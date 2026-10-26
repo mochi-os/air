@@ -43,6 +43,12 @@ and iteration knobs, so multiple attempts don't lose the design.
   refits the registration frame. The scan itself is NOT in the repository
   (third-party drawing, rights unverified — gitignored): it lives only in the
   local working tree, so keep a copy before wiping this checkout.
+- **`far.py`** — the distant model (headless Blender): everything but the deck strip, its
+  underside and the skirt, which the full model keeps drawing at every range, collapsed to about
+  50,000 triangles without images. The engine swaps it in once the ship is under 150 reference
+  pixels long (1/1080 of the view's height; about 3 km at normal zoom). **`farcheck.py`** checks it
+  against `nimitz-clean.glb`: no deck parts or images, within budget, every material carried over,
+  nearly every vertex on the full model and its extent no more than 4 m in or 0.2 m out.
 - **`cdp_shot.py`** — headless capture via Chrome DevTools Protocol (the old
   `--virtual-time-budget` one-shot broke in Chrome 141). `cdp_shot.py "<query>" out.png [wait-s]`.
 - **`raycheck.py`** — sky-through-ship regression rays: exact triangle ray-casts of the
@@ -82,6 +88,10 @@ python3 build_carrier.py               # reads decktex12.png; writes the outline
 python3 bake_decktex.py                # only when the build said the outline changed: re-bake on it
 python3 build_carrier.py               # ... and rebuild with that texture
 ../gltfpack-native -i nimitz-clean.glb -o ../../web/src/assets/nimitz.glb -cc -kn -noq -tc -tu
+PYTHONPATH=$HOME/.local/lib/python3.14/site-packages blender -b --factory-startup \
+  --python-use-system-env -P far.py -- nimitz-clean.glb nimitz-far.glb   # the distant model
+python3 farcheck.py
+../gltfpack-native -i nimitz-far.glb -o ../../web/src/assets/nimitz-far.glb -cc -noq
 # a changed outline, catapult or wire moves the physics too: re-export the world
 # server's map with claude/scripts/air/geometry.py and rebuild the world
 # then run `make` in apps/air — Vite content-hashes the GLB into the bundle,

@@ -70,6 +70,11 @@ describe('seedStart', () => {
 // MissionConfig interface and DEFAULT_CONFIG. Nothing caught it: the interface
 // carries a catch-all index signature, and engine.ts opens with @ts-nocheck.
 describe('DEFAULT_CONFIG', () => {
+  it('no longer carries the Distance LOD switch (#3): distance stages and spotting dots are the same for every player', () => {
+    expect(DEFAULT_CONFIG).not.toHaveProperty('lod')
+    expect(TAB_FIELDS.graphics).not.toContain('lod')
+  })
+
   it('declares hints, defaulted ON', () => {
     // A COMPILE-TIME assertion, and it needs to be: MissionConfig carries a
     // catch-all index signature, so DEFAULT_CONFIG type-checks whether or not
@@ -192,7 +197,7 @@ describe('profileFor and the standard remap', () => {
 
   it('gives a raw-HID stick its own profile when the browser has not remapped it', () => {
     expect(profileFor(stick, '').name).toBe(
-      'Turtle Beach VelocityOne Flightstick',
+      'Turtle Beach VelocityOne Flightstick'
     )
   })
 
@@ -226,8 +231,10 @@ describe('profileFor and the standard remap', () => {
 
 // #152: what the recording carries, so "was the stick healthy?" is a grep.
 describe('unreachable', () => {
-  const healthy = { axes: { pitch: '1', roll: '0', look: '3', weapon: '8' },
-                    buttons: { fire: '17', gear: '0' } }
+  const healthy = {
+    axes: { pitch: '1', roll: '0', look: '3', weapon: '8' },
+    buttons: { fire: '17', gear: '0' },
+  }
 
   it('says nothing when the device reports everything bound', () => {
     expect(unreachable(healthy, 10, 24)).toBe('')
@@ -243,12 +250,16 @@ describe('unreachable', () => {
 
   it('counts a pair as needing both halves', () => {
     // 9 axes has index 8 but not 9, so the castle pair is short by one.
-    expect(unreachable({ axes: { weapon: '8' }, buttons: {} }, 9, 24)).toBe('weapon')
+    expect(unreachable({ axes: { weapon: '8' }, buttons: {} }, 9, 24)).toBe(
+      'weapon'
+    )
     expect(unreachable({ axes: { weapon: '8' }, buttons: {} }, 10, 24)).toBe('')
   })
 
   it('ignores unbound actions', () => {
-    expect(unreachable({ axes: { zoom: '', trim: '' }, buttons: { hook: '' } }, 0, 0)).toBe('')
+    expect(
+      unreachable({ axes: { zoom: '', trim: '' }, buttons: { hook: '' } }, 0, 0)
+    ).toBe('')
   })
 })
 

@@ -208,11 +208,12 @@ export const PAIRS = new Set(['look', 'trim', 'weapon', 'tdc'])
 export function unreachable(
   bindings: StickBindings,
   axes: number,
-  buttons: number,
+  buttons: number
 ): string {
   const missed: string[] = []
   for (const [action, value] of Object.entries(bindings.axes ?? {}))
-    if (!reaches(String(value ?? ''), axes, PAIRS.has(action))) missed.push(action)
+    if (!reaches(String(value ?? ''), axes, PAIRS.has(action)))
+      missed.push(action)
   for (const [action, value] of Object.entries(bindings.buttons ?? {}))
     if (!reaches(String(value ?? ''), buttons)) missed.push(action)
   return missed.sort().join(',')
@@ -283,7 +284,6 @@ export interface MissionConfig {
   exterior_detail: number
   ocean_segments: number
   dyn_res: boolean
-  lod: boolean
   shadows: boolean
   afterburner: boolean
   tracers: boolean
@@ -356,7 +356,6 @@ export const TAB_FIELDS: Record<string, string[]> = {
   graphics: [
     'render_scale',
     'dyn_res',
-    'lod',
     'shadows',
     'exterior_detail',
     'effects_quality',
@@ -391,7 +390,6 @@ export const DEFAULT_CONFIG: MissionConfig = {
   // render_scale (floor 0.45) when frames exceed 18 ms, so slow machines get a
   // smooth game instead of a slideshow. The Graphics tab switch still disables it.
   dyn_res: true,
-  lod: true,
   shadows: false,
   afterburner: true,
   tracers: true,

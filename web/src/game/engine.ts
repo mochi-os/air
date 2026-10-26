@@ -80,6 +80,8 @@ import nimitz_model_url from '../assets/nimitz.glb?url'
 import nimitz_deck from '../assets/nimitz.json'   // its deck layout, shared with the model tools (tools/nimitz/ship.py)
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
+import fa18c_far_url from '../assets/fa18c-far.glb?url'   // the distant stages (#3): tools/fa18c
+import nimitz_far_url from '../assets/nimitz-far.glb?url'   // the carrier's far model (#3): tools/nimitz/far.py
 import amraam_model_url from '../assets/aim120c.glb?url'
 import hornet_font_url from '../assets/hornet.woff2?url'
 import moon_day_url from '../assets/moon-day.png?url'
@@ -168,7 +170,7 @@ export function startGame({
   if (config.sound !== false) { audio_enable(true); audio_gesture() }
 
 // ============================================================================ config
-const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3, lod:true,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
+const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
 	tracers:true, effects_quality:2, stores:stores_migrate(true), flares:true, shadows:false, clouds:"none", afterburner:true,   // effects_quality 0..3 scales expensive translucent work; stores (#17): the per-station loadout
 	view:"hud", framerate:false,   // no sens: the Sensitivity slider was removed because it was a flight-control gain, and the last two reads of it went with it (see sanitize_cfg)
 	task:"joust", start:"carrier", tod:"day", help:false };
@@ -181,7 +183,7 @@ const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, e
 // from an imported asset URL, for the dev readout.
 function model_stamp(url){ const m=/-([\w-]+)\.\w+$/.exec(url); return m?m[1]:url; }
 const CARRIER_MODELS={
-	nimitz:{ url:nimitz_model_url, length:333, yaw:20, bow:0, draft:0.375, deck:19,   // real USS Nimitz length. yaw:20 faces the bow to 070° (into the Midway wind) — the model's bow is +X (the retired Ford's was +Z, hence its yaw:110); both reach the same 070° recovery course. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
+	nimitz:{ url:nimitz_model_url, far:nimitz_far_url, length:333, yaw:20, bow:0, draft:0.375, deck:19,   // real USS Nimitz length. yaw:20 faces the bow to 070° (into the Midway wind) — the model's bow is +X (the retired Ford's was +Z, hence its yaw:110); both reach the same 070° recovery course. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
 		ident:"NIM",                                      // the ship's TACAN ident, shown beside the HUD's slant range
 		tacan:{ channel:74, band:"X" }, icls:11,          // the ship's TACAN and ICLS channels, which the pre-flight tunes: plausible values, not a real hull's
 		channels:[305000,262500,275800,318500],           // its tower, approach, marshal and landing signal officer frequencies, kHz, the first four comm presets of the mission load: plausible values too
@@ -190,6 +192,7 @@ const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with
 function sanitize_cfg(){   // runs after every config merge (the server-backed store can hold stale eras too)
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
 	delete cfg.sens;   // the retired Sensitivity slider. Removing the SETTING did not remove the saved VALUE: the config is server-backed, so an account that moved it before the removal still carries it, and the two surviving reads (the multiplayer control sample, the nosewheel pedal) went on scaling by it with no UI left to correct it
+	delete cfg.lod;   // the retired Distance LOD switch: nothing ever read it, and the distance stages and spotting dots are the same for every player, never a setting (#3)
 	delete cfg.invert;   // the retired Invert pitch switch — the per-axis "-" reverse flag replaced it (a flyer who used it re-reverses pitch with the axis row's swap button; keyboard users swap their key bindings)
 	if(cfg.clouds!=="none"&&!["cumulus","high_stratus","mid_stratus","low_stratus"].includes(cfg.clouds)) cfg.clouds="cumulus";   // a saved cloud type that no longer exists falls back to the default. EVERY new preset must be listed here: an omission silently rewrites the mission to cumulus, which would have turned every Case II approach into a clear-sky one
 	cfg.stores=stores_normalize(cfg.stores&&Object.keys(cfg.stores).length?cfg.stores:stores_migrate(cfg.missiles!==false));   // #17: legacy configs carry the retired missiles boolean — map it to its preset; any stores map is normalized so a stale shape cannot reach the loadout paths
@@ -267,6 +270,15 @@ const graphics_verdict = diagnose();   // #55: null = real acceleration; the gov
 // fraction never receives its cloud and every airframe edge gets a dark
 // stair-stepped rim. Clear skies keep MSAA.
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:!MSAA_OFF && cfg.clouds==="none", powerPreference:"high-performance" });
+// screen_points: the lights drawn at a constant size on screen (sizeAttenuation off), whose
+// size the GPU takes in drawing-buffer pixels. Each is given the size it was tuned at on a
+// 1080p screen, whose buffer is POINT_HEIGHT rows (supersampled 1.5x), and apply_size rescales
+// them with the buffer: a light keeps its share of the view on any screen, pixel ratio or
+// render scale, where a fixed size was half as big on a 4K monitor and changed as dynamic
+// resolution moved the render scale (#12).
+const POINT_HEIGHT=1620, screen_points=[];
+function screen_point(material,size){ screen_points.push({ material, size }); material.size=size*renderer.domElement.height/POINT_HEIGHT; return material; }
+function screen_points_resize(){ const k=renderer.domElement.height/POINT_HEIGHT; for(const p of screen_points) p.material.size=p.size*k; }
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene = new THREE.Scene(); scene.fog=new THREE.FogExp2(fog_colour,0.000042);
@@ -1417,7 +1429,7 @@ function make_jet(){ const g=new THREE.Group();   // afterburner cones only — 
 // the state channel, min/max normalise a signed deflection (rad) onto the clip
 // span, flip reverses it.
 const AIRCRAFT_MODELS={
-	fa18c:{ url:fa18c_model_url, length:17.07, yaw:90, pitch:0, roll:0,
+	fa18c:{ url:fa18c_model_url, far:fa18c_far_url, length:17.07, yaw:90, pitch:0, roll:0,
 		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
 		shift:[{ node:"Column_Base_383", by:[-0.15,0,0] }],   // the stick's assembly, 15 cm aft: the model stands it with its grip flush with the AMPCD, where no forward stick fits, and the pilot figure's hand held it here
 		cockpitHide:/^(Pilot_Head_769|Object_1357|Object_1369)$/,   // first person: the pilot's head subtree (head, helmet, visor, mask), his arms and his body - a figure posed for another cockpit, whose right hand holds a stick of its own 15 cm behind the jet's
@@ -1875,6 +1887,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	const loaded=fleet[kind]; if(!loaded||g.userData.hasModel===kind) return; g.userData.hasModel=kind;
 	g.children.forEach(c=>{ if(c.userData.body||c.userData.glass) c.visible=false; });   // hide procedural shell, keep afterburner cones
 	const previous=g.children.find(c=>c.userData&&c.userData.model); if(previous) g.remove(previous);   // aircraft swap: drop the old airframe
+	g.userData.stages=null; g.userData.stage=undefined;   // its distant stages went with it
 	// No team tint on the airframe (#210): identification is the HUD box, locator
 	// line and map colours, not paint.
 	const m=loaded.proto.clone(true); m.userData.model=true;
@@ -1898,6 +1911,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	if(spec.cockpitHide){ const hide=[]; m.traverse(o=>{ if(o.name&&spec.cockpitHide.test(o.name)) hide.push(o); });
 		g.userData.cockpitHide=hide; }   // first-person set: the pilot's head subtree (visible cascades down, so one node hides head+helmet+visor+mask), arms and body
 	g.add(m);
+	stages_attach(g,kind);
 	for(const s of spec.shift||[]){ const o=m.getObjectByName(s.node); if(o) shift_node(g,o,s.by); }
 	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); controls_round(g,m); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
@@ -1924,6 +1938,87 @@ function own_aircraft(){ return MULTIPLAYER ? ((net&&net.welcome&&net.welcome.sp
 // and bloom - that are no structure to see through or past, and a sprite
 // cannot be ray-cast without a camera, which these casts have none of.
 function model_of(g){ return g.children.find(c=>c.userData&&c.userData.model)||g; }
+// Distance stages (#3). Another aircraft is drawn in full only while it is big on screen; smaller,
+// it is a merged model of a few thousand triangles in two or three draw calls (medium), then a
+// silhouette of a few hundred (far), then a dot. Sizes are reference pixels, 1/1080 of the view's
+// height: the view is 45 degrees high on every screen, so a jet reaches each stage at the same range
+// whatever the resolution, and the zoom pushes every stage out with it. A jet returns to a nearer stage
+// only once STAGE_MARGIN past that stage's limit, so it cannot flicker at a boundary. The dot keeps
+// the same share of the view on every screen (screen_point), takes the jet's own colour under the
+// scene's light and the scene's haze, and fades out over the last DOT_FADE metres before DOT_RANGE:
+// how far a jet can be seen is the weather's and the light's, never the monitor's, and the same for
+// every player. The carrier has two stages: it keeps drawing its deck strip, underside and skirt from
+// the full model at every range (CARRIER_KEEP), which its far model leaves out (tools/nimitz/far.py).
+const STAGES=["full","medium","far","dot"], STAGE_LIMITS=[80,8,2], STAGE_MARGIN=1.15;
+const DOT_SIZE=3, DOT_RANGE=25000, DOT_FADE=5000, DOT_GAIN=0.42, DOT_MAX=128;   // DOT_SIZE: POINT_HEIGHT pixels, 2 reference pixels
+const CARRIER_LIMIT=150, CARRIER_KEEP=/^deck_(baked|underside|skirt)$/;
+const fleet_far={};   // aircraft kind -> its distant stages (fa18c-far.glb: airframe, up, down, burner, far), or "loading"
+let carrier_far=null;   // { group: the far model, near: the full model's meshes it replaces, far: drawn }
+let stage_dots=null;
+const _stage_eye=new THREE.Vector3(), _stage_light=new THREE.Color();
+function screen_size(length,distance){ return length*1080/(2*Math.max(distance,1e-3)*Math.tan(camera.fov*D2R/2)); }   // reference pixels
+function stage_for(size,current){ let i=STAGE_LIMITS.findIndex(min=>size>=min); if(i<0) i=STAGE_LIMITS.length;
+	while(i<current&&size<STAGE_LIMITS[i]*STAGE_MARGIN) i++;   // a nearer stage only past its margin
+	return i; }
+function far_parse(bytes){ return new Promise((resolve,reject)=>{ const loader=new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder); loader.parse(bytes,"",resolve,reject); }); }
+async function init_far_model(kind){ const spec=AIRCRAFT_MODELS[kind]; if(!spec||!spec.far||fleet_far[kind]) return; fleet_far[kind]="loading";
+	try{ const gltf=await far_parse(await asset_bytes(spec.far));
+		const body=new THREE.MeshStandardMaterial({ vertexColors:true, roughness:0.7, metalness:0.1 }), glow=new THREE.MeshBasicMaterial({ vertexColors:true });   // the jet's colours are baked into the stages' vertices; the burner glows unlit, as the full model's nozzles do on another jet
+		const albedo=new THREE.Color(0,0,0); let corners=0;
+		gltf.scene.traverse(o=>{ if(!o.isMesh) return; let p=o; while(p&&!["airframe","up","down","burner","far"].includes(p.name)) p=p.parent;
+			o.material=p&&p.name==="burner"?glow:body; o.castShadow=cfg.shadows; o.userData.modelmesh=true;
+			if(p&&p.name==="far"){ const c=o.geometry.attributes.color; for(let i=0;i<c.count;i++){ albedo.r+=c.getX(i); albedo.g+=c.getY(i); albedo.b+=c.getZ(i); corners++; } } });
+		gltf.scene.userData.albedo=corners?albedo.multiplyScalar(1/corners):new THREE.Color(0.27,0.27,0.27);   // the dot's colour: the far silhouette's mean
+		fleet_far[kind]=gltf.scene;
+		for(const st of new Set([bandit,...remotes.values()])) if(st.group&&st.group.userData.hasModel===kind) stages_attach(st.group,kind); }
+	catch(e){ fleet_far[kind]=null; console.warn("aircraft model: no distant stages for "+kind+" ("+((e&&e.message)||e)+")"); } }   // without them the jet is drawn in full at every range
+// stages_attach hangs a jet's distant stages beside its model's own nodes, in the glTF scene they were
+// built in (tools/fa18c), so normalise_model's scale, centring, rotation and stance place them too.
+function stages_attach(g,kind){ const far=fleet_far[kind], m=g.children.find(c=>c.userData&&c.userData.model);
+	if(g.userData.player||!far||far==="loading"||!m) return;
+	const inner=m.children[0]&&m.children[0].children[0]; if(!inner) return;   // outer > proto (rotation, stance) > the glTF scene (scale, centring)
+	const root=far.clone(true); inner.add(root);
+	g.userData.stages={ root, parts:inner.children.filter(c=>c!==root), albedo:far.userData.albedo,
+		airframe:root.getObjectByName("airframe"), up:root.getObjectByName("up"), down:root.getObjectByName("down"), burner:root.getObjectByName("burner"), far:root.getObjectByName("far") };
+	g.userData.stage=-1; stage_show(g,0,1); }
+function stage_show(g,i,gear){ const s=g.userData.stages, down=gear<0.5;   // gear: 1 = up
+	if(g.userData.stage!==i){ for(const p of s.parts) p.visible=i===0; s.root.visible=i===1||i===2; g.userData.stage=i; }
+	s.airframe.visible=s.burner.visible=i===1; s.up.visible=i===1&&!down; s.down.visible=i===1&&down; s.far.visible=i===2; }
+function dots_build(){ const g=new THREE.BufferGeometry();
+	g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(DOT_MAX*3),3).setUsage(THREE.DynamicDrawUsage));
+	g.setAttribute("color",new THREE.BufferAttribute(new Float32Array(DOT_MAX*4),4).setUsage(THREE.DynamicDrawUsage));
+	const p=new THREE.Points(g,screen_point(new THREE.PointsMaterial({ vertexColors:true, transparent:true, depthWrite:false, sizeAttenuation:false }),DOT_SIZE));
+	p.frustumCulled=false; scene.add(p); return p; }
+// update_stages picks each aircraft's and the carrier's stage for this frame's view.
+function update_stages(){ camera.getWorldPosition(_stage_eye);
+	_stage_light.copy(sun.color).multiplyScalar(sun.intensity*Math.max(0,sun_dir.y)*0.5)
+		.add(new THREE.Color().copy(hemi.color).lerp(hemi.groundColor,0.25).multiplyScalar(hemi.intensity))
+		.add(new THREE.Color().copy(amb.color).multiplyScalar(amb.intensity)).multiplyScalar(DOT_GAIN);   // a lit grey's brightness under the scene's light, the sun's half from the side it lights
+	let n=0; const pos=stage_dots&&stage_dots.geometry.attributes.position, col=stage_dots&&stage_dots.geometry.attributes.color;
+	for(const st of new Set([bandit,...remotes.values()])){ const g=st.group; if(!g||!g.userData.stages) continue;
+		const spec=AIRCRAFT_MODELS[g.userData.hasModel]||AIRCRAFT_MODELS.fa18c, d=_stage_eye.distanceTo(g.position);
+		const was=g.userData.stage, i=stage_for(screen_size(spec.length,d),Math.max(was,0));
+		stage_show(g,i,st.gear??1);
+		if(i===0&&was>0&&presenting) apply_anim(st,0);   // posed afresh as it comes back into full view
+		if(i!==3||!g.visible||d>=DOT_RANGE||n>=DOT_MAX) continue;
+		if(!stage_dots){ stage_dots=dots_build(); return update_stages(); }
+		const c=g.userData.stages.albedo, fade=THREE.MathUtils.clamp((DOT_RANGE-d)/DOT_FADE,0,1);
+		pos.setXYZ(n,g.position.x,g.position.y,g.position.z); col.setXYZW(n,c.r*_stage_light.r,c.g*_stage_light.g,c.b*_stage_light.b,fade); n++; }
+	if(stage_dots){ stage_dots.geometry.setDrawRange(0,n); pos.needsUpdate=col.needsUpdate=n>0; stage_dots.visible=n>0; }
+	if(carrier_far){ const far=screen_size(SHIP.length,_stage_eye.distanceTo(carrier_far.group.position))<CARRIER_LIMIT*(carrier_far.far?STAGE_MARGIN:1);
+		if(far!==carrier_far.far){ carrier_far.far=far; carrier_far.group.visible=far; for(const o of carrier_far.near) o.visible=!far; } } }
+// init_carrier_far loads the carrier's far model into a group placed as the full model's, outside
+// carrier_model, so the deck grid and the island's collision never meet it.
+async function init_carrier_far(grp,gscene){ if(!SHIP.far) return;
+	try{ const gltf=await far_parse(await asset_bytes(SHIP.far)); const far=new THREE.Group();
+		gltf.scene.position.copy(gscene.position); far.add(gltf.scene); far.position.copy(grp.position); far.rotation.copy(grp.rotation); far.scale.copy(grp.scale);
+		far.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });   // as the full model's
+		far.visible=false; scene.add(far);
+		const near=[]; grp.traverse(o=>{ if(!o.isMesh) return; for(let p=o;p&&p!==grp;p=p.parent) if(CARRIER_KEEP.test(p.name||"")) return; near.push(o); });
+		carrier_far={ group:far, near, far:false }; }
+	catch(e){ console.warn("carrier model: no far model ("+((e&&e.message)||e)+")"); } }   // without it the carrier is drawn in full at every range
+if(DEV_MODE) (globalThis as any).dev_stages=()=>({ jets:[...new Set([bandit,...remotes.values()])].filter(st=>st.group&&st.group.userData.stages).map(st=>({ stage:STAGES[Math.max(st.group.userData.stage,0)], size:+screen_size((AIRCRAFT_MODELS[st.group.userData.hasModel]||AIRCRAFT_MODELS.fa18c).length,_stage_eye.distanceTo(st.group.position)).toFixed(2), distance:Math.round(_stage_eye.distanceTo(st.group.position)), visible:st.group.visible, at:[st.group.position.x,st.group.position.y,st.group.position.z].map(Math.round), screen:(v=>[v.x,v.y].map(c=>+c.toFixed(4)))(st.group.position.clone().project(camera)) })),   // i18n-format-ok: developer probe values
+	carrier:carrier_far?{ stage:carrier_far.far?"far":"full", size:+screen_size(SHIP.length,_stage_eye.distanceTo(carrier_far.group.position)).toFixed(1), screen:(v=>[v.x,v.y].map(c=>+c.toFixed(4)))(carrier_far.group.position.clone().project(camera)) }:null, dots:stage_dots?stage_dots.geometry.drawRange.count:0, dot:stage_dots?+stage_dots.material.size.toFixed(2):null });   // i18n-format-ok: developer probe values
 function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_769"); if(!head) return;
 	const g=ownship.group; g.updateMatrixWorld(true);
 	const p=new THREE.Vector3(); head.getWorldPosition(p);
@@ -5051,6 +5146,7 @@ async function init_external_model(kind){
 					if(mm.name==="Mirrors"){ const glass=mm.clone(); glass.metalness=1; glass.roughness=0.05; glass.color=new THREE.Color(0xd4d8dc); glass.envMap=mirror_env&&mirror_env.texture; mirror_mats.push(glass); if(Array.isArray(o.material)) o.material[ix]=glass; else o.material=glass; }   // the canopy bow's side mirrors: matte white plastic in the model, silvered glass here
 					if(mm.map&&/^Material_1[24]$/.test(mm.name||"")){ const lit=mm.clone(); lit.emissiveMap=mm.map; lit.emissive=new THREE.Color(0xffffff); lit.emissiveIntensity=0.32; instrument_mats.push(lit); if(Array.isArray(o.material)) o.material[ix]=lit; else o.material=lit; } }); } });   // instrument backlighting (#99) on this jet's own copy of the two cockpit gauge materials: the stock's are shared with the loadout preview
 				fleet[kind]={ proto, rig, profile:gun_profile(proto,AIRCRAFT_MODELS[kind]||{}) };
+				void init_far_model(kind);   // the distant stages follow; until they arrive every jet is drawn in full
 				if(kind===(cfg.aircraft||"fa18c")) model_active=true;   // the loading gate waits on the ownship's aircraft
 				apply_model_all(); finish();
 			}catch(e){ finish(); throw new Error("aircraft model: failed to process "+tag+": "+(e&&e.message||e)); } }
@@ -5206,6 +5302,7 @@ async function init_carrier_model(){
 			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; const hasuv=!!(o.geometry&&o.geometry.attributes&&o.geometry.attributes.uv);
 				if(baseTex&&hasuv)mm.map=baseTex; if(normTex&&hasuv)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });   // the map goes only where UVs exist: on the Nimitz only the baked deck strip has them (a map without UVs renders garbage)
 			carrier_model=grp; scene.add(grp);
+			void init_carrier_far(grp,gscene);   // the far model follows; until it arrives the carrier is drawn in full
 			/* procedural carrier removed; nothing to hide */
 			const yd=(SHIP.yaw-(SHIP.bow??90))*D2R, dc=Math.cos(yd), ds=Math.sin(yd);                        // rotate the sample spot with the carrier heading (yaw - bow: the deck-ops frame, see the nimitz config)
 			CARRIER.deckY=deck_y_at(grp, CARRIER.x+(70*dc-6*ds), CARRIER.z+(-70*ds-6*dc), st.deckY-waterline);   // deck height near the catapult spot (carrier-relative)
@@ -6640,9 +6737,9 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 			gpos.push(p.x,y+0.75,p.z); gcol.push(1,1,1); papi.push({mesh:m,x:p.x,y:y+0.75,z:p.z,set:setAng[i]});
 			obstacles.posts.push({x:p.x,z:p.z,r:2.2,y1:y+1.6}); }
 		const pg=new THREE.BufferGeometry(); pg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(gpos),3)); pg.setAttribute("color",new THREE.BufferAttribute(new Float32Array(gcol),3));
-		const papiPts=new THREE.Points(pg,new THREE.PointsMaterial({size:7,map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false})); papiPts.frustumCulled=false; papiPts.visible=false; scene.add(papiPts);   // base: normal-blended so the red reads red in daylight (additive washed it pale-orange). SCREEN-SPACE like the OLS meatball: world-sized (13 m) discs read as giant red balls from the runway in daylight
+		const papiPts=new THREE.Points(pg,screen_point(new THREE.PointsMaterial({map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false}),7)); papiPts.frustumCulled=false; papiPts.visible=false; scene.add(papiPts);   // base: normal-blended so the red reads red in daylight (additive washed it pale-orange). SCREEN-SPACE like the OLS meatball: world-sized (13 m) discs read as giant red balls from the runway in daylight
 		const wg=new THREE.BufferGeometry(); wg.setAttribute("position",pg.getAttribute("position")); wg.setAttribute("color",new THREE.BufferAttribute(new Float32Array(gcol.length),3));
-		const papiWhite=new THREE.Points(wg,new THREE.PointsMaterial({size:7,map:light_dot,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:false})); papiWhite.frustumCulled=false; papiWhite.visible=false; scene.add(papiWhite);   // additive boost lit ONLY on the white units, so they punch through bright daylight (red units stay normal-blended)
+		const papiWhite=new THREE.Points(wg,screen_point(new THREE.PointsMaterial({map:light_dot,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:false}),7)); papiWhite.frustumCulled=false; papiWhite.visible=false; scene.add(papiWhite);   // additive boost lit ONLY on the white units, so they punch through bright daylight (red units stay normal-blended)
 		return {papi,papiPts,papiWhite,cx:tdz.x,cz:tdz.z,bx:beam.x,bz:beam.z}; }
 	const thrP=new THREE.Vector3(o.x,y,o.z).addScaledVector(fwd,-L/2);        // -y end: approach for heading H, fly +fwd, left=-right, beam back along -fwd
 	const thrM=new THREE.Vector3(o.x,y,o.z).addScaledVector(fwd, L/2);        // +y end: approach for heading H+180, fly -fwd, left=+right, beam along +fwd
@@ -6702,7 +6799,7 @@ let carrier_jbds=null;       // one Mk 7 jet blast deflector per cat spot; rises
 const JBD_T=0.28, JBD_ANG=50*Math.PI/180, JBD_INSET={ side:0.125, end:0.1 };   // the panel fills its painted box (each catapult's deflector in the ship file) inside the border; real Mk 7 raises to ~50°
 function ols_points(pts,color,size){   // like glow_points but SCREEN-SPACE (constant pixels) so the meatball reads small up close and far, not a 9 m blob
 	const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pts),3));
-	const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:false})); p.frustumCulled=false; scene.add(p); return p;
+	const p=new THREE.Points(g,screen_point(new THREE.PointsMaterial({map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:false}),size)); p.frustumCulled=false; scene.add(p); return p;
 }
 function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the flight deck (called once the carrier GLB has loaded and CARRIER.deckY is known)
 	const dy=CARRIER.deckY;
@@ -6781,7 +6878,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const mast=new THREE.Mesh(new THREE.BoxGeometry(0.13,2.1,0.13),strut); mast.position.set(o.x,dy+1.1,o.z); mast.castShadow=true; scene.add(mast);   // mast from the housing up to the cut/waveoff
 	arm(2.3,dy+1.6,0.1); arm(2.3,dy+2.0,0.1); }   // cut + waveoff arms
 	const bg=new THREE.BufferGeometry(); bg.setAttribute("position",new THREE.BufferAttribute(new Float32Array([o.x,datumY,o.z]),3)); bg.setAttribute("color",new THREE.BufferAttribute(new Float32Array([1,0.62,0]),3));
-	const ballPts=new THREE.Points(bg,new THREE.PointsMaterial({size:11,map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false})); ballPts.frustumCulled=false; ballPts.visible=false; scene.add(ballPts);   // the amber "ball" — screen-space, normal-blended so it reads amber/red
+	const ballPts=new THREE.Points(bg,screen_point(new THREE.PointsMaterial({map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false}),11)); ballPts.frustumCulled=false; ballPts.visible=false; scene.add(ballPts);   // the amber "ball" — screen-space, normal-blended so it reads amber/red
 	const td=carrier_world(twfa,strip_lat(twfa));   // touchdown reference (the 2-wire) — the glideslope references the wires, NOT the OLS housing on the bracket
 	const sdx=STRIP_UFA*CARRIER_C+STRIP_ULAT*CARRIER_S, sdz=-STRIP_UFA*CARRIER_S+STRIP_ULAT*CARRIER_C, sl=Math.hypot(sdx,sdz);
 	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, cutPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl };   // approach comes from the −fa (aft) side, opposite the rollout
@@ -6816,9 +6913,8 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 			s2.position.set(q.x,dy+h,q.z); s2.target.position.set(tx,dy,tz); scene.add(s2); scene.add(s2.target); s2.visible=false; return s2; };
 		const ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
 		flood_lights.push(mk(-56.6,28.0,5.9,ld.x,ld.z), mk(-42.8,31.1,12.0,bw.x,bw.z));
-		const pscale=Math.max(1, renderer.domElement.height/720);   // Points sizes are DEVICE pixels: unscaled, the lamps were 3x smaller on a 4K screen than in 720p captures
 		const mkpts=(size,color)=>{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(fixtures),3));
-			const lp=new THREE.Points(lg,new THREE.PointsMaterial({size:size*pscale,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}));
+			const lp=new THREE.Points(lg,screen_point(new THREE.PointsMaterial({map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}),size*POINT_HEIGHT/720));   // the glare sizes were tuned in 720-row captures
 			lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); deck_floods.push(lp); };
 		mkpts(46,0x4a3a20);
 		mkpts(13,0xfff2d2); }   // the white-hot lamp core   // flood GLARE sprites: constant pixels AND no depth test — the broad island superstructure occluded every depth-tested placement near the mast; a source this bright blooms through structure anyway
@@ -10752,7 +10848,7 @@ function update_anim(dt){ const jets=[ownship,bandit];
 	{ const rolling=(st===ownship)?(st.squish??0)>0.1:((st.gear??1)<0.1 && st.speed>1);   // wheel spin: on the ground the tires match ground speed; airborne they freewheel down (~2.5 s), and retraction brakes them (real jets auto-brake the wheels in the wells)
 		st.wheelSpeed=rolling?st.speed:(st.gear??1)>0.5?0:(st.wheelSpeed??0)*Math.exp(-dt/2.5);
 		st.wheelDist=(st.wheelDist??0)+(st.wheelSpeed??0)*dt; }
-	if(presenting) apply_anim(st,dt); } }   // the airframe's parts are posed once a frame, as drawn
+	if(presenting&&!(st.group&&st.group.userData.stage>0)) apply_anim(st,dt); } }   // a jet drawn as a distant stage has no parts to pose   // the airframe's parts are posed once a frame, as drawn
 // afterburner shows or hides a jet's burner cones and flame boxes.
 function afterburner(g,on){
 	if(g.userData.flames) return;   // this airframe's burner look is its own nozzle glow — no cones, no flame boxes
@@ -10783,7 +10879,7 @@ function visuals(dt){
 	if(!presenting) return;
 	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts)+flush_points(debris,db_pts)+flush_points(vapour_pool,vp_pts);
 	tr_pts.visible=cfg.tracers; fl_pts.visible=true; strike_pts.visible=true;   // flares are no longer a mission setting (dispensing is always allowed); a strike flash is not a tracer, so it stays on with tracers switched off
-	update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(framed);
+	update_stages(); update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(framed);
 }
 // debris_struck meets the pilot's jet against the bandit's wreckage (world
 // battle/debris.go) over the time the frame's flight stepped. A strike wounds
@@ -11955,7 +12051,7 @@ function refresh_perf(dt){ pacing.record(dt);   // the frame's real length, uncl
 function supersample(dpr){ if(Number.isFinite(SSAA_OVERRIDE)) return SSAA_OVERRIDE;   // &ssaa=X (dev) pins it for benchmarking
 	return dpr>1.25?1.0:1.5; }
 function apply_size(){ const w=innerWidth,h=innerHeight,dpr=Math.min(devicePixelRatio||1,2),sc=THREE.MathUtils.clamp(cfg.render_scale,0.3,2.0)*dpr*supersample(dpr);
-	renderer.setSize(Math.round(w*sc),Math.round(h*sc),false); pacing.reset(); canvas.style.width=w+"px"; canvas.style.height=h+"px";
+	renderer.setSize(Math.round(w*sc),Math.round(h*sc),false); screen_points_resize(); pacing.reset(); canvas.style.width=w+"px"; canvas.style.height=h+"px";
 	camera.aspect=w/h; camera.updateProjectionMatrix(); cockpit_cam.aspect=w/h; cockpit_cam.updateProjectionMatrix(); hud_resize(); if(cloud_active()||rt) size_rt(); }
 addEventListener("resize",apply_size,{ signal });
 let dyn_cd=0, dyn_ceiling=2.0, dyn_ceiling_t=0, dyn_strain=0, dyn_health=0, dyn_compressed=false;
