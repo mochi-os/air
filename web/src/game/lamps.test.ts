@@ -5,6 +5,8 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { describe, expect, it } from 'vitest'
 import * as countermeasures from './countermeasures'
 
@@ -90,23 +92,34 @@ function panel(p: Panel): string[] {
   return run(p, countermeasures) as string[]
 }
 
+// the glareshield's lights where the model paints them, and the bezels' heights, as engine.ts declares them
+const B = new Function(`${/\nconst BROW=[\s\S]*?\};\n/.exec(source)?.[0] ?? ''} return BROW;`)() as { x: number; top: number; pitch: number; lens: number[]; left: number[]; right: number[]; caution: number[]; fireL: number[]; apufire: number[]; fireR: number[] }
+const BEZEL = new Function(`${/\nconst BEZEL=[^\n]*\n/.exec(source)?.[0] ?? ''} return BEZEL;`)() as { lift: number }
+const BUTTON = Number(/\nconst BROW_BUTTON=([\d.]+)/.exec(source)?.[1])
+
 describe('the glareshield panels', () => {
-  it('lay FIRE, MASTER CAUTION and the grids outboard of the HUD glass, and APU FIRE and FIRE on the right', () => {
-    const build = /\nfunction build_lamps\(g\)\{[\s\S]*?g\.userData\.lamps=lamps;/.exec(source)?.[0] ?? ''
-    expect(build).toMatch(/const BROW=\{ x:6\.160, y:0\.495 \};/) // the measured aft face of the glareshield, just below its chamfer
-    expect(build).toMatch(/brow\.position\.set\(BROW\.x, BROW\.y, 0\);/)
-    expect(build).toMatch(/brow\.children\.forEach\(m=>\{ m\.rotateY\(-Math\.PI\/2\);/) // painted face aft: the back of a lens reads mirrored
-    expect(build).toMatch(/const P=0\.012, col=\(k\)=>0\.125\+k\*0\.032;/) // the grids start 12.5 cm out, past the 9 cm glass half-width
-    expect(build).toMatch(/lamps\.caution=legend\("MASTER\\nCAUTION","#ffc23a",0\.028,0\.016\); lamps\.caution\.position\.set\(0,-0\.012,-0\.205\);/)
-    expect(build).toMatch(/lamps\.fireL=legend\("FIRE","#e23b2e",0\.024,0\.016\); lamps\.fireL\.position\.set\(0,-0\.012,-0\.245\);/)
-    expect(build).toMatch(/lamps\.apufire=legend\("APU\\nFIRE","#e23b2e",0\.024,0\.016\); lamps\.apufire\.position\.set\(0,-0\.012,0\.205\);/)
-    expect(build).toMatch(/lamps\.fireR=legend\("FIRE","#e23b2e",0\.024,0\.016\); lamps\.fireR\.position\.set\(0,-0\.012,0\.245\);/)
-    expect(build).toMatch(/grid\(-1,GLARESHIELD\.left\); grid\(1,GLARESHIELD\.right\);/)
+  it('lay FIRE, MASTER CAUTION and the left grid, and the right grid, APU FIRE and FIRE, on the lights the model paints (#140)', () => {
+    const { lamps, brow } = built()
+    expect(brow.position.toArray()).toEqual([B.x, 0, 0]) // the glareshield's aft face, which the DDIs' bezels share
+    for (const [name, [y, z, w, h]] of [['caution', B.caution], ['fireL', B.fireL], ['apufire', B.apufire], ['fireR', B.fireR]] as const) {
+      expect(lamps[name].position.toArray(), name).toEqual([-(BEZEL.lift + BUTTON + 0.0002), y, z]) // on its push-button's body
+      expect(lamps[name].userData.size, name).toEqual([w, h])
+    }
+    expect([lamps.caution.userData.text, lamps.fireL.userData.text, lamps.apufire.userData.text, lamps.fireR.userData.text]).toEqual(['MASTER\nCAUTION', 'FIRE', 'APU\nFIRE', 'FIRE'])
+    expect([lamps.fireL.position.z, lamps.caution.position.z, lamps.go.position.z, lamps.nogo.position.z]).toEqual([...[lamps.fireL, lamps.caution, lamps.go, lamps.nogo].map((m) => m.position.z)].sort((a, b) => a - b)) // outboard to inboard on the left
+    expect([lamps.rcdr.position.z, lamps.disp.position.z, lamps.apufire.position.z, lamps.fireR.position.z]).toEqual([...[lamps.rcdr, lamps.disp, lamps.apufire, lamps.fireR].map((m) => m.position.z)].sort((a, b) => a - b)) // and inboard to outboard on the right
+    for (const m of brow.children.filter((k) => !['MASTER\nCAUTION', 'FIRE', 'APU\nFIRE'].includes(k.userData.text))) {
+      expect(m.position.x).toBeCloseTo(-(BEZEL.lift + 0.0003), 9) // a grid's lenses on the plate
+      expect(m.userData.size).toEqual(B.lens)
+    }
+    expect(source).toMatch(/brow\.children\.forEach\(m=>\{ m\.rotateY\(-Math\.PI\/2\);/) // painted face aft: the back of a lens reads mirrored
+    expect(brow.children.every((m) => m.renderOrder === 1 && m.name === 'brow.lens')).toBe(true) // drawn after the plate behind them, as a lens writes no depth
   })
 
   // Each lens by its row from the top and its column, 0 inboard and 1 outboard,
   // as build_lamps places it on the brow.
-  const place = (m: THREE.Object3D) => [Math.round((-0.006 - m.position.y) / 0.012), Math.abs(m.position.z) < 0.14 ? 0 : 1, Math.sign(m.position.z)]
+  const place = (m: THREE.Object3D) => { const side = Math.sign(m.position.z), [inboard, outboard] = side < 0 ? B.left : B.right
+    return [Math.round((B.top - m.position.y) / B.pitch), Math.abs(m.position.z - inboard) < Math.abs(m.position.z - outboard) ? 0 : 1, side] }
   it('lay the right panel six rows deep as FO-5 item 8 does, with legendless lenses where it draws a dash', () => {
     const { lamps, brow } = built()
     const at = Object.fromEntries(['rcdr', 'disp', 'sam', 'ai', 'aaa', 'cw'].map((n) => [n, place(lamps[n])]))
@@ -339,7 +352,7 @@ describe('the caution lights panel', () => {
 // build_lamps's brow and caution panel blocks, run on three.js with the layout
 // constants and a stand-in lens that records its legend and size.
 function built(): { lamps: Record<string, THREE.Mesh>; brow: THREE.Object3D; cautions: THREE.Object3D } {
-  const constants = ['GLARESHIELD', 'CAUTION_LIGHTS', 'CAUTION_GRID'].map((n) => {
+  const constants = ['GLARESHIELD', 'BROW', 'CAUTION_LIGHTS', 'CAUTION_GRID'].map((n) => {
     const m = new RegExp(`\\nconst ${n}=[\\s\\S]*?;\\n`).exec(source)?.[0]
     if (!m) throw new Error(`${n} not found in engine.ts`)
     return m
@@ -350,9 +363,10 @@ function built(): { lamps: Record<string, THREE.Mesh>; brow: THREE.Object3D; cau
     return source.slice(start, end)
   }
   const place = /\nfunction caution_place\([^\n]*\n/.exec(source)?.[0] ?? ''
+  const lines = ['BEZEL', 'BROW_BUTTON'].map((n) => /\nconst [A-Z_]+=[^\n]*\n/.exec(source.slice(source.indexOf(`\nconst ${n}=`)))?.[0] ?? '').join('')
   const brow = cut('\tconst brow=new THREE.Group();', '\tconst handle=')
   const cautions = cut('\t// The caution lights panel (FO-5 item 46', '\t// The emergency instrument light')
-  return new Function('THREE', `${constants} ${place} const LAYER_OWN=1, lamps={}, g=new THREE.Group();
+  return new Function('THREE', `${constants} ${place} ${lines} const LAYER_OWN=1, lamps={}, g=new THREE.Group(), build_brow=()=>{};
     const legend=(text,colour,w=0.026,h=0.010)=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h)); m.userData.text=text; m.userData.size=[w,h]; return m; };
     ${brow} ${cautions} return { lamps, brow, cautions };`)(THREE)
 }
@@ -660,7 +674,8 @@ describe('the FIRE lights as pushbuttons', () => {
     expect([shown([true, false]), shown([false, true]), shown([false, false])]).toEqual([[true, false], [false, true], [false, false]])
     // their own group beside the glareshield's, so neither brow.children (the lights test) nor a lens or lamp colour (the dimming) reaches them
     expect(source).toMatch(/guard\.position\.copy\(brow\.position\); g\.add\(guard\); g\.userData\.poles=poles; \}/)
-    expect(source).toMatch(/for\(const z of \[-0\.245,0\.245\]\)/) // under the left and right FIRE lenses
+    expect(source).toMatch(/for\(const name of \["fireL","fireR"\]\)\{ const \[y,z,w,h\]=BROW\[name\], m=new THREE\.Mesh\(new THREE\.PlaneGeometry\(w,0\.004\)/) // under the left and right FIRE lenses
+    expect(source).toMatch(/m\.position\.set\(-LENS,y-h\/2-0\.0028,z\);/) // inside the guard, between the light and its lower wall
   })
 })
 
@@ -794,5 +809,87 @@ describe('the hydraulic pressure indicator', () => {
     expect(source).toMatch(/twins:\[\{ node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", name:"INSTRUMENT_Needle_HydPressure_HYD2" \}\]/)
     expect(source).toMatch(/\{ name:"hyd1", +node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", axis:"z", gauge:"hyd1" \}/)
     expect(source).toMatch(/\{ name:"hyd2", +node:"INSTRUMENT_Needle_HydPressure_HYD2", +axis:"z", gauge:"hyd2" \}/)
+  })
+})
+
+// build_brow (#140): the glareshield's faces over their paint - each light panel's plate and its grid's frame, the
+// push-button lights' bodies and the FIRE lights' guards - and the face of the HUD's body over the UFC. Run on three.js
+// with the layout as engine.ts declares it, and two stand-in FIRE lenses.
+describe('the glareshield\'s faces (#140)', () => {
+  const decl = (name: string) => { const m = new RegExp(`\\nconst ${name}=[\\s\\S]*?\\n(?=\\S)`).exec(source); if (!m) throw new Error(`${name} not found in engine.ts`); return m[0] }
+  const lift = (name: string) => { const start = source.indexOf(`function ${name}(`); const rest = source.slice(start); const end = /\n(?=\S)/.exec(rest.slice(1)); return end ? rest.slice(0, end.index + 1) : rest }
+  const tables = ['BROW', 'BROW_EDGE', 'BROW_BUTTON', 'HUD_FACE', 'BEZEL', 'CENTRE_LEVER', 'CENTRE_COLOURS'].map(decl).join('')
+  const run = () => new Function('THREE', 'RoundedBoxGeometry', 'mergeGeometries', `const D2R=Math.PI/180, LAYER_OWN=1; ${tables} ${lift('centre_lever')} ${lift('build_brow')}
+    const lens=()=>{ const m=new THREE.Mesh(new THREE.PlaneGeometry(0.01,0.01)); m.userData.rest=-0.005; m.position.x=-0.005; return m; };
+    const lamps={ fireL:lens(), fireR:lens() }, g=new THREE.Group(); build_brow(g,lamps); g.updateMatrixWorld(true);
+    return { g, lamps, fires:g.userData.fires, layout:{ BROW, BROW_EDGE, BROW_BUTTON, BROW_GUARD, HUD_FACE, BEZEL } };`)(THREE, RoundedBoxGeometry, mergeGeometries) as {
+    g: THREE.Group; lamps: Record<string, THREE.Mesh>; fires: { lens: THREE.Mesh; body: THREE.Mesh }[]
+    layout: { BROW: typeof B; BROW_EDGE: { inner: { left: number; right: number }; bottom: number; outline: number[][] }; BROW_BUTTON: number; BROW_GUARD: { wall: number; height: number }; HUD_FACE: { x: number; y: number[]; z: number[]; toggle: number[]; knob: number[] }; BEZEL: { lift: number } } }
+  const b = run(), { BROW, BROW_EDGE, BROW_BUTTON, BROW_GUARD, HUD_FACE } = b.layout
+  // what a sightline square to the panel, from in front of it, meets first at [y, z]
+  const hit = (y: number, z: number) => {
+    const ray = new THREE.Raycaster(new THREE.Vector3(6.0, y, z), new THREE.Vector3(1, 0, 0)); ray.layers.enableAll()
+    const h = ray.intersectObject(b.g, true)[0]
+    return h ? { name: h.object.name, x: Math.round(h.point.x * 1e5) / 1e5 } : null
+  }
+  const at = (depth: number, x = BROW.x) => Math.round((x - depth) * 1e5) / 1e5
+  const rows = [0, 1, 2, 3, 4, 5].map((r) => BROW.top - r * BROW.pitch)
+  // the face's outline on one side, [z, y], and whether a point lies inside it
+  const outline = (side: 'left' | 'right') => { const s = side === 'left' ? -1 : 1, inner = BROW_EDGE.inner[side]
+    return [[s * inner, BROW_EDGE.bottom], [s * inner, BROW_EDGE.outline[0][1]], ...BROW_EDGE.outline.map(([z, y]) => [s * z, y])] }
+  const inside = (poly: number[][], [z, y]: number[]) => { let n = false
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const [zi, yi] = poly[i], [zj, yj] = poly[j]; if (yi > y !== yj > y && z < ((zj - zi) * (y - yi)) / (yj - yi) + zi) n = !n }
+    return n }
+
+  it('frames each grid\'s lenses on the plate, and covers each panel\'s paint to its outline and no further', () => {
+    for (const side of ['left', 'right'] as const) for (const y of rows) for (const z of BROW[side]) expect(hit(y, z), `${side} ${y} ${z}`).toEqual({ name: 'brow.frames', x: at(0.0005) }) // the frame a tenth of a millimetre over the plate
+    for (const [y, z] of [[0.53, -0.12], [0.47, -0.235], [0.48, -0.20], [0.53, 0.12], [0.47, 0.235], [0.48, 0.20]]) expect(hit(y, z), `${y} ${z}`).toEqual({ name: 'brow.plates', x: at(0.0004) })
+    for (const [y, z] of [[0.545, -0.13], [0.515, -0.235], [0.48, -0.25], [0.545, 0.13], [0.515, 0.235], [0.48, 0.25]]) expect(hit(y, z), `${y} ${z}`).toBeNull() // past the chamfer's edge, or beyond the panel
+    for (const side of ['left', 'right'] as const) for (const y of rows) for (const z of BROW[side]) {
+      const [w, h] = BROW.lens
+      for (const [dy, dz] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) expect(inside(outline(side), [z + (dz * w) / 2, y + (dy * h) / 2]), `${side} lens ${y} ${z}`).toBe(true)
+    }
+  })
+
+  it('stands MASTER CAUTION, APU FIRE and the FIRE lights on bodies, the FIRE lights inside guards, all on the face', () => {
+    for (const name of ['caution', 'apufire', 'fireL', 'fireR'] as const) {
+      const [y, z, w, h] = BROW[name], side = z < 0 ? 'left' : 'right'
+      expect(hit(y, z), name).toEqual({ name: name.startsWith('fire') ? 'brow.fire' : 'brow.buttons', x: at(0.0004 + BROW_BUTTON) })
+      for (const [dy, dz] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) expect(inside(outline(side), [z + (dz * w) / 2, y + (dy * h) / 2]), `${name} corner`).toBe(true)
+    }
+    for (const name of ['fireL', 'fireR'] as const) {
+      const [y, z, w, h] = BROW[name], wall = z + w / 2 + 0.001 + BROW_GUARD.wall / 2
+      expect(hit(y, wall), `${name} guard`).toEqual({ name: 'brow.guards', x: at(0.0004 + BROW_GUARD.height) }) // its side wall, standing past the light
+      expect(hit(y - h / 2 - 0.0028, z), `${name} pole`).toEqual({ name: 'brow.plates', x: at(0.0004) }) // the barber pole's place, open between the light and the wall below it
+      expect(hit(y - h / 2 - 0.0055 - BROW_GUARD.wall / 2, z), `${name} lower wall`).toEqual({ name: 'brow.guards', x: at(0.0004 + BROW_GUARD.height) })
+    }
+  })
+
+  it('sinks a pushed FIRE light into its guard, lens and body, and lifts it back out', () => {
+    const line = /\n\t\{ const f=ownship\.group\.userData\.fires; [^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(line).not.toBe('')
+    const press = (secured: boolean[]) => { new Function('ownship', 'secured', 'BROW_TRAVEL', line)({ group: { userData: { fires: b.fires } } }, secured, 0.002)
+      return b.fires.map((f) => [Math.round(f.lens.position.x * 1e4) / 1e4 + 0, Math.round(f.body.position.z * 1e4) / 1e4 + 0]) }   // + 0: no negative zero
+    expect(press([true, false])).toEqual([[-0.003, -0.002], [-0.005, 0]]) // the left in by 2 mm, the right out
+    expect(press([false, false])).toEqual([[-0.005, 0], [-0.005, 0]])
+    expect(b.fires.map((f) => f.lens)).toEqual([b.lamps.fireL, b.lamps.fireR])
+    expect(source).toMatch(/\nconst BROW_TRAVEL=0\.002;/)
+  })
+
+  it('lays the face of the HUD\'s body over its paint, with its toggle down and its knob', () => {
+    const [y0, y1] = HUD_FACE.y, [z0, z1] = HUD_FACE.z
+    for (const [y, z] of [[(y0 + y1) / 2, 0], [y0 + 0.002, z0 + 0.002], [y1 - 0.002, z1 - 0.002]]) expect(hit(y, z), `${y} ${z}`).toEqual({ name: 'brow.plates', x: at(0.0004, HUD_FACE.x) })
+    const [ky, kz] = HUD_FACE.knob, [ty, tz] = HUD_FACE.toggle
+    expect(hit(ky - 0.003, kz)).toEqual({ name: 'brow.knobs', x: at(0.0004 + 0.006, HUD_FACE.x) })
+    expect(hit(ty + 0.0035, tz)?.name).toBe('brow.nuts')
+    const lever = b.g.getObjectByName('brow.lever') as THREE.Mesh, tip = lever.localToWorld(new THREE.Vector3(0, 0, 0.012))
+    expect(tip.y).toBeLessThan(ty - 0.004) // thrown down
+  })
+
+  it('draws on the ownship\'s cockpit layer, out of the pit\'s raycasts, and is built with the lenses', () => {
+    let count = 0
+    b.g.traverse((o) => { if ((o as THREE.Mesh).isMesh) { count++; expect(o.userData.overlay, o.name).toBe(true); expect(o.layers.mask, o.name).toBe(1 << 1) } })
+    expect(count).toBe(6 + 2 + 2) // plates, frames, button bodies, guards, nuts and knobs; the two FIRE bodies; the lever and the pointer
+    expect(source).toMatch(/\tg\.add\(brow\); build_brow\(g,lamps\);/)
   })
 })

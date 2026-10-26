@@ -289,11 +289,13 @@ describe('the cockpit shell over the lower left panel', () => {
 
   // the glare shield's strip across each DDI's outer top corner, in front of the panel: the top row's outer pushbutton
   // caps, in the GLB's frame, which it hid from the eye; and the next caps in, which it never did
-  it('hid the DDIs\' outer top pushbuttons with the glare shield\'s lower edge, and is cut clear of them', () => {
+  it('hid the DDIs\' outer top pushbuttons and the glareshield\'s lights with the glare shield\'s lower edge, and is cut clear of them', () => {
     expect(coaming).not.toBe('')
     const whole = scene('Object_1095'), open = cut(coaming, 'Object_1095')
-    expect(open.n).toBe(13) // the two strips, six triangles a side, and one behind the panel the right box takes with them
-    for (const [name, point] of Object.entries({ left: [0.2553, 1.1504, 4.4533], right: [-0.2545, 1.1509, 4.4533] })) {
+    expect(open.n).toBe(13 + 73) // the two strips, six triangles a side, and one behind the panel the right box takes with them; and where the strip crosses the glareshield's light panels (#140), 35 left and 37 right, and one more behind on the right
+    for (const [name, point] of Object.entries({ left: [0.2553, 1.1504, 4.4533], right: [-0.2545, 1.1509, 4.4533],
+      // the lights' faces it crossed (#140): the two FIRE lights, GO and L BLEED on the left, RCDR ON on the right
+      fireL: [0.2092, 1.1951, 4.452], fireR: [-0.2054, 1.1956, 4.452], go: [0.1558, 1.2174, 4.452], lbleed: [0.1558, 1.2071, 4.452], rcdr: [-0.1312, 1.2174, 4.452] })) {
       expect(blocked(whole.mesh, point), name).toBe(true)
       expect(blocked(open.mesh, point), name).toBe(false)
     }
