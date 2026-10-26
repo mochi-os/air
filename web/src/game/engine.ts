@@ -70,6 +70,8 @@ import { geometry_canonical, geometry_hash } from './geometry'
 import { audio_pace, audio_pass, audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 // Model binaries are content-hashed bundle assets (assets/nimitz-<hash>.glb):
 // the URL changes when the bytes do, so there is no version constant to bump on
@@ -98,6 +100,7 @@ import * as faces from './faces'
 import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, planet as sky_planet, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
+import { subdivide } from './subdivide'
 
 export type GameConfig = Record<string, unknown>
 
@@ -1431,7 +1434,10 @@ const AIRCRAFT_MODELS={
 			{ lo:[-0.525,0.325,4.165], hi:[-0.275,0.910,4.508] } ] },   // the lower right panel: AV COOL and the landing checklist
 			{ node:"Object_1101", boxes:[   // the levers the model stands, fixed, on panels a face is drawn over (FACE_SEATS), which draws them where they are thrown
 			{ lo:[0.3107,1.0068,4.3864], hi:[0.3495,1.0699,4.4738] },     // the MASTER ARM switch's
-			{ lo:[-0.0194,0.5262,4.4641], hi:[0.0922,0.6524,4.5369] } ] } ],   // and the earlier dispenser panel's switches and ECM knob on the pedestal
+			{ lo:[-0.0194,0.5262,4.4641], hi:[0.0922,0.6524,4.5369] } ] },   // and the earlier dispenser panel's switches and ECM knob on the pedestal
+			{ node:"Object_1095", boxes:[   // the glare shield's lower edge, whose strip across each DDI's outer top corner stands in front of the panel and hid the top row's outer pushbutton from the eye (#132)
+			{ lo:[0.2128,1.0836,4.4299], hi:[0.3061,1.1908,4.5887] },     // the left DDI's
+			{ lo:[-0.3141,1.0623,4.4299], hi:[-0.2183,1.1904,4.6194] } ] } ],   // and the right DDI's
 		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer)|INSTRUMENT_Needle_CabinPress_AN_CabinPress_526$|Object_1057$)/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page. Object_1057: an opaque display plate the model hangs 8 mm in front of the combining glass (Object_1042), which hid the world behind the HUD. The CabinPress needle: it turns on the radar altimeter's dial, over the face build_radalt draws
 		twins:[{ node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", name:"INSTRUMENT_Needle_HydPressure_HYD2" }],   // the hydraulic pressure indicator's second pointer (NATOPS 2.7.1: a transducer in each reservoir; #150): the model draws one, so it is copied onto the same pivot
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
@@ -1609,15 +1615,37 @@ const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.
 // centre in the group frame, picked on the painted face (dev_pick), and its radius in metres.
 const SWITCH_SEATS={ rejswitch:{ at:[6.166,0.298,-0.072], r:0.008 }, symbology:{ at:[6.166,0.298,-0.044], r:0.008 }, indexer:{ at:[6.166,0.298,0.013], r:0.008 },
 	altswitch:{ at:[6.166,0.298,0.041], r:0.008 }, attswitch:{ at:[6.166,0.298,0.069], r:0.008 }, ufcbrt:{ at:[6.135,0.469,0.085], r:0.008 } };
+const DDI_BUTTON=0.006, DDI_PANEL=6.163;   // m: a pushbutton cap's half width, and the panel face the caps sit on
+// The displays' knobs and rockers (#132), mapped from the shell's atlas into the jet's frame through its texture
+// coordinates, a knob's centre from its painted outline (the same mapping lands the painted pushbuttons within
+// 2.4 mm of DDI_BUTTONS): each DDI's brightness selector over its top row, its BRT knob at the lower left and its
+// contrast knob at the lower right (NATOPS 2.13.4.1.1-2.13.4.1.3), alike in size as the paint has them; the AMPCD's
+// OFF/BRT knob over its top row, which the model leaves unpainted (2.13.4.6.1), and the heading and course set
+// switches either side of it (2.13.4.9, 2.13.4.10, 2.9.2.4); and the AMPCD's four rockers, NGT/DAY and SYM across
+// its upper corners and GAIN and contrast upright at its lower (2.13.4.6.2-2.13.4.6.5). A knob is [y, z, radius],
+// a rocker [y, z, length, width, degrees clockwise from upright]. A knob's face stands BEZEL.knob proud of the
+// panel, a rocker's and a pushbutton cap's BEZEL.cap.
+const BEZEL={ margin:0.005, lift:0.0004, cap:0.003, knob:0.007, corner:0.010, plate:0x2f322f, light:0xd9dad7, dark:0x3a3634 };   // m, and the colours the paint has
+const DDI_KNOBS={
+	left:{ selector:[0.4659,-0.2199,0.006], brt:[0.2879,-0.3045,0.0075], contrast:[0.2879,-0.1325,0.0075] },
+	right:{ selector:[0.4660,0.2153,0.006], brt:[0.2879,0.1296,0.0075], contrast:[0.2879,0.2985,0.0075] },
+	center:{ brt:[0.2140,-0.0010,0.0065], heading:[0.2112,-0.0938,0.0095], course:[0.2120,0.0927,0.0095] } };
+const DDI_ROCKERS={ center:{ mode:[0.1854,-0.0723,0.020,0.007,45], symbology:[0.1846,0.0712,0.020,0.007,-45], gain:[0.0399,-0.0826,0.020,0.008,0], contrast:[0.0399,0.0803,0.020,0.008,0] } };
+// display_spots: the click spots of the displays' controls that work (#115), on their faces, which build_bezels stands
+// proud of the panel, so a click on a knob and the pointer's ring meet it there (#132): each DDI's selector, BRT and
+// contrast knobs, and the AMPCD's OFF/BRT knob and its NGT/DAY and contrast rockers. The SYM and GAIN rockers and the
+// heading and course set switches act on nothing drawn.
+function display_spots(){ const face=([y,z],depth)=>[DDI_PANEL-BEZEL.lift-depth,y,z];
+	return [ ...["left","right"].flatMap(d=>["selector","brt","contrast"].map(k=>({ action:`display.${d}.${k==="selector"?"mode":k}`, at:face(DDI_KNOBS[d][k],BEZEL.knob), r:DDI_KNOBS[d][k][2] }))),
+		{ action:"display.center.brt", at:face(DDI_KNOBS.center.brt,BEZEL.knob), r:DDI_KNOBS.center.brt[2] },
+		...["mode","contrast"].map(k=>({ action:`display.center.${k}`, at:face(DDI_ROCKERS.center[k],BEZEL.cap), r:DDI_ROCKERS.center[k][2]/2 })) ]; }
 // Controls with no animated node (#115, #19, #18, #129), each a point on the panel, group frame: a
 // click within a few pixels of it, or on its face where that is larger, works it as a switch's click
 // does. r is the face's radius in metres where it is not PIT_SPOT_RADIUS's 8 mm toggle, measured on
 // zoomed captures.
 const PIT_SPOT_RADIUS=0.008;
 const PIT_SPOTS=[
-	{ action:"display.left.mode", at:[6.163,0.469,-0.223], r:0.006 }, { action:"display.left.brt", at:[6.163,0.288,-0.305], r:0.006 },
-	{ action:"display.right.mode", at:[6.163,0.469,0.213], r:0.006 }, { action:"display.right.brt", at:[6.163,0.288,0.125], r:0.006 },
-	{ action:"display.center.brt", at:[6.163,0.211,0] }, { action:"display.center.mode", at:[6.163,0.205,-0.08], r:0.005 },
+	...display_spots(),   // the displays' knobs and NGT/DAY rocker, on their faces
 	{ action:"knob.ifei", at:[6.211,0.049,-0.305], r:0.006 }, { action:"clock", at:[6.231,-0.069,0.077], r:0.005 }, { action:"fcs.reset", at:[5.736,-0.059,-0.29] },
 	{ action:"knob.hmd", at:[6.195,0.315,0.361], r:0.007 },   // the HMD OFF/BRT knob under IR COOL (2.21.6, figure 2-52): part of a merged mesh painted MAP GAIN, so it clicks but cannot turn
 	{ action:"wing.inhibit", at:[5.886,-0.028,-0.371] },   // INTR WING, on the EXT LT panel (2.2.3.3): its lever is part of a merged static mesh, so it clicks but cannot move
@@ -1783,6 +1811,18 @@ function rig_build(spec, animations){
 	}
 	return rig;
 }
+// The cockpit's knobs, switches and buttons (#132): small parts on the cockpit's atlases, 35 triangles on the median
+// and polygons in outline zoomed in. The ownship's are subdivided into curved surfaces (subdivide.ts), about 3,000
+// triangles becoming 50,000, and keep the model's own vertices, so pivots and the measured click spots hold; a
+// bandit's cockpit is never seen that close and keeps the model's. CONTROL_SIZE: a part's longest side, metres.
+const CONTROL_MATERIALS=/^Material_(12|12\.001|13\.001|20)$/, CONTROL_SIZE=0.06, CONTROL_LEVELS=2;
+const control_shapes=new WeakMap();   // the model's geometry -> its subdivision, shared by every ownship built from it
+function controls_round(g,m){ g.updateMatrixWorld(true); const scale=g.matrixWorld.getMaxScaleOnAxis(), size=new THREE.Vector3();
+	m.traverse(o=>{ if(!o.isMesh||Array.isArray(o.material)||!CONTROL_MATERIALS.test(o.material.name||"")) return;
+		if(!o.geometry.boundingBox) o.geometry.computeBoundingBox();
+		o.geometry.boundingBox.getSize(size); if(Math.max(size.x,size.y,size.z)*o.matrixWorld.getMaxScaleOnAxis()/scale>=CONTROL_SIZE) return;
+		let shape=control_shapes.get(o.geometry); if(!shape){ shape=subdivide(o.geometry,CONTROL_LEVELS); control_shapes.set(o.geometry,shape); }
+		o.geometry=shape; }); }
 function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	const loaded=fleet[kind]; if(!loaded||g.userData.hasModel===kind) return; g.userData.hasModel=kind;
 	g.children.forEach(c=>{ if(c.userData.body||c.userData.glass) c.visible=false; });   // hide procedural shell, keep afterburner cones
@@ -1811,7 +1851,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 		g.userData.cockpitHide=hide; }   // first-person set: the pilot's head subtree (visible cascades down, so one node hides head+helmet+visor+mask), arms and body
 	g.add(m);
 	for(const s of spec.shift||[]){ const o=m.getObjectByName(s.node); if(o) shift_node(g,o,s.by); }
-	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
+	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); controls_round(g,m); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
 		g.userData.rig=loaded.rig.map(r=>{
 			if(r.node){ const o=m.getObjectByName(r.node); if(!o) return null;
@@ -1965,7 +2005,7 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_cabin(g); build_clock(g); build_screens(g); build_ifei(g); build_ufc(g); build_faces(g); }
+	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_cabin(g); build_clock(g); build_screens(g); build_bezels(g); build_ifei(g); build_ufc(g); build_faces(g); }
 // A drawn face's resolution follows its size on screen (#121), as the DDIs' does: face_canvas makes its canvas and
 // texture at the face's own pixels, the units its drawing works in, and face_sharpen, every 120 ms in the pit, steps
 // the canvas to the screen pixels the face covers, with the DDIs' hysteresis, and back to its own pixels once it is
@@ -2576,6 +2616,29 @@ function clock_draw(ck){ const x=face_context(ck), C=64;
 // apertures, measured by thresholding a capture of the bare panel and picking
 // the edges into the group frame (dev_overlays, dev_pick).
 const DDI_FACE={ left:{ y:[0.295,0.441], z:[-0.293,-0.137] }, right:{ y:[0.295,0.442], z:[0.137,0.294] }, center:{ y:[0.053,0.191], z:[-0.072,0.072] } };
+// ddi_rect: a display's screen in the panel's plane (#132): centred in its pushbuttons' ring, as the measured
+// aperture is not by up to 8 mm (a screen on the aperture covered the buttons and knobs on one side), and a hair
+// inside the aperture's size, against which the pages lay out the legends beside the pushbuttons, or DDI_CLEAR
+// inside the ring where that is less: the AMPCD's ring is the tighter.
+const DDI_CLEAR=0.005;   // m
+function ddi_rect(display){ const face=DDI_FACE[display], ring=DDI_BUTTONS[display], inside=2*(DDI_BUTTON+DDI_CLEAR);
+	return { y:(ring.top+ring.bottom)/2, z:(ring.left+ring.right)/2,
+		w:Math.min((face.z[1]-face.z[0])*0.97,ring.right-ring.left-inside), h:Math.min((face.y[1]-face.y[0])*0.97,ring.top-ring.bottom-inside) }; }
+// ampcd_corners: the AMPCD screen's mask, its top corners cut DDI_CUT along each edge, where its rockers sit (#132).
+const DDI_CUT=0.016;   // m
+function ampcd_corners(w,h){ const c=document.createElement("canvas"); c.width=c.height=256; const x=c.getContext("2d"), a=256*DDI_CUT/w, b=256*DDI_CUT/h;
+	x.fillStyle="#fff"; x.fillRect(0,0,256,256); x.fillStyle="#000";
+	x.beginPath(); x.moveTo(0,0); x.lineTo(a,0); x.lineTo(0,b); x.closePath(); x.fill();
+	x.beginPath(); x.moveTo(256,0); x.lineTo(256-a,0); x.lineTo(256,b); x.closePath(); x.fill();
+	const t=new THREE.CanvasTexture(c); t.minFilter=THREE.LinearFilter; t.generateMipmaps=false; return t; }
+// screen_contrast: a screen's contrast control in its shader (#132, NATOPS 2.13.4.1.3): the face mixed toward a veil of the
+// display's own light, raising the dark background as it lowers the symbology, under the brightness the material's colour
+// sets. A DDI's veil is its symbology's green, the colour AMPCD's grey. The contrast uniform is material.userData.contrast.
+const SCREEN_VEIL={ ddi:0x39e07a, ampcd:0x9a9a9a, level:0.35 };
+function screen_contrast(material,display){ const uniforms={ u_contrast:{ value:1 }, u_veil:{ value:new THREE.Color(display==="center"?SCREEN_VEIL.ampcd:SCREEN_VEIL.ddi).multiplyScalar(SCREEN_VEIL.level) } };
+	material.onBeforeCompile=(sh)=>{ Object.assign(sh.uniforms,uniforms);
+		sh.fragmentShader="uniform float u_contrast;\nuniform vec3 u_veil;\n"+sh.fragmentShader.replace("#include <map_fragment>","#include <map_fragment>\n\tdiffuseColor.rgb=mix(diffuse*u_veil,diffuseColor.rgb,u_contrast);"); };
+	material.userData.contrast=uniforms.u_contrast; return material; }
 function build_screens(g){
 	if(g.userData.screens&&g.userData.screens.every(sc=>sc.mesh.parent)) return;
 	const list=[];
@@ -2583,14 +2646,13 @@ function build_screens(g){
 		const box={ lo:new THREE.Vector3(6.16,face.y[0],face.z[0]), hi:new THREE.Vector3(6.2,face.y[1],face.z[1]) };
 		const fit=surface_fit(g,box);
 		const tilt=fit?fit.tilt:0;
-		const cy=(box.lo.y+box.hi.y)/2, cz=(box.lo.z+box.hi.z)/2;
-		const w=(box.hi.z-box.lo.z)*0.97, h=(box.hi.y-box.lo.y)*0.97/Math.cos(tilt);   // a hair inside the aperture, whose corners are rounded
+		const r=ddi_rect(display), cy=r.y, cz=r.z, w=r.w, h=r.h/Math.cos(tilt);
 		const canvas=document.createElement("canvas"); canvas.width=canvas.height=512;
 		const tex=new THREE.CanvasTexture(canvas); tex.minFilter=THREE.LinearFilter; tex.generateMipmaps=false; tex.colorSpace=THREE.SRGBColorSpace;   // the default filter would REGENERATE mipmaps on every upload
 		const flat=DEV_MODE&&new URLSearchParams(location.search).get("ddiflat");   // &ddiflat=1: untextured magenta quads — separates a mesh-render problem from a texture problem
 		const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),
 			flat?new THREE.MeshBasicMaterial({ color:0xff00ff, side:THREE.DoubleSide })
-			:new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide }));
+			:screen_contrast(new THREE.MeshBasicMaterial({ map:tex, toneMapped:false, side:THREE.DoubleSide, ...(display==="center"?{ alphaMap:ampcd_corners(w,h), alphaTest:0.5 }:{}) }),display));
 		surface_pose(mesh,fit?fit.x:box.lo.x,tilt,cy,cz);
 		g.add(mesh);
 		list.push({ mesh, canvas, tex, display, height:h, fit:fit?[+fit.x.toFixed(3),+(tilt/D2R).toFixed(1)]:null, stack:fit?fit.stack:null,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -6811,18 +6873,25 @@ function knob_turn(k,d){ knobs[k]=THREE.MathUtils.clamp(Math.round((knob_level(k
 // The displays' own controls (#115): each DDI's brightness selector, OFF, NIGHT, AUTO or DAY, and its
 // BRT knob (NATOPS 2.13.4.1.1, 2.13.4.1.2); the AMPCD's OFF/BRT knob, whose bottom stop is OFF, and its
 // NGT/DAY rocker (2.13.4.6.1, 2.13.4.6.2); the UFC's BRT knob, and the IFEI's at the left end of the
-// video record panel below it, which works only under NITE (2.6.2.6, 2.13.8.5). NIGHT and NGT take the lower range. The contrast, symbology and gain controls act on
-// nothing the game draws and stay inert. Every display is on the ac buses (#116).
+// video record panel below it, which works only under NITE (2.6.2.6, 2.13.8.5). NIGHT and NGT take the lower range. Each
+// display's contrast, a DDI's knob at its lower right and the AMPCD's rocker there (2.13.4.1.3, 2.13.4.6.5), a fifth of
+// its range a click, upper half or clockwise higher (#132). The AMPCD's symbology and gain controls act on nothing the game
+// draws and stay inert. Every display is on the ac buses (#116).
 const SELECTOR=["off","night","auto","day"];
-const displays={ left:{ mode:"auto", brt:1 }, right:{ mode:"auto", brt:1 }, center:{ mode:"day", brt:1 } };
+const displays={ left:{ mode:"auto", brt:1, contrast:1 }, right:{ mode:"auto", brt:1, contrast:1 }, center:{ mode:"day", brt:1, contrast:1 } };
 function display_level(d){ const s=displays[d]; if(!buses.ac||(d==="left"&&!buses.left)||(d==="right"&&!buses.right)||s.mode==="off"||(d==="center"&&s.brt<=0)) return 0;   // each DDI on its own side's ac bus (FO-8)
 	return (s.mode==="night"?0.45:1)*(0.3+0.7*s.brt); }
+// display_contrast: how much of a screen's face is its own light (#132), the rest a veil over symbology and background
+// alike (screen_contrast), at any brightness: all of it at the top stop, CONTRAST_FLOOR at the bottom, where the symbology
+// stands about twice its background's light, faint but legible.
+const CONTRAST_FLOOR=0.25;
+function display_contrast(d){ return CONTRAST_FLOOR+(1-CONTRAST_FLOOR)*displays[d].contrast; }
 function display_press(d,control,direction){ const s=displays[d], up=direction>=0;
-	if(control==="brt") s.brt=THREE.MathUtils.clamp(Math.round((s.brt+(up?0.2:-0.2))*5)/5,0,1);
+	if(control==="brt"||control==="contrast") s[control]=THREE.MathUtils.clamp(Math.round((s[control]+(up?0.2:-0.2))*5)/5,0,1);
 	else if(d==="center") s.mode=up?"day":"night";   // the rocker: the upper half DAY
 	else s.mode=SELECTOR[THREE.MathUtils.clamp(SELECTOR.indexOf(s.mode)+(up?1:-1),0,3)]; }
 function displays_light(){ const u=ownship.group.userData;
-	for(const sc of u.screens||[]) sc.mesh.material.color.setScalar(display_level(sc.display));
+	for(const sc of u.screens||[]){ sc.mesh.material.color.setScalar(display_level(sc.display)); if(sc.mesh.material.userData.contrast) sc.mesh.material.userData.contrast.value=display_contrast(sc.display); }
 	if(u.ufc) u.ufc.mesh.material.color.setScalar(buses.ac?0.3+0.7*knob_level("ufc"):0);
 	if(u.ifei) u.ifei.mesh.material.color.setScalar(buses.ac?(lighting.mode==="nite"?0.3+0.7*knob_level("ifei"):1):0);
 	if(u.rwr) u.rwr.mesh.material.color.setScalar(buses.ac&&suite.receiver.power?1:0); }   // the azimuth indicator is dark without ac power (#116), and with the set's POWER off (#9)
@@ -7066,7 +7135,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		casKt:cas, fpm, spoolL:gL, spoolR:gR, reheatL:bL, reheatR:bR, fuelRaw:lbs, externalRaw:extlbs, wingRaw:wingLbs, centreRaw:centreLbs, mach:out[STATE.mach]||0,
 		track:vh>2?Math.atan2(vx,-vz):null, ground:vh*1.944 };   // track null at taxi speeds — the diamond parks off the rose rather than swinging with tyre scrub
 	{ const step=Math.max(0,t-(systems_at??t)); systems_at=t;   // the panel systems on the core's clock: the buses (#21, #116), what they light (#115), INTR WING (#18), the cockpit's pressure (#14) and the spin recovery display (#12)
-		power_step(out); displays_light(); wing_step(lbs,step); cabin_step(out,step); spin_step(out); }
+		power_step(out); displays_light(); bezel_turn(); wing_step(lbs,step); cabin_step(out,step); spin_step(out); }
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
 	const glow=buses.ac?knob_level("indexer"):0;   // the HUD panel's AOA indexer knob (2.13.4.8.7, #115); the indexer is dark without ac power
@@ -7165,8 +7234,17 @@ function view_note(kind,value,source){ const entry=`${sim_time.toFixed(1)}|${kin
 // conformal with the world at 1x; at 60° the overlay's angles run a third large, as they already did a notch out.
 const HUD_FIELD=60;
 function zoom_floor(view=cfg.view){ return view==="chase"?0.5:view==="hud"?HUD_FIELD/75:0.6; }   // chase zooms out to 90° wide; first person to ~75°, which is nearer what a pilot actually takes in than the 45° a 1x floor pinned it to - the HUD view's floor follows its wider base to the same 75°
-function zoom_recall(v){ return THREE.MathUtils.clamp(Number(cfg["zoom_"+v])||1, zoom_floor(v), 4); }
+// The zoom each view keeps (#209, #138): the HUD view's, the chase's and the flypast's carry from match to match in
+// the config; the cockpit's lasts the match, as its head does, and every match starts it at 1x (views_fresh).
+const zoom_held={ cockpit:1 };
+function zoom_recall(v){ return THREE.MathUtils.clamp((v in zoom_held?zoom_held[v]:Number(cfg["zoom_"+v]))||1, zoom_floor(v), 4); }
+// views_fresh: the views as every match starts them (#138): each first-person view's head ahead and the cockpit at
+// 1x, the HUD view at the zoom the pilot last left it.
+function views_fresh(){ for(const look of Object.values(looks)){ look.az=0; look.el=0; } head_az=0; head_el=0; look_home=false;
+	zoom_held.cockpit=1; const was=zoom_target; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;
+	if(zoom_target!==was) view_note("zoom",zoom_target.toFixed(2),"start"); }   // i18n-format-ok: ACMI event value, not display text
 function zoom_persist(){   // remember the setting per view, debounced past the notch flurry
+	if(cfg.view in zoom_held){ zoom_held[cfg.view]=Math.round(zoom_target*100)/100; return; }   // a zoom kept for the match only
 	const view=cfg.view, value=()=>Math.round(zoom_target*100)/100;   // the view is captured at SCHEDULE time: a swap inside the debounce window otherwise files this zoom under the view just switched TO
 	if(zoom_save) clearTimeout(zoom_save);
 	zoom_save=window.setTimeout(()=>{ zoom_save=0;
@@ -7826,7 +7904,47 @@ const DDI_BUTTONS={
 	left:{ top:0.4535, bottom:0.2843, left:-0.3053, right:-0.1295, down:[0.415,0.393,0.368,0.3455,0.3225], across:[-0.264,-0.241,-0.218,-0.194,-0.170] },
 	right:{ top:0.454, bottom:0.2846, left:0.126, right:0.3015, down:[0.416,0.3925,0.368,0.3455,0.322], across:[0.167,0.192,0.214,0.238,0.261] },
 	center:{ top:0.202, bottom:0.0398, left:-0.0815, right:0.077, down:[0.1575,0.1355,0.1115,0.0895,0.068], across:[-0.0465,-0.0235,-0.001,0.021,0.044] } };
-const DDI_BUTTON=0.006, DDI_PANEL=6.163;   // m: a pushbutton cap's half width, and the panel face the caps sit on
+// The displays' bezels (#132): the model paints them, pushbuttons and knobs and all, on the cockpit shell's
+// low-detail atlas at about 550 texels a metre, so zoomed in they read as grey smears. Each gets a plate over the
+// paint and its controls as geometry, sharp at any zoom: a cap on every pushbutton (DDI_BUTTONS) and the knobs and
+// rockers of DDI_KNOBS and DDI_ROCKERS, the knobs that turn with a pointer at their setting (bezel_turn).
+function build_bezels(g){
+	if(g.userData.bezels&&g.userData.bezels.parent===g) return;
+	const plates=[], light=[], dark=[], pointers={};
+	// at: a part placed in the bezels' frame - x across (the jet's z), y up, z toward the pilot - turned clockwise by turn degrees
+	const at=(geo,y,z,depth,turn=0)=>{ if(geo.index) geo=geo.toNonIndexed(); geo.clearGroups(); if(turn) geo.rotateZ(-turn*D2R); geo.translate(z,y,depth); return geo; };
+	const disc=(r,height)=>new THREE.CylinderGeometry(r,r,height,40).rotateX(Math.PI/2);   // its axis toward the pilot
+	const cap=(width,height)=>new RoundedBoxGeometry(width,height,BEZEL.cap,2,0.0012);
+	const index=r=>new THREE.BoxGeometry(0.001,r*0.8,0.0004).translate(0,r*0.45,0);   // a knob's pointer, from its middle toward twelve o'clock
+	const group=new THREE.Group(); group.rotation.y=-Math.PI/2; group.position.x=DDI_PANEL;   // local z toward the pilot, local x along the jet's z
+	const ink=new THREE.MeshStandardMaterial({ color:BEZEL.dark, roughness:0.6, metalness:0 }), face=BEZEL.lift+BEZEL.knob+0.0002;
+	for(const display of ["left","right","center"]){
+		let lo=[Infinity,Infinity], hi=[-Infinity,-Infinity];   // [y, z]: what the plate covers
+		const cover=(y,z,ry,rz)=>{ lo=[Math.min(lo[0],y-ry),Math.min(lo[1],z-rz)]; hi=[Math.max(hi[0],y+ry),Math.max(hi[1],z+rz)]; };
+		for(let pb=1;pb<=20;pb++){ const p=ddi_button(display,pb); cover(p.y,p.z,DDI_BUTTON,DDI_BUTTON); light.push(at(cap(2*DDI_BUTTON,2*DDI_BUTTON),p.y,p.z,BEZEL.lift+BEZEL.cap/2)); }
+		for(const [name,[y,z,r]] of Object.entries(DDI_KNOBS[display])){ const set=name==="heading"||name==="course";   // the set switches stand beside the AMPCD's top row, off its plate, dark
+			if(!set) cover(y,z,r,r);
+			(set?dark:light).push(at(disc(r,BEZEL.knob),y,z,BEZEL.lift+BEZEL.knob/2));
+			if(name==="selector"||name==="brt"||name==="contrast"){ const pointer=new THREE.Mesh(index(r),ink); pointer.position.set(z,y,face); pointer.name="bezel.pointer"; pointer.userData.overlay=true; pointer.layers.set(LAYER_OWN);
+				group.add(pointer); pointers[`${display}.${name}`]=pointer; }
+			else (set?light:dark).push(at(index(r),y,z,face)); }
+		for(const [y,z,length,width,turn] of Object.values(DDI_ROCKERS[display]||{})){ const s=Math.abs(Math.sin(turn*D2R)), c=Math.abs(Math.cos(turn*D2R));
+			cover(y,z,c*length/2+s*width/2,s*length/2+c*width/2); light.push(at(cap(width,length),y,z,BEZEL.lift+BEZEL.cap/2,turn)); }
+		const m=BEZEL.margin, w=hi[1]-lo[1]+2*m, h=hi[0]-lo[0]+2*m, k=BEZEL.corner, shape=new THREE.Shape();
+		shape.moveTo(-w/2+k,-h/2); shape.lineTo(w/2-k,-h/2); shape.quadraticCurveTo(w/2,-h/2,w/2,-h/2+k); shape.lineTo(w/2,h/2-k); shape.quadraticCurveTo(w/2,h/2,w/2-k,h/2);
+		shape.lineTo(-w/2+k,h/2); shape.quadraticCurveTo(-w/2,h/2,-w/2,h/2-k); shape.lineTo(-w/2,-h/2+k); shape.quadraticCurveTo(-w/2,-h/2,-w/2+k,-h/2);
+		plates.push(at(new THREE.ShapeGeometry(shape,6),(lo[0]+hi[0])/2,(lo[1]+hi[1])/2,BEZEL.lift)); }
+	for(const [name,list,colour,roughness] of [["bezel.plates",plates,BEZEL.plate,0.85],["bezel.light",light,BEZEL.light,0.6],["bezel.dark",dark,BEZEL.dark,0.6]]){
+		const mesh=new THREE.Mesh(mergeGeometries(list),new THREE.MeshStandardMaterial({ color:colour, roughness, metalness:0 }));
+		mesh.name=name; mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); group.add(mesh); }
+	group.userData.pointers=pointers; g.add(group); g.userData.bezels=group; bezel_turn(group); }
+// bezel_turn: the turning knobs' pointers at their settings (#132): a DDI's selector at OFF, NIGHT, AUTO or DAY a
+// detent apart, and the BRT and contrast knobs over their throw, least at the bottom stop (the AMPCD's BRT OFF).
+const SELECTOR_DETENTS=[-67.5,-22.5,22.5,67.5], BRT_THROW=135;   // degrees clockwise from upright
+function bezel_turn(group=ownship.group.userData.bezels){ if(!group) return; const p=group.userData.pointers;
+	for(const d of ["left","right"]){ p[d+".selector"].rotation.z=-SELECTOR_DETENTS[SELECTOR.indexOf(displays[d].mode)]*D2R;
+		for(const k of ["brt","contrast"]) p[`${d}.${k}`].rotation.z=-(2*displays[d][k]-1)*BRT_THROW*D2R; }
+	p["center.brt"].rotation.z=-(2*displays.center.brt-1)*BRT_THROW*D2R; }
 // ddi_button is pushbutton pb's centre on a display's bezel in the jet's frame: 1-5 up the left, 6-10 across the top, 11-15 down the right, 16-20 back along the bottom.
 function ddi_button(display,pb){ const b=DDI_BUTTONS[display]; let y,z;
 	if(pb<=5){ y=b.down[5-pb]; z=b.left; }
@@ -10559,7 +10677,7 @@ function reset_ownship(){
 	for(const k of Object.keys(knobs)) knobs[k]=null; for(const k of Object.keys(thrown)) delete thrown[k];   // G1: the panel as the pre-flight leaves it - knobs at their levels, the travel-only controls where the model draws them,
 	{ const air=st!=="carrier"&&st!=="runway", wild=()=>(Math.random()*2-1)*3*D2R;   // the helmet (#103): a start in the air hands it over on, warmed and aligned; on the wheels it is OFF, and its line of sight reads off by up to 3° until aligned
 		Object.assign(hmd,helmet.fresh(air,{ azimuth:wild(), elevation:wild(), roll:wild() },Math.random()*Math.PI*2)); if(!air) knobs.hmd=0; }
-	displays.left.mode=displays.right.mode="auto"; displays.center.mode="day"; for(const d of Object.values(displays)) d.brt=1;
+	displays.left.mode=displays.right.mode="auto"; displays.center.mode="day"; for(const d of Object.values(displays)){ d.brt=1; d.contrast=1; }
 	Object.assign(electrics,{ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false }); buses={ ac:true, essential:true, left:true, right:true };   // both generators and BATT ON, charged,
 	buttons.trim=buttons.reset=-Infinity; buttons.standing=false; buttons.jams=0;
 	ecs.bleed=1; ecs.valves=[true,true]; ecs.through=false; fire_test.at=-Infinity; rudder_trim=0; reference="auto";   // BLEED AIR at NORM, the rudder trimmed neutral, ATT at AUTO,
@@ -12512,7 +12630,8 @@ function net_event(e){ const slot=Number(e.slot);
 			feed(midair?"midair":"battle", named, net.names.get(slot)||""); }
 		break;
 	case "respawn":
-		if(net&&slot===net.slot){ apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; latch(false,"auto"); rearm_order(ownship); update_rails(ownship, ownship.msl); systems_fresh(true); Object.assign(hmd,helmet.fresh(true,hmd.error,hmd.direction)); }   // in a joust the match-starting double-respawn releases the waiting room
+		if(net&&slot===net.slot){ if(net_waiting) views_fresh();   // a joust's match starts here, in the flight already running (#138)
+			apply_own_state(e.state); flight_push(); crash_t=0; ownship.group.visible=true; net_waiting=false; latch(false,"auto"); rearm_order(ownship); update_rails(ownship, ownship.msl); systems_fresh(true); Object.assign(hmd,helmet.fresh(true,hmd.error,hmd.direction)); }   // in a joust the match-starting double-respawn releases the waiting room
 		else { const st=remotes.get(slot); if(st){ st.msl=magazine(); rearm_order(st); update_rails(st,st.msl); } }   // a fresh jet comes with fresh rails
 		break;
 	case "store": { const st=(net&&slot===net.slot)?ownship:remotes.get(slot); if(st&&e.name) ignite(st,String(e.name)); break; }   // a round's motor caught fire on that jet's rail: it goes first in the launch order, and its fire is drawn until it leaves
@@ -12792,7 +12911,7 @@ function start_mission(){
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
 	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time; fuel_read=false; checkpoint_at=-Infinity; mission_epoch=Date.now();   // a fresh mission may follow an ended one without a page reload (#240)
-	on_config=onConfig||null; on_over=onOver||null; zoom_target=zoom_recall(cfg.view); view_zoom=zoom_target;   // the starting view wakes at its remembered zoom (#209)
+	on_config=onConfig||null; on_over=onOver||null; views_fresh();   // the views as a match starts them (#138)
 	view_events.length=0; view_note("view",cfg.view,"start"); view_note("zoom",zoom_target.toFixed(2),"start");   // the recording opens on the view and zoom the match began with; anything noted before this (the last match's tail, the start's own set_view) is not this match's - i18n-format-ok: ACMI event value, not display text
 	if(!playback){ recorder.clear(); record_started=new Date(); publish_recording(recording_file); } passes=[];   // a fresh recording per mission, and a fresh LSO book (#212) - but a replay records nothing, and publishing would hand the log page's buffer of the last flight over to an empty one
 	// Dev/screenshot preset: ?fly=1&shot=<az>,<el>,<alt>,<dist> — low pass over open water,

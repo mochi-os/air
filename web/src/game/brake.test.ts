@@ -272,7 +272,8 @@ describe('the cockpit shell over the lower left panel', () => {
   }
   const cutfn = /\nfunction model_cut\(scene, cut\)\{[\s\S]*?\n\treturn \(index\.length-kept\.length\)\/3; \}\n/.exec(source)?.[0] ?? ''
   const spec = /\n\t\tcut:\[ (\{ node:"Object_1372", boxes:\[[\s\S]*?\} \] \}),/.exec(source)?.[1] ?? ''
-  const levers = /\n\t\t\t(\{ node:"Object_1101", boxes:\[[\s\S]*?\} \] \}) \],/.exec(source)?.[1] ?? ''   // the second cut: the fixed levers under the faces (G5)
+  const levers = /\n\t\t\t(\{ node:"Object_1101", boxes:\[[\s\S]*?\} \] \}),/.exec(source)?.[1] ?? ''   // the second cut: the fixed levers under the faces (G5)
+  const coaming = /\n\t\t\t(\{ node:"Object_1095", boxes:\[[\s\S]*?\} \] \}) \],/.exec(source)?.[1] ?? ''   // the third: the glare shield's lower edge over the DDIs' outer top corners (#132)
   const cut = (box: string, name?: string) => { const s = scene(name); const n = new Function('THREE', 'scene', `${cutfn} return model_cut(scene, ${box});`)(THREE, s.root) as number; return { ...s, n } }
   // the first shell triangle between the design eye and a point, if any
   const eye = new THREE.Vector3(0, 1.379, 3.971)
@@ -285,6 +286,19 @@ describe('the cockpit shell over the lower left panel', () => {
   // the clock's hub and the cockpit altimeter under the pedestal block; AV COOL under the right one
   const hidden: Record<string, number[]> = { gauge: [0.331, 0.675, 4.45], hookbypass: [0.376, 0.675, 4.424], ldg: [0.358, 0.711, 4.457], parkbrake: [0.306, 0.664, 4.494], firetest: [0.293, 0.648, 4.433], apu: [0.353, 0.654, 4.378], ground: [0.384, 0.659, 4.386],
     clock: [-0.068, 0.615, 4.529], cabin: [-0.066, 0.56, 4.515], avcool: [-0.404, 0.709, 4.434] }
+
+  // the glare shield's strip across each DDI's outer top corner, in front of the panel: the top row's outer pushbutton
+  // caps, in the GLB's frame, which it hid from the eye; and the next caps in, which it never did
+  it('hid the DDIs\' outer top pushbuttons with the glare shield\'s lower edge, and is cut clear of them', () => {
+    expect(coaming).not.toBe('')
+    const whole = scene('Object_1095'), open = cut(coaming, 'Object_1095')
+    expect(open.n).toBe(13) // the two strips, six triangles a side, and one behind the panel the right box takes with them
+    for (const [name, point] of Object.entries({ left: [0.2553, 1.1504, 4.4533], right: [-0.2545, 1.1509, 4.4533] })) {
+      expect(blocked(whole.mesh, point), name).toBe(true)
+      expect(blocked(open.mesh, point), name).toBe(false)
+    }
+    for (const point of [[0.233, 1.1504, 4.4533], [-0.2321, 1.1509, 4.4533]]) expect(blocked(whole.mesh, point)).toBe(false)
+  })
 
   it('is cut once, on load, before the model is normalised', () => {
     expect(spec).not.toBe('')
