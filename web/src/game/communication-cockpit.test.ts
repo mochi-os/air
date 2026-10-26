@@ -123,8 +123,9 @@ describe('the comm channel selector knobs', () => {
     expect(cockpit('ufc.entry="3051"; ufc.error=true; pit_press("comm.one.channel",1); return [ufc.entry,ufc.error];')).toEqual(['', false])
   })
   it('are a click to turn and a middle click to pull, on each side of the UFC', () => {
-    expect(source).toMatch(/\{ action:"comm\.one\.channel", at:\[6\.157,0\.34,-0\.088\], hold:"comm\.one\.channel" \}/)
-    expect(source).toMatch(/\{ action:"comm\.two\.channel", at:\[6\.157,0\.34,0\.085\], hold:"comm\.two\.channel" \}/)
+    expect(source).toMatch(/"comm\.one\.channel":\["row",0\.3397,-0\.0889,[\d.]+,[\d.]+\]/) // on the centre panel's function row (#139), each a knob a click turns
+    expect(source).toMatch(/"comm\.two\.channel":\["row",0\.3390,0\.0840,[\d.]+,[\d.]+\]/)
+    expect(source).toMatch(/\.\.\.\(a\.endsWith\("\.channel"\)\?\{ hold:a \}:\{\}\)/) // and a middle click pulls
   })
 })
 
@@ -276,10 +277,12 @@ describe('the left console\'s click spots', () => {
       expect(source, action).toMatch(new RegExp(`\\{ action:"${action.replace(/\./g, '\\.')}", at:\\[${at.replace(/\./g, '\\.')}\\](?:, r:[\\d.]+)? \\}`))
   })
   it('put the radios\' volume controls at the UFC\'s lower corners', () => {
-    expect(source).toMatch(/\{ action:"comm\.one\.volume", at:\[6\.14,0\.417,-0\.089\](?:, r:[\d.]+)? \}/); expect(source).toMatch(/\{ action:"comm\.two\.volume", at:\[6\.14,0\.417,0\.086\](?:, r:[\d.]+)? \}/)
+    expect(source).toMatch(/"comm\.one\.volume":\["ufc",0\.4165,-0\.0889,/); expect(source).toMatch(/"comm\.two\.volume":\["ufc",0\.4165,0\.0853,/) // the centre panel's (#139)
   })
   it('give every click spot an action pit_press answers', () => {
-    const spots = [...source.matchAll(/\{ action:"([a-z.0-9]+)", at:\[[^\]]*\](?:, r:[\d.]+)?(?:, hold:"([a-z.]+)")? \}/g)].flatMap((m) => [m[1], m[2]].filter(Boolean))
+    const centre = ['CENTRE_KNOBS', 'CENTRE_TOGGLES'].flatMap((n) => [...(new RegExp(`\\nconst ${n}=([\\s\\S]*?)\\};\\n`).exec(source)?.[1] ?? '').matchAll(/"?([a-z.]+)"?:\["(?:ufc|row|hud)"/g)].map((m) => m[1])) // the centre panel's spots (#139)
+    expect(centre).toHaveLength(15)
+    const spots = [...source.matchAll(/\{ action:"([a-z.0-9]+)", at:\[[^\]]*\](?:, r:[\d.]+)?(?:, hold:"([a-z.]+)")? \}/g)].flatMap((m) => [m[1], m[2]].filter(Boolean)).concat(centre)
     expect(spots.length).toBeGreaterThan(30)
     for (const action of new Set(spots)) {
       const prefix = ['knob.', 'travel.', 'display.', 'jettison.station.', 'receiver.'].some((p) => action.startsWith(p))

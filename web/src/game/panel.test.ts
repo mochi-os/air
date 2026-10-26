@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
+import * as communication from './communication'
 
 // The cockpit's panel systems against NATOPS: the electrical power panel and
 // what the cockpit loses without generator power (2.5, 15.17), the display and
@@ -46,17 +47,17 @@ const running = words(), stopped = words({ spoolL: 0, spoolR: 0 })
 type System = any
 function system(o: { tod?: string; grounded?: boolean; parking?: boolean; multiplayer?: boolean } = {}): System {
   for (const [name, text] of [['panel systems block', block], ['tables', tables], ['pit_press', press]]) if (!text) throw new Error(name + ' not found in engine.ts')
-  return new Function('THREE', 'STATE', 'o', `let sim_time=0, glance=0, reset_flag=false, reset_owed=false, MULTIPLAYER=!!o.multiplayer, brake_accumulator=3000, unpowered=false, lamps_testing=false, sari_clicked=-Infinity, radalt_on=true, radalt_test=-Infinity;
+  return new Function('THREE', 'STATE', 'o', 'communication', `let sim_time=0, glance=0, reset_flag=false, reset_owed=false, MULTIPLAYER=!!o.multiplayer, brake_accumulator=3000, unpowered=false, lamps_testing=false, sari_clicked=-Infinity, radalt_on=true, radalt_test=-Infinity;
     const cfg={ tod:o.tod||"day" }, ownship={ grounded:o.grounded??false, gearTarget:1 }, RADAR={ unpowered:false }, ACCUMULATOR={ full:3000, empty:1750, gas:80000 };
     const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
     ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${press}
     return { press:pit_press, step(t,out){ sim_time=t; glance=t; power_step(out); }, at(t){ sim_time=t; glance=t; }, generators, knob_level, knob_turn, display_level, display_contrast, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, wing_kept, clock_elapsed, travel_at, lighting_set,
-      ownship, knobs, displays, electrics, ecs, transfer, thrown, fire_test, lighting, RADAR, TRAVEL,
+      ownship, knobs, displays, hud_panel, electrics, ecs, transfer, thrown, fire_test, lighting, RADAR, TRAVEL, get finder(){ return finder; },
       get buses(){ return buses; }, set buses(v){ buses=v; }, get reset(){ return reset_flag; }, get owed(){ return reset_owed; }, get accumulator(){ return brake_accumulator; }, get rudder(){ return rudder_trim; },
       get reference(){ return reference; }, get emergency(){ return gear_emergency; }, get inhibit(){ return wing_inhibit; }, get held(){ return wing_held; }, set inhibit(v){ wing_inhibit=v; },
       get cabin(){ return cabin_feet; }, set unpowered(v){ unpowered=v; }, get sari(){ return sari_clicked; }, get radalt(){ return radalt_test; },
-      buttons, set out(v){ last_out=v; } };`)(THREE, STATE, o)
+      buttons, set out(v){ last_out=v; } };`)(THREE, STATE, o, communication)
 }
 
 describe('the electrical power panel (#21, #116)', () => {
@@ -234,7 +235,7 @@ describe('the electrical power panel (#21, #116)', () => {
     expect(source).toMatch(/if\(e\) e\.intensity=\(unpowered&&buses\.essential&&cfg\.view==="cockpit"\)\?EMERGENCY_LIGHT:0;/)
     expect(source).toMatch(/const sym=symbology\(\);[^\n]*\n\tconst flight_symbols=sym>0&&\(/)
     expect(source).toMatch(/adi_face\(faces\.adi,[^\n]*sari_testing\(\),!buses\.essential\|\|caged,sari_trim\);/)
-    expect(source).toMatch(/power_step\(out\); displays_light\(\); bezel_turn\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
+    expect(source).toMatch(/power_step\(out\); displays_light\(\); bezel_turn\(\); centre_turn\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
     const radar = readFileSync(fileURLToPath(new URL('./radar.ts', import.meta.url)), 'utf8')
     expect(radar).toMatch(/return this\.sil \|\| this\.emcon \|\| this\.unpowered/)
   })
@@ -307,6 +308,28 @@ describe('the display and lights knobs (#11, #23, #115)', () => {
     s.press('display.left.contrast', 1); s.press('display.left.contrast', 1)
     expect(s.displays.left.contrast).toBe(1) // the top stop
     expect(source).toMatch(/for\(const d of Object\.values\(displays\)\)\{ d\.brt=1; d\.contrast=1; \}/) // and a new flight's at the top
+  })
+
+  it('set the HUD\'s brightness selector, NIGHT the lower range; step the video and ADF switches; and turn BLK LVL and BAL from 12 o\'clock (#139)', () => {
+    const s = system()
+    expect(s.hud_panel).toEqual({ range: 'day', video: 'off' })
+    s.press('hud.range', 1)
+    expect(s.hud_panel.range).toBe('night') // two positions: either button throws it
+    expect(s.symbology()).toBeCloseTo(0.45, 9)
+    s.press('knob.symbology', -1)
+    expect(s.symbology()).toBeCloseTo(0.45 * 0.8, 9) // the knob within the NIGHT range
+    s.press('hud.range', -1)
+    expect([s.hud_panel.range, s.symbology()]).toEqual(['day', 0.8])
+    const video: string[] = []
+    for (const d of [1, 1, 1, -1, -1, -1]) { s.press('hud.video', d); video.push(s.hud_panel.video) }
+    expect(video).toEqual(['video', 'polarity', 'polarity', 'video', 'off', 'off']) // up toward W/B, held at its ends
+    const finder: string[] = []
+    for (const d of [1, 1, -1, -1, -1]) { s.press('finder', d); finder.push(s.finder) }
+    expect(finder).toEqual(['one', 'one', 'off', 'two', 'two']) // up toward 1
+    expect([s.knob_level('black'), s.knob_level('balance')]).toEqual([0.5, 0.5])
+    s.press('knob.black', 1); s.press('knob.balance', -1); s.press('knob.balance', -1); s.press('knob.balance', -1)
+    expect([s.knob_level('black'), s.knob_level('balance')]).toEqual([0.7, 0])
+    expect(source).toMatch(/Object\.assign\(hud_panel,\{ range:"day", video:"off" \}\); finder="off";/) // and a new flight's: DAY, video OFF, ADF OFF
   })
 
   it('dim the HUD from SYM BRT, off at its stop and without ac power', () => {

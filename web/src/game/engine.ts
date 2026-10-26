@@ -1609,12 +1609,6 @@ const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.
 	instpnl:"knob.instrument", consoles:"knob.consoles", flood:"knob.flood", warncaut:"knob.warn", symbology:"knob.symbology", indexer:"knob.indexer", ufcbrt:"knob.ufc",
 	volumereceiver:"volume.receiver", volumeweapon:"volume.weapon", attswitch:"attitude", insknob:"ins", battery:"battery", genleft:"generator.left", genright:"generator.right", bleed:"bleed", firetest:"fire.test", ruddertrim:"rudder.trim",
 	wingtanks:"transfer.wing", centretank:"transfer.centre", ...Object.fromEntries(Object.keys(TRAVEL).map(k=>[k,"travel."+k])) };
-// SWITCH_SEATS: the switches whose model parts lie wholly behind the panel face, where no head sees
-// them - the five on the HUD control panel under the UFC and the UFC's BRT knob - seated on the knobs
-// the panel paints, so a click and the pointer's ring work there and not over the hidden parts: each
-// centre in the group frame, picked on the painted face (dev_pick), and its radius in metres.
-const SWITCH_SEATS={ rejswitch:{ at:[6.166,0.298,-0.072], r:0.008 }, symbology:{ at:[6.166,0.298,-0.044], r:0.008 }, indexer:{ at:[6.166,0.298,0.013], r:0.008 },
-	altswitch:{ at:[6.166,0.298,0.041], r:0.008 }, attswitch:{ at:[6.166,0.298,0.069], r:0.008 }, ufcbrt:{ at:[6.135,0.469,0.085], r:0.008 } };
 const DDI_BUTTON=0.006, DDI_PANEL=6.163;   // m: a pushbutton cap's half width, and the panel face the caps sit on
 // The displays' knobs and rockers (#132), mapped from the shell's atlas into the jet's frame through its texture
 // coordinates, a knob's centre from its painted outline (the same mapping lands the painted pushbuttons within
@@ -1631,6 +1625,62 @@ const DDI_KNOBS={
 	right:{ selector:[0.4660,0.2153,0.006], brt:[0.2879,0.1296,0.0075], contrast:[0.2879,0.2985,0.0075] },
 	center:{ brt:[0.2140,-0.0010,0.0065], heading:[0.2112,-0.0938,0.0095], course:[0.2120,0.0927,0.0095] } };
 const DDI_ROCKERS={ center:{ mode:[0.1854,-0.0723,0.020,0.007,45], symbology:[0.1846,0.0712,0.020,0.007,-45], gain:[0.0399,-0.0826,0.020,0.008,0], contrast:[0.0399,0.0803,0.020,0.008,0] } };
+// The centre panel (#139): the UFC's face, its function row stepped 1.3 cm in below it and the HUD control panel
+// under that (NATOPS 2.13.5, figure 2-28; 2.13.4.8, figure 2-25), each a plane of the shell's, x = x + slope*y in the
+// jet's frame, with its outline [y, z] measured off the shell's own geometry; the HUD control panel's lower row
+// stands on a narrower extension, below. The model paints all of it at about 550 texels a metre, so, as with the
+// displays' bezels (#132), each face gets a plate with its legends drawn sharp and its controls as geometry, each
+// centred on its paint mapped into the jet's frame through the shell's texture coordinates.
+const CENTRE={ ufc:{ x:6.1727, slope:-0.0796, y:[0.364,0.4974], z:[-0.1016,0.0994] },
+	row:{ x:6.15694, slope:0, y:[0.3234,0.3636], z:[-0.1016,0.0994] },
+	hud:{ x:6.16582, slope:0, y:[0.2731,0.3231], z:[-0.1016,0.0994], below:{ y:[0.2454,0.2731], z:[-0.0521,0.0499] } } };
+// CENTRE_KEYS: the UFC's pushbuttons by ufc_press's names, each [face, y, z, width, height, legend lines]: the keypad, a
+// letter over four of its digits (2.13.5.9); the option selects beside their windows (2.13.5.5), round, a width of 0;
+// I/P and EMCON at the heads of the side columns (2.13.5.2, 2.13.5.3); and the function selectors along the row (2.13.5.10).
+const CENTRE_KEYS={
+	"1":["ufc",0.4490,-0.0628,0.013,0.0115,["1"]], "2":["ufc",0.4490,-0.0405,0.013,0.0115,["N","2"]], "3":["ufc",0.4490,-0.0183,0.013,0.0115,["3"]],
+	"4":["ufc",0.4262,-0.0628,0.013,0.0115,["W","4"]], "5":["ufc",0.4262,-0.0405,0.013,0.0115,["5"]], "6":["ufc",0.4262,-0.0183,0.013,0.0115,["E","6"]],
+	"7":["ufc",0.4035,-0.0628,0.013,0.0115,["7"]], "8":["ufc",0.4035,-0.0405,0.013,0.0115,["S","8"]], "9":["ufc",0.4035,-0.0183,0.013,0.0115,["9"]],
+	clr:["ufc",0.3829,-0.0628,0.013,0.0115,["CLR"]], "0":["ufc",0.3829,-0.0405,0.013,0.0115,["0"]], ent:["ufc",0.3829,-0.0183,0.013,0.0115,["ENT"]],
+	opt0:["ufc",0.477,0.0065,0,0.008,[]], opt1:["ufc",0.456,0.0065,0,0.008,[]], opt2:["ufc",0.434,0.0065,0,0.008,[]], opt3:["ufc",0.412,0.0065,0,0.008,[]], opt4:["ufc",0.389,0.0065,0,0.008,[]],
+	ip:["ufc",0.4700,-0.0883,0,0.011,["I/P"]], emcon:["ufc",0.4487,0.0854,0.015,0.011,["EMCON"]],
+	ap:["row",0.3500,-0.0648,0.014,0.011,["A/P"]], iff:["row",0.3500,-0.0438,0.014,0.011,["IFF"]], tcn:["row",0.3500,-0.0231,0.014,0.011,["TCN"]], ils:["row",0.3500,-0.0018,0.014,0.011,["ILS"]],
+	dl:["row",0.3500,0.0192,0.014,0.011,["D/L"]], bcn:["row",0.3500,0.0406,0.014,0.011,["BCN"]], onoff:["row",0.3500,0.0625,0.014,0.011,["ON","OFF"]] };
+// CENTRE_KNOBS: the knobs by the actions a click on them sends, each [face, y, z, radius, height], turned to what they set
+// (centre_turn): the UFC's BRT knob (2.13.5.1), its comm volume controls and the channel selectors below them on the row
+// (2.13.5.11, 2.13.5.12), and on the HUD control panel SYM BRT, black level, balance and the AOA indexer's (2.13.4.8.2,
+// 2.13.4.8.5-2.13.4.8.7). CENTRE_TOGGLES: its toggle switches, each [face, y, z, positions top to bottom] - the ADF switch
+// (2.13.5.4), and symbology reject, the brightness selector, video, ALT and ATT (2.13.4.8.1, 2.13.4.8.3, 2.13.4.8.4,
+// 2.13.4.8.8, 2.13.4.8.9). The paint stands the AOA knob, ALT and ATT on the lower row, as figure 2-25 does, and black
+// level, video and balance in their places on the upper, where the model's hidden parts put the three it has.
+const CENTRE_KNOBS={ "knob.ufc":["ufc",0.4686,0.0853,0.0065,0.007], "comm.one.volume":["ufc",0.4165,-0.0889,0.0065,0.007], "comm.two.volume":["ufc",0.4165,0.0853,0.0065,0.007],
+	"comm.one.channel":["row",0.3397,-0.0889,0.0095,0.009], "comm.two.channel":["row",0.3390,0.0840,0.0095,0.009],
+	"knob.symbology":["hud",0.2978,-0.0434,0.0065,0.007], "knob.black":["hud",0.2978,0.0129,0.0065,0.007], "knob.balance":["hud",0.2978,0.0694,0.0065,0.007], "knob.indexer":["hud",0.2620,-0.0255,0.0065,0.007] };
+const CENTRE_TOGGLES={ finder:["ufc",0.4456,-0.0861,["one","off","two"]], reject:["hud",0.2978,-0.0719,["norm","one","two"]], "hud.range":["hud",0.2978,-0.0152,["day","night"]],
+	"hud.video":["hud",0.2978,0.0403,["polarity","video","off"]], altitude:["hud",0.2620,-0.0028,["baro","radar"]], attitude:["hud",0.2620,0.0250,["ins","auto","stby"]] };
+const CENTRE_LEVER={ nut:0.0045, depth:0.003, length:0.012, base:0.0013, tip:0.0019, throw:25 };   // m: a toggle's hex nut across its flats' circle, how proud it stands, the lever and its ends; degrees each side of centre
+// CENTRE_LEGENDS: what the plates print, each [face, y, z, text] centred there - each control's name, and its positions'
+// at the ends of a lever's travel or a knob's.
+const CENTRE_LEGENDS=[ ["ufc",0.4568,-0.0861,"ADF"], ["ufc",0.4510,-0.0782,"1"], ["ufc",0.4402,-0.0782,"2"], ["ufc",0.4270,-0.0889,"COMM 1"], ["ufc",0.4060,-0.0950,"OFF"],
+	["ufc",0.4790,0.0853,"BRT"], ["ufc",0.4270,0.0853,"COMM 2"], ["ufc",0.4060,0.0790,"OFF"],
+	["hud",0.3125,-0.0719,"NORM"], ["hud",0.2978,-0.0905,"REJ 1"], ["hud",0.2835,-0.0719,"REJ 2"], ["hud",0.3125,-0.0434,"SYM BRT"], ["hud",0.2835,-0.0500,"OFF"], ["hud",0.2835,-0.0368,"BRT"],
+	["hud",0.3125,-0.0152,"DAY"], ["hud",0.2835,-0.0152,"NIGHT"], ["hud",0.3125,0.0129,"BLK LVL"], ["hud",0.3125,0.0403,"W/B"], ["hud",0.2978,0.0535,"VID"], ["hud",0.2835,0.0403,"OFF"],
+	["hud",0.3125,0.0694,"BAL"], ["hud",0.2835,0.0628,"VID"], ["hud",0.2835,0.0760,"SYM"],
+	["hud",0.2745,-0.0255,"AOA"], ["hud",0.2745,-0.0028,"BARO"], ["hud",0.2505,-0.0028,"RDR"], ["hud",0.2745,0.0250,"ATT"], ["hud",0.2700,0.0405,"INS"], ["hud",0.2620,0.0405,"AUTO"], ["hud",0.2540,0.0405,"STBY"] ];
+// centre_point: the point w metres proud of a face at [y, z] on it, in the jet's frame, along the face's normal.
+function centre_point(face,y,z,w){ const f=CENTRE[face], n=Math.hypot(1,f.slope); return [f.x+f.slope*y-w/n, y+f.slope*w/n, z]; }
+// centre_seat: where a click works a centre control, and its reach: a knob's face, or a toggle's lever halfway out.
+function centre_seat(action){ if(action in CENTRE_KNOBS){ const [face,y,z,r,height]=CENTRE_KNOBS[action]; return { at:centre_point(face,y,z,BEZEL.lift+height), r }; }
+	const [face,y,z]=CENTRE_TOGGLES[action]; return { at:centre_point(face,y,z,BEZEL.lift+CENTRE_LEVER.depth+CENTRE_LEVER.length/2), r:0.008 }; }
+// centre_spots: the click spots of the centre controls the rig has no switch for, as PIT_SPOTS holds them; a channel
+// selector is pulled by a middle click (2.13.5.12).
+function centre_spots(){ return [ ...["comm.one.volume","comm.two.volume","comm.one.channel","comm.two.channel","knob.black","knob.balance","finder","hud.range","hud.video"].map(a=>({ action:a, ...centre_seat(a), ...(a.endsWith(".channel")?{ hold:a }:{}) })) ]; }
+// SWITCH_SEATS: the switches whose model parts lie wholly behind the panel face, where no head sees
+// them - the five on the HUD control panel under the UFC and the UFC's BRT knob - seated on the
+// controls the centre panel models over the paint (#139), so a click and the pointer's ring work
+// there and not over the hidden parts: each centre in the group frame, and its radius in metres.
+const SWITCH_SEATS={ rejswitch:centre_seat("reject"), symbology:centre_seat("knob.symbology"), indexer:centre_seat("knob.indexer"),
+	altswitch:centre_seat("altitude"), attswitch:centre_seat("attitude"), ufcbrt:centre_seat("knob.ufc") };
 // display_spots: the click spots of the displays' controls that work (#115), on their faces, which build_bezels stands
 // proud of the panel, so a click on a knob and the pointer's ring meet it there (#132): each DDI's selector, BRT and
 // contrast knobs, and the AMPCD's OFF/BRT knob and its NGT/DAY and contrast rockers. The SYM and GAIN rockers and the
@@ -1646,6 +1696,7 @@ function display_spots(){ const face=([y,z],depth)=>[DDI_PANEL-BEZEL.lift-depth,
 const PIT_SPOT_RADIUS=0.008;
 const PIT_SPOTS=[
 	...display_spots(),   // the displays' knobs and NGT/DAY rocker, on their faces
+	...centre_spots(),   // the centre panel's comm knobs, black level, balance, the ADF switch, the brightness selector and the video switch (#139)
 	{ action:"knob.ifei", at:[6.211,0.049,-0.305], r:0.006 }, { action:"clock", at:[6.231,-0.069,0.077], r:0.005 }, { action:"fcs.reset", at:[5.736,-0.059,-0.29] },
 	{ action:"knob.hmd", at:[6.195,0.315,0.361], r:0.007 },   // the HMD OFF/BRT knob under IR COOL (2.21.6, figure 2-52): part of a merged mesh painted MAP GAIN, so it clicks but cannot turn
 	{ action:"wing.inhibit", at:[5.886,-0.028,-0.371] },   // INTR WING, on the EXT LT panel (2.2.3.3): its lever is part of a merged static mesh, so it clicks but cannot move
@@ -1659,9 +1710,6 @@ const PIT_SPOTS=[
 	// right, turned to trim the miniature airplane and pulled by a middle click, and the TEST switch at the lower left (figure 25-1)
 	{ action:"baro", at:[6.211,0.049,0.192], r:0.0055 }, { action:"index", at:[6.193,0.005,0.296], r:0.005, hold:"radalt.test" },
 	{ action:"sari.trim", at:[6.211,0.126,0.203], r:0.0075, hold:"sari.cage" }, { action:"sari.test", at:[6.211,0.129,0.103], r:0.004 },
-	// the UFC's comm controls (figure 23-1, #20): each radio's volume control beside the keypad and its channel selector knob below, turned by a click and pulled by a middle click
-	{ action:"comm.one.volume", at:[6.14,0.417,-0.089], r:0.007 }, { action:"comm.two.volume", at:[6.14,0.417,0.086], r:0.007 },
-	{ action:"comm.one.channel", at:[6.157,0.34,-0.088], hold:"comm.one.channel" }, { action:"comm.two.channel", at:[6.157,0.34,0.085], hold:"comm.two.channel" },
 	{ action:"jettison.select", at:[6.193,0.017,-0.281], r:0.016, hold:"jettison.release" },   // the SELECT JETT knob (2.17.1.2.2, FO-5 item 32): turned by a click, its JETT button pushed by a middle click; the model's knob is fixed, and a mark beside it shows the position (jettison_mark)
 	{ action:"dispense", at:[5.863,0.196,-0.326], r:0.02 },   // the dispense button on the left sill (FO-5 sheet 2 left console item 16)
 	{ action:"recorder", at:[6.211,0.055,-0.206], r:0.006 },   // the video record mode selector, right of the HUD/LDDI selector on the panel under the IFEI (2.13.8.7, FO-5 item 23)
@@ -2005,7 +2053,7 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_cabin(g); build_clock(g); build_screens(g); build_bezels(g); build_ifei(g); build_ufc(g); build_faces(g); }
+	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_cabin(g); build_clock(g); build_screens(g); build_bezels(g); build_centre(g); build_ifei(g); build_ufc(g); build_faces(g); }
 // A drawn face's resolution follows its size on screen (#121), as the DDIs' does: face_canvas makes its canvas and
 // texture at the face's own pixels, the units its drawing works in, and face_sharpen, every 120 ms in the pit, steps
 // the canvas to the screen pixels the face covers, with the DDIs' hysteresis, and back to its own pixels once it is
@@ -2038,7 +2086,8 @@ function face_sharpen(f,dpr){ const e=face_extent(f.mesh,dpr), [w,h]=f.pixels;
 function sharp_faces(u){ return [["ufc",u.ufc,()=>{ ufc_dirty=true; }],["ifei",u.ifei,()=>{ ifei_dirty=true; }],["radalt",u.radalt,f=>{ f.last=0; }],["rwr",u.rwr,f=>{ f.last=0; }],
 	["brake",u.brake,f=>{ f.psi=null; }],["cabin",u.cabin,f=>{ f.feet=null; }],["clock",u.clock,clock_draw],
 	...["asi","alt","vsi","adi"].map(k=>[k,u.standby&&u.standby[k],()=>{ u.standby.last=0; }]),
-	...Object.entries(u.faces||{}).map(([k,f])=>[k,f,()=>{ faces_key=""; }])].filter(([,f])=>f); }
+	...Object.entries(u.faces||{}).map(([k,f])=>[k,f,()=>{ faces_key=""; }]),
+	...Object.entries((u.centre&&u.centre.userData.plates)||{}).map(([k,f])=>["centre."+k,f,centre_plate_draw])].filter(([,f])=>f); }
 function faces_sharpen(dpr){ for(const [,f,redraw] of sharp_faces(ownship.group.userData)) if(face_sharpen(f,dpr)) redraw(f); }
 // The faces (faces.ts): panels the model paints too coarsely to read or as an earlier aircraft's, drawn over it as FO-5
 // draws them, each seated on the panel it replaces - its centre, the panel's normal toward the pilot and its up, and
@@ -4198,25 +4247,16 @@ function ifei_hold_end(){ const hold=ifei_hold; ifei_hold=null; if(!hold) return
 	if(hold.timeout) clearTimeout(hold.timeout); if(hold.interval) clearInterval(hold.interval); return hold.fired; }
 // ---- The UFC (NATOPS 2.13.5, #15) ----
 // The upfront control is painted into the main panel below the HUD: no nodes, no
-// windows. A transparent canvas quad over the measured face draws its displays and
-// leaves the painted keypad and legends showing through; the pushbuttons are panel
-// points matched to the nearest button under a click. What it works is what the
-// game has: EMCON, the TACAN and the ILS with their channels and ON/OFF, the timers,
-// and the autopilot's options with no autopilot behind them.
+// windows. The centre panel (#139) lays a plate with its legends over the paint and
+// its pushbuttons as caps (CENTRE_KEYS); a transparent canvas quad on the plate draws
+// its displays, and a click works the cap under it (ufc_key_at). What it works is what
+// the game has: EMCON, the TACAN and the ILS with their channels and ON/OFF, the
+// timers, and the autopilot's options with no autopilot behind them.
 const UFC_FACE={ y:[0.370,0.497], z:[-0.097,0.094] };   // the upper face, group frame, measured by panel click (&panelpoint=1); the function row steps 1.4 cm proud below it
 const UFC_W=536, UFC_H=356;   // the face's own aspect
 const UFC_CHANNELS={ y:[0.381,0.389], one:[-0.095,-0.082], two:[0.080,0.093] };   // the comm 1 and comm 2 channel display windows, under the volume controls at the face's sides (figure 23-1)
 const UFC_SCRATCH={ y:[0.475,0.486], z:[-0.076,-0.001] };   // the nine-character scratchpad window
 const UFC_OPTIONS={ z:[0.018,0.071], rows:[0.477,0.456,0.434,0.412,0.389], h:0.012 };   // the five option display windows
-const UFC_BUTTONS=[   // painted pushbutton centres (y,z): the keypad, the option selects, EMCON, I/P, the function selectors and ON/OFF, one key pitch right of BCN as the row is painted
-	{ name:"1", y:0.453, z:-0.061 }, { name:"2", y:0.453, z:-0.039 }, { name:"3", y:0.453, z:-0.018 },
-	{ name:"4", y:0.432, z:-0.062 }, { name:"5", y:0.432, z:-0.039 }, { name:"6", y:0.432, z:-0.018 },
-	{ name:"7", y:0.409, z:-0.063 }, { name:"8", y:0.409, z:-0.040 }, { name:"9", y:0.409, z:-0.018 },
-	{ name:"clr", y:0.386, z:-0.063 }, { name:"0", y:0.386, z:-0.041 }, { name:"ent", y:0.386, z:-0.018 },
-	{ name:"opt0", y:0.477, z:0.006 }, { name:"opt1", y:0.456, z:0.006 }, { name:"opt2", y:0.434, z:0.006 }, { name:"opt3", y:0.412, z:0.006 }, { name:"opt4", y:0.389, z:0.006 },
-	{ name:"ip", y:0.477, z:-0.088 }, { name:"emcon", y:0.447, z:0.086 },   // I/P heads the left column, over the ADF switch, and EM CON is second in the right, under the BRT knob (figure 23-1)
-	{ name:"ap", y:0.351, z:-0.065 }, { name:"iff", y:0.351, z:-0.044 }, { name:"tcn", y:0.351, z:-0.023 }, { name:"ils", y:0.351, z:-0.002 }, { name:"dl", y:0.351, z:0.019 }, { name:"bcn", y:0.351, z:0.041 }, { name:"onoff", y:0.351, z:0.062 } ];
-const UFC_RADIUS=0.011;   // m: a click within this of a button centre presses it (the keys sit 2.2 cm apart)
 const UFC_PAGES={ ap:["ATTH","HSEL","BALT","RALT","CPL"], iff:["","","","",""], tcn:["T/R","RCV","A/A","X","Y"], ils:["CHNL","","","",""], dl:["","","","",""], link:["","","","",""], bcn:["","","","",""], comm:["","","","",""], time:["","ET","CD","ZTOD",""],   // IFF and COMM write their own windows (ufc_face), and D/L, its Link 16 display and BCN have none NATOPS draws - time: the HSI's TIMEUFC loads it (24.1.3.15), with the MC OFP 10A windows (figure 24-9)
 	wypt:["POSN","HDTH","ELEV","GRID","O/S"], offset:["RNG","BRG","ELEV","GRID",""], elevation:["FEET","MTRS","","",""], range:["FEET","MTRS","NM","YARD",""], bearing:["TRUE","","","",""], seq:["GSPD","TGT","TOT","INS","DEL"], ac:["POSN","","WSPD","WDIR","MVAR"], alt:["ALT","","","",""],   // the HSI's DATA sublevels load these (figure 24-9): a waypoint and its offset, a sequence, the aircraft's data, a low altitude warning
 	station:["X","Y","POSN","ELEV","MVAR"], cv:["POSN","","CHDG","CVEL",""] };   // a TACAN station's data (figure 24-18), and a manual carrier alignment's (figure 24-3)
@@ -4293,9 +4333,6 @@ function ufc_face(state,live,now){ if(live.test) return { scratch:(live.test===1
 	return { scratch, options, windows:[communication.window(live.comm.one),communication.window(live.comm.two)] }; }
 function ufc_live(){ const tested=sim_time-ufc_test.at;
 	return { emcon, radios, comm:uhf, squawk, terminal, timer:timer.shown, precise:nav.precise, unit:nav.units[ufc.unit], meridian:nav.meridian, test:tested<5?1:tested<10?2:0, autopilot:{ modes:hold.modes, offered:autopilot.offered(hold,autopilot_sense(couple_now())) } }; }
-function ufc_button_at(y,z){ let best=null, bd=UFC_RADIUS*UFC_RADIUS;   // the painted button nearest a panel point, or null
-	for(const b of UFC_BUTTONS){ const d=(b.y-y)*(b.y-y)+(b.z-z)*(b.z-z); if(d<bd){ bd=d; best=b.name; } }
-	return best; }
 // ufc_enter works ENT: a keyed channel tunes the TACAN (1-126) or the ILS (1-20)
 // (24.4.2, 24.5.4), and on the TIMEUFC page ENT works the timers (timer_enter).
 // false: nothing the page can take.
@@ -4427,11 +4464,9 @@ function ufc_press(name){ const now=performance.now()/1000;
 function build_ufc(g){
 	if(g.userData.ufc&&g.userData.ufc.mesh.parent===g) return;
 	const y=(UFC_FACE.y[0]+UFC_FACE.y[1])/2, z=(UFC_FACE.z[0]+UFC_FACE.z[1])/2, w=UFC_FACE.z[1]-UFC_FACE.z[0], h=UFC_FACE.y[1]-UFC_FACE.y[0];
-	const box={ lo:new THREE.Vector3(6.12,y-h/2,z-w/2), hi:new THREE.Vector3(6.16,y+h/2,z+w/2) };   // the face reads at x≈6.13-6.14 with a lean of a few degrees; the fit finds both
-	const fit=surface_fit(g,box), tilt=fit?fit.tilt:0;
 	const f=face_canvas(UFC_W,UFC_H);
-	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({ map:f.tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: the painted keypad and legends show through, only the windows are drawn
-	surface_pose(mesh,fit?fit.x:6.138,tilt,y,z);
+	const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h*Math.hypot(1,CENTRE.ufc.slope)), new THREE.MeshBasicMaterial({ map:f.tex, toneMapped:false, transparent:true, depthWrite:false, side:THREE.DoubleSide }));   // transparent: only the windows are drawn, over the centre panel's plate
+	centre_pose(mesh,"ufc",y,z,BEZEL.lift+0.0003);   // flush with the plate under it (#139), on the face's own lean
 	g.add(mesh);
 	g.userData.ufc={ mesh, ...f, width:w, height:h, at:[y,z,w] };
 	ufc_dirty=true; ufc_update(true); }
@@ -6866,9 +6901,9 @@ let cockpit_flood=null, console_lights=null;
 // day's for the interior lights and full for the rest. A click turns one a fifth of its throw, right
 // clockwise and brighter. hmd is the HMD OFF/BRT knob on the spin recovery panel (2.21.6, figure 2-52),
 // where the model still paints MAP GAIN: OFF at its bottom stop, as a deck or runway start leaves it.
-const knobs={ instrument:null, consoles:null, flood:null, warn:null, symbology:null, indexer:null, ufc:null, ifei:null, hmd:null };
+const knobs={ instrument:null, consoles:null, flood:null, warn:null, symbology:null, indexer:null, ufc:null, ifei:null, hmd:null, black:null, balance:null };
 function knob_level(k){ if(knobs[k]!==null) return knobs[k]; const night=cfg.tod==="night";
-	return k==="instrument"?(night?0.62:0.22):(k==="consoles"||k==="flood")?(night?1:0):k==="warn"?(night?0.7:1):1; }
+	return k==="instrument"?(night?0.62:0.22):(k==="consoles"||k==="flood")?(night?1:0):k==="warn"?(night?0.7:1):(k==="black"||k==="balance")?0.5:1; }   // BLK LVL and BAL at 12 o'clock (#139)
 function knob_turn(k,d){ knobs[k]=THREE.MathUtils.clamp(Math.round((knob_level(k)+(d<0?-0.2:0.2))*100)/100,0,1); }   // hundredths, so five clicks from full reach the OFF stop exactly
 // The displays' own controls (#115): each DDI's brightness selector, OFF, NIGHT, AUTO or DAY, and its
 // BRT knob (NATOPS 2.13.4.1.1, 2.13.4.1.2); the AMPCD's OFF/BRT knob, whose bottom stop is OFF, and its
@@ -6879,6 +6914,12 @@ function knob_turn(k,d){ knobs[k]=THREE.MathUtils.clamp(Math.round((knob_level(k
 // draws and stay inert. Every display is on the ac buses (#116).
 const SELECTOR=["off","night","auto","day"];
 const displays={ left:{ mode:"auto", brt:1, contrast:1 }, right:{ mode:"auto", brt:1, contrast:1 }, center:{ mode:"day", brt:1, contrast:1 } };
+// The HUD control panel's switches the rig has no part for (#139): the symbology brightness selector, DAY or NIGHT,
+// NIGHT the lower range (2.13.4.8.3; this jet, 163985 and up, has no AUTO), and the video control switch, OFF, VID or
+// W/B (2.13.4.8.4); and the UFC's ADF switch, 1, OFF or 2 (2.13.5.4). The game has no FLIR video and no ADF, so the
+// video switch, BLK LVL, BAL and the ADF switch move and act on nothing.
+const hud_panel={ range:"day", video:"off" };
+let finder="off";
 function display_level(d){ const s=displays[d]; if(!buses.ac||(d==="left"&&!buses.left)||(d==="right"&&!buses.right)||s.mode==="off"||(d==="center"&&s.brt<=0)) return 0;   // each DDI on its own side's ac bus (FO-8)
 	return (s.mode==="night"?0.45:1)*(0.3+0.7*s.brt); }
 // display_contrast: how much of a screen's face is its own light (#132), the rest a veil over symbology and background
@@ -6895,7 +6936,7 @@ function displays_light(){ const u=ownship.group.userData;
 	if(u.ufc) u.ufc.mesh.material.color.setScalar(buses.ac?0.3+0.7*knob_level("ufc"):0);
 	if(u.ifei) u.ifei.mesh.material.color.setScalar(buses.ac?(lighting.mode==="nite"?0.3+0.7*knob_level("ifei"):1):0);
 	if(u.rwr) u.rwr.mesh.material.color.setScalar(buses.ac&&suite.receiver.power?1:0); }   // the azimuth indicator is dark without ac power (#116), and with the set's POWER off (#9)
-function symbology(){ return buses.ac?knob_level("symbology"):0; }   // the HUD's SYM BRT knob, its bottom stop OFF (2.13.4.8.2); the HUD is on the ac buses
+function symbology(){ return buses.ac?knob_level("symbology")*(hud_panel.range==="night"?0.45:1):0; }   // the HUD's SYM BRT knob, its bottom stop OFF (2.13.4.8.2), in the selector's range as a DDI's NIGHT takes the lower (#139); the HUD is on the ac buses
 // The electrical power panel (#21, NATOPS 2.5, figure 2-9): the L and R GEN switches, NORM or OFF, and
 // BATT, OFF, ON or ORIDE. Either generator on the line powers every bus. With both off the 28 V dc
 // essential bus alone lives, on the batteries with BATT at ON or ORIDE (2.5.2): the warning, caution
@@ -7135,7 +7176,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		casKt:cas, fpm, spoolL:gL, spoolR:gR, reheatL:bL, reheatR:bR, fuelRaw:lbs, externalRaw:extlbs, wingRaw:wingLbs, centreRaw:centreLbs, mach:out[STATE.mach]||0,
 		track:vh>2?Math.atan2(vx,-vz):null, ground:vh*1.944 };   // track null at taxi speeds — the diamond parks off the rose rather than swinging with tyre scrub
 	{ const step=Math.max(0,t-(systems_at??t)); systems_at=t;   // the panel systems on the core's clock: the buses (#21, #116), what they light (#115), INTR WING (#18), the cockpit's pressure (#14) and the spin recovery display (#12)
-		power_step(out); displays_light(); bezel_turn(); wing_step(lbs,step); cabin_step(out,step); spin_step(out); }
+		power_step(out); displays_light(); bezel_turn(); centre_turn(); wing_step(lbs,step); cabin_step(out,step); spin_step(out); }
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
 	const glow=buses.ac?knob_level("indexer"):0;   // the HUD panel's AOA indexer knob (2.13.4.8.7, #115); the indexer is dark without ac power
@@ -7829,8 +7870,7 @@ function pit_click(e){
 	if(e.button===2){ if(!playback) pit_switch(e); return; }   // the right button only works the switches (#19) - and a replay's switches are the recording's: the screens, the IFEI and the lenses keep their left-click behaviour
 	{ const u=ownship.group.userData.ifei; const on=u&&_click_ray.intersectObject(u.mesh,false)[0];   // the IFEI's six pushbuttons; the hold length tells ET a reset from a press
 		const button=on&&ifei_button_at(on.point); if(button){ ifei_click(button,(performance.now()-press_at)/1000); return; } }   // a click elsewhere on the unit falls through to the panel behind it
-	if(ownship.group.userData.ufc){ const h=_click_ray.intersectObject(ownship.group,true).find(k=>!k.object.userData.overlay&&shown(k.object));   // the UFC's painted pushbuttons (#15): the panel point under the click, matched to the nearest button
-		const p=h&&ownship.group.worldToLocal(h.point.clone()), button=p&&p.x>6.10&&p.x<6.18?ufc_button_at(p.y,p.z):null;
+	{ const button=ownship.group.userData.ufc&&ufc_key_at(e.clientX,e.clientY);   // the UFC's pushbuttons (#15), the cap under the click (#139)
 		if(button){ ufc_press(button); return; } }
 	{ const u=ownship.group.userData, l=u.lamps||{}, targets=[l.caution,u.silence,l.fireL,l.fireR].filter(Boolean);   // the MASTER CAUTION light, the silence button (#20) and the two FIRE lights: the press the key makes
 		const on=targets.length?_click_ray.intersectObjects(targets,false)[0]:null;
@@ -7874,6 +7914,9 @@ function pit_switch(e){ const hit=pit_target(e); if(!hit) return false;
 if(DEV_MODE) (globalThis as any).dev_target=function(px,py){ _click_ray.setFromCamera(_click_at.set((px/HW)*2-1,-(py/HH)*2+1),cockpit_cam);   // dev: the control a click on a css pixel would work - its switch's name, its action and what a middle click does
 	const s=pit_target({ clientX:px, clientY:py }); return s?{ name:s.name||"", action:s.action||"", hold:s.hold||"" }:null; };
 const PIT_CLICK_RADIUS=12;   // css px: the nearest-origin fallback's reach
+if(DEV_MODE) (globalThis as any).dev_centre=()=>({ keys:Object.fromEntries(Object.entries(CENTRE_KEYS).map(([name,[face,y,z]])=>[name,centre_point(face,y,z,BEZEL.lift+BEZEL.cap)])),   // dev: the centre panel's key faces and its knobs' and switches' seats, group frame (#139)
+	controls:Object.fromEntries([...Object.keys(CENTRE_KNOBS),...Object.keys(CENTRE_TOGGLES)].map(a=>[a,centre_seat(a).at])) });
+if(DEV_MODE) (globalThis as any).dev_key=(px,py)=>ufc_key_at(px,py);   // dev: the UFC key a click on a css pixel presses (#139)
 // ---- the cockpit pointer (#105) ----
 // In the cockpit the mouse is the pilot's hand on the panel, so the pointer
 // shows while it moves and for a couple of seconds after; every other flying
@@ -7945,6 +7988,101 @@ function bezel_turn(group=ownship.group.userData.bezels){ if(!group) return; con
 	for(const d of ["left","right"]){ p[d+".selector"].rotation.z=-SELECTOR_DETENTS[SELECTOR.indexOf(displays[d].mode)]*D2R;
 		for(const k of ["brt","contrast"]) p[`${d}.${k}`].rotation.z=-(2*displays[d][k]-1)*BRT_THROW*D2R; }
 	p["center.brt"].rotation.z=-(2*displays.center.brt-1)*BRT_THROW*D2R; }
+// The centre panel's build (#139): on each face a plate over the paint, its legends drawn on a canvas that steps with
+// zoom (face_sharpen) and lit by the instrument panel's integral lighting as the gauges are; the UFC's pushbuttons as
+// caps, their legends on their tops from one atlas; and the knobs with pointers and the toggles with levers that
+// centre_turn sets to what they work. Every part is an overlay on the ownship's cockpit layer, out of the pit's raycasts.
+const CENTRE_PIXELS=4000, CENTRE_LETTERS=12000;   // the plates' canvas pixels a metre at scale 1, and the key legend atlas's
+const CENTRE_COLOURS={ ink:"#e6e6dc", glass:"#0a140a", key:0x262928, nut:0x8e9192, lever:0xd4d6d6 };   // the legends, the windows' glass, the key caps and the toggles' nuts and levers
+// centre_frame: a face's frame in the jet's - x across (the jet's z), y up its slope, z toward the pilot - from the
+// point on it at y 0; a point [y, z] on it is at [z, y*hypot(1, slope)] there.
+function centre_frame(face){ const f=CENTRE[face], n=Math.hypot(1,f.slope);
+	return new THREE.Matrix4().makeBasis(new THREE.Vector3(0,0,1),new THREE.Vector3(f.slope,1,0).divideScalar(n),new THREE.Vector3(-1,f.slope,0).divideScalar(n)).setPosition(f.x,0,0); }
+function centre_pose(mesh,face,y,z,w){ mesh.quaternion.setFromRotationMatrix(centre_frame(face)); mesh.position.fromArray(centre_point(face,y,z,w)); mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); }
+// centre_plate_draw: a plate's picture - the panel's colour, the UFC's window glass under the windows build_ufc draws,
+// a ring round each option select and I/P, and the legends.
+function centre_plate_draw(p){ const x=face_context(p), f=CENTRE[p.face], n=Math.hypot(1,f.slope), px=z=>(z-f.z[0])*CENTRE_PIXELS, py=y=>(f.y[1]-y)*n*CENTRE_PIXELS;
+	x.clearRect(0,0,p.pixels[0],p.pixels[1]); x.fillStyle="#"+new THREE.Color(BEZEL.plate).getHexString(); x.fillRect(0,0,p.pixels[0],p.pixels[1]);
+	if(p.face==="ufc"){ x.fillStyle=CENTRE_COLOURS.glass;
+		const pane=(y0,y1,z0,z1)=>x.fillRect(px(z0),py(y1),px(z1)-px(z0),py(y0)-py(y1));
+		pane(UFC_SCRATCH.y[0],UFC_SCRATCH.y[1],UFC_SCRATCH.z[0],UFC_SCRATCH.z[1]); for(const r of UFC_OPTIONS.rows) pane(r-UFC_OPTIONS.h/2,r+UFC_OPTIONS.h/2,UFC_OPTIONS.z[0],UFC_OPTIONS.z[1]);
+		pane(UFC_CHANNELS.y[0],UFC_CHANNELS.y[1],UFC_CHANNELS.one[0],UFC_CHANNELS.one[1]); pane(UFC_CHANNELS.y[0],UFC_CHANNELS.y[1],UFC_CHANNELS.two[0],UFC_CHANNELS.two[1]);
+		x.strokeStyle=CENTRE_COLOURS.ink; x.lineWidth=0.00025*CENTRE_PIXELS;
+		for(const [face,y,z,w,h] of Object.values(CENTRE_KEYS)) if(face==="ufc"&&!w){ x.beginPath(); x.arc(px(z),py(y),(h/2+0.0008)*CENTRE_PIXELS,0,2*Math.PI); x.stroke(); } }
+	x.fillStyle=CENTRE_COLOURS.ink; x.font="bold "+(0.0026*CENTRE_PIXELS)+"px sans-serif"; x.textAlign="center"; x.textBaseline="middle";
+	for(const [face,y,z,text] of CENTRE_LEGENDS) if(face===p.face) x.fillText(text,px(z),py(y));
+	p.tex.needsUpdate=true; }
+// centre_letters: the key legends' atlas - a cell a key, its legend centred, a letter over a digit smaller - and each
+// key's cell in it, [x, y, width, height] in its pixels.
+function centre_letters(){ const most=1024, pad=4, cells={}; let cx=0, cy=0, row=0;
+	for(const [name,[,,,w,h,lines]] of Object.entries(CENTRE_KEYS)){ if(!lines.length) continue;
+		const cw=Math.ceil((w||h)*CENTRE_LETTERS)+2*pad, ch=Math.ceil(h*CENTRE_LETTERS)+2*pad;
+		if(cx+cw>most){ cx=0; cy+=row; row=0; } cells[name]=[cx,cy,cw,ch]; cx+=cw; row=Math.max(row,ch); }
+	const canvas=document.createElement("canvas"); canvas.width=most; canvas.height=cy+row; const x=canvas.getContext("2d");
+	x.fillStyle=CENTRE_COLOURS.ink; x.textAlign="center"; x.textBaseline="middle";
+	for(const [name,[cx0,cy0,cw,ch]] of Object.entries(cells)){ const lines=CENTRE_KEYS[name][5], two=lines.length===2;
+		lines.forEach((line,k)=>{ const size=two?(k===0?0.3:0.42)*ch:0.42*ch; x.font="bold "+size+"px sans-serif";
+			const fit=Math.min(1,(cw-4*pad)/x.measureText(line).width); if(fit<1) x.font="bold "+(size*fit)+"px sans-serif";
+			x.fillText(line,cx0+cw/2,cy0+(two?(k===0?0.3:0.68):0.5)*ch); }); }
+	const tex=new THREE.CanvasTexture(canvas); tex.colorSpace=THREE.SRGBColorSpace; tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+	return { tex, cells, size:[canvas.width,canvas.height] }; }
+function build_centre(g){
+	if(g.userData.centre&&g.userData.centre.parent===g) return;
+	const root=new THREE.Group(); root.name="centre"; const pointers={}, levers={}, plates={}, keys=[], letters=[], light=[], nuts=[];
+	const atlas=centre_letters(), ink=new THREE.MeshStandardMaterial({ color:BEZEL.dark, roughness:0.6, metalness:0 }), chrome=new THREE.MeshStandardMaterial({ color:CENTRE_COLOURS.lever, roughness:0.25, metalness:0.7 });
+	const lit=(map,more)=>{ const m=new THREE.MeshStandardMaterial({ map, emissiveMap:map, emissive:new THREE.Color(0xffffff), emissiveIntensity:lighting.instrument, roughness:0.8, metalness:0, ...more }); instrument_mats.push(m); return m; };   // the panel's integral lighting behind its legends, as gauge_material lights a dial
+	const lever=(()=>{ const L=CENTRE_LEVER; return mergeGeometries([new THREE.CylinderGeometry(L.tip*0.8,L.base,L.length,20).rotateX(Math.PI/2).translate(0,0,L.length/2),new THREE.SphereGeometry(L.tip,20,14).translate(0,0,L.length)]); })();   // its pivot at the nut's face, out toward the pilot
+	const lettered=new THREE.Group();
+	for(const face of Object.keys(CENTRE)){ const f=CENTRE[face], n=Math.hypot(1,f.slope), group=new THREE.Group(); group.applyMatrix4(centre_frame(face)); group.name="centre."+face;
+		const at=(geo,y,z,depth)=>{ if(geo.index) geo=geo.toNonIndexed(); geo.clearGroups(); return geo.translate(z,y*n,depth); };
+		// the plate: the face's outline, the HUD control panel's with its lower row's extension
+		const bottom=f.below?f.below.y[0]:f.y[0], shape=new THREE.Shape();
+		if(f.below) shape.moveTo(f.z[0],f.y[0]*n).lineTo(f.below.z[0],f.y[0]*n).lineTo(f.below.z[0],f.below.y[0]*n).lineTo(f.below.z[1],f.below.y[0]*n).lineTo(f.below.z[1],f.y[0]*n).lineTo(f.z[1],f.y[0]*n);
+		else shape.moveTo(f.z[0],f.y[0]*n).lineTo(f.z[1],f.y[0]*n);
+		shape.lineTo(f.z[1],f.y[1]*n).lineTo(f.z[0],f.y[1]*n).closePath();
+		const geo=new THREE.ShapeGeometry(shape), uv=geo.attributes.uv, pos=geo.attributes.position;
+		for(let i=0;i<pos.count;i++) uv.setXY(i,(pos.getX(i)-f.z[0])/(f.z[1]-f.z[0]),(pos.getY(i)-bottom*n)/((f.y[1]-bottom)*n));
+		geo.translate(0,0,BEZEL.lift);
+		const plate={ face, ...face_canvas(Math.round((f.z[1]-f.z[0])*CENTRE_PIXELS),Math.round((f.y[1]-bottom)*n*CENTRE_PIXELS)) };
+		plate.mesh=new THREE.Mesh(geo,lit(plate.tex)); plate.mesh.name="centre.plate"; group.add(plate.mesh); plates[face]=plate; centre_plate_draw(plate);
+		// the UFC's pushbuttons, and a legend on each one that has one
+		for(const [name,[kface,y,z,w,h,lines]] of Object.entries(CENTRE_KEYS)){ if(kface!==face) continue;
+			keys.push(at(w?new RoundedBoxGeometry(w,h,BEZEL.cap,2,0.0012):new THREE.CylinderGeometry(h/2,h/2,BEZEL.cap,32).rotateX(Math.PI/2),y,z,BEZEL.lift+BEZEL.cap/2));
+			if(!lines.length) continue;
+			const [cx,cy,cw,ch]=atlas.cells[name], [W,H]=atlas.size, label=new THREE.PlaneGeometry(cw/CENTRE_LETTERS,ch/CENTRE_LETTERS), t=label.attributes.uv;
+			for(let i=0;i<t.count;i++) t.setXY(i,(cx+t.getX(i)*cw)/W,1-(cy+(1-t.getY(i))*ch)/H);
+			letters.push(at(label,y,z,BEZEL.lift+BEZEL.cap+0.0002).applyMatrix4(group.matrix)); }
+		// the knobs, their pointers turning
+		for(const [action,[kface,y,z,r,height]] of Object.entries(CENTRE_KNOBS)){ if(kface!==face) continue;
+			light.push(at(new THREE.CylinderGeometry(r,r,height,40).rotateX(Math.PI/2),y,z,BEZEL.lift+height/2));
+			const pointer=new THREE.Mesh(new THREE.BoxGeometry(0.001,r*0.8,0.0004).translate(0,r*0.45,0),ink); pointer.position.set(z,y*n,BEZEL.lift+height+0.0002);
+			pointer.name="centre.pointer"; pointer.userData.overlay=true; pointer.layers.set(LAYER_OWN); group.add(pointer); pointers[action]=pointer; }
+		// the toggles: a hex nut, and the lever pivoting at its face
+		for(const [action,[kface,y,z]] of Object.entries(CENTRE_TOGGLES)){ if(kface!==face) continue;
+			nuts.push(at(new THREE.CylinderGeometry(CENTRE_LEVER.nut,CENTRE_LEVER.nut,CENTRE_LEVER.depth,6).rotateX(Math.PI/2),y,z,BEZEL.lift+CENTRE_LEVER.depth/2));
+			const pivot=new THREE.Group(); pivot.position.set(z,y*n,BEZEL.lift+CENTRE_LEVER.depth); const m=new THREE.Mesh(lever,chrome);
+			m.name="centre.lever"; m.userData.overlay=true; m.layers.set(LAYER_OWN); pivot.add(m); group.add(pivot); levers[action]=pivot; }
+		for(const [name,list,material] of [["centre.keys",keys,new THREE.MeshStandardMaterial({ color:CENTRE_COLOURS.key, roughness:0.55, metalness:0 })],["centre.knobs",light,new THREE.MeshStandardMaterial({ color:BEZEL.light, roughness:0.6, metalness:0 })],
+			["centre.nuts",nuts,new THREE.MeshStandardMaterial({ color:CENTRE_COLOURS.nut, roughness:0.35, metalness:0.6 })]]){
+			if(list.length){ const mesh=new THREE.Mesh(mergeGeometries(list),material); mesh.name=name; group.add(mesh); }
+			list.length=0; }
+		group.traverse(o=>{ if(o.isMesh){ o.userData.overlay=true; o.layers.set(LAYER_OWN); } });
+		root.add(group); }
+	const labels=new THREE.Mesh(mergeGeometries(letters),lit(atlas.tex,{ transparent:true, depthWrite:false }));   // the key legends, each placed in its face's frame already
+	labels.name="centre.letters"; labels.userData.overlay=true; labels.layers.set(LAYER_OWN); root.add(labels);
+	root.userData={ pointers, levers, plates }; g.add(root); g.userData.centre=root; centre_turn(root); }
+// centre_turn: the centre panel's pointers and levers at what they set (#139) - the knobs over BRT_THROW, least at the
+// bottom stop (OFF, DIM or the counter-clockwise end), a channel selector a 22nd of a turn a channel; a lever
+// CENTRE_LEVER.throw up or down, or upright at a three-position switch's centre.
+function centre_turn(root=ownship.group.userData.centre){ if(!root) return; const { pointers, levers }=root.userData;
+	const knob=(action,level)=>{ pointers[action].rotation.z=-(2*level-1)*BRT_THROW*D2R; };
+	knob("knob.ufc",knob_level("ufc")); knob("comm.one.volume",uhf.one.volume); knob("comm.two.volume",uhf.two.volume);
+	knob("knob.symbology",knob_level("symbology")); knob("knob.black",knob_level("black")); knob("knob.balance",knob_level("balance")); knob("knob.indexer",knob_level("indexer"));
+	for(const which of ["one","two"]) pointers[`comm.${which}.channel`].rotation.z=-communication.CHANNELS.indexOf(uhf[which].channel)/communication.CHANNELS.length*2*Math.PI;
+	const lever=(action,at)=>{ const list=CENTRE_TOGGLES[action][3], k=list.indexOf(at), up=list.length===2?(k===0?1:-1):1-k;
+		levers[action].rotation.x=-up*CENTRE_LEVER.throw*D2R; };   // a turn about the face's x tips the lever toward its y
+	lever("finder",finder); lever("reject",["norm","one","two"][declutter]); lever("hud.range",hud_panel.range); lever("hud.video",hud_panel.video);
+	lever("altitude",alt_radar?"radar":"baro"); lever("attitude",reference); }
 // ddi_button is pushbutton pb's centre on a display's bezel in the jet's frame: 1-5 up the left, 6-10 across the top, 11-15 down the right, 16-20 back along the bottom.
 function ddi_button(display,pb){ const b=DDI_BUTTONS[display]; let y,z;
 	if(pb<=5){ y=b.down[5-pb]; z=b.left; }
@@ -7965,6 +8103,13 @@ function screen_of(local,radius){ ownship.group.localToWorld(_screen_at.copy(loc
 function ddi_button_at(x,y){ let best=null, least=Infinity;
 	for(const display of Object.keys(DDI_BUTTONS)) for(let pb=1;pb<=20;pb++){ const at=screen_of(ddi_button(display,pb),DDI_BUTTON); if(!at) continue;
 		const d=Math.hypot(at[0]-x,at[1]-y); if(d<=Math.max(at[2],6)&&d<least){ least=d; best={ display, pb }; } }
+	return best; }
+// ufc_key_at is the UFC pushbutton under a css pixel, by ufc_press's name, or null: the nearest
+// cap whose face holds it, a few pixels' grace on a small one, as ddi_button_at finds a bezel's (#139).
+const _ufc_key=new THREE.Vector3();
+function ufc_key_at(x,y){ let best=null, least=Infinity;
+	for(const [name,[face,ky,kz,w,h]] of Object.entries(CENTRE_KEYS)){ const at=screen_of(_ufc_key.fromArray(centre_point(face,ky,kz,BEZEL.lift+BEZEL.cap)),(w||h)/2); if(!at) continue;
+		const d=Math.hypot(at[0]-x,at[1]-y); if(d<=Math.max(at[2],6)&&d<least){ least=d; best=name; } }
 	return best; }
 // extent_of is the box a set of meshes fills in the jet's frame: a lens, a lamp
 // or an instrument's face, all of it in the pilot's sight.
@@ -8002,22 +8147,18 @@ function mark_ring(mark){ let half=mark.radius, at=mark.at;
 	if(mark.box){ at=mark.box.getCenter(_ring_at); mark.box.getSize(_ring_size); half=Math.max(_ring_size.x,_ring_size.y,_ring_size.z)/2; }
 	const size=MARK_SIZES.find(k=>half<=k.bound), ring=screen_of(at,size.radius);
 	return ring&&[ring[0],ring[1],Math.max(ring[2],MARK_SMALLEST)]; }
-const IFEI_CAP=[0.006,0.004], UFC_KEY_RADIUS=0.007;   // m: an IFEI pushbutton's half width and half height, and a UFC key's face, for their rings
+const IFEI_CAP=[0.006,0.004];   // m: an IFEI pushbutton's half width and half height, for its ring
 // pit_hover is what a left click at a css pixel would work, tested in pit_click's
 // order, in the jet's frame: the box its meshes fill, { box }, or a painted
 // control's centre and radius in metres, { at, radius } - or null.
-const _hover_ray=new THREE.Ray(), _hover_inverse=new THREE.Matrix4();
 function pit_hover(x,y){ const g=ownship.group, u=g.userData, list=u.screens; if(!list) return null;
 	_click_ray.setFromCamera(_click_at.set((x/HW)*2-1,-(y/HH)*2+1),cockpit_cam);
 	const on=(m)=>m?_click_ray.intersectObject(m,false)[0]:null, local=(w)=>g.worldToLocal(w.clone());
 	{ const h=u.ifei&&on(u.ifei.mesh), b=h&&ifei_button_at(h.point);
 		if(b){ const x=local(h.point).x;
 			return { box:new THREE.Box3(new THREE.Vector3(x,IFEI_BUTTONS[b]-IFEI_CAP[1],IFEI_BUTTON_Z-IFEI_CAP[0]),new THREE.Vector3(x,IFEI_BUTTONS[b]+IFEI_CAP[1],IFEI_BUTTON_Z+IFEI_CAP[0])), name:"ifei."+b }; } }
-	if(u.ufc){ _hover_ray.copy(_click_ray.ray).applyMatrix4(_hover_inverse.copy(g.matrixWorld).invert());   // the panel plane first, so the jet-wide raycast pit_click makes runs only over a painted key
-		const t=(6.14-_hover_ray.origin.x)/_hover_ray.direction.x, y0=_hover_ray.origin.y+t*_hover_ray.direction.y, z0=_hover_ray.origin.z+t*_hover_ray.direction.z;
-		if(t>0&&ufc_button_at(y0,z0)){ const h=_click_ray.intersectObject(g,true).find(k=>!k.object.userData.overlay&&shown(k.object));
-			const p=h&&local(h.point), name=p&&p.x>6.10&&p.x<6.18?ufc_button_at(p.y,p.z):null, b=name&&UFC_BUTTONS.find(k=>k.name===name);
-			if(b){ p.y=b.y; p.z=b.z; return { at:p, radius:UFC_KEY_RADIUS, name:"ufc."+name }; } } }
+	{ const name=u.ufc&&ufc_key_at(x,y);   // a UFC pushbutton, ringed on its cap (#139)
+		if(name){ const [face,ky,kz,w,h]=CENTRE_KEYS[name]; return { at:new THREE.Vector3().fromArray(centre_point(face,ky,kz,BEZEL.lift+BEZEL.cap)), radius:(w||h)/2, name:"ufc."+name }; } }
 	{ const l=u.lamps||{}, targets=[l.caution,u.silence,l.fireL,l.fireR].filter(Boolean), h=targets.length?_click_ray.intersectObjects(targets,false)[0]:null;
 		if(h) return extent_of([h.object],h.object.name||"lamp"); }
 	const hit=_click_ray.intersectObjects(list.map(sc=>sc.mesh),false)[0];
@@ -8069,6 +8210,9 @@ function pit_press(action,direction){ const d=direction||0;
 		break;
 	case "probe": ownship.probeTarget=(ownship.probeTarget??0)>0.5?0:1; break;
 	case "altitude": alt_radar=!alt_radar; break;
+	case "hud.range": hud_panel.range=hud_panel.range==="day"?"night":"day"; break;   // the symbology brightness selector, DAY up (#139)
+	case "hud.video": hud_panel.video=communication.step(["off","video","polarity"],hud_panel.video,d||1); break;   // up toward W/B
+	case "finder": finder=communication.step(["two","off","one"],finder,d||1); break;   // the UFC's ADF switch, up toward 1
 	case "reject": declutter=d>0?Math.max(0,declutter-1):d<0?Math.min(2,declutter+1):(declutter+1)%3; if(declutter>0) peak_g=1; break;   // NORM at the top, REJ 2 at the bottom; moving into a reject position clears peak g (NATOPS 2.13.4.8.11 item 8)
 	case "lights": ownship.lights=!ownship.lights; break;   // the exterior lights master switch on the left throttle grip (2.6.1.1)
 	case "landing": exterior.landing=!exterior.landing; break;   // the LDG/TAXI switch (2.6.1.5)
@@ -9489,7 +9633,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 		hands:{ pedals:+hotas.pedals.toFixed(2), trigger:hotas.trigger, paddle:hotas.paddle, steering, nws:NWS.mode, nose:nose_loaded(), seat:seat_armed, canopy:canopy_gone, cranked, lifted:lockout.lifted, designator },   // G2: the hands and feet on the controls, nosewheel steering, the seat and canopy, the afterburner lockout and the TDC's display   // i18n-format-ok: dev probe numbers
 		panel:{ buses, battery:electrics.battery, generators:electrics.switches, cutoff:electrics.cutoff, charge:electrics.charge, mech:electrics.mech,   // G1: the panel systems' state
 			bleed:BLEED[ecs.bleed], valves:ecs.valves, through:ecs.through, fire:fire_testing(), reference, rudder:rudder_trim, transfer, inhibit:wing_inhibit, held:wing_held,
-			emergency:gear_emergency, handle:+emergency_travel.toFixed(2), knobs, displays, thrown, elapsed:+clock_elapsed().toFixed(1), symbology:symbology() },   // i18n-format-ok: dev probe numbers
+			emergency:gear_emergency, handle:+emergency_travel.toFixed(2), knobs, displays, hud:{ ...hud_panel }, finder, thrown, elapsed:+clock_elapsed().toFixed(1), symbology:symbology() },   // i18n-format-ok: dev probe numbers
 		brakes:{ handle:parking?"park":pulled?"emerg":"norm", accumulator:Math.round(brake_accumulator), pump:hydraulic(), face:u.brake?u.brake.psi:null },   // the emergency/parking brake handle, the brake accumulator and what its gauge last drew (#13)
 		emergency:u.emergency?u.emergency.intensity:null, backlight:lighting.instrument, lighting:{ ...lighting }, lights:!!ownship.lights, exterior:{ ...exterior },   // the emergency instrument light's intensity, the integral backlight level (#17) and the interior lights panel (#21)
 		adi:adi_source,   // the EADI's attitude source option (#24): stby on a weight-on-wheels power-up
@@ -10678,6 +10822,7 @@ function reset_ownship(){
 	{ const air=st!=="carrier"&&st!=="runway", wild=()=>(Math.random()*2-1)*3*D2R;   // the helmet (#103): a start in the air hands it over on, warmed and aligned; on the wheels it is OFF, and its line of sight reads off by up to 3° until aligned
 		Object.assign(hmd,helmet.fresh(air,{ azimuth:wild(), elevation:wild(), roll:wild() },Math.random()*Math.PI*2)); if(!air) knobs.hmd=0; }
 	displays.left.mode=displays.right.mode="auto"; displays.center.mode="day"; for(const d of Object.values(displays)){ d.brt=1; d.contrast=1; }
+	Object.assign(hud_panel,{ range:"day", video:"off" }); finder="off";   // the HUD control panel's selector at DAY and video OFF, and the ADF switch OFF (#139)
 	Object.assign(electrics,{ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false }); buses={ ac:true, essential:true, left:true, right:true };   // both generators and BATT ON, charged,
 	buttons.trim=buttons.reset=-Infinity; buttons.standing=false; buttons.jams=0;
 	ecs.bleed=1; ecs.valves=[true,true]; ecs.through=false; fire_test.at=-Infinity; rudder_trim=0; reference="auto";   // BLEED AIR at NORM, the rudder trimmed neutral, ATT at AUTO,
