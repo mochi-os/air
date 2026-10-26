@@ -1282,13 +1282,6 @@ function GraphicsPanel({
               onChange={(v) => set('dyn_res', v)}
             />
             <SwitchRow
-              id='lod'
-              tight
-              label={<Trans>Distance LOD</Trans>}
-              checked={config.lod}
-              onChange={(v) => set('lod', v)}
-            />
-            <SwitchRow
               id='shadows'
               tight
               label={<Trans>Shadows</Trans>}
