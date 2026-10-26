@@ -6,7 +6,9 @@
   3. the original model's up-facing paint: near-black never painted; saturated markings painted (JBD
      borders killed at the authored spots and drawn at the plan rectangles); neutral thin lines (<1.0 m)
      painted; neutral wide plates, marks inside a catapult corridor, material_37 raft shells, and grey
-     mono marks (lum<=0.60) within 4.5 m of the outline skipped (bow "68" numerals exempted by box)
+     mono marks (lum<=0.60) within 4.5 m of the outline skipped (bow "68" numerals exempted by box);
+     the original bow cab's tops skipped, and a steel plate with a red/yellow border drawn under each
+     catapult control cab (cabs.py)
   4. catapult tracks: bare-steel strip 1.4 m + near-black slot 0.12 m, from aft of each shuttle to the
      deck-outline exit; cats 1/4 are plan-derived
   5. rubber: landing-strip band + catapult start streaks
@@ -23,6 +25,7 @@ import resource
 from pathlib import Path
 import numpy as np
 from PIL import Image
+from cabs import CABS, footprint, PLATE, BORDER, DASH
 
 # Hard memory cap: a healthy bake fits in well under 4 GB; a MemoryError here
 # means a new unbounded allocation.
@@ -152,6 +155,11 @@ def in_corridor(f, l):
         if s-1.5 < f < e+1.5 and abs(l-ln(f)) < 0.9: return True
     return False
 EXCLUDE_SAT = [(78.0, 88.5, 4.0*S_LAT, 11.5*S_LAT)]   # ammo-elevator dash box: authored, but wrong for this deck
+# The original model's bow cab: its walls and roof (material_38, 0.67-1.17 m) bake as an
+# octagon outline at a spot where no cab stands any more (cabs.py). The dashed lines between
+# cats 1 and 2 cross the same box as deck paint (material_3), so only the cab's material goes.
+OLD_CAB = (64.5, 73.0, 4.5*S_LAT, 11.5*S_LAT)
+OLD_CAB_MATERIAL = 'material_38'
 # Grey mono paint within EDGE_KILL of the rim is phantom: below-lip catwalk and
 # sponson plates bake flat onto the deck as fans hugging the edge. Edge safety
 # dashes are near-white (lum 0.976) and survive; the bow "68" numerals share the
@@ -226,7 +234,8 @@ def walk(i, P):
     for c in nodes[i].get('children', []): walk(c, Wm)
 for r in G['scenes'][G.get('scene',0)]['nodes']: walk(r, np.eye(4))
 
-marks = []   # (h, tri_fa_lat[3x2], colour)
+marks = []   # (h, convex polygon in (fa, lat), anticlockwise or clockwise [nx2], colour): mostly triangles
+old_cab = 0
 for ni, n in enumerate(nodes):
     if 'mesh' not in n: continue
     for p in G['meshes'][n['mesh']]['primitives']:
@@ -256,6 +265,8 @@ for ni, n in enumerate(nodes):
         for i2 in np.where(band)[0]:
             f2, l2 = cf[i2], cl[i2]
             if not inpoly(f2, l2): continue
+            if m.get('name') == OLD_CAB_MATERIAL and OLD_CAB[0] < f2 < OLD_CAB[1] and OLD_CAB[2] < l2 < OLD_CAB[3]:
+                old_cab += 1; continue
             if sat:
                 if any(a<f2<b and c<l2<d for a,b,c,d in EXCLUDE_SAT): continue
             else:
@@ -283,24 +294,34 @@ for ni, n in enumerate(nodes):
 # the neighbouring safety borders). Appended as mark tris at ch +10 so they
 # rasterise last through the same anti-aliased pipeline.
 JBD_RED = np.array([0.58, 0.0, 0.01])*255; JBD_YEL = np.array([0.97, 0.86, 0.02])*255
-for c, u, w2, bw in JBD_FRAMES:
-    corners = [c+u*JBD_BD/2+w2*bw/2, c-u*JBD_BD/2+w2*bw/2, c-u*JBD_BD/2-w2*bw/2, c+u*JBD_BD/2-w2*bw/2]
+def dashed_loop(corners, width, dash, h):
+    # red/yellow dashes of this width centred on the closed polyline through corners
     s = 0.0
-    for k in range(4):
-        a, b = corners[k], corners[(k+1) % 4]
+    for k in range(len(corners)):
+        a, b = corners[k], corners[(k+1) % len(corners)]
         seg = b-a; seglen = np.linalg.norm(seg); sd = seg/seglen
-        nn = np.array([-sd[1], sd[0]])*JBD_LW/2
+        nn = np.array([-sd[1], sd[0]])*width/2
         # walk dash boundaries by integer dash index, continuous around the loop
-        # - a float-remainder walk stalls when the remainder lands at ~JBD_DASH
+        # - a float-remainder walk stalls when the remainder lands at ~dash
         # and appends zero-length tris without bound
-        for i in range(int(math.floor(s/JBD_DASH)), int(math.floor((s+seglen)/JBD_DASH))+1):
-            t0 = max(i*JBD_DASH-s, 0.0); t1 = min((i+1)*JBD_DASH-s, seglen)
+        for i in range(int(math.floor(s/dash)), int(math.floor((s+seglen)/dash))+1):
+            t0 = max(i*dash-s, 0.0); t1 = min((i+1)*dash-s, seglen)
             if t1 <= t0: continue
             col = JBD_RED if i % 2 == 0 else JBD_YEL
             p0, p1 = a+sd*t0, a+sd*t1
-            marks.append((10.0, np.stack([p0+nn, p1+nn, p1-nn]), col))
-            marks.append((10.0, np.stack([p0+nn, p1-nn, p0-nn]), col))
+            marks.append((h, np.stack([p0+nn, p1+nn, p1-nn]), col))
+            marks.append((h, np.stack([p0+nn, p1-nn, p0-nn]), col))
         s += seglen
+for c, u, w2, bw in JBD_FRAMES:
+    dashed_loop([c+u*JBD_BD/2+w2*bw/2, c-u*JBD_BD/2+w2*bw/2, c-u*JBD_BD/2-w2*bw/2, c+u*JBD_BD/2-w2*bw/2], JBD_LW, JBD_DASH, 10.0)
+# catapult control cabs: each stands on a smooth steel plate, lighter than the non-skid, with a
+# red/yellow dashed border round its outer edge (Navy photographs); painted over everything
+# beneath, as the plate replaces the deck there
+PLATE_GREY = np.array([150.0, 152.0, 153.0])
+for cab in CABS:
+    marks.append((10.5, footprint(cab, PLATE), PLATE_GREY))   # one convex polygon: a fan of triangles leaves anti-aliased seams
+    dashed_loop(footprint(cab, PLATE-BORDER/2), BORDER, DASH, 11.0)
+print(f"  old bow cab: {old_cab} tops skipped")
 print(f"  {len(marks)} paint tris")
 marks.sort(key=lambda x: x[0])
 SS = 3   # 3x3 coverage per texel: edge steps of 1/3 texel read smooth at deck view distances
@@ -320,8 +341,8 @@ for _, tri, col in marks:
         y1 = min(y0+CHUNK, yb1)
         gx, gy = np.meshgrid(x0+(np.arange((x1-x0)*SS)+0.5)/SS, y0+(np.arange((y1-y0)*SS)+0.5)/SS)
         inside = np.ones(gx.shape, bool)
-        for k in range(3):
-            ax, ay = up[k], vp[k]; bx, by = up[(k+1)%3], vp[(k+1)%3]
+        for k in range(len(up)):
+            ax, ay = up[k], vp[k]; bx, by = up[(k+1)%len(up)], vp[(k+1)%len(up)]
             e = (gx-ax)*(by-ay) - (gy-ay)*(bx-ax)
             inside &= (e*sgn <= 0.01)
         if not inside.any(): continue

@@ -1,6 +1,7 @@
-"""Deck-edge catwalk and life-raft checks on nimitz-clean.glb: the generated catwalk, its railings
-and braces, and the raft racks must hang together and on the ship - every failure the authored-raft
-attempts (v57-v74) produced is a check here. Run after any change to build_carrier.py's 1c/2a/4b;
+"""Deck-edge catwalk, life-raft and catapult control cab checks on nimitz-clean.glb: the generated
+catwalk, its railings and braces, and the raft racks must hang together and on the ship - every failure
+the authored-raft attempts (v57-v74) produced is a check here. Run after any change to
+build_carrier.py's 1c/2a/4b, to its cabs or to cabs.py;
 exits non-zero on any failure.
   count     exactly RAFTS canisters
   supported every canister rests on its cradle arms (no float, no sink)
@@ -11,6 +12,11 @@ exits non-zero on any failure.
   attached  every catwalk slab's inboard edge is on the skirt or the ship's side, every railing post
             stands on a slab, every brace runs from under a slab to the skirt or the ship's side
   outward   every face of every generated piece faces out (single-sided materials are culled)
+  cabs      each catapult control cab stands where cabs.py puts it, at its size, its walls starting
+            just under the deck, on a painted plate with a red/yellow border in the deck texture,
+            and at least WHEEL_CLEAR from every catapult's centreline over the jet's whole run (its
+            main wheels at the launch spot to the end of the stroke; engine.ts carrier data); the
+            original bow cab is gone, and every cab face faces out
 Usage: edgecheck.py [-v] [glb]   (default nimitz-clean.glb; -v lists where each failure is)"""
 import json, struct, sys
 import numpy as np
@@ -287,6 +293,65 @@ for k,(mid,axis,R,L) in enumerate(cans):
     nc+=int((out<0).sum())
 bad_out['raft_canisters']=nc
 check('outward',not any(bad_out.values()),f"inward faces per mesh {bad_out}")
+
+# --- cabs ---
+from cabs import CABS, axes as cab_axes, footprint as cab_footprint, LENGTH as CAB_L, WIDTH as CAB_W, HEIGHT as CAB_H, \
+    PLATE as CAB_PLATE, BORDER as CAB_BORDER, HATCH as CAB_HATCH, WHEEL_CLEAR
+import os, re
+_engine=open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','web','src','game','engine.ts')).read()
+_nimitz=_engine[_engine.index('nimitz:{'):]
+STROKE=float(re.search(r'stroke:([\d.]+)',_nimitz).group(1))
+SHUTTLES=[tuple(map(float,m)) for m in re.findall(r'\{x:([-\d.]+), z:([-\d.]+), h:([-\d.]+)\}',_nimitz[:_nimitz.index(']')])]
+MAIN_WHEELS=6.0   # the main wheels sit this far aft of the nose wheel on the shuttle (F/A-18C wheelbase 5.4 m)
+def track_distance(points,shuttle):
+    # least distance from the points to the catapult's centreline over the jet's run (heading + = to
+    # port): for a straight run past a convex cab the nearest point of the cab is one of its corners
+    x,z,h=shuttle; d=np.array([np.cos(np.radians(h)),-np.sin(np.radians(h))])
+    a=np.array([x,z])-MAIN_WHEELS*d; q=points[:,:2]-a; s=np.clip(q@d,0,MAIN_WHEELS+STROKE)
+    return float(np.hypot(*(q-s[:,None]*d).T).min())
+from PIL import Image
+CABT=np.concatenate([tris[k] for k in ('iccs_cab','iccs_glass') if k in tris]+[np.zeros((0,3,3))]); CC=CABT.mean(1)
+DT=tris.get('deck_baked',np.zeros((0,3,3))); DTC=DT.mean(1)
+TEX=np.asarray(Image.open('decktex12.png').convert('RGB')).astype(int)
+def texel(p): return TEX[int((p[1]+52)/100*TEX.shape[0]), int((p[0]+172)/344*TEX.shape[1])]
+def ring(cab,grow): q=cab_footprint(cab,grow); return [q[k]+(q[(k+1)%8]-q[k])*t for k in range(8) for t in np.linspace(0.1,0.9,5)]
+PLATE_GREY=np.array([150,152,153])   # bake_decktex.py
+def deck_height(p):
+    # the drawn deck strip's height straight below p: its triangles are metres across, so test them all
+    a=DT[:,0,:2]; e1=DT[:,1,:2]-a; e2=DT[:,2,:2]-a; q=p-a
+    det=e1[:,0]*e2[:,1]-e1[:,1]*e2[:,0]; ok=np.abs(det)>1e-12; det=np.where(ok,det,1)
+    s=(q[:,0]*e2[:,1]-q[:,1]*e2[:,0])/det; t=(e1[:,0]*q[:,1]-e1[:,1]*q[:,0])/det
+    hit=ok&(s>=-1e-9)&(t>=-1e-9)&(s+t<=1+1e-9)
+    if not hit.any(): return None
+    z=DT[hit,0,2]+s[hit]*(DT[hit,1,2]-DT[hit,0,2])+t[hit]*(DT[hit,2,2]-DT[hit,0,2]); return float(z.max())
+claimed=np.zeros(len(CABT),bool); bad_cab=[]; cab_inward=0
+for i,cab in enumerate(CABS):
+    c,u,w=cab_axes(cab); mine=np.hypot(CC[:,0]-c[0],CC[:,1]-c[1])<4.0; claimed|=mine
+    if not mine.any(): bad_cab.append((i,'missing')); continue
+    T=CABT[mine]; P=T.reshape(-1,3)
+    x=(P[:,0]-c[0])*u[0]+(P[:,1]-c[1])*u[1]; y=(P[:,0]-c[0])*w[0]+(P[:,1]-c[1])*w[1]
+    deckh=deck_height(c)
+    if deckh is None: bad_cab.append((i,'no deck under it')); continue
+    got=np.round([x.max()-x.min(),y.max()-y.min(),(x.max()+x.min())/2,(y.max()+y.min())/2,P[:,2].max()-deckh,P[:,2].min()-deckh],3)
+    want=[CAB_L,CAB_W,0.0,0.0,CAB_H+CAB_HATCH[2]]
+    if any(abs(g-v)>0.02 for g,v in zip(got,want)) or not -0.10<got[5]<=0.0: bad_cab.append((i,'size/place',list(got)))
+    if any(np.abs(texel(p)-PLATE_GREY).max()>6 for p in ring(cab,(CAB_PLATE-CAB_BORDER)/2)): bad_cab.append((i,'no plate round the base'))
+    if any(np.ptp(texel(p))<80 for p in ring(cab,CAB_PLATE-CAB_BORDER/2)): bad_cab.append((i,'no red/yellow border round the plate'))
+    near=[round(track_distance(P,s),2) for s in SHUTTLES]
+    if min(near)<WHEEL_CLEAR: bad_cab.append((i,'a catapult runs too close',near))
+    # every face away from the cab's middle, the hatch's faces away from the hatch's
+    hc=c+u*CAB_HATCH[0]; m=T.mean(1); nrm=np.cross(T[:,1]-T[:,0],T[:,2]-T[:,0])
+    roof=P[:,2].max()-CAB_HATCH[2]
+    hatch=(np.hypot(m[:,0]-hc[0],m[:,1]-hc[1])<CAB_HATCH[1]+0.02)&(m[:,2]>roof+0.001)
+    ctr=np.where(hatch[:,None],[hc[0],hc[1],roof+CAB_HATCH[2]/2],[c[0],c[1],roof-CAB_H/2])
+    cab_inward+=int((((m-ctr)*nrm).sum(1)<=0).sum())
+if not claimed.all(): bad_cab.append(('stray cab faces',int((~claimed).sum())))
+if cab_inward: bad_cab.append(('inward cab faces',cab_inward))
+# the original bow cab stood at fa 67-70: nothing but the deck may stand there now
+old=[k for k,T in tris.items() if k not in ('deck_baked','deck_underside') and
+     (((T[...,0]>66.5)&(T[...,0]<71)&(T[...,1]>5.5)&(T[...,1]<9.5)&(T[...,2]>0.71)).any())]
+if old: bad_cab.append(('old bow cab still there',old))
+check('cabs',not bad_cab,f"{len(CABS)} cabs {bad_cab[:4] if bad_cab else 'placed, sized, on their plates, facing out; old bow cab gone'}")
 
 if VERBOSE:
     for k,v in WHERE.items(): print(f'  {k}: {v[:30]}')

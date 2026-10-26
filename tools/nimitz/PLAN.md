@@ -37,7 +37,7 @@ built deck and `CARRIER.deckY` (raycast from the drawn deck), not a core change.
 - ~~Preserve round objects~~ **REVERSED (v48-v50, tried twice, torn both times)**: any blend between shape-preserved (translated) and squashed geometry has a transition zone, and the dome clusters are dense enough that the falloff always runs through a neighbouring shell or pedestal (v48: small dome shells exceed their tight boxes; v49: an unpreserved pedestal inside a preserved neighbour's falloff). **Uniform squash everywhere**: 4% on even a 6-8 m sphere is 24-32 cm of ellipticity — invisible in game — and uniform scaling cannot displace anything relative to anything. `DOME_PRESERVE=[]` remains as a knob.
 - **Deck height**: flat (or gentle bow sheer from the profile), one surface height for interior AND edges per cross-section, so no bowl. The physics contact plane follows (`CARRIER.deckY` is raycast from the drawn deck). NOTE the height change ripples: spawn Y, OLS datum, wire heights, and floods all reference `CARRIER.deckY` — re-verify a launch and a landing (glideslope/ball) after.
 - **The plan is the SINGLE horizontal source of truth for ALL equipment** — outline, catapults, wires, landing line, elevators, OLS — snapped to published specs for exact angles/spacings, with the in-game align tool (key 0 / Shift+1-4) as the final touch-up. This REVERSES the earlier "keep the hand-calibrated cats" idea: the shuttles were total-least-squares fitted to the MODEL's painted tracks, i.e. precisely fitted to a low-confidence reference, so they inherit the model's errors. Deriving everything from one source (the plan) also guarantees the drawn deck, the baked track markings, and the shuttle/physics positions all agree. (Wires + line were already plan-measured; cats + OLS were the model-derived ones that now move to the plan.)
-- **Hybrid architecture**: plan -> 2D layout (outline + all equipment); scaled model -> 3D structures only (hull, island, sponsons, radomes); profile -> heights. All current fixes (texture AA, deck-tone repaint, railings, ICCS transplant, floods) still apply on top.
+- **Hybrid architecture**: plan -> 2D layout (outline + all equipment); scaled model -> 3D structures only (hull, island, sponsons, radomes); profile -> heights. All current fixes (texture AA, deck-tone repaint, railings, generated catapult control cabs, floods) still apply on top.
 
 ## Coordinate registration
 
@@ -97,7 +97,7 @@ plan.json ────┘        │  steps:
                        │   3. edge-line purge
                        │   4. band clear (existing boundary-owned rules, now against the plan outline)
                        │   5. flat deck polygon from plan.json outline at the profile height (fixes concavity + bow)
-                       │   6. ICCS transplant + railings (existing)
+                       │   6. catapult control cabs + railings (generated)
                        │   7. empty-mesh strip + GC repack
 plan.json ──> bake_decktex.py ──> decktex.png   (markings drawn at plan positions, not model-traced)
 plan.json ──> splice_layout.py ──> engine.ts    (SHIP.outline + shuttles/wires/line/elevators from the plan)

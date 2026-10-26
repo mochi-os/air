@@ -16,18 +16,19 @@ and iteration knobs, so multiple attempts don't lose the design.
   (`flush_walk`, writes `outline.json`) → boundary-owned deck-band clear (keep boxes,
   ELEV_CLEAR, material-blind life-raft zone kill, deck-tone/steel repaint, walkway
   clear, interior purge) → sheer-following textured deck polygon + steel underside
-  plate → 2 m skirt (the generated fascia) → ICCS cab transplant + generated railings →
+  plate → 2 m skirt (the generated fascia) → generated catapult control cabs + railings →
   generated catwalks and life-raft racks → GC repack. Reads
-  `decktex12.png` + `cab38.npy`/`cab1.npy`. Writes `nimitz-clean.glb` + `outline.json`.
+  `decktex12.png`. Writes `nimitz-clean.glb` + `outline.json`.
   The header docstring carries the accumulated lessons (sources of truth, why the catwalk
   and rafts are generated whole, why every generated mesh's winding is flipped,
   verification protocol) —
   read it before changing any rule.
 - **`bake_decktex.py`** — bakes the deck texture (`decktex12.png`, 8192×2400) from the
-  original's up-facing paint + catapult tracks + rubber, all anti-aliased. Reads
-  `outline.json` when present.
-- **`extract_cab.py`** — extracts the ICCS cab geometry (`cab38.npy` walls + `cab1.npy`
-  glass) from the original, dropped 0.64 m flush. Run once; `build_carrier` loads the `.npy`.
+  original's up-facing paint + catapult tracks + rubber + the cabs' deck plates, all
+  anti-aliased. Reads `outline.json` when present.
+- **`cabs.py`** — where the two catapult control cabs (ICCS "bubbles") stand and how big
+  they are, from the 1:200 plan, navysite.de and Navy photographs. The bake paints their
+  deck plates from it, the build makes the cabs, and `edgecheck.py` checks the two agree.
 - **`splice_outline.py`** — splices `outline.json` into `engine.ts` `SHIP.outline` (the
   physics polygon must match the drawn deck strip).
 - **`plan_check.py`** — checks the engine layout (outline, cats, wires) against the
@@ -49,8 +50,10 @@ and iteration knobs, so multiple attempts don't lose the design.
   on its cradle beside the catwalk and along the deck edge; nothing generated crossing the
   ship or lying in a catwalk's plane over an authored plate (z-fighting); every slab on
   the skirt or the ship's side, every post on a slab, every brace slab-to-side; every face
-  outward. Each check is what the authored-raft attempts (v57-v74) got wrong. Run after any
-  change to the catwalk plan, the walkway clear or the generator; `-v` lists where each
+  outward. Each check is what the authored-raft attempts (v57-v74) got wrong. It also checks
+  the two catapult control cabs: where `cabs.py` puts them, at their size, on the deck, on a
+  painted plate in the deck texture, facing out, with the original bow cab gone. Run after any
+  change to the catwalk plan, the walkway clear, the generator or the cabs; `-v` lists where each
   failure is.
 - **`skyprobe.py`** — bulk corridor finder: voxelizes the built GLB at 0.5 m and scans
   straight lines per height/angle for free stretches flanked by hull on both sides.
@@ -67,7 +70,6 @@ and iteration knobs, so multiple attempts don't lose the design.
 ## Regen chain (order matters — bake reads outline.json, build writes it then reads the texture)
 
 ```
-python3 extract_cab.py                 # once (writes cab38.npy, cab1.npy)
 python3 bake_decktex.py                # bootstrap texture (uses previous/placeholder outline)
 python3 build_carrier.py               # writes outline.json, reads decktex12.png
 python3 bake_decktex.py                # re-bake with the real traced outline
@@ -105,7 +107,7 @@ means the build ran before the cp landed).
    Rule edits move them; an intended revert must reproduce them exactly (byte-identical
    GLB is the strongest form — v66 and v80 both hit it).
 2. **`raycheck.py`** — must exit 0 after any hull/skirt/deck/band-clear edit, and
-   **`edgecheck.py`** after any catwalk or raft edit.
+   **`edgecheck.py`** after any catwalk, raft or cab edit.
 3. **In-game captures** (`cdp_shot.py`, `start=carrier&cat=4&view=chase`) at the standard
    angles: close (`az=-0.85&el=0.25&dist=32`), straight down (`az=-1.2&el=1.45&dist=55`),
    beam (`az=-1.6&el=0.06&dist=60`), and from below (`el<0`, incl. grazing `el=-0.12`

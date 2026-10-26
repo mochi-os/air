@@ -12,19 +12,18 @@ Steps:
   2a. clear the authored walkway pieces on the planned catwalk runs
   3. one flat-across, sheer-following deck polygon textured with the decktex bake, plus a steel
      underside plate 0.10 m below (the strip is single-sided)
-  4. deck-edge skirt, authored ICCS cab transplant, generated railings
+  4. deck-edge skirt, generated catapult control cabs (cabs.py), generated railings
   4b. generated catwalks on the planned runs, and the life-raft racks hung on them
   5. strip empty meshes, GC-repack
 Wires, sheaves, shuttles, JBD animation, OLS lights and floods are engine-drawn.
 
 REGEN CHAIN (order matters): build_carrier.py (writes outline.json) -> bake_decktex.py (-> decktex12.png)
--> build_carrier.py -> cp to web/src/assets/nimitz.glb + splice_outline.py + make. Needs cab38.npy/cab1.npy
-(extract_cab.py).
+-> build_carrier.py -> cp to web/src/assets/nimitz.glb + splice_outline.py + make.
 
 Rules: the 1:200 GA plan is 2D truth for markings, the model is 3D truth, the fascia is generated. The
 deck-edge catwalk and the life rafts are generated whole (4b) - never reuse the authored racks, which
 belong to the authored catwalk the rebuild deletes (v57-v74) - and edgecheck.py must pass after any
-change to 1c, 2a or 4b. Every ship material is
+change to 1c, 2a, 4b or the cabs. Every ship material is
 single-sided: a generated face must be wound to face the viewer (add_soup restores the winding its
 deck-frame axis swap mirrors). A sky sighting: reproduce the in-game camera as a raycheck.py ray first. After rule changes
 compare the deleted/repainted counters against the previous run, run raycheck.py after any hull/skirt/deck
@@ -34,6 +33,7 @@ md5-compare dist/assets/nimitz-*.glb against src/assets/nimitz.glb.
 import json, struct
 import numpy as np
 from collections import defaultdict, deque
+from cabs import CABS, axes as cab_axes, octagon as cab_octagon, LENGTH as CAB_LENGTH, WIDTH as CAB_WIDTH, CHAMFER as CAB_CHAMFER, HEIGHT as CAB_HEIGHT, HATCH as CAB_HATCH
 
 import os
 from pathlib import Path
@@ -53,7 +53,10 @@ S = 0.025; CX, CZ = 6361.3, -469.3; DECKY = 776.0
 OUT=[[-166,4.2],[-158,31.2]]   # placeholder; the trace below overwrites OUT/NS entirely
 NS = 44
 ISL = (-92, -33, 16, 46)
-ICCSZONES = [(64.5,73.0,4.5,11.5), (-56.5,-48.5,-37.0,-31.5)]
+# no keep box protects what lies here, so the band clear removes it: the original model's bow
+# cab (the cabs are generated where the plan puts them, cabs.py), and a 14 m strip of panels and
+# glass hidden just under the deck at the port waist, which the glass auto-keep would otherwise save
+NO_KEEP = [(64.5,73.0,4.5,11.5), (-56.5,-48.5,-37.0,-31.5)]
 KEEP_HAND = [(-28,-14,-46,-34),                                    # OLS bracket
              (122,128.5,-17,-11),(-9.5,-4,-36.5,-31),(-85.5,-79,-36.5,-31),
              (88,94.5,16.5,22),(125,131.5,13.5,19.5)]              # operator cabs
@@ -186,7 +189,7 @@ for ni,n in enumerate(nodes):
 # every measured deck-frame constant follows the squash (they were measured pre-squash)
 def _lat(x): return round(x*S_LAT,2)
 ISL=(ISL[0],ISL[1],_lat(ISL[2]),_lat(ISL[3]))
-ICCSZONES=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in ICCSZONES]
+NO_KEEP=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in NO_KEEP]
 KEEP_HAND=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in KEEP_HAND]
 DOME_KEEP=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in DOME_KEEP]
 DOME_PLATFORMS=[(f0,f1,_lat(l0),_lat(l1)) for f0,f1,l0,l1 in DOME_PLATFORMS]
@@ -355,7 +358,7 @@ def clusters_of(matset,maxdim,hlo,hhi,needtall):
         hspan=A[:,2].max()-A[:,2].min()
         cf,cl=A[:,0].mean(),A[:,1].mean()
         if needtall and (hspan<1.2 or A[:,2].max()<1.0): continue    # panels are not domes
-        if inzone(cf,cl,ICCSZONES): continue
+        if inzone(cf,cl,NO_KEEP): continue
         if len(A)>=12 and dim<maxdim and inpoly_vec(np.array([cf]),np.array([cl]),P_r8)[0]:
             autokeep.append((A[:,0].min()-0.6,A[:,0].max()+0.6,A[:,1].min()-0.6,A[:,1].max()+0.6))
 clusters_of(set(white),9.0,-1.5,6.0,True)
@@ -556,7 +559,7 @@ for mi2,nis in inst.items():
             keepm=np.zeros(len(t),bool)
             for f0,f1,l0,l1 in KEEP: keepm|=(fa>f0)&(fa<f1)&(la>l0)&(la<l1)
             zic=np.zeros(len(t),bool)
-            for f0,f1,l0,l1 in ICCSZONES: zic|=(fa>f0)&(fa<f1)&(la>l0)&(la<l1)
+            for f0,f1,l0,l1 in NO_KEEP: zic|=(fa>f0)&(fa<f1)&(la>l0)&(la<l1)
             keepm&=~zic
             island=(fa>ISL[0])&(fa<ISL[1])&(la>ISL[2])
             # crest: up-facing flat-ish plate wholly near deck level. The mean-height band
@@ -843,7 +846,7 @@ DOME_RAILS=[([(57.69,-42.94),(57.97,-41.75),(57.14,-40.88),(56.0,-40.56),(54.86,
               (-153.69,25.78),(-153.31,24.31),(-152.28,23.25),(-150.87,23.08),(-149.46,23.24),(-148.43,24.31)],-2.16)]
 def deck_h(faq):   # deck surface height at this fa (flat cross-section at the rim height). v43
     faarr=[OUT[i][0] for i in range(NS)]   # raised the deck ~0.65 m, so flight-deck features
-    i=int(np.clip(np.searchsorted(faarr,faq)-1,0,NS-2))   # (railings, ICCS) must sit ON it, not at h=0
+    i=int(np.clip(np.searchsorted(faarr,faq)-1,0,NS-2))   # (railings, cabs) must sit ON it, not at h=0
     return (RIMH[i]+RIMH[2*NS-1-i])/2
 # flight-deck railings (island walkway + ammo-elevator rings): base on the raised deck. No
 # deck-edge railings: the catwalks they guarded die in the band clear, so the short runs
@@ -890,15 +893,6 @@ def add_soup(verts, mat_idx, name, deckframe):
 
 matbyname={m.get('name'):i for i,m in enumerate(mats)}
 add_soup(RAILS, RAIL, 'railings', True)
-cab38=np.load('cab38.npy'); cab1=np.load('cab1.npy')
-# the cab was extracted 'dropped 0.64 m' to sit flush on the OLD interior (h=0); v43 raised the
-# deck ~0.65 m, so it was fully buried ('ICCS gone'). Undo the drop so it sits flush on the deck.
-ICCS_RAISE=0.64/S
-cab38[:,1]+=ICCS_RAISE; cab1[:,1]+=ICCS_RAISE
-# the extraction is pre-squash world coords; follow the deck (position + 4% shape, like everything)
-cab38[:,2]=CZ+(cab38[:,2]-CZ)*S_LAT; cab1[:,2]=CZ+(cab1[:,2]-CZ)*S_LAT
-add_soup(cab38, matbyname.get('material_38',0), 'iccs_cab', False)
-add_soup(cab1, matbyname.get('material_1',0), 'iccs_glass', False)
 
 # --- deck-edge fascia skirt --- The band clear removes the original fascia and
 # the flat deck strip replaces only the top surface, so the deck edge would
@@ -936,6 +930,54 @@ def outward(t,centres):
     flip=((t.mean(1)-c)*nrm).sum(1)<0
     t[flip]=t[flip][:,[0,2,1]]
     return t.reshape(-1,3)
+# --- catapult control cabs (cabs.py): a steel frame in the island's grey round ten windows of
+# dark tinted glass, two on each long side, one on each end and one on each corner; walls
+# sloping in to a flat roof with a round hatch (Navy photographs). The glass is opaque: the
+# see-through blue the island's windows use made the cab read as a pale glass dome.
+CAB_END_IN, CAB_SIDE_IN, CAB_TOP_CHAMFER = 0.33, 0.18, 0.38   # the roof octagon, inset from the base
+CAB_SILL, CAB_HEAD = 0.10, 0.50      # the window band, above the deck
+CAB_POST, CAB_MULLION = 0.07, 0.12   # frame at each face's ends, and between a long side's two windows
+def cab_soup(cab, deck):
+    c, u, w = cab_axes(cab)
+    def at(q, z): return np.array([c[0]+q[0]*u[0]+q[1]*w[0], c[1]+q[0]*u[1]+q[1]*w[1], z])
+    z0, z1 = deck-0.03, deck+CAB_HEIGHT   # the walls start just under the deck surface
+    za, zb = deck+CAB_SILL, deck+CAB_HEAD
+    lo = cab_octagon(CAB_LENGTH, CAB_WIDTH, CAB_CHAMFER)
+    hi = cab_octagon(CAB_LENGTH-2*CAB_END_IN, CAB_WIDTH-2*CAB_SIDE_IN, CAB_TOP_CHAMFER)
+    frame, glass = [], []
+    def quad(out, a, b, c2, d): out.extend([a, b, c2, a, c2, d])
+    for k in range(8):
+        windows = 2 if k in (1, 5) else 1   # faces 1 and 5 are the long sides
+        def point(s, z):   # s metres along this face from its first corner, at height z
+            v = (z-z0)/(z1-z0)
+            p0 = lo[k]+(hi[k]-lo[k])*v; p1 = lo[(k+1)%8]+(hi[(k+1)%8]-lo[(k+1)%8])*v
+            return at(p0+(p1-p0)*s/np.linalg.norm(p1-p0), z)
+        def cuts(z):   # where frame and glass alternate along the face at height z; the last is its length
+            v = (z-z0)/(z1-z0)
+            n = np.linalg.norm((lo[(k+1)%8]-lo[k])*(1-v)+(hi[(k+1)%8]-hi[k])*v)
+            pane = (n-2*CAB_POST-(windows-1)*CAB_MULLION)/windows
+            return [0.0]+[x for i in range(windows) for x in (CAB_POST+i*(pane+CAB_MULLION), CAB_POST+i*(pane+CAB_MULLION)+pane)]+[n]
+        ca, cb = cuts(za), cuts(zb)
+        quad(frame, point(0, z0), point(cuts(z0)[-1], z0), point(ca[-1], za), point(0, za))   # below the windows
+        quad(frame, point(0, zb), point(cb[-1], zb), point(cuts(z1)[-1], z1), point(0, z1))   # above them
+        for j in range(len(ca)-1):
+            quad(glass if j % 2 else frame, point(ca[j], za), point(ca[j+1], za), point(cb[j+1], zb), point(cb[j], zb))
+    for k in range(1, 7):   # the roof
+        frame.extend([at(hi[0], z1), at(hi[k], z1), at(hi[k+1], z1)])
+    middle = np.array([c[0], c[1], deck+0.3])
+    frame = list(outward(frame, middle)); glass = list(outward(glass, middle))
+    hx, hr, hh = CAB_HATCH; hc = at((hx, 0.0), z1); ring = [hc+hr*np.array([*(np.cos(q)*u+np.sin(q)*w), 0.0]) for q in np.linspace(0, 2*np.pi, 17)[:-1]]
+    hatch = []
+    for j in range(16):
+        a, b = ring[j], ring[(j+1) % 16]; up = np.array([0, 0, hh])
+        quad(hatch, a, b, b+up, a+up); hatch.extend([hc+up, a+up, b+up])
+    frame += list(outward(hatch, hc+np.array([0, 0, hh/2])))
+    return np.array(frame), np.array(glass)
+mats.append({'name':'iccs_glass','pbrMetallicRoughness':{'baseColorFactor':[0.035,0.060,0.055,1.0],'metallicFactor':0.0,'roughnessFactor':0.12}})
+CAB_GLASS=len(mats)-1
+_cabs=[cab_soup(cab, deck_h(cab[0])) for cab in CABS]
+add_soup(np.concatenate([f for f,_ in _cabs]), matbyname['material_38'], 'iccs_cab', True)
+add_soup(np.concatenate([g for _,g in _cabs]), CAB_GLASS, 'iccs_glass', True)
 def hexa(c8,caps=True):
     # convex hexahedron: c8[0:4] one end, c8[4:8] the other, corners in the same order
     b=c8[:4]; u=c8[4:]
