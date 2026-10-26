@@ -20,18 +20,18 @@ export const DEPTH = 3
 // BUDGET: the bytes the encoded datagram must stay within, clear of the limit.
 export const BUDGET = 1100
 
-// queue adds a sample to the batch. solo, extinguish, onspeed, reverted and
-// retract go only when set, and held only when fuel is, a server reading their
-// absence as false and none; the status goes packed, and the seeker's line while the
+// queue adds a sample to the batch. solo, extinguish, onspeed, reverted, retract,
+// spin and uncooled go only when set, and held only when fuel is, a server reading
+// their absence as false and none; the status goes packed, and the seeker's line while the
 // helmet slaves it, on the newest sample alone, which is the one the server
 // reads them from.
 export function queue(batch: Queued[], sample: InputSample, sequence: number): void {
-  const { solo, extinguish, onspeed, reverted, retract, held, visual, status, seeker, ...rest } = sample
+  const { solo, extinguish, onspeed, reverted, retract, spin, uncooled, held, visual, status, seeker, ...rest } = sample
   for (const earlier of batch) {
     delete earlier.status
     delete earlier.seeker
   }
-  const rare = { ...(solo ? { solo } : {}), ...(extinguish ? { extinguish } : {}), ...(onspeed ? { onspeed } : {}), ...(reverted ? { reverted } : {}), ...(retract ? { retract } : {}), ...(held > 0 ? { held } : {}), ...(visual ? { visual } : {}) }
+  const rare = { ...(solo ? { solo } : {}), ...(extinguish ? { extinguish } : {}), ...(onspeed ? { onspeed } : {}), ...(reverted ? { reverted } : {}), ...(retract ? { retract } : {}), ...(spin ? { spin } : {}), ...(uncooled ? { uncooled } : {}), ...(held > 0 ? { held } : {}), ...(visual ? { visual } : {}) }
   batch.push({ ...rest, ...rare, status: pack(status), ...(seeker ? { seeker } : {}), sequence })
   if (batch.length > DEPTH) batch.shift()
 }

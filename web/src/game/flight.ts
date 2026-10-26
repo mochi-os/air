@@ -97,6 +97,7 @@ export interface Controls {
   gear: boolean
   emergency: boolean // the gear handle turned and pulled: the gear free-falls down whatever the hydraulics (NATOPS 2.10.1.6)
   mechanical: boolean // MECH ON: all electrical power gone, the stick drives the stabilators through the mechanical linkage (NATOPS 2.8.2.10, 15.17)
+  spin: boolean // the spin recovery switch at RCVY: the flight computers engage the spin mode at 120 kt whatever the yaw (NATOPS 2.8.2.6.1)
   hook: boolean
   probe: boolean // refuelling probe out (drag; the real ~300 KCAS limit stays procedural)
   launch: boolean
@@ -294,6 +295,7 @@ function fill(controls: Controls, count: number): void {
     (controls.gear ? 4 : 0) |
     (controls.emergency ? 4096 : 0) |
     (controls.mechanical ? 8192 : 0) |
+    (controls.spin ? 131072 : 0) |
     (controls.hook ? 8 : 0) |
     (controls.launch ? 16 : 0) |
     (controls.retract ? 65536 : 0) |

@@ -265,7 +265,7 @@ describe('the centre panel\'s clicks (#139)', () => {
   })
 
   it('are wired: built and turned with the displays\' bezels, sharpened with the faces, the UFC\'s windows on its plate and its clicks on the caps', () => {
-    expect(source).toMatch(/build_screens\(g\); build_bezels\(g\); build_centre\(g\); build_ifei\(g\);/)
+    expect(source).toMatch(/build_screens\(g\); build_bezels\(g\); build_centre\(g\); build_plates\(g\); build_ifei\(g\);/)
     expect(source).toMatch(/displays_light\(\); bezel_turn\(\); centre_turn\(\);/)
     expect(source).toMatch(/\.\.\.Object\.entries\(\(u\.centre&&u\.centre\.userData\.plates\)\|\|\{\}\)\.map\(\(\[k,f\]\)=>\["centre\."\+k,f,centre_plate_draw\]\)/)
     expect(lift('build_ufc')).toMatch(/centre_pose\(mesh,"ufc",y,z,BEZEL\.lift\+0\.0003\);/)

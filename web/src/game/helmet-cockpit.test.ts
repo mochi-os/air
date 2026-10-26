@@ -9,6 +9,7 @@ import * as THREE from 'three'
 import * as helmet from './helmet'
 import * as avionics from './avionics'
 import * as navigate from './navigation'
+import * as plates from './plates'
 
 // The cockpit's side of the helmet (#103, #82, NATOPS 2.21): its frame - power,
 // alignment, the exits, the IBIT's patterns, HACQ's fall back to VACQ - where it
@@ -44,12 +45,12 @@ const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   const look=(az,el=0)=>{ camera.quaternion.setFromEuler(new THREE.Euler(el*D2R,-az*D2R,0,'YXZ')); camera.updateMatrixWorld(); };
   const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(0,0,-1), right:new THREE.Vector3(1,0,0), up:new THREE.Vector3(0,1,0), canopy:0, msl:2, launching:false, gear:1, group:{ userData:{} } };
   const bit=avionics.fresh(), wrap_axis=(v)=>v;
-  let MULTIPLAYER=false, has_enemy=true; const remotes=new Map();
+  let MULTIPLAYER=false, has_enemy=true, ir_cool="norm"; const remotes=new Map();
   const bandit={ group:{ visible:true }, pos:new THREE.Vector3(0,0,-2000), fwd:new THREE.Vector3(0,0,-1), reheat:0 };
   const at=(az,el,d)=>new THREE.Vector3(Math.sin(az*D2R)*Math.cos(el*D2R),Math.sin(el*D2R),-Math.cos(az*D2R)*Math.cos(el*D2R)).multiplyScalar(d);`
 const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track'), line('amraam_visual'), line('VISUAL')].join('')
 const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hud_fit', 'hud_scale', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
-  'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line'].map(lift).join('\n')
+  'uncooled', 'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line'].map(lift).join('\n')
 function pit<T>(body: string): T {
   return new Function('THREE', 'helmet', 'avionics', 'navigate', `${world} ${defs} ${functions}
     const frames=(seconds,dt=0.1)=>{ for(let t=0;t<seconds-1e-9;t+=dt){ sim_time+=dt; glance+=dt; beat=dt; helmet_frame(dt); } };
@@ -126,6 +127,11 @@ describe('the 9M\'s seeker under the helmet', () => {
   it('without the helmet or the radar, looks along the boresight with its 2.5° field (2.21.17)', () => {
     expect(pit(`knobs.hmd=0; frames(0.1); master='9m'; const r=[]; for(const az of [2,3,20]){ bandit.pos.copy(at(az,0,2000)); const s=seeker_look(null,false); r.push([s.lockon,s.line.z<-0.99]); } return r;`))
       .toEqual([[true, true], [false, true], [false, true]])
+  })
+  it('with IR COOL at OFF, has nothing: no tone and no lock on a jet dead ahead or the radar\'s, caged to the boresight (#141)', () => {
+    expect(pit(`master='9m'; bandit.pos.copy(at(0,0,2000)); const a=seeker_look(null,false).lockon; RADAR.stt='bandit'; const b=seeker_look(bandit,false).lockon;
+      ir_cool='off'; const c=seeker_look(null,false), d=seeker_look(bandit,false); ir_cool='oride'; return [a,b,c.lockon,c.drinking,c.line.z<-0.99,d.lockon,seeker_look(bandit,false).lockon];`))
+      .toEqual([true, true, false, 0, true, false, true])
   })
   it('slaved, has the jet the pilot looks at off the nose, inside its 2.5° field and the 40° gimbal', () => {
     expect(pit(`master='9m'; const r=[]; for(const [jet,eye] of [[35,35],[35,39],[45,45],[0,20]]){ bandit.pos.copy(at(jet,0,2000)); look(eye); r.push(seeker_look(null,false).lockon); } return r;`))
@@ -591,7 +597,8 @@ describe('the heading scale on the helmet (the DCS guide)', () => {
 
 describe('the wiring', () => {
   it('has its OFF/BRT knob on the spin recovery panel, where the model paints MAP GAIN, OFF on the wheels', () => {
-    expect(source).toMatch(/\{ action:"knob\.hmd", at:\[6\.195,0\.315,0\.361\](?:, r:[\d.]+)? \}/)
+    expect(plates.PLATES.spin.knobs!['knob.hmd']).toMatchObject({ at: [0.3403, 0.341], shape: 'round' }) // the plate's own knob, clicked where it stands (#141)
+    expect(source).not.toMatch(/\{ action:"knob\.hmd", at:\[/)
     expect(line('knobs')).toContain('hmd:null')
     expect(lift('reset_ownship')).toMatch(/Object\.assign\(hmd,helmet\.fresh\(air,[^\n]*\); if\(!air\) knobs\.hmd=0; \}/)
   })

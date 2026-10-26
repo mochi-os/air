@@ -689,20 +689,20 @@ describe('the lights test', () => {
   const set = /\nfunction lamp_set\(m,on\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   interface Light { on: boolean; swaps: number }
   interface Rig { frame(held: boolean): Record<string, Light> }
-  const rig = (c: { unpowered?: boolean; playback?: boolean; caution?: boolean; clicked?: number; fire?: boolean; essential?: boolean; batt?: boolean; seat?: boolean } = {}): Rig => {
+  const rig = (c: { unpowered?: boolean; playback?: boolean; caution?: boolean; clicked?: number; fire?: boolean; essential?: boolean; batt?: boolean; seat?: boolean; spin?: string } = {}): Rig => {
     for (const [name, text] of [['lamps_update', update], ['lights_test', test], ['lamp_set', set]]) if (!text) throw new Error(name + ' not found in engine.ts')
     return new Function('c', 'countermeasures', `let lamps_testing=false, unpowered=!!c.unpowered, handle_lit=-1, lights_clicked=c.clicked??-Infinity; const playback=c.playback?{}:null;
       const keys=new Set(), key_of=(a)=>a==="lights.test"?"Shift+KeyL":"None", held=(a)=>keys.has(key_of(a));
       ${test}${set}
       const lens=()=>{ const m={ userData:{ lens:{ on:"on", off:"off" }, on:false }, swaps:0 }; let map="off"; m.material={ get map(){ return map; }, set map(v){ map=v; m.swaps++; } }; return m; };
       const plain=()=>({ userData:{ lit:0x2fd24a }, material:{ opacity:0 }, swaps:0 });
-      const l={}; for(const n of ["fireL","fireR","caution","apufire","go","nogo","stby","disp","rcdr","spdbrk","lbar","aspj","xmit","rec","ai","hook","fuello","genL","genR","fces","lock","shoot","bleedL","bleedR","battsw","ckseat","apuacc","gentie"]) l[n]=lens();
+      const l={}; for(const n of ["fireL","fireR","caution","apufire","go","nogo","stby","disp","rcdr","spdbrk","lbar","aspj","xmit","rec","ai","hook","fuello","genL","genR","fces","lock","shoot","bleedL","bleedR","battsw","ckseat","apuacc","gentie","spin"]) l[n]=lens();
       for(const n of ["transit","nose","left","right","half","full","flaps"]) l[n]=plain();
       const blank=lens(), tested=[...Object.values(l),blank];
       const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, suite=countermeasures.fresh(false), ASPJ_TEST=20, recording=()=>false, accumulator_low=()=>false, electrics={ tie:true }, faces_update=()=>{};
       const RWR={contacts:[], time:0, locked:()=>false, warned:()=>false}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
       const buses={ ac:!unpowered, essential:c.essential??true }, battery_switch=()=>!!c.batt, check_seat=()=>!!c.seat, fire_testing=()=>!!c.fire, cabin_feet=null, clock_elapsed=()=>0;
-      const wheels_warning=()=>false, sim_time=0, glance=0, GEAR_COLLAPSE=0.7, flap_select=0;
+      const wheels_warning=()=>false, sim_time=0, glance=0, GEAR_COLLAPSE=0.7, flap_select=0, spin_switch=c.spin||"norm";
       const bar_switch="retract", ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd1:2.83, hyd2:2.83 } };
       ${update}
       return { frame(down){ if(down) keys.add("Shift+KeyL"); else keys.clear(); lamps_update(out);
@@ -715,13 +715,14 @@ describe('the lights test', () => {
   it('lights every light while held, those no condition drives and the lens with no legend too', () => {
     const r = rig().frame(true)
     expect(lit(r)).toEqual(Object.keys(r).sort())
-    expect(Object.keys(r).length).toBe(36)
+    expect(Object.keys(r).length).toBe(37)
   })
 
-  it('lights the three FIRE lights and both BLEEDs through a fire and bleed air test, and BATT SW on its condition (2.14.5, 2.5.3.3)', () => {
+  it('lights the three FIRE lights and both BLEEDs through a fire and bleed air test, and BATT SW, CK SEAT and SPN RCVY on their conditions (2.14.5, 2.5.3.3)', () => {
     expect(lit(rig({ fire: true }).frame(false))).toEqual(['apufire', 'bleedL', 'bleedR', 'fireL', 'fireR'])
     expect(lit(rig({ batt: true }).frame(false))).toEqual(['battsw'])
     expect(lit(rig({ seat: true }).frame(false))).toEqual(['ckseat'])
+    expect(lit(rig({ spin: 'rcvy' }).frame(false))).toEqual(['spin']) // SPN RCVY with the SPIN switch at RCVY (#141, 2.8.5.6)
   })
 
   it('lights nothing with the essential bus dead, the test and the latched MASTER CAUTION included (#116)', () => {

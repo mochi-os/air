@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
+import * as plates from './plates'
 import { describe, expect, it } from 'vitest'
 
 // The AOA indexer's flash rule (NATOPS 2.12.10): the symbols flash with the
@@ -77,7 +78,7 @@ describe('the AOA indexer on the modeled unit', () => {
     const g = new THREE.Group()
     g.userData = { glass: { x: 6.3, y: 0.6, hw: 0.08, hh: 0.06 }, eye: { x: 5.6, y: 0.66, z: 0 }, outline }
     new Function('THREE', 'g', `const LAYER_OWN=2, INDEXER_TEST="", noop=()=>{};
-      const build_lamps=noop, build_radalt=noop, build_rwr=noop, build_standby=noop, build_brake=noop, build_cabin=noop, build_clock=noop, build_screens=noop, build_bezels=noop, build_centre=noop, build_ifei=noop, build_ufc=noop, build_faces=noop;
+      const build_lamps=noop, build_radalt=noop, build_rwr=noop, build_standby=noop, build_brake=noop, build_cabin=noop, build_clock=noop, build_screens=noop, build_bezels=noop, build_centre=noop, build_plates=noop, build_ifei=noop, build_ufc=noop, build_faces=noop;
       ${constants} ${lift('build_indexer')} build_indexer(g);`)(THREE, g)
     g.updateMatrixWorld(true)
     return g.userData.indexerGroup as THREE.Group
@@ -393,6 +394,8 @@ describe('the clickable switches', () => {
       ['insknob', 'ins'],
       // G5: the communication panel's RWR and WPN volume controls (#20)
       ['volumereceiver', 'volume.receiver'], ['volumeweapon', 'volume.weapon'],
+      // the communication panel's TCN volume knob, a copy of RUD TRIM's part with its own clip (#146)
+      ['volumetacan', 'volume.tacan'],
     ]
     for (const [name, action] of expected) expect(table, name).toContain(`${name}:${action === null ? 'null' : `"${action}"`}`)
     expect(table.match(/\w+:/g)?.length).toBe(expected.length)
@@ -811,9 +814,9 @@ describe('the cockpit pointer', () => {
   it('works and rings the standby instruments\' knobs where they are painted, outside their dials', () => {
     const g = new THREE.Group()
     g.userData.switches = []
-    const lifted = new Function('THREE', 'ownship', 'cockpit_cam', 'HW', 'HH', `${decl('const DDI_BUTTON=')}${decl('const BEZEL=')}${decl('const DDI_KNOBS=')}${decl('const DDI_ROCKERS=')}${top('display_spots')}${decl('const CENTRE=')}${decl('const CENTRE_KEYS=')}${decl('const CENTRE_KNOBS=')}${decl('const CENTRE_TOGGLES=')}${decl('const CENTRE_LEVER=')}${top('centre_point')}${top('centre_seat')}${top('centre_spots')}${decl('const PIT_SPOT_RADIUS=')}${decl('const PIT_SPOTS=')}${decl('const STANDBY=')}${decl('const RADALT_SEAT=')}
+    const lifted = new Function('THREE', 'plates', 'ownship', 'cockpit_cam', 'HW', 'HH', `${decl('const DDI_BUTTON=')}${decl('const BEZEL=')}${decl('const DDI_KNOBS=')}${decl('const DDI_ROCKERS=')}${top('display_spots')}${decl('const CENTRE=')}${decl('const CENTRE_KEYS=')}${decl('const CENTRE_KNOBS=')}${decl('const CENTRE_TOGGLES=')}${decl('const CENTRE_LEVER=')}${top('centre_point')}${top('centre_seat')}${top('centre_spots')}${top('plate_spots')}${decl('const PIT_SPOT_RADIUS=')}${decl('const PIT_SPOTS=')}${decl('const STANDBY=')}${decl('const RADALT_SEAT=')}
       ${decl('const _screen_at=')}${top('screen_of')} const PIT_CLICK_RADIUS=12, _click_p=new THREE.Vector3(), face_target=()=>null, shown=()=>true;
-      ${top('pit_target')} return { pit_target, screen_of, PIT_SPOTS, STANDBY, RADALT_SEAT };`)(THREE, { group: g }, eye(), 1280, 761) as {
+      ${top('pit_target')} return { pit_target, screen_of, PIT_SPOTS, STANDBY, RADALT_SEAT };`)(THREE, plates, { group: g }, eye(), 1280, 761) as {
       pit_target: (e: { clientX: number; clientY: number }) => { action?: string; hold?: string } | null
       screen_of: (local: THREE.Vector3, radius: number) => [number, number, number] | null
       PIT_SPOTS: { action: string; at: number[]; r?: number; hold?: string }[]

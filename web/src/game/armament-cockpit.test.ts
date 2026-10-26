@@ -160,8 +160,8 @@ describe('the selective jettison controls', () => {
     expect(jett(set, { handle: 0 })).toEqual({ dropped: [], said: ['JETTISON: GEAR'] })
     expect(jett(set, { gear: 0.5 })).toEqual({ dropped: [], said: ['JETTISON: GEAR'] })
   })
-  it('have the JETT button in the knob: a middle click on it', () => {
-    expect(source).toMatch(/\{ action:"jettison\.select", at:\[6\.193,0\.017,-0\.281\], r:0\.016, hold:"jettison\.release" \}/)
+  it('have the JETT button in the knob: a middle click on it, the click seated on the knob the plates build (#145)', () => {
+    expect(source).toMatch(/\{ action:"jettison\.select", at:plates\.point\(\{ origin:plates\.SELECT\.centre, right:plates\.SELECT\.right, up:plates\.SELECT\.up \},\[0,0\],plates\.SELECT\.skirt\.height\), r:0\.016, hold:"jettison\.release" \}/)
   })
   it('keep the tanks key behind MASTER ARM too', () => {
     expect(source).toMatch(/if\(ch===key_of\("jettison\.tanks"\) && !dev_parked\)\{[^\n]*\n\t\t\tif\(!arms\.arm\) notice\(translate\("MASTER ARM SAFE"\)\);[^\n]*\n\t\t\telse if\(on_ground\(\)\|\|\(ownship\.gearTarget\?\?1\)<0\.5\) notice\(translate\("JETTISON: GEAR"\)\);/)
@@ -235,17 +235,17 @@ describe('the STORES page', () => {
 // The faces drawn over the model's panels (faces.ts; FO-5 items 12, 17, 20, 35 and 36): where the engine seats
 // them, what it gives them to show, when it redraws them, and how a click on one reaches its control.
 describe('the panels drawn over the model', () => {
-  const seats = /\nconst FACE_SEATS=\{[\s\S]*?\n\tdefence:[^\n]*\n/.exec(source)?.[0] ?? '', mark = /\nconst JETTISON_MARK=[^\n]*\n/.exec(source)?.[0] ?? ''
+  const seats = /\nconst FACE_SEATS=\{[\s\S]*?\n\tdefence:[^\n]*\n/.exec(source)?.[0] ?? ''
   interface Built { name: string; at: number[]; size: number[]; normal: number[]; overlay: boolean; layer: number; canvas: number[]; transparent: boolean }
   // pit builds the faces on a group with a recording canvas, and runs a body against them
   function pit<T>(body: string, o: { essential?: boolean; testing?: boolean; master?: string; pushed?: boolean[] } = {}): T {
-    if (!seats || !mark) throw new Error('the face seats not found in engine.ts')
+    if (!seats) throw new Error('the face seats not found in engine.ts')
     return new Function('o', 'THREE', 'faces', 'armament', 'countermeasures', `const LAYER_OWN=1, D2R=Math.PI/180, _v=new THREE.Vector3(), secured=o.pushed||[false,false];
       let sim_time=10, lamps_testing=!!o.testing, master=o.master||"nav", drawn=[], buses={ essential:o.essential??true };
       const arms=armament.fresh(true), suite=countermeasures.fresh(true);
       const document={ createElement:()=>({ width:0, height:0, getContext(){ const canvas=this; return new Proxy({}, { get:(t,k)=>k==="clearRect"?()=>drawn.push(canvas.width):()=>{}, set:()=>true }); } }) };
       const g=new THREE.Group(), ownship={ group:g }, _click_ray={ intersectObjects:(meshes)=>hit?[{ object:meshes[hit.face], uv:{ x:hit.u, y:hit.v } }]:[] }; let hit=null;
-      ${seats} ${mark} ${lift('seat_pose')} ${lift('face_canvas')} ${lift('face_context')} ${line('faces_key')}
+      ${seats} ${lift('seat_pose')} ${lift('face_canvas')} ${lift('face_context')} ${line('faces_key')}
       ${lift('faces_shown')}
       ${lift('faces_update')}
       ${lift('face_target')}
@@ -290,14 +290,9 @@ describe('the panels drawn over the model', () => {
   it('is redrawn each frame with the lamps', () => {
     expect(source).toMatch(/\n\tfaces_update\(\); {3}\/\/ the faces' lights and switches/)
   })
-  it('moves the SELECT JETT knob\'s mark to the position selected, round the knob as FO-5 draws them', () => {
-    const at = (select: string) => pit<number[]>(`arms.select=${JSON.stringify(select)}; faces_update(); return g.userData.jettison.position.toArray();`)
-    const centre = [6.204, 0.017, -0.284], right = [0.125, -0.594, 0.794], up = [0.391, 0.765, 0.511]
-    for (const [select, degrees] of Object.entries({ left: -50, safe: 0, right: 50, rack: 88, stores: 130 })) {
-      const a = (degrees * Math.PI) / 180
-      expect(round(at(select)), select).toEqual(round(centre.map((c, k) => c + 0.027 * (Math.sin(a) * right[k] + Math.cos(a) * up[k]))))
-    }
-    expect(at('safe')[1]).toBeGreaterThan(at('stores')[1]) // SAFE at the top, STORES round past the right
+  it('leaves the SELECT JETT knob to the plates, which turn it (plates.test.ts): no mark, and no redraw for its position', () => {
+    expect(source).not.toMatch(/JETTISON_MARK|userData\.jettison/)
+    expect(pit<number[]>('const a=drawn.length; arms.select="stores"; faces_update(); return [a,drawn.length];')).toEqual([4, 4])
   })
   it('sends a click on a face to the control under it, the picture\'s top at the face\'s top', () => {
     expect(pit('hit={ face:0, u:124/204, v:1-320/436 }; return face_target();')).toMatchObject({ action: 'arm' })

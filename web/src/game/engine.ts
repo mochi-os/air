@@ -100,6 +100,7 @@ import * as identification from './identification'
 import * as mids from './mids'
 import * as helmet from './helmet'
 import * as faces from './faces'
+import * as plates from './plates'
 import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, planet as sky_planet, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
@@ -1436,10 +1437,19 @@ const AIRCRAFT_MODELS={
 		cut:[ { node:"Object_1372", boxes:[   // see model_cut: the cockpit shell's blocks over the modelled panels
 			{ lo:[0.275,0.325,4.165], hi:[0.525,0.852,4.508] },     // the lower left panel: brake gauge, HOOK BYPASS, LDG/TAXI, fire test and ground power
 			{ lo:[-0.125,0.320,4.340], hi:[0.125,0.715,4.800] },    // the pedestal under the AMPCD: the clock and the cockpit altimeter
-			{ lo:[-0.525,0.325,4.165], hi:[-0.275,0.910,4.508] } ] },   // the lower right panel: AV COOL and the landing checklist
+			{ lo:[-0.525,0.325,4.165], hi:[-0.275,0.910,4.508] },   // the lower right panel: AV COOL and the landing checklist
+			{ lo:[0.2775,0.6073,4.0939], hi:[0.4083,0.6899,4.2155] } ] },   // and a blank slate standing 35 mm proud of the fuel panel, over its PROBE switch and EXT TANKS legends, whose forward part the first box takes (#146)
 			{ node:"Object_1101", boxes:[   // the levers the model stands, fixed, on panels a face is drawn over (FACE_SEATS), which draws them where they are thrown
 			{ lo:[0.3107,1.0068,4.3864], hi:[0.3495,1.0699,4.4738] },     // the MASTER ARM switch's
-			{ lo:[-0.0194,0.5262,4.4641], hi:[0.0922,0.6524,4.5369] } ] },   // and the earlier dispenser panel's switches and ECM knob on the pedestal
+			{ lo:[-0.0194,0.5262,4.4641], hi:[0.0922,0.6524,4.5369] },   // and the earlier dispenser panel's switches and ECM knob on the pedestal
+			{ lo:[0.2559,0.6997,4.4699], hi:[0.3002,0.7440,4.5132] },   // the SELECT JETT knob and its JETT button, fixed, which build_plates builds to turn (#145)
+			{ lo:[0.3193,1.0254,4.3987], hi:[0.3377,1.0533,4.4345] }, { lo:[0.3012,0.8684,4.3487], hi:[0.3377,1.0533,4.4204] },   // and the canopy jettison handle, which it builds to pull (#144)
+			// and the side consoles' switches, which the console plates stand as levers to throw (#146): INTR WING, MC and HYD ISOL,
+			// the comm panel's RLY, G XMT and ILS, the IFF's CRYPTO, MODE 4 and MASTER, and the antenna selects for COMM 1 and IFF
+			{ lo:[0.3522,0.6594,4.1762], hi:[0.3690,0.6862,4.1969] }, { lo:[0.4329,0.6735,3.7177], hi:[0.4420,0.6934,3.7258] }, { lo:[0.4329,0.6735,3.7783], hi:[0.4420,0.6934,3.7864] },
+			{ lo:[0.3561,0.6602,3.8580], hi:[0.3711,0.6884,3.8714] }, { lo:[0.3632,0.6592,3.9313], hi:[0.3829,0.6862,3.9447] }, { lo:[0.3171,0.6534,3.9485], hi:[0.3322,0.6817,3.9619] },
+			{ lo:[0.2700,0.6447,3.8610], hi:[0.2823,0.6687,3.8716] }, { lo:[0.2734,0.6459,3.9036], hi:[0.2826,0.6658,3.9118] }, { lo:[0.2678,0.6449,3.9415], hi:[0.2829,0.6732,3.9549] },
+			{ lo:[0.4155,0.6705,3.8736], hi:[0.4247,0.6904,3.8818] }, { lo:[0.4155,0.6705,3.9228], hi:[0.4247,0.6904,3.9310] } ] },
 			{ node:"Object_1095", boxes:[   // the glare shield's lower edge, whose strip across each DDI's outer top corner stands in front of the panel and hid the top row's outer pushbutton from the eye (#132)
 			{ lo:[0.2128,1.0836,4.4299], hi:[0.3061,1.1908,4.5887] },     // the left DDI's
 			{ lo:[-0.3141,1.0623,4.4299], hi:[-0.2183,1.1904,4.6194] },   // and the right DDI's
@@ -1566,6 +1576,7 @@ const AIRCRAFT_MODELS={
 	      // the communication panel's RWR and WPN volume controls (23.1.1, #20)
 	      { name:"volumereceiver", track:/^KNOB_RWR_VOL_LEFTPANEL_AN/i,                 drive:"volumereceiver" },
 	      { name:"volumeweapon",   track:/^KNOB_WPN_VOL_LEFTPANEL_AN/i,                 drive:"volumeweapon" },
+	      { name:"volumetacan",    track:/^HANDLING_Knob_RudderTrim\.?001_AN/i,         drive:"volumetacan" },   // the TCN volume knob: a copy of the RUD TRIM knob's part, with its own clip (#146)
 	      // the electrical power panel (#21): BATT (the model's UNKNOWN_ELEC) and the two GEN switches
 	      { name:"battery",      track:/^Switch_UNKNOWN_ELEC_RightPanel_AN/i,           drive:"battery" },
 	      { name:"genleft",      track:/^Switch_L-GEN_RightPanel_AN/i,                  drive:"genleft" },
@@ -1619,7 +1630,7 @@ const PIT_SWITCHES={ canopyswitch:"canopy", foldswitch:"fold", parkbrake:"brake.
 	altswitch:"altitude", rejswitch:"reject", ldglight:"landing", strobe:"strobe", formation:"formation", position:"position", dumpswitch:"dump", radaropr:"radar",
 	hookbypass:"hook.bypass", antiskid:"antiskid", gearlever:"gear", hooklever:"hook", flaplever:"flaps", lttest:"lights.test",
 	instpnl:"knob.instrument", consoles:"knob.consoles", flood:"knob.flood", warncaut:"knob.warn", symbology:"knob.symbology", indexer:"knob.indexer", ufcbrt:"knob.ufc",
-	volumereceiver:"volume.receiver", volumeweapon:"volume.weapon", attswitch:"attitude", insknob:"ins", battery:"battery", genleft:"generator.left", genright:"generator.right", bleed:"bleed", firetest:"fire.test", ruddertrim:"rudder.trim",
+	volumereceiver:"volume.receiver", volumeweapon:"volume.weapon", volumetacan:"volume.tacan", attswitch:"attitude", insknob:"ins", battery:"battery", genleft:"generator.left", genright:"generator.right", bleed:"bleed", firetest:"fire.test", ruddertrim:"rudder.trim",
 	wingtanks:"transfer.wing", centretank:"transfer.centre", ...Object.fromEntries(Object.keys(TRAVEL).map(k=>[k,"travel."+k])) };
 const DDI_BUTTON=0.006, DDI_PANEL=6.163;   // m: a pushbutton cap's half width, and the panel face the caps sit on
 // The displays' knobs and rockers (#132), mapped from the shell's atlas into the jet's frame through its texture
@@ -1701,6 +1712,16 @@ function display_spots(){ const face=([y,z],depth)=>[DDI_PANEL-BEZEL.lift-depth,
 	return [ ...["left","right"].flatMap(d=>["selector","brt","contrast"].map(k=>({ action:`display.${d}.${k==="selector"?"mode":k}`, at:face(DDI_KNOBS[d][k],BEZEL.knob), r:DDI_KNOBS[d][k][2] }))),
 		{ action:"display.center.brt", at:face(DDI_KNOBS.center.brt,BEZEL.knob), r:DDI_KNOBS.center.brt[2] },
 		...["mode","contrast"].map(k=>({ action:`display.center.${k}`, at:face(DDI_ROCKERS.center[k],BEZEL.cap), r:DDI_ROCKERS.center[k][2]/2 })) ]; }
+// plate_spots: the click spots of the controls on the plates (plates.ts, #141, #142), as PIT_SPOTS holds them: a knob's
+// face and its radius; a toggle's lever halfway out, or over a guard, the guard's closed cover, which a click lifts with
+// the lever.
+function plate_spots(){ const out=[];
+	for(const p of Object.values(plates.PLATES)){
+		for(const [action,k] of Object.entries(p.knobs||{})) out.push({ action, at:plates.point(p,k.at,BEZEL.lift+k.height), r:k.radius });
+		for(const [action,t] of Object.entries(p.toggles||{})){ const guard=p.guards&&p.guards[action];
+			const k=t.scale||1;
+			out.push(guard?{ action, at:plates.point(p,guard.at,BEZEL.lift+guard.height), r:Math.max(...guard.size)/2 }:{ action, at:plates.point(p,t.at,BEZEL.lift+k*(CENTRE_LEVER.depth+CENTRE_LEVER.length/2)), r:0.008*k }); } }
+	return out; }
 // Controls with no animated node (#115, #19, #18, #129), each a point on the panel, group frame: a
 // click within a few pixels of it, or on its face where that is larger, works it as a switch's click
 // does. r is the face's radius in metres where it is not PIT_SPOT_RADIUS's 8 mm toggle, measured on
@@ -1709,29 +1730,22 @@ const PIT_SPOT_RADIUS=0.008;
 const PIT_SPOTS=[
 	...display_spots(),   // the displays' knobs and NGT/DAY rocker, on their faces
 	...centre_spots(),   // the centre panel's comm knobs, black level, balance, the ADF switch, the brightness selector and the video switch (#139)
-	{ action:"knob.ifei", at:[6.211,0.049,-0.305], r:0.006 }, { action:"clock", at:[6.231,-0.069,0.077], r:0.005 }, { action:"fcs.reset", at:[5.736,-0.059,-0.29] },
-	{ action:"knob.hmd", at:[6.195,0.315,0.361], r:0.007 },   // the HMD OFF/BRT knob under IR COOL (2.21.6, figure 2-52): part of a merged mesh painted MAP GAIN, so it clicks but cannot turn
-	{ action:"wing.inhibit", at:[5.886,-0.028,-0.371] },   // INTR WING, on the EXT LT panel (2.2.3.3): its lever is part of a merged static mesh, so it clicks but cannot move
-	{ action:"canopy.jettison", at:[6.05,0.175,-0.313], r:0.017 },   // the canopy jettison handle's grip on the left sill (2.15.1.2.1), pulled by a middle click: part of a merged mesh, it cannot move
+	...plate_spots(),   // the plates' knobs and toggles: the spin recovery panel's and those under the IFEI (#141, #142)
+	{ action:"clock", at:[6.231,-0.069,0.077], r:0.005 }, { action:"fcs.reset", at:[5.736,-0.059,-0.29] },
+	{ action:"canopy.jettison", at:[6.0921,0.2508,-0.3196], r:0.017 },   // the canopy jettison handle on the left sill (2.15.1.2.1), pulled aft by a middle click, on the face toward the pilot halfway up (plates.HANDLE, #144)
 	{ action:"canopy.crank", at:[5.46,0.28,-0.377] },   // the canopy hand crank under the left sill (2.15.1.1.3, FO-5 sheet 2 item 19), where the model draws only the wall
 	{ action:"seat", at:[5.6,0.22,0.25] },
-	{ action:"computer", at:[5.408,-0.027,-0.446] },   // the MC switch, aft of HYD ISOL on the MC/HYD ISOL panel (2.13.1.3, FO-5 sheet 2 left console item 12): painted, no node to move
 	{ action:"heading.set", at:[6.163,0.211,-0.095], r:0.006 }, { action:"course.set", at:[6.163,0.209,0.091], r:0.006 },
 	// the standby instruments' controls, outside their dials: the altimeter's baro set knob at its lower left (2.12.4); the height indicator's
 	// knob at its lower right, pushed to test by a middle click (2.12.5.4.1); and on the attitude indicator, the pull to cage knob at the lower
 	// right, turned to trim the miniature airplane and pulled by a middle click, and the TEST switch at the lower left (figure 25-1)
 	{ action:"baro", at:[6.211,0.049,0.192], r:0.0055 }, { action:"index", at:[6.193,0.005,0.296], r:0.005, hold:"radalt.test" },
 	{ action:"sari.trim", at:[6.211,0.126,0.203], r:0.0075, hold:"sari.cage" }, { action:"sari.test", at:[6.211,0.129,0.103], r:0.004 },
-	{ action:"jettison.select", at:[6.193,0.017,-0.281], r:0.016, hold:"jettison.release" },   // the SELECT JETT knob (2.17.1.2.2, FO-5 item 32): turned by a click, its JETT button pushed by a middle click; the model's knob is fixed, and a mark beside it shows the position (jettison_mark)
+	{ action:"jettison.select", at:plates.point({ origin:plates.SELECT.centre, right:plates.SELECT.right, up:plates.SELECT.up },[0,0],plates.SELECT.skirt.height), r:0.016, hold:"jettison.release" },   // the SELECT JETT knob (2.17.1.2.2, FO-5 item 32): turned by a click, its JETT button pushed by a middle click; built to turn (plates.SELECT, #145)
 	{ action:"dispense", at:[5.863,0.196,-0.326], r:0.02 },   // the dispense button on the left sill (FO-5 sheet 2 left console item 16)
-	{ action:"recorder", at:[6.211,0.055,-0.206], r:0.006 },   // the video record mode selector, right of the HUD/LDDI selector on the panel under the IFEI (2.13.8.7, FO-5 item 23)
-	// the communication and antenna select panels (FO-5 sheet 2 left console items 7 and 13, #20): painted switches, their levers part of a merged mesh
-	{ action:"antenna.comm", at:[5.565,-0.04,-0.431] }, { action:"antenna.identification", at:[5.619,-0.041,-0.431] },
-	{ action:"comm.relay", at:[5.556,-0.05,-0.373] }, { action:"comm.guard", at:[5.628,-0.049,-0.38] }, { action:"comm.landing", at:[5.649,-0.057,-0.331] }, { action:"comm.channel", at:[5.592,-0.056,-0.338] },
-	{ action:"identification.crypto", at:[5.558,-0.065,-0.283] }, { action:"identification.alert", at:[5.601,-0.066,-0.284] }, { action:"identification.master", at:[5.641,-0.065,-0.282] },
-	{ action:"volume.tacan", at:[5.681,-0.04,-0.367], r:0.011 },
-	{ action:"hydraulic.isolate", at:[5.468,-0.037,-0.45] },   // HYD ISOL, forward of the MC switch on its panel (2.7.4)
-	{ action:"generator.tie", at:[5.9,-0.035,-0.43] } ];   // the GEN TIE CONTROL switch, outboard of the exterior lights panel where FO-5 draws it (2.5.1.3): this model has none   // the heading and course set switches at the AMPCD's upper corners (2.13.4.9, 2.13.4.10, #8), painted on the shell: the model's own pair are an older panel's, behind it   // the seat's SAFE/ARMED handle, forward on the right armrest (2.15.3.5), under the pilot's forearm in the model
+	// the communication panel's ILS channel (FO-5 sheet 2 left console item 7, #20); its switches, INTR WING, MC, HYD ISOL, the antenna selects and GEN TIE are the plates' (plates.ts, #146)
+	{ action:"comm.channel", at:[5.592,-0.056,-0.338] },   // the ILS channel thumbwheels, between their windows on the comm plate (plates.ts)
+	];   // the heading and course set switches at the AMPCD's upper corners (2.13.4.9, 2.13.4.10, #8), painted on the shell: the model's own pair are an older panel's, behind it   // the seat's SAFE/ARMED handle, forward on the right armrest (2.15.3.5), under the pilot's forearm in the model
 // THROTTLE_OFF: a lever's place at OFF, as a fraction of its 40° IDLE to MAX travel: the finger lift raised,
 // it comes 4° aft of IDLE (2.1.1.7.2, #34). The lifts themselves are merged into the grip meshes
 const THROTTLE_OFF=-0.1;
@@ -2148,7 +2162,7 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_cabin(g); build_clock(g); build_screens(g); build_bezels(g); build_centre(g); build_ifei(g); build_ufc(g); build_faces(g); }
+	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_cabin(g); build_clock(g); build_screens(g); build_bezels(g); build_centre(g); build_plates(g); build_ifei(g); build_ufc(g); build_faces(g); }
 // A drawn face's resolution follows its size on screen (#121), as the DDIs' does: face_canvas makes its canvas and
 // texture at the face's own pixels, the units its drawing works in, and face_sharpen, every 120 ms in the pit, steps
 // the canvas to the screen pixels the face covers, with the DDIs' hysteresis, and back to its own pixels once it is
@@ -2182,7 +2196,8 @@ function sharp_faces(u){ return [["ufc",u.ufc,()=>{ ufc_dirty=true; }],["ifei",u
 	["brake",u.brake,f=>{ f.psi=null; }],["cabin",u.cabin,f=>{ f.feet=null; }],["clock",u.clock,clock_draw],
 	...["asi","alt","vsi","adi"].map(k=>[k,u.standby&&u.standby[k],()=>{ u.standby.last=0; }]),
 	...Object.entries(u.faces||{}).map(([k,f])=>[k,f,()=>{ faces_key=""; }]),
-	...Object.entries((u.centre&&u.centre.userData.plates)||{}).map(([k,f])=>["centre."+k,f,centre_plate_draw])].filter(([,f])=>f); }
+	...Object.entries((u.centre&&u.centre.userData.plates)||{}).map(([k,f])=>["centre."+k,f,centre_plate_draw]),
+	...Object.entries((u.plates&&u.plates.userData.faces)||{}).map(([k,f])=>["plate."+k,f,plates_draw])].filter(([,f])=>f); }
 function faces_sharpen(dpr){ for(const [,f,redraw] of sharp_faces(ownship.group.userData)) if(face_sharpen(f,dpr)) redraw(f); }
 // The faces (faces.ts): panels the model paints too coarsely to read or as an earlier aircraft's, drawn over it as FO-5
 // draws them, each seated on the panel it replaces - its centre, the panel's normal toward the pilot and its up, and
@@ -2196,9 +2211,6 @@ const FACE_SEATS={
 	emergency:{ centre:[6.184,0.255,-0.339], normal:[-1,0,0], up:[0,1,0], size:[0.034,0.034] },
 	stations:{ centre:[6.211,0.075,-0.3505], normal:[-1,0,0], up:[0,1,0], size:[0.04,0.046] },
 	defence:{ centre:[6.2182,-0.1254,-0.0375], normal:[-0.951,0.309,0.001], up:[0.309,0.951,0], size:[0.109,0.113] } };
-// JETTISON_MARK: the SELECT JETT knob's centre on its panel, the panel's right and up there, and the angle of each of
-// its positions clockwise from up, as FO-5 draws them: a mark outside the fixed knob shows the one selected.
-const JETTISON_MARK={ centre:[6.204,0.017,-0.284], right:[0.125,-0.594,0.794], up:[0.391,0.765,0.511], radius:0.027, angles:{ left:-50, safe:0, right:50, rack:88, stores:130 } };
 function build_faces(g){
 	if(g.userData.faces&&Object.values(g.userData.faces).every(f=>f.mesh.parent===g)) return;
 	const built={};
@@ -2207,20 +2219,14 @@ function build_faces(g){
 		const mesh=new THREE.Mesh(new THREE.PlaneGeometry(seat.size[0],seat.size[1]), new THREE.MeshBasicMaterial({ map:f.tex, toneMapped:false, transparent:name==="emergency", side:THREE.DoubleSide }));
 		seat_pose(mesh,seat,0.002); mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); g.add(mesh);
 		built[name]={ mesh, ...f, face }; }
-	const mark=new THREE.Mesh(new THREE.CircleGeometry(0.0035,16), new THREE.MeshBasicMaterial({ color:0xf4f4ec, toneMapped:false, side:THREE.DoubleSide }));   // the SELECT JETT knob's position mark
-	{ const R=new THREE.Vector3(...JETTISON_MARK.right), U=new THREE.Vector3(...JETTISON_MARK.up), N=new THREE.Vector3().crossVectors(R,U);
-		mark.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(R,U,N)); mark.userData.overlay=true; mark.layers.set(LAYER_OWN); g.add(mark); }
-	g.userData.faces=built; g.userData.jettison=mark; faces_key=""; faces_update(); }
-// faces_shown: what the faces show now (faces.ts Shown). faces_update redraws them when it changes, and puts the SELECT
-// JETT knob's mark at the position selected.
+	g.userData.faces=built; faces_key=""; faces_update(); }
+// faces_shown: what the faces show now (faces.ts Shown). faces_update redraws them when it changes.
 let faces_key="";
 function faces_shown(){ return { power:buses.essential, test:lamps_testing, arm:arms.arm, air:master!=="nav", ready:armament.ready(secured), discharged:arms.discharged, stations:arms.stations,
 	dispenser:suite.dispenser, jammer:suite.jammer, indicator:countermeasures.indicator(suite.receiver,sim_time) }; }
 function faces_update(){ const u=ownship.group.userData; if(!u.faces) return;
-	const shown=faces_shown(), key=JSON.stringify(shown)+arms.select; if(key===faces_key) return; faces_key=key;
-	for(const [name,f] of Object.entries(u.faces)){ faces.draw(name,face_context(f),shown); f.tex.needsUpdate=true; }
-	if(u.jettison){ const J=JETTISON_MARK, a=J.angles[arms.select]*D2R;
-		u.jettison.position.set(...J.centre).addScaledVector(_v.set(...J.right),Math.sin(a)*J.radius).addScaledVector(_v.set(...J.up),Math.cos(a)*J.radius); } }
+	const shown=faces_shown(), key=JSON.stringify(shown); if(key===faces_key) return; faces_key=key;
+	for(const [name,f] of Object.entries(u.faces)){ faces.draw(name,face_context(f),shown); f.tex.needsUpdate=true; } }
 // face_target: the face control under the click ray, as a switch's click target is found - the point on the face,
 // in the face's pixels, and the control whose reach holds it.
 function face_target(){ const built=ownship.group.userData.faces; if(!built) return null;
@@ -2601,6 +2607,7 @@ function lamps_update(out){
 	lamp_set(l.disp,countermeasures.dispensing(suite,sim_time));   // DISP while a dispenser programme runs
 	lamp_set(l.ai,suite.receiver.power&&buses.ac&&RWR.contacts.some(c=>c.locked&&!c.missile&&RWR.time-c.at<0.5));   // AI: an air intercept radar locked on, as the RWR hears it; a search radar's paint does not light it
 	lamp_set(l.rcdr,recording());   // RCDR ON while the video recording system records (2.13.8.10)
+	lamp_set(l.spin,spin_switch==="rcvy");   // SPN RCVY with the spin recovery switch at RCVY (2.8.2.6.1)
 	faces_update();   // the faces' lights and switches: the master arm panel, the station select buttons, the dispenser/EMC panel and the RWR control indicator (#7, #10, #9)
 	lamp_set(l.hook,Math.abs((ownship.hook??0)-(ownship.hookTarget??0))>0.02||((ownship.hookTarget??0)>0.5&&ownship.grounded));   // HOOK (2.10.5.1, #10): the hook disagreeing with the handle, or down on deck where the point rests short of the down switch
 	// the caution lights panel (#13): FUEL LO is the feed-tank hardware caution; a generator light follows its engine's health-weighted spool, the voltmeter's rule,
@@ -3257,14 +3264,15 @@ function caution_display(x,display){ const gz=ownship.gauges||{}, hdg=gz.heading
 	for(const [from,to] of [[[0,-14],[0,14]],[[-12,0],[12,0]],[[-5,11],[5,11]]]){ x.moveTo(...f(from)); x.lineTo(...f(to)); }
 	x.stroke(); }
 function ddi_blit(sc){ const x=sc.canvas.getContext("2d"); ddi_render(x,sc.canvas.width,sc.display); sc.tex.needsUpdate=true; }
-// The spin recovery display (#12, NATOPS 2.8.2.6.2, figure 2-14), both DDIs, with the spin recovery
-// switch at NORM (the game's jet has no RCVY): SPIN MODE, and an arrow asking for STICK LEFT or RIGHT
-// while the flight core finds the airspeed at 120 ±15 kt and an uncommanded yaw; ENGAGED under SPIN
-// MODE once the stick is where it asks and the core's spin recovery mode holds. The airspeed boxed at
-// the upper left, the altitude at the upper right and the AOA at the lower centre. When the yaw stops
-// or the airspeed passes about 245 kt the MENU display replaces it.
+// The spin recovery display (#12, NATOPS 2.8.2.6.2, figure 2-14), both DDIs: with the spin recovery switch
+// at NORM, SPIN MODE and an arrow asking for STICK LEFT or RIGHT while the flight core finds the airspeed at
+// 120 ±15 kt and an uncommanded yaw, and ENGAGED under SPIN MODE once the stick is where it asks and the
+// core's spin recovery mode holds; with it at RCVY (#141), SPIN MODE all the while, ENGAGED once the core
+// engages the mode at 120 kt, and the arrow with any yaw. The airspeed boxed at the upper left, the altitude
+// at the upper right and the AOA at the lower centre. When the yaw stops or the airspeed passes about 245 kt
+// at NORM, or the switch returns to NORM, the MENU display replaces it.
 let spin_up=false;   // the display is up
-function spin_step(out){ const now=(out[STATE.spin]||0)!==0||(out[STATE.recovery]||0)>0.5;
+function spin_step(out){ const now=spin_switch==="rcvy"||(out[STATE.spin]||0)!==0||(out[STATE.recovery]||0)>0.5;
 	if(spin_up&&!now) for(const d of ["left","right"]) ddi_state[d].menu="tac";
 	if(now!==spin_up) ddi_dirty=true;
 	spin_up=now; }
@@ -5426,7 +5434,7 @@ function systems_fresh(airborne){
 	Object.assign(uhf,{ one:communication.fresh(SHIP.channels), two:communication.fresh(SHIP.channels), panel:communication.panel(SHIP.icls), keypad:communication.backup(), pulled:"" });
 	uhf.two.channel=2; uhf.two.stored=communication.selected(uhf.two);
 	Object.assign(squawk,identification.fresh(CODES)); Object.assign(terminal,mids.fresh()); extinguish_flag=false; ownship.failures=[];
-	apu_accumulator=1; isolate_clicked=emergency_clicked=-Infinity; taping="automatic"; }   // a charged APU accumulator and the video recorder at AUTO
+	apu_accumulator=1; isolate_clicked=emergency_clicked=-Infinity; taping="automatic"; taping_source="hud"; ir_cool="norm"; spin_switch="norm"; }   // a charged APU accumulator and the video recorder at AUTO
 // arm_sense: where the jet is for the ARM conditions (2.17.1.2) - off the wheels, the gear handle up, the gear up
 // and locked.
 function arm_sense(){ return { airborne:!on_ground(), handle:(ownship.gearTarget??0)>0.5, locked:(ownship.gear??0)>0.98 }; }
@@ -7322,7 +7330,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		casKt:cas, fpm, spoolL:gL, spoolR:gR, reheatL:bL, reheatR:bR, fuelRaw:lbs, externalRaw:extlbs, wingRaw:wingLbs, centreRaw:centreLbs, mach:out[STATE.mach]||0,
 		track:vh>2?Math.atan2(vx,-vz):null, ground:vh*1.944 };   // track null at taxi speeds — the diamond parks off the rose rather than swinging with tyre scrub
 	{ const step=Math.max(0,t-(systems_at??t)); systems_at=t;   // the panel systems on the core's clock: the buses (#21, #116), what they light (#115), INTR WING (#18), the cockpit's pressure (#14) and the spin recovery display (#12)
-		power_step(out); displays_light(); bezel_turn(); centre_turn(); wing_step(lbs,step); cabin_step(out,step); spin_step(out); }
+		power_step(out); displays_light(); bezel_turn(); centre_turn(); plates_turn(); wing_step(lbs,step); cabin_step(out,step); spin_step(out); }
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
 	const glow=buses.ac?knob_level("indexer"):0;   // the HUD panel's AOA indexer knob (2.13.4.8.7, #115); the indexer is dark without ac power
@@ -8063,6 +8071,13 @@ const PIT_CLICK_RADIUS=12;   // css px: the nearest-origin fallback's reach
 if(DEV_MODE) (globalThis as any).dev_centre=()=>({ keys:Object.fromEntries(Object.entries(CENTRE_KEYS).map(([name,[face,y,z]])=>[name,centre_point(face,y,z,BEZEL.lift+BEZEL.cap)])),   // dev: the centre panel's key faces and its knobs' and switches' seats, group frame (#139)
 	controls:Object.fromEntries([...Object.keys(CENTRE_KNOBS),...Object.keys(CENTRE_TOGGLES)].map(a=>[a,centre_seat(a).at])) });
 if(DEV_MODE) (globalThis as any).dev_key=(px,py)=>ufc_key_at(px,py);   // dev: the UFC key a click on a css pixel presses (#139)
+if(DEV_MODE) (globalThis as any).dev_press=(action,direction)=>{ pit_press(action,direction); return true; };   // dev: work a cockpit control as a click on it would, by its action (#141)
+if(DEV_MODE) (globalThis as any).dev_plates=()=>{ const root=ownship.group.userData.plates; if(!root) return null; const u=root.userData;   // dev: the plates' controls - each knob's and toggle's click seat (group frame), what it shows and each lever's throw - the SELECT JETT knob's and the canopy handle's, and each plate's frame and legends (#141-#146)
+	return { seats:Object.fromEntries(plate_spots().map(s=>[s.action,s.at.map(v=>Math.round(v*1e4)/1e4)])), knobs:Object.fromEntries(Object.keys(u.pointers).map(a=>[a,Math.round(-u.pointers[a].rotation.z/D2R)])),
+		toggles:Object.fromEntries(Object.keys(u.levers).map(a=>[a,plate_toggle(a)])), levers:Object.fromEntries(Object.entries(u.levers).map(([a,l])=>[a,Math.round(-l.rotation.x/D2R)])),
+		frames:Object.fromEntries(Object.entries(plates.PLATES).map(([k,p])=>[k,{ origin:p.origin, right:p.right, up:p.up, normal:plates.normal(p), legends:p.legends.map(l=>l.at) }])), guards:Object.fromEntries(Object.keys(u.guards).map(a=>[a,Math.round(u.guards[a].rotation.x/D2R)])),
+		select:u.select?Math.round(-u.select.turn.rotation.z/D2R):null, handle:u.handle?Math.round(-u.handle.rotation.z/D2R):null,
+		boxes:Object.fromEntries([["handle",u.handle],["select",u.select&&u.select.turn]].filter(([,o])=>o).map(([k,o])=>{ const b=extent_of(o.children.filter(m=>m.isMesh),k)||extent_of([],k); return [k,b?[b.box.min.toArray(),b.box.max.toArray()].map(v=>v.map(n=>Math.round(n*1e4)/1e4)):null]; })), faces:Object.keys(u.faces), states:{ ir_cool, spin_switch, taping, taping_source, uncooled:uncooled() } }; };
 if(DEV_MODE) (globalThis as any).dev_brow=()=>{ const g=ownship.group, b=g.userData.lampsGroup; if(!b) return null; g.updateMatrixWorld(true);   // dev: each glareshield lens's centre, group frame (#140)
 	return b.children.map(m=>g.worldToLocal(m.getWorldPosition(new THREE.Vector3())).toArray().map(v=>Math.round(v*1e4)/1e4)); };
 // ---- the cockpit pointer (#105) ----
@@ -8233,6 +8248,119 @@ function centre_turn(root=ownship.group.userData.centre){ if(!root) return; cons
 		levers[action].rotation.x=-up*CENTRE_LEVER.throw*D2R; };   // a turn about the face's x tips the lever toward its y
 	lever("finder",finder); lever("reject",["norm","one","two"][declutter]); lever("hud.range",hud_panel.range); lever("hud.video",hud_panel.video);
 	lever("altitude",alt_radar?"radar":"baro"); lever("attitude",reference); }
+// The plates (plates.ts, #141, #142, #146): faces over the model's paint where it blurs zoomed in, each built as the
+// centre panel's are - its legends on a canvas that steps with zoom (face_sharpen), lit as the paint it covers is: the
+// main panel's by its integral lighting, a console's under the console floods; its knobs with pointers and its toggles
+// with levers, a console's turned to throw across a panel that reads sideways and half again the centre panel's size,
+// which plates_turn sets to what they work; a guard hinged at its top over the toggle it holds; its windows' figures;
+// and its lights, on the lamps like every other lens. With them the SELECT JETT knob (#145) and the canopy jettison
+// handle (#144). Every part is an overlay on the ownship's cockpit layer, out of the pit's raycasts.
+const PLATE_OPEN=-110;   // degrees a guard swings open about its hinge, away from the panel and up
+// plate_values: what a plate's windows show - the ILS channel's two digits on the comm panel's thumbwheels (FO-5 item 7).
+function plate_values(){ const channel=uhf.panel.channel; return { "channel.tens":String(Math.floor(channel/10)), "channel.units":String(channel%10) }; }
+function plates_draw(f){ f.shown=JSON.stringify(plate_values()); plates.draw(f.plate,face_context(f),plate_values()); f.tex.needsUpdate=true; }
+function build_plates(g){
+	if(g.userData.plates&&g.userData.plates.parent===g) return;
+	const root=new THREE.Group(); root.name="plates"; root.userData={}; const faces={}, pointers={}, levers={}, guards={}, lamps=g.userData.lamps||{};
+	const lit=(map,kind)=>{ if(kind==="console") return new THREE.MeshStandardMaterial({ map, roughness:0.8, metalness:0 });   // a console's legends under the console floods, as the model's own console paint is
+		const m=new THREE.MeshStandardMaterial({ map, emissiveMap:map, emissive:new THREE.Color(0xffffff), emissiveIntensity:lighting.instrument, roughness:0.8, metalness:0 }); instrument_mats.push(m); return m; };
+	const knob=new THREE.MeshStandardMaterial({ color:BEZEL.light, roughness:0.6, metalness:0 }), ink=new THREE.MeshStandardMaterial({ color:BEZEL.dark, roughness:0.6, metalness:0 });
+	const nut=new THREE.MeshStandardMaterial({ color:CENTRE_COLOURS.nut, roughness:0.35, metalness:0.6 }), chrome=new THREE.MeshStandardMaterial({ color:CENTRE_COLOURS.lever, roughness:0.25, metalness:0.7 });
+	const striped=(()=>{ const c=document.createElement("canvas"); c.width=128; c.height=256; plates.stripes(c.getContext("2d"),0,0,128,256,128/0.02);
+		const tex=new THREE.CanvasTexture(c); tex.colorSpace=THREE.SRGBColorSpace; return new THREE.MeshStandardMaterial({ map:tex, roughness:0.6, metalness:0 }); })();
+	const lever=centre_lever();
+	const part=(mesh,name)=>{ mesh.name=name; mesh.userData.overlay=true; mesh.layers.set(LAYER_OWN); return mesh; };
+	for(const [name,p] of Object.entries(plates.PLATES)){
+		const group=new THREE.Group(); group.name="plate."+name;
+		group.applyMatrix4(new THREE.Matrix4().makeBasis(new THREE.Vector3(...p.right),new THREE.Vector3(...p.up),new THREE.Vector3(...plates.normal(p))).setPosition(...p.origin));
+		const [a0,b0,a1,b1]=plates.bounds(p), geo=new THREE.ShapeGeometry(new THREE.Shape(p.outline.map(([a,b])=>new THREE.Vector2(a,b)))), uv=geo.attributes.uv, pos=geo.attributes.position;
+		for(let i=0;i<pos.count;i++) uv.setXY(i,(pos.getX(i)-a0)/(a1-a0),(pos.getY(i)-b0)/(b1-b0));
+		geo.translate(0,0,BEZEL.lift);
+		const [w,h]=plates.pixels(p), f={ plate:p, ...face_canvas(w,h) };
+		f.mesh=part(new THREE.Mesh(geo,lit(f.tex,p.lighting)),"plate.face"); group.add(f.mesh); plates_draw(f); faces[name]=f;
+		for(const [action,k] of Object.entries(p.knobs||{})){   // a knob turns whole: its body, and the pointer on its face or the blade it is
+			const turn=new THREE.Group(); turn.position.set(k.at[0],k.at[1],BEZEL.lift);
+			if(k.shape==="lever"){ turn.add(part(new THREE.Mesh(new RoundedBoxGeometry(k.radius*0.8,k.radius*2.2,k.height,2,0.0012).translate(0,k.radius*0.3,k.height/2),knob),"plate.knob"));
+				turn.add(part(new THREE.Mesh(new THREE.BoxGeometry(0.0008,k.radius*1.1,0.0004).translate(0,k.radius*0.8,k.height+0.0002),ink),"plate.pointer")); }
+			else { turn.add(part(new THREE.Mesh(new THREE.CylinderGeometry(k.radius,k.radius,k.height,40).rotateX(Math.PI/2).translate(0,0,k.height/2),knob),"plate.knob"));
+				turn.add(part(new THREE.Mesh(new THREE.BoxGeometry(0.001,k.radius*0.8,0.0004).translate(0,k.radius*0.45,k.height+0.0002),ink),"plate.pointer")); }
+			group.add(turn); pointers[action]=turn; }
+		for(const [action,t] of Object.entries(p.toggles||{})){   // a toggle: its hex nut, and the lever pivoting at the nut's face, turned to throw along its legends and scaled to the console's larger switches
+			const seat=new THREE.Group(); seat.position.set(t.at[0],t.at[1],BEZEL.lift); seat.rotation.z=(t.turn||0)*D2R; seat.scale.setScalar(t.scale||1);
+			seat.add(part(new THREE.Mesh(new THREE.CylinderGeometry(CENTRE_LEVER.nut,CENTRE_LEVER.nut,CENTRE_LEVER.depth,6).rotateX(Math.PI/2),nut),"plate.nut").translateZ(CENTRE_LEVER.depth/2));
+			const pivot=new THREE.Group(); pivot.position.z=CENTRE_LEVER.depth; pivot.add(part(new THREE.Mesh(lever,chrome),"plate.lever")); seat.add(pivot); group.add(seat); levers[action]=pivot; }
+		for(const [action,d] of Object.entries(p.guards||{})){   // a guard: its striped cover and two cheeks, hinged along its top edge
+			const [gw,gh]=d.size, hinge=new THREE.Group(); hinge.position.set(d.at[0],d.at[1]+gh/2,BEZEL.lift);
+			hinge.add(part(new THREE.Mesh(new THREE.BoxGeometry(gw,gh,0.0012).translate(0,-gh/2,d.height-0.0006),striped),"plate.guard"));
+			for(const side of [-1,1]) hinge.add(part(new THREE.Mesh(new THREE.BoxGeometry(0.0012,gh,d.height).translate(side*(gw-0.0012)/2,-gh/2,d.height/2),striped),"plate.guard"));
+			group.add(hinge); guards[action]=hinge; }
+		for(const [lamp,l] of Object.entries(p.lamps||{})){   // a light: a lens like every other, turned as its legend reads
+			const turned=Math.abs(l.turn%180)===90, m=legend(l.text,l.colour,turned?l.size[1]:l.size[0],turned?l.size[0]:l.size[1]);
+			m.position.set(l.at[0],l.at[1],BEZEL.lift+0.0003); m.rotation.z=l.turn*D2R; m.renderOrder=1; part(m,"plate.lamp"); group.add(m); lamps[lamp]=m;
+			if(g.userData.tested) g.userData.tested.push(m); }
+		root.add(group); }
+	{ const S=plates.SELECT, R=new THREE.Vector3(...S.right), U=new THREE.Vector3(...S.up), N=new THREE.Vector3().crossVectors(R,U).normalize();   // the SELECT JETT knob (#145)
+		const seat=new THREE.Group(); seat.applyMatrix4(new THREE.Matrix4().makeBasis(R,U,N).setPosition(...S.centre)); seat.name="plate.select";
+		const turn=new THREE.Group(), k=S.skirt, b=S.button;
+		turn.add(part(new THREE.Mesh(new THREE.CylinderGeometry(k.radius,k.radius*1.03,k.height,48,1,true).rotateX(Math.PI/2).translate(0,0,k.height/2),nut),"plate.select"));   // the skirt's wall
+		turn.add(part(new THREE.Mesh(new THREE.RingGeometry(k.bore,k.radius,48).translate(0,0,k.height),nut),"plate.select"));   // its rim
+		turn.add(part(new THREE.Mesh(new THREE.CylinderGeometry(k.bore,k.bore,k.height-b.low,48,1,true).rotateX(Math.PI/2).translate(0,0,(k.height+b.low)/2),new THREE.MeshStandardMaterial({ color:0x2a2c2c, roughness:0.6, metalness:0.3, side:THREE.BackSide })),"plate.select"));   // the bore the button sits in
+		turn.add(part(new THREE.Mesh(new THREE.CircleGeometry(0.0022,3).rotateZ(-Math.PI/2).translate(0,-(k.bore+k.radius)/2,k.height+0.0002),new THREE.MeshBasicMaterial({ color:0xf2f2ea })),"plate.index"));   // the index on the rim, at the knob's six o'clock as the model paints it
+		const label=document.createElement("canvas"); label.width=label.height=256; { const x=label.getContext("2d"); x.fillStyle="#b3262c"; x.fillRect(0,0,256,256); x.strokeStyle="#f2f2ea"; x.lineWidth=10; x.beginPath(); x.arc(128,128,108,0,2*Math.PI); x.stroke();
+			x.fillStyle="#f2f2ea"; x.font="bold 72px sans-serif"; x.textAlign="center"; x.textBaseline="middle"; x.fillText("JETT",128,132); }
+		const face=new THREE.CanvasTexture(label); face.colorSpace=THREE.SRGBColorSpace;
+		const push=new THREE.Group(), red=new THREE.MeshStandardMaterial({ color:0xb3262c, roughness:0.45, metalness:0 });
+		push.add(part(new THREE.Mesh(new THREE.CylinderGeometry(b.radius,b.radius,b.top-b.low,40).rotateX(Math.PI/2).translate(0,0,(b.top+b.low)/2),red),"plate.button"));
+		push.add(part(new THREE.Mesh(new THREE.CircleGeometry(b.radius,40).translate(0,0,b.top+0.0001),new THREE.MeshStandardMaterial({ map:face, roughness:0.45, metalness:0 })),"plate.button"));
+		turn.add(push); seat.add(turn); root.add(seat); Object.assign(root.userData,{ select:{ turn, push } }); }
+	{ const H=plates.HANDLE, A=new THREE.Vector3(...H.axis), F=new THREE.Vector3(...H.aft), I=new THREE.Vector3().crossVectors(F,A).normalize();   // the canopy jettison handle (#144): x aft, y up it, z outboard
+		const seat=new THREE.Group(), pivot=new THREE.Group(); seat.applyMatrix4(new THREE.Matrix4().makeBasis(F,A,I).setPosition(...plates.point({ origin:H.origin, right:H.aft, up:H.axis },[0,H.along[0]])));
+		seat.name="plate.handle"; seat.add(pivot);   // the seat holds the handle's frame at its foot, the pivot inside it leans
+		const { starts, total }=plates.handle_perimeter(), length=H.tip.along-H.along[0], pos=[], uv=[];
+		const corner=([inboard,aft],along)=>[aft,along-H.along[0],-inboard];   // the pivot's frame: z is outboard
+		const quad=(p,q,r,t,u0,u1,v0,v1)=>{ pos.push(...p,...q,...r,...p,...r,...t); uv.push(u0,v0,u0,v1,u1,v1,u0,v0,u1,v1,u1,v0); };   // p to q round the section, q to r along it
+		H.section.forEach((c,k)=>{ const d=H.section[(k+1)%H.section.length], v0=1-starts[k]/total, v1=1-(starts[k]+Math.hypot(d[0]-c[0],d[1]-c[1]))/total;
+			quad(corner(c,H.along[0]),corner(d,H.along[0]),corner(d,H.tip.along),corner(c,H.tip.along),0,1,v0,v1); });
+		const tip=new THREE.Shape(H.section.map(([inboard,aft])=>new THREE.Vector2(aft,-inboard)));   // the foot's and the tip's caps, in yellow
+		const geo=new THREE.BufferGeometry(); geo.setAttribute("position",new THREE.Float32BufferAttribute(pos,3)); geo.setAttribute("uv",new THREE.Float32BufferAttribute(uv,2)); geo.computeVertexNormals();
+		const canvas=document.createElement("canvas"); canvas.width=Math.round(length*plates.HANDLE_PIXELS); canvas.height=Math.round(total*plates.HANDLE_PIXELS);
+		plates.handle_draw(canvas.getContext("2d")); const tex=new THREE.CanvasTexture(canvas); tex.colorSpace=THREE.SRGBColorSpace; tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+		const bar=part(new THREE.Mesh(geo,new THREE.MeshStandardMaterial({ map:tex, roughness:0.55, metalness:0, side:THREE.DoubleSide })),"plate.handle"); pivot.add(bar);
+		const yellow=new THREE.MeshStandardMaterial({ color:plates.COLOURS.yellow, roughness:0.55, metalness:0, side:THREE.DoubleSide });
+		for(const at of [0,length]) pivot.add(part(new THREE.Mesh(new THREE.ShapeGeometry(tip).rotateX(Math.PI/2).translate(0,at,0),yellow),"plate.handle"));
+		root.add(seat); Object.assign(root.userData,{ handle:pivot }); }
+	Object.assign(root.userData,{ faces, pointers, levers, guards }); g.add(root); g.userData.plates=root; plates_turn(root); }
+// PLATE_KNOBS: where each plate knob points, degrees clockwise from up - a brightness knob over BRT_THROW from its OFF
+// stop, a selector at its position as FO-5 draws it; PLATE_TOGGLES: the position each toggle stands at. Tables, not
+// switch cases, so a case in pit_press is the only one of its name.
+const PLATE_KNOBS={
+	"knob.hmd":()=>(2*knob_level("hmd")-1)*BRT_THROW,
+	"knob.ifei":()=>(2*knob_level("ifei")-1)*BRT_THROW,
+	"record.source":()=>taping_source==="left"?-90:90,   // L DDI to the left, HUD to the right (FO-5 item 23)
+	recorder:()=>({ manual:45, off:90, automatic:135 })[taping] };   // the paddle toward MAN, OFF or AUTO
+const PLATE_TOGGLES={
+	ircool:()=>ir_cool, "spin.recovery":()=>spin_switch,
+	"wing.inhibit":()=>wing_inhibit?"inhibit":"norm", computer:()=>mc_switch,
+	"hydraulic.isolate":()=>isolate_held()?"oride":"norm",   // spring-loaded to NORM: at ORIDE only while held
+	"comm.guard":()=>uhf.panel.guard, "comm.relay":()=>uhf.panel.relay, "comm.landing":()=>uhf.panel.landing, "antenna.comm":()=>uhf.panel.antenna,
+	"identification.master":()=>squawk.master, "identification.alert":()=>squawk.alert, "identification.crypto":()=>squawk.crypto, "antenna.identification":()=>squawk.antenna,
+	"generator.tie":()=>glance-tie_flicked<TIE_HOLD?"reset":"norm" };   // spring-loaded: at RESET for a moment after the click, then back to NORM
+function plate_knob(action){ const f=PLATE_KNOBS[action]; return f?f():0; }
+function plate_toggle(action){ const f=PLATE_TOGGLES[action]; return f?f():null; }
+// plates_turn: every plate control at what it works - a pointer turned, a lever thrown toward the top or bottom of its
+// throw or upright at a three-position switch's centre, as centre_turn throws the centre panel's, and a guard closed
+// over its switch's guarded position or swung open.
+let jettison_pushed=-Infinity;   // when the JETT button was last pushed, on the pilot's clock
+let tie_flicked=-Infinity;   // when GEN TIE CONTROL was last cycled to RESET, on the pilot's clock
+const TIE_HOLD=0.4;   // seconds the GEN TIE lever shows at RESET before its spring returns it to NORM
+function plates_turn(root=ownship.group.userData.plates){ if(!root) return; const { pointers, levers, guards, select, handle }=root.userData;
+	if(select){ select.turn.rotation.z=-plates.SELECT.angles[arms.select]*D2R; select.push.position.z=glance-jettison_pushed<0.3?-plates.SELECT.button.push:0; }   // SELECT JETT at its position, the button in while pushed
+	if(handle) handle.rotation.z=canopy_gone?-plates.HANDLE.pull*D2R:0;   // the handle pulled aft, for the rest of the flight once the canopy has gone
+	for(const [action,turn] of Object.entries(pointers)) turn.rotation.z=-plate_knob(action)*D2R;
+	for(const f of Object.values(root.userData.faces)) if(f.plate.windows&&f.shown!==JSON.stringify(plate_values())) plates_draw(f);   // a window's digits redrawn as they change
+	for(const p of Object.values(plates.PLATES)) for(const [action,t] of Object.entries(p.toggles||{})){ const at=plate_toggle(action), k=t.positions.indexOf(at), up=t.positions.length===2?(k===0?1:-1):1-k;
+		levers[action].rotation.x=-up*CENTRE_LEVER.throw*D2R;
+		const d=p.guards&&p.guards[action]; if(d) guards[action].rotation.x=at===d.closed?0:PLATE_OPEN*D2R; } }
 // ddi_button is pushbutton pb's centre on a display's bezel in the jet's frame: 1-5 up the left, 6-10 across the top, 11-15 down the right, 16-20 back along the bottom.
 function ddi_button(display,pb){ const b=DDI_BUTTONS[display]; let y,z;
 	if(pb<=5){ y=b.down[5-pb]; z=b.left; }
@@ -8385,9 +8513,12 @@ function pit_press(action,direction){ const d=direction||0;
 	case "battery": battery_set(["on","off","oride"][THREE.MathUtils.clamp(["on","off","oride"].indexOf(electrics.battery)+(d<0?1:-1),0,2)]); break;   // ON up, OFF, ORIDE down (FO-5)
 	case "generator.left": electrics.switches[0]=!electrics.switches[0]; break;
 	case "generator.right": electrics.switches[1]=!electrics.switches[1]; break;
-	case "generator.tie": electrics.tie=true; break;   // the GEN TIE CONTROL switch cycled to RESET and back to NORM (2.5.1.3): the bus tie closes
+	case "generator.tie": electrics.tie=true; tie_flicked=glance; break;   // the GEN TIE CONTROL switch cycled to RESET and back to NORM (2.5.1.3): the bus tie closes
 	case "hydraulic.isolate": isolate_clicked=sim_time; break;   // HYD ISOL held at ORIDE (2.7.4)
 	case "recorder": taping=communication.step(["automatic","off","manual"],taping,d||1); break;   // the video record mode selector: MAN up, OFF, AUTO down (2.13.8.7)
+	case "record.source": taping_source=d>0?"hud":d<0?"left":taping_source==="hud"?"left":"hud"; break;   // clockwise toward HUD
+	case "ircool": ir_cool=communication.step(["off","norm","oride"],ir_cool,d||1); break;   // up toward ORIDE
+	case "spin.recovery": spin_switch=d>0?"rcvy":d<0?"norm":spin_switch==="norm"?"rcvy":"norm"; ddi_dirty=true; break;   // the guard lifted and the switch up to RCVY, or down to NORM and the guard closed over it
 	case "bleed": bleed_turn(d||1); break;
 	case "fire.test": fire_switch(d||1); break;
 	case "rudder.trim": rudder_trim=THREE.MathUtils.clamp(rudder_trim+(d<0?-0.25:0.25),-1,1); break;
@@ -8405,7 +8536,7 @@ function pit_press(action,direction){ const d=direction||0;
 	case "extinguisher": if(armament.discharge(arms,secured)) extinguish_flag=true; break;   // FIRE EXTGH with READY on (2.14.2)
 	case "jettison.emergency": emergency_clicked=glance; break;   // a click holds the button as long as a hand would, on the pilot's clock
 	case "jettison.select": armament.turn(arms,d||1); break;
-	case "jettison.release": jettison_press(); break;
+	case "jettison.release": jettison_pushed=glance; jettison_press(); break;   // the JETT button pushed in, and out again under its spring (plates_turn)
 	// the dispenser/EMC panel and the RWR control indicator (#10, #9, FO-5 items 35, 36, left console item 16)
 	case "dispenser": suite.dispenser=d===0?(suite.dispenser==="off"?"on":"off"):communication.step(countermeasures.DISPENSER,suite.dispenser,d); break;   // up toward BYPASS; its key turns it on and off
 	case "jammer": countermeasures.turn(suite,d||1,sim_time); break;
@@ -8631,6 +8762,15 @@ function accumulator_low(){ return apu_accumulator<ACCUMULATOR_LOW; }
 // OFF never. recording drives the RCDR ON light (2.13.8.10); the game's own flight recorder is another thing.
 let taping="automatic";
 function recording(){ return buses.ac&&(taping==="manual"||(taping==="automatic"&&master!=="nav")); }
+let taping_source="hud";   // the video selector beside it, L DDI or HUD (FO-5 item 23): the game records no video, so it moves and acts on nothing
+// The map gain/spin recovery panel's switches (#141, FO-5 item 16). IR COOL (ORIDE, NORM, OFF): with no cooling the
+// heater's seeker sees nothing, so OFF gives it no tone or lock and a round fired leaves unguided; NORM and ORIDE both
+// cool it while it is selected, the game never running a seeker it does not select. The spin recovery switch (NORM,
+// RCVY under its guard, NATOPS 2.8.2.6.1): RCVY lights SPN RCVY, puts SPIN MODE on both DDIs and has the flight
+// computers engage the spin mode at 120 kt whatever the yaw (fcs.go recovery); NORM leaves the mode to the automatic
+// conditions.
+let ir_cool="norm", spin_switch="norm";
+function uncooled(){ return ir_cool==="off"; }
 let reset_flag=false, reset_owed=false;   // one-shot trim reset: the flag until the core here has stepped with it, owed until a datagram has carried it to the server's
 function trim_reset(){ reset_flag=true; reset_owed=MULTIPLAYER; }   // the sample is built after the core's step has cleared the flag, so a match's server is told from its own latch
 // Nosewheel steering (2.10.2, #36): off, where the nosewheel castors, LOW (±16°) or HI (±75°). With
@@ -10347,7 +10487,7 @@ function fly_player(dt){
 	const controls={ pitch:THREE.MathUtils.clamp(input.pitch,-1,1), roll:THREE.MathUtils.clamp(input.roll,-1,1), yaw:THREE.MathUtils.clamp(input.yaw,-1,1),   // RAW stick. cfg.sens used to scale these: the removed Sensitivity slider genuinely was a flight-control gain, and a saved sens!=1 silently rescaled the whole stick. The multiplayer sample and the nosewheel pedal kept scaling by it until 2026-08-17; sanitize_cfg now deletes the key outright
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
 		reheat:ownship.burner??0, brake:input.brake || (sim_time<test_idle && test_brake && !ownship.wire),   // scenario rollout: the scripted pilot rides the brakes only on a runway (test_brake); the carrier's wire and the bolter's power stop the jet instead (a hands-off free roll ran 1.4 km off the runway end into the lagoon) — but NEVER on a wire: locked mains under the 3 g runout slammed the nose and rolled the trap over (the live-traced 37-degree topple)
-		bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), transfer:[transfer.wing,transfer.centre], gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
+		bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), spin:spin_switch==="rcvy", transfer:[transfer.wing,transfer.centre], gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
 		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, onspeed:onspeed_flag, reverted:!mc().one, held:wing_kept(), flap:flap_select,
 		launch:launch_flag, retract:bar_switch==="retract", override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
 		dump:fuel_dump, port:secured[0], starboard:secured[1], fire:trigger_own(), steering, sequence:++control_sequence };   // the core kicks back while rounds leave
@@ -10715,6 +10855,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		case "warncaut": f=knob_level("warn"); break;
 		case "symbology": f=knob_level("symbology"); break; case "indexer": f=knob_level("indexer"); break; case "ufcbrt": f=knob_level("ufc"); break;
 		case "volumereceiver": f=st===ownship?uhf.panel.volume.receiver:1; break; case "volumeweapon": f=st===ownship?uhf.panel.volume.weapon:1; break;
+		case "volumetacan": f=0.5+((st===ownship?uhf.panel.volume.tacan:1)-0.5)*0.854; break;   // its clip turns it 281°, as RUD TRIM's: the volume's 240° of throw centred on the clip's middle
 		case "attswitch": f={ ins:1, auto:0.5, stby:0 }[reference]; break;   // the clips run down to up, STBY to INS, and aft to forward: ORIDE to ON, OFF to NORM, STOP to ORIDE
 		case "insknob": f=0; break;   // its clip held at OFF: the node is turned to its position after the mixer (INS_KNOB)
 		case "battery": f={ on:1, off:0.5, oride:0 }[electrics.battery]; break;
@@ -12644,6 +12785,7 @@ function seeker_reach(st,to){ const tail=st.fwd?Math.max(0,to.dot(st.fwd)):0, fl
 function seeker_toward(st){ const to=new THREE.Vector3(wrap_axis(st.pos.x-ownship.pos.x),st.pos.y-ownship.pos.y,wrap_axis(st.pos.z-ownship.pos.z)), d=to.length()||1; return { to:to.multiplyScalar(1/d), d }; }
 function seeker_look(boxed,pa){
 	if(master!=="9m"||pa){ seeker_track=null; return { line:null, quarry:null, lockon:false, drinking:0 }; }
+	if(uncooled()){ seeker_track=null; return { line:ownship.fwd.clone(), quarry:null, lockon:false, drinking:0 }; }   // IR COOL at OFF (#141): an uncooled seeker has nothing in it, caged to the boresight
 	const jets=MULTIPLAYER?[...remotes.values()].filter(st=>st.group&&st.group.visible):(has_enemy&&bandit.group.visible?[bandit]:[]);
 	let line=null;
 	if(seeker_track){ const { to, d }=jets.includes(seeker_track)?seeker_toward(seeker_track):{ to:null, d:Infinity };
@@ -12996,7 +13138,7 @@ function net_frame(dt){
 	// fly_player) - no sensitivity scaling here.
 	const sample={ pitch:c?c.pitch:input.pitch, roll:c?c.roll:input.roll, yaw:c?c.yaw:input.yaw,
 		throttle:ownship.throttle, speedbrake:ownship.speedbrakeTarget??0,
-		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_owed, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
+		reheat:ownship.burner??0, brake:input.brake, bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), spin:spin_switch==="rcvy", uncooled:uncooled(), wing:transfer.wing, centre:transfer.centre, trim:input.trim||0, lean:input.lean||0, reset:reset_owed, onspeed:onspeed_owed, reverted:c?c.reverted:!mc().one, held:c?c.held:wing_kept(), flap:flap_select,
 		gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,   // wire gear/hook: true = down/deployed
 		override:c?c.override:false, retract:bar_switch==="retract"&&!!ownship.grounded, dump:fuel_dump, port:secured[0], starboard:secured[1], steering,
 		fire:input.guns&&!ownship.launching&&(ownship.gear??0)>0.98, flare:flare_flag, chaff:chaff_flag, missile:missile_flag, radar:fox3_flag, visual:fox3_flag&&fox3_visual, jammer:jammer_armed(), eject:eject_flag, solo:solo_flag, extinguish:extinguish_flag, status:status_own(), seeker:seeker_now.line?helmet.pack(seeker_now.line):null };

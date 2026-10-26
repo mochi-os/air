@@ -9,6 +9,7 @@ import * as THREE from 'three'
 import * as communication from './communication'
 import * as identification from './identification'
 import * as mids from './mids'
+import * as plates from './plates'
 
 // The cockpit's side of the radios and the left console's panels (G5: #20,
 // #81, #15): the communication and antenna select panels' switches, the volume
@@ -250,7 +251,7 @@ describe('the APU accumulator', () => {
   it('is stepped each frame, and raises the DDI\'s APU ACCUM caution', () => {
     expect(source).toMatch(/\n\taccumulator_step\(dt\);/)
     expect(source).toMatch(/\n\tif\(accumulator_low\(\)\) captions\.push\("APU ACCUM"\);/)
-    expect(source).toMatch(/\{ action:"hydraulic\.isolate", at:\[5\.468,-0\.037,-0\.45\] \}/)
+    expect(plates.PLATES.computer.toggles!['hydraulic.isolate'].positions).toEqual(['oride', 'norm']) // its lever on the MC/HYD ISOL plate (#146)
   })
 })
 
@@ -265,16 +266,27 @@ describe('the video record mode selector', () => {
     expect([on('manual', { master: '9m' }), on('automatic', { master: '9m' }), on('off', { master: '9m' })]).toEqual([true, true, false])
     expect(on('manual', { ac: false })).toBe(false)
   })
-  it('has its switch on the left of the main panel', () => {
-    expect(source).toMatch(/\{ action:"recorder", at:\[6\.211,0\.055,-0\.206\](?:, r:[\d.]+)? \}/)
+  it('has its switch on the left of the main panel, the paddle on the plate under the IFEI (#142)', () => {
+    const p = plates.PLATES.record, k = p.knobs!.recorder, at = plates.point(p, k.at, 0)
+    expect(k.shape).toBe('lever')
+    expect(at[2]).toBeLessThan(-0.15); expect(at[0]).toBeCloseTo(6.2111, 3)
+    expect(source).not.toMatch(/\{ action:"recorder", at:\[/)
   })
 })
 
 describe('the left console\'s click spots', () => {
   it('put each switch of the communication and antenna select panels where FO-5 draws it', () => {
-    for (const [action, at] of Object.entries({ 'antenna.comm': '5.565,-0.04,-0.431', 'antenna.identification': '5.619,-0.041,-0.431', 'comm.relay': '5.556,-0.05,-0.373', 'comm.guard': '5.628,-0.049,-0.38', 'comm.landing': '5.649,-0.057,-0.331',
-      'comm.channel': '5.592,-0.056,-0.338', 'identification.crypto': '5.558,-0.065,-0.283', 'identification.alert': '5.601,-0.066,-0.284', 'identification.master': '5.641,-0.065,-0.282', 'volume.tacan': '5.681,-0.04,-0.367' }))
-      expect(source, action).toMatch(new RegExp(`\\{ action:"${action.replace(/\./g, '\\.')}", at:\\[${at.replace(/\./g, '\\.')}\\](?:, r:[\\d.]+)? \\}`))
+    // the switches stand on their plates (#146), each within 8 mm across the panel of where the model paints it
+    const painted: Record<string, [string, number[]]> = { 'antenna.comm': ['antenna', [5.565, -0.04, -0.431]], 'antenna.identification': ['antenna', [5.619, -0.041, -0.431]], 'comm.relay': ['comm', [5.556, -0.05, -0.373]],
+      'comm.guard': ['comm', [5.628, -0.049, -0.38]], 'comm.landing': ['comm', [5.649, -0.057, -0.331]], 'identification.crypto': ['comm', [5.558, -0.065, -0.283]], 'identification.alert': ['comm', [5.601, -0.066, -0.284]],
+      'identification.master': ['comm', [5.641, -0.065, -0.282]] }
+    for (const [action, [plate, at]] of Object.entries(painted)) {
+      const p = plates.PLATES[plate], t = p.toggles![action], q = plates.point(p, t.at, 0)
+      expect(Math.hypot(q[0] - at[0], q[2] - at[2]), action).toBeLessThan(0.008)
+      expect(source, action).not.toMatch(new RegExp(`\\{ action:"${action.replace(/\./g, '\\.')}", at:\\[`))
+    }
+    expect(source).toMatch(/\{ action:"comm\.channel", at:\[5\.592,-0\.056,-0\.338\] \}/) // the ILS channel thumbwheels stay a spot
+    expect(source).toMatch(/volumetacan:"volume\.tacan"/) // and the TCN volume knob is the model's own, rigged (#146)
   })
   it('put the radios\' volume controls at the UFC\'s lower corners', () => {
     expect(source).toMatch(/"comm\.one\.volume":\["ufc",0\.4165,-0\.0889,/); expect(source).toMatch(/"comm\.two\.volume":\["ufc",0\.4165,0\.0853,/) // the centre panel's (#139)
@@ -282,7 +294,9 @@ describe('the left console\'s click spots', () => {
   it('give every click spot an action pit_press answers', () => {
     const centre = ['CENTRE_KNOBS', 'CENTRE_TOGGLES'].flatMap((n) => [...(new RegExp(`\\nconst ${n}=([\\s\\S]*?)\\};\\n`).exec(source)?.[1] ?? '').matchAll(/"?([a-z.]+)"?:\["(?:ufc|row|hud)"/g)].map((m) => m[1])) // the centre panel's spots (#139)
     expect(centre).toHaveLength(15)
-    const spots = [...source.matchAll(/\{ action:"([a-z.0-9]+)", at:\[[^\]]*\](?:, r:[\d.]+)?(?:, hold:"([a-z.]+)")? \}/g)].flatMap((m) => [m[1], m[2]].filter(Boolean)).concat(centre)
+    const seated = Object.values(plates.PLATES).flatMap((p) => [...Object.keys(p.knobs ?? {}), ...Object.keys(p.toggles ?? {})]) // the plates' controls (plate_spots, #141-#146)
+    expect(seated).toHaveLength(18)
+    const spots = [...source.matchAll(/\{ action:"([a-z.0-9]+)", at:[^\n]*?, r:[\d.]+(?:, hold:"([a-z.]+)")? \}|\{ action:"([a-z.0-9]+)", at:\[[^\]]*\](?:, hold:"([a-z.]+)")? \}/g)].flatMap((m) => [m[1], m[2], m[3], m[4]].filter(Boolean)).concat(centre, seated)
     expect(spots.length).toBeGreaterThan(30)
     for (const action of new Set(spots)) {
       const prefix = ['knob.', 'travel.', 'display.', 'jettison.station.', 'receiver.'].some((p) => action.startsWith(p))

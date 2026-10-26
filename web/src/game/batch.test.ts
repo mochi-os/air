@@ -12,7 +12,7 @@ import type { InputSample } from './net'
 // The input datagram's batch: what each sample costs it, and that the whole
 // stays inside what a datagram carries.
 const sample = (over: Partial<InputSample> = {}): InputSample => ({
-  pitch: -0.123456789, roll: 0.123456789, yaw: 0.0123456789, throttle: 0.87654321, speedbrake: 0.25, reheat: 0.5, brake: false, bypass: false, emergency: false, mechanical: false,
+  pitch: -0.123456789, roll: 0.123456789, yaw: 0.0123456789, throttle: 0.87654321, speedbrake: 0.25, reheat: 0.5, brake: false, bypass: false, emergency: false, mechanical: false, spin: false, uncooled: false,
   wing: 0, centre: 0, steering: 0, trim: 0, lean: 0, reset: false, flap: 0, gear: false, hook: false, probe: false, eject: false, override: false, retract: false, dump: false, port: false, starboard: false, fire: false, flare: false, chaff: false, missile: false, radar: false, jammer: false,
   solo: false, extinguish: false, onspeed: false, reverted: false, held: 0, visual: false, status: { reply: true, challenge: true, link: true, antenna: 'both', tracks: [] }, seeker: null, steps: 1, ...over,
 })
@@ -39,6 +39,12 @@ describe('the input batch', () => {
   it('leaves the launch bar out unless it is retracted, which the engine says only on the wheels (#127)', () => {
     expect('retract' in filled([sample()])[0]).toBe(false)
     expect(filled([sample({ retract: true })])[0].retract).toBe(true)
+  })
+  it('leaves the spin recovery switch and IR COOL out unless RCVY or OFF is selected (#141)', () => {
+    const [plain] = filled([sample()])
+    expect('spin' in plain || 'uncooled' in plain).toBe(false)
+    const [set] = filled([sample({ spin: true, uncooled: true })])
+    expect([set.spin, set.uncooled]).toEqual([true, true])
   })
   it('leaves the trim reset, the reversion and the held fuel out unless there is one', () => {
     const [plain] = filled([sample()])

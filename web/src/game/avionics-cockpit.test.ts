@@ -13,6 +13,7 @@ import * as communication from './communication'
 import * as identification from './identification'
 import * as mids from './mids'
 import * as helmet from './helmet'
+import * as plates from './plates'
 
 // The cockpit's side of the mission computers and the BIT display (G4: #95, #90,
 // #96, #79): the MC switch, what each unit is found to be doing, the frame's
@@ -73,8 +74,10 @@ describe('the MC switch', () => {
     expect(cockpit('const a=mc(); mc_switch="one"; const b=mc(); mc_switch="two"; const c=mc(); mc_switch="norm"; buses={ ac:false, essential:true }; return [a,b,c,mc()];'))
       .toEqual([{ one: true, two: true }, { one: false, two: true }, { one: true, two: false }, { one: false, two: false }])
   })
-  it('has its click spot aft of HYD ISOL on the left console', () => {
-    expect(source).toMatch(/\{ action:"computer", at:\[5\.408,-0\.027,-0\.446\] \}/)
+  it('stands aft of HYD ISOL on their plate on the left console, its positions the switch\'s own (#146)', () => {
+    const p = plates.PLATES.computer, at = (action: string) => plates.point(p, p.toggles![action].at, 0)
+    expect(at('computer')[0]).toBeLessThan(at('hydraulic.isolate')[0] - 0.05)
+    expect(p.toggles!.computer.positions).toEqual(avionics.SWITCH)
   })
 })
 
