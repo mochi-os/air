@@ -1437,7 +1437,14 @@ const AIRCRAFT_MODELS={
 			{ lo:[-0.0194,0.5262,4.4641], hi:[0.0922,0.6524,4.5369] } ] },   // and the earlier dispenser panel's switches and ECM knob on the pedestal
 			{ node:"Object_1095", boxes:[   // the glare shield's lower edge, whose strip across each DDI's outer top corner stands in front of the panel and hid the top row's outer pushbutton from the eye (#132)
 			{ lo:[0.2128,1.0836,4.4299], hi:[0.3061,1.1908,4.5887] },     // the left DDI's
-			{ lo:[-0.3141,1.0623,4.4299], hi:[-0.2183,1.1904,4.6194] } ] } ],   // and the right DDI's
+			{ lo:[-0.3141,1.0623,4.4299], hi:[-0.2183,1.1904,4.6194] },   // and the right DDI's
+			// and where the same strip crosses the glareshield's light panels (#140), in front of FIRE, MASTER CAUTION or APU FIRE
+			// and the grids' top rows: every triangle a sightline from the design eye meets before the panels' faces, sampled at
+			// 1.5 mm across them, boxed tight (one other triangle with them, on the right)
+			{ lo:[0.1365,1.0840,4.4274], hi:[0.3057,1.2248,4.6548] }, { lo:[0.0994,1.1718,4.4303], hi:[0.1415,1.2248,4.6537] },   // the left panel's
+			{ lo:[-0.2252,1.1598,4.4277], hi:[-0.0904,1.2249,4.5935] }, { lo:[-0.1604,1.1544,4.4338], hi:[-0.0904,1.2249,4.6583] }, { lo:[-0.1336,1.1550,4.4336], hi:[-0.0904,1.2190,4.6537] },   // and the right's
+			{ lo:[-0.1340,1.1719,4.4336], hi:[-0.0904,1.2249,4.6537] }, { lo:[-0.2252,1.1349,4.4314], hi:[-0.1531,1.2161,4.5957] }, { lo:[-0.1861,1.1836,4.4340], hi:[-0.1602,1.2222,4.5971] },
+			{ lo:[-0.2814,1.0627,4.4340], hi:[-0.2114,1.1824,4.6190] } ] } ],
 		hide:/^(RPMNeedle|EGT2?_\d|FuelFlowAction|Fuel_Flow1|Fuel_Needle|FuelNeedleAction|Fuel_Drum_|Nozzle[LR]|INSTRUMENT_AttitudeIndicator_(Glide|Localizer)|INSTRUMENT_Needle_CabinPress_AN_CabinPress_526$|Object_1057$)/,   // the A/B drum engine monitor and pointer-counter fuel gauge (NATOPS 2.1.1.7.4, 2.2.9): the C carries the IFEI LCD there, drawn over the face by build_ifei. The ILS bars on the standby attitude indicator: the C's has pitch, roll, an OFF flag and a needle and ball only (2.12.2) — ILS deviation is on the HUD and the ADI page. Object_1057: an opaque display plate the model hangs 8 mm in front of the combining glass (Object_1042), which hid the world behind the HUD. The CabinPress needle: it turns on the radar altimeter's dial, over the face build_radalt draws
 		twins:[{ node:"INSTRUMENT_Needle_HydPressure_AN_HydPressure_529", name:"INSTRUMENT_Needle_HydPressure_HYD2" }],   // the hydraulic pressure indicator's second pointer (NATOPS 2.7.1: a transducer in each reservoir; #150): the model draws one, so it is copied onto the same pivot
 		pose:model_pose,   // the stabs' mid-animation-flipped parent correction — SHARED with the setup preview (model.ts POSE) so both prepare the same jet. A GLOBAL end-prime is wrong: other subtrees (the left flap family) end DEPLOYED
@@ -2311,6 +2318,24 @@ const GLARESHIELD={
 		[["lbar","L BAR","#2fd24a"],["rec","REC","#2fd24a"]],[["lbarfault","L BAR","#e23b2e"],["xmit","XMIT","#2fd24a"]],[null,["aspj","ASPJ ON","#2fd24a"]]],
 	right:[[["rcdr","RCDR ON","#2fd24a"],["disp","DISP","#2fd24a"]],[[null,""],[null,""]],[[null,""],[null,""]],[[null,""],["sam","SAM","#ffc23a"]],
 		[["ai","AI","#ffc23a"],["aaa","AAA","#ffc23a"]],[["cw","CW","#ffc23a"],null]] };
+// BROW: the glareshield's lights where the model paints them (#140), on the aft face that carries the DDIs' bezels
+// (x 6.163, picked in the cockpit and mapped through the shell's texture coordinates): each panel's six rows top down
+// from y 0.5225, 10.6 mm apart, in two columns, inboard then outboard; and MASTER CAUTION, FIRE and APU FIRE beside them,
+// each [y, z, width, height]. The model's panels are not mirror images: the right one stands 5 mm further in. BROW_EDGE
+// is the face's outline above the DDIs, [|z|, y] from the top of each side's own inner edge out and down to its bottom
+// outboard corner, a millimetre or so inside the edge the glareshield's chamfer meets; it closes along y 0.465, over the
+// DDI bezels' plates. The lens grids stand on the plate,
+// and the three push-button lights on bodies BROW_BUTTON proud of it, the two FIRE lights inside guards (2.14.1).
+const BROW={ x:6.163, top:0.5225, pitch:0.0106, lens:[0.019,0.0085], left:[-0.140,-0.1615], right:[0.134,0.159],
+	caution:[0.5005,-0.1885,0.020,0.014], fireL:[0.4995,-0.2165,0.020,0.015], apufire:[0.500,0.181,0.018,0.014], fireR:[0.500,0.2105,0.020,0.015] };
+const BROW_EDGE={ inner:{ left:0.1115, right:0.1100 }, bottom:0.465, outline:[[0.150,0.538],[0.160,0.5306],[0.170,0.5285],[0.180,0.5263],[0.190,0.5242],[0.200,0.5242],
+	[0.210,0.5167],[0.220,0.5167],[0.230,0.5068],[0.240,0.5068],[0.243,0.498],[0.243,0.465]] };
+const BROW_BUTTON=0.0045, BROW_GUARD={ wall:0.0015, height:0.007 };   // m: a push-button light's body proud of the plate; the FIRE guards' walls and how far they stand out
+// HUD_FACE: the face of the HUD's body under its combiner, over the UFC (x 6.0979, its outline [y, z] measured off the
+// shell), painted plain but for a toggle switch and a knob at its right end, which the plate keeps as geometry: neither
+// is named in NATOPS's text or worked by the game.
+const HUD_FACE={ x:6.0979, y:[0.504,0.5555], z:[-0.0955,0.0930], toggle:[0.5355,0.0595], knob:[0.527,0.0775,0.0055] };
+const BROW_TRAVEL=0.002;   // m: how far a pushed FIRE light stays in
 // The caution lights panel (FO-5 item 46, aircraft 163985 and up), four rows by
 // three, top down and left to right; a null name is a lens with no legend. The
 // model paints the earlier aircraft's order (FO-3) on its lenses, which the
@@ -2327,6 +2352,43 @@ function caution_place(r,c){ const G=CAUTION_GRID; return G.origin.map((v,i)=>v+
 // Cockpit lamps (#99 realism): the GLB models no annunciators, so the indexer's
 // unlit-quad pattern extends to the fire/caution row on the glareshield and the
 // gear lights beside the handle. All state the lamps need already exists.
+// build_brow lays the glareshield's faces over their paint (#140), as build_bezels does the displays': on each side a
+// plate to BROW_EDGE's outline with a darker frame behind each lens grid, the push-button lights' bodies - MASTER
+// CAUTION, APU FIRE and the two FIRE lights, these inside their guards (2.14.1) and sinking when pushed (lamps_update) -
+// and the face of the HUD's body over the UFC with its toggle and knob (HUD_FACE). Every part is an overlay on the
+// ownship's cockpit layer, out of the pit's raycasts; the lenses themselves are build_lamps's.
+function build_brow(g,lamps){
+	const plates=[], frames=[], bodies=[], guards=[], nuts=[], light=[], fires=[];
+	const at=(geo,y,z,depth)=>{ if(geo.index) geo=geo.toNonIndexed(); geo.clearGroups(); return geo.translate(z,y,depth); };   // a part in a face's frame: x across (the jet's z), y up, z toward the pilot
+	const group=new THREE.Group(); group.rotation.y=-Math.PI/2; group.position.x=BROW.x; group.name="brow";
+	for(const side of ["left","right"]){ const s=side==="left"?-1:1, inner=BROW_EDGE.inner[side], shape=new THREE.Shape();
+		shape.moveTo(s*inner,BROW_EDGE.bottom).lineTo(s*inner,BROW_EDGE.outline[0][1]); for(const [z,y] of BROW_EDGE.outline) shape.lineTo(s*z,y); shape.closePath();
+		plates.push(at(new THREE.ShapeGeometry(shape),0,0,BEZEL.lift));
+		const [a,b]=BROW[side], [w,h]=BROW.lens, top=BROW.top+h/2+0.0015, bottom=Math.max(BROW.top-5*BROW.pitch-h/2-0.0015,BROW_EDGE.bottom);   // the frame: round the grid's lenses, no lower than the plate
+		frames.push(at(new THREE.PlaneGeometry(Math.abs(b-a)+w+0.003,top-bottom),(top+bottom)/2,(a+b)/2,BEZEL.lift+0.0001)); }
+	for(const name of ["caution","apufire","fireL","fireR"]){ const [y,z,w,h]=BROW[name], body=at(new RoundedBoxGeometry(w+0.002,h+0.002,BROW_BUTTON,2,0.001),y,z,BEZEL.lift+BROW_BUTTON/2);
+		if(name.startsWith("fire")){ const W=BROW_GUARD.wall, D=BROW_GUARD.height, left=z-w/2-0.001-W/2, right=z+w/2+0.001+W/2, high=y+h/2+0.001+W/2, low=y-h/2-0.0055-W/2;   // the guard: a wall round the light and the pole below it
+			for(const [cy,cz,gw,gh] of [[high,z,right-left+W,W],[low,z,right-left+W,W],[(high+low)/2,left,W,high-low],[(high+low)/2,right,W,high-low]]) guards.push(at(new THREE.BoxGeometry(gw,gh,D),cy,cz,BEZEL.lift+D/2));
+			const mesh=new THREE.Mesh(body,null); mesh.name="brow.fire"; fires.push({ lens:lamps[name], body:mesh }); }
+		else bodies.push(body); }
+	const dark=new THREE.MeshStandardMaterial({ color:0x232523, roughness:0.5, metalness:0 });
+	for(const f of fires){ f.body.material=dark; group.add(f.body); }
+	// the face of the HUD's body: a plate, the toggle's nut and its lever down, and the knob with its pointer up
+	const hud=new THREE.Group(); hud.rotation.y=-Math.PI/2; hud.position.x=HUD_FACE.x; hud.name="brow.hud";
+	{ const [y0,y1]=HUD_FACE.y, [z0,z1]=HUD_FACE.z; plates.push(at(new THREE.PlaneGeometry(z1-z0,y1-y0),(y0+y1)/2,(z0+z1)/2,BEZEL.lift-(HUD_FACE.x-BROW.x)));   // in the brow's frame, BROW.x - HUD_FACE.x nearer the pilot
+		const [ty,tz]=HUD_FACE.toggle, [ky,kz,kr]=HUD_FACE.knob, near=BROW.x-HUD_FACE.x;
+		nuts.push(at(new THREE.CylinderGeometry(CENTRE_LEVER.nut,CENTRE_LEVER.nut,CENTRE_LEVER.depth,6).rotateX(Math.PI/2),ty,tz,near+BEZEL.lift+CENTRE_LEVER.depth/2));
+		const pivot=new THREE.Group(); pivot.position.set(tz,ty,BEZEL.lift+CENTRE_LEVER.depth); pivot.rotation.x=CENTRE_LEVER.throw*D2R;   // down
+		const lever=new THREE.Mesh(centre_lever(),new THREE.MeshStandardMaterial({ color:CENTRE_COLOURS.lever, roughness:0.25, metalness:0.7 })); lever.name="brow.lever"; pivot.add(lever); hud.add(pivot);
+		light.push(at(new THREE.CylinderGeometry(kr,kr,0.006,40).rotateX(Math.PI/2),ky,kz,near+BEZEL.lift+0.003));
+		const pointer=new THREE.Mesh(new THREE.BoxGeometry(0.001,kr*0.8,0.0004).translate(0,kr*0.45,0),new THREE.MeshStandardMaterial({ color:BEZEL.dark, roughness:0.6, metalness:0 }));
+		pointer.position.set(kz,ky,BEZEL.lift+0.0062); pointer.name="brow.pointer"; hud.add(pointer); }
+	for(const [name,list,material] of [["brow.plates",plates,new THREE.MeshStandardMaterial({ color:BEZEL.plate, roughness:0.85, metalness:0 })],["brow.frames",frames,new THREE.MeshStandardMaterial({ color:0x1b1d1b, roughness:0.85, metalness:0 })],
+		["brow.buttons",bodies,dark],["brow.guards",guards,new THREE.MeshStandardMaterial({ color:0x2a2c2a, roughness:0.6, metalness:0 })],["brow.nuts",nuts,new THREE.MeshStandardMaterial({ color:CENTRE_COLOURS.nut, roughness:0.35, metalness:0.6 })],
+		["brow.knobs",light,new THREE.MeshStandardMaterial({ color:BEZEL.light, roughness:0.6, metalness:0 })]])
+		if(list.length){ const mesh=new THREE.Mesh(mergeGeometries(list),material); mesh.name=name; group.add(mesh); }
+	for(const o of [group,hud]){ o.traverse(m=>{ if(m.isMesh){ m.userData.overlay=true; m.layers.set(LAYER_OWN); } }); g.add(o); }
+	g.userData.brow=group; g.userData.fires=fires; }
 function build_lamps(g){
 	if(g.userData.lamps&&g.userData.lampsGroup&&g.userData.lampsGroup.parent===g) return;
 	const glass=g.userData.glass; if(!glass) return;
@@ -2337,25 +2399,18 @@ function build_lamps(g){
 	// The glareshield (FO-5 items 4-10, NATOPS 2.14.1, 2.17.2, #12): outboard to
 	// inboard on the left, the guarded FIRE light, MASTER CAUTION and the left
 	// warning/caution/advisory panel, two columns by six rows; on the right the
-	// right panel, APU FIRE and FIRE. The HUD glass spans ±glass.hw (9 cm), so the
-	// grids start just outboard of it (GLARESHIELD). The lenses sit on the
-	// glareshield's aft face, which the panel-point measurer (&panelpoint=1) puts
-	// vertical at x 6.163 below y 0.50, under a chamfer up to the top edge at x
-	// 6.10, y 0.54: the model's own lens panels lie inside the glareshield behind
-	// that face, where the eye never sees them.
-	const BROW={ x:6.160, y:0.495 };
-	const P=0.012, col=(k)=>0.125+k*0.032;   // row pitch and the grid columns, metres from the centreline
-	const grid=(side,rows)=>rows.forEach((row,r)=>row.forEach((entry,c)=>{ if(!entry) return; const [name,text,colour]=entry;
-		const m=legend(text,colour||"#2fd24a"); if(name) lamps[name]=m; m.position.set(0,-0.006-r*P,side<0?-col(1-c):col(c)); brow.add(m); }));
+	// right panel, APU FIRE and FIRE. Each lens stands where the model paints it
+	// on the glareshield's aft face (BROW, #140): a grid's on the plate build_brow
+	// lays over the paint, a push-button light's on its body.
+	const LENS=BEZEL.lift+0.0003, PUSHBUTTON=BEZEL.lift+BROW_BUTTON+0.0002;   // m: how far a grid's lens and a push-button light's stand off the face
+	const grid=(side,rows)=>rows.forEach((row,r)=>row.forEach((entry,c)=>{ if(!entry) return; const [name,text,colour]=entry, columns=side<0?BROW.left:BROW.right;
+		const m=legend(text,colour||"#2fd24a",BROW.lens[0],BROW.lens[1]); if(name) lamps[name]=m; m.position.set(-LENS,BROW.top-r*BROW.pitch,columns[side<0?1-c:c]); brow.add(m); }));   // the left panel's rows outboard first, the right's inboard first (GLARESHIELD)
 	grid(-1,GLARESHIELD.left); grid(1,GLARESHIELD.right);
-	lamps.caution=legend("MASTER\nCAUTION","#ffc23a",0.028,0.016); lamps.caution.position.set(0,-0.012,-0.205);
-	lamps.fireL=legend("FIRE","#e23b2e",0.024,0.016); lamps.fireL.position.set(0,-0.012,-0.245);
-	lamps.apufire=legend("APU\nFIRE","#e23b2e",0.024,0.016); lamps.apufire.position.set(0,-0.012,0.205);
-	lamps.fireR=legend("FIRE","#e23b2e",0.024,0.016); lamps.fireR.position.set(0,-0.012,0.245);
-	brow.add(lamps.caution,lamps.fireL,lamps.apufire,lamps.fireR);
-	brow.position.set(BROW.x, BROW.y, 0);
-	brow.children.forEach(m=>{ m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); });   // the painted face aft, toward the eye: the back of a lens reads mirrored
-	g.add(brow);
+	for(const [name,text,colour] of [["caution","MASTER\nCAUTION","#ffc23a"],["fireL","FIRE","#e23b2e"],["apufire","APU\nFIRE","#e23b2e"],["fireR","FIRE","#e23b2e"]]){
+		const [y,z,w,h]=BROW[name]; lamps[name]=legend(text,colour,w,h); lamps[name].position.set(-PUSHBUTTON,y,z); lamps[name].userData.rest=-PUSHBUTTON; brow.add(lamps[name]); }
+	brow.position.set(BROW.x,0,0);
+	brow.children.forEach(m=>{ m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); m.renderOrder=1; m.name="brow.lens"; });   // the painted face aft, toward the eye: the back of a lens reads mirrored; drawn after the plate behind it, as a lens writes no depth
+	g.add(brow); build_brow(g,lamps);
 	const handle=g.getObjectByName("Gear_handle_483"); const gear=new THREE.Group();
 	if(handle){ const p=new THREE.Vector3(); handle.getWorldPosition(p); g.worldToLocal(p);
 		lamps.transit=lamp(0xe23b2e,0.011,0.011); lamps.transit.position.set(0,0.045,0); lamps.transit.name="transitlamp";   // the lollipop: red while the gear travels
@@ -2420,12 +2475,12 @@ function build_lamps(g){
 	bow.add(lamps.lock,lamps.shoot); bow.position.set(PENDANT.x,PENDANT.y,PENDANT.z);
 	bow.children.forEach(m=>{ m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); }); g.add(bow);
 	// The barber poles in the FIRE lights' guards (NATOPS 2.14.4), shown while a light is pushed in: a strip under each lens,
-	// in their own group so the lights test and the dimming, which walk the lenses, leave them alone.
+	// inside its guard, in their own group so the lights test and the dimming, which walk the lenses, leave them alone.
 	{ const c=document.createElement("canvas"); c.width=64; c.height=8; const x=c.getContext("2d");
 		x.fillStyle="#f2c12e"; x.fillRect(0,0,64,8); x.fillStyle="#141414"; for(let k=-8;k<64;k+=8){ x.beginPath(); x.moveTo(k,8); x.lineTo(k+4,8); x.lineTo(k+8,0); x.lineTo(k+4,0); x.fill(); }
 		const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; const guard=new THREE.Group(), poles=[];
-		for(const z of [-0.245,0.245]){ const m=new THREE.Mesh(new THREE.PlaneGeometry(0.024,0.004),new THREE.MeshBasicMaterial({ map:t, side:THREE.DoubleSide, toneMapped:false }));
-			m.position.set(0,-0.0225,z); m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); m.visible=false; guard.add(m); poles.push(m); }
+		for(const name of ["fireL","fireR"]){ const [y,z,w,h]=BROW[name], m=new THREE.Mesh(new THREE.PlaneGeometry(w,0.004),new THREE.MeshBasicMaterial({ map:t, side:THREE.DoubleSide, toneMapped:false }));
+			m.position.set(-LENS,y-h/2-0.0028,z); m.rotateY(-Math.PI/2); m.layers.set(LAYER_OWN); m.visible=false; guard.add(m); poles.push(m); }
 		guard.position.copy(brow.position); g.add(guard); g.userData.poles=poles; }
 	g.userData.tested=[...new Set([...brow.children,...cautions.children,...Object.values(lamps)])];   // every light the lights test brings on: each lens on the glareshield and the caution panel, those with no legend too, and the rest of the lamps
 	g.userData.lamps=lamps; backlight_state=""; g.userData.lampsGroup=brow; }
@@ -2448,6 +2503,7 @@ function lamps_update(out){
 	const loop=fire_testing();   // the fire and bleed air test (#17, 2.14.5): all three FIRE lights and both BLEEDs
 	lamp_set(l.fireL,own_burn[0]>0||own_burning||loop); lamp_set(l.fireR,own_burn[1]>0||own_burning||loop); lamp_set(l.apufire,loop); lamp_set(l.bleedL,loop); lamp_set(l.bleedR,loop);
 	{ const p=ownship.group.userData.poles; if(p){ p[0].visible=secured[0]; p[1].visible=secured[1]; } }   // a FIRE light pushed in shows its barber pole
+	{ const f=ownship.group.userData.fires; if(f) f.forEach((k,i)=>{ const d=secured[i]?BROW_TRAVEL:0; k.lens.position.x=k.lens.userData.rest+d; k.body.position.z=-d; }); }   // and stays in (2.14.4, #140)
 	lamp_set(l.caution,caution_lamp);   // the latched MASTER CAUTION (#47) — its OWN conditions disagreed with the stack (a pounds/kg mix left FUEL LO dark)
 	// glareshield panels (#12): SAM, AAA and CW stay dark, the world having no missile site, gun radar or continuous-wave illuminator to light them, and the BLEEDs and APU FIRE light only in the fire test
 	lamp_set(l.spdbrk,(out[STATE.speedbrake]||0)>0.02);   // any time the board is off its stop (NATOPS 2.8.4.8.2, #9)
@@ -7917,6 +7973,8 @@ const PIT_CLICK_RADIUS=12;   // css px: the nearest-origin fallback's reach
 if(DEV_MODE) (globalThis as any).dev_centre=()=>({ keys:Object.fromEntries(Object.entries(CENTRE_KEYS).map(([name,[face,y,z]])=>[name,centre_point(face,y,z,BEZEL.lift+BEZEL.cap)])),   // dev: the centre panel's key faces and its knobs' and switches' seats, group frame (#139)
 	controls:Object.fromEntries([...Object.keys(CENTRE_KNOBS),...Object.keys(CENTRE_TOGGLES)].map(a=>[a,centre_seat(a).at])) });
 if(DEV_MODE) (globalThis as any).dev_key=(px,py)=>ufc_key_at(px,py);   // dev: the UFC key a click on a css pixel presses (#139)
+if(DEV_MODE) (globalThis as any).dev_brow=()=>{ const g=ownship.group, b=g.userData.lampsGroup; if(!b) return null; g.updateMatrixWorld(true);   // dev: each glareshield lens's centre, group frame (#140)
+	return b.children.map(m=>g.worldToLocal(m.getWorldPosition(new THREE.Vector3())).toArray().map(v=>Math.round(v*1e4)/1e4)); };
 // ---- the cockpit pointer (#105) ----
 // In the cockpit the mouse is the pilot's hand on the panel, so the pointer
 // shows while it moves and for a couple of seconds after; every other flying
@@ -8026,12 +8084,14 @@ function centre_letters(){ const most=1024, pad=4, cells={}; let cx=0, cy=0, row
 			x.fillText(line,cx0+cw/2,cy0+(two?(k===0?0.3:0.68):0.5)*ch); }); }
 	const tex=new THREE.CanvasTexture(canvas); tex.colorSpace=THREE.SRGBColorSpace; tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
 	return { tex, cells, size:[canvas.width,canvas.height] }; }
+// centre_lever: a toggle switch's lever, its pivot at the nut's face and its tip out toward the pilot along z.
+function centre_lever(){ const L=CENTRE_LEVER; return mergeGeometries([new THREE.CylinderGeometry(L.tip*0.8,L.base,L.length,20).rotateX(Math.PI/2).translate(0,0,L.length/2),new THREE.SphereGeometry(L.tip,20,14).translate(0,0,L.length)]); }
 function build_centre(g){
 	if(g.userData.centre&&g.userData.centre.parent===g) return;
 	const root=new THREE.Group(); root.name="centre"; const pointers={}, levers={}, plates={}, keys=[], letters=[], light=[], nuts=[];
 	const atlas=centre_letters(), ink=new THREE.MeshStandardMaterial({ color:BEZEL.dark, roughness:0.6, metalness:0 }), chrome=new THREE.MeshStandardMaterial({ color:CENTRE_COLOURS.lever, roughness:0.25, metalness:0.7 });
 	const lit=(map,more)=>{ const m=new THREE.MeshStandardMaterial({ map, emissiveMap:map, emissive:new THREE.Color(0xffffff), emissiveIntensity:lighting.instrument, roughness:0.8, metalness:0, ...more }); instrument_mats.push(m); return m; };   // the panel's integral lighting behind its legends, as gauge_material lights a dial
-	const lever=(()=>{ const L=CENTRE_LEVER; return mergeGeometries([new THREE.CylinderGeometry(L.tip*0.8,L.base,L.length,20).rotateX(Math.PI/2).translate(0,0,L.length/2),new THREE.SphereGeometry(L.tip,20,14).translate(0,0,L.length)]); })();   // its pivot at the nut's face, out toward the pilot
+	const lever=centre_lever();
 	const lettered=new THREE.Group();
 	for(const face of Object.keys(CENTRE)){ const f=CENTRE[face], n=Math.hypot(1,f.slope), group=new THREE.Group(); group.applyMatrix4(centre_frame(face)); group.name="centre."+face;
 		const at=(geo,y,z,depth)=>{ if(geo.index) geo=geo.toNonIndexed(); geo.clearGroups(); return geo.translate(z,y*n,depth); };

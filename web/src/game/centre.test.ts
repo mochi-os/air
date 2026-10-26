@@ -29,7 +29,7 @@ function decl(name: string): string {
   return m[0]
 }
 const tables = ['CENTRE', 'CENTRE_KEYS', 'CENTRE_KNOBS', 'CENTRE_TOGGLES', 'CENTRE_LEVER', 'CENTRE_LEGENDS', 'BEZEL', 'CENTRE_PIXELS', 'CENTRE_COLOURS', 'UFC_SCRATCH', 'UFC_OPTIONS', 'UFC_CHANNELS', 'SELECTOR_DETENTS'].map(decl).join('')
-const helpers = ['centre_point', 'centre_seat', 'centre_spots', 'centre_frame', 'centre_pose', 'centre_plate_draw', 'centre_letters', 'build_centre', 'centre_turn'].map(lift).join('')
+const helpers = ['centre_point', 'centre_seat', 'centre_spots', 'centre_frame', 'centre_pose', 'centre_plate_draw', 'centre_letters', 'centre_lever', 'build_centre', 'centre_turn'].map(lift).join('')
 
 type Face = { x: number; slope: number; y: [number, number]; z: [number, number]; below?: { y: [number, number]; z: [number, number] } }
 type Key = [string, number, number, number, number, string[]]
