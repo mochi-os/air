@@ -3,13 +3,17 @@
 
 Steps:
   1. drop SketchUp edge-line prims (no baseColorFactor -> glTF metallic=1 -> render black)
+  1c. plan the deck-edge catwalk runs: the long edges aft of the bows, less elevator openings,
+     keep boxes and sponsons
   2. clear the flight-deck band inside the traced outline (keep-boxed cabs, OLS bracket, radomes) with
      boundary-owned rules: +2 m ring on the long edges, exact outline at the round-downs; pokes-through,
      crest, island, elevator (ELEV_CLEAR: everything in the band dies) and life-raft (RAFT_ZONES:
-     everything dies, nothing regenerated) rules
+     the authored racks die whole) rules
+  2a. clear the authored walkway pieces on the planned catwalk runs
   3. one flat-across, sheer-following deck polygon textured with the decktex bake, plus a steel
      underside plate 0.10 m below (the strip is single-sided)
   4. deck-edge skirt, authored ICCS cab transplant, generated railings
+  4b. generated catwalks on the planned runs, and the life-raft racks hung on them
   5. strip empty meshes, GC-repack
 Wires, sheaves, shuttles, JBD animation, OLS lights and floods are engine-drawn.
 
@@ -17,8 +21,10 @@ REGEN CHAIN (order matters): build_carrier.py (writes outline.json) -> bake_deck
 -> build_carrier.py -> cp to web/src/assets/nimitz.glb + splice_outline.py + make. Needs cab38.npy/cab1.npy
 (extract_cab.py).
 
-Rules: the 1:200 GA plan is 2D truth for markings, the model is 3D truth, the fascia is generated. Life
-rafts are removed by decision - do not re-add without a design discussion. Every ship material is
+Rules: the 1:200 GA plan is 2D truth for markings, the model is 3D truth, the fascia is generated. The
+deck-edge catwalk and the life rafts are generated whole (4b) - never reuse the authored racks, which
+belong to the authored catwalk the rebuild deletes (v57-v74) - and edgecheck.py must pass after any
+change to 1c, 2a or 4b. Every ship material is
 single-sided: a generated face must be wound to face the viewer (add_soup restores the winding its
 deck-frame axis swap mirrors). A sky sighting: reproduce the in-game camera as a raycheck.py ray first. After rule changes
 compare the deleted/repainted counters against the previous run, run raycheck.py after any hull/skirt/deck
@@ -414,6 +420,104 @@ print(f"life-raft clusters: {len(RAFT_CLUSTERS)} (authored racks killed in-zone,
 # RACK_MATS gate removed: the zone kill is material-blind (brackets span many materials)
 
 
+# --- 1c. deck-edge catwalk plan ---
+# One generated catwalk (4b) runs along every long-edge stretch that is not an elevator
+# opening, a keep box or a sponson; 2a clears the authored walkway pieces there (ledges,
+# rails, gratings, fittings) so the two never stand side by side. Below the deck the hull
+# is never outboard of the deck edge, so authored geometry wholly outboard of the skirt
+# within the skirt's band is walkway, never hull. Planned before the band clear so the
+# retention audit (audit.py) can classify what 2a removes.
+WALK_DROP=1.5      # catwalk floor top below the deck rim
+WALK_WIDTH=1.3     # skirt face to the catwalk's outer edge
+WALK_THICK=0.10
+WALK_RAIL=1.05     # railing height above the floor
+WALK_REACH=2.5     # how far out the catwalk and its raft racks reach
+WALK_CLEAR=3.6     # authored walkway out to here goes
+WALK_FORE=105      # the bows keep their authored walkways: they follow the flare out to 2.9 m, where a
+                   # generated catwalk at a fixed drop cuts through them
+ELEVATORS=[(11,35,1),(-33,-11,1),(-111,-89,1),(-119,-93,-1)]   # deck-edge elevator openings (fa span, side), as engine.ts marks their edges
+def side_line(s):
+    # one long edge of the outline, stern to bow: s=+1 starboard (OUT[:NS]), -1 port
+    ix=list(range(NS)) if s>0 else list(range(2*NS-1,NS-1,-1))
+    return np.array([OUT[i] for i in ix],np.float64), np.array([RIMH[i] for i in ix],np.float64)
+def side_normals(P,s):
+    d=P[1:]-P[:-1]; L=np.hypot(d[:,0],d[:,1])
+    n=np.stack([-d[:,1],d[:,0]],1)/L[:,None]
+    return n*np.where(n[:,1]*s<0,-1.0,1.0)[:,None], L
+def project(P,n,f,l):
+    # nearest segment of polyline P for each point: (segment, along 0..1, signed outboard offset)
+    a=P[:-1]; d=P[1:]-a; L2=(d**2).sum(1)+1e-12
+    seg=np.empty(len(f),int); t=np.empty(len(f)); off=np.empty(len(f))
+    for c0 in range(0,len(f),4000):
+        ff=f[c0:c0+4000,None]; ll=l[c0:c0+4000,None]
+        tt=np.clip(((ff-a[:,0])*d[:,0]+(ll-a[:,1])*d[:,1])/L2,0,1)
+        qf=a[:,0]+tt*d[:,0]; ql=a[:,1]+tt*d[:,1]
+        k=np.hypot(ff-qf,ll-ql).argmin(1); r=np.arange(len(k))
+        seg[c0:c0+4000]=k; t[c0:c0+4000]=tt[r,k]
+        off[c0:c0+4000]=(ff[:,0]-qf[r,k])*n[k,0]+(ll[:,0]-ql[r,k])*n[k,1]
+    return seg,t,off
+def authored_vertices():
+    # every authored vertex in the deck frame (fa, lat, h), as the model stands now
+    out=[]
+    for mi2,nis in inst.items():
+        for p in G['meshes'][mi2]['primitives']:
+            pos_ai=p['attributes'].get('POSITION')
+            if pos_ai is None: continue
+            v=readA(pos_ai).astype(np.float64)
+            if 'indices' in p: v=v[np.unique(readA(p['indices']).ravel())]
+            for ni in nis:
+                w=(world[ni][:3,:3]@v.T).T+world[ni][:3,3]
+                out.append(np.stack([(w[:,0]-CX)*S,(w[:,2]-CZ)*S,(w[:,1]-DECKY)*S],1))
+    return np.concatenate(out)
+def in_boxes(f,l,boxes,pad=0.0):
+    m=np.zeros(len(f),bool)
+    for f0,f1,l0,l1 in boxes: m|=(f>f0-pad)&(f<f1+pad)&(l>l0-pad)&(l<l1+pad)
+    return m
+AV=authored_vertices()
+WALK_OK={}
+for s in (1,-1):
+    P,H=side_line(s); n,L=side_normals(P,s)
+    ok=(np.abs(n[:,1])>=0.5)&(np.maximum(P[:-1,0],P[1:,0])<=WALK_FORE)&(np.minimum(P[:-1,0],P[1:,0])>=-164)   # the long edges, not the bow or stern ends
+    for f0,f1,es in ELEVATORS:
+        if es==s: ok&=~((np.maximum(P[:-1,0],P[1:,0])>f0-0.5)&(np.minimum(P[:-1,0],P[1:,0])<f1+0.5))
+    V=AV[(np.sign(AV[:,1])==s)&(np.abs(AV[:,1])>5)&(AV[:,2]>-6.0)&(AV[:,2]<1.8)]
+    seg,t,off=project(P,n,V[:,0],V[:,1]); rim=H[seg]+t*(H[seg+1]-H[seg])
+    # protected geometry (radomes, cabs, OLS bracket, dome platforms) inside the catwalk's space
+    kept=in_boxes(V[:,0],V[:,1],KEEP+DOME_PLATFORMS)&(off>-0.05)&(off<WALK_REACH+0.1)&(V[:,2]>rim-2.3)&(V[:,2]<rim+0.2)
+    ok[np.unique(seg[kept])]=False
+    # a sponson: structure reaching past the clear, or hanging below the catwalk band -
+    # clearing round it would cut it in two, so the catwalk stops a segment short
+    beyond=(off>=WALK_CLEAR)&(off<=12)&(V[:,2]>rim-4.5)&(V[:,2]<rim+1.0)
+    below=(off>=0.3)&(off<WALK_CLEAR)&(V[:,2]>rim-4.5)&(V[:,2]<rim-2.2)
+    ok[np.where((np.bincount(seg[beyond],minlength=len(ok))>=20)|(np.bincount(seg[below],minlength=len(ok))>=20))[0]]=False
+    # what reaches from these into the segments either side (a radome's platform, a sponson's
+    # deck) is the per-piece crossing and overlap test's to find (4b), not a blanket margin
+    WALK_OK[s]=ok
+def walkway_zones(vf,vl,vh,planned=True):
+    # per point: (in the walkway space, in the walkway band) - the space is outboard of the
+    # skirt; the band is the same height range reaching 1 m inboard of it. planned=True
+    # also requires a planned catwalk run there.
+    inside=np.zeros(len(vf),bool); band=np.zeros(len(vf),bool)
+    for s in (1,-1):
+        P,H=side_line(s); n,_=side_normals(P,s)
+        m=np.where((np.sign(vl)==s)&(np.abs(vl)>5))[0]
+        if not len(m): continue
+        seg,t,off=project(P,n,vf[m],vl[m])
+        rim=H[seg]+t*(H[seg+1]-H[seg])
+        ok=(vh[m]>rim-2.2)&(vh[m]<rim+0.15)&~in_boxes(vf[m],vl[m],KEEP+DOME_PLATFORMS)
+        if planned: ok&=WALK_OK[s][seg]
+        inside[m]=ok&(off>0.1)&(off<WALK_CLEAR)
+        band[m]=ok&(off>-1.0)&(off<WALK_CLEAR)
+    return inside,band
+def in_walkway(tri_f,tri_l,tri_h):
+    # triangles (N, 3 corners) 2a clears: centred on a planned run, wholly in the walkway band
+    # and reaching into the walkway space. Walkway floors that run on under the deck edge go
+    # too: under the deck the skirt hides them, and left in place they sit in the catwalk's
+    # own plane. Judged by the centre, so a plate at a run's end goes whole.
+    i,b=walkway_zones(tri_f.ravel(),tri_l.ravel(),tri_h.ravel(),planned=False)
+    ci,cb=walkway_zones(tri_f.mean(1),tri_l.mean(1),tri_h.mean(1))
+    return cb&b.reshape(-1,3).all(1)&i.reshape(-1,3).any(1)
+
 # --- 2. the deck-band clear ---
 deleted=0; resplit=0
 for mi2,nis in inst.items():
@@ -546,6 +650,31 @@ for mi2,nis in inst.items():
             p['indices']=addidx(keep_tris.ravel().astype(np.uint32))
     mesh['primitives'].extend(newprims)
 print(f"band clear: deleted {deleted}, repainted {resplit}")
+
+# --- 2a. walkway clear (the plan is 1c) ---
+walked=0
+for mi2,nis in inst.items():
+    mesh=G['meshes'][mi2]
+    for p in list(mesh['primitives']):
+        pos_ai=p['attributes'].get('POSITION')
+        if pos_ai is None: continue
+        v=readA(pos_ai).astype(np.float64)
+        idx=readA(p['indices']).ravel().astype(np.int64) if 'indices' in p else np.arange(len(v),dtype=np.int64)
+        idx=idx[:len(idx)//3*3]
+        if not len(idx): continue
+        killall=None
+        for ni in nis:
+            w=(world[ni][:3,:3]@v.T).T+world[ni][:3,3]
+            vf=(w[:,0]-CX)*S; vl=(w[:,2]-CZ)*S; vh=(w[:,1]-DECKY)*S
+            ti=idx.reshape(-1,3)
+            kill=in_walkway(vf[ti],vl[ti],vh[ti])
+            killall=kill if killall is None else (killall&kill)
+        if killall is None or not killall.any(): continue
+        walked+=int(killall.sum())
+        keep_tris=idx.reshape(-1,3)[~killall]
+        if len(keep_tris): p['indices']=addidx(keep_tris.ravel().astype(np.uint32))
+        else: mesh['primitives'].remove(p)
+print(f"walkway clear: deleted {walked}; catwalk segments {int(WALK_OK[1].sum())} starboard, {int(WALK_OK[-1].sum())} port")
 
 # --- 2b. interior purge: delete polygons invisible from anywhere outside ---
 # Voxelize occupancy (0.75 m), flood "outside air" from the bounds (flows through real
@@ -783,7 +912,287 @@ for i in range(NPOLY):
     skirt+=[p0,p1,p3, p0,p3,p2,  p0,p3,p1, p0,p2,p3]   # both windings -> double-sided
 add_soup(np.array(skirt,dtype=np.float64), GREY, 'deck_skirt', True)
 
-# --- 3. the deck polygon + texture: FLAT-ISH, NOT HORIZONTAL ---
+# --- 4b. deck-edge catwalks and life-raft racks ---
+# Generated whole, on the runs 2a planned: a solid floor hung on the skirt WALK_DROP
+# below the rim, a railing along its outer edge with returns at each end, braces down to
+# the skirt, and in the authored raft zones racks of canisters stacked two high on the
+# rail side. Every piece is a convex solid wound away from its own centre, and every
+# rack is a rigid straight unit on a straight stretch of edge - nothing bends to follow
+# the deck.
+RAFT_LEN=1.65; RAFT_R=0.45; RAFT_GAP=0.06; RAFT_RACK=5; RAFT_RACK_GAP=0.25; RAFT_COUNT=242   # 65 x 35 in canisters, 25-person rafts
+# where racks may go (fa spans per side): every catwalk aft of the bows, which the
+# 2013-2017 photographs show bare. The full complement needs nearly all of it; if the
+# catwalks hold more, columns are dropped evenly down to RAFT_COUNT.
+RAFT_RUNS={1:[(-170,97)], -1:[(-170,97)]}
+def outward(t,centres):
+    # wind each triangle away from its piece's centre (one centre, or one per triangle)
+    t=np.array(t,np.float64).reshape(-1,3,3)
+    c=np.broadcast_to(np.asarray(centres,np.float64),(len(t),3))
+    nrm=np.cross(t[:,1]-t[:,0],t[:,2]-t[:,0])
+    flip=((t.mean(1)-c)*nrm).sum(1)<0
+    t[flip]=t[flip][:,[0,2,1]]
+    return t.reshape(-1,3)
+def hexa(c8,caps=True):
+    # convex hexahedron: c8[0:4] one end, c8[4:8] the other, corners in the same order
+    b=c8[:4]; u=c8[4:]
+    quads=[(b[i],b[(i+1)%4],u[(i+1)%4],u[i]) for i in range(4)]+([(b[0],b[1],b[2],b[3]),(u[0],u[1],u[2],u[3])] if caps else [])
+    return outward([v for a,bb,c,d in quads for v in (a,bb,c,a,c,d)],np.mean(c8,0))
+def bar(p0,p1,w,h,ref,caps=False):
+    # a w x h bar from p0 to p1; ref is a direction the w side lies along when the bar is vertical
+    p0=np.asarray(p0,float); p1=np.asarray(p1,float); a=(p1-p0)/np.linalg.norm(p1-p0)
+    up=np.array([0,0,1.0]) if abs(a[2])<0.9 else np.asarray(ref,float)
+    s1=np.cross(a,up); s1/=np.linalg.norm(s1); s2=np.cross(a,s1)
+    return hexa(np.array([p+e1*s1*w/2+e2*s2*h/2 for p in (p0,p1) for e1,e2 in ((1,1),(-1,1),(-1,-1),(1,-1))]),caps)
+def add_mesh(pos,nrm,tri,mat_idx,name):
+    # an indexed, smooth-normalled mesh from the deck frame (fa, lat, h); the frame swap is a
+    # mirror, so the winding is reversed on the way out, as add_soup does
+    global B
+    wpos=np.stack([CX+pos[:,0]/S,DECKY+pos[:,2]/S,CZ+pos[:,1]/S],1).astype(np.float32)
+    wnrm=np.stack([nrm[:,0],nrm[:,2],nrm[:,1]],1).astype(np.float32)
+    idx=np.asarray(tri,np.uint32)[:,[0,2,1]].ravel()
+    ais=[]
+    for arr,target,ctype,typ in ((wpos,34962,5126,'VEC3'),(wnrm,34962,5126,'VEC3'),(idx,34963,5125,'SCALAR')):
+        while len(B)%4: B.append(0)
+        o=len(B); B.extend(arr.tobytes())
+        bvs.append({'buffer':0,'byteOffset':o,'byteLength':arr.nbytes,'target':target})
+        a={'bufferView':len(bvs)-1,'byteOffset':0,'componentType':ctype,'count':len(arr),'type':typ}
+        if typ=='VEC3' and not ais: a['min']=[float(x) for x in arr.min(0)]; a['max']=[float(x) for x in arr.max(0)]
+        acc.append(a); ais.append(len(acc)-1)
+    G['meshes'].append({'name':name,'primitives':[{'attributes':{'POSITION':ais[0],'NORMAL':ais[1]},'indices':ais[2],'material':mat_idx}]})
+    nodes.append({'name':name,'mesh':len(G['meshes'])-1})
+    G['scenes'][G.get('scene',0)]['nodes'].append(len(nodes)-1)
+def canister(centre,e,o,pos,nrm,tri,straps):
+    # a canister lying along e (horizontal), o its horizontal outward: domed ends, two straps
+    z=np.array([0,0,1.0]); k=8; ang=np.arange(k)*2*np.pi/k
+    ring=lambda x,r,ax: [(centre+x*e+r*(np.cos(q)*o+np.sin(q)*z), np.cos(ax)*(np.cos(q)*o+np.sin(q)*z)+np.sin(ax)*np.sign(x)*e) for q in ang]
+    L=RAFT_LEN/2; R=RAFT_R
+    rings=[ring(-L+0.10,0.80*R,0.8),ring(-L+0.24,R,0.0),ring(L-0.24,R,0.0),ring(L-0.10,0.80*R,0.8)]
+    base=len(pos)
+    for rg in rings:
+        for p,n_ in rg: pos.append(p); nrm.append(n_/np.linalg.norm(n_))
+    for tipx,sgn in ((-L,-1),(L,1)): pos.append(centre+tipx*e); nrm.append(sgn*e)
+    t0,t1=base+4*k,base+4*k+1
+    for r_ in range(3):
+        for j in range(k):
+            a0=base+r_*k+j; a1=base+r_*k+(j+1)%k; b0=a0+k; b1=a1+k
+            tri+=[(a0,b0,b1),(a0,b1,a1)]
+    for j in range(k):
+        tri+=[(t0,base+(j+1)%k,base+j),(t1,base+3*k+j,base+3*k+(j+1)%k)]
+    for x in (-0.45,0.45):   # straps: short open tubes just proud of the shell
+        c0=centre+(x-0.035)*e; c1=centre+(x+0.035)*e; rr=R+0.012
+        q4=[(c+rr*(np.cos(q)*o+np.sin(q)*z)) for c in (c0,c1) for q in ang]
+        for j in range(k):
+            a0,a1,b0,b1=q4[j],q4[(j+1)%k],q4[k+j],q4[k+(j+1)%k]
+            straps.extend(outward([a0,b0,b1,a0,b1,a1],centre+x*e))
+def fix_winding(pos,tri,axis_point,axis_dir):
+    # every canister triangle faces away from its axis
+    P_=np.array(pos); out=[]
+    for a,b,c in tri:
+        n_=np.cross(P_[b]-P_[a],P_[c]-P_[a]); m=(P_[a]+P_[b]+P_[c])/3
+        q=axis_point+np.dot(m-axis_point,axis_dir)*axis_dir
+        out.append((a,b,c) if np.dot(n_,m-q)>=0 else (a,c,b))
+    return out
+WALK_MAT=matbyname['material_42']; RAFT_MAT=matbyname['material_37']; STRAP_MAT=matbyname['Charcoal']
+floor=[]; rails=[]; braces=[]; racks=[]; straps=[]; cpos=[]; cnrm=[]; ctri=[]
+AV2=authored_vertices()
+def authored_triangles():
+    # every authored triangle in the deck frame (fa, lat, h), as the model stands now
+    out=[]
+    for mi2,nis in inst.items():
+        for p in G['meshes'][mi2]['primitives']:
+            pos_ai=p['attributes'].get('POSITION')
+            if pos_ai is None: continue
+            v=readA(pos_ai).astype(np.float64)
+            idx=readA(p['indices']).ravel().astype(np.int64) if 'indices' in p else np.arange(len(v))
+            idx=idx[:len(idx)//3*3]
+            for ni in nis:
+                w=(world[ni][:3,:3]@v.T).T+world[ni][:3,3]
+                out.append(np.stack([(w[:,0]-CX)*S,(w[:,2]-CZ)*S,(w[:,1]-DECKY)*S],1)[idx].reshape(-1,3,3))
+    return np.concatenate(out)
+AT=authored_triangles(); ATC=AT.mean(1)
+def wall_at(p2,m2,h0,h1,span):
+    # the ship's side here: the furthest authored surface out along m2 from the outline point
+    # p2, 0 to 1.2 m, standing over the whole height h0..h1 (a wall that stops partway is not
+    # one to hang a catwalk on), sampled span either way along the edge - the catwalk starts
+    # there, not inside it
+    near=np.where(np.hypot(ATC[:,0]-p2[0],ATC[:,1]-p2[1])<6)[0]
+    if not len(near): return 0.0
+    a=AT[near,0]; e1=AT[near,1]-a; e2=AT[near,2]-a; best=0.0
+    dv=np.array([m2[0],m2[1],0.0]); dv/=np.linalg.norm(dv)
+    pv=np.cross(dv,e2); det=np.einsum('ij,ij->i',e1,pv); mk=np.abs(det)>1e-12
+    inv=np.zeros_like(det); inv[mk]=1/det[mk]
+    for side in ((-span,0.0,span) if span else (0.0,)):   # a little along the edge either way
+        reach=None
+        for hh in sorted({h0,h1}):
+            o=np.array([p2[0],p2[1],hh])+side*np.array([-dv[1],dv[0],0.0])-dv*0.3; s_=o-a
+            u=np.einsum('ij,ij->i',s_,pv)*inv; q=np.cross(s_,e1); w=np.einsum('j,ij->i',dv,q)*inv; t=np.einsum('ij,ij->i',e2,q)*inv
+            hit=mk&(u>=0)&(w>=0)&(u+w<=1)&(t>0.3)&(t<1.5)
+            r=float(t[hit].max())-0.3 if hit.any() else None
+            reach=r if reach is None else (None if r is None else min(reach,r))
+            if reach is None: break
+        if reach is not None: best=max(best,reach)
+    return best
+def flat_overlap(T,quad,h0,h1):
+    # a flat authored plate lying in a catwalk slab (h0 bottom .. h1 top, within 6 cm) over its
+    # footprint: the two would z-fight, and a segment test cannot see a plane it lies in
+    n_=np.cross(T[:,1]-T[:,0],T[:,2]-T[:,0]); nl=np.linalg.norm(n_,axis=1)+1e-12
+    flat=(np.abs(n_[:,2])/nl>0.97)&(T[:,:,2].min(1)>h0-0.06)&(T[:,:,2].max(1)<h1+0.06)
+    for t in T[flat]:
+        if polygons_overlap(t[:,:2],quad): return True
+    return False
+def polygons_overlap(a,b):
+    # two convex polygons (2D, any winding) overlap: separating-axis test
+    for poly in (a,b):
+        for i in range(len(poly)):
+            e=poly[(i+1)%len(poly)]-poly[i]; ax=np.array([-e[1],e[0]])
+            pa=a@ax; pb=b@ax
+            if pa.max()<=pb.min()+1e-4 or pb.max()<=pa.min()+1e-4: return False
+    return True
+def slab_crosses(a0,a1,b1,b0,t0,t1):
+    # does a catwalk piece (inner a0-a1, outer b0-b1, top heights t0/t1) cross an authored
+    # triangle: its slab edges, a diagonal, its railing posts and the walking space over its
+    # inner edge, as segments against the ship
+    c=[np.array([*a0,t0]),np.array([*a1,t1]),np.array([*b1,t1]),np.array([*b0,t0])]
+    lo=[q-np.array([0,0,WALK_THICK]) for q in c]; up=[np.array([*q[:2],q[2]+WALK_RAIL]) for q in c[2:]]
+    upin=[np.array([*q[:2],q[2]+WALK_RAIL]) for q in c[:2]]   # the walking space over the inner edge
+    segs=[(c[i],c[(i+1)%4]) for i in range(4)]+[(lo[i],lo[(i+1)%4]) for i in range(4)]+[(c[i],lo[i]) for i in range(4)]+[(c[0],c[2]),(c[2],up[0]),(c[3],up[1]),(up[0],up[1]),(c[0],upin[0]),(c[1],upin[1]),(upin[0],upin[1])]
+    mid=np.mean(c,0); near=np.where(np.linalg.norm(ATC-mid,axis=1)<6)[0]
+    if not len(near): return False
+    if flat_overlap(AT[near],np.array([a0,a1,b1,b0]),min(t0,t1)-WALK_THICK,max(t0,t1)): return True
+    a=AT[near,0]; e1=AT[near,1]-a; e2=AT[near,2]-a
+    for p0,p1 in segs:
+        dv=p1-p0; L=np.linalg.norm(dv); dv=dv/L
+        pv=np.cross(dv,e2); det=np.einsum('ij,ij->i',e1,pv); m=np.abs(det)>1e-12
+        inv=np.zeros_like(det); inv[m]=1/det[m]; s_=p0-a
+        u=np.einsum('ij,ij->i',s_,pv)*inv; q=np.cross(s_,e1); w=np.einsum('j,ij->i',dv,q)*inv; t=np.einsum('ij,ij->i',e2,q)*inv
+        if (m&(u>=0)&(w>=0)&(u+w<=1)&(t>0.002)&(t<L-0.002)).any(): return True
+    return False
+def build_run(s,zones,A,Bv,top,Np,Mp,Hp):
+    # one stretch of catwalk: floor, railing, braces, end returns and its raft columns
+    P,H=side_line(s); n,_=side_normals(P,s)
+    for j in range(len(A)-1):   # floor: one closed slab per piece, 1 mm apart
+        e=(A[j+1]-A[j])/np.linalg.norm(A[j+1]-A[j])*0.0005
+        c8=[]
+        for hh in (0.0,-WALK_THICK):
+            for pt,tt in ((A[j]+e,top[j]),(A[j+1]-e,top[j+1]),(Bv[j+1]-e,top[j+1]),(Bv[j]+e,top[j])):
+                c8.append([pt[0],pt[1],tt+hh])
+        floor.extend(hexa(np.array(c8)))
+    # the outer edge as a polyline with its arc length, for the railing, braces and racks
+    seg_len=np.hypot(*np.diff(Bv,axis=0).T); arc=np.r_[0,np.cumsum(seg_len)]; total=arc[-1]
+    def at(d):
+        i=int(np.clip(np.searchsorted(arc,d,side='right')-1,0,len(seg_len)-1)); t=(d-arc[i])/max(seg_len[i],1e-9)
+        return Bv[i]+(Bv[i+1]-Bv[i])*t, top[i]+(top[i+1]-top[i])*t, Np[i], Hp[i]+(Hp[i+1]-Hp[i])*t, A[i]+(A[i+1]-A[i])*t
+    RIN=0.05   # the railing stands this far inboard of the floor's outer edge
+    def rail_line(o,i):   # RIN in from the outer edge, along the piece's own inner-to-outer line
+        return o-(o-i)*(RIN/WALK_WIDTH)
+    for j in range(len(A)-1):   # top and middle rails
+        for hh in (WALK_RAIL-0.02,WALK_RAIL*0.52):
+            rails.extend(bar([*rail_line(Bv[j],A[j]),top[j]+hh],[*rail_line(Bv[j+1],A[j+1]),top[j+1]+hh],0.05,0.05,[0,0,1]))
+    npost=max(2,int(round(total/1.4))+1)
+    for q in np.linspace(0,total,npost):
+        p_,tp,nn,_,inner=at(q)
+        rails.extend(bar([*rail_line(p_,inner),tp],[*rail_line(p_,inner),tp+WALK_RAIL],0.06,0.06,[nn[1],-nn[0],0],caps=True))
+    for q in np.linspace(0.6,total-0.6,max(2,int(total/3.0)+1)):   # braces from the floor's outer underside down to the ship's side
+        p_,tp,nn,rim,inner=at(q)
+        foot_h=rim-SKIRT_DROP+0.05   # the skirt's foot; where the side stands further out, the side at that height
+        sg,tt,_=project(P,n,np.array([inner[0]]),np.array([inner[1]]))
+        edge=P[sg[0]]+tt[0]*(P[sg[0]+1]-P[sg[0]])
+        foot=edge+nn*(wall_at(edge,nn,foot_h,foot_h,0.0)+0.03)
+        braces.extend(bar([*(p_-nn*0.15),tp-WALK_THICK],[*foot,foot_h],0.06,0.06,[nn[1],-nn[0],0],caps=True))
+    for j in (0,len(A)-1):   # end returns: rails from the outer edge back to the side
+        for hh in (WALK_RAIL-0.02,WALK_RAIL*0.52):
+            rails.extend(bar([*rail_line(Bv[j],A[j]),top[j]+hh],[*(A[j]+Mp[j]*0.03),top[j]+hh],0.05,0.05,[0,0,1]))
+        rails.extend(bar([*(A[j]+Mp[j]*0.06),top[j]],[*(A[j]+Mp[j]*0.06),top[j]+WALK_RAIL],0.06,0.06,[Mp[j][1],-Mp[j][0],0],caps=True))
+    # raft columns along this run, inside a raft zone, on straight stretches, clear of authored geometry
+    d=0.2; placed=0   # clear of the end returns
+    while d+RAFT_LEN<=total-0.2:
+        p0=at(d)[0]; p1=at(d+RAFT_LEN)[0]; chord=p1-p0; cl=np.linalg.norm(chord); e2=chord/cl
+        if not any(f0<=min(p0[0],p1[0]) and max(p0[0],p1[0])<=f1 for f0,f1 in zones): d+=0.25; continue
+        inner=[at(x)[0] for x in np.linspace(d,d+RAFT_LEN,7)]
+        dev=max(abs(e2[0]*(q[1]-p0[1])-e2[1]*(q[0]-p0[0])) for q in inner)
+        if dev>0.08: d+=0.25; continue   # a straight rack on a gently curving edge: at most 8 cm off it
+        o2=np.array([e2[1],-e2[0]]); o2*=np.sign(np.dot(o2,at(d+RAFT_LEN/2)[2]))
+        ends=np.array([p0,p1])+o2*(0.08+RAFT_R)   # the canisters' end points
+        sg,tt,_=project(P,n,ends[:,0],ends[:,1])
+        q=P[sg]+tt[:,None]*(P[sg+1]-P[sg]); ec=(q[1]-q[0])/np.linalg.norm(q[1]-q[0])
+        if abs(e2[0]*ec[1]-e2[1]*ec[0])>np.sin(np.radians(1.9)): d+=0.25; continue   # and along the deck edge under them (edgecheck allows 2)
+        rim=at(d+RAFT_LEN/2)[3]
+        hu=rim-0.05-RAFT_R; hl=hu-2*RAFT_R-0.08
+        rel=AV2[:,:2]-p0; ax=rel@e2; ou=rel@o2
+        clash=(ax>-0.1)&(ax<cl+0.1)&(ou>-0.05)&(ou<2*RAFT_R+0.2)&(AV2[:,2]>hl-RAFT_R-0.2)&(AV2[:,2]<hu+RAFT_R+0.1)
+        if clash.any(): d+=0.25; continue
+        columns.append((s,p0,e2,o2,cl,hu,hl)); placed+=1
+        d+=RAFT_LEN+RAFT_GAP+(RAFT_RACK_GAP if placed%RAFT_RACK==0 else 0)
+columns=[]   # (side, chord start, chord end, rim, outward)
+for s in (1,-1):
+    P,H=side_line(s); n,Lseg=side_normals(P,s); ok=WALK_OK[s]
+    k=0; runs=[]
+    while k<len(ok):
+        if not ok[k]: k+=1; continue
+        k1=k
+        while k1<len(ok) and ok[k1]: k1+=1
+        if Lseg[k:k1].sum()>=6.0: runs.append((k,k1))   # segments k..k1-1, vertices k..k1; shorter is a stub between sponsons
+        k=k1
+    zones=RAFT_RUNS[s]
+    for k0,k1 in runs:
+        V=np.arange(k0,k1+1)
+        m=np.zeros((len(V),2))
+        for j,v in enumerate(V):   # mitred outward normals: constant width round the bends
+            na=n[max(v-1,k0)]; nb=n[min(v,k1-1)]
+            m[j]=(na+nb)/max(1+np.dot(na,nb),0.5)
+        # the run resampled about every metre, each point measured against the ship's side
+        # (the hull fascia stands up to 0.6 m outboard of the outline in places, and varies
+        # along a segment): the catwalk starts on whichever is further out, skirt or side
+        Pp=[]; Mp=[]; Hp=[]; Sp=[]
+        for j in range(len(V)-1):
+            v=V[j]; nsub=max(1,int(np.ceil(Lseg[v]/1.0)))
+            for q in range(nsub):
+                t=q/nsub; Pp.append(P[v]+(P[v+1]-P[v])*t); Hp.append(H[v]+(H[v+1]-H[v])*t)
+                Mp.append(m[j] if q==0 else n[v]); Sp.append(v)
+        Pp.append(P[V[-1]]); Hp.append(H[V[-1]]); Mp.append(m[-1]); Sp.append(V[-1]-1)
+        Pp=np.array(Pp); Mp=np.array(Mp); Hp=np.array(Hp); Np=n[np.array(Sp)]
+        top=Hp-WALK_DROP
+        wall=np.array([wall_at(Pp[j],Mp[j],top[j]-WALK_THICK,top[j]+0.05,0.5) for j in range(len(Pp))])   # at the floor's own height
+        A=Pp+Mp*(wall[:,None]+0.01); Bv=A+Mp*WALK_WIDTH
+        # a piece whose slab would cross the ship (a sloping fascia, a platform) is left out
+        # and the run split round it: the catwalk never passes through anything
+        good=[not slab_crosses(A[j],A[j+1],Bv[j+1],Bv[j],top[j],top[j+1]) for j in range(len(Pp)-1)]
+        j0=0
+        while j0<len(good):
+            if not good[j0]: j0+=1; continue
+            j1=j0
+            while j1<len(good) and good[j1]: j1+=1
+            sl=slice(j0,j1+1)   # points j0..j1
+            if np.hypot(*np.diff(Bv[sl],axis=0).T).sum()>=2.0:
+                build_run(s,zones,A[sl],Bv[sl],top[sl],Np[sl],Mp[sl],Hp[sl])
+            j0=j1
+cap=len(columns)
+if 2*cap>RAFT_COUNT:   # more room than rafts: drop columns evenly so the racks keep their spacing
+    keep=set(np.round(np.linspace(0,cap-1,RAFT_COUNT//2)).astype(int))
+    columns=[c for i,c in enumerate(columns) if i in keep]
+for s,p0,e2,o2,cl,hu,hl in columns:
+    E=np.array([e2[0],e2[1],0.0]); O=np.array([o2[0],o2[1],0.0]); base=np.array([p0[0],p0[1],0.0])
+    uc=0.08+RAFT_R   # canister centre: outboard of the inner uprights, clear of the railing
+    for hh in (hu,hl):
+        c=base+E*(cl/2)+O*uc+np.array([0,0,hh])
+        t0=len(ctri); canister(c,E,O,cpos,cnrm,ctri,straps)
+        ctri[t0:]=fix_winding(cpos,ctri[t0:],c,E)
+    for a in (0.18*cl,0.82*cl):
+        foot=base+E*a
+        for uu in (0.03,2*RAFT_R+0.13):   # inner and outer uprights, floor to the upper canister
+            racks.extend(bar(foot+O*uu+np.array([0,0,hl-RAFT_R-0.10]),foot+O*uu+np.array([0,0,hu]),0.06,0.06,E))
+        for hh in (hu,hl):   # cradle arms, their tops at the canister's underside
+            racks.extend(bar(foot+np.array([0,0,hh-RAFT_R-0.03]),foot+O*(2*RAFT_R+0.16)+np.array([0,0,hh-RAFT_R-0.03]),0.06,0.06,E))
+cpos=np.array(cpos); cnrm=np.array(cnrm); ctri=np.array(ctri)
+add_soup(np.array(floor),WALK_MAT,'catwalk',True)
+add_soup(np.array(rails),RAIL,'catwalk_railings',True)
+add_soup(np.array(braces),GREY,'catwalk_braces',True)
+if len(columns):
+    add_soup(np.array(racks),GREY,'raft_racks',True)
+    add_soup(np.array(straps),STRAP_MAT,'raft_straps',True)
+    add_mesh(cpos,cnrm,ctri,RAFT_MAT,'raft_canisters')
+print(f"catwalks: {len(floor)//3} floor, {len(rails)//3} railing, {len(braces)//3} brace triangles; "
+      f"rafts: {2*len(columns)} canisters on {len(columns)} columns (room for {2*cap}), {len(ctri)+len(straps)//3+len(racks)//3} triangles")
 # Give each strip vertex the measured hull rim height, smoothed along the outline — the deck
 # stays smooth and effectively flat but meets the hull rim flush (no lip, no sawtooth).
 rim_h=np.array(RIMH)

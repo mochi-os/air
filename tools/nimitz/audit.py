@@ -1,13 +1,15 @@
 """Retention audit: baseline (post-squash, post-edge-purge) vs the built nimitz-clean.glb. Execs
 build_carrier.py's front half so the rule volumes are the build's own, looks every baseline triangle up
 in the built model, and classifies each missing one as an intended kill (raft zone, deck band, elevator
-clear, fence/dome, OLS trim) or UNEXPLAINED. Review the UNEXPLAINED bucket; it should stay tiny."""
+clear, fence/dome, OLS trim, walkway clear) or UNEXPLAINED. Review the UNEXPLAINED bucket; it should stay
+tiny. The walkway-clear bucket is listed by material and height too: it should hold walkway pieces only."""
 import json, struct
 import numpy as np
 from collections import defaultdict
 
 # exec the build front half: parses ORIG, purges edge lines, applies the squash,
-# defines KEEP/FENCE_KILL/OLS_TRIM/ELEV_CLEAR/RAFT_ZONES/arc_project/inpoly/polygons
+# defines KEEP/FENCE_KILL/OLS_TRIM/ELEV_CLEAR/RAFT_ZONES/arc_project/inpoly/polygons and the
+# catwalk plan (in_walkway)
 exec(open('build_carrier.py').read().split("# --- 2. the deck-band clear ---")[0].replace("print(","_p=("))
 
 def tri_keys_from_state():
@@ -30,7 +32,7 @@ def tri_keys_from_state():
                 for i2 in range(len(t)):
                     kk=(int(k[i2,0]),int(k[i2,1]),int(k[i2,2]))
                     keys.setdefault(kk,[]).append(len(meta))
-                    meta.append((mname,tuple(c[i2])))
+                    meta.append((mname,tuple(c[i2]),t[i2]))
     return keys,meta
 base_keys,base_meta=tri_keys_from_state()
 print(f"baseline tris: {len(base_meta):,}")
@@ -62,7 +64,8 @@ def walk2(i,P):
     W2[i]=P@trs2(G2['nodes'][i])
     for c in G2['nodes'][i].get('children',[]): walk2(c,W2[i])
 for r in G2['scenes'][G2.get('scene',0)]['nodes']: walk2(r,np.eye(4))
-GEN={'deck_skirt','railings','deck_baked','deck_underside','iccs_cab','iccs_glass'}
+GEN={'deck_skirt','railings','deck_baked','deck_underside','iccs_cab','iccs_glass',
+     'catwalk','catwalk_railings','catwalk_braces','raft_racks','raft_straps','raft_canisters'}
 built=set(); gen_counts=defaultdict(int)
 for ni,n in enumerate(G2['nodes']):
     if 'mesh' not in n: continue
@@ -84,7 +87,7 @@ print(f"built retained-tri cells: {len(built):,}; generated: {dict(gen_counts)}"
 
 # classify missing baseline tris
 S_ = S
-def classify(c):
+def classify(c,corners):
     fa=(c[0]-CX)*S_; la=(c[2]-CZ)*S_; ys=(c[1]-DECKY)*S_
     for f0,f1,l0,l1 in RAFT_ZONES:
         if f0<fa<f1 and l0<la<l1 and -2.2<ys<1.4:
@@ -101,16 +104,23 @@ def classify(c):
     if inring and (-1.2<ys<1.8): return 'deck band (intended)'
     inbase=inpoly_vec(np.array([fa]),np.array([la]),P_base)[0]
     if inbase and (-2.6<ys<1.8): return 'deck band deep/pokes (intended)'
+    # the walkway clear (after the band clear): a triangle in the catwalk band reaching into its space
+    cf=(corners[:,0]-CX)*S_; cl=(corners[:,2]-CZ)*S_; ch=(corners[:,1]-DECKY)*S_
+    if in_walkway(cf[None],cl[None],ch[None])[0]: return 'walkway clear (intended)'
     return 'UNEXPLAINED'
 missing=defaultdict(int)
 unexp=defaultdict(int)
+walkway=defaultdict(int)
 nmiss=0
 for kk,idxs in base_keys.items():
     if kk in built: continue
     for mi3 in idxs:
-        mname,c=base_meta[mi3]
+        mname,c,corners=base_meta[mi3]
         nmiss+=1
-        cls=classify(c)
+        cls=classify(c,corners)
+        if cls=='walkway clear (intended)':
+            ys=(c[1]-DECKY)*S_; la=(c[2]-CZ)*S_
+            walkway[(mname,'stbd' if la>0 else 'port',round(ys*2)/2)]+=1
         missing[cls]+=1
         if cls=='UNEXPLAINED':
             fa=(c[0]-CX)*S_; la=(c[2]-CZ)*S_; ys=(c[1]-DECKY)*S_
@@ -122,3 +132,6 @@ for k3,v3 in sorted(missing.items(),key=lambda x:-x[1]):
 print("\nUNEXPLAINED by 8m cell + material (top 40):")
 for (cell,mname),cnt in sorted(unexp.items(),key=lambda x:-x[1])[:40]:
     print(f"  fa {cell[0]:5d} lat {cell[1]:5d}  {mname:18s} {cnt:6d}")
+print("\nwalkway clear by material, side and height (top 30) - walkway pieces only:")
+for (mname,side,h),cnt in sorted(walkway.items(),key=lambda x:-x[1])[:30]:
+    print(f"  {mname:18s} {side:5s} h {h:5.1f}  {cnt:6d}")

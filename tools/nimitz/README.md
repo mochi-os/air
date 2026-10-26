@@ -14,12 +14,14 @@ and iteration knobs, so multiple attempts don't lose the design.
 
 - **`build_carrier.py`** — the main build. Edge-line purge → auto-traced deck rim
   (`flush_walk`, writes `outline.json`) → boundary-owned deck-band clear (keep boxes,
-  ELEV_CLEAR, material-blind life-raft zone kill, deck-tone/steel repaint, interior
-  purge) → sheer-following textured deck polygon + steel underside plate → 2 m skirt
-  (the generated fascia) → ICCS cab transplant + generated railings → GC repack. Reads
+  ELEV_CLEAR, material-blind life-raft zone kill, deck-tone/steel repaint, walkway
+  clear, interior purge) → sheer-following textured deck polygon + steel underside
+  plate → 2 m skirt (the generated fascia) → ICCS cab transplant + generated railings →
+  generated catwalks and life-raft racks → GC repack. Reads
   `decktex12.png` + `cab38.npy`/`cab1.npy`. Writes `nimitz-clean.glb` + `outline.json`.
-  The header docstring carries the accumulated lessons (sources of truth, why the life
-  rafts are gone, why every generated mesh's winding is flipped, verification protocol) —
+  The header docstring carries the accumulated lessons (sources of truth, why the catwalk
+  and rafts are generated whole, why every generated mesh's winding is flipped,
+  verification protocol) —
   read it before changing any rule.
 - **`bake_decktex.py`** — bakes the deck texture (`decktex12.png`, 8192×2400) from the
   original's up-facing paint + catapult tracks + rubber, all anti-aliased. Reads
@@ -43,6 +45,13 @@ and iteration knobs, so multiple attempts don't lose the design.
   from behind is culled. Non-zero exit on a see-through ray. Run after any edit touching
   the hull, skirt, deck strip, underside, or band-clear rules. A new sighting: add the
   in-game camera as a ray first and watch it fail.
+- **`edgecheck.py`** — the generated catwalks and life rafts: exactly 242 canisters, each
+  on its cradle beside the catwalk and along the deck edge; nothing generated crossing the
+  ship or lying in a catwalk's plane over an authored plate (z-fighting); every slab on
+  the skirt or the ship's side, every post on a slab, every brace slab-to-side; every face
+  outward. Each check is what the authored-raft attempts (v57-v74) got wrong. Run after any
+  change to the catwalk plan, the walkway clear or the generator; `-v` lists where each
+  failure is.
 - **`skyprobe.py`** — bulk corridor finder: voxelizes the built GLB at 0.5 m and scans
   straight lines per height/angle for free stretches flanked by hull on both sides.
   Discovery tool only; over-reports open air under the bow/stern overhangs and the hull
@@ -95,7 +104,8 @@ means the build ran before the cp landed).
 1. **Counters** — compare `band clear: deleted N, repainted M` against the previous run.
    Rule edits move them; an intended revert must reproduce them exactly (byte-identical
    GLB is the strongest form — v66 and v80 both hit it).
-2. **`raycheck.py`** — must exit 0 after any hull/skirt/deck/band-clear edit.
+2. **`raycheck.py`** — must exit 0 after any hull/skirt/deck/band-clear edit, and
+   **`edgecheck.py`** after any catwalk or raft edit.
 3. **In-game captures** (`cdp_shot.py`, `start=carrier&cat=4&view=chase`) at the standard
    angles: close (`az=-0.85&el=0.25&dist=32`), straight down (`az=-1.2&el=1.45&dist=55`),
    beam (`az=-1.6&el=0.06&dist=60`), and from below (`el<0`, incl. grazing `el=-0.12`
@@ -112,12 +122,17 @@ means the build ran before the cp landed).
 
 ## Standing decisions (why the model is the way it is)
 
-- **Life rafts removed** (v75/v76 after fourteen failed placement schemes, v57-v74):
-  the authored racks belong to the authored catwalk, which the rebuild deletes; every
-  exemption/transplant/relocation scheme produced floating, buried, sliced, bent, or
-  askew rafts, and preserving the authored catwalk brought back the shredded edge the
-  band clear exists to remove. The zone kill is material-blind (brackets included).
-  Do not re-add without a fresh design discussion.
+- **Catwalks and life rafts are generated, never reused** (2026-10-25). The authored
+  racks belong to the authored catwalk, which the rebuild deletes; every scheme that kept
+  them (v57-v74) produced floating, buried, sliced, bent or askew rafts, so they were
+  removed at v75/v76. Now the build plans catwalk runs along the long edges aft of the
+  bows (the bows keep their authored walkways, which follow the flare), clears the
+  authored walkway there, and generates a solid catwalk 1.5 m below the rim - starting on
+  whichever is further out, skirt or measured ship's side, leaving out any metre that
+  would cross the ship - with a railing, braces, and 242 canisters (25-person rafts, the
+  full complement) stacked two high in rigid straight racks of five on straight stretches.
+  The photographs (2013-2017) show both sides carrying rows and the bows bare.
+  `edgecheck.py` holds every rule.
 - **Sources of truth**: 1:200 GA plan = 2D layout (markings, fixtures; outranks the
   model's own paint). Model = 3D structure (outline shape, sheer, hull, island). The
   fascia is generated — the skirt IS the ship's side below the deck edge.

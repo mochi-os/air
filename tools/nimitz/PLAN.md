@@ -78,7 +78,8 @@ Model lateral squash factor: `S_lat = 76.8 / (measured model max beam in m)`. Ex
   attempts (deeper skirt, hangar walls, closed interior liner - v77-v79) still showed
   sky from viewpoints the measurements never reproduced; all three are reverted. The cause
   was back-face culling of mirrored generated faces, resolved 2026-10-25 (README standing
-  decisions). Tools
+  decisions). The catwalks and life rafts came back on 2026-10-25 as generated geometry
+  checked by `edgecheck.py` (README standing decisions). Tools
   that survive the saga: `raycheck.py` (regression rays, necessary-not-sufficient) and
   `skyprobe.py` (bulk corridor finder, over-reports). If rafts or the sky class are ever
   reopened, start from the README's standing-decisions section, not from scratch.
