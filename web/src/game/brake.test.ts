@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
+import * as plates from './plates'
 
 // A remote jet's speed brake is animated from the target the wire carries,
 // eased at the actuator's own travel (2.5 s stowed to full, the flight
@@ -285,7 +286,9 @@ describe('the cockpit shell over the lower left panel', () => {
   // in the GLB's frame: the brake gauge's centre (fitted to FO-5's layout) and the controls the lower left block hid;
   // the clock's hub and the cockpit altimeter under the pedestal block; AV COOL under the right one
   const hidden: Record<string, number[]> = { gauge: [0.331, 0.675, 4.45], hookbypass: [0.376, 0.675, 4.424], ldg: [0.358, 0.711, 4.457], parkbrake: [0.306, 0.664, 4.494], firetest: [0.293, 0.648, 4.433], apu: [0.353, 0.654, 4.378], ground: [0.384, 0.659, 4.386],
-    clock: [-0.068, 0.615, 4.529], cabin: [-0.066, 0.56, 4.515], avcool: [-0.404, 0.709, 4.434] }
+    clock: [-0.068, 0.615, 4.529], cabin: [-0.066, 0.56, 4.515], avcool: [-0.404, 0.709, 4.434],
+    // and the fuel panel's legends under the slate that stood over it (#146): PROBE, EXTEND, WINGS and EXT TANKS
+    probe: [0.369, 0.6635, 4.1484], extend: [0.3518, 0.6605, 4.1122], wings: [0.3269, 0.6561, 4.1442], tanks: [0.2997, 0.6513, 4.1525] }
 
   // the glare shield's strip across each DDI's outer top corner, in front of the panel: the top row's outer pushbutton
   // caps, in the GLB's frame, which it hid from the eye; and the next caps in, which it never did
@@ -315,10 +318,33 @@ describe('the cockpit shell over the lower left panel', () => {
     }
   })
 
-  it('takes only those blocks: 136 of the shell\'s 2,226 triangles, none outside the boxes, and leaves the main panel\'s face', () => {
+  // The side consoles' plates (#146) sit on the panels' faces, which stand 3-6 mm proud of the console: from the design
+  // eye nothing of the console's own mesh lies in front of their legends. From the jet's frame to the GLB's is
+  // normalise_model's for this model: a scale, the GLB's z forward and x to the left, and an offset.
+  it('has nothing of the consoles in front of the console plates\' legends', () => {
+    const s = 1.029842, t = [1.573411, -0.731255, -0.000983]
+    const glb = (p: number[]) => new THREE.Vector3(-(p[2] - t[2]) / s, (p[1] - t[1]) / s, (p[0] - t[0]) / s)
+    const eye = glb([5.6777, 0.669, 0]), consoles = { left: scene('Object_1089').mesh, right: scene('Object_1092').mesh }
+    for (const m of Object.values(consoles)) m.material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide })
+    let checked = 0
+    for (const [name, p] of Object.entries(plates.PLATES)) {
+      if (p.lighting !== 'console' || name === 'tie') continue // the GEN TIE plate is on the shell's wall, where the model has no panel
+      const mesh = p.origin[2] < 0 ? consoles.left : consoles.right
+      const gaps = p.legends.map((l) => {
+        const target = glb(plates.point(p, l.at, 0.0004)), d = eye.distanceTo(target)
+        const hit = new THREE.Raycaster(eye, target.clone().sub(eye).normalize(), 0, d).intersectObject(mesh)[0]
+        return hit ? d - hit.distance : 0
+      }).sort((a, b) => a - b)
+      expect(gaps[Math.floor(gaps.length / 2)], name).toBeLessThan(0.001)
+      checked++
+    }
+    expect(checked).toBe(22)
+  })
+
+  it('takes only those blocks: 202 of the shell\'s 2,226 triangles, none outside the boxes, and leaves the main panel\'s face', () => {
     const open = cut(spec)
-    expect(open.n).toBe(136)
-    expect(open.mesh.geometry.index?.count).toBe((2226 - 136) * 3)
+    expect(open.n).toBe(136 + 66) // the three blocks, and the rest of the fuel panel's slate (#146)
+    expect(open.mesh.geometry.index?.count).toBe((2226 - 202) * 3)
     // the AMPCD's aperture on the shell's panel face, which the AMPCD's screen is seated on, stays
     expect(blocked(open.mesh, [0, 0.85, 4.47])).toBe(true)
   })
@@ -334,7 +360,11 @@ describe('the cockpit shell over the lower left panel', () => {
   }
   const arm = [[0.3107, 1.0068, 4.3864], [0.3495, 1.0699, 4.4738]], pedestal = [[-0.0194, 0.5262, 4.4641], [0.0922, 0.6524, 4.5369]]
   const behind: Record<string, number[]> = { mode: [-0.0055, 0.615, 4.5369], receiver: [0.0364, 0.589, 4.5369], jammer: [0.0713, 0.602, 4.5369] }
-  it('takes the fixed levers off the panels the faces are drawn on: 242 of that mesh\'s 5,572 triangles', () => {
+  // and the parts the plates build to move (plates.ts, #144-#146): the SELECT JETT knob, the canopy jettison handle in two
+  // boxes, and the side consoles' eleven levers - INTR WING, MC, HYD ISOL, RLY, G XMT, ILS, CRYPTO, MODE 4, MASTER and the
+  // two antenna selects
+  const built = [...levers.matchAll(/\{ lo:\[([-\d.,]+)\], hi:\[([-\d.,]+)\] \}/g)].map((m) => [m[1], m[2]].map((v) => v.split(',').map(Number))).slice(2)
+  it('takes the fixed levers off the panels the faces are drawn on: 826 of that mesh\'s 5,572 triangles', () => {
     expect(levers).not.toBe('')
     expect(levers).toContain(JSON.stringify(arm[0]).replace(/"/g, '')); expect(levers).toContain(JSON.stringify(pedestal[1]).replace(/"/g, ''))   // the boxes checked are the boxes cut
     const whole = scene('Object_1101'), open = cut(levers, 'Object_1101')
@@ -344,7 +374,9 @@ describe('the cockpit shell over the lower left panel', () => {
       expect(blocked(whole.mesh, point), name).toBe(true)
       expect(blocked(open.mesh, point), name).toBe(false)
     }
-    expect(open.n).toBe(242)
-    expect(open.mesh.geometry.index?.count).toBe((5572 - 242) * 3)   // the rest of the cockpit's levers stay
+    expect(built).toHaveLength(14)
+    for (const [lo, hi] of built) { expect(within(whole.mesh, lo, hi), `${lo}`).toBeGreaterThan(0); expect(within(open.mesh, lo, hi), `${lo}`).toBe(0) }
+    expect(open.n).toBe(242 + 584)
+    expect(open.mesh.geometry.index?.count).toBe((5572 - 826) * 3)   // the rest of the cockpit's levers stay
   })
 })

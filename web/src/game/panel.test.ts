@@ -235,7 +235,7 @@ describe('the electrical power panel (#21, #116)', () => {
     expect(source).toMatch(/if\(e\) e\.intensity=\(unpowered&&buses\.essential&&cfg\.view==="cockpit"\)\?EMERGENCY_LIGHT:0;/)
     expect(source).toMatch(/const sym=symbology\(\);[^\n]*\n\tconst flight_symbols=sym>0&&\(/)
     expect(source).toMatch(/adi_face\(faces\.adi,[^\n]*sari_testing\(\),!buses\.essential\|\|caged,sari_trim\);/)
-    expect(source).toMatch(/power_step\(out\); displays_light\(\); bezel_turn\(\); centre_turn\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
+    expect(source).toMatch(/power_step\(out\); displays_light\(\); bezel_turn\(\); centre_turn\(\); plates_turn\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
     const radar = readFileSync(fileURLToPath(new URL('./radar.ts', import.meta.url)), 'utf8')
     expect(radar).toMatch(/return this\.sil \|\| this\.emcon \|\| this\.unpowered/)
   })
@@ -527,8 +527,8 @@ describe('the fuel panel (#18)', () => {
     s.press('transfer.wing', 1); s.press('transfer.wing', 1)
     s.press('transfer.centre', -1); s.press('transfer.centre', -1)
     expect(s.transfer).toEqual({ wing: 1, centre: -1 })
-    expect(source).toMatch(/emergency:gear_emergency, mechanical:mechanical\(\), transfer:\[transfer\.wing,transfer\.centre\],/)
-    expect(source).toMatch(/emergency:gear_emergency, mechanical:mechanical\(\), wing:transfer\.wing, centre:transfer\.centre,/)
+    expect(source).toMatch(/emergency:gear_emergency, mechanical:mechanical\(\), spin:spin_switch==="rcvy", transfer:\[transfer\.wing,transfer\.centre\],/)
+    expect(source).toMatch(/emergency:gear_emergency, mechanical:mechanical\(\), spin:spin_switch==="rcvy", uncooled:uncooled\(\), wing:transfer\.wing, centre:transfer\.centre,/)
   })
 
   it('holds the wings\' fuel under INTR WING\'s INHIBIT and gives it back at NORM at the transfer rate', () => {
@@ -673,13 +673,16 @@ describe('the panel\'s switches on the model', () => {
 })
 
 describe('the spin recovery display (#12, figure 2-14)', () => {
-  const run = (frames: number[][]) => new Function('STATE', 'frames', `let spin_up=false, ddi_dirty=false; const ddi_state={ left:{ menu:"" }, right:{ menu:"" }, center:{ menu:"" } };
-    ${lift('spin_step')} const seen=[]; for(const out of frames){ spin_step(out); seen.push([spin_up,ddi_state.left.menu,ddi_state.right.menu,ddi_state.center.menu]); } return seen;`)(STATE, frames) as [boolean, string, string, string][]
+  const run = (frames: number[][], switches: string[] = []) => new Function('STATE', 'frames', 'switches', `let spin_up=false, ddi_dirty=false, spin_switch="norm"; const ddi_state={ left:{ menu:"" }, right:{ menu:"" }, center:{ menu:"" } };
+    ${lift('spin_step')} const seen=[]; frames.forEach((out,k)=>{ spin_switch=switches[k]||"norm"; spin_step(out); seen.push([spin_up,ddi_state.left.menu,ddi_state.right.menu,ddi_state.center.menu]); }); return seen;`)(STATE, frames, switches) as [boolean, string, string, string][]
   it('comes up on both DDIs with the core\'s direction or its latch, and hands them the MENU display when the spin ends', () => {
     const seen = run([words(), words({ spin: -1 }), words({ spin: -1, recovery: 1 }), words({ recovery: 1 }), words()])
     expect(seen.map((s) => s[0])).toEqual([false, true, true, true, false])
     expect(seen[4].slice(1)).toEqual(['tac', 'tac', ''])
     expect(source).toMatch(/if\(spin_up&&display!=="center"\)\{ spin_draw\(x,last_out\|\|\[\]\); return; \}/)
+  })
+  it('comes up too with the SPIN switch at RCVY, the core not spinning, and goes when it is put back to NORM (#141, 2.8.5.6)', () => {
+    expect(run([words(), words(), words()], ['norm', 'rcvy', 'norm']).map((s) => s[0])).toEqual([false, true, false])
   })
 
   it('draws SPIN MODE, the arrow with STICK over LEFT or RIGHT, ENGAGED once latched, the boxed airspeed and altitude and the AOA', () => {

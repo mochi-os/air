@@ -314,6 +314,8 @@ export interface InputSample {
   retract: boolean // the LAUNCH BAR switch at RETRACT (#127), sent on the wheels alone, where the crew could hook the jet up: a server that predates it reads nothing, and a sample without it keeps the crew's hook-up
   emergency: boolean // the gear handle turned and pulled: the emergency gear extension (#128)
   mechanical: boolean // MECH ON (#116): the client judges when all electrical power is gone; a sample without it keeps the computers
+  spin: boolean // the spin recovery switch at RCVY (#141): the flight computers engage the spin mode at 120 kt; a server that predates it reads nothing, and a sample without it keeps NORM
+  uncooled: boolean // the IR COOL switch at OFF (#141): the heater's seeker has nothing, and a round leaves unguided; a sample without it keeps the seeker cooled
   wing: number // the EXT TANKS switches (#18): -1 STOP, 0 NORM, +1 ORIDE; a sample without them keeps the normal transfer
   centre: number
   steering: number // nosewheel steering (#36): -1 off, 0 LOW, +1 HI; a sample without it keeps LOW
