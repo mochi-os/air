@@ -380,3 +380,51 @@ describe('the cockpit shell over the lower left panel', () => {
     expect(open.mesh.geometry.index?.count).toBe((5572 - 826) * 3)   // the rest of the cockpit's levers stay
   })
 })
+
+// The canopy sills' rivet heads (#147) are built as geometry where the texture paints
+// them, in the frame of the canopy frame mesh (Object_1329), so they open and jettison
+// with it. Each must sit on that mesh's surface and face out of it, 25 to a sill.
+describe('the canopy sill rivets', () => {
+  const glb = readFileSync(fileURLToPath(new URL('../assets/fa18c.glb', import.meta.url)))
+  const json = JSON.parse(glb.subarray(20, 20 + glb.readUInt32LE(12)).toString('utf8'))
+  const bin = glb.subarray(28 + glb.readUInt32LE(12))
+  const read = (i: number) => {
+    const a = json.accessors[i], view = json.bufferViews[a.bufferView], n = { SCALAR: 1, VEC2: 2, VEC3: 3 }[a.type as 'SCALAR' | 'VEC2' | 'VEC3'] ?? 1
+    const start = (view.byteOffset ?? 0) + (a.byteOffset ?? 0), data = bin.buffer.slice(bin.byteOffset + start, bin.byteOffset + start + a.count * n * (a.componentType === 5126 || a.componentType === 5125 ? 4 : 2))
+    return a.componentType === 5126 ? new Float32Array(data) : a.componentType === 5125 ? new Uint32Array(data) : new Uint16Array(data)
+  }
+  const node = json.nodes.find((n: { name?: string }) => n.name === 'Object_1329')
+  const triangles: THREE.Triangle[] = []
+  for (const p of json.meshes[node.mesh].primitives) {
+    const pos = read(p.attributes.POSITION), index = read(p.indices)
+    const at = (k: number) => new THREE.Vector3(pos[k * 3], pos[k * 3 + 1], pos[k * 3 + 2])
+    for (let t = 0; t < index.length; t += 3) triangles.push(new THREE.Triangle(at(index[t]), at(index[t + 1]), at(index[t + 2])))
+  }
+  const table = /\nconst RIVETS=\[\n([\s\S]*?)\];\n/.exec(source)?.[1] ?? ''
+  const rivets = [...table.matchAll(/\[([-\d.,]+)\]/g)].map((m) => m[1].split(',').map(Number))
+
+  it('number 25 to each sill', () => {
+    expect(rivets).toHaveLength(50)
+    expect(rivets.filter((r) => r[0] > 0)).toHaveLength(25)
+  })
+
+  it('sit on the canopy frame and face out of it', () => {
+    const closest = new THREE.Vector3(), normal = new THREE.Vector3()
+    for (const [x, y, z, nx, ny, nz] of rivets) {
+      const p = new THREE.Vector3(x, y, z)
+      let best = Infinity, facing = 0
+      for (const tri of triangles) {
+        tri.closestPointToPoint(p, closest); const d = closest.distanceTo(p)
+        if (d < best) { best = d; tri.getNormal(normal); facing = Math.abs(normal.dot(new THREE.Vector3(nx, ny, nz).normalize())) }
+      }
+      expect(best, `rivet at ${x},${y},${z}`).toBeLessThan(0.0005)
+      expect(facing, `rivet at ${x},${y},${z}`).toBeGreaterThan(0.99)
+    }
+  })
+
+  it('are children of the canopy frame', () => {
+    expect(source).toMatch(/const frame=g\.getObjectByName\("Object_1329"\);[^\n]*\n/)
+    expect(source).toMatch(/frame\.add\(heads\);/)
+    expect(source).toMatch(/build_faces\(g\); build_rivets\(g\); \}/)
+  })
+})
