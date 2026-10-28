@@ -2917,6 +2917,9 @@ function default_master(){
 	if(amraams>0&&(MULTIPLAYER||cfg.duel==="bvr")) return "120c";
 	if(missiles_on()&&(ownship.msl|0)>0) return "9m";
 	return "gun"; }
+// weapon_hat: the master the weapon select switch points at, from its HID pair (x -1 left +1 right, y -1 forward
+// +1 aft), or "" centred: up the AMRAAM, down the gun, left the 9M, right NAV. A diagonal reads as up or down.
+function weapon_hat(x,y){ return y<-0.5?"120c":y>0.5?"gun":x<-0.5?"9m":x>0.5?"nav":""; }
 function select_master(m){
 	const loaded={ gun:(ownship.rounds??0)>0, "9m":(ownship.msl|0)>0, "120c":Math.max(0,ownship.amraam|0)>0, nav:true };
 	if(loaded[m]) set_master(m); }
@@ -8898,7 +8901,7 @@ function read_input(dt){
 				pad_trim.x=Math.abs(hx)>0.5?Math.sign(hx):0; pad_trim.y=Math.abs(hy)>0.5?Math.sign(hy):0; } } }
 		{ const h=String(bind.axes.weapon??""); if(h!==""){ const hi=+h;   // the weapon-select hat pair (the castle): positional, see select_master
 			if(pad.axes.length>hi+1){ const hx=pad.axes[hi], hy=pad.axes[hi+1];   // HID: y -1 forward +1 aft, x -1 left +1 right
-				const want=hy<-0.5?"120c":hy>0.5?"9m":hx<-0.5?"gun":hx>0.5?"nav":"";
+				const want=weapon_hat(hx,hy);
 				if(want&&want!==pad_weapon) select_master(want);   // the press edge selects once; a held castle does not re-select every frame
 				pad_weapon=want; } } }
 		{ const h=String(bind.axes.tdc??""); if(h!==""){ const hi=+h;   // the TDC pair (#32): a ministick slewing the cursor, HID y -1 forward

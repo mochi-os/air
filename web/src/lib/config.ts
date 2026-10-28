@@ -56,7 +56,7 @@ export const PROFILES: StickProfile[] = [
     match: (id) => /velocityone|10f5/i.test(id),
     raw: true,
     // The castle POV pair at 8/9 is POSITIONAL weapon select - forward 120C,
-    // aft 9M, left GUN, right NAV - so trim lives on the thumbwheel (12/13,
+    // aft GUN, left 9M, right NAV - so trim lives on the thumbwheel (12/13,
     // forward = nose down) and zoom keeps no stick binding.
     axes: {
       pitch: '1',

@@ -298,3 +298,27 @@ describe('the seat and the canopy\'s emergency controls', () => {
     expect(source).toMatch(/seat_armed=true; canopy_gone=false; cranked=false;/)
   })
 })
+
+// The weapon select switch on the stick (#123): positional, read from the castle's
+// HID pair, x -1 left +1 right, y -1 forward +1 aft.
+describe('the weapon select switch', () => {
+  const hat = new Function(`${lift('weapon_hat')} return weapon_hat;`)() as (x: number, y: number) => string
+
+  it('selects the AMRAAM up, the gun down, the 9M left and NAV right, and nothing centred', () => {
+    expect(hat(0, -1)).toBe('120c')
+    expect(hat(0, 1)).toBe('gun')
+    expect(hat(-1, 0)).toBe('9m')
+    expect(hat(1, 0)).toBe('nav')
+    expect(hat(0, 0)).toBe('')
+    expect(hat(0.4, -0.4)).toBe('') // inside the threshold is centred
+  })
+
+  it('reads a diagonal as up or down', () => {
+    expect(hat(-1, -1)).toBe('120c')
+    expect(hat(1, 1)).toBe('gun')
+  })
+
+  it('is what the stick\'s hat pair selects, once on the press edge', () => {
+    expect(source).toMatch(/const want=weapon_hat\(hx,hy\);\n\t+if\(want&&want!==pad_weapon\) select_master\(want\);/)
+  })
+})
