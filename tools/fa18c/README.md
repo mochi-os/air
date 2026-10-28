@@ -1,4 +1,35 @@
-# F/A-18C distant stages
+# F/A-18C
+
+## Factory-fresh paint
+
+`web/src/assets/fa18c.glb` is the JPEG model from before #200 with its atlases repainted clean (#147), then
+encoded to KTX2. The source atlases carry a service jet's wear: grime on the skin, and chipped paint on the
+cockpit's sills, walls and throttle grips.
+
+```
+git show bdd7ebc63^:web/src/assets/fa18c.glb > /tmp/source.glb
+python3 fresh.py /tmp/source.glb /tmp/fresh.glb [preview]                    # preview: each atlas before and after
+python3 ../texswap.py /tmp/fresh.glb ../../web/src/assets/fa18c.glb etc1s 15,19,20,21,22
+```
+
+- **`fresh.py`** - repaints each atlas in `ATLASES` over the texels its materials' triangles cover. The exterior
+  (`skin`) keeps a broad base, the panel lines, rivets and stencils above a noise floor, and every marking that
+  stands well off the base; the nozzle petals' grain goes under a higher floor. The cockpit and the gear (`pit`)
+  take an edge-preserving smoothing that keeps hard edges and the baked shading. Per atlas, rectangles name what
+  else to fill: paint chips on an island's edge (`chips`), light scuffs and worn bands on dark frames (`light`, and
+  `faint` for fainter ones on plain paint), a strip's dashed worn edge, averaged along the strip (`along`), every
+  flake (`clean`), whole islands to repaint as the exterior is (`skin`), parts to paint whole in their colour
+  (`flat`, and `discs` for round button faces, their legend kept), whole islands to paint in a colour of their own
+  (`paint`: the shoulder spotlights' housings and arms, in the cockpit's grey), triangles to point at a patch of
+  their own where their UVs lie on a neighbour's (`patch`: the spotlights' lenses, which share their barrels' ends),
+  and what to leave as it was (`keep`: the pilot, the engine faces, the compass card). Every texel outside the triangles' coverage then takes its island's edge, so
+  filtering never meets the background or the wear the source painted past an island. The canopy sills' rivets are
+  cleared from atlas 9: the engine builds them as geometry (`RIVETS` in engine.ts), since at three texels across
+  the painted ones stretch to soft dashes.
+- **`../texswap.py`** - encodes the atlases to KTX2: UASTC for the panel atlases that carry lettering, ETC1S for
+  the rest. Its temporary files go beside the output and are removed.
+
+## Distant stages
 
 Builds `web/src/assets/fa18c-far.glb`, the stages the engine draws another jet with once it is small
 on screen (engine.ts, distance stages): a merged **medium** model of about 5,000 triangles from 80 down

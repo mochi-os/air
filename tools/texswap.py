@@ -8,8 +8,9 @@
 # image; UASTC lists image indices encoded UASTC whatever MODE says. ETC1S's 4x4
 # blocks smear lettering a few texels tall, so an atlas carrying text keeps
 # UASTC. fa18c.glb is SRC = the JPEG model before #200 (git show
-# bdd7ebc63^:web/src/assets/fa18c.glb), etc1s, UASTC 15,19,20,21,22: the
-# cockpit's panel atlases and the lit placards' emissive map (#121).
+# bdd7ebc63^:web/src/assets/fa18c.glb) repainted by fa18c/fresh.py (#147),
+# etc1s, UASTC 15,19,20,21,22: the cockpit's panel atlases and the lit
+# placards' emissive map (#121). See fa18c/README.md.
 import json, struct, subprocess, sys, os, base64
 
 import os

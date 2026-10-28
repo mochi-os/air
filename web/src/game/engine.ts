@@ -2162,7 +2162,7 @@ function build_indexer(g){
 	if(INDEXER_TEST==="2"){ for(const k of ["slow","donut","fast"]) parts[k].depthTest=false; box.traverse(o=>{ o.renderOrder=999; }); }
 	g.add(box); g.userData.indexer=parts; g.userData.indexerGroup=box;
 	build_lamps(g);
-	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_cabin(g); build_clock(g); build_screens(g); build_bezels(g); build_centre(g); build_plates(g); build_ifei(g); build_ufc(g); build_faces(g); }
+	build_radalt(g); build_rwr(g); build_standby(g); build_brake(g); build_cabin(g); build_clock(g); build_screens(g); build_bezels(g); build_centre(g); build_plates(g); build_ifei(g); build_ufc(g); build_faces(g); build_rivets(g); }
 // A drawn face's resolution follows its size on screen (#121), as the DDIs' does: face_canvas makes its canvas and
 // texture at the face's own pixels, the units its drawing works in, and face_sharpen, every 120 ms in the pit, steps
 // the canvas to the screen pixels the face covers, with the DDIs' hysteresis, and back to its own pixels once it is
@@ -2451,6 +2451,32 @@ function caution_place(r,c){ const G=CAUTION_GRID; return G.origin.map((v,i)=>v+
 // CAUTION, APU FIRE and the two FIRE lights, these inside their guards (2.14.1) and sinking when pushed (lamps_update) -
 // and the face of the HUD's body over the UFC with its toggle and knob (HUD_FACE). Every part is an overlay on the
 // ownship's cockpit layer, out of the pit's raycasts; the lenses themselves are build_lamps's.
+// RIVETS: the canopy sills' fastener heads (#147), 25 a side where the model's texture paints them, each [x, y, z,
+// nx, ny, nz] in the frame of Object_1329, the canopy frame that rises and jettisons with the canopy: the texture's
+// are three texels across and stretch to soft dashes, so the heads are built here and the paint under them cleared
+// (tools/fa18c/fresh.py). RIVET sizes a head in metres.
+const RIVETS=[
+	[0.34325,-0.16541,-0.84744,0.000,0.999,-0.052],[0.34342,-0.16272,-0.79622,-0.001,0.999,-0.052],[0.34239,-0.15997,-0.74409,0.000,0.999,-0.053],[0.34276,-0.15717,-0.69255,0.000,0.996,-0.086],[0.34247,-0.15309,-0.64538,0.000,0.996,-0.086],
+	[0.34235,-0.14855,-0.59285,0.000,0.996,-0.086],[0.34253,-0.14410,-0.54140,0.000,0.996,-0.086],[0.34267,-0.13947,-0.48851,0.000,0.994,-0.106],[0.34179,-0.13396,-0.43693,0.000,0.994,-0.106],[0.34329,-0.12889,-0.38942,0.000,0.994,-0.106],
+	[0.34247,-0.12326,-0.33670,0.000,0.994,-0.106],[0.34350,-0.11821,-0.28930,0.000,0.994,-0.106],[0.33698,-0.11126,-0.22813,0.000,0.994,-0.113],[0.33713,-0.10541,-0.17667,0.000,0.994,-0.113],[0.33714,-0.09953,-0.12499,0.000,0.994,-0.113],
+	[0.33712,-0.09255,-0.07334,-0.065,0.987,-0.144],[0.33657,-0.08556,-0.02529,-0.065,0.987,-0.144],[0.33732,-0.07791,0.02731,0.000,0.993,-0.118],[0.33708,-0.07069,0.07943,0.000,0.987,-0.160],[0.33702,-0.06231,0.13120,0.000,0.987,-0.160],
+	[0.33657,-0.05382,0.18357,0.000,0.987,-0.160],[0.33233,-0.04641,0.22935,0.000,0.987,-0.160],[0.32813,-0.03731,0.28172,0.000,0.983,-0.184],[0.32320,-0.02859,0.32821,0.000,0.983,-0.184],[0.31825,-0.01964,0.37587,0.000,0.983,-0.184],
+	[-0.34217,-0.16542,-0.84778,0.000,0.999,-0.052],[-0.34243,-0.16271,-0.79613,0.001,0.999,-0.052],[-0.34260,-0.15997,-0.74407,0.000,0.999,-0.053],[-0.34231,-0.15714,-0.69224,0.000,0.996,-0.086],[-0.34207,-0.15312,-0.64573,0.000,0.996,-0.086],
+	[-0.34282,-0.14857,-0.59311,0.000,0.996,-0.086],[-0.34290,-0.14406,-0.54096,0.000,0.996,-0.086],[-0.34243,-0.13954,-0.48921,0.000,0.994,-0.106],[-0.34264,-0.13396,-0.43688,0.000,0.994,-0.106],[-0.34273,-0.12885,-0.38907,0.000,0.994,-0.106],
+	[-0.34267,-0.12324,-0.33651,0.000,0.994,-0.106],[-0.34291,-0.11822,-0.28947,0.000,0.994,-0.106],[-0.33659,-0.11128,-0.22828,0.000,0.994,-0.113],[-0.33681,-0.10540,-0.17660,0.000,0.994,-0.113],[-0.33668,-0.09952,-0.12488,0.000,0.994,-0.113],
+	[-0.33667,-0.09250,-0.07284,0.065,0.987,-0.144],[-0.33610,-0.08557,-0.02513,0.065,0.987,-0.144],[-0.33597,-0.07790,0.02749,0.065,0.987,-0.144],[-0.33619,-0.07057,0.08018,0.000,0.987,-0.160],[-0.33628,-0.06189,0.13379,0.000,0.987,-0.160],
+	[-0.33652,-0.05398,0.18259,0.000,0.987,-0.160],[-0.33193,-0.04628,0.23013,0.000,0.987,-0.160],[-0.32707,-0.03687,0.28410,0.000,0.983,-0.184],[-0.32252,-0.02856,0.32838,0.000,0.983,-0.184],[-0.31811,-0.01982,0.37495,0.000,0.983,-0.184]];
+const RIVET={ radius:0.004, height:0.0013, sunk:0.0002, colour:0x4a4d50 };
+// build_rivets sets the heads on the canopy frame as one instanced dome, a child of the frame so they open and go
+// with it; an overlay, out of the pit's raycasts.
+function build_rivets(g){
+	const frame=g.getObjectByName("Object_1329"); if(!frame||frame.userData.rivets) return;
+	g.updateMatrixWorld(true); const local=new THREE.Matrix4().copy(g.matrixWorld).invert().multiply(frame.matrixWorld), scale=new THREE.Vector3().setFromMatrixScale(local).x;   // metres in the group frame to the frame's own units
+	const r=RIVET.radius/scale, h=RIVET.height/scale, dome=new THREE.SphereGeometry(1,16,5,0,Math.PI*2,0,Math.PI/2).scale(r,h,r).translate(0,-RIVET.sunk/scale,0);
+	const heads=new THREE.InstancedMesh(dome,new THREE.MeshStandardMaterial({ color:RIVET.colour, roughness:0.45, metalness:0.3 }),RIVETS.length);
+	const up=new THREE.Vector3(0,1,0), q=new THREE.Quaternion(), m=new THREE.Matrix4(), one=new THREE.Vector3(1,1,1);
+	RIVETS.forEach(([x,y,z,nx,ny,nz],i)=>{ q.setFromUnitVectors(up,new THREE.Vector3(nx,ny,nz).normalize()); heads.setMatrixAt(i,m.compose(new THREE.Vector3(x,y,z),q,one)); });
+	heads.name="rivets"; heads.userData.overlay=true; heads.layers.mask=frame.layers.mask; frame.add(heads); frame.userData.rivets=heads; }
 function build_brow(g,lamps){
 	const plates=[], frames=[], bodies=[], guards=[], nuts=[], light=[], fires=[];
 	const at=(geo,y,z,depth)=>{ if(geo.index) geo=geo.toNonIndexed(); geo.clearGroups(); return geo.translate(z,y,depth); };   // a part in a face's frame: x across (the jet's z), y up, z toward the pilot
