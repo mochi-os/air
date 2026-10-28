@@ -7233,7 +7233,7 @@ function clock_press(){
 	else { clock_et.running=true; clock_et.start=sim_time; } }
 const thrown={};   // the travel-only controls' positions (TRAVEL), as thrown
 function travel_at(name){ return thrown[name]??TRAVEL_REST[name]??0; }
-function travel_press(name,d){ thrown[name]=THREE.MathUtils.clamp(travel_at(name)+(d<0?-1:1),0,TRAVEL[name]-1); }
+function travel_press(name,d){ thrown[name]=d===0&&TRAVEL[name]===2?1-travel_at(name):THREE.MathUtils.clamp(travel_at(name)+(d<0?-1:1),0,TRAVEL[name]-1); }   // d 0 flips a two-position control (#122), and steps any other up
 function update_shuttles(){   // the hooked cat's shuttle rides with the jet's launch bar; the others sit home
 	if(!carrier_shuttles) return;
 	// The shuttle follows the launch bar tip whenever the jet is hooked - parked
@@ -8077,7 +8077,7 @@ function pit_click(e){
 // raycast at the switch meshes first, then the nearest switch origin, seat or
 // painted control within a few pixels, because a 16 mm lever is a handful of
 // pixels at 1x, or within its face where zoom makes that larger. The right button
-// (up, forward, clockwise) is +1, the left -1; two-position controls toggle on either.
+// (up, forward, clockwise) is +1, the left -1; a two-position control flips on either (FLIPS, #122).
 const _click_p=new THREE.Vector3();
 function pit_target(e){ const g=ownship.group, list=g.userData.switches||[];
 	{ const on=face_target(); if(on) return on; }   // a control drawn on one of the faces (FACE_SEATS)
@@ -8091,8 +8091,13 @@ function pit_target(e){ const g=ownship.group, list=g.userData.switches||[];
 		const o=s.objects[0]; if(!o||!shown(o)) continue; near(s,g.worldToLocal(o.getWorldPosition(_click_p)),0); }
 	for(const s of PIT_SPOTS) near(s,_click_p.fromArray(s.at),s.r||PIT_SPOT_RADIUS);   // the painted controls (PIT_SPOTS)
 	return hit; }
+// FLIPS: the two-position controls whose press takes a direction, which a click sends as 0, the flip their keys send
+// (#122), so neither button is a dead click at a stop. The autopilot still sets the gear handle by direction. The other
+// two-position controls flip on any press already.
+const FLIPS=new Set(["canopy","radar","launch.bar","record.source","spin.recovery","arm","comm.landing","identification.master","gear",
+	...Object.keys(TRAVEL).filter(k=>TRAVEL[k]===2).map(k=>"travel."+k)]);
 function pit_switch(e){ const hit=pit_target(e); if(!hit) return false;
-	if(hit.action) pit_press(hit.action,e.button===2?1:-1);
+	if(hit.action) pit_press(hit.action,FLIPS.has(hit.action)?0:e.button===2?1:-1);
 	return true; }
 if(DEV_MODE) (globalThis as any).dev_target=function(px,py){ _click_ray.setFromCamera(_click_at.set((px/HW)*2-1,-(py/HH)*2+1),cockpit_cam);   // dev: the control a click on a css pixel would work - its switch's name, its action and what a middle click does
 	const s=pit_target({ clientX:px, clientY:py }); return s?{ name:s.name||"", action:s.action||"", hold:s.hold||"" }:null; };
@@ -8595,7 +8600,7 @@ function pit_press(action,direction){ const d=direction||0;
 		if(action.startsWith("jettison.station.")) armament.press(arms,+action.slice(17));   // a station jettison select button (2.17.1.2.1)
 		else if(action.startsWith("receiver.")) countermeasures.press(suite.receiver,action.slice(9),sim_time);   // one of the RWR control indicator's pushbuttons
 		else if(action.startsWith("knob.")) knob_turn(action.slice(5),d||1);
-		else if(action.startsWith("travel.")) travel_press(action.slice(7),d||1);
+		else if(action.startsWith("travel.")) travel_press(action.slice(7),d);
 		else if(action.startsWith("display.")){ const [,which,control]=action.split("."); display_press(which,control,d||1); }
 		break;
 	case "sari.trim": sari_trim=THREE.MathUtils.clamp(sari_trim+(d||1),SARI_TRIM[0],SARI_TRIM[1]); break;   // the pull to cage knob turned: the miniature airplane a degree a click, right clockwise raising it (25.2.4.2 item 2)

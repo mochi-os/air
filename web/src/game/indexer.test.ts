@@ -412,7 +412,7 @@ describe('the clickable switches', () => {
     expect(source).toMatch(/if\(e\.button===2\)\{ if\(!playback\) pit_switch\(e\); return; \}/)   // a replay's switches are the recording's
     // a left click reaches the displays' bezel pushbuttons and then the switches only after the screens miss, ahead of the panel-point measurement
     expect(source).toMatch(/if\(!hit\|\|!hit\.uv\)\{\n\t\t\{ const b=ddi_button_at\(e\.clientX,e\.clientY\); if\(b\)\{ if\(ddi_press\(b\.display,b\.pb\)\) screens_update\(\); return; \} \}[^\n]*\n\t\tif\(!playback&&pit_switch\(e\)\) return;[^\n]*\n\t\tif\(PANEL_POINT\)/) // and not in a replay, whose switches are the recording's
-    expect(source).toMatch(/if\(hit\.action\) pit_press\(hit\.action,e\.button===2\?1:-1\);/)
+    expect(source).toMatch(/if\(hit\.action\) pit_press\(hit\.action,FLIPS\.has\(hit\.action\)\?0:e\.button===2\?1:-1\);/) // a two-position control flips on either (#122)
   })
 
   it('send every clickable key through pit_press so a click and its key share one gate', () => {
@@ -839,5 +839,52 @@ describe('the cockpit pointer', () => {
       expect(lifted.pit_target(at(centre)), `${action}'s dial`).toBeNull()
     }
     for (const fn of ['pit_click', 'pit_hover']) expect(top(fn), fn).not.toMatch(/userData\.standby|userData\.radalt|u\.standby|u\.radalt|\.alt\.mesh|\.adi\.mesh/)
+  })
+})
+
+// A click on a two-position control throws it to its other position whichever
+// button it comes from (#122), so neither is a dead click at a stop. pit_switch,
+// FLIPS, pit_press and the travel-only controls are lifted and run against
+// stand-ins, the click's target given.
+const switchfn = /\nfunction pit_switch\(e\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+const flipsdef = /\nconst FLIPS=new Set\(\[[\s\S]*?\]\);\n/.exec(source)?.[0] ?? ''
+const travel = [/\nconst TRAVEL=\{[^\n]*\n[^\n]*\n/, /\nconst TRAVEL_REST=[^\n]*\n/, /\nconst thrown=\{\};[^\n]*\nfunction travel_at\([^\n]*\nfunction travel_press\([^\n]*\n/]
+  .map((re) => re.exec(source)?.[0] ?? '')
+// Where each directional two-position control keeps its position; a travel-only control is read with travel_at.
+const FLIPPED: Record<string, string> = {
+  canopy: 'ownship.canopyTarget', radar: 'RADAR.sil', 'launch.bar': 'bar_switch', 'record.source': 'taping_source', 'spin.recovery': 'spin_switch',
+  arm: 'arms.arm', 'comm.landing': 'uhf.panel.landing', 'identification.master': 'squawk.master', gear: 'ownship.gearTarget',
+}
+const TWO = ['apu', 'pitot', 'avcool', 'windlever', 'oxygen', 'chains', 'mask', 'smoke', 'spare', 'visors', 'floodswitch'].map((k) => 'travel.' + k)
+// clicks: the control's position before the first click and after each, 0 the left button and 2 the right.
+function clicks(action: string, buttons: number[]): unknown[] {
+  for (const [name, text] of [['pit_switch', switchfn], ['FLIPS', flipsdef], ['pit_press', pressfn], ['the travel-only controls', travel.every(Boolean) ? 'ok' : '']])
+    if (!text) throw new Error(name + ' not found in engine.ts')
+  const read = FLIPPED[action] ?? `travel_at("${action.slice(7)}")`
+  return new Function('action', 'buttons', `const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+    const ownship={ squish:1, speed:0, canopyTarget:0, gearTarget:1 }, buses={ essential:true }, RADAR={ sil:false }, arms={ arm:false }, uhf={ panel:{ landing:"ufc" } }, squawk={ master:"normal" };
+    let canopy_gone=false, cranked=false, bar_switch="retract", taping_source="hud", spin_switch="norm", ddi_dirty=false, gear_emergency=false;
+    const on_ground=()=>false, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, pit_target=()=>({ action });
+    ${travel.join('')} ${flipsdef} ${pressfn} ${switchfn}
+    const seen=[${read}]; for(const button of buttons){ pit_switch({ button }); seen.push(${read}); } return seen;`)(action, buttons) as unknown[]
+}
+
+describe('the two-position controls (#122)', () => {
+  it('are the directional ones pit_press takes and every travel-only control of two', () => {
+    const flips = new Function(`${travel.join('')} ${flipsdef} return [...FLIPS];`)() as string[]
+    expect(flips.sort()).toEqual([...Object.keys(FLIPPED), ...TWO].sort())
+  })
+
+  it('flip on either button, there and back', () => {
+    for (const action of [...Object.keys(FLIPPED), ...TWO]) {
+      const [rest, ...after] = clicks(action, [0, 0, 2, 2])
+      const other = after[0]
+      expect(other, action).not.toEqual(rest)
+      expect(after, action).toEqual([other, rest, other, rest])
+    }
+  })
+
+  it('leave a control of three or more positions stepping by button: the left down, the right up', () => {
+    expect(clicks('travel.crank', [2, 2, 0, 0, 0])).toEqual([1, 2, 2, 1, 0, 0]) // ENG CRANK: from its rest, against both stops
   })
 })
