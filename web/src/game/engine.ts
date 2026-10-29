@@ -9750,6 +9750,10 @@ const CARRIER_YD=(SHIP.yaw-(SHIP.bow??90))*D2R, CARRIER_C=Math.cos(CARRIER_YD), 
 function carrier_fore_aft(x,z){ return (x-CARRIER.x)*CARRIER_C-(z-CARRIER.z)*CARRIER_S; }   // carrier-local fore/aft: + toward the bow (catapult ≈ +48), the arrestor wires are aft (≈ −50)
 function carrier_world(lx,lz){ return { x:CARRIER.x+lx*CARRIER_C+lz*CARRIER_S, z:CARRIER.z-lx*CARRIER_S+lz*CARRIER_C }; }   // carrier-local (fore-aft, lateral: −=port) → world x/z (same frame as place_on_cat)
 function carrier_lateral(x,z){ return (x-CARRIER.x)*CARRIER_S+(z-CARRIER.z)*CARRIER_C; }   // inverse of the lateral axis: how far port(−)/starboard(+) of the ship centreline
+// deck_spot: where a point lies in the deck's frame as the ship stands now (fore-aft, lateral), or null when it is not
+// over the deck's outline as deck_carry judges it (#148).
+function deck_spot(p){ const dx=wrap_axis(p.x-CARRIER.x), dz=wrap_axis(p.z-CARRIER.z), fa=dx*CARRIER_C-dz*CARRIER_S, lat=dx*CARRIER_S+dz*CARRIER_C;
+	return Math.abs(fa)<=180&&Math.abs(lat)<=60?{ fa, lat }:null; }
 function cat_spot(i=cat_idx){ const cat=SHIP.catapults[i]; return { x:CARRIER.x+cat.x*CARRIER_C+cat.z*CARRIER_S, z:CARRIER.z-cat.x*CARRIER_S+cat.z*CARRIER_C }; }   // world position of a catapult spot
 const CAT_POS_TOL=3, CAT_HEADING_DOT=0.99;   // "spotted on the cat": within 3 m of the spot and ~8° of the launch heading — tight, so the launch (which fires from the actual pose, never snapped) always looks clean
 function on_cat_spot(){   // which catapult the aircraft is parked on, lined up down its launch heading — -1 for none (works before the carrier GLB finishes loading — the spots are fixed world coords)
@@ -11021,7 +11025,8 @@ function update_anim(dt){ const jets=[ownship,bandit];
 		st.flameA=(st.flameA??0)+(rh[0]>0.02?(0.5+2.5*rh[0])*6.283*dt:0); st.flameB=(st.flameB??0)+(rh[1]>0.02?(0.5+2.5*rh[1])*6.283*dt:0);
 		st.flameOn=[rh[0]>0.02, rh[1]>0.02]; }
 	{ const rolling=(st===ownship)?(st.squish??0)>0.1:((st.gear??1)<0.1 && st.speed>1);   // wheel spin: on the ground the tires match ground speed; airborne they freewheel down (~2.5 s), and retraction brakes them (real jets auto-brake the wheels in the wells)
-		st.wheelSpeed=rolling?st.speed:(st.gear??1)>0.5?0:(st.wheelSpeed??0)*Math.exp(-dt/2.5);
+		const spot=rolling?deck_spot(st.pos):null, was=st.deckSpot; st.deckSpot=spot;   // on the deck the tires roll at the jet's speed over it, its travel in the deck's frame, not with the ship's way: a jet held on the catapult of a ship under way keeps still wheels (#148)
+		st.wheelSpeed=spot?(was&&dt>0?Math.hypot(spot.fa-was.fa,spot.lat-was.lat)/dt:st.wheelSpeed??0):rolling?st.speed:(st.gear??1)>0.5?0:(st.wheelSpeed??0)*Math.exp(-dt/2.5);
 		st.wheelDist=(st.wheelDist??0)+(st.wheelSpeed??0)*dt; }
 	if(presenting&&!(st.group&&st.group.userData.stage>0)) apply_anim(st,dt); } }   // a jet drawn as a distant stage has no parts to pose   // the airframe's parts are posed once a frame, as drawn
 // afterburner shows or hides a jet's burner cones and flame boxes.
