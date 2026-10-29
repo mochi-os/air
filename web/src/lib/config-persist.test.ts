@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
 import { migrate, normalize } from '../game/stores'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
@@ -195,5 +197,36 @@ describe('the answer on sharing', () => {
     expect('sharing' in first).toBe(false)
     expect(first.callsign).toBe('Maverick')
     expect(cached.sharing).toBe(true) // a copy: the caller's config is untouched
+  })
+})
+
+// A first-time player has nothing saved: the menu shows DEFAULT_CONFIG, and the
+// first load seeds the account with it. A returning player's saved task stands.
+describe('a first-time player', () => {
+  it('starts in free flight, in the air', () => {
+    expect(DEFAULT_CONFIG.task).toBe('free')
+    expect(DEFAULT_CONFIG.start).toBe('air')
+    expect(loadOutcome(false, null)).toBe('seed')
+    expect(seeded(DEFAULT_CONFIG).task).toBe('free')
+    expect(seeded(DEFAULT_CONFIG).start).toBe('air')
+  })
+
+  it('keeps free flight when an edit lands before the first load', () => {
+    expect(merged(null, { callsign: 'x' }).task).toBe('free')
+    expect(merged(null, { callsign: 'x' }).start).toBe('air')
+  })
+
+  it('leaves a returning player on the task and start they saved', () => {
+    expect(absorb({ task: 'joust' }).task).toBe('joust')
+    expect(absorb({ start: 'carrier' }).start).toBe('carrier')
+    expect(merged({ task: 'joust' }, { callsign: 'x' }).task).toBe('joust')
+  })
+
+  it("matches the engine's own fallback", () => {
+    // engine.ts cannot be imported (WebGL at module scope), so its cfg literal is read as text.
+    const engine = readFileSync(fileURLToPath(new URL('../game/engine.ts', import.meta.url)), 'utf8')
+    const literal = /\nconst cfg = \{[\s\S]*?\};/.exec(engine)?.[0] ?? ''
+    expect(literal).toContain(`task:"${DEFAULT_CONFIG.task}"`)
+    expect(literal).toContain(`start:"${DEFAULT_CONFIG.start}"`)
   })
 })

@@ -174,7 +174,7 @@ export function startGame({
 const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, exterior_detail:3,   // dyn_res defaults ON (#148): slow machines self-tune render_scale down to 0.45 instead of stuttering
 	tracers:true, effects_quality:2, stores:stores_migrate(true), flares:true, shadows:false, clouds:"none", afterburner:true,   // effects_quality 0..3 scales expensive translucent work; stores (#17): the per-station loadout
 	view:"hud", framerate:false,   // no sens: the Sensitivity slider was removed because it was a flight-control gain, and the last two reads of it went with it (see sanitize_cfg)
-	task:"joust", start:"carrier", tod:"day", help:false };
+	task:"free", start:"air", tod:"day", help:false };   // task and start as the menu's DEFAULT_CONFIG has them: a first-time player starts in free flight, in the air
 // CARRIER_MODELS: per-ship data; a second carrier is one more entry (#100). Its
 // deck layout - catapults and their blast deflectors, the landing line and wires,
 // the OLS, the elevators, the deck texture's extent and the deck outline - is the
