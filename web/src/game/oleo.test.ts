@@ -234,3 +234,52 @@ describe('oleo wiring', () => {
     expect(source).toMatch(/function stance_of\b/)
   })
 })
+
+// The wheels roll at the jet's speed over what they roll on (#148): aboard a ship
+// under way that is its speed over the deck, read as its travel in the deck's
+// frame, so a jet held on the catapult or parked keeps still wheels. deck_spot and
+// the spin block are lifted from engine.ts and run against a ship that steams and
+// turns, a second at 60 frames.
+describe('wheel spin (#148)', () => {
+  const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const spotfn = /\nfunction deck_spot\(p\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  const block = /\n\t\{ const rolling=\(st===ownship\)[^\n]*\n[^\n]*\n[^\n]*\n\t\tst\.wheelDist=[^\n]*\n/.exec(source)?.[0] ?? ''
+  // roll: how far the wheels turn (metres of tread) with the ship at `way` m/s turning at `turn` rad/s and the jet
+  // at `fore(t)` fore-aft, `lat` lateral on its deck; `ashore` rolls it at `way` on a runway far from the ship instead.
+  const roll = (o: { way: number; turn?: number; fore?: (t: number) => number; lat?: number; ashore?: boolean; remote?: boolean }): number => {
+    if (!spotfn || !block) throw new Error('deck_spot or the wheel spin block not found in engine.ts')
+    return new Function('o', `const wrap_axis=(v)=>v, CARRIER={ x:0, z:0 };
+      let CARRIER_C=1, CARRIER_S=0, yaw=0;
+      ${spotfn}
+      const jet={ pos:{ x:0, y:21, z:0 }, squish:1, speed:0, gear:0 }, ownship=o.remote?{}:jet, st=jet, dt=1/60;
+      const fore=o.fore||(()=>-60), lat=o.lat??10;
+      const place=(t)=>{ if(o.ashore){ jet.pos.x=5000+o.way*t; jet.pos.y=5; jet.pos.z=0; return; }
+        const f=fore(t); jet.pos.x=CARRIER.x+f*CARRIER_C+lat*CARRIER_S; jet.pos.z=CARRIER.z-f*CARRIER_S+lat*CARRIER_C; };
+      place(0);
+      for(let i=1;i<=60;i++){ const t=i*dt, x=jet.pos.x, z=jet.pos.z;
+        yaw+=(o.turn||0)*dt; CARRIER_C=Math.cos(yaw); CARRIER_S=Math.sin(yaw); CARRIER.x+=o.way*dt*CARRIER_C; CARRIER.z-=o.way*dt*CARRIER_S;
+        place(t); jet.speed=Math.hypot(jet.pos.x-x,jet.pos.z-z)/dt;   // its speed over the water, as the core reports it
+        ${block} }
+      return jet.wheelDist;`)(o) as number
+  }
+
+  it('keeps the wheels still on a jet held on the catapult of a ship steaming at 28 kt', () => {
+    expect(roll({ way: 14.4 })).toBeLessThan(0.01) // 14.4 m of tread a second before
+  })
+
+  it('and on a ship turning under it, the jet well off the centreline', () => {
+    expect(roll({ way: 15.4, turn: 0.022, lat: 25 })).toBeLessThan(0.01)
+  })
+
+  it('and on another jet parked on the deck', () => {
+    expect(roll({ way: 14.4, remote: true })).toBeLessThan(0.01)
+  })
+
+  it('rolls them at the jet\'s speed over the deck down the catapult stroke, not with the ship\'s way added', () => {
+    expect(roll({ way: 14.4, fore: (t) => -90 + 15 * t * t })).toBeCloseTo(15, 1) // 30 m/s² for a second: 15 m down the deck, less the first frame, which has no spot before it
+  })
+
+  it('rolls them at the jet\'s speed over the ground ashore', () => {
+    expect(roll({ way: 20, ashore: true })).toBeCloseTo(20, 6)
+  })
+})
