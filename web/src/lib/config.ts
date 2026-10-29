@@ -367,7 +367,7 @@ export const TAB_FIELDS: Record<string, string[]> = {
 }
 
 export const DEFAULT_CONFIG: MissionConfig = {
-  task: 'joust',
+  task: 'free', // a first-time player starts in free flight, in the air; a returning player's saved task and start stand
   bandit: 'expert',
   fuel: FUEL.fox2, // the load of the Fox 2 preset the default stores carry
   record: true, // flight recorder (#212): always running, saved from the log
@@ -376,7 +376,7 @@ export const DEFAULT_CONFIG: MissionConfig = {
   joystick: '',
   sticks: {},
   keys: {},
-  start: 'carrier',
+  start: 'air',
   demonstration: false,
   servers: '',
   pilot: '',
