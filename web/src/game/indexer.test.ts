@@ -77,9 +77,13 @@ describe('the AOA indexer on the modeled unit', () => {
     if (!constants) throw new Error('the indexer constants not found in engine.ts')
     const g = new THREE.Group()
     g.userData = { glass: { x: 6.3, y: 0.6, hw: 0.08, hh: 0.06 }, eye: { x: 5.6, y: 0.66, z: 0 }, outline }
+    // build_indexer ends by calling the cockpit's other builders in turn; each is stubbed, read from the
+    // function itself so a builder added to that chain needs no edit here.
+    const indexer = lift('build_indexer')
+    const chain = [...new Set(indexer.match(/\bbuild_\w+(?=\()/g) ?? [])].filter((name) => name !== 'build_indexer')
     new Function('THREE', 'g', `const LAYER_OWN=2, INDEXER_TEST="", noop=()=>{};
-      const build_lamps=noop, build_radalt=noop, build_rwr=noop, build_standby=noop, build_brake=noop, build_cabin=noop, build_clock=noop, build_screens=noop, build_bezels=noop, build_centre=noop, build_plates=noop, build_ifei=noop, build_ufc=noop, build_faces=noop;
-      ${constants} ${lift('build_indexer')} build_indexer(g);`)(THREE, g)
+      const ${chain.map((name) => `${name}=noop`).join(', ')};
+      ${constants} ${indexer} build_indexer(g);`)(THREE, g)
     g.updateMatrixWorld(true)
     return g.userData.indexerGroup as THREE.Group
   }
