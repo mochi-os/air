@@ -34,8 +34,17 @@ nose from the front, the aircraft's right is on the photo's left. Get this right
 - `lex_apex_left` / `lex_apex_right`: the forward tip of that LEX (leading-edge extension, the thin
   strake along the fuselage side from below the windscreen back to the wing), where its edge leaves the fuselage.
 - `lex_wing_left` / `lex_wing_right`: where that LEX's edge meets the wing's leading edge (the kink).
-- `inlet_lip_top_left` / `_right`: the highest point of that engine inlet's lip (its front edge), outer side.
-- `inlet_lip_bottom_left` / `_right`: the lowest point of that inlet's lip.
+- `lex_fence_top_front_left` / `_right`, `lex_fence_top_aft_left` / `_right`: the top front and top aft
+  corners of the small upright fence on that LEX's upper surface.
+- The engine inlet sits under the LEX: a D-shaped mouth whose flat side is inboard, facing a curved splitter
+  plate that stands off the fuselage just ahead of it. On its lip (its rounded front edge), outer side:
+  - `inlet_lip_top_left` / `_right`: the lip's highest point.
+  - `inlet_lip_bottom_left` / `_right`: the lip's lowest point.
+  - `inlet_lip_outer_left` / `_right`: the lip's most outboard point.
+  - `inlet_corner_top_left` / `_right`, `inlet_corner_bottom_left` / `_right`: the top and bottom ends of
+    the lip's curve, where it meets the duct's flat inboard wall beside the splitter plate.
+- `splitter_top_left` / `_right`, `splitter_bottom_left` / `_right`: the top end (under the LEX) and bottom
+  end of the splitter plate's leading edge.
 - `fin_tip_leading_left` / `_right`: the fin's top forward corner. `fin_tip_trailing_left` / `_right`:
   its top aft corner (the fin tip carries antenna fairings at the trailing corner: mark the fin's own corner).
 - `wingtip_trailing_left` / `_right`: the wingtip's aft outer corner (the wing's own corner, not the
@@ -45,6 +54,9 @@ nose from the front, the aircraft's right is on the photo's left. Get this right
   tail's tip corners.
 - `axle_main_left` / `_right`: centre of that main wheel's hub, as seen.
 - `axle_nose_left` / `_right`: centre of that nose wheel's hub (the nose leg has two wheels side by side).
+  Mark a hub only where its outboard face shows; a wheel seen from inboard or tread-on is not an axle mark.
+- `wheel_main_left` / `_right`, `wheel_nose_left` / `_right`: a wheel seen tread-on (head-on or from
+  behind): the centre of the tyre's silhouette.
 - `nozzle_root_bottom_left` / `_right`: bottom of that engine nozzle where its petals start.
 - `nozzle_exit_bottom_left` / `_right`: bottom of that nozzle's exit lip.
 - `hook_point`: the tip of the stowed arresting hook (its aft, lower end) under the tail.
@@ -61,7 +73,9 @@ An edge is 5-15 points along a clearly visible line, in order, each on the line 
   only the airframe forms the edge (no stores, people, vehicles, shadows). Give each a descriptive name
   (`nose_top`, `canopy`, `spine`, `belly_forward`, `fin_left_trailing`, ...).
 - `against: "lex_edge_left"` / `"lex_edge_right"`: that LEX's leading edge.
-- `against: "inlet_lip_left"` / `"inlet_lip_right"`: that inlet lip's front edge.
+- `against: "inlet_lip_left"` / `"inlet_lip_right"`: that inlet lip's front edge, from one inner corner
+  round the outside to the other.
+- `against: "splitter_left"` / `"splitter_right"`: that splitter plate's leading edge, top to bottom.
 - `against: "fin_leading_left"` / `"fin_leading_right"`: that fin's leading edge.
 - `against: "canopy_sill_left"` / `"canopy_sill_right"`: the canopy's lower edge on that side, bow foot to aft corner.
 - `against: "stabilator_leading_left"` etc.: only if the tail looks undeflected.

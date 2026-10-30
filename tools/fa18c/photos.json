@@ -247,12 +247,8 @@
 					3544
 				],
 				"inlet_lip_top_right": [
-					3591,
-					2727
-				],
-				"inlet_lip_bottom_right": [
-					3591,
-					3055
+					3174,
+					2792
 				],
 				"nozzle_exit_bottom_right": [
 					300,
@@ -293,6 +289,22 @@
 				"probe_door_aft": [
 					5873,
 					2506
+				],
+				"inlet_corner_top_right": [
+					3188,
+					2797
+				],
+				"inlet_corner_bottom_right": [
+					3205,
+					3087
+				],
+				"splitter_top_right": [
+					3560,
+					2704
+				],
+				"splitter_bottom_right": [
+					3591,
+					3056
 				]
 			},
 			"locate": {
@@ -390,28 +402,6 @@
 						]
 					]
 				},
-				"inlet_lip_right": {
-					"against": "inlet_lip_right",
-					"snap": 6,
-					"points": [
-						[
-							3569,
-							2719
-						],
-						[
-							3562,
-							2825
-						],
-						[
-							3559,
-							2950
-						],
-						[
-							3569,
-							3045
-						]
-					]
-				},
 				"fin_leading_right": {
 					"against": "fin_leading_right",
 					"snap": 8,
@@ -459,9 +449,75 @@
 							2445
 						]
 					]
+				},
+				"splitter_right": {
+					"against": "splitter_right",
+					"snap": 6,
+					"points": [
+						[
+							3560,
+							2710
+						],
+						[
+							3559,
+							2730
+						],
+						[
+							3559,
+							2755
+						],
+						[
+							3560,
+							2780
+						],
+						[
+							3561,
+							2805
+						],
+						[
+							3562,
+							2830
+						],
+						[
+							3563,
+							2855
+						],
+						[
+							3565,
+							2880
+						],
+						[
+							3567,
+							2905
+						],
+						[
+							3570,
+							2930
+						],
+						[
+							3573,
+							2955
+						],
+						[
+							3577,
+							2980
+						],
+						[
+							3582,
+							3005
+						],
+						[
+							3588,
+							3030
+						],
+						[
+							3592,
+							3048
+						]
+					]
 				}
 			},
-			"notes": "The far main wheel shows its inboard face, so it is not marked as axle_main_left (the outboard hub face). The canopy's aft lower corner is not separable from its aft end at this angle. hook_point is the aft end of the stowed hook's visible shank. radome_top and probe_door_front are left to dvids9820810 and dvids9820801, which mark them on the same construction."
+			"notes": "The far main wheel shows its inboard face, so it is not marked as axle_main_left (the outboard hub face). The canopy's aft lower corner is not separable from its aft end at this angle. hook_point is the aft end of the stowed hook's visible shank. radome_top and probe_door_front are left to dvids9820810 and dvids9820801, which mark them on the same construction. Inlets (added later): The existing inlet_lip_top_right [3591, 2727] and inlet_lip_bottom_right [3591, 3055] are NOT on the lip. They sit at the splitter plate's leading edge, about 420 px forward of the lip: the bottom one is the plate's lower front corner (splitter_bottom_right here) and the top one is in the dark boundary-layer gap about 30 px forward of the plate's top end under the LEX. The existing inlet_lip_right edge also traces the splitter's leading edge, not the lip, and should be dropped (splitter_right here replaces it). The lip is the D-shaped edge at x 3125-3205 with the JET INTAKE DANGER chevron behind it; the large lit plate with streaks from x 3130 to 3590 is the splitter plate continuing into the duct's inboard wall. The view is about 27 deg ahead of the beam (fin-tip parallax), so the wall shows through the mouth. inlet_lip_top_right corrected to [3174, 2792]: the top of the lit lip band against the dark recess under the LEX, flat over x 3165-3185 (x +-8, y +-3). inlet_lip_bottom_right has no corrected value: the lip's lowest point is hidden, the lit bottom lip running down into the external tank's upper outline at x 3130-3185, y 3097-3105; delete the existing mark. inlet_lip_outer_right not marked: the lip's front edge reaches its outboard extreme at x 3125, flat over y 2905-2955 (centre about 2940), but the outer-side point the dictionary asks for has no visible feature here (the cowl behind the lip is evenly lit). inlet_corner_top_right is where the top lip band ends at the inboard wall, beside a dark corner shadow (+-6). inlet_corner_bottom_right is where the lip's lower outline turns into the splitter plate's straight bottom edge (+-6 along the curve), the same construction as dvids9820788. splitter_top_right is where the leading edge meets the LEX underside (the edge stays visible in the shadow up to y 2705); splitter_bottom_right is the plate's rounded lower front corner. The lip's front edge, for reference (not recorded as an edge because its bottom is hidden): [3151, 2810], [3140, 2830], [3134, 2850], [3130, 2870], [3127, 2890], [3125, 2910], [3125, 2950], [3127, 2990], [3129, 3030]."
 		},
 		"dvids9820756": {
 			"file": "photos/164718_right-rear-quarter_dvids9820756.jpg",
@@ -3998,6 +4054,1569 @@
 				}
 			},
 			"notes": "Firefighters in the foreground hide the tail cone, nozzles, hook, stabilator and nose gear; nothing marked near them. Below y~1230 the sky-facing edge right of the near fin is the FAR (left) fin's leading edge (offset ~55 px right of the near fin's LE line); the near fin's LE is only against sky above y~1215. fin_tip_leading_left is the far fin's top-forward corner peeking above; its trailing corner is hidden. fin_tip_leading_right is on the rounded tip corner (intersection of the top-edge and LE lines is ~2 px outside it, at (2879,1037)). fin_right_trailing includes the rudder's trailing edge (rudder looks neutral). apex +-4 px: the radome's lower side is in shadow against dark trees. radome_top / gun_port: same construction as dvids9820810 (slot aft tip on the silhouette; centroid of the slot opening). Canopy outline = thin glass edge against sky (no snap), skipping the bow at x~6400 where the frame sits a few px below the glass line. canopy_aft +-4 px (where the canopy aft edge line leaves the top silhouette). light_strip_* = the formation-light strip corners also marked in dvids9820810 and dvids9820799."
+		},
+		"dvids9820748": {
+			"file": "photos/164718_left-front-quarter-hook_dvids9820748.jpg",
+			"pose": {
+				"gear": 1
+			},
+			"marks": {
+				"apex": [
+					1809,
+					3263
+				],
+				"windscreen_base": [
+					2766,
+					2855
+				],
+				"bow_top": [
+					3085,
+					2662
+				],
+				"canopy_crown": [
+					3245,
+					2633
+				],
+				"canopy_aft": [
+					3753,
+					2747
+				],
+				"bow_foot_left": [
+					3245,
+					2887
+				],
+				"lex_apex_left": [
+					2954,
+					3003
+				],
+				"lex_fence_top_front_left": [
+					4467,
+					2955
+				],
+				"lex_fence_top_aft_left": [
+					4625,
+					2954
+				],
+				"fin_tip_leading_left": [
+					6137,
+					2164
+				],
+				"fin_tip_trailing_left": [
+					6405,
+					2178
+				],
+				"fin_tip_leading_right": [
+					5035,
+					2211
+				],
+				"fin_tip_trailing_right": [
+					5319,
+					2222
+				],
+				"inlet_lip_top_left": [
+					4575,
+					3203
+				],
+				"inlet_lip_bottom_left": [
+					4566,
+					3519
+				],
+				"inlet_lip_outer_left": [
+					4669,
+					3328
+				],
+				"inlet_corner_top_left": [
+					4531,
+					3212
+				],
+				"inlet_corner_bottom_left": [
+					4478,
+					3462
+				],
+				"splitter_top_left": [
+					4303,
+					3122
+				],
+				"splitter_bottom_left": [
+					4226,
+					3431
+				]
+			},
+			"edges": {
+				"nose_top": {
+					"against": "outline",
+					"snap": 6,
+					"points": [
+						[
+							1850,
+							3217.5
+						],
+						[
+							1900,
+							3180.5
+						],
+						[
+							1950,
+							3148.5
+						],
+						[
+							2000,
+							3124.5
+						],
+						[
+							2050,
+							3098.5
+						],
+						[
+							2100,
+							3076.5
+						],
+						[
+							2150,
+							3058.5
+						],
+						[
+							2200,
+							3041.5
+						],
+						[
+							2450,
+							2960.5
+						],
+						[
+							2500,
+							2943.5
+						],
+						[
+							2550,
+							2928.5
+						],
+						[
+							2600,
+							2912.5
+						],
+						[
+							2650,
+							2896.5
+						],
+						[
+							2700,
+							2881.5
+						]
+					]
+				},
+				"windscreen": {
+					"against": "outline",
+					"points": [
+						[
+							2800,
+							2833.5
+						],
+						[
+							2825,
+							2818.5
+						],
+						[
+							2850,
+							2803.5
+						],
+						[
+							2875,
+							2785.5
+						],
+						[
+							2900,
+							2767.5
+						],
+						[
+							2925,
+							2751.5
+						],
+						[
+							2950,
+							2733.5
+						],
+						[
+							2975,
+							2717.5
+						]
+					]
+				},
+				"canopy": {
+					"against": "outline",
+					"points": [
+						[
+							3150,
+							2642.5
+						],
+						[
+							3200,
+							2634
+						],
+						[
+							3250,
+							2632.5
+						],
+						[
+							3300,
+							2635.5
+						],
+						[
+							3350,
+							2642
+						],
+						[
+							3400,
+							2647.5
+						],
+						[
+							3450,
+							2657.5
+						],
+						[
+							3500,
+							2667.5
+						],
+						[
+							3550,
+							2678.5
+						],
+						[
+							3600,
+							2692.5
+						],
+						[
+							3650,
+							2708.5
+						],
+						[
+							3700,
+							2726.5
+						]
+					]
+				},
+				"spine": {
+					"against": "outline",
+					"snap": 6,
+					"points": [
+						[
+							4060,
+							2762.5
+						],
+						[
+							4100,
+							2766.5
+						],
+						[
+							4160,
+							2770.5
+						],
+						[
+							4200,
+							2775.5
+						],
+						[
+							4220,
+							2777.5
+						],
+						[
+							4280,
+							2783.5
+						],
+						[
+							4320,
+							2788.5
+						],
+						[
+							4360,
+							2791.5
+						],
+						[
+							4400,
+							2796.5
+						]
+					]
+				},
+				"lex_edge_left": {
+					"against": "lex_edge_left",
+					"snap": 6,
+					"points": [
+						[
+							2970,
+							3005.6
+						],
+						[
+							3070,
+							3006.7
+						],
+						[
+							3170,
+							3009.8
+						],
+						[
+							3270,
+							3015.2
+						],
+						[
+							3370,
+							3021.2
+						],
+						[
+							3470,
+							3030.4
+						],
+						[
+							3570,
+							3039.4
+						],
+						[
+							3670,
+							3049.7
+						],
+						[
+							3770,
+							3061.7
+						],
+						[
+							3870,
+							3074.0
+						],
+						[
+							3970,
+							3087.0
+						],
+						[
+							4070,
+							3099.2
+						],
+						[
+							4170,
+							3108.7
+						],
+						[
+							4270,
+							3118.2
+						],
+						[
+							4370,
+							3125.4
+						]
+					]
+				},
+				"fin_leading_left": {
+					"against": "fin_leading_left",
+					"snap": 6,
+					"points": [
+						[
+							6107.5,
+							2200
+						],
+						[
+							6019,
+							2300
+						],
+						[
+							5932,
+							2400
+						],
+						[
+							5844,
+							2500
+						],
+						[
+							5757,
+							2600
+						],
+						[
+							5670,
+							2700
+						],
+						[
+							5582,
+							2800
+						]
+					]
+				},
+				"fin_leading_right": {
+					"against": "fin_leading_right",
+					"snap": 6,
+					"points": [
+						[
+							5023,
+							2250
+						],
+						[
+							4988,
+							2350
+						],
+						[
+							4953.5,
+							2450
+						],
+						[
+							4920,
+							2550
+						],
+						[
+							4886,
+							2650
+						],
+						[
+							4851,
+							2750
+						]
+					]
+				},
+				"inlet_lip_left": {
+					"against": "inlet_lip_left",
+					"points": [
+						[
+							4531,
+							3212
+						],
+						[
+							4565,
+							3208
+						],
+						[
+							4605,
+							3212
+						],
+						[
+							4630,
+							3227
+						],
+						[
+							4651,
+							3255
+						],
+						[
+							4662,
+							3290
+						],
+						[
+							4665,
+							3330
+						],
+						[
+							4662,
+							3375
+						],
+						[
+							4654,
+							3420
+						],
+						[
+							4631,
+							3479
+						],
+						[
+							4600,
+							3504
+						],
+						[
+							4565,
+							3511
+						],
+						[
+							4530,
+							3500
+						],
+						[
+							4500,
+							3476
+						],
+						[
+							4478,
+							3462
+						]
+					]
+				},
+				"splitter_left": {
+					"against": "splitter_left",
+					"snap": 6,
+					"points": [
+						[
+							4303,
+							3125
+						],
+						[
+							4301.5,
+							3155
+						],
+						[
+							4299.5,
+							3185
+						],
+						[
+							4295.5,
+							3215
+						],
+						[
+							4291.5,
+							3245
+						],
+						[
+							4286.5,
+							3275
+						],
+						[
+							4280.5,
+							3305
+						],
+						[
+							4271.5,
+							3335
+						],
+						[
+							4260.5,
+							3365
+						],
+						[
+							4244.5,
+							3395
+						],
+						[
+							4235.5,
+							3410
+						],
+						[
+							4226.5,
+							3425
+						]
+					]
+				}
+			},
+			"notes": "Camera ahead of the jet's left side, roughly 35-40 deg off the nose, above the LEX (its top surface shows) and below the canopy top. Photo-right = aft and aircraft-left; the photo-right fin is the left fin. DEFLECTIONS: leading-edge flaps drooped, roughly 10-20 deg by eye (the LEF's inboard end stands below the LEX edge at the junction, x 4715-4915); trailing-edge flaps and ailerons drooped well down, roughly 30-40 deg (their lower surfaces hang as a dark band below the wing, the aileron's outboard edge a diagonal from about 6952,3172 to 7015,3275); the left stabilator's outboard tip shows past the wingtip (white, x 6955-7305, y 3115-3220) with its tip edge rising steeply to the trailing corner, consistent with trailing-edge-up roughly 5-12 deg as in dvids9820756; rudders not judged. Hook down (not marked); canopy closed. INLET: the lip is a bright rim round the outboard side of a dark mouth; its inboard ends meet the splitter plate's outboard face, which runs on aft as the duct's inboard wall (perforated/streaked band x 4440-4530 ahead of the mouth). inlet_lip_top/bottom/outer are on the rim's outer boundary (top boundary against the shadow under the LEX, bottom boundary against the shadow below, outboard boundary against the inlet's outer face); the inlet_lip_left edge is the centre of the rim highlight (the leading edge), with no snap because the rim is 10-15 px wide and either of its boundaries could capture a snap. splitter_left is the plate's leading edge from where it meets the LEX underside (splitter_top_left) to its rounded lower-front corner (splitter_bottom_left). LEAST CERTAIN: inlet_corner_bottom_left (+-6 px along the outline: the lip's lower curve fairs smoothly into the plate's lower edge, read where the rim highlight ends and the outline leaves the plate's straight lower edge; it sits about 50 px left of the top corner, so the inboard wall leans or the lower lip is filleted forward); inlet_lip_top_left (rim top is nearly flat from x 4555 to 4600, so +-15 px along it, +-2 px in height); inlet_lip_outer_left (rim is near vertical from y 3305 to 3345, so +-15 px in height, +-2 px across); bow_top (+-15 px along the flat top of the bow arch, seen through the glass below the canopy silhouette); canopy_crown (+-25 px along a flat top); canopy_aft (+-5 px, low contrast); axle_nose_left (+-4 px). The canopy and windscreen outline edges are glass against sky with weak contrast, so no snap; the windscreen and canopy edges stop short of the bow (x 2990-3140), where the bow frame and glass outlines cross. nose_top skips x 2230-2430, where the gun muzzle fairing sits on the silhouette. fin_leading_left stops at y 2800 (lower down the right fin's trailing edge meets it); fin_leading_right stops at y 2750 above the spine. SKIPPED: wingtip corners (the trailing corner is on the drooped aileron, the leading corner hidden by the tip rail and AIM-9); stabilator tip corners (leading corner hidden behind the drooped aileron, trailing corner rounded); lex_wing_left (drooped LEF splits the kink); nozzles (hidden behind the drooped flaps); the far (right) main wheel and the right nose wheel show their inboard faces, so no axle marks for them; gun_port and radome_top (the muzzle fairing is seen obliquely from below and the radome seam does not reach the silhouette visibly); sill_aft_left (no clear corner); hook_point (hook down). The axle marks are left out: the jet is decelerating in the arresting wire, its struts compressed, a pose the model does not take (they missed by 2-5 in while the rest fit within 1.5 in)."
+		},
+		"dvids8678631": {
+			"file": "photos/165221_front-shelter_dvids8678631.jpg",
+			"pose": {
+				"gear": 1,
+				"canopy": 1
+			},
+			"marks": {
+				"gun_port": [
+					3547,
+					2493
+				],
+				"bow_top": [
+					3857,
+					2230
+				],
+				"lex_apex_left": [
+					3899,
+					2490
+				],
+				"lex_fence_top_front_left": [
+					4495,
+					2474
+				],
+				"lex_fence_top_aft_left": [
+					4532,
+					2478
+				],
+				"fin_tip_leading_left": [
+					4948,
+					2008
+				],
+				"fin_tip_leading_right": [
+					4112,
+					2047
+				],
+				"axle_nose_left": [
+					4061,
+					3144
+				],
+				"wheel_main_left": [
+					4788,
+					3061
+				],
+				"splitter_top_left": [
+					4364,
+					2587
+				],
+				"splitter_bottom_left": [
+					4294,
+					2815
+				],
+				"inlet_corner_top_left": [
+					4438,
+					2652
+				],
+				"inlet_lip_outer_left": [
+					4553,
+					2735
+				],
+				"inlet_lip_bottom_left": [
+					4452,
+					2867
+				]
+			},
+			"edges": {
+				"inlet_lip_left": {
+					"against": "inlet_lip_left",
+					"points": [
+						[
+							4442,
+							2655
+						],
+						[
+							4470,
+							2653
+						],
+						[
+							4500,
+							2655
+						],
+						[
+							4520,
+							2663
+						],
+						[
+							4537,
+							2680
+						],
+						[
+							4548,
+							2700
+						],
+						[
+							4552,
+							2730
+						],
+						[
+							4550,
+							2760
+						],
+						[
+							4543,
+							2790
+						],
+						[
+							4532,
+							2820
+						],
+						[
+							4516,
+							2839
+						],
+						[
+							4500,
+							2852
+						],
+						[
+							4475,
+							2862
+						],
+						[
+							4450,
+							2862
+						],
+						[
+							4425,
+							2859
+						]
+					]
+				},
+				"splitter_left": {
+					"against": "splitter_left",
+					"snap": 6,
+					"points": [
+						[
+							4365,
+							2595
+						],
+						[
+							4363,
+							2610
+						],
+						[
+							4361,
+							2640
+						],
+						[
+							4360,
+							2652
+						],
+						[
+							4356,
+							2676
+						],
+						[
+							4354,
+							2688
+						],
+						[
+							4352,
+							2700
+						],
+						[
+							4347,
+							2724
+						],
+						[
+							4342,
+							2736
+						],
+						[
+							4338,
+							2748
+						],
+						[
+							4332,
+							2760
+						],
+						[
+							4326,
+							2772
+						],
+						[
+							4318,
+							2784
+						],
+						[
+							4311,
+							2796
+						],
+						[
+							4300,
+							2808
+						]
+					]
+				},
+				"lex_edge_left": {
+					"against": "lex_edge_left",
+					"snap": 6,
+					"points": [
+						[
+							3910,
+							2490
+						],
+						[
+							3960,
+							2491
+						],
+						[
+							4010,
+							2494
+						],
+						[
+							4060,
+							2498
+						],
+						[
+							4110,
+							2505
+						],
+						[
+							4160,
+							2516
+						],
+						[
+							4210,
+							2526
+						],
+						[
+							4260,
+							2538
+						],
+						[
+							4310,
+							2551
+						],
+						[
+							4360,
+							2562
+						],
+						[
+							4410,
+							2573
+						],
+						[
+							4460,
+							2584
+						],
+						[
+							4510,
+							2592
+						]
+					]
+				},
+				"fin_leading_left": {
+					"against": "fin_leading_left",
+					"snap": 6,
+					"points": [
+						[
+							4937,
+							2030
+						],
+						[
+							4917,
+							2070
+						],
+						[
+							4896,
+							2110
+						],
+						[
+							4876,
+							2150
+						],
+						[
+							4855,
+							2190
+						],
+						[
+							4835,
+							2230
+						],
+						[
+							4814,
+							2270
+						],
+						[
+							4794,
+							2310
+						],
+						[
+							4773,
+							2350
+						],
+						[
+							4753,
+							2390
+						],
+						[
+							4732,
+							2430
+						],
+						[
+							4711,
+							2470
+						],
+						[
+							4691,
+							2510
+						]
+					]
+				},
+				"fin_leading_right": {
+					"against": "fin_leading_right",
+					"snap": 6,
+					"points": [
+						[
+							4112,
+							2055
+						],
+						[
+							4114,
+							2075
+						],
+						[
+							4116,
+							2095
+						],
+						[
+							4119,
+							2115
+						],
+						[
+							4121,
+							2135
+						],
+						[
+							4123,
+							2155
+						],
+						[
+							4125,
+							2175
+						],
+						[
+							4128,
+							2195
+						],
+						[
+							4130,
+							2215
+						]
+					]
+				},
+				"nose_top": {
+					"against": "outline",
+					"snap": 6,
+					"points": [
+						[
+							3363,
+							2611
+						],
+						[
+							3370,
+							2603
+						],
+						[
+							3392,
+							2579
+						],
+						[
+							3400,
+							2571
+						],
+						[
+							3419,
+							2555
+						],
+						[
+							3429,
+							2547
+						],
+						[
+							3440,
+							2539
+						],
+						[
+							3451,
+							2531
+						]
+					]
+				},
+				"forebody_top": {
+					"against": "outline",
+					"snap": 6,
+					"points": [
+						[
+							3555,
+							2459
+						],
+						[
+							3570,
+							2450
+						],
+						[
+							3585,
+							2441
+						],
+						[
+							3600,
+							2433
+						],
+						[
+							3615,
+							2425
+						],
+						[
+							3630,
+							2417
+						],
+						[
+							3645,
+							2409
+						],
+						[
+							3660,
+							2401
+						],
+						[
+							3675,
+							2392
+						]
+					]
+				}
+			},
+			"notes": "Left side from about 20 degrees off the nose axis (the main tyre is near tread-on, the nose-wheel hub rim is a 31 x 98 px ellipse), camera at about the lower inlet lip's height (horizon near y 2820). The inlet is in deep shade; read with level stretches. INLET: the D's flat side is the photo-left of the mouth, the splitter the lit crescent left of it. inlet_lip_outer_left is the rightmost point of the lip's front highlight; x is good to 2 px, but the lip is vertical from y 2720 to 2750, so y is good only to about 8 px. inlet_lip_bottom_left is the lower lip's outer limb (its lowest silhouette), the vertex of a flat curve: y good to 2 px, x to about 5 px. inlet_corner_top_left is where the top rim's highlight ends against the splitter's face (rim at y 2652-2655, ends at x 4436-4440), good to about 4 px. Left out: inlet_lip_top_left, because the top rim is flat to within 2 px from the corner to x 4492 (y 2651 outer side, 2653 highlight), so no highest point can be placed in x; and inlet_corner_bottom_left, because the lower lip curves up leftward into the lit lower end of the splitter around x 4395-4410, y 2840-2850 with no crisp corner (a fitting sits at 4385-4395, 2835-2865). The inlet_lip_left trace runs along the lip's front highlight with no snap, since the strongest gradient is the dark duct boundary 3-5 px inside it; it stops at x 4425, short of the bottom corner. The splitter leading edge is clearly curved (a crescent), not straight. splitter_top_left is where the plate's leading edge meets the LEX underside (the top of the dark boundary-layer gap behind it), +-3 px in y. The right inlet is hidden by the nose, the nose gear and the centreline tank. ORDINARY POINTS: gun_port is the centre of the dark muzzle hole (24 x 10 px) at the front of the gun fairing. bow_top is the top of the fixed windscreen arch; the arch top is flat, so x was taken as the midpoint of symmetric pairs on its outer edge (+-4 px). lex_apex_left is where the LEX's lit-to-shadow edge starts. Fence corners: photo-left is forward. axle_nose_left is the centre of the left (near, photo-right) nose wheel's outer rim ellipse, outboard face. wheel_main_left is the centre of the left main tyre's silhouette (x 4738-4837, top 2966, ground 3152), nudged 2 px down for tyre deflection; its outboard hub face shows only as a sliver, so no axle_main_left. Fin tips: only the leading corners (the trailing corners carry antenna fairings and look rounded). NOT MARKED: apex, because at this angle the tip projects inside the outline: the tan radome tip cap is a near-circle (140 x 146 px, centre about 3395, 2695) and the true tip lies somewhere around x 3345-3372, not to a few px. Also not marked: windscreen_base (the centreline point on the glass base can't be found to a few px), radome_top (the joint is faint near the top), bow_foot_left (the pilot's sleeve is in the way), lex_wing_left (the leading-edge flap's drooped inboard end hides the kink), wingtips (a pod or launcher clutters the left tip and the right is hidden), stabilators, nozzles and hook (not visible). DEFLECTIONS: leading-edge flaps visibly drooped (the left LEF's inboard end stands about 30 px, roughly 3-4 in, below the LEX edge at the junction; angle not measurable). Trailing-edge flaps: hinge line not visible from the front; the dark underside band under the wing is about 95 px deep at the pylons, which suggests lowered flaps, but this is unconfirmed. Stabilators hidden behind the wing. The right rudder looks toed in (its tiger-striped panel sits displaced to photo-right of the fin's trailing edge, top at 4220-4268, 2215-2222); the left rudder can't be seen. Heat shimmer distorts the background right of x 5000 below the wing."
+		},
+		"dvids9820788": {
+			"file": "photos/164718_left-front-quarter-trucks_dvids9820788.jpg",
+			"pose": {
+				"gear": 1
+			},
+			"marks": {
+				"apex": [
+					2935,
+					2877
+				],
+				"windscreen_base": [
+					3752,
+					2553
+				],
+				"bow_top": [
+					4008,
+					2410
+				],
+				"canopy_crown": [
+					4115,
+					2390
+				],
+				"canopy_aft": [
+					4508,
+					2466
+				],
+				"bow_foot_left": [
+					4110,
+					2571
+				],
+				"sill_aft_left": [
+					4565,
+					2530
+				],
+				"lex_apex_left": [
+					3876,
+					2657
+				],
+				"lex_fence_top_front_left": [
+					5018,
+					2599
+				],
+				"lex_fence_top_aft_left": [
+					5133,
+					2598
+				],
+				"fin_tip_leading_left": [
+					6149,
+					2057
+				],
+				"fin_tip_trailing_left": [
+					6321,
+					2070
+				],
+				"fin_tip_leading_right": [
+					5446,
+					2137
+				],
+				"fin_tip_trailing_right": [
+					5626,
+					2146
+				],
+				"axle_main_left": [
+					5672,
+					3180
+				],
+				"axle_nose_left": [
+					4328,
+					3240
+				],
+				"inlet_lip_top_left": [
+					5110,
+					2766
+				],
+				"inlet_lip_bottom_left": [
+					5113,
+					2978
+				],
+				"inlet_lip_outer_left": [
+					5174,
+					2853
+				],
+				"inlet_corner_top_left": [
+					5078,
+					2770
+				],
+				"inlet_corner_bottom_left": [
+					5047,
+					2945
+				],
+				"splitter_top_left": [
+					4913,
+					2717
+				],
+				"splitter_bottom_left": [
+					4868,
+					2931
+				]
+			},
+			"edges": {
+				"inlet_lip_left": {
+					"against": "inlet_lip_left",
+					"points": [
+						[
+							5078,
+							2770
+						],
+						[
+							5100,
+							2768
+						],
+						[
+							5125,
+							2770
+						],
+						[
+							5143,
+							2778
+						],
+						[
+							5155,
+							2795
+						],
+						[
+							5164,
+							2820
+						],
+						[
+							5168,
+							2850
+						],
+						[
+							5166,
+							2885
+						],
+						[
+							5159,
+							2920
+						],
+						[
+							5148,
+							2952
+						],
+						[
+							5130,
+							2973
+						],
+						[
+							5110,
+							2975
+						],
+						[
+							5088,
+							2970
+						],
+						[
+							5065,
+							2953
+						],
+						[
+							5047,
+							2945
+						]
+					]
+				},
+				"splitter_left": {
+					"against": "splitter_left",
+					"snap": 6,
+					"points": [
+						[
+							4913,
+							2730
+						],
+						[
+							4912,
+							2745
+						],
+						[
+							4912,
+							2760
+						],
+						[
+							4911,
+							2775
+						],
+						[
+							4909,
+							2790
+						],
+						[
+							4908,
+							2805
+						],
+						[
+							4906,
+							2820
+						],
+						[
+							4903,
+							2835
+						],
+						[
+							4900,
+							2850
+						],
+						[
+							4896,
+							2865
+						],
+						[
+							4891,
+							2880
+						],
+						[
+							4884,
+							2895
+						],
+						[
+							4877,
+							2910
+						],
+						[
+							4869,
+							2925
+						]
+					]
+				},
+				"lex_edge_left": {
+					"against": "lex_edge_left",
+					"snap": 6,
+					"points": [
+						[
+							3900,
+							2657
+						],
+						[
+							4000,
+							2656
+						],
+						[
+							4100,
+							2658
+						],
+						[
+							4200,
+							2662
+						],
+						[
+							4300,
+							2668
+						],
+						[
+							4400,
+							2675
+						],
+						[
+							4500,
+							2683
+						],
+						[
+							4600,
+							2693
+						],
+						[
+							4700,
+							2702
+						],
+						[
+							4800,
+							2709
+						],
+						[
+							4900,
+							2715
+						]
+					]
+				},
+				"fin_leading_left": {
+					"against": "fin_leading_left",
+					"snap": 6,
+					"points": [
+						[
+							6136,
+							2070
+						],
+						[
+							6099,
+							2116
+						],
+						[
+							6061,
+							2162
+						],
+						[
+							6022,
+							2208
+						],
+						[
+							5985,
+							2254
+						],
+						[
+							5946,
+							2300
+						],
+						[
+							5907,
+							2346
+						],
+						[
+							5869,
+							2392
+						],
+						[
+							5828,
+							2438
+						],
+						[
+							5789,
+							2484
+						],
+						[
+							5761,
+							2520
+						]
+					]
+				},
+				"fin_leading_right": {
+					"against": "fin_leading_right",
+					"snap": 6,
+					"points": [
+						[
+							5441,
+							2150
+						],
+						[
+							5428,
+							2189
+						],
+						[
+							5413,
+							2228
+						],
+						[
+							5387,
+							2306
+						],
+						[
+							5373,
+							2345
+						],
+						[
+							5360,
+							2384
+						],
+						[
+							5346,
+							2423
+						],
+						[
+							5332,
+							2462
+						]
+					]
+				},
+				"canopy_sill_left": {
+					"against": "canopy_sill_left",
+					"points": [
+						[
+							4110,
+							2571
+						],
+						[
+							4160,
+							2567
+						],
+						[
+							4200,
+							2563
+						],
+						[
+							4240,
+							2559
+						],
+						[
+							4280,
+							2556
+						],
+						[
+							4320,
+							2552
+						],
+						[
+							4360,
+							2548
+						],
+						[
+							4400,
+							2544
+						],
+						[
+							4440,
+							2541
+						],
+						[
+							4490,
+							2536
+						],
+						[
+							4520,
+							2534
+						],
+						[
+							4550,
+							2531
+						]
+					]
+				},
+				"nose_top_forward": {
+					"against": "outline",
+					"snap": 6,
+					"points": [
+						[
+							2994,
+							2822
+						],
+						[
+							3028,
+							2802
+						],
+						[
+							3062,
+							2784
+						],
+						[
+							3096,
+							2767
+						],
+						[
+							3130,
+							2752
+						],
+						[
+							3164,
+							2738
+						],
+						[
+							3198,
+							2725
+						],
+						[
+							3232,
+							2713
+						],
+						[
+							3266,
+							2703
+						],
+						[
+							3300,
+							2693
+						]
+					]
+				},
+				"nose_top_aft": {
+					"against": "outline",
+					"snap": 6,
+					"points": [
+						[
+							3440,
+							2651
+						],
+						[
+							3480,
+							2638
+						],
+						[
+							3520,
+							2626
+						],
+						[
+							3560,
+							2615
+						],
+						[
+							3600,
+							2603
+						],
+						[
+							3640,
+							2591
+						],
+						[
+							3680,
+							2580
+						],
+						[
+							3720,
+							2566
+						]
+					]
+				},
+				"canopy": {
+					"against": "outline",
+					"points": [
+						[
+							4060,
+							2393
+						],
+						[
+							4105,
+							2390
+						],
+						[
+							4150,
+							2391
+						],
+						[
+							4195,
+							2394
+						],
+						[
+							4240,
+							2399
+						],
+						[
+							4280,
+							2405
+						],
+						[
+							4320,
+							2412
+						],
+						[
+							4360,
+							2420
+						],
+						[
+							4420,
+							2435
+						],
+						[
+							4480,
+							2453
+						]
+					]
+				},
+				"spine": {
+					"against": "outline",
+					"snap": 6,
+					"points": [
+						[
+							4720,
+							2475
+						],
+						[
+							4760,
+							2477
+						],
+						[
+							4800,
+							2480
+						],
+						[
+							4840,
+							2484
+						],
+						[
+							4900,
+							2488
+						],
+						[
+							4940,
+							2492
+						],
+						[
+							4980,
+							2495
+						],
+						[
+							5020,
+							2500
+						],
+						[
+							5040,
+							2502
+						]
+					]
+				}
+			},
+			"notes": "Front-left quarter, about 45 deg ahead of the beam (fin-tip parallax), camera near the height of the inlet's bottom; canopy closed. INLET: the lip points are on the lip's outer side. inlet_lip_top_left is the top boundary of the bright lip band against the dark recess under the LEX (flat between x 5100 and 5120, so x +-10; y +-2). inlet_lip_bottom_left is the lower boundary of the lit bottom lip against the shadow below (flat between x 5105 and 5120, x +-8). inlet_lip_outer_left is on a faint seam line about 8 px outboard of the lip's bright inner edge (that edge peaks at x 5166); y 2853 from the symmetry of the curve (+-6); the seam is faint and the DANGER placard crosses it below y 2856, so x +-3. inlet_corner_top_left is the inboard end of the top lip band, where it turns down the flat wall (+-4). inlet_corner_bottom_left is where the lip's lower outline turns into the straight bottom edge of the splitter plate (+-5 along the curve). The inlet_lip_left edge follows the lip's crest (the middle of the band at the top and bottom, about 2 px outboard of its bright inner edge on the outboard side); no snap, because the strongest nearby edge switches between the band's inner and outer boundaries round the curve. The splitter's leading edge is the boundary between the lit plate and the dark boundary-layer gap ahead of it: splitter_top_left where it meets the LEX underside, splitter_bottom_left the plate's lower front corner. CANOPY: canopy_aft is where the glass ends on the top silhouette, merging tangentially into the spine (x +-5), as 808 marks it. sill_aft_left is the opening canopy's aft lower corner (aft end of the sill seam, where the canopy's curved aft edge comes down), about 60 px aft of the glass end. bow_top is the top of the bow frame on the silhouette (x +-6). canopy_crown: the top is flat to 0.5 px between x 4090 and 4135; the centre of a symmetric fit is taken, x +-15. windscreen_base: the glass edge meets the nose top at a shallow angle, x +-5. Least sure: canopy_crown (x), inlet_lip_outer_left, windscreen_base, canopy_aft. LEFT OUT: radome_top and gun_port (the radome seam crosses the top under the gun fairing, and the slot's centre cannot be placed to a few px); lex_wing_left (the drooped leading-edge flap opens a wedge-shaped gap at the LEX junction, so there is no single kink); wingtip_leading_left (rail and AIM-9); wingtip_trailing_left and fold_trailing_left (on the drooped aileron and flap, not fixed structure); stabilator tips, nozzles and hook_point (hidden behind the drooped left trailing edge and the tanks); the right main and right nose wheels (seen from inboard, so no axle marks). Nose outline split around the gun fairing hump (x 3310-3430); spine outline starts aft of the antenna hump and skips the small blade at x 4865-4895. DEFLECTIONS: leading-edge flaps drooped (wedge gap at the LEX/LEF junction; amount not measurable, looks substantial); trailing-edge flaps drooped; ailerons drooped strongly, roughly 40-50 deg judging by the left aileron's two side edges (the bright diagonal at x 6365-6410 is its inboard side edge); right rudder toed in (its surface is lit much brighter than the fin and its trailing edge stands out beyond the fin's trailing-edge line); left rudder not assessable; stabilators not visible."
 		}
 	}
 }

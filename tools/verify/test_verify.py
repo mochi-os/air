@@ -245,6 +245,44 @@ class CameraTest(unittest.TestCase):
 		misses = bundle.misses()
 		self.assertGreater(math.hypot(*misses[1]["u0"][:2]), 200)
 
+	def test_bundle_flags_what_one_photo_cannot_fix(self):
+		# A point only one photo sees is loose along that camera's ray: the
+		# bundle must say so rather than report it known. Points two photos see,
+		# directly or one of them through its mirror twin, stay fixed, even two
+		# photos only 3 degrees apart (weakly, but fixed).
+		rng = np.random.default_rng(11)
+		anchors = {f"a{i}": p for i, p in enumerate(scene(6, 6))}
+		truth = {"both": np.array([1.0, 0.5, 1.0]), "once": np.array([-1.0, 0.8, 0.7]),
+			"wing_right": np.array([-2.0, 1.0, 1.5]), "wing_left": np.array([-2.0, 1.0, -1.5]),
+			"narrow": np.array([0.5, -0.4, -1.0]), "fin_left": np.array([-3.0, 2.0, -1.2]), "fin_right": np.array([-3.0, 2.0, 1.2])}
+		turn = math.radians(3)
+		near = np.array([[math.cos(turn), 0, math.sin(turn)], [0, 1, 0], [-math.sin(turn), 0, math.cos(turn)]]) @ [25.0, 3, 10]
+		cameras = [cam.looking(np.array(p, float), np.zeros(3), 8000.0) for p in ((25, 3, 10), (-8, 2, 22), near)]
+		seen = [["both", "once", "wing_right", "narrow", "fin_left"], ["both", "wing_left"], ["narrow"]]
+		photos = []
+		for c, extra in zip(cameras, seen):
+			marks = {**anchors, **{n: truth[n] for n in extra}}
+			names = list(marks)
+			pixels = cam.project(c, np.array([marks[n] for n in names]), self.centre)[0] + rng.normal(0, 0.3, (len(names), 2))
+			photos.append({"centre": self.centre, "width": 4000, "sigma": 1.0, "marks": dict(zip(names, map(tuple, pixels)))})
+		points = {n: {"priors": [(np.eye(3)[i], p[i], 0.0) for i in range(3)]} for n, p in anchors.items()}
+		points.update({n: {"priors": [], "value": p + 0.05} for n, p in truth.items()})
+		bundle = cam.Bundle(photos, points, mirror=(np.diag([1, 1, -1.0]), [("wing_left", "wing_right"), ("fin_left", "fin_right")]))
+		self.assertEqual(bundle.initialise(log=lambda *_: None), [])
+		_, solved = bundle.solve()
+		for name in ("both", "wing_right", "wing_left"):
+			self.assertEqual(len(bundle.loose[name]), 0, name)
+			np.testing.assert_allclose(solved[name], truth[name], atol=5e-3, err_msg=name)
+		self.assertEqual(len(bundle.loose["narrow"]), 0)
+		self.assertGreater(np.sqrt(np.linalg.eigvalsh(bundle.spread["narrow"]).max()), 0.05)
+		for name in ("once", "fin_left"):
+			self.assertEqual(len(bundle.loose[name]), 1, name)
+			ray = cam.ray(bundle.cameras[0], photos[0]["marks"][name], self.centre)
+			self.assertGreater(abs(bundle.loose[name][0] @ ray), 0.999, name)
+			# across the ray it is measured: the solved point lies on the true ray
+			off = solved[name] - truth[name]
+			self.assertLess(np.linalg.norm(off - (off @ ray) * ray), 5e-3, name)
+
 	def test_bundle_uses_partial_priors(self):
 		# a point seen in one photo, with its z cited, lands on the right spot
 		anchors = {f"a{i}": p for i, p in enumerate(scene(5, 6))}

@@ -13,15 +13,34 @@ import sys
 from PIL import Image, ImageDraw
 
 Image.MAX_IMAGE_PIXELS = None
+LARGEST = 4000   # pixels on the output's longer side: more is a mistake (a swapped corner), and can take tens of GB
+
+
+def size(x0, y0, x1, y1, width, photo):
+	# The crop held inside the photo (a box past its edge is padded, and 0 0
+	# 99999 99999 asks for ten billion pixels), and its output size drawn
+	# `width` pixels wide; or an error
+	x0, y0, x1, y1 = max(x0, 0), max(y0, 0), min(x1, photo[0]), min(y1, photo[1])
+	if x1 <= x0 or y1 <= y0:
+		raise ValueError(f"the crop needs x0 < x1 and y0 < y1 inside the {photo[0]} x {photo[1]} photo, got {x0} {y0} {x1} {y1}")
+	height = round((y1 - y0) * width / (x1 - x0))
+	if max(width, height) > LARGEST:
+		raise ValueError(f"the crop would be {width} x {height} pixels; keep it within {LARGEST} (check the corners and WIDTH)")
+	return (x0, y0, x1, y1), (width, max(1, height))
 
 
 def main():
 	photo, x0, y0, x1, y1, step, out = sys.argv[1], *map(int, sys.argv[2:7]), sys.argv[7]
 	rest = sys.argv[8:]
 	width = int(rest.pop(0)) if rest and ":" not in rest[0] else 1400
-	image = Image.open(photo).convert("RGB").crop((x0, y0, x1, y1))
+	image = Image.open(photo)
+	try:
+		(x0, y0, x1, y1), shape = size(x0, y0, x1, y1, width, image.size)
+	except ValueError as e:
+		sys.exit(f"crop.py: {e}")
+	image = image.convert("RGB").crop((x0, y0, x1, y1))
 	k = width / (x1 - x0)
-	image = image.resize((width, int((y1 - y0) * k)), Image.LANCZOS)
+	image = image.resize(shape, Image.LANCZOS)
 	pen = ImageDraw.Draw(image)
 	for x in range((x0 // step + 1) * step, x1, step):
 		X = (x - x0) * k

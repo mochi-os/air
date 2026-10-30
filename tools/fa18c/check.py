@@ -324,7 +324,7 @@ def checks(jet):
 		lex_points = jet.points(["lex_right"])
 		end = lex_points[:, 0].max()
 		yield result("shape.lex", "LEX's aft end behind the LEX-wing junction (a square end sits on it)", 40.0, min(end - junction, 40.0), 20.0)
-		beneath = ["fuselage", "inlet_right", "wing_inner_right", "flap_leading_inner_right"]
+		beneath = ["fuselage", "inlet_right", "splitter_right", "wing_inner_right", "flap_leading_inner_right"]
 		under = np.concatenate([jet.points([n]).reshape(-1, 3, 3) for n in beneath if n in jet.parts()])
 		stations, buttlines = np.arange(200.0, end + 0.5, 1.0), np.arange(15.0, 60.5, 1.0)
 		L = heights(jet.points(["lex_right"]).reshape(-1, 3, 3), stations, buttlines)
@@ -514,7 +514,8 @@ def checks(jet):
 		start = n[n[:, 0] < n[:, 0].min() + 0.5]
 		slope = math.degrees(math.atan(((start[:, 2].max() + start[:, 2].min()) / 2 - centre) / (at - n[:, 0].min())))
 		yield result("engine.angle", "nozzle axis converging aft", value(e_["angle"]), slope, 0.5, "deg")
-		lip = jet.points(["inlet_right"])[:, 0].min()
+		# 4 in behind the raked lip's aftmost point, where the cut crosses the duct whole
+		lip = max(p[0] for p in F["layout"]["inlet"]["lip"].values())
 		q = jet.cut(["inlet_right"], [lip + 4, 100, 0], [1, 0, 0])
 		inner = min((l for l in loops(q[:, 1:].reshape(-1, 2, 2)) if len(l) > 8), key=shoelace)
 		a = shoelace(inner)
@@ -522,6 +523,51 @@ def checks(jet):
 		yield result("engine.inlet", "inlet duct's hydraulic diameter, 4 in in", value(e_["inlet"]), 4 * a / perimeter, 1.0)
 
 	yield from guard("engine", "engine", engine)
+
+	# The inlet's mouth and splitter plate where the photos put them
+	def inlet():
+		place = F["layout"]["inlet"]
+		lip = place["lip"]
+		measured = np.array([lip[k] for k in ("top", "bottom", "outer", "corner_top", "corner_bottom")], float)
+		plane = np.linalg.lstsq(np.c_[np.ones(len(measured)), measured[:, 1], measured[:, 2]], measured[:, 0], rcond=None)[0]
+		duct = jet.points(["inlet_right"])
+		# the lip as built: the front edge and the ring 1.6 in behind it, found
+		# from the mesh (the most forward points along the lip's slant), so an
+		# inlet built in the wrong place reads as misses, not as nothing
+		ahead = plane[0] + plane[1] * duct[:, 1] + plane[2] * duct[:, 2] - duct[:, 0]
+		front = duct[ahead > ahead.max() - 1.9]
+
+		def pick(values, how):
+			return float(how(values)) if len(values) else float("nan")
+
+		yield result("layout.inlet", "lip's top", lip["top"][1], pick(front[:, 1], np.max), 1.0, "WL in")
+		yield result("layout.inlet", "lip's bottom", lip["bottom"][1], pick(front[:, 1], np.min), 1.0, "WL in")
+		yield result("layout.inlet", "lip's outboard side", lip["outer"][2], pick(front[:, 2], np.max), 1.0, "BL in")
+		for key in ("top", "bottom"):
+			p = lip[f"corner_{key}"]
+			near = front[np.abs(front[:, 1] - p[1]) < 1.0]
+			yield result("layout.inlet", f"flat inboard side at its {key} corner", p[2], pick(near[:, 2], np.min), 1.0, "BL in")
+			p = lip[key]
+			near = front[np.abs(front[:, 1] - p[1]) < 1.0]
+			yield result("layout.inlet", f"lip's station at its {key}", p[0], pick(near[:, 0], np.min), 1.0, "FS in")
+		# the front edge (the one ring ahead of the rest) against the traced outline
+		edge = np.unique(duct[ahead > ahead.max() - 0.2][:, [1, 2]].round(4), axis=0)
+		centre = edge.mean(axis=0)
+		edge = edge[np.argsort(np.arctan2(edge[:, 1] - centre[1], edge[:, 0] - centre[0]))]
+		a, b = edge, np.roll(edge, -1, axis=0)
+		worst = 0.0
+		for q in np.array(place["outline"], float):
+			s = np.clip(((q - a) * (b - a)).sum(1) / np.maximum(((b - a) ** 2).sum(1), 1e-12), 0, 1)
+			worst = max(worst, float(np.linalg.norm(a + s[:, None] * (b - a) - q, axis=1).min()))
+		yield result("layout.inlet", "lip's front edge off the traced outline, worst", 0.0, worst, 1.0)
+		plate = jet.points(["splitter_right"])
+		traced = place["splitter"]["edge"]
+		for what, p in (("top", traced[0]), ("middle", traced[len(traced) // 2]), ("bottom", traced[-1])):
+			near = plate[np.abs(plate[:, 1] - p[1]) < 0.6]
+			yield result("layout.inlet", f"splitter's leading edge at its {what}", p[0], pick(near[:, 0], np.min), 1.0, "FS in")
+			yield result("layout.inlet", f"splitter's buttline at its {what}", p[2], pick(near[:, 2], np.max), 0.5, "BL in")
+
+	yield from guard("layout.inlet", "inlet", inlet)
 
 	# Fittings
 	def fittings():

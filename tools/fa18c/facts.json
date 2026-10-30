@@ -1371,6 +1371,162 @@
 			"source": "photo match",
 			"where": "verify/photos.py over photos.json (12 photos solved together): nozzle_exit_bottom in 4 photos (FS 720.0 +-2, WL 90.45 +-2.1)",
 			"note": "the nozzles' outer flaps on the engine axes: the exit's lower lip where the photos put it; the HARV's exhaust plane (overall.exhaust) stands 7 in further forward. The start and the start's radius are provisional (fitted to the HATP views)"
+		},
+		"inlet": {
+			"lip": {
+				"top": [
+					413.9,
+					107.5,
+					32.6
+				],
+				"bottom": [
+					417.4,
+					76.8,
+					28.3
+				],
+				"outer": [
+					414.6,
+					95.1,
+					43.9
+				],
+				"corner_top": [
+					414.3,
+					107.1,
+					27.3
+				],
+				"corner_bottom": [
+					416.8,
+					82.3,
+					17.2
+				]
+			},
+			"outline": [
+				[
+					107.2,
+					29.9
+				],
+				[
+					107.2,
+					33.5
+				],
+				[
+					106.4,
+					37.2
+				],
+				[
+					104.4,
+					40.5
+				],
+				[
+					101.1,
+					42.6
+				],
+				[
+					97.4,
+					43.3
+				],
+				[
+					93.8,
+					43.2
+				],
+				[
+					90.4,
+					42.4
+				],
+				[
+					87.2,
+					41.3
+				],
+				[
+					83.9,
+					39.8
+				],
+				[
+					80.8,
+					37.4
+				],
+				[
+					78.4,
+					34.0
+				],
+				[
+					77.5,
+					29.9
+				],
+				[
+					77.9,
+					25.6
+				],
+				[
+					79.7,
+					21.7
+				],
+				[
+					81.8,
+					17.9
+				]
+			],
+			"splitter": {
+				"edge": [
+					[
+						381.2,
+						115.5,
+						25.5
+					],
+					[
+						381.2,
+						114.8,
+						25.7
+					],
+					[
+						381.4,
+						111.0,
+						25.1
+					],
+					[
+						381.3,
+						106.7,
+						24.6
+					],
+					[
+						381.3,
+						102.4,
+						23.8
+					],
+					[
+						381.2,
+						98.2,
+						22.9
+					],
+					[
+						381.1,
+						93.9,
+						21.3
+					],
+					[
+						381.1,
+						89.7,
+						18.8
+					],
+					[
+						381.2,
+						86.0,
+						16.0
+					],
+					[
+						381.8,
+						85.2,
+						14.8
+					]
+				],
+				"thickness": 0.5,
+				"past": 2.0
+			},
+			"wall": 1.2,
+			"unit": "[FS, WL, BL] in; lip: its rounded front edge's highest, lowest and most outboard points and the ends of its curve at the flat inboard wall, outer side; outline: [WL, BL] along the lip's front edge from the top corner round the outside to the bottom corner; splitter: its leading edge, top to bottom",
+			"source": "photo match",
+			"where": "verify/photos.py over photos.json (15 photos solved together): the lip's and splitter's points in 2 to 4 of dvids9820748, dvids9820788, dvids8678631 and dvids9820808 each (+-0.7 to 1.9 in); the outline from the three lip traces cast onto the lip's plane (they agree within 1.5 in); the splitter's leading edge from dvids9820808 and dvids8678631 together (dvids9820748 and dvids9820788 agree within 0.7 in); the wall is the lip rim's width in dvids9820748 (10-15 px, 1.0 to 1.3 in). The lip's lower and outboard points, and its bottom corner, rest on one photo each outside the two 45 degree quarter views (dvids8678631, dvids9820808): leaving that photo out moves them up to 12 in along the quarter views' line of sight, so a mistake in its mark would go unseen there; the three lip traces cast onto the lip's plane from three cameras agree within 1.5 in, which they would not if the plane were wrong",
+			"note": "the lip stands 40 in aft of where the model first had it (FS 365), under the LEX-wing junction, raked 3.5 in aft from top to bottom, its flat inboard side leaning inboard at the bottom; tp3478's FS 401 section (figure 4a) shows the splitter plate there but no duct yet, which agrees. The duct inside the measured lip has a hydraulic diameter of 23.6 in, tm103703's 23.34 (engine.inlet). The splitter's leading edge stands upright at FS 381, bowing 2.7 in outboard at mid-height"
 		}
 	}
 }

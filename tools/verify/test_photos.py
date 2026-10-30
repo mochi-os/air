@@ -13,6 +13,7 @@ import numpy as np  # noqa: E402
 from PIL import Image  # noqa: E402
 
 import camera as cam  # noqa: E402
+import crop  # noqa: E402
 import model as mod  # noqa: E402
 import photos  # noqa: E402
 from test_verify import JET, box, glb  # noqa: E402
@@ -35,6 +36,17 @@ class HelpersTest(unittest.TestCase):
 		moved = photos.snap(gray, [[52, 20], [53, 50], [54, 80]], 10)
 		self.assertTrue(np.all(np.abs(moved[:, 0] - 59.5) <= 1.0), moved)
 		np.testing.assert_allclose(moved[:, 1], [20, 50, 80], atol=1.0)
+
+	def test_crop_refuses_a_runaway_size(self):
+		photo = (8000, 5000)
+		self.assertEqual(crop.size(100, 200, 500, 400, 1400, photo), ((100, 200, 500, 400), (1400, 700)))
+		# a box past the photo's edge is held inside it, not padded out to ten billion pixels
+		self.assertEqual(crop.size(0, 0, 99999, 99999, 1600, photo), ((0, 0, 8000, 5000), (1600, 1000)))
+		# a thin strip drawn 1400 wide would be millions of pixels tall
+		with self.assertRaises(ValueError):
+			crop.size(100, 200, 102, 5000, 1400, photo)
+		with self.assertRaises(ValueError):
+			crop.size(500, 200, 100, 400, 1400, photo)
 
 	def test_segment_distance(self):
 		segments = photos.to_segments(np.array([[0.0, 0.0], [10.0, 0.0], [10.0, 10.0]]))
@@ -99,6 +111,48 @@ class MatchTest(unittest.TestCase):
 		self.assertAlmostEqual(report["points"]["front_right"]["miss"][1], 3.0, delta=0.15)
 		self.assertLess(max(abs(v) for v in report["points"]["tail_top_left"]["miss"]), 0.15)
 		self.assertLess(report["edges"]["p0:top"]["median"], 0.1)
+
+	def test_one_photo_measures_across_its_sightline_only(self):
+		# front_right marked in one photo only: the report flags it loose along
+		# that camera's line of sight, gives the model's miss across it only,
+		# and does not depend on where along the line the solve left the point
+		r = self.root
+		catalogue = json.loads((r / "photos.json").read_text())
+		for k, photo in enumerate(catalogue["photos"].values()):
+			photo["marks"].pop("front_left")
+			if k:
+				photo["marks"].pop("front_right")
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		match = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None)
+		row = match.report()["points"]["front_right"]
+		self.assertEqual(row["photos"], 1)
+		self.assertEqual(len(row["loose"]), 1)
+		frame = mod.Frame(JET)
+		eye = frame.source(cam.eye(match.cameras[0]))
+		sight = frame.source(self.truth["front_right"]) - eye
+		sight /= np.linalg.norm(sight)
+		loose = np.array(row["loose"][0])
+		self.assertGreater(abs(loose @ sight), 0.999)
+		miss = np.array(row["miss"])
+		self.assertLess(abs(miss @ loose), 0.05)
+		# the raised corner's 3 in, less its part along the line of sight
+		self.assertAlmostEqual(np.linalg.norm(miss), 3.0 * math.sqrt(1 - sight[1] ** 2), delta=0.15)
+		# slide the solved point 30 cm along its line of sight: nothing reported moves
+		match.points["front_right"] = match.points["front_right"] + 0.3 * match.bundle.loose["front_right"][0]
+		moved = match.report()["points"]["front_right"]
+		np.testing.assert_allclose(moved["miss"], row["miss"], atol=0.02)
+		np.testing.assert_allclose(moved["measured"], row["measured"], atol=0.02)
+
+	def test_an_edge_against_a_curve_not_built_is_reported(self):
+		r = self.root
+		catalogue = json.loads((r / "photos.json").read_text())
+		catalogue["photos"]["p0"]["edges"]["spoiler"] = {"against": "spoiler_right", "points": [[10.0, 10.0], [20.0, 20.0]]}
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		match = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None)
+		report = match.report()
+		self.assertTrue(report["edges"]["p0:spoiler"]["missing"])
+		self.assertLess(report["edges"]["p0:top"]["median"], 0.1)
+		self.assertIn("no such curve", photos.text(report))
 
 	def test_outline_edges_are_signed(self):
 		r = self.root

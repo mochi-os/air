@@ -46,8 +46,9 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   NACA 65A sections from TR-84's tables; the hinged surfaces' chord fractions follow from their published
   areas over the spans in `facts.json` `layout`. The forebody lofts the cited sections over the HATP keel
   line, its nosecone on TM-101724's drooped axis; the LEX is a blade whose span and heights come from
-  TM-101724, cr186938 and the traced sections, faired behind the LEX-wing junction onto the wing root. The
-  third output, the features file, names points and curves on the model with the node each rides on, for the
+  TM-101724, cr186938 and the traced sections, faired behind the LEX-wing junction onto the wing root. Each
+  inlet is a raked D-shaped mouth through the lip points the photos measure (`layout.inlet`), its flat side
+  inboard beside a splitter plate, easing behind the lip into the nacelle. The third output, the features file, names points and curves on the model with the node each rides on, for the
   photo match. `--draft` leaves out the paint bake (seconds instead of minutes).
 - **`check.py`** - the facts check: measures the built model back against every `facts.json` entry, posed
   where the entry needs it, and fails outside each tolerance; entries it does not measure are listed in
@@ -74,6 +75,9 @@ python3 -I test_check.py
 
 The build also unwraps every part into one atlas and bakes its ambient occlusion in Cycles (`paint.png`
 beside OUT.glb), the shading the paint is laid over.
+
+The model viewer (`/air/models`) shows the latest painted build as `fa18c-new.glb`, beside the model it
+replaces. After a build, copy it in: `cp OUT.glb ../../web/src/assets/fa18c-new.glb`, then `/build air`.
 
 ## Factory-fresh paint
 

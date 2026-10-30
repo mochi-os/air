@@ -20,6 +20,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import amraam_model_url from '../assets/aim120c.glb?url'
+import fa18c_new_model_url from '../assets/fa18c-new.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import nimitz_model_url from '../assets/nimitz.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
@@ -40,6 +41,13 @@ const MODELS: Entry[] = [
     prepare: (gltf: GLTF) => normalize_round(gltf.scene.clone(true)),
   },
   { name: 'fa18c.glb', url: fa18c_model_url, prepare: posed },
+  // Our own F/A-18C as tools/fa18c/build.py last built it, at rest: gear up,
+  // every surface neutral. It replaces fa18c.glb when the engine moves to it.
+  {
+    name: 'fa18c-new.glb',
+    url: fa18c_new_model_url,
+    prepare: (gltf: GLTF) => gltf.scene.clone(true),
+  },
   {
     name: 'stores.glb',
     url: stores_model_url,

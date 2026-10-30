@@ -75,8 +75,10 @@ solves every photo's camera (focal length, pose, one radial distortion term) and
 only start the solve. It reports:
 
 - each photo's fit (pixels), and each mark's miss in project units at the depth it lies;
-- each point the photos measure, with its uncertainty, beside the model's, and the miss: a point seen in one
-  photo is loose along that camera's line of sight, and its uncertainty says so;
+- each point the photos measure, with its uncertainty, beside the model's, and the miss. A point seen from
+  only one direction is reported `loose` along that camera's line of sight: the photos fix a line, not a
+  point, so it is measured at the line's nearest point to the model's and its miss is the part the photo
+  sees, across the line;
 - how far the photos pull each anchor: a large pull means the citation or the marks are wrong;
 - each traced edge's distance from the posed model's silhouette (signed: + where the model stands outside the
   photo's edge) or from one of the build's curves.
@@ -137,12 +139,29 @@ What went wrong on the F/A-18C, each a rule now:
   Settle it from which face of a fin or which way lettering reads.
 - **Mark fixed structure.** Flaps, slats and tails move between photos; a point on them is only usable with a
   pose read off the photo, and by eye is not good enough to settle a height.
+- **One photo cannot place a point in depth.** The inlet lips, marked in one near side view, read 9 in
+  outboard of the model; 6.5 in of that lay along the camera's line of sight, where the solve had simply
+  left the point. The report now flags such a point `loose` and gives only the miss across the line. Mark
+  every point that matters in two photos taken 20 degrees or more apart (a mirror pair counts: its left
+  side in one photo and its right in another).
+- **A mark on the wrong feature reads as a shape error.** Those same lip marks sat on the splitter plate's
+  leading edge, 35 in ahead of the lip; the model's inlet, fitted near them, was 40 in too far forward. A
+  second marker reading the same photo from the dictionary caught it. Have a feature that a check turns on
+  marked by two helpers, or re-read by one, before moving the model.
+- **A drawn line needs a surface to be measured on.** Casting a traced edge onto an assumed plane is only
+  right if the edge lies in it: the splitter's leading edge, cast onto a flat plane, disagreed by 15 in
+  between photos because it bows outboard. Solve such an edge from two views together, refining each
+  coordinate from the photo that sees it best, and check the result against a third.
 - **Distrust a lone answer.** The reported uncertainty is optimistic for a coordinate few photos see across.
   Re-solve with photos added or removed: a value that moves by more than its uncertainty is not settled.
 - **Static is not taxiing.** Photos of moving jets sit at their own attitude; a manual's static heights describe
   another. Say which a number is.
 - **A miss may be a definition.** A flat canopy top has no single crown; a sloping bow has no single station.
   Before moving the model, check what the mark means on it.
+- **Cap the helpers' memory.** A crop of `0 0 99999 99999` for an overview is padded past the photo's edge
+  to ten billion pixels: 22 GB, and the out-of-memory killer took the whole session down. `crop.py` now holds
+  a crop inside the photo and refuses an output over 4000 px; tell helpers to run any image script of their
+  own under `systemd-run --user --scope -p MemoryMax=2G -p MemorySwapMax=0`.
 - **Helpers mark well with a dictionary.** Three helpers marked twelve photos from `../fa18c/marking.md` in an
   hour or so each. Check their marks against the overlays and the flagged misses; they also found the wrong
   photo labels.

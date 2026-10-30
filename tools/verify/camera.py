@@ -198,6 +198,8 @@ class Bundle:
 	#   points  {name: {"priors": [(normal, offset, sigma metres)], "value": xyz or None}}
 	#           a point whose priors fix all three coordinates with sigma 0 is held fixed
 	#   mirror  (matrix, [(left name, right name)]): each pair solved as one point and its image
+	# After solve(): spread {point: 3x3 covariance over its fixed directions} and
+	# loose {point: (k, 3) unit directions nothing fixes, empty for most}
 	def __init__(self, photos, points, mirror=None):
 		self.photos, self.points = photos, points
 		self.reflect = np.eye(3)
@@ -357,16 +359,29 @@ class Bundle:
 			J[:, i] = (self.residuals(trial) - error) / step
 		dof = max(1, len(error) - len(x))
 		scale = float(error @ error) / dof
-		try:
-			cov = np.linalg.pinv(J.T @ J) * max(scale, 1.0)
-		except np.linalg.LinAlgError:
-			cov = np.full((len(x), len(x)), np.nan)
-		self.spread = {}
+		# The normal equations scaled to a unit diagonal, so pixels, radians and
+		# metres compare. A direction they leave unfixed (a point seen by one
+		# photo moves freely along that camera's ray) is loose, not certain: the
+		# solve leaves such a point anywhere along it, so its spread covers only
+		# the fixed directions and loose names the rest
+		A = J.T @ J
+		d = np.sqrt(np.diag(A))
+		d[d == 0] = 1.0
+		w, V = np.linalg.eigh(A / np.outer(d, d))
+		null = w < 1e-9 * max(float(w.max()), 1e-300)
+		fixed = V[:, ~null]
+		cov = (fixed / w[~null]) @ fixed.T / np.outer(d, d) * max(scale, 1.0)
+		free = V[:, null] / d[:, None]
+		free /= np.maximum(np.linalg.norm(free, axis=0), 1e-300)
+		self.spread, self.loose = {}, {}
 		for name, at in self.point_slot.items():
 			self.spread[name] = cov[at : at + 3, at : at + 3]
+			u, s, _ = np.linalg.svd(free[at : at + 3], full_matrices=False)
+			self.loose[name] = u[:, s > 0.1].T
 		for left, right in self.twin.items():
 			if right in self.spread:
 				self.spread[left] = self.reflect @ self.spread[right] @ self.reflect.T
+				self.loose[left] = self.loose[right] @ self.reflect.T
 		return self.cameras, self.solved
 
 	def misses(self):

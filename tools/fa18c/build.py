@@ -590,6 +590,9 @@ def skin(station, theta, out=0.0):
 	return math.copysign(centre[0] + (bl - centre[0]) * k, theta), centre[1] + (wl - centre[1]) * k
 
 
+FUSELAGE_STATIONS = []   # the stations fuselage() lofts its rings at
+
+
 def body_at(station, waterline):
 	# The fuselage's side at a station and waterline: the first wall the
 	# half-ring crosses coming down from the top centreline (the body's side,
@@ -615,6 +618,7 @@ def fuselage():
 	c = LAYOUT["canopy"]
 	located = {c["windscreen"]["station"], c["bow"]["station"], c["crown"]["station"], c["aft"]["station"]} | {p[0] for p in c["sill"]}
 	stations = sorted(set(stations) | {float(x) for x in range(340, 472, 4)} | located)
+	FUSELAGE_STATIONS[:] = stations
 	rings = []
 	for station in stations:
 		_, starboard = half_ring(station)
@@ -827,6 +831,9 @@ def lex(side, widths):
 	knots.append((junction, reach))
 	stations = [apex + (junction - apex) * i / LEX_STATIONS for i in range(LEX_STATIONS + 1)]
 	behind = [junction + FAIRING * (i / 12) ** 1.3 for i in range(1, 13)]
+	# and a ring wherever the fuselage beneath has one: between its rings the
+	# fuselage runs straight, so a bend there would rise through the fairing
+	behind = sorted(set(behind) | {s for s in FUSELAGE_STATIONS if junction < s < junction + FAIRING})
 	across = 16
 	rings, edges, tops = [], [], []
 	for station in stations + behind:
@@ -938,16 +945,16 @@ def engine_buttline(station):
 # to the HATP views and the reference photo dvids9820808, verify/photos.py): the
 # central body's top, bottom and half-width, and each nacelle's centre
 # buttline and waterline and half-width and half-height. A nacelle starts at
-# the inlet lip, FS 365 (dvids9820808: its outer wall from WL 86 to 112.7),
+# the inlet's mouth (MOUTH, layout.inlet), rises behind it to meet the wing
+# root by FS 445 (the HATP fit's section there, which nothing measures yet),
 # runs aft and inboard onto the engine axis by the engine face, and ends at
-# the nozzles.
+# the nozzles: these are its knots from FS 445.
 CORE = {
 	"top": [(357, 151.3), (405, 150.0), (450, 148.4), (500, 145.6), (540, 140.9), (570, 135), (600, 130), (650, 127), (692, 124)],
 	"bottom": [(357, 84.2), (420, 83.5), (500, 84), (560, 85), (620, 88), (692, 93)],
 	"half": [(357, 23.2), (404, 24), (450, 22), (550, 20), (650, 17), (692, 12)],
 }
-NACELLE = [(365, 36.0, 99.4, 9.5, 13.4), (385, 35.5, 100.0, 10.5, 14.0), (420, 33.0, 102.0, 13.0, 15.5), (470, None, 104.5, 17.5, 17.5),
-	(520, None, 105.5, 19.5, 18.5), (580, None, 106.0, 21.0, 19.0), (640, None, 106.0, 20.0, 18.5), (692, None, 106.0, 18.5, 17.5)]
+NACELLE = [(445, 30.3, 103.3, 15.3, 16.5), (470, None, 104.5, 17.5, 17.5), (520, None, 105.5, 19.5, 18.5), (580, None, 106.0, 21.0, 19.0), (640, None, 106.0, 20.0, 18.5), (692, None, 106.0, 18.5, 17.5)]
 NOZZLE = LAYOUT["nozzle"]   # the outer flaps' start and exit, their radii, and the axis's waterline
 
 
@@ -957,11 +964,12 @@ def union_ring(station, angles=None):
 	top, bottom, half = (between(CORE[k], station) for k in ("top", "bottom", "half"))
 	centre = (0.0, (top + bottom) / 2)
 	parts = [((0.0, centre[1]), (half, (top - bottom) / 2), 2.6)]
-	if station > 365:
-		# The nacelles grow in from the inlets' lips, full by FS 404, inside
-		# the inlet ducts (inlets()), so the fuselage has no step where they start
+	if station > MOUTH["station"] + PLUG:
+		# The nacelles grow in behind the plug that closes each inlet's duct,
+		# inside the inlet (inlets()), full 12 in later: hidden, and over
+		# before the LEX's fairing reaches them, so it lies on a smooth surface
 		b, w, a, h = nacelle_at(station)
-		g = min(1.0, (station - 365) / (404 - 365))
+		g = min(1.0, (station - MOUTH["station"] - PLUG) / 12)
 		g = g * g * (3 - 2 * g)
 		for side in (1, -1):
 			parts.append(((side * b, w), (a * g + 1e-3, h * g + 1e-3), 2.3))
@@ -975,38 +983,150 @@ def union_ring(station, angles=None):
 
 
 def nacelle_at(station):
-	knots = [(s, (b if b is not None else engine_buttline(s), w, a, h)) for s, b, w, a, h in NACELLE]
+	# From the mouth, whose outer surface's box starts it, then NACELLE's knots
+	if "front" not in MOUTH:
+		ring = np.array([(b, w) for _, w, b in mouth_ring(0, 0)])
+		low, high = ring.min(axis=0), ring.max(axis=0)
+		MOUTH["front"] = ((low[0] + high[0]) / 2, (low[1] + high[1]) / 2, (high[0] - low[0]) / 2, (high[1] - low[1]) / 2)
+	knots = [(MOUTH["station"], MOUTH["front"])]
+	knots += [(s, (b if b is not None else engine_buttline(s), w, a, h)) for s, b, w, a, h in NACELLE]
 	return [between([(s, v[i]) for s, v in knots], station) for i in range(4)]
 
 
+MOUTH_SIDES = 40   # points round the inlet's mouth, from its top outboard and round
+PLUG = 15   # inches down each inlet's duct to the plug that closes it
+
+
+def mouth():
+	# The inlet's mouth (layout.inlet, the photo match): a D whose flat side is
+	# inboard, facing the splitter plate. Its lip's front edge follows the
+	# traced outline from the top corner round the outside to the bottom
+	# corner, then the flat side back up; the lip lies in the plane that fits
+	# its five measured points (it is raked): FS = plane[0] + plane[1] WL +
+	# plane[2] BL
+	inlet = LAYOUT["inlet"]
+	lip = inlet["lip"]
+	points = np.array([lip[k] for k in ("top", "bottom", "outer", "corner_top", "corner_bottom")], float)
+	plane = np.linalg.lstsq(np.c_[np.ones(len(points)), points[:, 1], points[:, 2]], points[:, 0], rcond=None)[0]
+	edge = [lip["corner_top"][1:]] + inlet["outline"] + [lip["corner_bottom"][1:]]
+	# (BL, WL): the centre, and the front edge as a closed polygon
+	return {"plane": plane, "centre": points[:, [2, 1]].mean(0), "edge": np.array(edge, float)[:, ::-1],
+		"wall": inlet["wall"], "station": float(points[:, 0].min())}
+
+
+MOUTH = mouth()
+
+
+def reach(direction):
+	# How far the lip's front edge lies from the mouth's centre along a
+	# direction (BL, WL)
+	c, poly = MOUTH["centre"], MOUTH["edge"]
+	for a, b in zip(poly, np.roll(poly, -1, axis=0)):
+		matrix = np.array([direction, a - b]).T
+		if abs(np.linalg.det(matrix)) < 1e-12:
+			continue
+		r, s = np.linalg.solve(matrix, a - c)
+		if r > 0 and -1e-9 <= s <= 1 + 1e-9:
+			return float(r)
+	raise ValueError(f"no lip along {direction}")
+
+
+def mouth_ring(depth, inset):
+	# The mouth's outline, `depth` inches aft of the lip's plane and `inset`
+	# inches inside its outer surface (which stands half the wall outside the
+	# front edge): (FS, WL, BL outboard) round from the top, outboard first
+	m = MOUTH
+	out = []
+	for i in range(MOUTH_SIDES):
+		t = 2 * math.pi * i / MOUTH_SIDES
+		direction = np.array([math.sin(t), math.cos(t)])
+		r = reach(direction) + m["wall"] / 2 - inset
+		bl, wl = m["centre"] + direction * r
+		out.append((m["plane"][0] + m["plane"][1] * wl + m["plane"][2] * bl + depth, float(wl), float(bl)))
+	return out
+
+
+# The inlet's outer surface behind the lip: (depth aft of the lip, share of
+# the way from the mouth's D to the nacelle's section)
+INLET_OUTER = [(1.2, 0.0), (6, 0.0), (15, 0.0), (25, 0.3), (35, 0.8), (45, 1.0)]
+
+
+def inlet_ring(depth, inset, blend=0.0):
+	# One ring of the inlet, (FS, WL, BL outboard): the mouth's outline at a
+	# depth and inset, eased `blend` of the way into the nacelle's section
+	d = mouth_ring(depth, inset)
+	if blend <= 0:
+		return d
+	station = MOUTH["station"] + depth
+	b0, w0, a, h = nacelle_at(station)
+	out = []
+	for i, (s_, w, b) in enumerate(d):
+		t = 2 * math.pi * i / MOUTH_SIDES
+		c, s = math.cos(t), math.sin(t)
+		x = b0 + (abs(s) ** (2 / 2.3)) * math.copysign(1, s) * a
+		y = w0 + (abs(c) ** (2 / 2.3)) * math.copysign(1, c) * h
+		out.append((s_ * (1 - blend) + station * blend, w * (1 - blend) + y * blend, b * (1 - blend) + x * blend))
+	return out
+
+
 def inlets():
-	# Each inlet's mouth: an open duct from the lip (FS 365) aft into the
-	# nacelle, its lip rounded, its interior closed by a plug 15 in down the
-	# duct
-	lip = NACELLE[0][0]
-	wall = 1.5
+	# Each inlet: an open duct from the lip aft into the nacelle, its lip
+	# rounded, its interior closed by a plug 15 in down the duct; behind the
+	# lip its outer surface eases from the mouth's D into the nacelle's section
+	wall = MOUTH["wall"]
 	for side in (-1, 1):
 		name = side_name(side)
 
-		def ring(station, inset):
-			b, w, a, h = nacelle_at(station)
-			out = []
-			for i in range(40):
-				t = 2 * math.pi * i / 40
-				c, s_ = math.cos(t), math.sin(t)
-				x = (abs(s_) ** (2 / 2.3)) * math.copysign(1, s_) * (a - inset)
-				y = (abs(c) ** (2 / 2.3)) * math.copysign(1, c) * (h - inset)
-				out.append(at(station, w + y, side * (b + x)))
-			return out
+		def ring(depth, inset, blend=0.0):
+			return [at(s_, w, side * b) for s_, w, b in inlet_ring(depth, inset, blend)]
 
-		rings = [ring(lip + 15, wall), ring(lip + 6, wall), ring(lip + 1.2, wall), ring(lip - 0.4, wall / 2), ring(lip + 1.2, 0)]
-		rings += [ring(s, 0) for s in (lip + 6, lip + 15, lip + 25, 400, 410)]
+		rings = [ring(PLUG, wall), ring(6, wall), ring(1.2, wall), ring(-0.4, wall / 2), ring(1.2, 0)]
+		rings += [ring(depth, 0, blend) for depth, blend in INLET_OUTER[1:]]
 		node(f"inlet_{name}", mesh=loft(rings))
-		outer = ring(lip + 1.2, 0)
-		MARKS[f"inlet_lip_top_{name}"] = (max(outer, key=lambda v: v.z), f"inlet_{name}")
-		MARKS[f"inlet_lip_bottom_{name}"] = (min(outer, key=lambda v: v.z), f"inlet_{name}")
-		edge = ring(lip - 0.4, wall / 2)
+		outer = mouth_ring(0, 0)
+		lip = LAYOUT["inlet"]["lip"]
+
+		def nearest(key):
+			# the lip's outer side, in the lip's plane, nearest a measured point in its WL and BL
+			target = lip[key]
+			s_, w, b = min(outer, key=lambda p: (p[1] - target[1]) ** 2 + (p[2] - target[2]) ** 2)
+			return at(s_, w, side * b)
+
+		for key in ("top", "bottom", "outer"):
+			MARKS[f"inlet_lip_{key}_{name}"] = (nearest(key), f"inlet_{name}")
+		for key in ("top", "bottom"):
+			MARKS[f"inlet_corner_{key}_{name}"] = (nearest(f"corner_{key}"), f"inlet_{name}")
+		edge = ring(-0.4, wall / 2)
 		CURVES[f"inlet_lip_{name}"] = (edge + edge[:1], f"inlet_{name}")
+		splitter(side)
+
+
+def splitter(side):
+	# The splitter plate: a thin plate standing off the fuselage beside the
+	# inlet's flat side, its leading edge the measured curve
+	# (layout.inlet.splitter, bowing outboard at mid-height), running aft past
+	# the lip into the duct's inner wall
+	name = side_name(side)
+	s = LAYOUT["inlet"]["splitter"]
+	edge = np.array(s["edge"], float)
+	thickness = s["thickness"]
+	rows = []
+	for w in np.linspace(edge[0, 1], edge[-1, 1], 13):
+		s_, b = (np.interp(w, edge[::-1, 1], edge[::-1, k]) for k in (0, 2))
+		lip = MOUTH["plane"][0] + MOUTH["plane"][1] * w + MOUTH["plane"][2] * b
+		aft = lip + s["past"]
+		rows.append([(s_, w, b), (aft, w, b), (aft, w, b - thickness), (s_ + thickness, w, b - thickness)])
+	vertices = [at(s_, w, side * b) for row in rows for s_, w, b in row]
+	faces = []
+	for k in range(len(rows) - 1):
+		a, c = 4 * k, 4 * (k + 1)
+		faces += [(a + i, a + (i + 1) % 4, c + (i + 1) % 4, c + i) for i in range(4)]
+	last = 4 * (len(rows) - 1)
+	faces += [(3, 2, 1, 0), (last, last + 1, last + 2, last + 3)]
+	node(f"splitter_{name}", mesh=(vertices, faces))
+	MARKS[f"splitter_top_{name}"] = (vertices[0], f"splitter_{name}")
+	MARKS[f"splitter_bottom_{name}"] = (vertices[4 * (len(rows) - 1)], f"splitter_{name}")
+	CURVES[f"splitter_{name}"] = ([vertices[4 * k] for k in range(len(rows))], f"splitter_{name}")
 
 
 def cylinder(p0, p1, r0, r1=None, sides=12):

@@ -223,15 +223,28 @@ class Match:
 			at = f.source(p)
 			spread = self.bundle.spread.get(name)
 			sigma = (np.sqrt(np.abs(np.diag(f.axes.T @ spread @ f.axes))) / f.unit) if spread is not None else np.zeros(3)
-			row = {"measured": [round(float(v), 2) for v in at], "sigma": [round(float(v), 2) for v in sigma], "photos": seen}
-			if name in self.features.landmarks:
-				ours = f.source(self.features.landmark(name, self.pose_for(name)))
-				row["model"] = [round(float(v), 2) for v in ours]
-				row["miss"] = [round(float(v), 2) for v in ours - at]
+			row = {"photos": seen, "sigma": [round(float(v), 2) for v in sigma]}
+			# Directions the photos leave unfixed (one photo's line of sight),
+			# in the project's axes: along them the solved position means nothing
+			loose = self.bundle.loose.get(name, np.zeros((0, 3))) @ f.axes
+			if len(loose):
+				loose = loose / np.linalg.norm(loose, axis=1, keepdims=True)
+				row["loose"] = [[round(float(v), 3) for v in r] for r in loose]
 			spec = self.catalogue.get("points", {}).get(name)
 			if spec:
 				cited = spec.get("at")
-				out["anchors"][name] = {"cited": cited, "pull": [None if c is None else round(float(m - c), 2) for c, m in zip(cited, at)], "why": spec.get("why")}
+				share = np.abs(loose).max(axis=0) if len(loose) else np.zeros(3)
+				out["anchors"][name] = {"cited": cited, "pull": [None if c is None or s > 0.1 else round(float(m - c), 2) for c, m, s in zip(cited, at, share)],
+					"why": spec.get("why")}
+			if name in self.features.landmarks:
+				ours = f.source(self.features.landmark(name, self.pose_for(name)))
+				if len(loose):
+					# the photos fix a line (or plane): measure at its point nearest the model's
+					basis = np.linalg.qr(loose.T)[0]
+					at = at + basis @ (basis.T @ (ours - at))
+				row["model"] = [round(float(v), 2) for v in ours]
+				row["miss"] = [round(float(v), 2) for v in ours - at]
+			row["measured"] = [round(float(v), 2) for v in at]
 			out["points"][name] = row
 		for k, photo in enumerate(self.photos):
 			if k not in self.cameras:
@@ -262,6 +275,9 @@ class Match:
 		# A traced edge against the model, each traced point's miss in the project's units
 		photo, c, f = self.photos[k], self.cameras[k], self.frame
 		points = np.asarray(edge["points"], float)
+		if edge["against"] != "outline" and edge["against"] not in self.features.curves:
+			# a curve this build does not export yet (a part not built): say so, not crash
+			return {"against": edge["against"], "points": len(points), "missing": True}
 		if edge.get("snap"):
 			with Image.open(self.root / "references" / photo["entry"]["file"]) as image:
 				gray = np.asarray(image.convert("L"), float)
@@ -383,12 +399,17 @@ def text(report):
 		row = f"{name:34s} {p['photos']} photos  measured {p['measured']} +- {p['sigma']}"
 		if "miss" in p:
 			row += f"  model {p['model']}  miss {p['miss']}"
+		if "loose" in p:
+			row += f"  loose along {p['loose']}" + (" (miss across it only)" if "miss" in p else "")
 		lines.append(row)
 	lines.append("")
 	for name, a in report["anchors"].items():
 		lines.append(f"anchor {name:27s} cited {a['cited']} pulled {a['pull']}")
 	lines.append("")
 	for name, e in report["edges"].items():
+		if e.get("missing"):
+			lines.append(f"edge {name:40s} against {e['against']:24s} {e['points']:3d} points: the model has no such curve")
+			continue
 		lines.append(f"edge {name:40s} against {e['against']:24s} {e['points']:3d} points, median {e['median']:5.2f} in, worst {e['worst']:+6.2f} in")
 	for name, l in report["locate"].items():
 		lines.append(f"locate {name}: {l}")
