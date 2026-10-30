@@ -122,7 +122,7 @@ describe('the electrical power panel (#21, #116)', () => {
   const pushed = (throttle: number) => new Function(`const STATE={ position:0, velocity:3, attitude:6, omega:10, fuel:13, engine:14, stabilator:22, demand:33, normal:34, extension:35, catapult:36, stroke:37, wire:38, wow:39, contact:40, touch:41, engine_harm:45, stress:54, time:55, element:57, gear_harm:106 };
     let flight_active=true, prev_wire=0, test_active=false, sent=null; const b=new Float64Array(117);
     const ownship={ flown:true, grounded:true, speed:0, throttle:${throttle}, pos:{ x:0, y:10, z:0 }, vel_dir:{ x:1, y:0, z:0 }, q:{ w:1, x:0, y:0, z:0 }, gearTarget:0 };
-    const mission_start=()=>"runway", flight_get=()=>b, flight_set=(state)=>{ sent=Array.from(state); }, sync_core=()=>{}, ground_height=()=>0, stance_of=()=>2, FUEL=()=>4000, stores_book=null;
+    const mission_start=()=>"runway", flight_get=()=>b, flight_set=(state)=>{ sent=Array.from(state); }, sync_core=()=>{}, ground_height=()=>0, stance_of=()=>2, FUEL=()=>4000, stores_book=null, flight_footing=()=>({ x:0, y:0, z:0 });
     ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flight_push')}
 } flight_push(); return sent.slice(14,18);`)() as number[] // the lift stops at the function's own closing brace, which stands alone
   it('hands a ground start its engines turning: both generators on the line from the first frame', () => {

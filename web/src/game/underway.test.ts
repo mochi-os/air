@@ -269,6 +269,23 @@ describe('spotting on the catapult under way', () => {
     expect(spot.lat).toBeCloseTo(-0.6, 6)
     expect(spot.heading).toBeCloseTo((1.6 * Math.PI) / 180, 6) // the catapult's own heading on the deck
   })
+
+  // Handed to the core at rest over the sea, a jet on the deck of a ship under way had the deck run 0.2 m out from
+  // under it before the catapult snatched it up to her speed, and the nose rocked +4.1 then -1.7 degrees for a second
+  // and a half (measured in the built app, single player's 2.6 m/s).
+  const pushed = (speed: number) => new Function(`const STATE={ position:0, velocity:3, attitude:6, omega:10, fuel:13, engine:14, stabilator:22, demand:33, normal:34, extension:35, catapult:36, stroke:37, wire:38, wow:39, contact:40, touch:41, engine_harm:45, stress:54, time:55, element:57, gear_harm:106 };
+    let flight_active=true, prev_wire=0, test_active=false, sent=null, asked=null; const b=new Float64Array(117);
+    const ownship={ flown:true, grounded:true, speed:${speed}, throttle:0, pos:{ x:-18457, y:22.4, z:7484 }, vel_dir:{ x:1, y:0, z:0 }, q:{ w:1, x:0, y:0, z:0 }, gearTarget:0 };
+    const mission_start=()=>"carrier", flight_get=()=>b, flight_set=(state)=>{ sent=Array.from(state); }, sync_core=()=>{}, ground_height=()=>19.94, stance_of=()=>2.46, FUEL=()=>4000, stores_book=null;
+    const flight_footing=(x,y,z)=>{ asked=[x,y,z]; return { x:2.44, y:0, z:-0.89 }; };   // the deck's own velocity where the jet sits
+    ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flight_push')}
+    flight_push(); return { velocity:sent.slice(3,6), asked };`)() as { velocity: number[]; asked: number[] }
+  it("hands the core a jet spotted on the deck moving with her deck, not at rest over the sea", () => {
+    const parked = pushed(0)
+    expect(parked.velocity).toEqual([2.44, 0, -0.89])
+    expect(parked.asked).toEqual([-18457, expect.closeTo(22.4, 9), 7484]) // the deck's velocity where the jet is, its wheels rested on the deck
+    expect(pushed(10).velocity).toEqual([12.44, 0, -0.89]) // a composed roll on the deck rolls over it
+  })
 })
 
 describe("the carrier's island", () => {

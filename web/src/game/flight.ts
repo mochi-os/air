@@ -137,6 +137,7 @@ interface Core {
   debris_lay?(words: Uint8Array): string
   debris_meet?(output: Uint8Array): number | string
   wind?(input: Uint8Array, output: Uint8Array): string | null
+  footing?(input: Uint8Array, output: Uint8Array): string | null
   approach(
     x: number,
     y: number,
@@ -1105,6 +1106,27 @@ export function flight_wind(
   wind_words[2] = z
   core.wind(wind_in, wind_out_bytes)
   return { x: wind_out[0], y: wind_out[1], z: wind_out[2] }
+}
+
+// flight_footing is the velocity of the surface under a point, on the jet's
+// clock, as the core's gear meets it: the deck's own on the carrier, which a
+// jet spotted on a ship under way starts with. Still before the core has a
+// mission, or from a core that predates it.
+const footing_words = new Float64Array(3)
+const footing_in = new Uint8Array(footing_words.buffer)
+const footing_out = new Float64Array(3)
+const footing_out_bytes = new Uint8Array(footing_out.buffer)
+export function flight_footing(
+  x: number,
+  y: number,
+  z: number
+): { x: number; y: number; z: number } {
+  if (!core?.footing) return { x: 0, y: 0, z: 0 }
+  footing_words[0] = x
+  footing_words[1] = y
+  footing_words[2] = z
+  core.footing(footing_in, footing_out_bytes)
+  return { x: footing_out[0], y: footing_out[1], z: footing_out[2] }
 }
 
 // Debris (world battle/debris.go): a kill's wreckage, laid where the jet fell,

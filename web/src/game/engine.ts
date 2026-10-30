@@ -37,7 +37,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_steer, flight_voyage, flight_carrier, flight_wind, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
+import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_steer, flight_voyage, flight_carrier, flight_wind, flight_footing, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
@@ -10535,7 +10535,8 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	if(ownship.speed<1){ const g=ground_height(ownship.pos.x,ownship.pos.z);   // ground spawns: rest the wheels ON the surface — legacy spawn heights assume the old glue, and an interpenetrated spawn fires the bottomed-out struts like a mortar
 		if(g>-1e8) ownship.pos.y=Math.max(ownship.pos.y,g+stance_of()); }
 	b[STATE.position]=ownship.pos.x; b[STATE.position+1]=ownship.pos.y; b[STATE.position+2]=ownship.pos.z;
-	b[STATE.velocity]=ownship.vel_dir.x*ownship.speed; b[STATE.velocity+1]=ownship.vel_dir.y*ownship.speed; b[STATE.velocity+2]=ownship.vel_dir.z*ownship.speed;
+	const footing=flight_footing(ownship.pos.x,ownship.pos.y,ownship.pos.z);   // the surface's own velocity under the wheels: spotted on a ship under way, the jet moves with her deck, or the deck runs out from under it and the catapult snatches it up to her speed, rocking the nose 4°
+	b[STATE.velocity]=footing.x+ownship.vel_dir.x*ownship.speed; b[STATE.velocity+1]=footing.y+ownship.vel_dir.y*ownship.speed; b[STATE.velocity+2]=footing.z+ownship.vel_dir.z*ownship.speed;
 	b[STATE.attitude]=ownship.q.w; b[STATE.attitude+1]=ownship.q.x; b[STATE.attitude+2]=ownship.q.y; b[STATE.attitude+3]=ownship.q.z;
 	b[STATE.extension]=(ownship.gearTarget??0)<0.5?1:0;   // the core's gear matches the spawn configuration immediately — a landing start otherwise spends its first seconds extending (flaps absent, trim shifting)
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
