@@ -7,11 +7,11 @@
 // it - every jet and missile where the recording had it, interpolated between
 // the samples. The engine draws what this returns; nothing here flies.
 // Dependency-free so it unit-tests without WebGL.
-import { metres } from './acmi'
+import { EARTH, metres } from './acmi'
 
 export interface Frame {
   time: number // s from the start of the recording
-  x: number // world metres, the engine's frame
+  x: number // world frame metres (earth.ts HOME); the engine carries them into its own
   y: number
   z: number
   roll: number // degrees, the recorder's own conventions
@@ -25,7 +25,6 @@ export interface Track {
   samples: number[] // the recording's sample indices this object appears in, ascending
   frames: Frame[] // one per entry in samples
   rates?: number[][] // each frame's velocity, m/s, fitted when first drawn (rate)
-  rated?: number // the world wrap the rates were fitted for
 }
 
 export interface Playback {
@@ -94,7 +93,7 @@ export function parse(text: string): Playback {
   const times: number[] = []
   const tracks = new Map<number, Track>()
   const latest = new Map<number, Frame>() // each object's newest frame, whose properties carry forward
-  const degrees = new Map<number, [number, number]>() // each object's last longitude and latitude
+  const degrees = new Map<number, [number, number, number]>() // each object's last longitude, latitude and height
   for (const raw of text.split('\n')) {
     const line = raw.replace(/\r$/, '')
     if (!line) continue
@@ -150,13 +149,14 @@ export function parse(text: string): Playback {
       const last = degrees.get(id)
       const longitude = number(0) ?? last?.[0]
       const latitude = number(1) ?? last?.[1]
+      const altitude = number(2) ?? last?.[2] ?? 0
       if (longitude !== undefined && latitude !== undefined) {
-        degrees.set(id, [longitude, latitude])
-        const at = metres(longitude, latitude)
+        degrees.set(id, [longitude, latitude, altitude])
+        const at = metres(longitude, latitude, altitude, information.Earth === EARTH)
         frame.x = at.x
+        frame.y = at.y
         frame.z = at.z
       }
-      frame.y = number(2) ?? frame.y
       if (fields.length >= 6) {
         frame.roll = number(3) ?? frame.roll
         frame.pitch = number(4) ?? frame.pitch
@@ -203,11 +203,6 @@ function turn(degrees: number): number {
   return ((((degrees + 180) % 360) + 360) % 360) - 180
 }
 
-// across is the shortest step between two coordinates on a wrapped axis.
-function across(delta: number, wrap: number): number {
-  return wrap > 0 ? delta - wrap * Math.round(delta / wrap) : delta
-}
-
 // search finds value in an ascending array, -1 when it is not there.
 function search(values: number[], value: number): number {
   let low = 0
@@ -244,8 +239,8 @@ const REACH = 3
 // positions over the samples within REACH either side that it appears in
 // without a break, so a jet that vanished and came back is never fitted
 // across the gap. Fitted once per track, on first use.
-function rate(track: Track, wrap: number): number[][] {
-  if (track.rates && track.rated === wrap) return track.rates
+function rate(track: Track): number[][] {
+  if (track.rates) return track.rates
   const rates: number[][] = []
   for (let i = 0; i < track.frames.length; i++) {
     let low = i
@@ -276,14 +271,13 @@ function rate(track: Track, wrap: number): number[][] {
       const frame = track.frames[j]
       const dt = frame.time - mean
       spread += dt * dt
-      slope[0] += dt * across(frame.x - centre.x, wrap)
+      slope[0] += dt * (frame.x - centre.x)
       slope[1] += dt * (frame.y - centre.y)
-      slope[2] += dt * across(frame.z - centre.z, wrap)
+      slope[2] += dt * (frame.z - centre.z)
     }
     rates.push(spread > 0 ? slope.map((v) => v / spread) : [0, 0, 0])
   }
   track.rates = rates
-  track.rated = wrap
   return rates
 }
 
@@ -337,10 +331,9 @@ function blend(
 
 // scene is every object present at time, each interpolated toward its next
 // sample. An object is present from its first sample to its last, and between
-// two samples when it appears in the earlier one. wrap is the world's size
-// when it wraps (0 when it does not), so a jet crossing the seam is drawn
-// crossing it rather than sweeping back across the map.
-export function scene(p: Playback, time: number, wrap = 0): Pose[] {
+// two samples when it appears in the earlier one. Positions and velocities
+// are the world frame's.
+export function scene(p: Playback, time: number): Pose[] {
   const k = sample(p.times, time)
   if (k < 0) return []
   const poses: Pose[] = []
@@ -352,16 +345,16 @@ export function scene(p: Playback, time: number, wrap = 0): Pose[] {
     const span = next ? next.time - a.time : 0
     const f =
       next && span > 0 ? Math.min(1, Math.max(0, (time - a.time) / span)) : 0
-    const dx = next ? across(next.x - a.x, wrap) : 0
+    const dx = next ? next.x - a.x : 0
     const dy = next ? next.y - a.y : 0
-    const dz = next ? across(next.z - a.z, wrap) : 0
+    const dz = next ? next.z - a.z : 0
     // The velocity is each sample's fitted rate, blended across the interval,
     // not the step between two samples: that difference carried the writer's
     // rounding (altitude to a decimetre, 0.1 s apart, is a metre a second of
     // vertical speed) and changed at every sample, and the flight path marker
     // and the vertical speed drawn from it jumped by degrees and thousands of
     // feet a minute in a frame.
-    const rates = rate(track, wrap)
+    const rates = rate(track)
     const va = rates[i]
     const vb = next ? rates[i + 1] : va
     const properties = next

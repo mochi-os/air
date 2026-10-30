@@ -29,7 +29,7 @@ function line(fragment: string): string {
   return lines[0]
 }
 
-type Rig = { events: string[]; zoom: number; view: string; padlocked: boolean; head: number[] }
+type Rig = { events: string[]; zoom: number; view: string; padlocked: boolean; head: number[]; dist: number }
 // rig runs a body in the HUD view at 1x, the HUD view's saved zoom 1.38 and
 // the chase view's 1, with the clock at 12.34 s
 function rig(body: string): Rig {
@@ -40,9 +40,11 @@ function rig(body: string): Rig {
     const ownship={ fwd:{x:0,z:1} }, cockpit_hidden=()=>{}, ddi_open=()=>{}, ddi_range=()=>{}, DDI_ORDER=["left","right","center"], ddi_focus=()=>cfg.ddi, ddi_state={}, DDI_PAGES={};
     ${line('const looks=')}
     ${line('const zoom_held=')}
-    ${['view_note', 'zoom_floor', 'zoom_recall', 'zoom_persist', 'zoom_to', 'zoom_step', 'latch', 'set_view', 'view_reset', 'views_fresh'].map(lift).join('\n')}
+    ${line('const CHASE_NEAR=')}
+    ${line('let chase_from=')}
+    ${['view_note', 'zoom_floor', 'zoom_recall', 'zoom_persist', 'zoom_to', 'zoom_step', 'chase_zoom', 'latch', 'set_view', 'view_reset', 'views_fresh'].map(lift).join('\n')}
     ${body}
-    return { events:view_events, zoom:zoom_target, view:cfg.view, padlocked, head:[head_az, head_el] };`)(THREE) as Rig
+    return { events:view_events, zoom:zoom_target, view:cfg.view, padlocked, head:[head_az, head_el], dist:cam_dist };`)(THREE) as Rig
 }
 
 describe('the View channel', () => {
@@ -188,4 +190,57 @@ describe('each match start (#138)', () => {
     expect(source).toMatch(/case "respawn":\n\t\tif\(net&&slot===net\.slot\)\{ if\(net_waiting\) views_fresh\(\);/)
   })
 
+})
+
+describe('the chase camera zooming out', () => {
+  // The chase view at the shoulder (24 m), its lens at the zoom given.
+  const chase = (body: string, lens = 1) => rig(`cfg.view="chase"; cam_dist=24; zoom_target=${lens}; ${body}`)
+  const out = (n: number) => `for(let i=0;i<${n};i++) zoom_step(-1,"stick");`
+  const back = (n: number) => `for(let i=0;i<${n};i++) zoom_step(1,"stick");`
+  it('takes a zoomed lens out to 1x first, where the camera is', () => {
+    const s = chase(out(1), 2)
+    expect(s.zoom).toBeCloseTo(2 / 1.18, 6)
+    expect(s.dist).toBe(24)
+    expect(chase(out(1), 1.1).zoom).toBe(1) // and no further: the next notch backs off
+  })
+  it('then backs the camera off at 1x, out to a whole ship and her wake, and only there widens the lens', () => {
+    const s = chase(out(1))
+    expect(s.dist).toBeCloseTo(24 * 1.18, 6)
+    expect(s.zoom).toBe(1)
+    const far = chase(out(33)) // 24 m x 1.18^33 passes 5 km
+    expect(far.dist).toBe(5000)
+    expect(far.zoom).toBe(1)
+    expect(chase(out(60)).zoom).toBe(0.5)
+    expect(line('chase_zoom(Math.pow(1.5,notch),"wheel")')).toContain('if(cfg.view==="chase") chase_zoom(Math.pow(1.5,notch),"wheel");') // the wheel goes the same way
+  })
+  it('retraces it zooming in: the lens back to 1x, the camera back to where it began backing off, then the lens in', () => {
+    const s = chase(out(60) + back(5))
+    expect(s.zoom).toBe(1)
+    expect(s.dist).toBe(5000)
+    const t = chase(out(8) + back(8))
+    expect(t.dist).toBeCloseTo(24, 6)
+    expect(t.zoom).toBe(1)
+    const u = chase(out(8) + back(9))
+    expect(u.dist).toBeCloseTo(24, 6)
+    expect(u.zoom).toBeCloseTo(1.18, 6)
+  })
+  it('starts backing off from where the camera is, not where an earlier zoom left it', () => {
+    // backed off from 24 m, then brought in to 20 m on the keys
+    const s = chase(out(8) + 'cam_dist=20;' + out(1) + back(3))
+    expect(s.dist).toBeCloseTo(20, 6)
+    expect(s.zoom).toBeCloseTo(1.18 * 1.18, 6)
+  })
+  it('dollies on the held keys from the airframe out to a whole ship and her wake, as far again in the same time wherever it is', () => {
+    const keys = [line('const ar=dt*0.9, zr='), line('if(held("zoom.out")) cam_dist='), line('if(held("zoom.in")) cam_dist=')].join('\n')
+    const run = (held: string, seconds: number, from = 24) =>
+      new Function('THREE', `const CHASE_NEAR=14, CHASE_FAR=5000, dt=1/60, held=(a)=>a===${JSON.stringify(held)}, pad_looks={}; let cam_az=0, cam_el=0, cam_dist=${from};
+        for(let i=0;i<Math.round(${seconds}*60);i++){ ${keys}
+}
+        return cam_dist;`)(THREE) as number
+    expect(source).toContain('const CHASE_NEAR=14, CHASE_FAR=5000;')
+    expect(run('zoom.out', 1 / 60) - 24).toBeGreaterThan(30 / 60) // about the 40 m/s it always had at the shoulder
+    expect(run('zoom.out', 1 / 60) - 24).toBeLessThan(45 / 60)
+    expect(run('zoom.out', 4)).toBe(5000)
+    expect(run('zoom.in', 4, 5000)).toBe(14)
+  })
 })

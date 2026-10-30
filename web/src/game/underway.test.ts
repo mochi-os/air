@@ -39,6 +39,16 @@ interface Pose {
   z: number
   heading: number
   closed: boolean
+  y?: number // her deck reference's height in the frame: on the curved sea away from where she was built, not the charted one
+  lean?: number // her bow up off the frame's level, rad: the curved sea under her, seen from a frame anchored elsewhere
+}
+interface Grid {
+  data: Float32Array
+  W: number
+  H: number
+  cell: number
+  minFa: number
+  minLat: number
 }
 interface Station {
   channel: number
@@ -85,6 +95,9 @@ interface Harness {
   carrier_lateral(x: number, z: number): number
   deck_carry(st: Remote, then: number): void
   carry_start(): void
+  deck_y_at(grp: unknown, x: number, z: number, fallback: number): number
+  grid(value: Grid): void
+  turn(): THREE.Quaternion
 }
 
 const NOW = 100
@@ -92,25 +105,33 @@ function harness(): Harness {
   return new Function(
     'THREE',
     `const D2R=Math.PI/180, SHIP={ yaw:110, bow:90, tacan:{ channel:74, band:"X" } };
-    const CARRIER={ x:-18500, z:7500, deckY:19.9 };
+    const CARRIER={ x:-18500, z:7500, deckY:19.9, height:19.9 };
     const scene=new THREE.Scene(), world_up=new THREE.Vector3(0,1,0), poses=new Map(), carrier_model={};
     const flight_carrier=(t)=>poses.get(t)??null;
+    const flight_deck=(t)=>{ const p=poses.get(t); if(!p) return null;   // the ship on her heading, level on a flat sea unless the pose sets her lower and leaning, as the curved sea does
+      const q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),p.heading).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,0,1),p.lean??0));
+      return { position:{ x:p.x, y:p.y??19.9, z:p.z }, quaternion:{ x:q.x, y:q.y, z:q.z, w:q.w } }; };
     const nav={ stations:[{ channel:74, band:"X", x:0, z:0 }, { channel:12, band:"X", x:5, z:5 }] };
     const ownship={ pos:new THREE.Vector3(), fwd:new THREE.Vector3(1,0,0), vel_dir:new THREE.Vector3(1,0,0), q:new THREE.Quaternion() };
-    let carrier_ols=null;
+    let carrier_ols=null, deck_grid=null;
     ${line(/^let CARRIER_YD=[^\n]*/m)}
     ${line(/^const CHART=[^\n]*/m)}
     ${line(/^const carrier_rig=[^\n]*/m)}
     ${line(/^const _deck_turn=[^\n]*/m)}
+    ${line(/^const _hang_turn=[^\n]*/m)}
+    ${line(/^const _charted_up=[^\n]*/m)}
+    ${line(/^const _carry_offset=[^\n]*/m)}
+    ${line(/^const _deck_rise=[^\n]*/m)}
     ${line(/^let carrier_time=[^\n]*/m)}
     ${line(/^let placed=[^\n]*/m)}
     ${lift('carrier_fore_aft')}${lift('carrier_world')}${lift('carrier_lateral')}
-    ${lift('carrier_set')}${lift('carrier_pose')}${lift('carrier_place')}${lift('with_charted')}${lift('rig_adopt')}${lift('rig_local')}
-    ${lift('charted')}${lift('ols_follow')}${lift('deck_carry')}${lift('carry_start')}
+    ${lift('carrier_set')}${lift('carrier_pose')}${lift('carrier_hang')}${lift('carrier_place')}${lift('with_charted')}${lift('rig_adopt')}${lift('rig_local')}
+    ${lift('charted')}${lift('ols_follow')}${lift('deck_carry')}${lift('carry_start')}${lift('deck_y_at')}
     return { scene, rig:carrier_rig, chart:CHART, carrier:CARRIER, poses, stations:nav.stations, ownship,
       frame:()=>({ yaw:CARRIER_YD, closed:deck_closed, time:carrier_time }),
       lens:(v)=>{ carrier_ols=v; }, placed:(v)=>{ placed=v; },
-      carrier_pose, with_charted, rig_adopt, rig_local, carrier_world, carrier_fore_aft, carrier_lateral, deck_carry, carry_start };`
+      grid:(v)=>{ deck_grid=v; }, turn:()=>carrier_turn.clone(),
+      carrier_pose, with_charted, rig_adopt, rig_local, carrier_world, carrier_fore_aft, carrier_lateral, deck_carry, carry_start, deck_y_at };`
   )(THREE) as Harness
 }
 
@@ -176,6 +197,10 @@ describe('the carrier under way', () => {
     ).toThrow('no deck')
     expect(h.carrier).toMatchObject({ x: pose.x, z: pose.z })
     expect(h.frame().yaw).toBe(pose.heading)
+    // her attitude too: level on the chart's heading inside, her own after
+    const charted = h.with_charted(() => h.turn())
+    expect(charted.angleTo(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), h.chart.yaw))).toBeLessThan(1e-7)
+    expect(h.turn().angleTo(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), pose.heading))).toBeLessThan(1e-7)
   })
 
   it('keeps the lens on the ship: its touchdown and approach axis where the ship has taken them', () => {
@@ -232,12 +257,12 @@ describe('the carrier under way', () => {
     h.ownship.pos.set(spot.x, 22, spot.z)
     h.ownship.fwd.set(Math.cos(h.chart.yaw), 0, -Math.sin(h.chart.yaw))
     h.ownship.q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), h.chart.yaw)
-    h.placed({ x: h.chart.x, z: h.chart.z, yaw: h.chart.yaw })
+    h.placed({ x: h.chart.x, y: h.carrier.deckY, z: h.chart.z, turn: h.turn() })
     const pose = underway(h)
     h.carry_start()
     expect(h.carrier_fore_aft(h.ownship.pos.x, h.ownship.pos.z)).toBeCloseTo(45, 6)
     expect(h.carrier_lateral(h.ownship.pos.x, h.ownship.pos.z)).toBeCloseTo(-0.6, 6)
-    expect(h.ownship.pos.y).toBe(22)
+    expect(h.ownship.pos.y).toBeCloseTo(22, 9)
     expect(Math.atan2(-h.ownship.fwd.z, h.ownship.fwd.x)).toBeCloseTo(pose.heading, 9)
     const nose = new THREE.Vector3(1, 0, 0).applyQuaternion(h.ownship.q)
     expect(Math.atan2(-nose.z, nose.x)).toBeCloseTo(pose.heading, 9)
@@ -249,6 +274,41 @@ describe('the carrier under way', () => {
     h.carry_start()
     expect(h.ownship.fwd.x).toBeCloseTo((pose.x - h.ownship.pos.x) / Math.hypot(pose.x - h.ownship.pos.x, pose.z - h.ownship.pos.z), 9)
     expect(h.ownship.vel_dir.equals(h.ownship.fwd)).toBe(true)
+  })
+
+  it('carries a start onto a ship that floats lower and leans, as she does on the curved sea away from her chart', () => {
+    const h = harness()
+    const spot = h.carrier_world(45, -0.6)
+    h.ownship.pos.set(spot.x, 22, spot.z)
+    h.ownship.q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), h.chart.yaw)
+    h.placed({ x: h.chart.x, y: h.carrier.deckY, z: h.chart.z, turn: h.turn() })
+    h.poses.set(NOW, { x: h.chart.x + 20000, z: h.chart.z - 4000, heading: h.chart.yaw + 0.3, closed: false, y: 12.1, lean: 0.004 })
+    h.carrier_pose(NOW)
+    h.carry_start()
+    // in her own axes the jet is where it was spotted on her: 45 m forward, 2.1 m up, 0.6 m to port
+    const turn = h.turn()
+    const aboard = h.ownship.pos.clone().sub(new THREE.Vector3(h.carrier.x, h.carrier.deckY, h.carrier.z)).applyQuaternion(turn.clone().invert())
+    expect(aboard.x).toBeCloseTo(45, 9)
+    expect(aboard.y).toBeCloseTo(2.1, 9)
+    expect(aboard.z).toBeCloseTo(-0.6, 9)
+    expect(h.ownship.pos.y).toBeCloseTo(12.1 + 2.1 + 45 * Math.sin(0.004), 3) // lower with her, and up her rising bow
+    expect(h.ownship.q.angleTo(turn)).toBeLessThan(1e-7) // and sat as level on her deck as it was spotted
+  })
+
+  it('reads the deck where the ship floats now: risen through her lean from where she sits, and as built inside with_charted', () => {
+    const h = harness()
+    const cell = 1.5
+    const W = Math.ceil(300 / cell)
+    const H = Math.ceil(80 / cell)
+    h.grid({ data: new Float32Array(W * H).fill(19.9 + 1.5), W, H, cell, minFa: -150, minLat: -40 }) // a deck 1.5 m over her reference, built at 19.9 m
+    h.poses.set(NOW, { x: h.chart.x + 20000, z: h.chart.z - 4000, heading: h.chart.yaw + 0.3, closed: false, y: 12.1, lean: 0.004 })
+    h.carrier_pose(NOW)
+    const at = h.carrier_world(45, -0.6)
+    const rise = new THREE.Vector3(45, Math.fround(19.9 + 1.5) - 19.9, -0.6).applyQuaternion(h.turn()) // over her reference as built at 19.9 m; the grid holds single precision
+    expect(h.deck_y_at(null, at.x, at.z, -1e9)).toBeCloseTo(12.1 + rise.y, 9)
+    expect(h.deck_y_at(null, h.carrier.x + 1000, h.carrier.z, -1e9)).toBe(-1e9) // off the deck
+    // inside with_charted, the height the deck was built at
+    expect(h.with_charted(() => { const c = h.carrier_world(45, -0.6); return h.deck_y_at(null, c.x, c.z, -1e9) })).toBeCloseTo(19.9 + 1.5, 6)
   })
 })
 
@@ -318,12 +378,13 @@ describe("the carrier's island", () => {
 
 describe('the carrier under way in recordings', () => {
   it('records the ship by its compass heading, and a replay turns that back into the heading it steamed on', () => {
-    const recorded = /yaw:(\(degrees\(Math\.atan2\(CARRIER_C,CARRIER_S\)\)\+360\)%360),[^\n]*\n\t\tname:"Nimitz", label:SHIP\.ident, colour:"Blue", kind:"Sea\+Watercraft\+AircraftCarrier" \}\);\n\trecorder\.add\(sim_time,list\); \}/.exec(source)?.[1]
-    const replayed = /if\(type\.includes\("Watercraft"\)\)\{ carrier_place\(pose\.x,pose\.z,([^)]*\)?[^)]*)\); continue; \}/.exec(source)?.[1]
+    const recorded = /yaw:(\(degrees\(Math\.atan2\(CARRIER_C,CARRIER_S\)\)\+360\)%360),[^\n]*\n\t\tname:"Nimitz", label:SHIP\.ident, colour:"Blue", kind:"Sea\+Watercraft\+AircraftCarrier" \}\);\n\tfor\(const o of list\)[^\n]*\n\trecorder\.add\(sim_time,list\); \}/.exec(source)?.[1]
+    const replayed = /if\(type\.includes\("Watercraft"\)\)\{ carrier_place\(pose,([^;]*)\); continue; \}/.exec(source)?.[1]
     expect(recorded).toBeTruthy()
-    expect(replayed).toBe('Math.PI/2-pose.yaw*D2R')
+    expect(replayed).toBe('pose.yaw*D2R') // the compass heading, which carrier_place turns back into the engine's
+    expect(lift('carrier_place')).toMatch(/heading=Math\.PI\/2-yaw;/)
     const compass = new Function('CARRIER_C', 'CARRIER_S', `const degrees=(v)=>v*180/Math.PI; return ${recorded};`) as (c: number, s: number) => number
-    const back = new Function('pose', `const D2R=Math.PI/180; return ${replayed};`) as (pose: { yaw: number }) => number
+    const back = new Function('pose', `const D2R=Math.PI/180, yaw=${replayed}; return Math.PI/2-yaw;`) as (pose: { yaw: number }) => number
     expect(compass(Math.cos(0.349), Math.sin(0.349))).toBeCloseTo(70, 1) // into the trade wind from 070
     for (let heading = -3; heading <= 3; heading += 0.25) {
       const yaw = compass(Math.cos(heading), Math.sin(heading))
@@ -336,8 +397,8 @@ describe('the carrier under way in recordings', () => {
   })
 
   it('replays a recording without the ship against the ship where the map charts it', () => {
-    expect(lift('playback_arm')).toMatch(/^function playback_arm\(text\)\{\n\tcarrier_place\(CHART\.x,CHART\.z,CHART\.yaw\);/)
-    expect(lift('carrier_pose')).toMatch(/carrier_place\(p\.x,p\.z,p\.heading\);/)
+    expect(lift('playback_arm')).toMatch(/^function playback_arm\(text\)\{\n\tcarrier_place\(theatre_point\(HOME\.sea\(CHART\.x,CHART\.z\)\.point\),Math\.PI\/2-CHART\.yaw\);/)
+    expect(lift('carrier_pose')).toMatch(/carrier_hang\(d\.position,d\.quaternion\);/)
   })
 })
 
@@ -350,7 +411,9 @@ describe('the carrier under way in the engine', () => {
     expect(source).toMatch(
       /if\(MULTIPLAYER\) flight_voyage\(ship_track\|\|net\.welcome\.spawn\.ship\); else flight_plan\(\);[^\n]*\n\t+carrier_pose\(flight_get\(\)\[STATE\.time\]\|\|0\); if\(MULTIPLAYER\) placed=null; else carry_start\(\);\n\t+joust_drawn\(\); flight_active=true; flight_push\(\);/
     )
-    expect(lift('reset_ownship')).toMatch(/placed=\(st==="carrier"\|\|st==="case1"\|\|st==="case2"\|\|st==="case3"\)\?\{ x:CARRIER\.x, z:CARRIER\.z, yaw:CARRIER_YD \}/)
+    expect(lift('reset_ownship')).toMatch(/placed=\(st==="carrier"\|\|st==="case1"\|\|st==="case2"\|\|st==="case3"\)\?\{ x:CARRIER\.x, y:CARRIER\.deckY, z:CARRIER\.z, turn:carrier_turn\.clone\(\) \}/)
+    // the frame onto the spawn as the core comes up, before anything is flown or judged there
+    expect(source).toMatch(/joust_drawn\(\); flight_active=true; flight_push\(\);\n\t+theatre_follow\(\);/)
   })
 
   it("takes a match's track from its ship events", () => {
@@ -362,7 +425,7 @@ describe('the carrier under way in the engine', () => {
     expect(model).toMatch(/grp\.position\.set\(CHART\.x,0,CHART\.z\);/)
     expect(model).toMatch(/with_charted\(\(\)=>build_deck_grid\(grp, st\.deckY-waterline\)\);/)
     expect(model).toMatch(/carrier_model=grp; carrier_rig\.add\(grp\);/)
-    expect(model).toMatch(/with_charted\(\(\)=>rig_adopt\(\(\)=>\{ CARRIER\.deckY=deck_y_at\([^\n]*\n\t+build_carrier_deck_aids\(\); \}\)\);[^\n]*\n\t+ols_follow\(\);/)
+    expect(model).toMatch(/with_charted\(\(\)=>rig_adopt\(\(\)=>\{ CARRIER\.deckY=CARRIER\.height=deck_y_at\([^\n]*\n\t+build_carrier_deck_aids\(\); \}\)\);[^\n]*\n\t+ols_follow\(\);/)
     expect(model).not.toMatch(/scene\.add\(grp\)/)
   })
 

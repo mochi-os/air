@@ -11,6 +11,7 @@ import * as communication from './communication'
 import * as identification from './identification'
 import * as mids from './mids'
 import * as helmet from './helmet'
+import * as earth from './earth'
 
 // The cockpit's side of the navigation suite (G3): the engine's glue between the
 // jet and navigation.ts, the INS knob and the set switches, the HSI's pushbuttons
@@ -36,7 +37,8 @@ const D = Math.PI / 180, NM = 1852
 // The jet: at 3,000 m over the map's origin heading north at 200 m/s, the ship 10.8 nm to the west-south-west.
 const world = `const D2R=Math.PI/180, NM=1852;
   let sim_time=0, glance=0, beat=0.1, presenting=true, ddi_dirty=false, WORLD_WRAP=0, parking=false, master="nav", designator="center", last_out=null, ufc_dirty=false, law_primary=false, law_disabled=false, emcon=false, designated=-1, radar_calls=0;
-  const cfg={ task:"free" }, wrap_axis=(v)=>v, CARRIER={ x:-18500, z:7500, deckY:20 }, SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" } }, buses={ ac:true }, STATE={ mach:0 };
+  const HOME=earth.HOME, homeward=(p)=>earth.point(earth.theatre.outward,{ x:p.x, y:p.y??0, z:p.z }), theatre_point=(p)=>earth.point(earth.theatre.inward,{ x:p.x, y:p.y??0, z:p.z });   // the engine's frame on the world frame
+  const cfg={ task:"free" }, CARRIER={ x:-18500, z:7500, deckY:20, height:20 }, SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" } }, buses={ ac:true }, STATE={ mach:0 };
   const RADAR={ silent:()=>false, mode:"rws", stt:null, tracks:[], ls:null }, radar_undesignate=()=>{ radar_calls++; return false; }, radar_events=[], carrier_ols=true;
   const ownship={ pos:{ x:0, y:3000, z:0 }, velx:0, vely:0, velz:-200, speed:200, grounded:false, vel_dir:{ x:0, y:0, z:-1 }, gauges:{ heading:0, pitch:0, bank:0, track:0, ground:389, zulu:0 } };
   const airports=[{ x:-1429, z:3537, sy:5.7, code:"PMDY" }, { x:9, z:9, sy:3 }], radios={ tacan:{ on:true, channel:74, band:"X", mode:"tr", air:false }, ils:{ on:true, channel:11 } };
@@ -50,11 +52,11 @@ const functions = ['button_of', 'hundredths', 'tacan', 'tacan_variation', 'grid_
   'hud_steer', 'mumi_press', 'undesignate_press'].map(lift).join('\n')
 // cockpit runs a body against the engine's navigation glue, booted as a spawn in the air is unless raw
 function cockpit<T>(body: string, raw = false): T {
-  return new Function('navigate', 'THREE', 'communication', 'identification', 'mids', 'helmet', `${world} ${defs} ${functions}
+  return new Function('navigate', 'THREE', 'communication', 'identification', 'mids', 'helmet', 'earth', `${world} ${defs} ${functions}
     const hmd=helmet.fresh(false,{ azimuth:0, elevation:0, roll:0 },0);   // the helmet off: the TDC is the displays' (helmet-cockpit.test.ts gives it to the HMD)
     map_name="MIDWAY ATOLL"; const point=(x,z,more)=>({ x, z, elevation:0, name:"", offset:null, ...more }), keys=(...b)=>{ for(const k of b) ufc_press(k); };
     ${raw ? '' : 'nav_reset(); nav_frame(0.1);'}
-    ${body}`)(navigate, THREE, communication, identification, mids, helmet) as T
+    ${body}`)(navigate, THREE, communication, identification, mids, helmet, earth) as T
 }
 
 describe('what the jet tells the suite', () => {
@@ -88,7 +90,7 @@ describe('the mission data load', () => {
   it('carries the ship and the first airfield as waypoints 1 and 2, the ship\'s TACAN station, and the GPS points', () => {
     const m = cockpit<navigate.Mission>('return mission();')
     expect(m.identifier).toBe('MIDWAY')
-    expect(m.waypoints).toEqual([{ index: 1, point: { name: 'NIM', x: -18500, z: 7500, elevation: 20 } }, { index: 2, point: { name: 'PMDY', x: -1429, z: 3537, elevation: 3.5 } }])
+    expect(m.waypoints).toEqual([{ index: 1, point: { name: 'NIM', x: -18500, z: 7500, elevation: 20 } }, { index: 2, point: { name: 'PMDY', x: -1429, y: earth.HOME.sea(-1429, 3537).point.y, z: 3537, elevation: 3.5 } }]) // the field on the sea where the world frame lays it
     expect(m.stations).toEqual([{ channel: 74, band: 'X', x: -18500, z: 7500, elevation: 20, name: 'NIM', variation: 7 * D }])
     expect(m.points.map((p) => p.name)).toEqual(['NIM', 'PMDY']) // an airfield without a code is left out
   })
@@ -440,8 +442,9 @@ describe('grid coordinates through the UFC and the grid display', () => {
     expect(s).toEqual([true, '6340338642', '1RDM6340338642', '1RDM0000500007'])
   })
   it('turns an offset\'s grid into a range and bearing from its aimpoint, and holds one past 400,000 ft off, flashing', () => {
+    // 733 556 lies 19.6 km off the aimpoint on the ellipsoid (the flat world's degrees made it 19.8)
     const s = entry(`p(12); nav.waypoints[1]={ x:0, z:-18520, elevation:0, name:"", offset:null }; p(5); keys("opt4","opt3"); const up=[ufc.func, ddi_state.right.page]; grid_face(256,256); keys("7","3","3","5","5","6","ent");
-      const o={ ...nav.waypoints[1].offset }; grid_face(76+4.5*72,256); const east=grid_state.chosen.id; keys("0","ent"); return [up, Math.abs(o.range-19812)<150, Math.abs(o.bearing/D2R-30)<0.5, o.elevation, east, nav.waypoints[1].offset.range===o.range, grid_state.far, ufc.error];`)
+      const o={ ...nav.waypoints[1].offset }; grid_face(76+4.5*72,256); const east=grid_state.chosen.id; keys("0","ent"); return [up, Math.abs(o.range-19639)<150, Math.abs(o.bearing/D2R-30)<0.5, o.elevation, east, nav.waypoints[1].offset.range===o.range, grid_state.far, ufc.error];`)
     expect(s).toEqual([['offset', 'grid'], true, true, 0, 'FM', true, { shown: 1, text: '1RFM000000' }, false])
   })
   it('keeps the offset\'s elevation when its grid is keyed', () => {

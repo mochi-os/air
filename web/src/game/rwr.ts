@@ -50,13 +50,12 @@ export type RwrMotion = {
 export function incoming(
   phase: number,
   round: RwrMotion,
-  own: RwrMotion,
-  wrap: (v: number) => number
+  own: RwrMotion
 ): boolean {
   if (phase < 1) return false
-  const dx = wrap(own.x - round.x)
+  const dx = own.x - round.x
   const dy = own.y - round.y
-  const dz = wrap(own.z - round.z)
+  const dz = own.z - round.z
   return (
     (round.vx - own.vx) * dx +
       (round.vy - own.vy) * dy +
@@ -85,8 +84,7 @@ export type RwrRound = {
 // incoming, each painting us from where it is.
 export function threats(
   rounds: RwrRound[],
-  own: RwrMotion,
-  wrap: (v: number) => number
+  own: RwrMotion
 ): RwrSeeker[] {
   const seekers: RwrSeeker[] = []
   for (const m of rounds) {
@@ -95,8 +93,7 @@ export function threats(
       !incoming(
         m.phase ?? 0,
         { x: m.px, y: m.py, z: m.pz, vx: m.vx, vy: m.vy, vz: m.vz },
-        own,
-        wrap
+        own
       )
     )
       continue
@@ -129,7 +126,6 @@ export class Rwr {
     dt: number,
     own: { x: number; z: number },
     emitters: RwrEmitter[],
-    wrap: (v: number) => number,
     random: () => number = Math.random,
     seekers: RwrSeeker[] = []
   ): { fresh: number; missile: boolean } {
@@ -139,7 +135,7 @@ export class Rwr {
     // receiver will ever hear, and it owns its own symbol rather than
     // colouring the shooter's.
     for (const s of seekers) {
-      const bearing = Math.atan2(wrap(s.x - own.x), -wrap(s.z - own.z))
+      const bearing = Math.atan2(s.x - own.x, -s.z - own.z)
       const existing = this.contacts.find((c) => c.id === s.id)
       if (existing) {
         existing.bearing = bearing
@@ -157,8 +153,8 @@ export class Rwr {
     }
     for (const e of emitters) {
       if (e.mode === 2 && !e.locked) continue // his antenna is on someone else
-      const dx = wrap(e.x - own.x)
-      const dz = wrap(e.z - own.z)
+      const dx = e.x - own.x
+      const dz = e.z - own.z
       const range = Math.hypot(dx, dz) || 1
       const bearing = Math.atan2(dx, -dz)
       if (e.locked) {

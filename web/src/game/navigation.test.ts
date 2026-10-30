@@ -5,6 +5,7 @@
 
 import { describe, it, expect } from 'vitest'
 import * as N from './navigation'
+import { DEGREE, destination, HOME, settle, tangent, between, theatre } from './earth'
 
 const NM = 1852
 const D = Math.PI / 180
@@ -701,14 +702,38 @@ describe('sequences', () => {
 })
 
 describe('steering', () => {
-  it('finds the bearing and range to a point, across the wrap', () => {
+  it('finds the bearing and range to a point, near across the frame and far along the ellipsoid', () => {
+    settle(HOME)
+    expect(N.leg({ x: 0, z: 0 }, { x: 1000, z: 0 }).bearing / D).toBeCloseTo(90, 9)
+    expect(N.leg({ x: 0, z: 0 }, { x: 0, z: 1000 }).bearing / D).toBeCloseTo(180, 9)
+    expect(N.leg({ x: 0, z: 0 }, { x: -300, z: -400 }).range).toBeCloseTo(500, 9)
+    // A thousand kilometres along a great circle setting off north-east: across
+    // the frame's level the point lies 4 km short and off the line it was set on.
+    const far = destination({ latitude: HOME.latitude, longitude: HOME.longitude, altitude: 0 }, 45 * DEGREE, 1000000)
+    const p = HOME.position(far)
+    const leg = N.leg({ x: 0, z: 0 }, { x: p.x, y: p.y, z: p.z })
+    expect(Math.abs(leg.range - 1000000)).toBeLessThan(0.01)
+    expect(Math.abs(leg.bearing / D - 45)).toBeLessThan(1e-6)
+  })
+  it('carries its points and its errors with the frame, keeping where they are on the earth', () => {
+    settle(HOME)
     const nav = N.fresh(1)
-    expect(N.leg(nav, { x: 0, z: 0 }, { x: 1000, z: 0 }).bearing / D).toBeCloseTo(90, 9)
-    expect(N.leg(nav, { x: 0, z: 0 }, { x: 0, z: 1000 }).bearing / D).toBeCloseTo(180, 9)
-    expect(N.leg(nav, { x: 0, z: 0 }, { x: -300, z: -400 }).range).toBeCloseTo(500, 9)
-    nav.span = 100000
-    expect(N.leg(nav, { x: 49000, z: 0 }, { x: -49000, z: 0 })).toMatchObject({ range: 2000 })
-    expect(N.leg(nav, { x: 49000, z: 0 }, { x: -49000, z: 0 }).bearing / D).toBeCloseTo(90, 9)
+    const far = HOME.position(destination({ latitude: HOME.latitude, longitude: HOME.longitude, altitude: 0 }, 1, 2000000))
+    nav.waypoints[1] = { x: 3000, z: -1000, elevation: 50, name: '', offset: null }
+    nav.waypoints[2] = { x: far.x, y: far.y, z: far.z, elevation: 0, name: '', offset: null }
+    nav.ins.error = { x: 30, z: 40 }
+    const before = [1, 2].map((k) => N.coordinates(nav.waypoints[k] as N.Waypoint))
+    const next = tangent(30 * D, -170 * D)
+    N.carry(nav, HOME, between(HOME, next))
+    settle(next)
+    const after = [1, 2].map((k) => N.coordinates(nav.waypoints[k] as N.Waypoint))
+    for (let k = 0; k < 2; k++) {
+      expect(Math.abs(after[k].latitude - before[k].latitude)).toBeLessThan(1e-9)
+      expect(Math.abs(after[k].longitude - before[k].longitude)).toBeLessThan(1e-9)
+    }
+    expect(Math.hypot(nav.ins.error.x, nav.ins.error.z)).toBeCloseTo(50, 9) // an error turns with the frame, the same size
+    expect(theatre.frame.same(next)).toBe(true)
+    settle(HOME)
   })
   it('steers to the waypoint, an offset aimpoint itself, or the designated target', () => {
     const nav = N.fresh(1)
@@ -755,10 +780,17 @@ describe('steering', () => {
 })
 
 describe('the groundspeed required', () => {
+  // north is a point a distance due north along the earth: 160 nm across the
+  // frame's level lies 0.06 nm further than that along the meridian.
+  const north = (distance: number) => {
+    const p = HOME.position(destination({ latitude: HOME.latitude, longitude: HOME.longitude, altitude: 0 }, 0, distance))
+    return point(p.x, p.z, { y: p.y })
+  }
   const plan = () => {
+    settle(HOME)
     const nav = N.fresh(1)
-    nav.waypoints[1] = point(0, -100 * NM)
-    nav.waypoints[2] = point(0, -160 * NM)
+    nav.waypoints[1] = north(100 * NM)
+    nav.waypoints[2] = north(160 * NM)
     N.insert(nav, 1)
     N.insert(nav, 2)
     nav.target = 2

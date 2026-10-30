@@ -105,7 +105,7 @@ describe('the scenery', () => {
 
   it('sweeps the midair over the world step, so a long step cannot fly two jets through each other', () => {
     const run = (dt: number, gap: number) => new Function('dt', 'gap', `const THREE={ MathUtils:{ clamp:(v,a,b)=>Math.min(b,Math.max(a,v)) } }, wrap_axis=(v)=>v;
-      const crashed=[]; let crash_t=0, has_enemy=true; const BANDIT='bandit', bandit_destroy=()=>{}, crash_ownship=(why)=>{ crashed.push(why); }, ground_height=()=>0;
+      const crashed=[]; let crash_t=0, has_enemy=true; const BANDIT='bandit', bandit_destroy=()=>{}, crash_ownship=(why)=>{ crashed.push(why); }, ground_height=()=>0, theatre={ frame:{ altitude:(p)=>p.y } };
       const ownship={ pos:{ x:0, y:3000, z:0 }, velx:0, vely:0, velz:-250 }, bandit={ pos:{ x:5, y:3000, z:gap }, velx:0, vely:0, velz:250 };
       ${body('swept')}
 ${body('check_collisions')}

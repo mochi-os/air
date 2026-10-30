@@ -11,9 +11,11 @@
 // (24.2.7); waypoints, offset aimpoints, marks and sequences (24.2.5); the
 // steering to them (24.2.9) and designation (24.2.10). Pure: the engine feeds
 // it what the sensors measure each step and draws what it holds. Metres in the
-// flat world (x east, z south), radians true clockwise from north, seconds.
+// engine's frame (earth.ts: x east, y up, z south, level under the jet), which
+// moves as the jet flies on and takes the suite's points along (carry);
+// radians true clockwise from north, seconds.
 
-import { position as degrees, metres } from './acmi'
+import { DEGREE, destination, geodesic, level, point as carried, theatre, vector as turned, type Frame, type Rigid } from './earth'
 
 const NM = 1852
 const KNOT = NM / 3600
@@ -21,6 +23,7 @@ const TURN = Math.PI * 2
 
 export interface Fix {
   x: number
+  y?: number // the frame's height of a point on the sea, once the frame has moved from under it (carry); a point without one lies on the sea below (x, z)
   z: number
 }
 
@@ -219,7 +222,6 @@ export interface Navigation {
   local: boolean // TCN MGVAR: the TACAN station's own variation for its readouts, not the aircraft's (24.4.3.1)
   home: number // the FPAS home waypoint
   limit: 'nav' | 'tac' // BLIM: the bank coupled steering may use (24.2.8)
-  span: number // the world's wrap, 0 for none
 }
 
 // What the sensors measure in one step.
@@ -264,7 +266,7 @@ function noise(seed: number): number {
   return v - Math.floor(v)
 }
 
-export function fresh(seed: number, span = 0): Navigation {
+export function fresh(seed: number): Navigation {
   const ins: Ins = {
     knob: 'off', applied: 'off', mode: 'off', kind: '', manual: false, stored: false, heading: false, time: 0, progress: 0, held: false, radar: false, lapse: 0,
     partial: false, dark: Infinity, error: none(), drift: none(), angle: noise(seed) * TURN, motion: none(), aided: { position: 0, velocity: 0, held: false },
@@ -276,7 +278,7 @@ export function fresh(seed: number, span = 0): Navigation {
     steer: '', course: null, kept: 0, heading: 0, sequences: Array.from({ length: SEQUENCES }, () => []), sequence: 0, lines: false, auto: false,
     designation: null, target: null, tot: null, speed: 0, updating: '', update: null, previous: null, slew: none(),
     stations: [], station: 0, points: [], memory: { identifier: '', files: [], loaded: [] },
-    magnetic: false, variation: 0, decimal: false, precise: false, units: { waypoint: 'feet', offset: 'feet', station: 'feet', range: 'feet' }, meridian: 'true', local: false, home: 0, limit: 'nav', span,
+    magnetic: false, variation: 0, decimal: false, precise: false, units: { waypoint: 'feet', offset: 'feet', station: 'feet', range: 'feet' }, meridian: 'true', local: false, home: 0, limit: 'nav',
   }
 }
 
@@ -298,9 +300,6 @@ export function ready(nav: Navigation, truth: Fix): void {
 
 // ---- stepping ----
 
-function wrap(d: number, span: number): number {
-  return span > 0 ? d - Math.round(d / span) * span : d
-}
 function shut(ins: Ins): void {
   ins.heading = ins.mode === 'align' && ins.kind !== 'ifa' && finished(ins) // shut down after a good alignment without NAV selected: the heading is kept (24.2.3.2.1)
   ins.mode = 'off'
@@ -328,7 +327,7 @@ function begin(nav: Navigation, truth: Truth, kind: 'cv' | 'gnd'): void {
   ins.partial = false
   nav.log = record()
   const zero = nav.waypoints[0]
-  ins.error = kind === 'gnd' && zero ? { x: wrap(zero.x - truth.x, nav.span), z: wrap(zero.z - truth.z, nav.span) } : none()
+  ins.error = kind === 'gnd' && zero ? { x: zero.x - truth.x, z: zero.z - truth.z } : none()
 }
 // navigate takes the INS into NAV from an alignment: with its velocities valid
 // it navigates, drifting the faster the less complete the alignment; without, it
@@ -562,7 +561,7 @@ export function stored(nav: Navigation): boolean {
 // locate enters the present position by hand (24.2.5.6): the kept position
 // becomes the one given.
 export function locate(nav: Navigation, truth: Truth, fix: Fix): void {
-  const error = { x: wrap(fix.x - truth.x, nav.span), z: wrap(fix.z - truth.z, nav.span) }
+  const error = { x: fix.x - truth.x, z: fix.z - truth.z }
   if (nav.source === 'adc' || nav.ins.mode !== 'nav') nav.adc.error = { ...error }
   if (nav.ins.mode !== 'off') nav.ins.error = error
 }
@@ -611,9 +610,20 @@ export function label(index: number): string {
 }
 // aim: where an offset aimpoint's offset lies.
 export function aim(point: Waypoint): Fix & { elevation: number } {
-  if (!point.offset) return { x: point.x, z: point.z, elevation: point.elevation }
-  const d = polar(point.offset.bearing, point.offset.range)
-  return { x: point.x + d.x, z: point.z + d.z, elevation: point.offset.elevation }
+  if (!point.offset) return { x: point.x, y: point.y, z: point.z, elevation: point.elevation }
+  return { ...toward(point, point.offset.bearing, point.offset.range), elevation: point.offset.elevation }
+}
+// toward is the point a range along a bearing from a point: across the
+// frame's horizontal near its anchor, along the ellipsoid beyond, where the
+// frame's horizontal leans away from the point's own.
+function toward(from: Fix, bearing: number, range: number): Fix {
+  if (Math.hypot(from.x, from.z) < NEAR) {
+    const d = polar(bearing, range)
+    return { x: from.x + d.x, z: from.z + d.z }
+  }
+  const frame = theatre.frame
+  const p = frame.position(destination(frame.place(level(frame, from)), bearing, range))
+  return { x: p.x, y: p.y, z: p.z }
 }
 // advance steps the steer-to point with the arrows (24.1.3.11.1): through the
 // waypoints, then the marks there are; with AUTO boxed, through the sequence
@@ -638,7 +648,7 @@ export function advance(nav: Navigation, direction: number): void {
 export function mark(nav: Navigation, here: Fix): number {
   const at = nav.mark
   const d = nav.designation
-  nav.marks[at] = d ? { x: d.x, z: d.z, elevation: d.elevation, name: '', offset: null } : { x: here.x, z: here.z, elevation: 0, name: '', offset: null }
+  nav.marks[at] = d ? { x: d.x, y: d.y, z: d.z, elevation: d.elevation, name: '', offset: null } : { x: here.x, z: here.z, elevation: 0, name: '', offset: null }
   nav.mark = (at + 1) % MARKS
   return at
 }
@@ -695,19 +705,27 @@ export interface Leg {
   bearing: number
   range: number
 }
-export function leg(nav: Navigation, from: Fix, to: Fix): Leg {
-  const dx = wrap(to.x - from.x, nav.span)
-  const dz = wrap(to.z - from.z, nav.span)
-  return { bearing: (Math.atan2(dx, -dz) + TURN) % TURN, range: Math.hypot(dx, dz) }
+// NEAR: with both ends of a leg this close to the frame's anchor it is
+// measured across the frame's horizontal, a centimetre short at the most;
+// beyond, along the ellipsoid, as the great circle a waypoint across the
+// ocean lies on.
+const NEAR = 50000
+export function leg(from: Fix, to: Fix): Leg {
+  const dx = to.x - from.x
+  const dz = to.z - from.z
+  if (Math.hypot(from.x, from.z) < NEAR && Math.hypot(to.x, to.z) < NEAR) return { bearing: (Math.atan2(dx, -dz) + TURN) % TURN, range: Math.hypot(dx, dz) }
+  const frame = theatre.frame
+  const way = geodesic(frame.place(level(frame, from)), frame.place(level(frame, to)))
+  return { bearing: way.bearing, range: way.distance }
 }
 // goal: the point steered to - the designated target, else the steer-to
 // waypoint (an offset aimpoint's own position until its offset is designated).
 export function goal(nav: Navigation): (Fix & { elevation: number; kind: 'tgt' | 'oap' | 'wypt' }) | null {
   const d = nav.designation
   const point = spot(nav, nav.current)
-  if (d) return { x: d.x, z: d.z, elevation: d.elevation, kind: d.stage === 'oap' ? 'oap' : 'tgt' }
+  if (d) return { x: d.x, y: d.y, z: d.z, elevation: d.elevation, kind: d.stage === 'oap' ? 'oap' : 'tgt' }
   if (!point) return null
-  return { x: point.x, z: point.z, elevation: point.elevation, kind: point.offset ? 'oap' : 'wypt' }
+  return { x: point.x, y: point.y, z: point.z, elevation: point.elevation, kind: point.offset ? 'oap' : 'wypt' }
 }
 // turn: the signed angle from one direction to another, -π to π.
 export function turn(from: number, to: number): number {
@@ -737,7 +755,7 @@ export function sequential(nav: Navigation, here: Fix, track: number): boolean {
   if (!nav.auto || nav.updating === 'dsg') return false
   const point = spot(nav, nav.current)
   if (!point) return false
-  const to = leg(nav, here, point)
+  const to = leg( here, point)
   if (to.range >= 5 * NM || Math.abs(turn(track, to.bearing)) <= Math.PI / 2) return false
   const list = nav.sequences[nav.sequence]
   const at = list.indexOf(nav.current)
@@ -775,7 +793,7 @@ function inbound(nav: Navigation): number | null {
   const at = list.indexOf(nav.current)
   const from = at > 0 ? spot(nav, list[at - 1]) : null
   const point = spot(nav, nav.current)
-  return from && point ? leg(nav, from, point).bearing : null
+  return from && point ? leg( from, point).bearing : null
 }
 // coupling: what the steering boxed on the HSI gives the autopilot - the
 // waypoint or offset aimpoint, the sequence with AUTO boxed, or the TACAN
@@ -791,7 +809,7 @@ export function coupling(nav: Navigation, here: Fix, track: number, speed: numbe
   if (nav.steer === 'tcn') to = station
   else if (nav.steer === 'wypt' && !nav.designation) {
     const point = spot(nav, nav.current)
-    to = point && leg(nav, here, point)
+    to = point && leg( here, point)
     label = nav.auto ? 'SEQ' + (nav.sequence + 1) : 'WYPT'
     if (course === null && nav.auto) course = inbound(nav)
   }
@@ -814,8 +832,8 @@ export function anticipate(nav: Navigation, here: Fix, speed: number, bank: numb
   const point = spot(nav, nav.current)
   const next = at >= 0 && at < list.length - 1 ? spot(nav, list[at + 1]) : null
   if (!point || !next || point.overfly) return false
-  const to = leg(nav, here, point)
-  const bend = Math.abs(turn(inbound(nav) ?? to.bearing, leg(nav, point, next).bearing))
+  const to = leg( here, point)
+  const bend = Math.abs(turn(inbound(nav) ?? to.bearing, leg( point, next).bearing))
   const radius = (speed * speed) / (GRAVITY * Math.tan(bank))
   if (to.range > Math.min(5 * NM, radius * Math.tan(bend / 2) + speed * ROLL)) return false
   nav.current = list[at + 1]
@@ -841,10 +859,10 @@ export function required(nav: Navigation, here: Fix, now: number): number | null
   const from = list.indexOf(nav.current)
   const to = list.indexOf(nav.target)
   if (nav.auto && from >= 0 && to > from) {
-    before = leg(nav, here, nav.waypoints[nav.current] as Waypoint).range
-    for (let k = from; k < to - 1; k++) before += leg(nav, nav.waypoints[list[k]] as Waypoint, nav.waypoints[list[k + 1]] as Waypoint).range
-    final = leg(nav, nav.waypoints[list[to - 1]] as Waypoint, there).range
-  } else if (nav.current === nav.target) final = leg(nav, here, there).range
+    before = leg( here, nav.waypoints[nav.current] as Waypoint).range
+    for (let k = from; k < to - 1; k++) before += leg( nav.waypoints[list[k]] as Waypoint, nav.waypoints[list[k + 1]] as Waypoint).range
+    final = leg( nav.waypoints[list[to - 1]] as Waypoint, there).range
+  } else if (nav.current === nav.target) final = leg( here, there).range
   else return null
   const pace = nav.speed * KNOT
   const time = pace > 0 ? final / pace : Infinity
@@ -884,7 +902,7 @@ export function designate(nav: Navigation): boolean {
   }
   const point = spot(nav, nav.current)
   if (d || !point) return false
-  nav.designation = { x: point.x, z: point.z, elevation: point.elevation, stage: point.offset ? 'oap' : 'tgt' }
+  nav.designation = { x: point.x, y: point.y, z: point.z, elevation: point.elevation, stage: point.offset ? 'oap' : 'tgt' }
   nav.auto = false
   return true
 }
@@ -892,7 +910,7 @@ export function overfly(nav: Navigation, here: Fix): boolean {
   const point = spot(nav, nav.current)
   if (!point) return false
   const d = point.offset ? polar(point.offset.bearing, point.offset.range) : none()
-  nav.designation = { x: here.x + d.x, z: here.z + d.z, elevation: point.offset ? point.offset.elevation : point.elevation, stage: 'tgt' }
+  nav.designation = { x: here.x + d.x, z: here.z + d.z, elevation: point.offset ? point.offset.elevation : point.elevation, stage: 'tgt' } // here is the jet, at the frame's anchor
   nav.auto = false
   return true
 }
@@ -929,7 +947,7 @@ export function propose(nav: Navigation, truth: Truth, kind: 'tcn' | 'gps' | 'ds
   } else if (kind === 'gps' && good(nav.gps)) computed = { x: truth.x + nav.gps.error.x, z: truth.z + nav.gps.error.z }
   else if (kind === 'dsg' && over) computed = over
   if (!computed) return false
-  nav.update = { kind, delta: { x: wrap(here.x - computed.x, nav.span), z: wrap(here.z - computed.z, nav.span) } }
+  nav.update = { kind, delta: { x: here.x - computed.x, z: here.z - computed.z } }
   return true
 }
 // reading: the error readout on the ACPT/REJ display, the bearing and range
@@ -980,7 +998,7 @@ export function overhead(nav: Navigation, truth: Truth): boolean {
   const point = spot(nav, nav.current)
   if (nav.updating !== 'auto' || !point || !updatable(nav)) return false
   const here = place(nav, truth)
-  shift(nav, { x: wrap(point.x - here.x, nav.span), z: wrap(point.z - here.z, nav.span) })
+  shift(nav, { x: point.x - here.x, z: point.z - here.z })
   nav.updating = ''
   nav.auto = false
   advance(nav, 1)
@@ -1011,7 +1029,7 @@ export function load(nav: Navigation, mission: Mission, file: string | null = nu
   nav.memory.identifier = mission.identifier
   nav.memory.files = [...FILES]
   for (const name of file ? [file] : FILES) {
-    if (name === 'WYPT') for (const w of mission.waypoints) nav.waypoints[w.index] = { x: w.point.x, z: w.point.z, elevation: w.point.elevation, name: w.point.name, offset: null }
+    if (name === 'WYPT') for (const w of mission.waypoints) nav.waypoints[w.index] = { x: w.point.x, y: w.point.y, z: w.point.z, elevation: w.point.elevation, name: w.point.name, offset: null }
     if (name === 'TCN') nav.stations = mission.stations.slice(0, STATIONS).map((s) => ({ ...s }))
     if (name === 'GPS WYPT') nav.points = mission.points.map((p) => ({ ...p })).sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
     if (!nav.memory.loaded.includes(name)) nav.memory.loaded.push(name)
@@ -1021,18 +1039,48 @@ export function load(nav: Navigation, mission: Mission, file: string | null = nu
 export function transfer(nav: Navigation, name: string, index: number): boolean {
   const point = nav.points.find((p) => p.name === name)
   if (!point || index < 0 || index >= WAYPOINTS) return false
-  nav.waypoints[index] = { x: point.x, z: point.z, elevation: point.elevation, name: point.name, offset: null }
+  nav.waypoints[index] = { x: point.x, y: point.y, z: point.z, elevation: point.elevation, name: point.name, offset: null }
   return true
 }
 
 // ---- latitude and longitude ----
 
 export function coordinates(fix: Fix): { latitude: number; longitude: number } {
-  const d = degrees(fix.x, fix.z)
-  return { latitude: d.latitude, longitude: ((((d.longitude + 180) % 360) + 360) % 360) - 180 }
+  const frame = theatre.frame
+  const p = frame.place(level(frame, fix))
+  return { latitude: p.latitude / DEGREE, longitude: ((((p.longitude / DEGREE + 180) % 360) + 360) % 360) - 180 }
 }
 export function world(latitude: number, longitude: number): Fix {
-  return metres(longitude, latitude)
+  const p = theatre.frame.position({ latitude: latitude * DEGREE, longitude: longitude * DEGREE, altitude: 0 })
+  return { x: p.x, y: p.y, z: p.z }
+}
+
+// carry takes the suite into the engine's next frame, r carrying the old one
+// into it: every stored point, the designation and the stations where they
+// lie on the sea, and each error, drift and wind the new frame's way.
+export function carry(nav: Navigation, frame: Frame, r: Rigid): void {
+  const spot = <T extends Fix>(p: T | null): T | null => {
+    if (!p) return p
+    const q = carried(r, level(frame, p))
+    p.x = q.x
+    p.y = q.y
+    p.z = q.z
+    return p
+  }
+  const swing = (v: Fix): void => {
+    const q = turned(r, { x: v.x, y: 0, z: v.z })
+    const size = Math.hypot(v.x, v.z), across = Math.hypot(q.x, q.z)
+    v.x = across > 0 ? (q.x * size) / across : 0 // the frames lean apart: an error across the earth stays across it, the same size
+    v.z = across > 0 ? (q.z * size) / across : 0
+  }
+  for (const w of nav.waypoints) spot(w)
+  for (const m of nav.marks) spot(m)
+  for (const s of nav.stations) spot(s)
+  for (const p of nav.points) spot(p)
+  spot(nav.designation)
+  for (const v of [nav.ins.error, nav.ins.drift, nav.ins.motion, nav.gps.error, nav.adc.error, nav.adc.wind, nav.slew]) swing(v)
+  if (nav.update) swing(nav.update.delta)
+  if (nav.previous) swing(nav.previous.error)
 }
 // angle writes a latitude or longitude as the displays do: degrees, minutes
 // and seconds, or with LATLN DCML degrees, minutes and thousandths (24.2.5.6).

@@ -651,9 +651,10 @@ describe('the standby altimeter knob', () => {
   })
 
   it('feeds the setting to every barometric altitude reader', () => {
-    expect(source).toMatch(/altitude=Math\.max\(0,\(out\[STATE\.position\+1\]\|\|0\)\*3\.281\+baro_error\(\)\);/) // the standby altimeter and the ADI page
-    expect(source).toMatch(/const baro=ownship\.pos\.y\*3\.28084\+baro_error\(\); const lx=/) // the HUD's altitude box
-    expect(source).toMatch(/baro:ownship\.pos\.y\*3\.28084\+baro_error\(\) \};/) // the barometric low-altitude warning
+    // each from the jet's height over the sea, which the frame's y is not away from its anchor (#134)
+    expect(source).toMatch(/altitude=Math\.max\(0,\(ownship\.altitude\?\?out\[STATE\.position\+1\]\?\?0\)\*3\.281\+baro_error\(\)\);/) // the standby altimeter and the ADI page
+    expect(source).toMatch(/const baro=\(ownship\.altitude\?\?ownship\.pos\.y\)\*3\.28084\+baro_error\(\); const lx=/) // the HUD's altitude box
+    expect(source).toMatch(/baro:\(ownship\.altitude\?\?ownship\.pos\.y\)\*3\.28084\+baro_error\(\) \};/) // the barometric low-altitude warning
   })
 
   it('turns 0.01 inHg a click between 28.10 and 31.00', () => {

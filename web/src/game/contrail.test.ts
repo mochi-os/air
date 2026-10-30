@@ -219,9 +219,8 @@ describe('laying a segment', () => {
 })
 
 describe('the ribbons', () => {
-  const vertices = (wrap = 0) =>
-    new Function('wrap_axis', `${lift('contrail_shape')}\n${lift('contrail_vertices')}\nreturn contrail_vertices;`)(
-      (v: number) => (wrap > 0 ? v - wrap * Math.round(v / wrap) : v)) as (rig: Rig, time: number, cam: { x: number; y: number; z: number }, pixel: number) => number
+  const vertices = () =>
+    new Function(`${lift('contrail_shape')}\n${lift('contrail_vertices')}\nreturn contrail_vertices;`)() as (rig: Rig, time: number, cam: { x: number; y: number; z: number }, pixel: number) => number
   // two segments 30 m apart along +x at 10,000 m, laid at 0 and 0.15 s, both engines trailing
   function laid(): Rig {
     const r = rig(null)
@@ -295,13 +294,13 @@ describe('the ribbons', () => {
     expect(row(r, 2, 0)[1].alpha).toBe(0)
   })
 
-  it('draws each segment at its minimum image about the camera in a wrapped world', () => {
+  it('draws each segment where it was laid, however far from the camera', () => {
     const r = laid()
     r.cx[0] = 99000; r.cx[1] = 99030
-    vertices(100000)(r, 2, { x: 0, y: 10000, z: 800 }, 0)
-    expect(row(r, 0, 0)[1].x).toBeCloseTo(-1000, 3)
-    expect(row(r, 1, 0)[1].x).toBeCloseTo(-970, 3)
-    expect(row(r, 1, 0)[1].alpha).toBeGreaterThan(0) // 30 m apart on this side: no seam
+    vertices()(r, 2, { x: 0, y: 10000, z: 800 }, 0)
+    expect(row(r, 0, 0)[1].x).toBeCloseTo(99000, 3)
+    expect(row(r, 1, 0)[1].x).toBeCloseTo(99030, 3)
+    expect(row(r, 1, 0)[1].alpha).toBeGreaterThan(0) // 30 m apart: no seam
   })
 })
 
@@ -440,7 +439,7 @@ describe('the wiring', () => {
 
   it('is lit by the time of day and sits in the scene facing every camera, plain white with no texture along it', () => {
     expect(source).toMatch(/contrail_mat\.color\.setHex\(p\.sunCol\)\.lerp\(new THREE\.Color\(0xffffff\),0\.5\)\.multiplyScalar\(Math\.pow\(ratio,1\/2\.2\)\);/)
-    expect(source).toMatch(/const mesh=new THREE\.Mesh\(geo,contrail_mat\); mesh\.frustumCulled=false; scene\.add\(mesh\);/)
+    expect(source).toMatch(/const mesh=new THREE\.Mesh\(geo,contrail_mat\); mesh\.frustumCulled=false; mesh\.userData\.framed=true; scene\.add\(mesh\);/)
     expect(source).toMatch(/const contrail_mat=new THREE\.MeshBasicMaterial\(\{ color:0xffffff, transparent:true, vertexColors:true, depthWrite:false, side:THREE\.DoubleSide \}\);/)
     expect(source).not.toMatch(/contrail_map|contrail_beads|CN_WAVE|CN_ROWS/) // the puffs and their map are gone, not switched off
     expect(source).toMatch(/pixel=2\*Math\.tan\(camera\.fov\*Math\.PI\/360\)\/renderer\.domElement\.height;/)

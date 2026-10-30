@@ -89,7 +89,7 @@ describe('the frame budget', () => {
       'crash',
       `
       let compression=64, framed=0, presenting=true, beat=0, now=0, steps=0; const MULTIPLAYER=false, running=true, net_waiting=false, crash_t=0, mission_done=false, simulated={};
-      const performance={ now:()=>now }, flight_interval=()=>{}, audio_pace=()=>{}, read_input=()=>{}, step_world=()=>{ now+=cost; if(++steps===crash) compression=1; }, radar_step=()=>{}, rwr_step=()=>{}, recording_checkpoint=()=>{}, sea_advance=()=>{};
+      const performance={ now:()=>now }, flight_interval=()=>{}, audio_pace=()=>{}, read_input=()=>{}, step_world=()=>{ now+=cost; if(++steps===crash) compression=1; }, radar_step=()=>{}, rwr_step=()=>{}, recording_checkpoint=()=>{}, theatre_follow=()=>{}, sea_advance=()=>{};
       ${/\nconst BUDGET=[^\n]*\n/.exec(source)?.[0] ?? ''}${lift('simulate')}
       simulate(1/60); return framed*60;`
     )(chunking, stepping, cost, crash) as number

@@ -689,7 +689,7 @@ describe('the spin recovery display (#12, figure 2-14)', () => {
     const draw = (out: number[]) => {
       const text: [string, number, number][] = [], rects: number[][] = []
       const x = new Proxy({}, { get: (_t, k) => k === 'fillText' ? (s: string, a: number, b: number) => text.push([String(s), a, b]) : k === 'strokeRect' ? (...r: number[]) => rects.push(r) : k === 'measureText' ? (s: string) => ({ width: 10 * String(s).length }) : () => {}, set: () => true })
-      new Function('STATE', 'x', 'out', `const D2R=Math.PI/180; ${lift('spin_draw')}\n spin_draw(x,out);`)(STATE, x, out)
+      new Function('STATE', 'x', 'out', `const D2R=Math.PI/180, ownship={}; ${lift('spin_draw')}\n spin_draw(x,out);`)(STATE, x, out) // no height over the sea yet: the core's own
       return { text, rects }
     }
     const left = draw(words({ spin: -1, cas: 120 / 1.944, metres: 21500 / 3.281, alpha: 23.5 * Math.PI / 180 }))

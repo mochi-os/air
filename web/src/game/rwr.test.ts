@@ -5,7 +5,6 @@
 import { describe, expect, it } from 'vitest'
 import { Rwr, NM, incoming, threats } from './rwr'
 
-const wrap = (v: number) => v
 const own = { x: 0, z: 0 }
 const steady = () => 0 // no jitter: his sweep revisits every 2.2 s exactly
 
@@ -24,7 +23,7 @@ const facing = {
 function run(rwr: Rwr, emitters: Parameters<Rwr['step']>[2], seconds: number) {
   let fresh = 0
   for (let i = 0; i < seconds * 60; i++)
-    fresh += rwr.step(1 / 60, own, emitters, wrap, steady).fresh
+    fresh += rwr.step(1 / 60, own, emitters, steady).fresh
   return fresh
 }
 
@@ -105,7 +104,7 @@ describe('missile warning', () => {
     const rwr = new Rwr()
     const seeker = [{ id: 'm1', x: 0, z: -6 * NM }]
     expect(rwr.warned()).toBe(false)
-    const first = rwr.step(1 / 60, own, [], wrap, steady, seeker)
+    const first = rwr.step(1 / 60, own, [], steady, seeker)
     expect(first.fresh).toBe(1) // one chirp as the symbol appears
     expect(first.missile).toBe(true)
     expect(rwr.warned()).toBe(true)
@@ -116,9 +115,9 @@ describe('missile warning', () => {
 
   it('goes quiet when the seeker stops painting — the round is gone or blind', () => {
     const rwr = new Rwr()
-    rwr.step(1 / 60, own, [], wrap, steady, [{ id: 'm1', x: 0, z: -6 * NM }])
+    rwr.step(1 / 60, own, [], steady, [{ id: 'm1', x: 0, z: -6 * NM }])
     expect(rwr.warned()).toBe(true)
-    for (let i = 0; i < 90; i++) rwr.step(1 / 60, own, [], wrap, steady) // 1.5 s of silence
+    for (let i = 0; i < 90; i++) rwr.step(1 / 60, own, [], steady) // 1.5 s of silence
     expect(rwr.warned()).toBe(false)
   })
 
@@ -127,28 +126,21 @@ describe('missile warning', () => {
   const jet = { x: 0, y: 5000, z: 0, vx: 0, vy: 0, vz: -250 }
   const ahead = { x: 0, y: 5000, z: -6 * NM, vx: 0, vy: 0, vz: 900 }
   it('a round whose seeker is awake and still closing is incoming', () => {
-    expect(incoming(1, ahead, jet, wrap)).toBe(true) // active
-    expect(incoming(2, ahead, jet, wrap)).toBe(true) // pitbull
+    expect(incoming(1, ahead, jet)).toBe(true) // active
+    expect(incoming(2, ahead, jet)).toBe(true) // pitbull
   })
   it('a round that has gone by is not, whatever its seeker', () => {
     const past = { ...ahead, z: 2000 } // 2 km behind us, still flying south
-    expect(incoming(1, past, jet, wrap)).toBe(false)
-    expect(incoming(3, past, jet, wrap)).toBe(false) // loose: ballistic after the miss
+    expect(incoming(1, past, jet)).toBe(false)
+    expect(incoming(3, past, jet)).toBe(false) // loose: ballistic after the miss
   })
   it('a round still in midcourse is silent: its own radar is not on yet', () => {
-    expect(incoming(0, ahead, jet, wrap)).toBe(false)
+    expect(incoming(0, ahead, jet)).toBe(false)
   })
   it('judges the closure relative to us: a round we outrun is not closing', () => {
     const chasing = { x: 0, y: 5000, z: 3000, vx: 0, vy: 0, vz: -200 } // behind us, slower than we fly
-    expect(incoming(1, chasing, jet, wrap)).toBe(false)
-    expect(incoming(1, { ...chasing, vz: -400 }, jet, wrap)).toBe(true)
-  })
-  it('measures the line across the wrap seam', () => {
-    const W = 250000
-    const seam = (v: number) => v - W * Math.round(v / W)
-    const near = { ...jet, z: -W / 2 + 1000 } // just short of the seam, flying north toward it
-    const beyond = { ...ahead, z: W / 2 - 5000 } // 6 km ahead of us across the seam, flying south
-    expect(incoming(1, beyond, near, seam)).toBe(true)
+    expect(incoming(1, chasing, jet)).toBe(false)
+    expect(incoming(1, { ...chasing, vz: -400 }, jet)).toBe(true)
   })
 
   it("feeds the receiver the bandit's incoming rounds from the pool, and nothing else", () => {
@@ -172,7 +164,7 @@ describe('missile warning', () => {
       round(3, { active: false }), // an idle pool slot
       round(4, { phase: undefined }), // a heater: no seeker phase
     ]
-    expect(threats(pool, jet, wrap)).toEqual([
+    expect(threats(pool, jet)).toEqual([
       { id: 'bandit-round-0', x: 0, z: -6 * NM },
     ])
   })
@@ -190,17 +182,17 @@ describe('missile warning', () => {
       vy: 0,
       vz: 900,
     }
-    rwr.step(1 / 60, own, [], wrap, steady, threats([round], jet, wrap))
+    rwr.step(1 / 60, own, [], steady, threats([round], jet))
     expect(rwr.warned()).toBe(true)
     const past = { ...round, phase: 3, pz: 1500 } // through the fuse window and out behind us, ballistic
     for (let i = 0; i < 90; i++)
-      rwr.step(1 / 60, own, [], wrap, steady, threats([past], jet, wrap))
+      rwr.step(1 / 60, own, [], steady, threats([past], jet))
     expect(rwr.warned()).toBe(false)
   })
 
   it('a lock alone is never a missile warning', () => {
     const rwr = new Rwr()
-    rwr.step(1 / 60, own, [{ ...facing, mode: 2, locked: true }], wrap, steady)
+    rwr.step(1 / 60, own, [{ ...facing, mode: 2, locked: true }], steady)
     expect(rwr.locked()).toBe(true)
     expect(rwr.warned()).toBe(false)
   })

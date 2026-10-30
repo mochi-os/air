@@ -63,7 +63,7 @@ describe("the engine's roll is the target's", () => {
 
   it("reads the target's position, nose and burner, never the bandit's", () => {
     expect(roll).toMatch(
-      /decoy_aspect\(\{ x:wrap_axis\(m\.px-t\.pos\.x\), y:m\.py-t\.pos\.y, z:wrap_axis\(m\.pz-t\.pos\.z\) \},t\.fwd\)/
+      /decoy_aspect\(\{ x:\(m\.px-t\.pos\.x\), y:m\.py-t\.pos\.y, z:\(m\.pz-t\.pos\.z\) \},t\.fwd\)/
     )
     expect(roll).toMatch(
       /decoy_chance\(tail,t===ownship\?Math\.max\(\.\.\.\(ownship\.reheats\|\|\[0\]\)\):\(t\.reheat\?\?0\)\)/

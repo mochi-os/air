@@ -50,29 +50,32 @@ export function inside(
 
 // surface names what the aircraft is in contact with, or '' while it still
 // flies. `floor` is the terrain height beneath it, or -1e9 over open water.
-// The names are the ones the recording's Fate channel already uses.
+// The names are the ones the recording's Fate channel already uses. map is
+// the aircraft where the buildings and posts are laid, when that is another
+// frame than p's: the engine's moves with the jet, the map stays put.
 export function surface(
   p: { x: number; y: number; z: number },
   floor: number,
   buildings: Building[],
   posts: Post[],
-  island?: Island
+  island?: Island,
+  map: { x: number; y: number; z: number } = p
 ): string {
   if (p.y <= (floor > -1e8 ? floor + 2 : 6))
     return floor > -1e8 ? 'ground' : 'sea'
   for (const b of buildings) {
     if (
-      p.y < b.topY + 2 &&
-      p.x > b.minx &&
-      p.x < b.maxx &&
-      p.z > b.minz &&
-      p.z < b.maxz &&
-      inside(p.x, p.z, b.pts)
+      map.y < b.topY + 2 &&
+      map.x > b.minx &&
+      map.x < b.maxx &&
+      map.z > b.minz &&
+      map.z < b.maxz &&
+      inside(map.x, map.z, b.pts)
     )
       return 'building'
   }
   for (const m of posts) {
-    if (p.y < m.y1 && Math.hypot(p.x - m.x, p.z - m.z) < m.r + 4) return 'post'
+    if (map.y < m.y1 && Math.hypot(map.x - m.x, map.z - m.z) < m.r + 4) return 'post'
   }
   if (
     island &&

@@ -34,9 +34,12 @@ web/dist/index.html: web/src/assets/flight.wasm $(shell find web/src web/public 
 # The flight simulation core, compiled for the browser from the world repo.
 # Lands in src/assets so Vite content-hashes it into the bundle (no manual
 # cache-bust versions); the build products are gitignored there.
-web/src/assets/flight.wasm: $(shell find ../../world/games/air ../../world/wasm -name '*.go' 2>/dev/null)
+# world names the world repo to build it from, so a worktree of this app can
+# build against a worktree of the world.
+world ?= ../../world
+web/src/assets/flight.wasm: $(shell find $(world)/games/air $(world)/wasm -name '*.go' 2>/dev/null)
 	mkdir -p web/src/assets
-	cd ../../world && GOOS=js GOARCH=wasm CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o ../apps/air/web/src/assets/flight.wasm ./wasm
+	cd $(world) && GOOS=js GOARCH=wasm CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o $(CURDIR)/web/src/assets/flight.wasm ./wasm
 	cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" web/src/assets/
 
 release: vendor web/dist/index.html

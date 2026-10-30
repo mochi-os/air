@@ -45,15 +45,25 @@ const jet = (over: Partial<Recorded> = {}): Recorded => ({
 })
 
 describe('position', () => {
-  it('places the world origin at the map reference', () => {
-    const p = position(0, 0)
-    expect(p.latitude).toBeCloseTo(MIDWAY.latitude, 6)
-    expect(p.longitude).toBeCloseTo(MIDWAY.longitude, 6)
+  it('places the world origin at the map reference, on the sea', () => {
+    const p = position({ x: 0, y: 0, z: 0 })
+    expect(p.latitude).toBeCloseTo(MIDWAY.latitude, 9)
+    expect(p.longitude).toBeCloseTo(MIDWAY.longitude, 9)
+    expect(p.altitude).toBeCloseTo(0, 6)
   })
 
-  it('moves north for -z and east for +x', () => {
-    expect(position(0, -111320).latitude).toBeCloseTo(MIDWAY.latitude + 1, 3)
-    expect(position(1000, 0).longitude).toBeGreaterThan(MIDWAY.longitude)
+  it('moves north for -z and east for +x, along the ellipsoid', () => {
+    expect(position({ x: 0, y: 0, z: -110880 }).latitude).toBeCloseTo(MIDWAY.latitude + 1, 2) // a degree of latitude at 28 degrees north is 110.86 km
+    expect(position({ x: 1000, y: 0, z: 0 }).longitude).toBeGreaterThan(MIDWAY.longitude)
+  })
+
+  it('writes the height over the curved sea, not over the frame\'s level', () => {
+    expect(position({ x: 100000, y: 0, z: 0 }).altitude).toBeCloseTo(785, -1) // the level of the frame at Midway stands 785 m over the sea 100 km out
+    expect(position({ x: 0, y: 6000, z: 0 }).altitude).toBeCloseTo(6000, 6)
+  })
+
+  it('crosses the antimeridian into the eastern hemisphere', () => {
+    expect(position({ x: -400000, y: 0, z: 0 }).longitude).toBeGreaterThan(176) // Midway lies 2.6 degrees east of the line: 4.1 degrees west of it is 178.5 east
   })
 })
 

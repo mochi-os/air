@@ -41,7 +41,6 @@ export type Track = {
   at: number
   hits: number
 }
-export type Wrap = (value: number) => number
 
 const SWEEP = 1.31 // antenna sweep rate, rad/s (~75°/s)
 const BEAM = 0.0576 // one bar's height, rad (3.3°): the APG-65/73's beam
@@ -66,14 +65,13 @@ export const SCALES = [5, 10, 20, 40, 80, 160] // display range scales, nmi: the
 
 // geometry resolves a target into the radar's frame: azimuth relative to own
 // heading (the engine's bearing convention: atan2(dx, -dz)), elevation off
-// the horizontal, slant range. wrap is the toroidal minimum-image function.
+// the horizontal, slant range.
 export function geometry(
   own: RadarOwn,
-  target: { x: number; y: number; z: number },
-  wrap: Wrap
+  target: { x: number; y: number; z: number }
 ) {
-  const dx = wrap(target.x - own.x)
-  const dz = wrap(target.z - own.z)
+  const dx = (target.x - own.x)
+  const dz = (target.z - own.z)
   const dy = target.y - own.y
   const horizontal = Math.hypot(dx, dz)
   let azimuth = Math.atan2(dx, -dz) - own.heading
@@ -91,14 +89,13 @@ export function geometry(
 // target has no meaningful aspect — middle value.
 export function aspect_factor(
   own: RadarOwn,
-  target: RadarTarget,
-  wrap: Wrap
+  target: RadarTarget
 ): number {
   const speed = Math.hypot(target.vx, target.vy, target.vz)
   if (speed < 20) return 0.85
-  const dx = wrap(target.x - own.x)
+  const dx = (target.x - own.x)
   const dy = target.y - own.y
-  const dz = wrap(target.z - own.z)
+  const dz = (target.z - own.z)
   const d = Math.hypot(dx, dy, dz) || 1
   const along = Math.abs(
     (target.vx * dx + target.vy * dy + target.vz * dz) / (speed * d)
@@ -113,15 +110,15 @@ const EDGE = 0.005 // rad: the band either side of the horizon over which the se
 // clutter is how far this target is seen against the sea, 0 to 1: its line of
 // sight runs below the horizon, so the sea is behind it. The horizon sits
 // further below level the higher the jet flies (2.5° at 20,000 ft), and a
-// distant target sits lower for the earth's curve; a jet at the same height,
-// or a little below it at long range, has the sky behind it.
+// distant target sits lower for the earth's curve, which the engine's frame
+// has (earth.ts); a jet at the same height, or a little below it at long
+// range, has the sky behind it.
 export function clutter(
   own: RadarOwn,
-  target: RadarTarget,
-  wrap: Wrap
+  target: RadarTarget
 ): number {
-  const across = Math.hypot(wrap(target.x - own.x), wrap(target.z - own.z))
-  const below = Math.atan2(own.y - target.y, across) + across / (2 * EARTH) // how far below level the line of sight runs
+  const across = Math.hypot(target.x - own.x, target.z - own.z)
+  const below = Math.atan2(own.y - target.y, across) // how far below level the line of sight runs: the frame is level under the jet and the earth curved, so a distant target already sits lower for the curve
   const horizon = Math.acos(EARTH / (EARTH + Math.max(0, own.y)))
   const t = Math.min(1, Math.max(0, (below - horizon + EDGE) / (2 * EDGE)))
   return t * t * (3 - 2 * t)
@@ -134,13 +131,12 @@ export function clutter(
 // the same (world/games/air/round Notched).
 export function notched(
   own: RadarOwn,
-  target: RadarTarget,
-  wrap: Wrap
+  target: RadarTarget
 ): boolean {
-  if (clutter(own, target, wrap) <= 0.5) return false
-  const x = wrap(target.x - own.x)
+  if (clutter(own, target) <= 0.5) return false
+  const x = (target.x - own.x)
   const y = target.y - own.y
-  const z = wrap(target.z - own.z)
+  const z = (target.z - own.z)
   const range = Math.hypot(x, y, z)
   return (
     range < 1 ||
@@ -151,11 +147,10 @@ export function notched(
 // detect_range: how far this target paints, this look.
 export function detect_range(
   own: RadarOwn,
-  target: RadarTarget,
-  wrap: Wrap
+  target: RadarTarget
 ): number {
-  const look = 1 - CLUTTER * clutter(own, target, wrap) // look-down: sea clutter behind a target below the horizon
-  return BASE * aspect_factor(own, target, wrap) * look
+  const look = 1 - CLUTTER * clutter(own, target) // look-down: sea clutter behind a target below the horizon
+  return BASE * aspect_factor(own, target) * look
 }
 
 // paint_probability: certain close in, fading toward the detection edge.
@@ -255,7 +250,7 @@ export class Radar {
   // aim points the scan: TWS centres it on the L&S trackfile, carried on from
   // its last fix, in azimuth and elevation, so the target stays in a volume
   // narrow enough to update it; otherwise the nose at the antenna's elevation.
-  private aim(own: RadarOwn, wrap: Wrap): void {
+  private aim(own: RadarOwn): void {
     const track =
       this.mode === 'tws' && this.ls != null
         ? this.tracks.find((t) => t.id === this.ls)
@@ -271,9 +266,7 @@ export class Radar {
         x: track.x + track.vx * age,
         y: track.y + track.vy * age,
         z: track.z + track.vz * age,
-      },
-      wrap
-    )
+      })
     const reach = GIMBAL - this.half() // the scan's edge stays inside the gimbal
     this.centre = {
       azimuth: Math.max(-reach, Math.min(reach, g.azimuth)),
@@ -297,7 +290,6 @@ export class Radar {
     dt: number,
     own: RadarOwn,
     targets: RadarTarget[],
-    wrap: Wrap,
     random: () => number = Math.random
   ): void {
     this.time += dt
@@ -316,19 +308,19 @@ export class Radar {
       this.stt = null // a silent radar tracks nothing — the picture freezes and ages
       return
     }
-    this.aim(own, wrap)
+    this.aim(own)
     // Jamming strobes (#31): a radiating emitter shows as a bearing-only
     // spoke whatever the radar is doing — the jam arrives whether or not
     // the sweep is pointed at it.
     this.strobes = []
     for (const t of targets) {
       if (!t.jamming) continue
-      const g = geometry(own, t, wrap)
+      const g = geometry(own, t)
       this.strobes.push(g.azimuth)
     }
     if (this.stt != null) {
       const target = targets.find((t) => t.id === this.stt)
-      const g = target ? geometry(own, target, wrap) : null
+      const g = target ? geometry(own, target) : null
       if (!target || !g) {
         this.stt = null // broken lock: back to search; the last trackfile remembers
         this.memory = 0
@@ -341,7 +333,7 @@ export class Radar {
         this.breakReason = 'gimbal'
         return
       }
-      if (g.range > HOLD * detect_range(own, target, wrap)) {
+      if (g.range > HOLD * detect_range(own, target)) {
         this.stt = null
         this.memory = 0
         this.breakReason = 'range'
@@ -351,7 +343,7 @@ export class Radar {
       // fix), the display says MEM, and the lock drops if the condition
       // outlasts the window.
       const jammed = target.jamming && g.range > BURNTHROUGH
-      const starved = jammed || notched(own, target, wrap)
+      const starved = jammed || notched(own, target)
       if (starved) {
         this.memory += dt
         if (this.memory > MEMORY) {
@@ -385,7 +377,7 @@ export class Radar {
       turned = true
     }
     for (const target of targets) {
-      const g = geometry(own, target, wrap)
+      const g = geometry(own, target)
       const off = g.elevation - level
       if (off <= -BEAM / 2 || off > BEAM / 2) continue // this bar's slice, half-open so a target on a seam is in one bar
       if (Math.abs(g.azimuth - this.centre.azimuth) > half) continue
@@ -397,7 +389,7 @@ export class Radar {
         g.azimuth === this.sweep
       )
         continue
-      const detection = detect_range(own, target, wrap)
+      const detection = detect_range(own, target)
       if (g.range >= detection) continue
       if (random() > paint_probability(g.range, detection)) continue
       if (this.mode === 'rws')

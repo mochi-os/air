@@ -32,9 +32,10 @@ describe('metres', () => {
       [12345.6, -9876.5],
       [-120000, 80000],
     ]) {
-      const p = position(x, z)
-      const back = metres(p.longitude, p.latitude)
+      const p = position({ x, y: 1000, z })
+      const back = metres(p.longitude, p.latitude, p.altitude, true)
       expect(back.x).toBeCloseTo(x, 6)
+      expect(back.y).toBeCloseTo(1000, 6)
       expect(back.z).toBeCloseTo(z, 6)
     }
   })
@@ -207,11 +208,26 @@ describe('scene', () => {
     expect(Math.abs(pose.roll)).toBeCloseTo(180, 0)
   })
 
-  it('crosses the seam of a wrapped world rather than sweeping back across it', () => {
-    const wrap = 250000
-    const [pose] = scene(two({ x: 124990 }, { x: -124990 }), 0.05, wrap)
-    expect(Math.abs(pose.x)).toBeGreaterThan(124990)
+  it('flies on across the antimeridian, where the old world wrapped', () => {
+    const [pose] = scene(two({ x: 249990 }, { x: 250010 }), 0.05)
+    expect(pose.x).toBeCloseTo(250000, 1)
     expect(pose.vx).toBeCloseTo(200, 0)
+  })
+
+  it('reads a recording from the flat world onto the curved sea at the heights it had', () => {
+    // No Earth line: degrees about Midway at 111,320 m to the degree, the
+    // height the flat world's y. 20 km out the sea lies 31 m under the level.
+    const text = [
+      'FileType=text/acmi/tacview',
+      'FileVersion=2.2',
+      '0,ReferenceTime=2026-09-25T10:00:00Z',
+      '#0',
+      `1,T=${-177.3735 + 20000 / (111320 * Math.cos((28.2072 * Math.PI) / 180))}|28.2072|500|0|0|90,Name=FA-18C`,
+    ].join('\n')
+    const [pose] = scene(parse(text), 0)
+    expect(pose.x).toBeCloseTo(20000, -1)
+    expect(pose.y).toBeCloseTo(500 - 31.4, 0)
+    expect(pose.z).toBeCloseTo(0, -1)
   })
 
   it('gives a steady velocity through the writer’s rounding, and one that carries across a sample', () => {

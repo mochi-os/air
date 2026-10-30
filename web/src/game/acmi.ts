@@ -4,13 +4,19 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
 // Flight recorder (#212): a rolling buffer of the last few minutes written out
-// as TacView ACMI 2.2 text; dependency-free so it unit-tests in isolation. The
-// world is flat with a wrap, so the map carries a reference point and metres
-// convert to degrees about it (a constant degree of longitude is fine at
-// Midway's latitude).
+// as TacView ACMI 2.2 text; it unit-tests in isolation. Positions are recorded
+// in the world frame (earth.ts HOME, the tangent frame at Midway extended over
+// the whole earth) and written as their true latitude, longitude and height on
+// the WGS84 ellipsoid, which the header says (EARTH). A recording from before
+// the earth was round carries no such line: its world was flat about Midway,
+// and its degrees convert back to that flat world as they were written.
 
-export const MIDWAY = { latitude: 28.2072, longitude: -177.3735 } // Midway Atoll, the v1 map's real position
+import { DEGREE, HOME, MIDWAY, rotate } from './earth'
+
+export { MIDWAY }
 const METRES_PER_DEGREE = 111320
+// EARTH is the header line a recording on the ellipsoid carries.
+export const EARTH = 'WGS84'
 
 export interface Sample {
   time: number // seconds since the recording started
@@ -19,8 +25,8 @@ export interface Sample {
 
 export interface Recorded {
   id: number // stable per object for the whole recording
-  x: number // world metres: +x east, +z south (the engine's frame)
-  y: number // altitude, metres
+  x: number // world frame metres (earth.ts HOME): +x east, +y up, +z south at Midway
+  y: number
   z: number
   roll: number // degrees
   pitch: number
@@ -243,30 +249,39 @@ interface Flight {
   notice?: string[] // centre banners raised on this sample
 }
 
-// position converts the flat world's metres to the degrees ACMI carries.
-export function position(
-  x: number,
-  z: number
-): { longitude: number; latitude: number } {
-  const latitude = MIDWAY.latitude - z / METRES_PER_DEGREE // +z is south
-  const longitude =
-    MIDWAY.longitude +
-    x / (METRES_PER_DEGREE * Math.cos((MIDWAY.latitude * Math.PI) / 180))
-  return { longitude, latitude }
+// position converts a world frame point to the degrees and height ACMI
+// carries: its place on the ellipsoid.
+export function position(p: { x: number; y: number; z: number }): {
+  longitude: number
+  latitude: number
+  altitude: number
+} {
+  const place = HOME.place(p)
+  const longitude = ((((place.longitude / DEGREE + 180) % 360) + 360) % 360) - 180
+  return { longitude, latitude: place.latitude / DEGREE, altitude: place.altitude }
 }
 
-// metres is position's inverse: a recording's degrees back to the flat
-// world's metres, for a replay.
+// metres is position's inverse, for a replay: a recording's degrees and
+// height back to the world frame. earth says the recording is on the
+// ellipsoid (its header carries EARTH); one from the flat world converts as
+// it was written, about Midway at a constant metres to the degree, and stands
+// at the height it had over the sea, which now curves away below the frame.
 export function metres(
   longitude: number,
-  latitude: number
-): { x: number; z: number } {
+  latitude: number,
+  altitude: number,
+  earth: boolean
+): { x: number; y: number; z: number } {
+  if (earth)
+    return HOME.position({ latitude: latitude * DEGREE, longitude: longitude * DEGREE, altitude })
   const z = (MIDWAY.latitude - latitude) * METRES_PER_DEGREE
   const x =
     (longitude - MIDWAY.longitude) *
     METRES_PER_DEGREE *
     Math.cos((MIDWAY.latitude * Math.PI) / 180)
-  return { x, z }
+  const sea = HOME.sea(x, z)
+  const up = rotate(sea.level, { x: 0, y: 1, z: 0 })
+  return { x: sea.point.x + up.x * altitude, y: sea.point.y + up.y * altitude, z: sea.point.z + up.z * altitude }
 }
 
 // airspeed is the true airspeed, m/s, that the flight core flew at Mach
@@ -519,6 +534,7 @@ function header(started: Date, title: string, match?: Match): string[] {
     'FileVersion=2.2',
     `0,ReferenceTime=${started.toISOString().replace(/\.\d+Z$/, 'Z')}`,
     '0,DataSource=Mochi Air',
+    `0,Earth=${EARTH}`,
     `0,Title=${field(title)}`,
     '0,Category=Flight',
   ]
@@ -558,11 +574,11 @@ export function writer(): (sample: Sample, out: string[]) => void {
   return (sample: Sample, out: string[]) => {
     out.push(`#${round(sample.time, 2)}`)
     for (const o of sample.objects) {
-      const { longitude, latitude } = position(o.x, o.z)
+      const { longitude, latitude, altitude } = position(o)
       const transform = [
         round(longitude, 7),
         round(latitude, 7),
-        round(o.y, 1),
+        round(altitude, 1),
         round(o.roll, 1),
         round(o.pitch, 1),
         round(o.yaw, 1),

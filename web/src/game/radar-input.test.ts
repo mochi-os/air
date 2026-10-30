@@ -543,7 +543,7 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
     expect(lift('seeker_look')).not.toMatch(/0\.866/) // no cone on the client: the seeker's own 2.5° field about its line
     expect(lift('seeker_look')).toMatch(/if\(master!=="9m"\|\|pa\)/)
     expect(hud).toMatch(/const look=lockon\?quarry\.pos:seeker_now\.line\?new THREE\.Vector3\(\)\.copy\(camera\.position\)\.addScaledVector\(seeker_now\.line,1000\):null;/) // the seeker circle on its heat, boxed or not
-    expect(lift('radar_step')).toMatch(/RADAR\.step\(dt,radar_own\(\),contacts\(\),wrap_axis\);\n\tradar_held\(\);/)
+    expect(lift('radar_step')).toMatch(/RADAR\.step\(dt,radar_own\(\),contacts\(\)\);\n\tradar_held\(\);/)
   })
 
   it('designates the bandit alone as a match designates its remotes: the acquire key, the TWS L&S, the ACM cone', () => {

@@ -103,11 +103,14 @@ const trains = [...vertex.matchAll(/const vec4 (W\d)=vec4\(([-\d.]+),([-\d.]+),(
 
 // The fragment shader's frame: xz from the world, as the shader computes it,
 // and back. A pattern that moves m in that frame moves frame.back(m) in the world.
+// The chart's shift (u_chart, which keeps the patterns unbroken as the engine's
+// frame moves) is a translation, so a pattern's motion is the same without it.
 const frame = (() => {
   const m = /vec2 xz=([^;]+);/.exec(fragment)
   expect(m, 'xz in the fragment shader').not.toBeNull()
+  expect(m![1]).toContain('+u_chart')
   const to = (world: V, downwind: V) =>
-    glsl(`return ${m![1]};`, ['v_world', 'unturn'])({ xz: world }, (v: V) => unturn(v, downwind), vec2, dot, normalize)
+    glsl(`return ${m![1].replace('+u_chart', '')};`, ['v_world', 'unturn'])({ xz: world }, (v: V) => unturn(v, downwind), vec2, dot, normalize)
   const back = (v: V, downwind: V) => {
     const a = to(vec2(1, 0), downwind), b = to(vec2(0, 1), downwind)
     const det = a.x * b.y - b.x * a.y
@@ -143,7 +146,7 @@ describe('the wind the sea and the clouds follow', () => {
   it('is one uniform, shared by the sea and every cloud material', () => {
     expect(ocean).toMatch(/u_downwind:downwind,/)
     expect(source).toMatch(/const cloud_field_uniforms=\{[^\n]*uDownwind:downwind,/)
-    expect(source).toMatch(/uniform vec2 uGate,uDownwind;/)
+    expect(source).toMatch(/uniform vec2 uGate,uDownwind,uChart,uCurve;/)
   })
 })
 

@@ -19,7 +19,10 @@ import {
   type RadarTarget,
 } from './radar'
 
-const wrap = (v: number) => v
+// curved is a target's height in the jet's frame for an altitude, z metres out
+// along it: the engine's frame is level under the jet and the earth falls
+// away below it (earth.ts), as the server's tests place theirs.
+const curved = (altitude: number, z: number) => altitude - (z * z) / (2 * 6371000)
 const always = () => 0 // random() below every probability: every crossing paints
 const never = () => 1
 
@@ -30,7 +33,7 @@ const beam = { id: 7, x: 0, y: 3000, z: -15 * NM, vx: 250, vy: 0, vz: 0 }
 
 function swept(radar: Radar, targets: RadarTarget[] = [beam], seconds = 4, random = always) {
   for (let i = 0; i < seconds * 60; i++)
-    radar.step(1 / 60, own, targets, wrap, random)
+    radar.step(1 / 60, own, targets, random)
 }
 
 // breakReason is transient - reset at the top of every step, exactly like
@@ -41,17 +44,17 @@ function swept(radar: Radar, targets: RadarTarget[] = [beam], seconds = 4, rando
 // so a test can read the reason at the instant it was set.
 function stepUntilBroken(radar: Radar, targets: RadarTarget[], cap = 600) {
   for (let i = 0; i < cap && radar.stt != null; i++)
-    radar.step(1 / 60, own, targets, wrap, always)
+    radar.step(1 / 60, own, targets, always)
 }
 
 describe('geometry', () => {
   it('puts a target east of a north-facing jet at +90° azimuth', () => {
-    const g = geometry(own, { x: 5 * NM, y: 3000, z: 0 }, wrap)
+    const g = geometry(own, { x: 5 * NM, y: 3000, z: 0 })
     expect(g.azimuth).toBeCloseTo(Math.PI / 2, 5)
     expect(g.range).toBeCloseTo(5 * NM, 0)
   })
   it('reads elevation off the horizontal', () => {
-    const g = geometry(own, { x: 0, y: 3000 + 9260, z: -9260 }, wrap)
+    const g = geometry(own, { x: 0, y: 3000 + 9260, z: -9260 })
     expect(g.elevation).toBeCloseTo(Math.PI / 4, 3)
   })
 })
@@ -59,33 +62,33 @@ describe('geometry', () => {
 describe('detection', () => {
   it('sees a beam target further than a nose-on one', () => {
     const nose = { ...beam, vx: 0, vz: 250 } // running straight at us
-    expect(detect_range(own, beam, wrap)).toBeGreaterThan(
-      detect_range(own, nose, wrap)
+    expect(detect_range(own, beam)).toBeGreaterThan(
+      detect_range(own, nose)
     )
-    expect(aspect_factor(own, nose, wrap)).toBeCloseTo(0.8, 2)
+    expect(aspect_factor(own, nose)).toBeCloseTo(0.8, 2)
   })
   it("paints a head-on fighter before it reaches the AIM-120's ~38 nm head-on reach", () => {
     // The BVR joust starts the jets the AIM-120's head-on Rmax (~38 nm) plus
     // a 15 nm buffer apart, nose to nose at the same height.
     const own = { x: 0, y: 6096, z: 0, heading: 0 }
     const nose = { id: 7, x: 0, y: 6096, z: -38 * NM, vx: 0, vy: 0, vz: 272 }
-    expect(detect_range(own, nose, wrap)).toBeGreaterThanOrEqual(44 * NM - 1)
-    expect(paint_probability(38 * NM, detect_range(own, nose, wrap))).toBeGreaterThan(0.35) // better than a third a crossing: a paint within a few sweeps
+    expect(detect_range(own, nose)).toBeGreaterThanOrEqual(44 * NM - 1)
+    expect(paint_probability(38 * NM, detect_range(own, nose))).toBeGreaterThan(0.35) // better than a third a crossing: a paint within a few sweeps
     const radar = new Radar()
     for (let i = 0; i < 4 * 60; i++)
-      radar.step(1 / 60, own, [nose], wrap, () => 0.35)
+      radar.step(1 / 60, own, [nose], () => 0.35)
     expect(radar.bricks.some((b) => b.id === 7)).toBe(true) // painted at 38 nm, a crossing in three landing
   })
   it('pays the look-down penalty only for a target seen against the sea, below the horizon', () => {
-    const at = (y: number, z: number) => detect_range(own, { ...beam, y, z }, wrap)
+    const at = (y: number, z: number) => detect_range(own, { ...beam, y: curved(y, z), z })
     const clear = at(3000, -15 * NM)
     expect(at(2999, -15 * NM)).toBeCloseTo(clear, 6) // a metre below at 15 nm: sky behind it
     expect(at(2900, -40 * NM)).toBeCloseTo(at(3000, -40 * NM), 6) // a hundred metres below at 40 nm: the sky still
     expect(at(500, -15 * NM)).toBeCloseTo(clear * 0.65, 0) // far below, against the sea
     expect(at(3000, -60 * NM)).toBeCloseTo(at(3000, -15 * NM) * 1, 6) // level but far: the earth's curve is still above the horizon's dip
     const low = { x: 0, y: 300, z: 0, heading: 0 } // at 1,000 ft the horizon is 62 km off
-    expect(clutter(low, { ...beam, y: 300, z: -130000 }, wrap)).toBeGreaterThan(0.5) // a jet level with us past twice that is under it, for the earth's curve: the sea behind
-    expect(clutter(low, { ...beam, y: 300, z: -20000 }, wrap)).toBe(0) // 20 km out, the sky
+    expect(clutter(low, { ...beam, y: curved(300, -130000), z: -130000 })).toBeGreaterThan(0.5) // a jet level with us past twice that is under it, for the earth's curve: the sea behind
+    expect(clutter(low, { ...beam, y: curved(300, -20000), z: -20000 })).toBe(0) // 20 km out, the sky
     // Descending through the horizon line the penalty comes in smoothly: no
     // step anywhere between a jet level with us and one on the sea.
     let last = at(3000, -15 * NM)
@@ -220,7 +223,7 @@ describe('bars', () => {
     radar.bars = 3 // six bars at ±70°
     swept(radar, [beam], radar.frame() + 1)
     for (let i = 0; i < 40 * 60; i++) {
-      radar.step(1 / 60, own, [beam], wrap, always)
+      radar.step(1 / 60, own, [beam], always)
       expect(radar.bricks.length).toBeGreaterThan(0)
     }
   })
@@ -266,7 +269,7 @@ describe('TWS', () => {
       radar.width = 2
       const at = (t: number) => ({ ...beam, x: 250 * t, y: 3000 + 85 * t, z: -5 * NM, vx: 250, vy: 85, vz: 0 })
       for (let i = 0; i < 25 * 60; i++) {
-        radar.step(1 / 60, own, [at(i / 60)], wrap, always)
+        radar.step(1 / 60, own, [at(i / 60)], always)
         if (designate && i === 3 * 60) radar.designate(7)
       }
       return radar
@@ -353,9 +356,9 @@ describe('STT', () => {
     expect(radar.memory).toBe(0)
     expect(radar.tracks.find((t) => t.id === 7)?.hits).toBeGreaterThan(300)
     const above = { ...beam, y: 3500, z: -500, vx: 30, vz: -50 } // a slow jet close above: #97's lock
-    expect(notched(own, above, wrap)).toBe(false)
-    expect(notched(own, low, wrap)).toBe(true)
-    expect(notched(own, { ...low, vx: 0, vz: 250 }, wrap)).toBe(false) // low but flying at us: out of the notch
+    expect(notched(own, above)).toBe(false)
+    expect(notched(own, low)).toBe(true)
+    expect(notched(own, { ...low, vx: 0, vz: 250 })).toBe(false) // low but flying at us: out of the notch
   })
 
   it('a jammer outside burnthrough steals the gate; inside, the echo wins (#31)', () => {
@@ -380,7 +383,7 @@ describe('STT', () => {
     swept(radar, [beam], 1)
     expect(radar.stt).toBe(7)
     const far = { ...beam, z: -90 * NM } // dead ahead still (azimuth 0, no gimbal break), far past HOLD * detect_range (~63 nmi at best aspect)
-    radar.step(1 / 60, own, [far], wrap, always)
+    radar.step(1 / 60, own, [far], always)
     expect(radar.stt).toBe(null)
     expect(radar.breakReason).toBe('range')
   })
@@ -391,26 +394,25 @@ describe('STT', () => {
       1 / 60,
       own,
       [{ ...beam, x: 5 * NM, jamming: true }],
-      wrap,
       always
     )
     expect(radar.strobes.length).toBe(1)
     expect(radar.strobes[0]).toBeGreaterThan(0) // off to the right, bearing only
-    radar.step(1 / 60, own, [beam], wrap, always)
+    radar.step(1 / 60, own, [beam], always)
     expect(radar.strobes.length).toBe(0)
   })
   it('breaks past the gimbal and returns to search', () => {
     const radar = new Radar()
     radar.designate(7)
     const behind = { ...beam, x: 0, z: 10 * NM } // dead six
-    radar.step(1 / 60, own, [behind], wrap, always)
+    radar.step(1 / 60, own, [behind], always)
     expect(radar.stt).toBe(null)
     expect(radar.breakReason).toBe('gimbal')
   })
   it('breaks when the target disappears, labeled lost', () => {
     const radar = new Radar()
     radar.designate(7)
-    radar.step(1 / 60, own, [], wrap, always)
+    radar.step(1 / 60, own, [], always)
     expect(radar.stt).toBe(null)
     expect(radar.breakReason).toBe('lost')
   })
@@ -425,7 +427,7 @@ describe('emission', () => {
     radar.designate(7)
     expect(radar.emitter()).toBe(2)
     radar.sil = true
-    radar.step(1 / 60, own, [beam], wrap, always)
+    radar.step(1 / 60, own, [beam], always)
     expect(radar.stt).toBe(null)
     expect(radar.breakReason).toBe(null)
     expect(radar.emitter()).toBe(0)
@@ -446,7 +448,7 @@ describe('emission', () => {
     radar.emcon = true
     expect(radar.silent()).toBe(true)
     expect(radar.emitter()).toBe(0)
-    radar.step(1 / 60, own, [beam], wrap, always)
+    radar.step(1 / 60, own, [beam], always)
     expect(radar.stt).toBe(null)
     expect(radar.designate(7)).toBe(false)
     expect(radar.lock(7)).toBe(false)

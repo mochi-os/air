@@ -14,12 +14,12 @@ import { SIZE, STATE } from './flight'
 import { frame, frames } from './framing'
 import { queue, type Queued } from './batch'
 import { read as status_read, type Status } from './mids'
-import { sanitizeWrap, minimumImage, fold } from './wrap'
+import { attitude as earth_attitude, point as earth_point, theatre, vector as earth_vector } from './earth'
 
 export { crossHost } from './host'
 
 const POSE_RECORD = 39 // the server's fixed pose stride (world/games/air/air.go, pose_record) — MUST equal it exactly; the protocol byte below does not distinguish strides, so a build that disagrees here misparses every pose instead of being refused at the door
-const PROTOCOL = 1 // 1: the 39-byte pose record — byte 29 both engine fires, byte 30 his sideslip, byte 34 the emitter state (#30), the uint16 at 35 the gun expenditure (#163), bytes 37-38 his alpha and g (#164). Must equal world/server/message.go's `protocol`: the server refuses any join that does not match it exactly (#184). DELIBERATELY NOT bumped for the #164 widening nor for the fires sharing byte 29 to make room for the sideslip (held at 1 on instruction both times), so client and server must ship together — a 37-byte peer would be ACCEPTED here and then misread every pose, and a peer on the older 39-byte layout would read a slip as a fire and a fire as a slip.
+const PROTOCOL = 1 // 1: the 39-byte pose record, its position an offset from the datagram's origin (#134: a 32-bit float holds the earth's size to a metre and a half, a neighbour's offset to a centimetre) — byte 29 both engine fires, byte 30 his sideslip, byte 34 the emitter state (#30), the uint16 at 35 the gun expenditure (#163), bytes 37-38 his alpha and g (#164). Must equal world/server/message.go's `protocol`: the server refuses any join that does not match it exactly (#184). DELIBERATELY NOT bumped for the #164 widening nor for the fires sharing byte 29 to make room for the sideslip (held at 1 on instruction both times), so client and server must ship together — a 37-byte peer would be ACCEPTED here and then misread every pose, and a peer on the older 39-byte layout would read a slip as a fire and a fire as a slip.
 
 // isEnvelope is the minimal shape every server message must have before it
 // reaches handle(): an object with a string `kind` discriminator.
@@ -34,6 +34,49 @@ function isEnvelope(message: unknown): message is Record<string, unknown> {
 // MAX_SLOT bounds a slot index from an untrusted server - a slot is a map key
 // and an identity, so a NaN or absurd value must not get through.
 const MAX_SLOT = 256
+
+// vector3 reads a server's [x, y, z], null unless all three are finite.
+function vector3(value: unknown): [number, number, number] | null {
+  if (!Array.isArray(value) || value.length < 3) return null
+  const v: [number, number, number] = [Number(value[0]), Number(value[1]), Number(value[2])]
+  return v.every(Number.isFinite) ? v : null
+}
+
+// local carries a pose from the world frame the server keeps (earth.ts HOME)
+// into the engine's own: its position, attitude and direction. The rings hold
+// world positions, so a pose stays right however the engine's frame moves
+// while it waits to be drawn.
+export function local(pose: RemotePose): RemotePose {
+  const r = theatre.inward
+  if (r.plain) return pose
+  const p = earth_point(r, { x: pose.position[0], y: pose.position[1], z: pose.position[2] })
+  const d = earth_vector(r, { x: pose.direction[0], y: pose.direction[1], z: pose.direction[2] })
+  const q = earth_attitude(r, { w: pose.attitude[0], x: pose.attitude[1], y: pose.attitude[2], z: pose.attitude[3] })
+  return { ...pose, position: [p.x, p.y, p.z], direction: [d.x, d.y, d.z], attitude: [q.w, q.x, q.y, q.z] }
+}
+
+// core carries the server's own-state core into the engine's frame: its
+// position, velocity and attitude words, the rest being the jet's own.
+export function core(words: Float64Array): Float64Array {
+  const r = theatre.inward
+  if (r.plain) return words
+  const out = words.slice()
+  const at = STATE.position, v = STATE.velocity, a = STATE.attitude
+  const p = earth_point(r, { x: out[at], y: out[at + 1], z: out[at + 2] })
+  const u = earth_vector(r, { x: out[v], y: out[v + 1], z: out[v + 2] })
+  const q = earth_attitude(r, { w: out[a], x: out[a + 1], y: out[a + 2], z: out[a + 3] })
+  out[at] = p.x
+  out[at + 1] = p.y
+  out[at + 2] = p.z
+  out[v] = u.x
+  out[v + 1] = u.y
+  out[v + 2] = u.z
+  out[a] = q.w
+  out[a + 1] = q.x
+  out[a + 2] = q.y
+  out[a + 3] = q.z
+  return out
+}
 
 function validSlot(value: unknown): boolean {
   return (
@@ -362,7 +405,6 @@ export interface Welcome {
   parameters?: Record<string, unknown>
   spawn: {
     state?: SpawnState
-    wrap?: number
     model?: number
     aircraft?: string
     waiting?: boolean
@@ -394,7 +436,6 @@ const DELAY = 100 // remote interpolation delay, ms
 
 export class Net {
   slot = -1
-  wrap = 250000
   welcome: Welcome | null = null
   geometry: Record<string, unknown> | null = null // the map's collision geometry as the server serves it, the prediction core's world; sea-only when the server names no map or the fetch fails
   private transport: WebTransport
@@ -477,9 +518,9 @@ export class Net {
     let oy = memo.oy * fade
     let oz = memo.oz * fade
     const reach = pose.speed * dt
-    const jx = this.shortest(x, memo.x + pose.direction[0] * reach)
+    const jx = memo.x + pose.direction[0] * reach - x
     const jy = memo.y + pose.direction[1] * reach - y
-    const jz = this.shortest(z, memo.z + pose.direction[2] * reach)
+    const jz = memo.z + pose.direction[2] * reach - z
     const step = Math.hypot(jx, jy, jz)
     if (step > 1.2 && step < 60) {
       ox += jx
@@ -495,7 +536,7 @@ export class Net {
     this.glide.set(slot, { x, y, z, ox, oy, oz, at: now })
     return {
       ...pose,
-      position: [this.rewrap(x + ox), y + oy, this.rewrap(z + oz)],
+      position: [x + ox, y + oy, z + oz],
     }
   }
 
@@ -506,7 +547,7 @@ export class Net {
   self(): RemotePose | null {
     const ring = this.slot >= 0 ? this.rings.get(this.slot) : undefined
     if (!ring || !ring.length) return null
-    return ring[ring.length - 1].pose
+    return local(ring[ring.length - 1].pose)
   }
 
   remote(slot: number): RemotePose | null {
@@ -531,32 +572,34 @@ export class Net {
     if (target > when(b) + 0.001) {
       const ahead = Math.min(1.2, target - when(b))
       const reach = pb.speed * ahead
-      return this.soften(slot, {
-        ...pb,
-        position: [
-          this.rewrap(pb.position[0] + pb.direction[0] * reach),
-          pb.position[1] + pb.direction[1] * reach,
-          this.rewrap(pb.position[2] + pb.direction[2] * reach),
-        ],
-      })
+      return local(
+        this.soften(slot, {
+          ...pb,
+          position: [
+            pb.position[0] + pb.direction[0] * reach,
+            pb.position[1] + pb.direction[1] * reach,
+            pb.position[2] + pb.direction[2] * reach,
+          ],
+        })
+      )
     }
     const span = when(b) - when(a)
     const t =
       span > 0.001 ? Math.min(1, Math.max(0, (target - when(a)) / span)) : 1
-    const unwrap = (from: number, to: number) =>
-      from + this.shortest(from, to) * t
     const lerp = (from: number, to: number) => from + (to - from) * t
-    return this.soften(slot, {
-      ...pb,
-      position: [
-        this.rewrap(unwrap(pa.position[0], pb.position[0])),
-        lerp(pa.position[1], pb.position[1]),
-        this.rewrap(unwrap(pa.position[2], pb.position[2])),
-      ],
-      direction: pb.direction,
-      attitude: slerp(pa.attitude, pb.attitude, t),
-      speed: lerp(pa.speed, pb.speed),
-    })
+    return local(
+      this.soften(slot, {
+        ...pb,
+        position: [
+          lerp(pa.position[0], pb.position[0]),
+          lerp(pa.position[1], pb.position[1]),
+          lerp(pa.position[2], pb.position[2]),
+        ],
+        direction: pb.direction,
+        attitude: slerp(pa.attitude, pb.attitude, t),
+        speed: lerp(pa.speed, pb.speed),
+      })
+    )
   }
 
   // render is the session time remote() draws the jets at: the smoothed
@@ -572,7 +615,7 @@ export class Net {
     if (!newest || !newest.core || newest.acknowledged <= this.corrected)
       return null
     this.corrected = newest.acknowledged
-    return { sequence: newest.acknowledged, core: newest.core }
+    return { sequence: newest.acknowledged, core: core(newest.core) }
   }
 
   // time returns the shared session clock in seconds - the server tick
@@ -605,15 +648,7 @@ export class Net {
   // own returns the newest authoritative state for our aircraft.
   own(): RemotePose | null {
     const ring = this.rings.get(this.slot)
-    return ring?.length ? ring[ring.length - 1].pose : null // self rides first in every poses datagram
-  }
-
-  shortest(from: number, to: number): number {
-    return minimumImage(this.wrap, from, to)
-  }
-
-  private rewrap(value: number): number {
-    return fold(this.wrap, value)
+    return ring?.length ? local(ring[ring.length - 1].pose) : null // self rides first in every poses datagram
   }
 
   // chat sends one match-chat line (#84); the server sanitizes, scopes, and
@@ -705,6 +740,9 @@ export class Net {
         )
           this.clock = offset
         else this.clock += (offset - this.clock) * 0.08
+        // Every position in the datagram is an offset from its origin, the
+        // recipient's own jet in the world frame, sent at full precision.
+        const origin = vector3(message.origin) ?? [0, 0, 0]
         const view = new DataView(blob.buffer, blob.byteOffset)
         for (
           let base = 0;
@@ -716,9 +754,9 @@ export class Net {
           const tally = this.tallies.get(slot)
           const pose: RemotePose = {
             position: [
-              view.getFloat32(base + 1, true),
-              view.getFloat32(base + 5, true),
-              view.getFloat32(base + 9, true),
+              origin[0] + view.getFloat32(base + 1, true),
+              origin[1] + view.getFloat32(base + 5, true),
+              origin[2] + view.getFloat32(base + 9, true),
             ],
             attitude: [
               view.getInt16(base + 13, true) / 32767,
@@ -757,8 +795,7 @@ export class Net {
           }
           // The position floats are the only non-finite-capable field (a
           // hostile server can encode NaN/Inf in the Float32s); drop the
-          // record rather than feed NaN through shortest()/rewrap() into
-          // Three.js. Attitude/direction/speed are int-derived and finite.
+          // record rather than feed NaN into Three.js. Attitude/direction/speed are int-derived and finite.
           if (!pose.position.every(Number.isFinite)) continue
           // Byte 34 is the radar: with the high bit set, STT locked on the slot
           // in the low seven bits, a server bot's included; clear, the mode
@@ -782,7 +819,10 @@ export class Net {
         // floats the CBOR guard cannot see.
         const missiles = message.missiles as Uint8Array | undefined
         if (missiles instanceof Uint8Array) {
-          this.darts = parseDarts(missiles)
+          this.darts = parseDarts(missiles).map((d) => ({
+            ...d,
+            position: [origin[0] + d.position[0], origin[1] + d.position[1], origin[2] + d.position[2]],
+          }))
           this.dartsAt = at
         }
         break
@@ -1044,9 +1084,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
         net.names.set(record.slot as number, String(record.name ?? '')) // players present before us; later joiners arrive via roster events
     }
     const spawn = first.spawn as
-      { wrap?: unknown; team?: unknown; score?: unknown } | undefined
-    if (spawn && spawn.wrap !== undefined)
-      net.wrap = sanitizeWrap(spawn.wrap, net.wrap)
+      { team?: unknown; score?: unknown } | undefined
     if (spawn?.team) net.teams.set(slot, String(spawn.team))
     if (spawn?.score) net.score = finiteScore(spawn.score)
     // The map the match flies against (#28): the server names it and serves

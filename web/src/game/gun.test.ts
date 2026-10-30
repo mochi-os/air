@@ -310,8 +310,8 @@ describe('the BVR joust start', () => {
       'THREE',
       'drawn',
       'MULTIPLAYER',
-      `const DEV_MODE=true, WORLD_WRAP=250000, NM=1852, location={ search:${JSON.stringify(search)} }, world_up=new THREE.Vector3(0,1,0);
-       const asked=[]; const joust_opening=(seed,wrap)=>{ asked.push([seed,wrap]); return drawn; };
+      `const DEV_MODE=true, NM=1852, location={ search:${JSON.stringify(search)} }, world_up=new THREE.Vector3(0,1,0);
+       const asked=[]; const joust_opening=(seed)=>{ asked.push(seed); return drawn; };
        const bvr_separation=()=>111000; let joust_start=null, joust_side=1;
        const jet=()=>({ pos:new THREE.Vector3(), fwd:new THREE.Vector3(), q:new THREE.Quaternion(), vel_dir:new THREE.Vector3(), speed:0 });
        const ownship=jet(), bandit=jet();
@@ -323,12 +323,12 @@ describe('the BVR joust start', () => {
   const drawn: Opening = { altitude: [9000, 5000], speed: 250, flank: Math.PI / 6, apart: 120000 }
   const head: Opening = { altitude: [6096, 6096], speed: 272, flank: 0, apart: 111000 }
 
-  it('draws each joust from a fresh seed in the world\'s wrap', () => {
+  it('draws each joust from a fresh seed', () => {
     const s = start('', drawn)
     expect(s.bvr_opening()).toEqual(drawn)
     expect(s.bvr_opening()).toEqual(drawn)
-    expect(s.asked.map((a) => a[1])).toEqual([250000, 250000])
-    expect(s.asked[0][0]).not.toBe(s.asked[1][0])
+    expect(s.asked.length).toBe(2)
+    expect(s.asked[0]).not.toBe(s.asked[1])
   })
   it('pins the classic head-on start with &opening=head, and falls back to it pending before the core boots', () => {
     expect(start('?developer=1&opening=head', drawn).bvr_opening()).toEqual(head)

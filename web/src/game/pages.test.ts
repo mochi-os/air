@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import * as navigate from './navigation'
+import { destination, HOME } from './earth'
 import * as avionics from './avionics'
 import * as autopilot from './autopilot'
 import * as communication from './communication'
@@ -31,7 +32,7 @@ const navdefs = `const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); 
   const nav_sense=()=>({ dt:0, x:ownship.pos?ownship.pos.x:0, z:ownship.pos?ownship.pos.z:0, east:0, south:0, tas:ownship.tas??ownship.speed??0, heading:0, pitch:0, bank:0, airborne:!ownship.grounded, brake:false, power:true, radar:false, deck:false, tacan:null });`
 interface Drawn { text: [string, number, number][]; rects: [number, number, number, number][]; arcs: [number, number, number][]; rotate: number[]; moves: [number, number][]; styled: [string, number, number][]; lines: [number, number, number, number, string][]; fills: [number, number, number, number, string][]; fonts: [string, string][] }
 function page(name: string, setup: string, display = 'left'): Drawn {
-  const run = new Function('navigate', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const master="nav"; const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+  const run = new Function('navigate', `const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>"", homeward=(p)=>({ x:p.x, y:p.y??0, z:p.z }); let coupled=""; const master="nav"; const D2R=Math.PI/180, NM=1852, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
     ${setup}
     const glance=typeof sim_time==='undefined'?0:sim_time;   // the pilot's clock, which runs with the sim's at 1×
     ${lift('ddi_legend')} ${lift(name)}
@@ -785,8 +786,11 @@ describe('the FPAS display', () => {
     expect(run('nav.steer="wypt"; nav.current=3; return fpas_steer();')).toEqual({ dist: 50, hours: 0.125, arrive: 5250, name: 'WYPT 3' })
     expect(run('nav.steer=""; return fpas_steer();')).toBe(null)
     expect(run('return fpas_home();')).toBe(null) // no home waypoint stored
-    expect(run('nav.waypoints[0]={ x:0, z:-370400, elevation:0, name:"", offset:null }; return fpas_home();')).toEqual({ dist: 200, hours: 0.5, arrive: 3000 })
-    expect(run('nav.waypoints[7]={ x:185200, z:0, elevation:0, name:"", offset:null }; nav.home=7; return fpas_home().dist;')).toBeCloseTo(100, 9)
+    // Along the earth from the frame's anchor: 200 nm north, and 100 nm setting off east.
+    const along = (bearing: number, distance: number) => { const p = HOME.position(destination({ latitude: HOME.latitude, longitude: HOME.longitude, altitude: 0 }, bearing, distance)); return `{ x:${p.x}, y:${p.y}, z:${p.z}, elevation:0, name:"", offset:null }` }
+    const home = run(`nav.waypoints[0]=${along(0, 370400)}; return fpas_home();`) as { dist: number; hours: number; arrive: number }
+    expect(home.dist).toBeCloseTo(200, 6); expect(home.hours).toBeCloseTo(0.5, 6); expect(home.arrive).toBeCloseTo(3000, 3)
+    expect(run(`nav.waypoints[7]=${along(Math.PI / 2, 185200)}; nav.home=7; return fpas_home().dist;`)).toBeCloseTo(100, 9)
   })
 
   it('offers CLIMB at the lower left in the NAV master mode, boxed while it is selected (2.3.1.1.8, figure 2-7)', () => {
@@ -946,15 +950,13 @@ describe('the HSI page', () => {
     }
   })
 
-  it('reads the TACAN block as bearing and slant range, TTG at the groundspeed, and the ident, across the world wrap', () => {
+  it('reads the TACAN block as bearing and slant range, TTG at the groundspeed, and the ident', () => {
     const d = hsi()
     expect(at(d, '090°/ 10.0')).toEqual([60, 66])
     expect(at(d, '3:00')).toEqual([160, 90]) // right-aligned under the range
     expect(at(d, 'NIM')).toEqual([76, 114])
     expect(texts(hsi({ ground: 20 })).filter((s) => /^\d+:\d\d(:\d\d)?$/.test(s))).toEqual(['12:34:56']) // no TTG at taxi speed, only ZTOD
     expect(texts(hsi({ altitude: 5000 }))).toContain('090°/ 10.4') // slant: 10 nm out and 5 km up
-    const wrapped = hsi({ east: 81480, wrap: '(v)=>v>50000?v-100000:v' })
-    expect(texts(wrapped)).toContain('270°/ 10.0')
     const run = new Function(`${lift('time_to_go')} return [time_to_go(346), time_to_go(3827), time_to_go(40000)];`)() as string[]
     expect(run).toEqual(['5:46', '1:03:47', '8:59:59'])
   })
@@ -1281,8 +1283,8 @@ describe('the HSI\'s DATA sublevels', () => {
   it('shows a waypoint: its ID and number, position, elevation, the time on target and groundspeed, and the options', () => {
     const d = data({ nav: 'nav.tot=13*3600+45*60+30; nav.speed=367;' })
     expect(d.text).toContainEqual(['NIM', 256, 62]); expect(d.text).toContainEqual(['WYPT 1', 256, 84])
-    expect(d.text).toContainEqual(['N  28°22\'25"', 120, 112]); expect(d.text).toContainEqual(['W 177°22\'25"', 120, 134]); expect(d.text).toContainEqual(['ELEV 1000 FT', 120, 178])
-    expect(d.text).toContainEqual(['GRID 1RDM634386', 120, 156]) // the grid under the lat/long: proj puts it at 463403 E 3138642 N in zone 1
+    expect(d.text).toContainEqual(['N  28°22\'28"', 120, 112]); expect(d.text).toContainEqual(['W 177°22\'25"', 120, 134]); expect(d.text).toContainEqual(['ELEV 1000 FT', 120, 178])
+    expect(d.text).toContainEqual(['GRID 1RDM634387', 120, 156]) // the grid under the lat/long: proj puts it at 463404 E 3138724 N in zone 1
     expect(d.text).toContainEqual(['TOT 13:45:30', 60, 302]); expect(d.text).toContainEqual(['GSPD 367', 320, 302])
     for (const [label, px, py] of [['A/C', 96, 30], ['WYPT', 176, 30], ['TCN', 256, 30], ['HSI', 416, 30], ['NAVCK', 502, 96], ['UFC', 10, 96], ['SLEW', 10, 176], ['GPS', 10, 256], ['SEQUFC', 10, 416], ['REF WP', 502, 336], ['SEQ1', 502, 416], ['↑', 502, 176], ['↓', 502, 256], ['PRECISE', 176, 482]] as [string, number, number][]) {
       expect(at(d, label), label).toEqual([px, py])
@@ -1294,7 +1296,7 @@ describe('the HSI\'s DATA sublevels', () => {
   it('shows an offset aimpoint\'s offset, a mark by its M number, and zeros for a waypoint never stored', () => {
     const d = data({ nav: 'nav.waypoints[1].offset={ range:19812, bearing:30*D2R, elevation:381 };' })
     expect(d.text).toContainEqual(['O/S RNG 65000 FT', 120, 208]); expect(d.text).toContainEqual(['O/S BRG 030°00\'00" T', 120, 228]); expect(d.text).toContainEqual(['O/S ELEV 1250 FT', 120, 268])
-    expect(d.text).toContainEqual(['O/S GRID 1RDM733556', 120, 248]) // 65,000 ft on 030 from the waypoint: 473336 E 3155690 N
+    expect(d.text).toContainEqual(['O/S GRID 1RDM733558', 120, 248]) // 65,000 ft on 030 from the waypoint: 473359 E 3155845 N
     expect(texts(data({ shown: 61, nav: 'nav.marks[1]={ x:0, z:0, elevation:0, name:"", offset:null };' }))).toContain('WYPT M2')
     expect(data({ shown: 9 }).text).toContainEqual(['ELEV 0 FT', 120, 178])
   })
@@ -1308,7 +1310,7 @@ describe('the HSI\'s DATA sublevels', () => {
   })
   it('shows the aircraft\'s data: the source, the position kept, the wind, the variation, GPS\'s errors and time, and the altitude warnings', () => {
     const d = data({ tab: 'ac', nav: 'nav.ins.error={ x:0, z:-18520 }; nav.adc.wind={ x:-10.289, z:0 }; nav.variation=(8+52/60)*D2R;' })
-    expect(d.text).toContainEqual(['INS', 256, 92]); expect(d.text).toContainEqual(['N  28°22\'25"', 150, 124])
+    expect(d.text).toContainEqual(['INS', 256, 92]); expect(d.text).toContainEqual(['N  28°22\'28"', 150, 124])
     expect(d.text).toContainEqual(['WSPD 20 KT', 150, 172]); expect(d.text).toContainEqual(['WDIR 090°', 150, 196]); expect(d.text).toContainEqual(['MVAR E 8°52\'', 150, 220])
     expect(d.text).toContainEqual(['GPS HERR 33FT', 150, 262]); expect(d.text).toContainEqual(['GPS VERR 49FT', 150, 286]); expect(d.text).toContainEqual(['GPS TIME 12:34:56Z', 150, 310])
     expect(d.text).toContainEqual(['WARN ALT', 136, 416]); expect(d.text).toContainEqual(['5000', 96, 462]); expect(d.text).toContainEqual(['200', 176, 462])
@@ -1331,16 +1333,16 @@ describe('the HSI\'s DATA sublevels', () => {
   it('shows a TACAN station\'s channel, position, elevation and variation, and nothing for a free place', () => {
     const station = 'nav.stations=[{ channel:74, band:"X", x:0, z:-18520, elevation:20, name:"NIM", variation:7*D2R }];'
     const d = data({ tab: 'tcn', nav: station })
-    expect(d.text).toContainEqual(['74X', 256, 92]); expect(d.text).toContainEqual(['N  28°22\'25"', 150, 124]); expect(d.text).toContainEqual(['ELEV 66 FT', 150, 172]); expect(d.text).toContainEqual(["MVAR E 7°00'", 150, 196])
+    expect(d.text).toContainEqual(['74X', 256, 92]); expect(d.text).toContainEqual(['N  28°22\'28"', 150, 124]); expect(d.text).toContainEqual(['ELEV 66 FT', 150, 172]); expect(d.text).toContainEqual(["MVAR E 7°00'", 150, 196])
     expect(d.text).toContainEqual(['1', 502, 216]); expect(at(d, 'UFC')).toEqual([10, 96])
     const free = data({ tab: 'tcn', nav: station + 'nav.station=1;' })
     expect(free.text).toContainEqual(['2', 502, 216]); expect(texts(free).some((t) => t.startsWith('ELEV'))).toBe(false)
   })
   it('writes the waypoint to PRECISE: hundredths of a second and the grid to a metre, with PRECISE boxed', () => {
     const d = data({ nav: 'nav.precise=true;' })
-    expect(d.text).toContainEqual(['N  28°22\'24.84"', 120, 112]); expect(d.text).toContainEqual(['W 177°22\'24.60"', 120, 134]); expect(d.text).toContainEqual(['GRID 1RDM6340338642', 120, 156])
+    expect(d.text).toContainEqual(['N  28°22\'27.52"', 120, 112]); expect(d.text).toContainEqual(['W 177°22\'24.60"', 120, 134]); expect(d.text).toContainEqual(['GRID 1RDM6340438724', 120, 156])
     expect(d.rects.some(([, ry, , h]) => ry === 468 && h === 28)).toBe(true); expect(data().rects.some(([, ry]) => ry === 468)).toBe(false)
-    expect(texts(data({ nav: 'nav.precise=true; nav.decimal=true;' }))).toContain("N  28°22.414'") // not in decimal minutes
+    expect(texts(data({ nav: 'nav.precise=true; nav.decimal=true;' }))).toContain("N  28°22.459'") // not in decimal minutes
   })
   it('writes each length in the unit chosen for it, and the offset\'s bearing against the meridian chosen', () => {
     const d = data({ nav: 'nav.waypoints[1].offset={ range:19812, bearing:30.2575*D2R, elevation:381 }; nav.units={ waypoint:"feet", offset:"mtrs", station:"feet", range:"nm" }; nav.meridian="magnetic"; nav.variation=7*D2R;' })
@@ -1354,7 +1356,7 @@ describe('the HSI\'s DATA sublevels', () => {
     expect(data({ far, time: 0 }).text).toContainEqual(['O/S GRID 1RFM000000', 120, 248]); expect(texts(data({ far, time: 0.5 })).some((t) => t.startsWith('O/S GRID'))).toBe(false)
     expect(texts(data({ far, time: 0, nav: offset })).filter((t) => t.startsWith('O/S GRID'))).toEqual(['O/S GRID 1RFM000000']) // in place of the offset's own
     expect(texts(data({ far, time: 0.5, nav: offset })).some((t) => t.startsWith('O/S GRID'))).toBe(false)
-    expect(texts(data({ far: '{ shown:2, text:"1RFM000000" }', time: 0, nav: offset }))).toContain('O/S GRID 1RDM733556')
+    expect(texts(data({ far: '{ shown:2, text:"1RFM000000" }', time: 0, nav: offset }))).toContain('O/S GRID 1RDM733558')
   })
   it('writes no grid for a waypoint past N84', () => {
     const d = data({ nav: 'const far=navigate.world(85,-177.3735); nav.waypoints[1].x=far.x; nav.waypoints[1].z=far.z;' })
@@ -1386,7 +1388,7 @@ describe('the HSI\'s DATA sublevels', () => {
     expect(waiting.rects).toContainEqual([76, 194, 58, 24])
     expect(waiting.text.some(([, px, py]) => px === 70 && py === 96)).toBe(false); expect(texts(waiting)).not.toContain('XFER')
     const ready = data({ tab: 'gps', nav: points, time: 11, asked: 8 })
-    expect(ready.text).toContainEqual(['N  28°17\'25"', 70, 96]); expect(ready.text).toContainEqual(['ELEV 100 FT', 70, 144]); expect(at(ready, 'XFER')).toEqual([10, 96])
+    expect(ready.text).toContainEqual(['N  28°17\'27"', 70, 96]); expect(ready.text).toContainEqual(['ELEV 100 FT', 70, 144]); expect(at(ready, 'XFER')).toEqual([10, 96])
     expect(ready.text).toContainEqual(['WYPT 1', 290, 96]); expect(ready.text).toContainEqual(['NIM', 290, 68]); expect(ready.text).toContainEqual(['PAGE 1', 416, 452])
     expect(texts(data({ tab: 'gps', nav: points, time: 11, asked: 8, shown: 60 }))).not.toContain('XFER') // not into a mark
     expect(data({ tab: 'gps', nav: points, time: 11, asked: 8, cursor: 1 }).rects).toContainEqual([76, 218, 38, 24])
@@ -1428,9 +1430,9 @@ describe('the square identification grid', () => {
     const px = 76 + 2.63346877 * 72, py = 76 + (5 - 2.20211791) * 72
     expect(d.lines.some(([ax, ay, bx, by]) => Math.abs(ax - (px - 9)) < 0.01 && Math.abs(bx - (px + 9)) < 0.01 && Math.abs(ay - py) < 0.01 && Math.abs(by - py) < 0.01)).toBe(true)
     expect(d.lines.some(([ax, ay, bx, by]) => Math.abs(ax - px) < 0.01 && Math.abs(bx - px) < 0.01 && Math.abs(ay - (py - 9)) < 0.01 && Math.abs(by - (py + 9)) < 0.01)).toBe(true)
-    const wx = 76 + 2.63403 * 72, wy = 76 + (5 - 2.38642) * 72 // 463,403 E 3,138,642 N
+    const wx = 76 + 2.634041 * 72, wy = 76 + (5 - 2.387246) * 72 // 463,404 E 3,138,725 N
     expect(d.moves.some(([mx, my]) => Math.abs(mx - wx) < 0.05 && Math.abs(my - (wy - 9)) < 0.05)).toBe(true) // the star's top point
-    const ox = 76 + 2.73336 * 72, oy = 76 + (5 - 2.5569) * 72 // 473,336 E 3,155,690 N
+    const ox = 76 + 2.733595 * 72, oy = 76 + (5 - 2.558450) * 72 // 473,359 E 3,155,845 N
     expect(d.arcs.some(([ax, ay, r]) => Math.abs(ax - ox) < 0.05 && Math.abs(ay - oy) < 0.05 && r === 8)).toBe(true)
     expect(grid().arcs.some(([, , r]) => r === 8)).toBe(false) // no offset, no circle
     expect(grid({ shown: 9 }).moves.some(([mx, my]) => Math.abs(mx - wx) < 0.05 && Math.abs(my - (wy - 9)) < 0.05)).toBe(false) // a waypoint never stored draws no star

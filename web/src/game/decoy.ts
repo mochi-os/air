@@ -22,9 +22,8 @@ import type { Vector } from './seeker'
 export const FLARE = { reject: 0.55, drop: 30 }
 
 // decoy_aspect is how far behind the target the round sits: 1 dead astern,
-// 0 abeam or ahead. separation is the round's position less the target's,
-// taken the short way across the world wrap; nose is the target's forward
-// unit vector.
+// 0 abeam or ahead. separation is the round's position less the target's;
+// nose is the target's forward unit vector.
 export function decoy_aspect(separation: Vector, nose: Vector): number {
   const distance = Math.hypot(separation.x, separation.y, separation.z) || 1
   const behind =

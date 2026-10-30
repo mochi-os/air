@@ -15,6 +15,7 @@ import flight_wasm_url from '../assets/flight.wasm?url'
 import wasm_exec_url from '../assets/wasm_exec.js?url'
 import { asset } from './preload'
 import { journal_parse, type Journal } from './journal'
+import { reading as carrier_reading } from './wake'
 import type { Fitment } from './stores'
 
 // Encoded state layout (float64 words).
@@ -174,7 +175,9 @@ interface Core {
   plan?(): string
   steer?(): boolean | string
   voyage?(ship: string): string
-  carrier?(time: number): [number, number, number, number] | null | string
+  carrier?(time: number): number[] | null | string
+  deck?(time: number): [number, number, number, number, number, number, number] | null | string
+  reframe?(latitude: number, longitude: number): string | null
 }
 
 declare global {
@@ -431,15 +434,30 @@ export function flight_voyage(ship: unknown): void {
 }
 
 // flight_carrier is the ship at a time on the jet's clock: its reference
-// point, heading and whether the deck is closed (turning, or steaming away
-// from the wind). Null before the core is up, or from a core without a ship.
-export function flight_carrier(
-  time: number
-): { x: number; z: number; heading: number; closed: boolean } | null {
-  const pose = core?.carrier?.(time)
-  if (!Array.isArray(pose) || pose.length < 4 || !pose.every(Number.isFinite))
-    return null
-  return { x: pose[0], z: pose[1], heading: pose[2], closed: pose[3] > 0 }
+// point, heading, whether the deck is closed (turning, or steaming away from
+// the wind), her speed through the water and the earliest time her track
+// covers (-Infinity when she has held her course throughout). Null before the
+// core is up, or from a core without a ship.
+export function flight_carrier(time: number) {
+  return carrier_reading(core?.carrier?.(time))
+}
+
+// flight_deck is where the ship floats at a time on the jet's clock, in the
+// engine's frame: her deck reference point and the attitude of her deck (x to
+// the bow, y up, z to starboard), level on the curved sea. Null before the
+// core is up, or from a core without a ship.
+export function flight_deck(time: number): { position: { x: number; y: number; z: number }; quaternion: { x: number; y: number; z: number; w: number } } | null {
+  const pose = core?.deck?.(time)
+  if (!Array.isArray(pose) || pose.length < 7 || !pose.every(Number.isFinite)) return null
+  return { position: { x: pose[0], y: pose[1], z: pose[2] }, quaternion: { w: pose[3], x: pose[4], y: pose[5], z: pose[6] } }
+}
+
+// flight_reframe moves everything the core holds into the engine's new frame,
+// the tangent frame anchored at a latitude and longitude in radians: the jet,
+// the rounds in flight, the wreckage and the single-player bandit. The map,
+// the ship's track and the wakes stay in the world frame.
+export function flight_reframe(latitude: number, longitude: number): void {
+  core?.reframe?.(latitude, longitude)
 }
 
 // ---- Battle (single-player damage authority, #78) ----------------------
@@ -482,7 +500,6 @@ const menace_bytes = new Uint8Array(menace.buffer)
 export function bandit_init(config: {
   level: string
   seed: number
-  wrap: number
   sky: string
   night: boolean
   missiles: boolean
@@ -852,7 +869,6 @@ export function round_launch(
   position: { x: number; y: number; z: number },
   velocity: { x: number; y: number; z: number },
   estimate: Aimed | null,
-  wrap: number,
   loft: boolean
 ): void {
   if (!core) return
@@ -873,8 +889,7 @@ export function round_launch(
     r[12] = estimate.velocity.y
     r[13] = estimate.velocity.z
   }
-  r[14] = wrap
-  r[15] = loft ? 1 : 0
+  r[14] = loft ? 1 : 0
   core.round_launch(round_input_bytes)
 }
 
@@ -933,7 +948,6 @@ export function round_step(
 export function round_ladder(
   shooter: Aimed,
   target: Aimed,
-  wrap: number,
   still = false // judged in still air, as the BVR start's separation is, not the pilot's
 ): {
   aero: number
@@ -956,8 +970,7 @@ export function round_ladder(
   r[9] = target.velocity.x
   r[10] = target.velocity.y
   r[11] = target.velocity.z
-  r[12] = wrap
-  r[13] = still ? 1 : 0
+  r[12] = still ? 1 : 0
   core.round_ladder(round_input_bytes, round_output_bytes)
   const o = round_output
   return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
@@ -968,8 +981,7 @@ export function round_ladder(
 // player's), the block speed, the flank both hold off the line between them,
 // and the separation. null before the core has booted.
 export function joust_opening(
-  seed: number,
-  wrap: number
+  seed: number
 ): {
   altitude: [number, number]
   speed: number
@@ -978,7 +990,6 @@ export function joust_opening(
 } | null {
   if (!core || !core.joust_opening) return null
   round_input[0] = seed
-  round_input[1] = wrap
   core.joust_opening(round_input_bytes, round_output_bytes)
   const o = round_output
   return { altitude: [o[0], o[1]], speed: o[2], flank: o[3], apart: o[4] }
@@ -992,8 +1003,7 @@ export function heater_ladder(
   shooter: Aimed,
   target: Aimed,
   swing: { x: number; y: number; z: number },
-  lit: number,
-  wrap: number
+  lit: number
 ): {
   aero: number
   max: number
@@ -1019,7 +1029,6 @@ export function heater_ladder(
   r[13] = swing.y
   r[14] = swing.z
   r[15] = lit
-  r[16] = wrap
   core.heater_ladder(round_input_bytes, round_output_bytes)
   const o = round_output
   return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
