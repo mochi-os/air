@@ -261,8 +261,8 @@ describe("the sun's glint", () => {
     expect(shares, 'the upwind and crosswind shares').not.toBeNull()
     const upwind = Number(shares![1]), crosswind = Number(shares![2])
     // Cox-Munk at the wind the weather blows: 3.16e-3 U upwind, 0.003 + 1.92e-3 U crosswind
-    const wind = new Function('CLOUDS', 'cfg', 'DEV_MODE', 'D2R', 'WORLD_WRAP', 'cheat', `${lift('weather')}\nreturn weather;`)(
-      {}, { clouds: 'none' }, false, Math.PI / 180, 250000, () => false)().wind
+    const wind = new Function('CLOUDS', 'cfg', 'DEV_MODE', 'D2R', 'WORLD_WRAP', 'cheat', 'MULTIPLAYER', 'match_wind', `${lift('weather')}\nreturn weather;`)(
+      {}, { clouds: 'none' }, false, Math.PI / 180, 250000, () => false, false, () => null)().wind
     const speed = Math.hypot(wind.x, wind.z)
     const total = 0.003 + 5.12e-3 * speed
     expect(upwind).toBeCloseTo((3.16e-3 * speed) / total, 2)

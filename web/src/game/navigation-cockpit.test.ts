@@ -113,9 +113,10 @@ describe('a spawn', () => {
     const s = cockpit<{ cold: string[]; ready: string[]; mode: string; home: boolean; heading: number }>(
       'nav_reset(); const cold=navigate.cautions(nav); ownship.gauges.heading=1; nav_ready(); const ready=navigate.cautions(nav); ownship.gauges.heading=2; nav_ready(); nav_frame(0.1); return { cold, ready, mode:nav.ins.mode, home:nav.waypoints[0]!==null, heading:nav.heading };', true)
     expect(s).toEqual({ cold: ['INS ATT'], ready: [], mode: 'nav', home: true, heading: 1 }) // a later call, or nav_frame, does not ready it again
-    const fly = lift('fly_player'), at = fly.indexOf('\tsync_core(out); last_out=out;\n\tnav_ready();')
+    const fly = lift('fly_player'), at = fly.indexOf('\tsync_core(out); last_out=out;\n'), ready = fly.indexOf('\tnav_ready();', at)
     expect(at).toBeGreaterThan(0)
-    expect(fly.indexOf('cautions_update(dt);')).toBeGreaterThan(at)
+    expect(fly.slice(at, ready)).toMatch(/^\tsync_core\(out\); last_out=out;\n(\t[^\n]*carrier_pose\(out\[STATE\.time\]\);[^\n]*\n)?$/) // straight after the core's pose - and the ship's, posed at the same clock, which tells it whether the jet is aboard
+    expect(fly.indexOf('cautions_update(dt);')).toBeGreaterThan(ready)
   })
   it('loads the airfields when they arrive after it', () => {
     expect(cockpit<unknown[]>('const late=airports.splice(0); nav_reset(); nav_frame(0.1); const before=nav.waypoints[2]; airports.push(...late); nav_frame(0.1); return [before, nav.waypoints[2].name];')).toEqual([null, 'PMDY'])

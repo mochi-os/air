@@ -48,7 +48,7 @@ function scenery(): Scenery {
   const block = /function scenery\(\)\{[\s\S]*?return \{ sea:3, fields, carrier, prisms, posts \};[^\n]*\n\}/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('scenery not found in engine.ts')
   const run = new Function(`const ISLAND_H=3.5, AIRFIELD_FLOAT=1.46, RUNWAY_FLOAT=1.5, D2R=Math.PI/180, CARRIER_YD=0, STRIP_ULAT=1, STRIP_UFA=0, strip_lat=()=>0;
-    const CARRIER={x:0,z:0,deckY:20}, SHIP={outline:[[0,0],[1,0],[1,1]], catapults:[], landing:{ wires:[], span:2 }};
+    const CARRIER={x:0,z:0,deckY:20}, CHART={x:-18500,z:7500,yaw:0.349}, SHIP={outline:[[0,0],[1,0],[1,1]], catapults:[], landing:{ wires:[], span:2 }};
     const physics_strips=[{a:[0,0],b:[100,0],w:46}];
     const runway_strips=[{a:[-1500,0],b:[1500,0],w:60}];
     const obstacles={ islands:[{pts:[[0,0],[10,0],[10,10]]}], buildings:[{pts:[[0,0],[10,0],[10,10],[0,10]],topY:12},{pts:[[20,0],[30,0],[30,10]],topY:8}], posts:[{x:5,z:5,r:2,y1:9}] };
@@ -59,14 +59,20 @@ function scenery(): Scenery {
 }
 
 describe('the scenery', () => {
-  it('carries the buildings as prisms, the posts as posts, and the carrier island as a prism with its mast as a post', () => {
+  it('carries the buildings as prisms, the posts as posts, and the carrier island as the ship\'s own prism and post', () => {
     const world = scenery()
     expect(world.sea).toBe(3)
     expect(world.fields).toHaveLength(3)
-    expect(world.prisms).toHaveLength(3)
+    expect(world.prisms).toHaveLength(2)
     expect(world.prisms[0]).toEqual({ outline: [{ x: 0, z: 0 }, { x: 10, z: 0 }, { x: 10, z: 10 }, { x: 0, z: 10 }], top: 12 })
-    expect(world.prisms[2].top).toBe(44)
-    expect(world.posts).toEqual([{ position: { x: 5, z: 5 }, radius: 2, top: 9 }, { position: { x: 0, z: 0 }, radius: 1.5, top: 60 }])
+    expect(world.posts).toEqual([{ position: { x: 5, z: 5 }, radius: 2, top: 9 }])
+    // The island sails with the ship: in its frame, on the carrier the core sets under way from where the map charts it.
+    const carrier = world.carrier as { position: { x: number; z: number }; heading: number; prisms: Prism[]; posts: Post[] }
+    expect(carrier.position).toMatchObject({ x: -18500, z: 7500 })
+    expect(carrier.heading).toBe(0.349)
+    expect(carrier.prisms).toHaveLength(1)
+    expect(carrier.prisms[0].top).toBe(44)
+    expect(carrier.posts).toEqual([{ position: { x: 0, z: 0 }, radius: 1.5, top: 60 }])
   })
 
   // The runway sits PROUD of the taxiways and aprons, so it needs its own field

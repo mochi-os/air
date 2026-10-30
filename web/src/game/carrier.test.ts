@@ -48,7 +48,7 @@ function carrier(): Carrier {
   const run = new Function(
     'SHIP',
     `const ISLAND_H=3.5, AIRFIELD_FLOAT=1.46, RUNWAY_FLOAT=1.5, D2R=Math.PI/180, CARRIER_YD=0;
-    const CARRIER={x:0,z:0,deckY:20}, physics_strips=[], runway_strips=[], obstacles={ islands:[], buildings:[], posts:[] }, carrier_island=()=>null;
+    const CARRIER={x:0,z:0,deckY:20}, CHART={x:0,z:0,yaw:0}, physics_strips=[], runway_strips=[], obstacles={ islands:[], buildings:[], posts:[] }, carrier_island=()=>null;
     ${strip}${unit}${scenery}
     return scenery().carrier;`
   ) as (ship: unknown) => Carrier

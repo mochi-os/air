@@ -215,13 +215,16 @@ describe('distance stages', () => {
     const h = harness()
     const near = [{ visible: true }, { visible: true }]
     const far = {
-      group: { visible: false, position: new THREE.Vector3() },
+      group: Object.assign(new THREE.Group(), { visible: false }),
       near,
       far: false,
     }
+    const rig = new THREE.Group() // the carrier's rig, carried 5 km from where the map charts the ship: the stage reads where the far model is in the world
+    rig.position.set(5000, 0, 0)
+    rig.add(far.group)
     h.carrier(far)
     const place = (d: number) => {
-      far.group.position.set(d, 0, 0)
+      far.group.position.set(d - 5000, 0, 0)
       h.update_stages()
     }
     const limit = h.screen_size(333, 1) / 150 // the distance where the carrier is 150 px long
@@ -243,7 +246,7 @@ describe('distance stages in the engine', () => {
     expect(source).toMatch(
       /fleet\[kind\]=\{ proto, rig, profile:gun_profile\(proto,AIRCRAFT_MODELS\[kind\]\|\|\{\}\) \};\n\t+void init_far_model\(kind\);/
     )
-    expect(source).toMatch(/\tg\.add\(m\);\n\tstages_attach\(g,kind\);/)
+    expect(source).toMatch(/\tg\.add\(m\);\n\tfor\(const s of spec\.shift\|\|\[\]\)\{[^\n]*\n\tstages_attach\(g,kind\);/)
     expect(lift('stages_attach')).toMatch(
       /if\(g\.userData\.player\|\|!far\|\|far==="loading"\|\|!m\) return;/
     )
@@ -262,15 +265,15 @@ describe('distance stages in the engine', () => {
     )
   })
 
-  it('loads the carrier far model outside carrier_model, placed as the full one', () => {
+  it('loads the carrier far model outside carrier_model, placed as the full one on the same rig', () => {
     expect(source).toMatch(
-      /carrier_model=grp; scene\.add\(grp\);\n\t+void init_carrier_far\(grp,gscene\);/
+      /carrier_model=grp; carrier_rig\.add\(grp\);\n\t+void init_carrier_far\(grp,gscene\);/
     )
     const far = lift('init_carrier_far')
     expect(far).toMatch(
       /far\.position\.copy\(grp\.position\); far\.rotation\.copy\(grp\.rotation\); far\.scale\.copy\(grp\.scale\);/
     )
-    expect(far).toMatch(/scene\.add\(far\);/)
+    expect(far).toMatch(/carrier_rig\.add\(far\);/)
     expect(far).not.toMatch(/grp\.add\(/)
     expect(source).toMatch(
       /nimitz:\{ url:nimitz_model_url, far:nimitz_far_url,/

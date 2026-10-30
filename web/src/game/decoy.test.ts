@@ -108,9 +108,9 @@ describe("a heater fired at the pilot judges the plume its shooter fired on", ()
     const missiles = [{ active: false, mesh: { visible: false } } as Record<string, unknown>]
     const bandit = { pos: { x: 0, y: 3000, z: 0 }, fwd: { x: 1, y: 0, z: 0 }, speed: 250 }
     const launch_missile = new Function(
-      'THREE', 'missiles', 'local_offset', 'launch_puff', 'wrap_axis',
+      'THREE', 'missiles', 'local_offset', 'launch_puff', 'wrap_axis', 'airflow',
       `${launch}; return launch_missile`
-    )(THREE, missiles, () => ({ x: 0, y: 3000, z: 0 }), () => {}, (v: number) => v)
+    )(THREE, missiles, () => ({ x: 0, y: 3000, z: 0 }), () => {}, (v: number) => v, (st: { speed: number }) => ({ wind: { x: 0, y: 0, z: 0 }, speed: st.speed })) // still air
     expect(launch_missile(bandit, ownship)).toBe(true)
     return missiles[0]
   }

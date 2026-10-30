@@ -40,7 +40,7 @@ export interface Touch {
   fa: number // the touchdown's fore-aft on the deck, m; below -120 is at the round-down
 }
 
-export type Ending = 'trap' | 'bolter' | 'waveoff'
+export type Ending = 'trap' | 'bolter' | 'waveoff' | 'foul' // foul: waved off for a foul deck, the ship turning or steaming away from the wind
 export type Grade = 'OK' | 'FAIR' | 'NO-GRADE' | 'CUT' | 'BOLTER' | 'WAVE OFF'
 
 export const ONSPEED = 8.1
@@ -168,6 +168,7 @@ export function pass_grade(
   const written = remarks(pass, ending === 'trap' ? wire : 0)
   if (ending === 'bolter') return { grade: 'BOLTER', remarks: written }
   if (ending === 'waveoff') return { grade: 'WAVE OFF', remarks: written }
+  if (ending === 'foul') return { grade: 'WAVE OFF', remarks: 'WOFD' } // the deck's wave-off, not the pilot's: nothing in the pass is written up against the pilot
   const t = touch ?? { sink: 0, bank: 0, fa: 0 }
   const settled = wire === 1 && t.sink > 6 // a firm arrival in the 1 wire: the settle at the ramp
   // CUT: dangerously hard, a wing down at the deck, the round-down, through a

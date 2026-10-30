@@ -136,6 +136,7 @@ interface Core {
   wake_state?(): string
   debris_lay?(words: Uint8Array): string
   debris_meet?(output: Uint8Array): number | string
+  wind?(input: Uint8Array, output: Uint8Array): string | null
   approach(
     x: number,
     y: number,
@@ -169,6 +170,10 @@ interface Core {
   racks?(index: number, mask: number): boolean
   bandit_mode?(): string
   bandit_journal?(): string
+  plan?(): string
+  steer?(): boolean | string
+  voyage?(ship: string): string
+  carrier?(time: number): [number, number, number, number] | null | string
 }
 
 declare global {
@@ -401,6 +406,39 @@ export function flight_level(
 // after the host has read them.
 export function flight_clear(): void {
   core?.clear()
+}
+
+// ---- The carrier under way ----------------------------------------------
+// The core flies the ship's track, a pure function of time (world/wasm/ship.go):
+// single player plans and steers it here, a match takes the server's.
+
+// flight_plan sets single player's ship under way from the jet's clock.
+export function flight_plan(): void {
+  core?.plan?.()
+}
+
+// flight_steer moves single player's ship on: into the wind while the jet
+// needs the deck, across its area while it does not.
+export function flight_steer(): void {
+  core?.steer?.()
+}
+
+// flight_voyage takes a match's track from the server: { into, track } as its
+// welcome and its ship events carry it.
+export function flight_voyage(ship: unknown): void {
+  if (ship && typeof ship === 'object') core?.voyage?.(JSON.stringify(ship))
+}
+
+// flight_carrier is the ship at a time on the jet's clock: its reference
+// point, heading and whether the deck is closed (turning, or steaming away
+// from the wind). Null before the core is up, or from a core without a ship.
+export function flight_carrier(
+  time: number
+): { x: number; z: number; heading: number; closed: boolean } | null {
+  const pose = core?.carrier?.(time)
+  if (!Array.isArray(pose) || pose.length < 4 || !pose.every(Number.isFinite))
+    return null
+  return { x: pose[0], z: pose[1], heading: pose[2], closed: pose[3] > 0 }
 }
 
 // ---- Battle (single-player damage authority, #78) ----------------------
@@ -894,7 +932,8 @@ export function round_step(
 export function round_ladder(
   shooter: Aimed,
   target: Aimed,
-  wrap: number
+  wrap: number,
+  still = false // judged in still air, as the BVR start's separation is, not the pilot's
 ): {
   aero: number
   max: number
@@ -917,6 +956,7 @@ export function round_ladder(
   r[10] = target.velocity.y
   r[11] = target.velocity.z
   r[12] = wrap
+  r[13] = still ? 1 : 0
   core.round_ladder(round_input_bytes, round_output_bytes)
   const o = round_output
   return { aero: o[0], max: o[1], escape: o[2], minimum: o[3], active: o[4] }
@@ -1044,6 +1084,27 @@ export function flight_wake_shed(poses: readonly WakePose[]): void {
     new Uint8Array(wake_poses.buffer, 0, poses.length * WAKE_POSE * 8)
   )
   if (error) console.error('flight wake:', error)
+}
+
+// flight_wind is the air's own velocity at a point, on the jet's clock: the
+// wind the weapons fly through, and what they shed drifts in (flight.Wind) -
+// the mission's weather, and in a match the server's. Still air before the
+// core has a mission, or from a core that predates it.
+const wind_words = new Float64Array(3)
+const wind_in = new Uint8Array(wind_words.buffer)
+const wind_out = new Float64Array(3)
+const wind_out_bytes = new Uint8Array(wind_out.buffer)
+export function flight_wind(
+  x: number,
+  y: number,
+  z: number
+): { x: number; y: number; z: number } {
+  if (!core?.wind) return { x: 0, y: 0, z: 0 }
+  wind_words[0] = x
+  wind_words[1] = y
+  wind_words[2] = z
+  core.wind(wind_in, wind_out_bytes)
+  return { x: wind_out[0], y: wind_out[1], z: wind_out[2] }
 }
 
 // Debris (world battle/debris.go): a kill's wreckage, laid where the jet fell,

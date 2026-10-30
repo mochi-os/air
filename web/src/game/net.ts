@@ -370,6 +370,8 @@ export interface Welcome {
     team?: string
     score?: Record<string, number>
     map?: { name: string; hash: string } // the match's map, served at <lobby>/maps/<name> (#28)
+    ship?: { into: number; track: number[][] } // the carrier's track: the heading into the wind, and each leg as [start, x, z, heading, speed, turn, change]
+    wind?: [number, number, number] // the match's wind at the 10 m reference, the way the air moves (x east, z south); a server that predates it flies still air
   }
   players: { slot: number; name: string; identity: string }[]
 }
@@ -555,6 +557,12 @@ export class Net {
       attitude: slerp(pa.attitude, pb.attitude, t),
       speed: lerp(pa.speed, pb.speed),
     })
+  }
+
+  // render is the session time remote() draws the jets at: the smoothed
+  // server clock, DELAY behind.
+  render(): number {
+    return performance.now() / 1000 - this.clock - DELAY / 1000
   }
 
   // correction returns the newest unconsumed own-state authority for

@@ -842,7 +842,7 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
   // record what they are flown against; the bandit, alone, is somewhere else
   // by now than the radar last saw it.
   type Fed = { position: { x: number; y: number; z: number }; velocity: { x: number; y: number; z: number } }
-  function zones() {
+  function zones(wind = { x: 0, y: 0, z: 0 }) {
     return new Function(
       'Radar', 'THREE', 'stores_amraams', 'stores_eject', 'sequence', 'departed',
       `const RADAR=new Radar();
@@ -853,7 +853,8 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
        const fed={ amraam:null, heater:null, reheat:null, shooter:null, launcher:null };
        const round_ladder=(own,target)=>{ fed.launcher=own; fed.amraam=target; return { max:40000, escape:20000, minimum:800 }; };
        const heater_ladder=(own,target,swing,reheat)=>{ fed.shooter=own; fed.heater=target; fed.reheat=reheat; return { max:8000, escape:4000, minimum:500 }; };
-       ${lift('radar_target')} ${lift('amraam_departure')} ${lift('launch_zone')} ${lift('heat_zone')} ${lift('ranging')} ${lift('heat_lead')} ${lift('track_range')}
+       const flight_wind=()=>(${JSON.stringify(wind)}); // the air the jet flies, still unless a test blows it
+       ${lift('airflow')} ${lift('radar_target')} ${lift('amraam_departure')} ${lift('launch_zone')} ${lift('heat_zone')} ${lift('ranging')} ${lift('heat_lead')} ${lift('track_range')}
        return { RADAR, bandit, ownship, fed, launch_zone, heat_zone, ranging, heat_lead, track_range };`
     )(Radar, THREE, stores_amraams, stores_eject, sequence, departed) as { RADAR: Radar; bandit: { group: { visible: boolean } }; ownship: { velx: number; vely: number; velz: number; fwd: { x: number; y: number; z: number }; loadout: Record<string, { fixture: string; stores: string[] }>; amraam: number }; fed: { amraam: Fed | null; heater: Fed | null; reheat: number | null; shooter: Fed | null; launcher: Fed | null }; launch_zone(): { range: number; lead: { z: number } } | null; heat_zone(): { range: number } | null; ranging(): { range: number; closure: number } | null; heat_lead(): unknown; track_range(): number | null }
   }
@@ -884,9 +885,9 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
       z.launch_zone()
       return { v: z.fed.launcher?.velocity, sin: Math.sin(alpha), cos: Math.cos(alpha) }
     }
-    const cheek = shot(2) // the cheek's LAU-116 ejects: 15 m/s along the nose and 8 m/s down
+    const cheek = shot(2) // the cheek's LAU-116 ejects: 15 m/s along the nose and 8 m/s down, as the server's departure
     expect(cheek.v?.x).toBeCloseTo(0, 9)
-    expect(cheek.v?.y).toBeCloseTo(250 * cheek.sin - 8, 9)
+    expect(cheek.v?.y).toBeCloseTo(265 * cheek.sin - 8, 9)
     expect(cheek.v?.z).toBeCloseTo(-265 * cheek.cos, 9)
     const wing = shot(1) // the wing's LAU-127 rail: 30 m/s along the nose
     expect(wing.v?.y).toBeCloseTo(280 * wing.sin, 9)
@@ -918,6 +919,22 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
     expect(v?.x).toBeCloseTo(0, 9)
     expect(v?.y).toBeCloseTo(250 * Math.sin(alpha), 9)
     expect(v?.z).toBeCloseTo(-250 * Math.cos(alpha), 9)
+  })
+  it('launches both trial rounds at the jet\'s speed through the air along the nose, the wind carrying them', () => {
+    const wind = { x: -30, y: 0, z: 12 }
+    const z = zones(wind)
+    z.RADAR.tracks = [held]
+    z.RADAR.stt = 'bandit'
+    z.RADAR.time = 2
+    z.ownship.velx += wind.x // the jet flies its 250 m/s through air that moves
+    z.ownship.velz += wind.z
+    z.heat_zone()
+    z.launch_zone()
+    const heater = z.fed.shooter?.velocity, rail = z.fed.launcher?.velocity
+    expect(heater?.x).toBeCloseTo(wind.x, 9)
+    expect(heater?.z).toBeCloseTo(-250 + wind.z, 9)
+    expect(rail?.x).toBeCloseTo(wind.x, 9)
+    expect(rail?.z).toBeCloseTo(-280 + wind.z, 9) // the wing rail's 30 m/s on the airspeed
   })
   it("ranges the HUD on the trackfile carried on: range, and closure on the track's velocity", () => {
     const z = zones()

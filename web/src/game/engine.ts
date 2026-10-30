@@ -37,7 +37,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
+import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_steer, flight_voyage, flight_carrier, flight_wind, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
@@ -1925,8 +1925,8 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	if(spec.cockpitHide){ const hide=[]; m.traverse(o=>{ if(o.name&&spec.cockpitHide.test(o.name)) hide.push(o); });
 		g.userData.cockpitHide=hide; }   // first-person set: the pilot's head subtree (visible cascades down, so one node hides head+helmet+visor+mask), arms and body
 	g.add(m);
-	stages_attach(g,kind);
 	for(const s of spec.shift||[]){ const o=m.getObjectByName(s.node); if(o) shift_node(g,o,s.by); }
+	stages_attach(g,kind);
 	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); controls_round(g,m); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
 		g.userData.rig=loaded.rig.map(r=>{
@@ -1969,7 +1969,7 @@ const CARRIER_LIMIT=150, CARRIER_KEEP=/^deck_(baked|underside|skirt)$/;
 const fleet_far={};   // aircraft kind -> its distant stages (fa18c-far.glb: airframe, up, down, burner, far), or "loading"
 let carrier_far=null;   // { group: the far model, near: the full model's meshes it replaces, far: drawn }
 let stage_dots=null;
-const _stage_eye=new THREE.Vector3(), _stage_light=new THREE.Color();
+const _stage_eye=new THREE.Vector3(), _stage_light=new THREE.Color(), _carrier_at=new THREE.Vector3();
 function screen_size(length,distance){ return length*1080/(2*Math.max(distance,1e-3)*Math.tan(camera.fov*D2R/2)); }   // reference pixels
 function stage_for(size,current){ let i=STAGE_LIMITS.findIndex(min=>size>=min); if(i<0) i=STAGE_LIMITS.length;
 	while(i<current&&size<STAGE_LIMITS[i]*STAGE_MARGIN) i++;   // a nearer stage only past its margin
@@ -2019,7 +2019,7 @@ function update_stages(){ camera.getWorldPosition(_stage_eye);
 		const c=g.userData.stages.albedo, fade=THREE.MathUtils.clamp((DOT_RANGE-d)/DOT_FADE,0,1);
 		pos.setXYZ(n,g.position.x,g.position.y,g.position.z); col.setXYZW(n,c.r*_stage_light.r,c.g*_stage_light.g,c.b*_stage_light.b,fade); n++; }
 	if(stage_dots){ stage_dots.geometry.setDrawRange(0,n); pos.needsUpdate=col.needsUpdate=n>0; stage_dots.visible=n>0; }
-	if(carrier_far){ const far=screen_size(SHIP.length,_stage_eye.distanceTo(carrier_far.group.position))<CARRIER_LIMIT*(carrier_far.far?STAGE_MARGIN:1);
+	if(carrier_far){ const far=screen_size(SHIP.length,_stage_eye.distanceTo(carrier_far.group.getWorldPosition(_carrier_at)))<CARRIER_LIMIT*(carrier_far.far?STAGE_MARGIN:1);
 		if(far!==carrier_far.far){ carrier_far.far=far; carrier_far.group.visible=far; for(const o of carrier_far.near) o.visible=!far; } } }
 // init_carrier_far loads the carrier's far model into a group placed as the full model's, outside
 // carrier_model, so the deck grid and the island's collision never meet it.
@@ -2027,12 +2027,12 @@ async function init_carrier_far(grp,gscene){ if(!SHIP.far) return;
 	try{ const gltf=await far_parse(await asset_bytes(SHIP.far)); const far=new THREE.Group();
 		gltf.scene.position.copy(gscene.position); far.add(gltf.scene); far.position.copy(grp.position); far.rotation.copy(grp.rotation); far.scale.copy(grp.scale);
 		far.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });   // as the full model's
-		far.visible=false; scene.add(far);
+		far.visible=false; carrier_rig.add(far);
 		const near=[]; grp.traverse(o=>{ if(!o.isMesh) return; for(let p=o;p&&p!==grp;p=p.parent) if(CARRIER_KEEP.test(p.name||"")) return; near.push(o); });
 		carrier_far={ group:far, near, far:false }; }
 	catch(e){ console.warn("carrier model: no far model ("+((e&&e.message)||e)+")"); } }   // without it the carrier is drawn in full at every range
 if(DEV_MODE) (globalThis as any).dev_stages=()=>({ jets:[...new Set([bandit,...remotes.values()])].filter(st=>st.group&&st.group.userData.stages).map(st=>({ stage:STAGES[Math.max(st.group.userData.stage,0)], size:+screen_size((AIRCRAFT_MODELS[st.group.userData.hasModel]||AIRCRAFT_MODELS.fa18c).length,_stage_eye.distanceTo(st.group.position)).toFixed(2), distance:Math.round(_stage_eye.distanceTo(st.group.position)), visible:st.group.visible, at:[st.group.position.x,st.group.position.y,st.group.position.z].map(Math.round), screen:(v=>[v.x,v.y].map(c=>+c.toFixed(4)))(st.group.position.clone().project(camera)) })),   // i18n-format-ok: developer probe values
-	carrier:carrier_far?{ stage:carrier_far.far?"far":"full", size:+screen_size(SHIP.length,_stage_eye.distanceTo(carrier_far.group.position)).toFixed(1), screen:(v=>[v.x,v.y].map(c=>+c.toFixed(4)))(carrier_far.group.position.clone().project(camera)) }:null, dots:stage_dots?stage_dots.geometry.drawRange.count:0, dot:stage_dots?+stage_dots.material.size.toFixed(2):null });   // i18n-format-ok: developer probe values
+	carrier:carrier_far?{ stage:carrier_far.far?"far":"full", size:+screen_size(SHIP.length,_stage_eye.distanceTo(carrier_far.group.getWorldPosition(_carrier_at))).toFixed(1), screen:(v=>[v.x,v.y].map(c=>+c.toFixed(4)))(carrier_far.group.getWorldPosition(new THREE.Vector3()).project(camera)) }:null, dots:stage_dots?stage_dots.geometry.drawRange.count:0, dot:stage_dots?+stage_dots.material.size.toFixed(2):null });   // i18n-format-ok: developer probe values
 function calibrate_eye(){ const head=ownship.group.getObjectByName("Pilot_Head_769"); if(!head) return;
 	const g=ownship.group; g.updateMatrixWorld(true);
 	const p=new THREE.Vector3(); head.getWorldPosition(p);
@@ -5298,7 +5298,7 @@ function deck_y_at(grp,x,z,fallback){
 function place_on_cat(i=cat_idx){
 	// A cat pose ({x,z} offset and launch heading) was tuned at yaw 90; rotate it by the
 	// carrier's yaw delta so it tracks the ship when the heading changes. R_y: x'=x·c+z·s, z'=−x·s+z·c.
-	const cat=SHIP.catapults[i], yaw_delta=(SHIP.yaw-(SHIP.bow??90))*D2R, c=Math.cos(yaw_delta), s=Math.sin(yaw_delta);
+	const cat=SHIP.catapults[i], yaw_delta=CARRIER_YD, c=Math.cos(yaw_delta), s=Math.sin(yaw_delta);   // the ship's heading now: under way it is not the one the map charts
 	const sx=CARRIER.x+(cat.x*c+cat.z*s), sz=CARRIER.z+(-cat.x*s+cat.z*c);   // the SHUTTLE, in world
 	const hd=cat.heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 	const fwd=new THREE.Vector3(fx*c+fz*s,0,-fx*s+fz*c);
@@ -5329,21 +5329,22 @@ async function init_carrier_model(){
 			const s=SHIP.length/Math.max(sz.x,sz.y,sz.z,1e-3);
 			const c0=b0.getCenter(new THREE.Vector3()); gscene.position.sub(c0);   // centre the MODEL's OWN bbox at the group origin: the deck-ops frame must be the model's local frame, independent of yaw — centring on the world AABB after rotation shifted the origin 8 m to starboard on this asymmetric hull (the rotated AABB's centre is not the rotated centre), which put every measured cat/wire/OLS coordinate 8 m off the drawn deck
 			const grp=new THREE.Group(); grp.add(gscene); grp.scale.setScalar(s); grp.rotation.y=SHIP.yaw*D2R;
-			grp.position.set(CARRIER.x,0,CARRIER.z); grp.updateMatrixWorld(true);
+			grp.position.set(CHART.x,0,CHART.z); grp.updateMatrixWorld(true);   // where the map charts the ship: carrier_rig carries it to where the ship is
 			const st=model_y_stats(grp); const waterline=st.keelY+SHIP.draft*(st.deckY-st.keelY);   // sink so waterline -> y=0
 			grp.position.y-=waterline; grp.updateMatrixWorld(true);
-			build_deck_grid(grp, st.deckY-waterline);   // one triangle pass replaces every startup deck raycast
+			with_charted(()=>build_deck_grid(grp, st.deckY-waterline));   // one triangle pass replaces every startup deck raycast
 			let baseTex=null,normTex=null;
 			if(baseSrc&&typeof createImageBitmap==="function"){ try{ baseTex=await make_tex(baseSrc,true); }catch{ /* texture optional */ } }
 			if(normSrc&&typeof createImageBitmap==="function"){ try{ normTex=await make_tex(normSrc,false); }catch{ /* texture optional */ } }
 			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; const hasuv=!!(o.geometry&&o.geometry.attributes&&o.geometry.attributes.uv);
 				if(baseTex&&hasuv)mm.map=baseTex; if(normTex&&hasuv)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });   // the map goes only where UVs exist: on the Nimitz only the baked deck strip has them (a map without UVs renders garbage)
-			carrier_model=grp; scene.add(grp);
+			carrier_model=grp; carrier_rig.add(grp);
 			void init_carrier_far(grp,gscene);   // the far model follows; until it arrives the carrier is drawn in full
 			/* procedural carrier removed; nothing to hide */
 			const yd=(SHIP.yaw-(SHIP.bow??90))*D2R, dc=Math.cos(yd), ds=Math.sin(yd);                        // rotate the sample spot with the carrier heading (yaw - bow: the deck-ops frame, see the nimitz config)
-			CARRIER.deckY=deck_y_at(grp, CARRIER.x+(70*dc-6*ds), CARRIER.z+(-70*ds-6*dc), st.deckY-waterline);   // deck height near the catapult spot (carrier-relative)
-			build_carrier_deck_aids();   // wires + OLS, now that the deck height is known
+			with_charted(()=>rig_adopt(()=>{ CARRIER.deckY=deck_y_at(grp, CARRIER.x+(70*dc-6*ds), CARRIER.z+(-70*ds-6*dc), st.deckY-waterline);   // deck height near the catapult spot (carrier-relative)
+				build_carrier_deck_aids(); }));   // wires + OLS, now that the deck height is known: built where the map charts the ship, hung on the rig
+			ols_follow();
 			if(mission_start()==="carrier" && !ownship.launching && ownship.speed<5){ place_on_cat(); flight_push(); }   // re-spot on the cat at the now-known deck height, unless already taxiing / launched
 		}catch(e){ throw new Error("carrier model: failed to process "+tag+": "+(e&&e.message||e)); } },
 		err=>{ throw new Error("carrier model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+")"); });
@@ -5426,14 +5427,18 @@ function flush_points(p,pts){ const pos=pts.geometry.attributes.position.array,c
 	if(sized){ pts.geometry.attributes.grow.needsUpdate=true; pts.geometry.attributes.fade.needsUpdate=true; pts.geometry.attributes.spin.needsUpdate=true; }
 	return n; }
 let _live_particles=0;
-function update_pool_ballistic(p,dt,grav,drag,round){ const live=[], keep=drag?Math.pow(drag,dt*60):1;   // drag is the speed kept over a 60th of a second, whatever the step
+// air is the wind the pool drifts in, taken once a frame at the pilot's jet, and its drag slows each
+// piece toward the air's motion, not toward rest over the sea. The rounds the tracers stand for take
+// the wind where they are every quarter second (battle.Feel), so where the wind grows and veers with
+// height a steep tracer can sit a metre or two off its round at two kilometres; level, a few decimetres.
+function update_pool_ballistic(p,dt,grav,drag,round,air={ x:0, y:0, z:0 }){ const live=[], keep=drag?Math.pow(drag,dt*60):1;   // drag is the speed kept over a 60th of a second, whatever the step
 	for(const i of p.activeList){ if(!p.active[i]) continue;
-	p.vy[i]-=grav*dt; if(drag){p.vx[i]*=keep;p.vy[i]*=keep;p.vz[i]*=keep;}
-	if(round){ const sp=Math.hypot(p.vx[i],p.vy[i],p.vz[i]); if(sp>1){ const k=1/(1+sp*dt/round_length(p.py[i]));   // the quadratic drag the real 20 mm round flies (battle.Fly): the tracer IS the round the pilot corrects by
-		p.vx[i]*=k;p.vy[i]*=k;p.vz[i]*=k; } }
-	// Trade-wind advection plus low-frequency curl-like drift. It is deliberately
+	p.vy[i]-=grav*dt; if(drag){p.vx[i]=air.x+(p.vx[i]-air.x)*keep;p.vy[i]=air.y+(p.vy[i]-air.y)*keep;p.vz[i]=air.z+(p.vz[i]-air.z)*keep;}
+	if(round){ const rx=p.vx[i]-air.x, ry=p.vy[i]-air.y, rz=p.vz[i]-air.z, sp=Math.hypot(rx,ry,rz); if(sp>1){ const k=1/(1+sp*dt/round_length(p.py[i]));   // the quadratic drag the real 20 mm round flies through the air (battle.Fly): the tracer IS the round the pilot corrects by
+		p.vx[i]=air.x+rx*k;p.vy[i]=air.y+ry*k;p.vz[i]=air.z+rz*k; } }
+	// A low-frequency curl-like wander about the wind the drag carries it in. It is deliberately
 	// cheap and only applied to smoke; hot puffs also rise through negative grav.
-	if(p===smoke){ const age=p.ttl[i]-p.life[i], q=p.seed[i]; p.vx[i]+=(2.8+Math.sin(q+age*.7)*1.7-p.vx[i]*.018)*dt; p.vz[i]+=(.8+Math.cos(q*.71+age*.55)*1.5-p.vz[i]*.018)*dt; }
+	if(p===smoke){ const age=p.ttl[i]-p.life[i], q=p.seed[i]; p.vx[i]+=(Math.sin(q+age*.7)*1.7-(p.vx[i]-air.x)*.018)*dt; p.vz[i]+=(Math.cos(q*.71+age*.55)*1.5-(p.vz[i]-air.z)*.018)*dt; }
 	p.px[i]+=p.vx[i]*dt; p.py[i]+=p.vy[i]*dt; p.pz[i]+=p.vz[i]*dt; p.life[i]-=dt; if(p.life[i]<=0||p.py[i]<0) p.active[i]=0; else { p.pos[i]=live.length; live.push(i); } } p.activeList=live; }
 
 const muzzle=1050; const gun={};
@@ -6040,6 +6045,10 @@ function launch_puff(x,y,z){ for(let i=0;i<6;i++){ const k=pool_spawn(smoke); if
 const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_geo,missile_mat); m.visible=false; scene.add(m);
 	missiles.push({mesh:m,active:false,px:0,py:0,pz:0,vx:0,vy:0,vz:0,life:0,target:null,smoke_acc:0,
 		burn:0,flew:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, broken lock, and a swallowed flare's fall point (the sight line carries no memory: seeker.ts)
+// airflow is a jet's speed through the air and the wind it flies in: a round leaves the rail at the
+// jet's airspeed along the nose, and the wind carries it as it carries the jet (air.go departure).
+function airflow(st){ const w=flight_wind(st.pos.x,st.pos.y,st.pos.z), vx=st.velx??st.fwd.x*st.speed, vy=st.vely??st.fwd.y*st.speed, vz=st.velz??st.fwd.z*st.speed;
+	return { wind:w, speed:Math.hypot(vx-w.x,vy-w.y,vz-w.z) }; }
 function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.8,0);   // fallback: near the nose
 	if(st.group&&st.msl>0){
@@ -6049,7 +6058,7 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 			if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } } }
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
-	m.vx=st.fwd.x*(st.speed+30); m.vy=st.fwd.y*(st.speed+30); m.vz=st.fwd.z*(st.speed+30);   // off the rail at aircraft speed; the Mk 36 does the rest
+	{ const a=airflow(st); m.vx=a.wind.x+st.fwd.x*(a.speed+30); m.vy=a.wind.y+st.fwd.y*(a.speed+30); m.vz=a.wind.z+st.fwd.z*(a.speed+30); }   // off the rail at the jet's airspeed, in the air it flies; the Mk 36 does the rest
 	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.rate=undefined; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
 	if(target){ const dx=wrap_axis(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=wrap_axis(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
@@ -6110,9 +6119,9 @@ function jammer_loud(){ return countermeasures.radiating(suite,RWR.locked()||RWR
 // launch_amraam, which fires it, and launch_zone, whose ladder flies it and adds nothing of its own. Ejector
 // points (the cheek LAU-116, the inboard LAU-115C) punch the round DOWN before the motor lights; rail points
 // (wing LAU-127s, single or twin) send it forward off the rail like the 9M.
-function amraam_departure(st){ const order=sequence(st).amraams, name=order[departed(order,st.amraam|0)];
-	if(stores_eject(st.loadout||{},name||"")) return { name, velocity:{ x:st.fwd.x*(st.speed+15), y:st.fwd.y*st.speed-8, z:st.fwd.z*(st.speed+15) } };
-	return { name, velocity:{ x:st.fwd.x*(st.speed+30), y:st.fwd.y*(st.speed+30), z:st.fwd.z*(st.speed+30) } }; }
+function amraam_departure(st){ const order=sequence(st).amraams, name=order[departed(order,st.amraam|0)], a=airflow(st), w=a.wind;
+	if(stores_eject(st.loadout||{},name||"")) return { name, velocity:{ x:w.x+st.fwd.x*(a.speed+15), y:w.y+st.fwd.y*(a.speed+15)-8, z:w.z+st.fwd.z*(a.speed+15) } };   // the ejector: 15 m/s along the nose and 8 down, as the server's departure
+	return { name, velocity:{ x:w.x+st.fwd.x*(a.speed+30), y:w.y+st.fwd.y*(a.speed+30), z:w.z+st.fwd.z*(a.speed+30) } }; }
 function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.9,0);
 	const { name, velocity }=amraam_departure(st);
@@ -6145,13 +6154,16 @@ function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has
 	const sp=local_offset(bandit,1,-0.9,0);
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
-	m.vx=bandit.fwd.x*(bandit.speed+30); m.vy=bandit.fwd.y*(bandit.speed+30); m.vz=bandit.fwd.z*(bandit.speed+30);
+	{ const a=airflow(bandit); m.vx=a.wind.x+bandit.fwd.x*(a.speed+30); m.vy=a.wind.y+bandit.fwd.y*(a.speed+30); m.vz=a.wind.z+bandit.fwd.z*(a.speed+30); }   // its rail, at its airspeed in the air it flies
 	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=bandit; m.supported=undefined;
 	m.slot=missiles.indexOf(m);
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },WORLD_WRAP,true);
 	bandit.amraam=Math.max(0,(bandit.amraam??0)-1); update_rails(bandit,bandit.msl??bandit_remaining());   // its cheek round leaves the drawn jet and the hulk's rack, port first as the player's do
 	}   // no launch sound (#66): enemy launches are seen, never heard
+// drifted: where a jet's last chaff cloud hangs now. The cloud is carried by the air, so the wind has
+// taken it on since it bloomed (air.go fly_radar).
+function drifted(st){ const b=st.bloom, w=flight_wind(b.x,b.y,b.z), age=Math.max(0,sim_time-st.chaffed); return { x:b.x+w.x*age, y:b.y+w.y*age, z:b.z+w.z*age }; }
 // step_amraam (#27): the AIM-120 flies the Go `round` core - the same
 // integrator the server and the DLZ ladder use. While our track on the target
 // lives the round gets fresh estimates; lose it and it coasts on the last
@@ -6164,19 +6176,19 @@ function step_amraam(m,dt){
 		truth=crash_t<=0?{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z},
 			velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} }:null;
 		supported=truth&&bandit_locked&&has_enemy;
-		if(truth&&ownship.chaffed!==undefined&&sim_time-ownship.chaffed<2.0){ if(round_distract(m.slot,ownship.bloom,truth)) m.took=(m.took||0)+1; } }
+		if(truth&&ownship.chaffed!==undefined&&sim_time-ownship.chaffed<2.0){ if(round_distract(m.slot,drifted(ownship),truth)) m.took=(m.took||0)+1; } }
 	else{
 	truth=(t&&t.group&&t.group.visible)?{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z},
 		velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} }:null;
 	supported=truth&&!RADAR.silent()&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
-	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,t.bloom,truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
+	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,drifted(t),truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
 	m.supported=!!supported;   // (#33 debrief): whether THIS step still had midcourse support, so a shot that goes long can be told apart from one whose shooter lost the track first - recorded every step, so the ACMI's own delta-suppression on the missile's combined data catches the transition
 	const state=round_step(m.slot,dt,supported?truth:null,truth,m.enemy&&!!truth&&jammer_loud());   // our jammer radiating draws the bandit's round to home on it, as the server's rounds do
 	if(!state){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,"lost"); return; }
 	m.px=state.x; m.py=state.y; m.pz=state.z; m.vx=state.vx; m.vy=state.vy; m.vz=state.vz;
 	m.phase=state.phase; m.stale=state.stale; m.flew=state.time; m.mach=state.mach; m.rangeToGo=state.range; m.least=state.least;
 	m.mesh.position.set(m.px,m.py,m.pz);
-	m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx,m.vy,m.vz).normalize());
+	{ const w=flight_wind(m.px,m.py,m.pz); m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx-w.x,m.vy-w.y,m.vz-w.z).normalize()); }   // it points into the air it flies through
 	if(state.fused&&truth){   // the warhead speaks through battle, exactly like the 9M's
 		m.active=false; m.mesh.visible=false; round_drop(m.slot);
 		{ const prey=m.enemy?ownship:t;   // the burst record (#58): the core's own continuous least, the closing speed, and the miss vector in the target's body frame
@@ -6211,6 +6223,7 @@ function update_missiles(dt){
 function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 	if(m.kind==="120c"){ step_amraam(m,dt); continue; }
 	m.life-=dt; m.flew+=dt;
+	const w=flight_wind(m.px,m.py,m.pz);   // the air the round flies through, which carries it as it carries the target: its speed, its axis and its drag are the air's (air.go pursue)
 	if(m.target){ const md=wrap_distance({x:m.px,y:m.py,z:m.pz},m.target.pos); if(md<(m.least??1e9)) m.least=md; }   // closest approach: dev_missiles telemetry and the recording's Least channel (#33 debrief) — one distance per live heater per frame
 	const post=(why)=>{ m.fate=why; m.fated=sim_time;   // recorded on the round's last sample (#33 debrief)
 		if(DEV_MODE){ const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[]; log.push({why, enemy:!!m.enemy, least:+(m.least??-1).toFixed(1), flew:+m.flew.toFixed(1), loose:!!m.loose, broke:m.why||"", at:m.at??-1, mask:m.mask??-1, killed:!!m.killed, burst:m.burst!==undefined?+m.burst.toFixed(1):undefined, judged:m.judged!==undefined?+m.judged.toFixed(1):undefined}); } };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -6218,7 +6231,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 	// The AIM-9M (#126), mirroring the server: proportional navigation with a
 	// gimballed, rate-limited seeker; boost-coast propulsion paying for every
 	// turn in drag; a fuse that arms after separation; flares that SEDUCE.
-	let spd=Math.hypot(m.vx,m.vy,m.vz)||1;
+	let spd=Math.hypot(m.vx-w.x,m.vy-w.y,m.vz-w.z)||1;
 	const t=m.target;
 	let tracking=!m.loose && m.blind<=0 && !!t && (t!==bandit || bandit.group.visible);
 	// Flares: one seduction roll per flare window (SP only — MP damage is the server's).
@@ -6278,9 +6291,9 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 				if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } }
 			post("fuse");
 			continue; } }
-	let ax=0, ay=0, az=0, guided=false;
+	let ax=0, ay=0, az=0, guided=false, lured={ x:0, y:0, z:0 };
 	if(tracking){ ax=t.pos.x; ay=t.pos.y; az=t.pos.z; guided=true; }
-	else if(m.blind>0){ m.blind-=dt; m.ly-=45*dt; ax=m.lx; ay=m.ly; az=m.lz; guided=true;
+	else if(m.blind>0){ m.blind-=dt; lured=flight_wind(m.lx,m.ly,m.lz); m.lx+=lured.x*dt; m.ly+=(lured.y-45)*dt; m.lz+=lured.z*dt; ax=m.lx; ay=m.ly; az=m.lz; guided=true;   // the flare falls, and drifts with the wind
 		if(m.blind<=0){
 			// The flare has burnt out. ONE chance to find the aircraft again, and
 			// only if it is still inside the gimbal cone: improved counter-
@@ -6288,7 +6301,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			// flare being permanently terminal under-modelled the weapon.
 			m.loose=true;
 			if(t&&t.pos){ const rx=t.pos.x-m.px, ry=t.pos.y-m.py, rz=t.pos.z-m.pz, rd=Math.hypot(rx,ry,rz)||1;
-				if((rx*m.vx+ry*m.vy+rz*m.vz)/(rd*spd)>0.766 && Math.random()<0.55){
+				if((rx*(m.vx-w.x)+ry*(m.vy-w.y)+rz*(m.vz-w.z))/(rd*spd)>0.766 && Math.random()<0.55){
 					m.loose=false; m.blind=0; m.window=false; m.rejected=(m.rejected||0)+1; } }
 			if(m.loose){ m.why="flare"; } } }   // ballistic from here, fuse still live; mirrors the server
 	if(guided && m.flew>0.6){
@@ -6299,26 +6312,26 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 		// entire frame of motion and the second saw none. At 30 fps that doubled the rate
 		// on every frame, halved the seeker's real ceiling, and dropped locks the geometry
 		// never broke (recording 01a0b090: five of five, at 0.16-0.24 rad/s against 0.35).
-		const drift=tracking?{x:t.velx??t.fwd.x*t.speed, y:t.vely??t.fwd.y*t.speed, z:t.velz??t.fwd.z*t.speed}:{x:0,y:-45,z:0};   // the aim point's own motion: the target's, or a swallowed flare's fall
-		const sight=seeker_sight({x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},{x:ax,y:ay,z:az},drift);
+		const drift=tracking?{x:t.velx??t.fwd.x*t.speed, y:t.vely??t.fwd.y*t.speed, z:t.velz??t.fwd.z*t.speed}:{x:lured.x,y:lured.y-45,z:lured.z};   // the aim point's own motion: the target's, or a swallowed flare's fall and drift
+		const sight=seeker_sight({x:m.px,y:m.py,z:m.pz},{x:m.vx-w.x,y:m.vy-w.y,z:m.vz-w.z},{x:ax,y:ay,z:az},{x:drift.x-w.x,y:drift.y-w.y,z:drift.z-w.z});   // through the air: the sight line turns the same, and the gimbal is off the round's axis, which points along its way through the air
 		const broke=seeker_break(sight,SEEKERS.heater);   // ±40° gimbal and a 20°/s track ceiling — beaming saturates it
 		if(broke){ if(!m.loose){ m.why=broke; m.at=Math.round(sight.distance); m.rate=sight.rate; } m.loose=true; }   // recorded, not just logged: a debrief must be able to say WHY a lock went
 		if(!m.loose){
 			// PROPORTIONAL NAVIGATION: a = N·Vc·λ̇ — fly the collision course.
 			const pull=seeker_steer(sight,spd);
 			m.vx+=pull.x*dt; m.vy+=pull.y*dt; m.vz+=pull.z*dt;
-			spd=Math.hypot(m.vx,m.vy,m.vz)||1;
+			spd=Math.hypot(m.vx-w.x,m.vy-w.y,m.vz-w.z)||1;
 			const frac=Math.min(1,Math.hypot(pull.x,pull.y,pull.z)/(35*9.81));
 			const bleed=5e-5*spd*spd*(1+3*frac*frac);
-			const next=Math.max(spd-bleed*dt,60)/spd; m.vx*=next; m.vy*=next; m.vz*=next;
-			if(m.burn<=0 && tracking){ const ts=Math.hypot(drift.x,drift.y,drift.z);
+			const next=Math.max(spd-bleed*dt,60)/spd; m.vx=w.x+(m.vx-w.x)*next; m.vy=w.y+(m.vy-w.y)*next; m.vz=w.z+(m.vz-w.z)*next;   // the drag slows it through the air
+			if(m.burn<=0 && tracking){ const tw=flight_wind(t.pos.x,t.pos.y,t.pos.z), ts=Math.hypot(drift.x-tw.x,drift.y-tw.y,drift.z-tw.z);   // his speed through the air, as the round's
 				if(spd<ts+60 && sight.closing<40){ m.active=false; m.mesh.visible=false; post("energy"); continue; } }   // energy death: it trails off, no dice
 		}
 	}
-	if(m.burn>0){ m.burn-=dt; spd=Math.hypot(m.vx,m.vy,m.vz)||1; const thrust=260;   // the 9M's motor: ~780 m/s over 3 s
-		m.vx+=m.vx/spd*thrust*dt; m.vy+=m.vy/spd*thrust*dt; m.vz+=m.vz/spd*thrust*dt; }
-	else if(m.loose||!guided){ spd=Math.hypot(m.vx,m.vy,m.vz)||1; const next=Math.max(spd-5e-5*spd*spd*dt,60)/spd; m.vx*=next; m.vy*=next; m.vz*=next; }
-	m.px+=m.vx*dt;m.py+=m.vy*dt;m.pz+=m.vz*dt; m.mesh.position.set(m.px,m.py,m.pz); m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx,m.vy,m.vz).normalize());
+	if(m.burn>0){ m.burn-=dt; spd=Math.hypot(m.vx-w.x,m.vy-w.y,m.vz-w.z)||1; const thrust=260;   // the 9M's motor: ~780 m/s over 3 s, along its axis through the air
+		m.vx+=(m.vx-w.x)/spd*thrust*dt; m.vy+=(m.vy-w.y)/spd*thrust*dt; m.vz+=(m.vz-w.z)/spd*thrust*dt; }
+	else if(m.loose||!guided){ spd=Math.hypot(m.vx-w.x,m.vy-w.y,m.vz-w.z)||1; const next=Math.max(spd-5e-5*spd*spd*dt,60)/spd; m.vx=w.x+(m.vx-w.x)*next; m.vy=w.y+(m.vy-w.y)*next; m.vz=w.z+(m.vz-w.z)*next; }
+	m.px+=m.vx*dt;m.py+=m.vy*dt;m.pz+=m.vz*dt; m.mesh.position.set(m.px,m.py,m.pz); m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx-w.x,m.vy-w.y,m.vz-w.z).normalize());   // it points into the air it flies through
 	if(m.enemy && !m.heard && m.flew>1){   // the near pass (#80): an enemy round crossing its distance minimum to the ownship close aboard is HEARD — the only cue a passive heater gives that it just missed
 		const fx=wrap_axis(m.px-ownship.pos.x), fy=m.py-ownship.pos.y, fz=wrap_axis(m.pz-ownship.pos.z);
 		const span=Math.hypot(fx,fy,fz);
@@ -6918,7 +6931,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const ballPts=new THREE.Points(bg,screen_point(new THREE.PointsMaterial({map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false}),11)); ballPts.frustumCulled=false; ballPts.visible=false; scene.add(ballPts);   // the amber "ball" — screen-space, normal-blended so it reads amber/red
 	const td=carrier_world(twfa,strip_lat(twfa));   // touchdown reference (the 2-wire) — the glideslope references the wires, NOT the OLS housing on the bracket
 	const sdx=STRIP_UFA*CARRIER_C+STRIP_ULAT*CARRIER_S, sdz=-STRIP_UFA*CARRIER_S+STRIP_ULAT*CARRIER_C, sl=Math.hypot(sdx,sdz);
-	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, cutPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl };   // approach comes from the −fa (aft) side, opposite the rollout
+	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, cutPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl }; carrier_ols.chart={ x:o.x, z:o.z, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl };   // approach comes from the −fa (aft) side, opposite the rollout
 	// --- night lighting (darken-ship, night-only); heights + edges sampled off the REAL deck (which isn't flat), not a rectangle at deckY ---
 	const dh=(f,l)=>{ const w=carrier_world(f,l); return { x:w.x, z:w.z, y:deck_y_at(carrier_model,w.x,w.z,-1e9) }; };   // world pos + deck height at a carrier-local point (−1e9 = off the deck)
 	const edge_lat=(f,dir)=>{ let e=null; for(let l=0;Math.abs(l)<42;l+=dir*4){ const d=dh(f,l); if(d.y>dy-0.6 && d.y<dy+4) e=l; else if(e!==null) break; } return e; };   // scan out from the centre to the outermost still-DECK-LEVEL lat: the catwalks outboard sit ~1-2 m BELOW the lip and used to qualify, hanging edge lights off the ship (measured: dots at -0.84 and -2.2 m)
@@ -6999,6 +7012,7 @@ function update_wire_drag(){   // the caught wire deforms into a V, its apex dra
 		hx=claw.x-rx*off; hz=claw.z-rz*off; hy=Math.max(claw.y, o.dy+0.05);   // clamp to the deck: the mesh tip dips a touch below, the wire rides on top
 	}
 	else { hx=ownship.pos.x-ownship.fwd.x*6.5; hz=ownship.pos.z-ownship.fwd.z*6.5; hy=o.dy+0.5; }   // fallback before the model resolves
+	{ const h=rig_local(_wireApex.set(hx,hy,hz)); hx=h.x; hz=h.z; }   // the V hangs on the rig, in the frame the wires were built in
 	seg_between(o.vsegs[0],w.ax,w.az,hx,hz,hy); seg_between(o.vsegs[1],hx,hz,w.bx,w.bz,hy); o.vsegs[0].visible=o.vsegs[1].visible=true;
 }
 function build_aircraft_lights(){   // the position lights (red port, green starboard, white tail), the red anti-collision strobes and the landing light, on the ownship
@@ -7243,7 +7257,7 @@ function update_shuttles(){   // the hooked cat's shuttle rides with the jet's l
 	const active=ownship.launching?cat_idx:on_cat_spot();   // the cat the jet is hooked to (on_cat_spot is -1 mid-launch)
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
 	for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i];
-		if(i===active) s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), s.home.y, ownship.pos.z+ownship.fwd.z*(nose+0.28));
+		if(i===active){ s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), 0, ownship.pos.z+ownship.fwd.z*(nose+0.28)); rig_local(s.mesh.position).y=s.home.y; }   // found in the world, placed on the rig the shuttles hang from
 		else s.mesh.position.copy(s.home); }
 }
 const _ramDir=new THREE.Vector3(), _ramUp=new THREE.Vector3(0,1,0);
@@ -9131,6 +9145,8 @@ function recording_sample(){
 				...(m.why?{reason:m.why,...(m.rate!==undefined?{rate:m.rate}:{})}:{}),   // WHY the lock went (gimbal / rate / flare / cold) and the sight-line rate the seeker measured on the step that broke it: 'loose' alone could not tell a beaten seeker from a defeated one
 				...(m.supported!==undefined?{support:m.supported}:{}),   // (#33 debrief): the shooter's radar still holding this round's trackfile THIS step - AMRAAM only, heaters have no midcourse phase to lose
 				...(grace?{fate:m.fate||"lost",killed:!!m.killed,...(m.burst!==undefined?{burst:m.burst,closure:m.closure,when:m.fated,judged:m.judged,...(m.off?{off:m.off}:{})}:{})}:{}) } }); }
+	if(carrier_model) list.push({ id:3, x:CARRIER.x, y:0, z:CARRIER.z, roll:0, pitch:0, yaw:(degrees(Math.atan2(CARRIER_C,CARRIER_S))+360)%360,   // the ship under way, by its compass heading: a replay poses the carrier from it, and Tacview draws it
+		name:"Nimitz", label:SHIP.ident, colour:"Blue", kind:"Sea+Watercraft+AircraftCarrier" });
 	recorder.add(sim_time,list); }
 // recording_file renders what is buffered; null when nothing was captured.
 function recording_file(){
@@ -9716,6 +9732,13 @@ if(DEV_MODE) (globalThis as any).dev_fox=function(){ return launch_missile(ownsh
 if(DEV_MODE) (globalThis as any).dev_smoke=function(){ return smoke.activeList.length; };   // #83: live smoke-pool count — the decay curve the camera cannot fake
 if(DEV_MODE) (globalThis as any).dev_place=function(x,y,z,dx,dz,speed){ flight_level(+x,+y,+z,+dx,+dz,+speed,(ownship.fuel??2450)); };   // #91 probe: relocate to a pattern station in trimmed level flight
 if(DEV_MODE) (globalThis as any).dev_field=function(){ const ap=airports[0]; return ap?{x:ap.start.x,y:ap.sy,z:ap.start.z,dx:ap.dir.x,dz:ap.dir.z}:null; };   // #91 probe: the airfield frame the runway hints fly against
+if(DEV_MODE){ const frame=(x,z)=>({ fa:carrier_fore_aft(x,z), lat:carrier_lateral(x,z) });   // probes: the ship under way, and what rides it in its own frame
+	(globalThis as any).dev_carrier=()=>({ x:CARRIER.x, z:CARRIER.z, heading:CARRIER_YD, closed:deck_closed, time:carrier_time, chart:{ ...CHART }, own:{ ...frame(ownship.pos.x,ownship.pos.z), y:ownship.pos.y },
+		cat:frame(cat_spot(0).x,cat_spot(0).z), shuttle:carrier_shuttles?(v=>frame(v.x,v.z))(carrier_shuttles[Math.max(0,on_cat_spot())].mesh.getWorldPosition(new THREE.Vector3())):null,
+		touchdown:carrier_ols?frame(carrier_ols.tdx,carrier_ols.tdz):null, model:carrier_model?(v=>frame(v.x,v.z))(carrier_model.getWorldPosition(new THREE.Vector3())):null,
+		lens:carrier_ols?(v=>frame(v.x,v.z))(carrier_ols.datumPts.localToWorld(new THREE.Vector3().fromBufferAttribute(carrier_ols.datumPts.geometry.attributes.position,0))):null,
+		catapult:on_cat_spot(), waving:!!ownship.waving, grade:ownship.grade||"" });
+	(globalThis as any).dev_voyage=(ship)=>{ flight_voyage(ship); carrier_pose(carrier_time); }; }   // a track as a match's server sends it: { into, track:[[start, x, z, heading, speed, turn, change], ...] }
 if(DEV_MODE) (globalThis as any).dev_ship=function(){ const O=carrier_world(0,0), F=carrier_world(100,0), l=Math.hypot(F.x-O.x,F.z-O.z)||1; return {x:O.x,z:O.z,dx:(F.x-O.x)/l,dz:(F.z-O.z)/l}; };   // probe: the ship frame the Case I hints fly against - the hull's centre and its course
 let paint_force=-1;   // #102: -1 = the brain's own radar; 0/1/2 force the SP bandit's emitter, so RWR/jammer cockpit-truth probes stop depending on when the doctrine chooses to lock
 if(DEV_MODE) (globalThis as any).dev_paint=function(mode){ paint_force=[0,1,2].includes(+mode)?+mode:-1; return paint_force; };
@@ -9746,7 +9769,51 @@ function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx
 function stance_of(kind){ const spec=AIRCRAFT_MODELS[kind||own_aircraft()]; return (spec&&spec.stance)||GEAR; }   // #203: the resting height the DRAWN model of THIS aircraft needs. GEAR is a single global 11 cm shallower than the hornet's own stance, so wherever it governed a resting height it pulled the origin below what the model needs - four times the rest-pose margin. It survives only as the fallback for an aircraft that declares no stance
 const GEAR=2.46;   // fallback resting height for an aircraft with no stance of its own - prefer stance_of(). The model's wheel bottoms measure 2.457 m below the (bbox-centred) origin in the gear-down pose; per-aircraft stance lives in AIRCRAFT_MODELS. Lower buries the wheels — the model's wheel bottoms measure 2.457 m below the (bbox-centred) origin in the gear-down pose; per-aircraft stance lives in AIRCRAFT_MODELS. Lower buries the wheels
 const HOOK_DECK_CAP=0.88;   // max hook-deploy progress while resting on a surface — stops the claw at deck level instead of rotating through it
-const CARRIER_YD=(SHIP.yaw-(SHIP.bow??90))*D2R, CARRIER_C=Math.cos(CARRIER_YD), CARRIER_S=Math.sin(CARRIER_YD);   // same yaw-delta frame as place_on_cat: yaw - bow, so fore-aft follows the drawn bow (the -90 default is the legacy +Z-bow convention the Ford's constants were measured in)
+let CARRIER_YD=(SHIP.yaw-(SHIP.bow??90))*D2R, CARRIER_C=Math.cos(CARRIER_YD), CARRIER_S=Math.sin(CARRIER_YD);   // same yaw-delta frame as place_on_cat: yaw - bow, so fore-aft follows the drawn bow (the -90 default is the legacy +Z-bow convention the Ford's constants were measured in)
+// The carrier under way: the flight core flies the ship's track, a pure function
+// of time, and the engine poses the ship at the jet's own clock, so the deck drawn
+// is the deck flown. CARRIER and CARRIER_YD/C/S are where the ship is now. What
+// hangs on the ship is built where the map charts it (CHART) and hung on
+// carrier_rig, which carries it from there to wherever the ship is.
+const CHART={ x:CARRIER.x, z:CARRIER.z, yaw:CARRIER_YD };
+const carrier_rig=new THREE.Group(); scene.add(carrier_rig);
+const _deck_turn=new THREE.Quaternion();
+let carrier_time=0, deck_closed=false, ship_track=null;   // the jet's clock the ship was last posed at; the deck closed (turning, or away from the wind); a match's newest track
+function carrier_set(x,z,yaw){ CARRIER.x=x; CARRIER.z=z; CARRIER_YD=yaw; CARRIER_C=Math.cos(yaw); CARRIER_S=Math.sin(yaw); }
+function carrier_pose(t){ const p=flight_carrier(t); if(!p) return;
+	carrier_time=t; deck_closed=p.closed; carrier_place(p.x,p.z,p.heading); }
+function carrier_place(x,z,heading){ carrier_set(x,z,heading);   // the ship, and all that hangs on it, at a pose: the core's, or a recording's
+	const turn=heading-CHART.yaw, c=Math.cos(turn), s=Math.sin(turn);
+	carrier_rig.rotation.y=turn; carrier_rig.position.set(x-(CHART.x*c+CHART.z*s),0,z-(-CHART.x*s+CHART.z*c)); carrier_rig.updateMatrixWorld(true);
+	ols_follow();
+	for(const st of nav.stations) if(st.channel===SHIP.tacan.channel&&st.band===SHIP.tacan.band){ st.x=x; st.z=z; } }   // the stored station is the beacon on the ship: the INS takes its position updates from where it is
+function with_charted(build){ const x=CARRIER.x, z=CARRIER.z, yaw=CARRIER_YD; carrier_set(CHART.x,CHART.z,CHART.yaw); try{ return build(); } finally{ carrier_set(x,z,yaw); } }   // build in the frame the rig hangs things in
+function rig_adopt(build){ const before=new Set(scene.children); const made=build(); for(const o of [...scene.children]) if(!before.has(o)) carrier_rig.add(o); return made; }   // what a build adds to the scene goes on the rig instead
+function rig_local(v){ return carrier_rig.worldToLocal(v); }   // a world point in the frame the rig's children are built in
+function charted(x,z){ const dx=x-CHART.x, dz=z-CHART.z, c=Math.cos(CHART.yaw), s=Math.sin(CHART.yaw); return { x:dx*c-dz*s, z:dx*s+dz*c }; }   // a point built where the map charts the ship, in the ship's own frame (fore-aft, lateral)
+function ols_follow(){ if(!carrier_ols||!carrier_ols.chart) return; const o=carrier_ols, k=o.chart, turn=CARRIER_YD-CHART.yaw, c=Math.cos(turn), s=Math.sin(turn);   // the lens's world figures, from where they were built to where the ship is
+	const at=(x,z)=>{ const q=charted(x,z); return carrier_world(q.x,q.z); }, a=at(k.x,k.z), b=at(k.tdx,k.tdz);
+	o.x=a.x; o.z=a.z; o.tdx=b.x; o.tdz=b.z; o.apx=k.apx*c+k.apz*s; o.apz=-k.apx*s+k.apz*c; }
+// deck_carry draws a remote jet on the deck where the ship is now: remotes are drawn
+// some 100 ms behind the ownship's clock, and on a deck steaming at 28 kt that left a
+// parked jet a metre and a half off its spot. The carry fades out with height over the
+// deck, so a jet on the approach is drawn where it flies.
+function deck_carry(st,then){ const was=flight_carrier(then); if(!was||!carrier_model) return;
+	const dx=st.pos.x-was.x, dz=st.pos.z-was.z, c=Math.cos(was.heading), s=Math.sin(was.heading), fa=dx*c-dz*s, lat=dx*s+dz*c;
+	const k=THREE.MathUtils.clamp((CARRIER.deckY+15-st.pos.y)/10,0,1); if(k<=0||Math.abs(fa)>180||Math.abs(lat)>60) return;   // full on the deck, none 15 m over it
+	const now=carrier_world(fa,lat); st.pos.x+=(now.x-st.pos.x)*k; st.pos.z+=(now.z-st.pos.z)*k;
+	st.group.quaternion.premultiply(_deck_turn.setFromAxisAngle(world_up,(CARRIER_YD-was.heading)*k)); }
+// carry_start: a single-player start laid before the core came up was laid against
+// the ship where it last stood; the core then sets the ship under way from its own
+// station. Carry the jet with the ship - or, for a start that only aims at it, re-aim.
+let placed=null;
+function carry_start(){ const p=placed; placed=null; if(!p) return;
+	if(p.aim) ownship.fwd.set(CARRIER.x-ownship.pos.x,0,CARRIER.z-ownship.pos.z).normalize();
+	else { const turn=CARRIER_YD-p.yaw, c=Math.cos(turn), s=Math.sin(turn), dx=ownship.pos.x-p.x, dz=ownship.pos.z-p.z;
+		ownship.pos.x=CARRIER.x+dx*c+dz*s; ownship.pos.z=CARRIER.z-dx*s+dz*c;
+		_deck_turn.setFromAxisAngle(world_up,turn); ownship.q.premultiply(_deck_turn); ownship.fwd.applyQuaternion(_deck_turn); ownship.vel_dir.applyQuaternion(_deck_turn); return; }
+	const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 function carrier_fore_aft(x,z){ return (x-CARRIER.x)*CARRIER_C-(z-CARRIER.z)*CARRIER_S; }   // carrier-local fore/aft: + toward the bow (catapult ≈ +48), the arrestor wires are aft (≈ −50)
 function carrier_world(lx,lz){ return { x:CARRIER.x+lx*CARRIER_C+lz*CARRIER_S, z:CARRIER.z-lx*CARRIER_S+lz*CARRIER_C }; }   // carrier-local (fore-aft, lateral: −=port) → world x/z (same frame as place_on_cat)
 function carrier_lateral(x,z){ return (x-CARRIER.x)*CARRIER_S+(z-CARRIER.z)*CARRIER_C; }   // inverse of the lateral axis: how far port(−)/starboard(+) of the ship centreline
@@ -10089,6 +10156,7 @@ let playback_heard=-1, playback_stores="", playback_coach=null, playback_rails=[
 const _pf=new THREE.Vector3(), _pu=new THREE.Vector3(), _pr=new THREE.Vector3(), _pl=new THREE.Vector3(), _pm=new THREE.Matrix4(), _pw=new THREE.Vector3(0,1,0);
 // playback_arm sets the mission up as the recording's header describes it.
 function playback_arm(text){
+	carrier_place(CHART.x,CHART.z,CHART.yaw);   // a recording made before the ship sailed has none in it: it lay where the map charts it
 	playback=playback_parse(text); playback_rate=1; playback_follow=false; playback_compressed=/,Compression=(?!1(?![\d.]))/.test(text); playback_expect=null; playback_clock=0; playback_spool=0; playback_heard=-1; playback_stores=""; playback_coach=null; playback_rails=[-1,-1,null];
 	const info=playback.information;
 	if(info.Match_start) cfg.start=info.Match_start;
@@ -10281,6 +10349,7 @@ function playback_step(frame){ const dt=playback_held?0:frame;
 			darts.push({ position:[pose.x,pose.y,pose.z], velocity:[pose.vx,pose.vy,pose.vz], radar:pose.properties.Name==="AIM-120C" });
 			if(pose.final&&pose.properties.Fate==="fuse"&&!playback_gone.has(pose.id)){ playback_gone.add(pose.id); explosion_at(pose.x,pose.y,pose.z); }   // its warhead, where it went off
 			continue; }
+		if(type.includes("Watercraft")){ carrier_place(pose.x,pose.z,Math.PI/2-pose.yaw*D2R); continue; }   // the ship where the recording has it: its yaw is the compass heading
 		if(!type.includes("Air")) continue;
 		seen.add(pose.id); playback_jet(pose,dt); }
 	for(const [id,st] of playback_jets) if(!seen.has(id)&&st.group.visible){ st.group.visible=false; audio_remote_drop("p"+id); }
@@ -10322,9 +10391,9 @@ const render_offset=new THREE.Vector3();  // reconciliation discontinuity, decay
 let island_prism=null;
 function carrier_island(){
 	if(island_prism||!carrier_model||!deck_grid||!(deck_grid.island.top>-1e8)) return island_prism;
-	const isl=deck_grid.island, corner=(fa,lat)=>({ x:CARRIER.x+fa*CARRIER_C+lat*CARRIER_S, z:CARRIER.z-fa*CARRIER_S+lat*CARRIER_C });   // the ship's frame back to the world: the inverse of carrier_fore_aft/carrier_lateral
+	const isl=deck_grid.island, mast=charted(deck_grid.mast.x,deck_grid.mast.z), corner=(fa,lat)=>({ x:fa, z:lat });   // in the ship's own frame (fore-aft, lateral), which the core carries it in   // the ship's frame back to the world: the inverse of carrier_fore_aft/carrier_lateral
 	island_prism={ prism:{ outline:[corner(isl.minFa,isl.minLat),corner(isl.maxFa,isl.minLat),corner(isl.maxFa,isl.maxLat),corner(isl.minFa,isl.maxLat)], top:isl.top },
-		post:{ position:{x:deck_grid.mast.x, z:deck_grid.mast.z}, radius:1.5, top:deck_grid.mast.y } };
+		post:{ position:{x:mast.x, z:mast.z}, radius:1.5, top:deck_grid.mast.y } };
 	return island_prism;
 }
 // The world the flight core collides against, from this client's map build:
@@ -10341,18 +10410,22 @@ function scenery(){
 	const fields=[{ height:ISLAND_H+RUNWAY_FLOAT, strips:runway_strips.map(capsules) },
 		{ height:ISLAND_H+AIRFIELD_FLOAT, strips:physics_strips.map(capsules) }];
 	for(const is of obstacles.islands) fields.push({ height:ISLAND_H, coast:is.pts.map(q=>({x:q[0], z:q[1]})) });
-	const carrier={ position:{x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z}, heading:CARRIER_YD, speed:0,
+	const island=carrier_island();
+	const carrier={ position:{x:CHART.x, y:CARRIER.deckY, z:CHART.z}, heading:CHART.yaw, speed:0, prisms:island?[island.prism]:[], posts:island?[island.post]:[],   // where the map charts the ship; the core sets it under way from there
 		deck:SHIP.outline.map(q=>({x:q[0], z:q[1]})),
 		catapults:SHIP.catapults.map(c=>({ position:{x:c.x, y:0, z:c.z}, heading:c.heading*D2R, stroke:c.stroke, speed:c.speed })),   // shuttles ARE the nose-gear points — the core's native convention
 		wires:SHIP.landing.wires.map(fa=>({ a:{x:fa+SHIP.landing.span/2*STRIP_ULAT, y:0, z:strip_lat(fa)-SHIP.landing.span/2*STRIP_UFA}, b:{x:fa-SHIP.landing.span/2*STRIP_ULAT, y:0, z:strip_lat(fa)+SHIP.landing.span/2*STRIP_UFA} })) };   // pendants span SQUARE TO THE LANDING STRIP, as a real angled deck rigs them (the hook crosses them perpendicular on rollout); ship-axis-aligned wires skewed the catch geometry. NOT the topple fix — that was the world-side wing-leveler (#72 scenario 9) — but correct regardless
 	const prisms=obstacles.buildings.map(b=>({ outline:b.pts.map(q=>({x:q[0], z:q[1]})), top:b.topY }));
 	const posts=obstacles.posts.map(p=>({ position:{x:p.x, z:p.z}, radius:p.r, top:p.y1 }));
-	const island=carrier_island(); if(island){ prisms.push(island.prism); posts.push(island.post); }
 	return { sea:3, fields, carrier, prisms, posts };   // the sea at the height flight ends, the world server's own figure: the served file must be the file the server flies
 }
 // The sea and the clouds follow the wind the jet flies in; in a calm they keep the line they had.
 function apply_wind(){ const w=weather().wind, speed=Math.hypot(w.x,w.z); if(speed>0.1) downwind.value.set(w.x/speed,w.z/speed); ocean_mat.uniforms.u_slope.value=0.003+0.00512*speed; }   // u_slope: the sea's mean square slope, Cox-Munk at this wind
-// The single-player environment: the map's own seed and wrap, the mission's weather.
+// A match's wind: the server's, which its welcome carries as [x, y, z], the way the air moves.
+// Null from a server that predates it, whose matches fly still air.
+function match_wind(){ const w=net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.wind; return Array.isArray(w)&&w.length===3?{ x:w[0], y:w[1], z:w[2] }:null; }
+// The single-player environment: the map's own seed and wrap, the mission's weather. In a match the
+// wind is the server's, which the sea and the recording follow too.
 function weather(){
 	const cl=CLOUDS[cfg.clouds];
 	const cloud=(cl&&cl.flat<0.5)?{ base:cl.base, top:cl.top, high:cl.high, convective:1, gate:{ minimum:cl.gate[0], maximum:cl.gate[1] } }:undefined;   // #122: convective presets bump and lift; stratiform decks are STABLE air and stay deliberately smooth
@@ -10362,6 +10435,7 @@ function weather(){
 	// HUD wind arrow on the 070° bow must read a headwind.
 	let wind={ x:-12.9*Math.sin(70*D2R), z:12.9*Math.cos(70*D2R) };   // blowing FROM 070 toward 250 in the world frame (x east, z south)
 	if(DEV_MODE){ const w=new URLSearchParams(location.search).get("wind"); if(w!==null){ const knots=parseFloat(w)||0; const scale=knots*0.5144/12.9; wind={ x:wind.x*scale, z:wind.z*scale }; } }   // &wind=<knots> (0 = calm) — headless A/B isolation of wind effects (#44)
+	if(MULTIPLAYER){ const blown=match_wind(); if(blown) wind=blown; }   // a server that predates the match's wind flies still air, and the sea keeps the trades it always drew
 	return { seed:1, wrap:WORLD_WRAP, cloud, wind, cheat:{ fuel:cheat("fuel") } };
 }
 if(DEV_MODE) (globalThis as any).dev_geometry=()=>(airports.length&&carrier_model)?geometry_canonical(scenery()):null;   // the map's collision geometry as the world server's file: claude/scripts/air/geometry.py writes it
@@ -10370,7 +10444,7 @@ function flight_world(){
 	// an older server), with the match seed and wrap — the prediction core must
 	// mirror the server's world exactly, and freeze the tank exactly as it does,
 	// or every difference feeds the corrections forever.
-	if(MULTIPLAYER) return { aircraft:own_aircraft(), environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP, cheat:{ fuel:cheat("fuel") } }, world:(net&&net.geometry)||{ sea:3 } };
+	if(MULTIPLAYER) return { aircraft:own_aircraft(), environment:{ seed:(net&&net.welcome&&net.welcome.seed)||1, wrap:(net&&net.wrap)||WORLD_WRAP, wind:match_wind()||undefined, cheat:{ fuel:cheat("fuel") } }, world:(net&&net.geometry)||{ sea:3 } };   // the wind the server's match blows, or still air from a server that predates it
 	return { aircraft:cfg.aircraft||"fa18c", environment:weather(), world:scenery() };
 }
 function sync_core(out){   // core state -> the ownship object every consumer reads (HUD, cameras, weapons, LSO)
@@ -10512,8 +10586,11 @@ function fly_player(dt){
 		if(!flight_ready()){ if(flight_failure()) notice(translate("FLIGHT CORE FAILED")); return; }
 		const world=flight_world();
 		if(!flight_init(world)){ notice(translate("FLIGHT CORE FAILED")); return; }
+		if(MULTIPLAYER) flight_voyage(ship_track||net.welcome.spawn.ship); else flight_plan();   // the ship under way: a match's track from the server, planned here in single player
+		carrier_pose(flight_get()[STATE.time]||0); if(MULTIPLAYER) placed=null; else carry_start();
 		joust_drawn(); flight_active=true; flight_push();
-		vapour_air=world.environment.wind||{ x:0, z:0 };   // a match's core flies still air
+		vapour_air=world.environment.wind||{ x:0, z:0 };   // still air from a match server that predates its wind
+		if(MULTIPLAYER) apply_wind();   // the sea follows the match's wind, now its welcome has come (its spectrum was built for the trades, which a match blows too)
 		if(MULTIPLAYER&&net&&net.welcome.spawn&&net.welcome.spawn.map&&airports.length&&carrier_model){ const chart=net.welcome.spawn.map;   // the served geometry is what the core flies; this build's own is what the scene draws — say so when they differ
 			geometry_hash(geometry_canonical(scenery())).then(hash=>{ if(hash!==chart.hash) console.warn("map geometry differs from the server's:",chart.name,hash.slice(0,12),"vs",String(chart.hash).slice(0,12)); }); }   // i18n-format-ok: developer console output, never shown to a user
 	}
@@ -10534,6 +10611,7 @@ function fly_player(dt){
 	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; onspeed_flag=false; }   // the edges were consumed by the core
 	last_controls=controls; marked_steps+=flight_steps.value;
 	sync_core(out); last_out=out;
+	if(!MULTIPLAYER) flight_steer(); carrier_pose(out[STATE.time]);   // the ship where the jet's clock has it: the deck drawn is the deck flown
 	nav_ready();   // a fresh flight's suite, from the pose the core just gave and before this frame's cautions
 	emergency_update(dt/world_rate(), keys.has(key_of("jettison.emergency"))||glance-emergency_clicked<EMERGENCY_HOLD);   // the pairs go 0.3 s apart of the pilot's time for as long as the button is held: time compression does not turn a press into a full jettison   // #18: the held striped button — pairs release while held
 	carriage_update(dt); falling_update(dt);
@@ -11045,9 +11123,10 @@ function visuals(dt){
 	if(presenting) gun_effects(framed);   // every jet's flash, gas and nose light, from the bursts fire_gun recorded this frame
 	contrail_effects();   // every jet's contrail, where the air is cold enough
 	if(presenting) vapour_effects(framed);   // every jet's vapour, where the air is humid enough
-	update_pool_ballistic(tracers,dt,9.8,0,true); update_missiles(dt);
-	update_pool_ballistic(flares,dt,9.8,0.985); update_pool_ballistic(smoke,dt,-0.5,0.96); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
-	update_pool_ballistic(debris,dt,9.8,0.998);   // shed panels fall ballistically with a whisper of drag (#239)
+	const air=flight_wind(ownship.pos.x,ownship.pos.y,ownship.pos.z);   // the wind the weapons' tracers, flares, smoke and wreckage drift in
+	update_pool_ballistic(tracers,dt,9.8,0,true,air); update_missiles(dt);
+	update_pool_ballistic(flares,dt,9.8,0.985,false,air); update_pool_ballistic(smoke,dt,-0.5,0.96,false,air); update_pool_ballistic(strikes,dt,9.8,0);   // no drag, exactly as these behaved in the tracer pool: the change here is legibility, not motion
+	update_pool_ballistic(debris,dt,9.8,0.998,false,air);   // shed panels fall ballistically with a whisper of drag (#239), and drift with the wind
 	update_transient_fx(dt);
 	for(let i=0;i<debris.max;i++){ if(!debris.active[i]||Math.random()>dt*7) continue;   // micro-trail: falling wreckage sheds an occasional thin wisp — the gun-camera frames show each chunk drawing its own faint line
 		const k=pool_spawn(smoke); if(k<0) break;
@@ -11097,8 +11176,9 @@ function step_world(dt){ sim_time+=dt;
 			const wave=(s.dev<-0.7 && s.dist>250)   // dangerously low in close (matches the OLS waveoff lights); inside ~250 m the call is over (hook geometry reads falsely low there)
 				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
 				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
-				|| ((ownship.hook??0)<0.5 && s.along<1200);    // hook up on an approach — a mandatory wave-off on any deck
-			if(wave){ if(!ownship.waved) pass_end("waveoff"); ownship.waved=true; if(!ownship.waving){ ownship.wavet=sim_time; radio("PADDLES: "+translate("WAVE OFF")); recoach(); if(mission_start()==="case3") hint(HINT.abort,{heading:ship_groove()}); else hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
+				|| ((ownship.hook??0)<0.5 && s.along<1200)    // hook up on an approach — a mandatory wave-off on any deck
+				|| (deck_closed && s.along<1200);   // a foul deck: the ship is turning, or steaming away from the wind, and takes no one
+			if(wave){ if(!ownship.waved) pass_end(deck_closed?"foul":"waveoff"); ownship.waved=true; if(!ownship.waving){ ownship.wavet=sim_time; radio("PADDLES: "+translate("WAVE OFF")); recoach(); if(mission_start()==="case3") hint(HINT.abort,{heading:ship_groove()}); else hint(HINT.wave,{heading:ship_groove()}); } ownship.waving=true; }   // stamp the call's onset: the blink phase anchors here, so the banner always opens with a full ON period (a free-running clock made it flicker off just as it appeared)
 			}
 		}
 	} else { ownship.waving=false; ownship.groove=false; }
@@ -11213,6 +11293,7 @@ function reset_ownship(){
 		ownship.fwd.set(CARRIER.x-ownship.pos.x,0,CARRIER.z-ownship.pos.z).normalize(); ownship.speed=220; ownship.throttle=0.85;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+	placed=(st==="carrier"||st==="case1"||st==="case2"||st==="case3")?{ x:CARRIER.x, z:CARRIER.z, yaw:CARRIER_YD }:(st==="joust"||(st==="runway"&&airports.length))?null:{ aim:true };   // what the start was laid against, for carry_start
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
 	{ const down=(st==="carrier"||st==="runway"||st==="case2"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
 	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }
@@ -11498,7 +11579,7 @@ let zone_at=0, zone=null, zone_track=null;
 // the derivation on purpose.
 let bvr_apart=0;
 function bvr_separation(){ if(bvr_apart>0) return bvr_apart;
-	const z=round_ladder({position:{x:0,y:6096,z:0},velocity:{x:272,y:0,z:0}},{position:{x:60000,y:6096,z:0},velocity:{x:-272,y:0,z:0}},0);
+	const z=round_ladder({position:{x:0,y:6096,z:0},velocity:{x:272,y:0,z:0}},{position:{x:60000,y:6096,z:0},velocity:{x:-272,y:0,z:0}},0,true);   // in still air, as the server judges it: it sizes the start, and a shot flies the same whichever way the wind blows
 	bvr_apart=(z&&z.max>0?z.max:84000)+27780;
 	return bvr_apart; }
 // bvr_opening draws this BVR joust's start (#46) from a fresh seed, through the
@@ -11586,12 +11667,12 @@ function heat_zone(){
 	let swing={x:0,y:0,z:0};   // his present acceleration, from the last refresh: the ladder flies his turn on, not a straight line
 	if(heat_prev&&heat_track===track&&sim_time-heat_prev.t>0.2){ const dt=sim_time-heat_prev.t; swing={x:(v.x-heat_prev.vx)/dt,y:(v.y-heat_prev.vy)/dt,z:(v.z-heat_prev.vz)/dt}; }
 	heat_prev={t:sim_time,vx:v.x,vy:v.y,vz:v.z}; heat_track=track; heat_at=sim_time;
-	// The trial round leaves along the nose at the jet's speed, as launch_missile fires it and the server's
+	// The trial round leaves along the nose at the jet's speed through the air, as launch_missile fires it and the server's
 	// launcher() takes the shooter: handed the flight path, at fighting alpha it flew a round nobody fires, the
 	// target the nose was pulling onto sat outside its gimbal, and SHOOT stayed dark over a tone.
-	const speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
+	const a=airflow(ownship), w=a.wind;   // at the jet's airspeed along the nose, in the air it flies (heater.go launcher)
 	heat=heater_ladder(
-		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.fwd.x*speed,y:ownship.fwd.y*speed,z:ownship.fwd.z*speed} },
+		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:w.x+ownship.fwd.x*a.speed,y:w.y+ownship.fwd.y*a.speed,z:w.z+ownship.fwd.z*a.speed} },
 		{ position:t.position, velocity:v }, swing, t.reheat, WORLD_WRAP);
 	if(heat) heat.range=Math.hypot(wrap_axis(t.position.x-ownship.pos.x),t.position.y-ownship.pos.y,wrap_axis(t.position.z-ownship.pos.z));
 	return heat; }
@@ -11961,9 +12042,12 @@ function draw_hud(){
 			// The solution lives in pipper.ts, tested against a real round march. Not
 			// gated on the gun's reach: the ring and the shoot cue say whether the shot
 			// is worth taking, this says where to point.
-			const solution=pipper_impact(muz,ownship.fwd,{x:ownship.velx??ownship.fwd.x*ownship.speed,y:ownship.vely??ownship.fwd.y*ownship.speed,z:ownship.velz??ownship.fwd.z*ownship.speed},
+			// Worked through the air at the muzzle, which the rounds fly (battle.Fly): the jet's and the
+			// target's velocities through it, so the drag acts on the round's speed through the air.
+			const mw=flight_wind(muz.x,muz.y,muz.z);
+			const solution=pipper_impact(muz,ownship.fwd,{x:(ownship.velx??ownship.fwd.x*ownship.speed)-mw.x,y:(ownship.vely??ownship.fwd.y*ownship.speed)-mw.y,z:(ownship.velz??ownship.fwd.z*ownship.speed)-mw.z},
 				{x:boxed.pos.x,y:boxed.pos.y,z:boxed.pos.z},
-				{x:boxed.velx??boxed.fwd.x*boxed.speed,y:boxed.vely??boxed.fwd.y*boxed.speed,z:boxed.velz??boxed.fwd.z*boxed.speed},
+				{x:(boxed.velx??boxed.fwd.x*boxed.speed)-mw.x,y:(boxed.vely??boxed.fwd.y*boxed.speed)-mw.y,z:(boxed.velz??boxed.fwd.z*boxed.speed)-mw.z},
 				ownship.pos.y);
 			const impact=solution.point, t=solution.seconds;   // t: the round's time of flight, which the developer decomposition below reads — it was a local of the inline solution this replaced, and referencing it undeclared threw on the first HUD frame of every developer-mode match (2026-08-18)
 			const pip=proj_point(impact);
@@ -13131,6 +13215,7 @@ function net_event(e){ const slot=Number(e.slot);
 		if(net&&slot===net.slot&&!(e.kind==="eject"&&ejected)) notice(translate(e.kind==="eject"?"EJECTED":"PILOT DOWN"));   // our own eject already shows the banner
 		break;   // the airframe flies on as a wreck; the kill event handles scoring and the fireball
 	case "explode": { const st=(net&&slot===net.slot)?ownship:remotes.get(slot); if(st) explosion_at(st.pos.x,st.pos.y,st.pos.z); break; }
+	case "ship": ship_track=e.ship; if(flight_active) flight_voyage(e.ship); break;   // the ship turned, or will in a second: its new track
 	case "splash": if(Array.isArray(e.position)) explosion_at(e.position[0],e.position[1],e.position[2],"water"); break;   // a wreck met the sea: pale steam/spray rather than an orange fuel ball
 	case "join": if(!net||slot!==net.slot) notice((e.name||"")+" "+translate("JOINED")); break;
 	case "leave": remote_drop(slot); notice((e.name||"")+" "+translate("LEFT")); break;
@@ -13230,6 +13315,7 @@ function net_frame(dt){
 		const st=remote_for(slot);
 		st.pos.set(pose.position[0],pose.position[1],pose.position[2]); st.speed=pose.speed;
 		st.group.quaternion.set(pose.attitude[1],pose.attitude[2],pose.attitude[3],pose.attitude[0]);
+		deck_carry(st,net.render()+1/60);   // a snapshot of tick n holds the jets as tick n leaves them, at (n+1)/60
 		st.group.position.copy(st.pos);
 		st.fwd.set(1,0,0).applyQuaternion(st.group.quaternion);
 		// The full basis, read back exactly as the bandit reads it (fly_bandit):
@@ -13293,7 +13379,7 @@ function draw_darts(darts,age,dt){
 			if(fox3<fox3_pool.length){ const p=fox3_pool[fox3++]; p.mesh.visible=age<1.0;
 				const x=d.position[0]+d.velocity[0]*age, y=d.position[1]+d.velocity[1]*age, z=d.position[2]+d.velocity[2]*age;
 				p.mesh.position.set(x,y,z);
-				_v.set(d.velocity[0],d.velocity[1],d.velocity[2]);
+				{ const w=flight_wind(x,y,z); _v.set(d.velocity[0]-w.x,d.velocity[1]-w.y,d.velocity[2]-w.z); }   // it points into the air it flies through
 				if(_v.lengthSq()>1){ p.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),_v.normalize()); }   // the round model lies along +z (normalize_round's convention)
 				if(p.mesh.visible){ p.acc+=dt; while(p.acc>0.02){ p.acc-=0.02; if(!trail_puff(x,y,z)) break; } }   // continuous: the wire carries no burn state (#83)
 				continue; } }
@@ -13301,7 +13387,7 @@ function draw_darts(darts,age,dt){
 		const p=darts_pool[used++]; p.mesh.visible=age<1.0;   // a stale set (detonated, or out of the top six) disappears rather than flying on forever
 		const x=d.position[0]+d.velocity[0]*age, y=d.position[1]+d.velocity[1]*age, z=d.position[2]+d.velocity[2]*age;
 		p.mesh.position.set(x,y,z);
-		_v.set(d.velocity[0],d.velocity[1],d.velocity[2]);
+		{ const w=flight_wind(x,y,z); _v.set(d.velocity[0]-w.x,d.velocity[1]-w.y,d.velocity[2]-w.z); }   // it points into the air it flies through
 		if(_v.lengthSq()>1){ _dart_q.setFromUnitVectors(_dart_axis,_v.normalize()); p.mesh.quaternion.copy(_dart_q); }
 		if(!p.mesh.visible) continue;
 		p.acc+=dt; while(p.acc>0.02){ p.acc-=0.02; if(!trail_puff(x,y,z)) break; } }   // continuous: the wire carries no burn state (#83)

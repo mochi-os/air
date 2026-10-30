@@ -117,6 +117,11 @@ describe('the grade', () => {
     expect(pass_grade(flown({ IC: [0.6, 0, ONSPEED] }), null, 0, false, 'bolter')).toEqual({ grade: 'BOLTER', remarks: '(H) IC' })
     expect(pass_grade(flown({ IC: [-1.2, 0, ONSPEED] }), null, 0, true, 'waveoff')).toEqual({ grade: 'WAVE OFF', remarks: 'LO IC' })
   })
+
+  it('writes a foul deck wave-off up as the deck\'s, nothing in the pass against the pilot', () => {
+    expect(pass_grade(flown({ IC: [-1.2, 0, ONSPEED] }), null, 0, true, 'foul')).toEqual({ grade: 'WAVE OFF', remarks: 'WOFD' })
+    expect(pass_grade(flown({}), null, 0, true, 'foul')).toEqual({ grade: 'WAVE OFF', remarks: 'WOFD' })
+  })
 })
 
 // The waveoff in the cockpit (#123): the lens's waveoff lights are the LSO's, lit
@@ -143,13 +148,22 @@ describe('the waveoff', () => {
 
   it('has PADDLES call it on the radio once, as the call begins', () => {
     expect(call).not.toBe('')
-    const run = (frames: number) => new Function('frames', `const comms=[], ownship={ waving:false, waved:false }, wave=true, HINT={ abort:'a', wave:'w' };
+    const run = (frames: number) => new Function('frames', `const comms=[], ownship={ waving:false, waved:false }, wave=true, deck_closed=false, HINT={ abort:'a', wave:'w' };
       const sim_time=1, radio=(text)=>comms.push(text), translate=(t)=>t, pass_end=()=>{}, recoach=()=>{}, mission_start=()=>'carrier', hint=()=>{}, ship_groove=()=>90;
       for(let i=0;i<frames;i++){ ${call}
       }
       return comms;`)(frames) as string[]
     expect(run(1)).toEqual(['PADDLES: WAVE OFF'])
     expect(run(5)).toEqual(['PADDLES: WAVE OFF'])
+  })
+
+  it('ends the pass as a foul deck when the ship has closed it, and as the pilot\'s wave-off when not', () => {
+    const ended = (closed: boolean) => new Function('closed', `const ended=[], ownship={ waving:false, waved:false }, wave=true, deck_closed=closed, HINT={ abort:'a', wave:'w' };
+      const sim_time=1, radio=()=>{}, translate=(t)=>t, pass_end=(e)=>ended.push(e), recoach=()=>{}, mission_start=()=>'case1', hint=()=>{}, ship_groove=()=>90;
+      ${call}
+      return ended;`)(closed) as string[]
+    expect(ended(true)).toEqual(['foul'])
+    expect(ended(false)).toEqual(['waveoff'])
   })
 
   it('flashes the WAVE OFF banner in the HUD view only', () => {
