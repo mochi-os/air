@@ -1,5 +1,80 @@
 # F/A-18C
 
+## Our own model: sources
+
+The F/A-18C is being rebuilt as our own model (`claude/plans/air-fa18c.md`); the sections after this one
+describe tools for the model it replaces. Every source the build draws on is listed in `references.json`, with
+its licence and what the build may do with it: `trace` (a US government work, may be traced and matched),
+`facts` (its numbers may be cited, its figures are never traced into the repository: NATOPS, and the contractor,
+grant and AIAA reports) or `look`. Every dimension the build uses is in `facts.json` with its source and where
+in it.
+
+```
+python3 -I fetch.py    # downloads each reference into references/ (ignored by git), checked by hash
+python3 -I views.py    # true-scale top, side and front silhouettes from the HATP three-view
+```
+
+- **`fetch.py`** - fetches every `references.json` entry with a url into `references/` and checks its
+  SHA-256; a file already there with the right hash is kept.
+- **`views.py`** - renders the HATP overview's figure 2 (NASA, public domain) at 600 DPI and fills each view's
+  outline into a silhouette mask, written to `references/<view>.png` with `references/views.json` (metres per
+  pixel, nose apex, centreline). The side and front views are scaled by their dimension bars, 56.00 ft and
+  37.417 ft. The figure draws the top view about 1.5% smaller, so it is scaled by its own 56 ft length; its
+  span with missiles then reads 12.33 m, NATOPS's 40 ft 5 in to 0.1%. The figure is a sketch: the masks
+  check outlines to a few centimetres.
+
+  It also traces TP-3111 figure 5's six sections (FS 107 to 357, the last three with the LEX) into
+  `references/sections.json`, at the one scale that fits TM-101724's heights and widths at FS 107, 142 and
+  184 to 0.8 in. Where sources disagree, measured and dimensioned data win over the sketches. The HATP
+  silhouettes run 2-6 in larger than these sections, partly the drawn line's width, and its top view draws the
+  LEX 9-15 in wider than TP-3111 and TM-101724 agree on.
+
+  Last, `references/profiles.json`: the HATP side view's top and keel lines and the top view's half-width at
+  each inch of station, registered on the nose apex (FS 60.5, WL 100) and moved in by half the drawn line.
+
+```
+blender -b --factory-startup -P build.py -- OUT.glb OUT.json FEATURES.json [--draft]   # under the probe.slice memory cap
+python3 -I check.py OUT.glb OUT.json
+python3 -I outline.py OUT.glb [OVERLAY.png] [--threshold INCHES]
+```
+
+The model is checked by the procedure in `../verify/README.md`; these are its F/A-18C parts.
+
+- **`build.py`** - builds the model in Blender from `facts.json` and the traced references, into the
+  plan's contract (Contract in `air-fa18c.md`): true metres in the engine's axes, origin FS 456, WL 105, each
+  moving part a node on its hinge resting unrotated, and its joints in OUT.json. The lifting surfaces take
+  NACA 65A sections from TR-84's tables; the hinged surfaces' chord fractions follow from their published
+  areas over the spans in `facts.json` `layout`. The forebody lofts the cited sections over the HATP keel
+  line, its nosecone on TM-101724's drooped axis; the LEX is a blade whose span and heights come from
+  TM-101724, cr186938 and the traced sections, faired behind the LEX-wing junction onto the wing root. The
+  third output, the features file, names points and curves on the model with the node each rides on, for the
+  photo match. `--draft` leaves out the paint bake (seconds instead of minutes).
+- **`check.py`** - the facts check: measures the built model back against every `facts.json` entry, posed
+  where the entry needs it, and fails outside each tolerance; entries it does not measure are listed in
+  `EXEMPT` with the reason, and `test_check.py` fails on an entry that is neither. Shape checks (`shape.*`)
+  cover what no number does: the LEX running into the wing with no step.
+- **`outline.py`** - the outline check: the model's top, side and front silhouettes at the HATP masks' scale,
+  registered on the apex and centreline, with the share of their union both cover, and every place the
+  outlines part by more than a threshold, worst first, in stations, waterlines and buttlines.
+- **`photos.json`** - the photo match's catalogue (`../verify/photos.py`): the frame, the anchors the sources
+  cite, and per photo its marks, traced edges and pose. **`marking.md`** names every point and edge and how to
+  mark them.
+- **`checklist.json`** - every visible shape, region by region, with the photos that show it and whether the
+  model matches.
+- **`render.py`** - renders the model posed from its points file as the engine poses it (`gear=1 canopy=1`
+  ...), in Workbench: the rig contract's check that every joint turns, slides or shows as its keys say.
+
+```
+python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --overlays DIR --cameras CAMERAS.json
+blender -b --factory-startup -P ../verify/view.py -- OUT.glb OUT.json CAMERAS.json RENDERS
+python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --sheets RENDERS SHEETS
+blender -b --factory-startup -P render.py -- OUT.glb OUT.json DIR gear=1 canopy=1
+python3 -I test_check.py
+```
+
+The build also unwraps every part into one atlas and bakes its ambient occlusion in Cycles (`paint.png`
+beside OUT.glb), the shading the paint is laid over.
+
 ## Factory-fresh paint
 
 `web/src/assets/fa18c.glb` is the JPEG model from before #200 with its atlases repainted clean (#147), then

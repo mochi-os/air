@@ -1,0 +1,125 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# This file is part of Mochi, licensed under the GNU AGPL v3 with the
+# Mochi Application Interface Exception - see license.txt and license-exception.md.
+#
+# usage: python3 -I test_photos.py
+import json, math, sys, tempfile, unittest
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+
+import numpy as np  # noqa: E402
+from PIL import Image  # noqa: E402
+
+import camera as cam  # noqa: E402
+import model as mod  # noqa: E402
+import photos  # noqa: E402
+from test_verify import JET, box, glb  # noqa: E402
+
+
+class HelpersTest(unittest.TestCase):
+	def test_priors_become_planes(self):
+		frame = mod.Frame(JET)
+		planes = photos.priors(frame, {"at": [100.0, None, 12.0], "sigma": [1.0, 9.0, 0.5]})
+		self.assertEqual(len(planes), 2)
+		p = frame.model([100.0, 140.0, 12.0])
+		for normal, offset, sigma in planes:
+			self.assertAlmostEqual(normal @ p, offset)
+		self.assertAlmostEqual(planes[0][2], 0.0254)
+		self.assertAlmostEqual(planes[1][2], 0.5 * 0.0254)
+
+	def test_snap_finds_the_edge(self):
+		gray = np.zeros((100, 100))
+		gray[:, 60:] = 255.0
+		moved = photos.snap(gray, [[52, 20], [53, 50], [54, 80]], 10)
+		self.assertTrue(np.all(np.abs(moved[:, 0] - 59.5) <= 1.0), moved)
+		np.testing.assert_allclose(moved[:, 1], [20, 50, 80], atol=1.0)
+
+	def test_segment_distance(self):
+		segments = photos.to_segments(np.array([[0.0, 0.0], [10.0, 0.0], [10.0, 10.0]]))
+		d, i = photos.segment_distance([[5, 3], [12, 5], [-4, 0]], segments)
+		np.testing.assert_allclose(d, [3, 2, 4])
+		self.assertEqual(list(i), [0, 1, 0])
+
+
+class MatchTest(unittest.TestCase):
+	# A box "airframe" with a flap, photographed from three sides: the match
+	# recovers where its corners really are, reports the model's misses, and
+	# measures an edge traced along a curve.
+	def setUp(self):
+		self.dir = tempfile.TemporaryDirectory()
+		root = Path(self.dir.name)
+		(root / "references" / "photos").mkdir(parents=True)
+		glb(root / "m.glb", [{"name": "fuselage", "mesh": box((-4, -0.5, -0.6), (4, 0.5, 0.6))},
+			{"name": "flap", "translation": (-4, 0, 0), "mesh": box((-1, -0.05, -2), (0, 0.05, 2))}])
+		(root / "m.json").write_text(json.dumps({"joints": {"flap": {"motion": "rotate", "axis": [0, 0, 1], "drive": "flap", "keys": [[0, 0], [1, math.pi / 2]]}}}))
+		frame = mod.Frame(JET)
+		corners = {"nose_top": [4, 0.5, 0], "nose_bottom": [4, -0.5, 0], "tail_top_right": [-4, 0.5, 0.6], "tail_top_left": [-4, 0.5, -0.6],
+			"tail_bottom_right": [-4, -0.5, 0.6], "tail_bottom_left": [-4, -0.5, -0.6], "front_right": [4, 0.5, 0.6], "front_left": [4, 0.5, -0.6],
+			"flap_tip_right": [-5, 0, 2], "flap_tip_left": [-5, 0, -2]}
+		# the model puts one corner 3 in too high: the match must say so
+		self.truth = {n: np.array(p, float) for n, p in corners.items()}
+		modelled = dict(self.truth)
+		modelled["front_right"] = self.truth["front_right"] + [0, 3 * 0.0254, 0]
+		modelled["front_left"] = self.truth["front_left"] + [0, 3 * 0.0254, 0]
+		features = {"landmarks": {n: {"at": list(p), "node": "flap" if n.startswith("flap") else "fuselage"} for n, p in modelled.items()},
+			"curves": {"top_right": {"points": [[4, 0.5, 0.6], [-4, 0.5, 0.6]], "node": "fuselage"}}}
+		(root / "features.json").write_text(json.dumps(features))
+		catalogue = {"frame": JET, "mirror": ["_left", "_right"], "points": {
+			"nose_top": {"at": list(frame.source(self.truth["nose_top"])), "sigma": 0.0},
+			"nose_bottom": {"at": list(frame.source(self.truth["nose_bottom"])), "sigma": 0.0},
+			"tail_top_right": {"at": list(frame.source(self.truth["tail_top_right"])), "sigma": 0.0},
+			"tail_bottom_left": {"at": list(frame.source(self.truth["tail_bottom_left"])), "sigma": 0.0}}, "photos": {}}
+		rng = np.random.default_rng(7)
+		size = (3000, 2000)
+		for k, position in enumerate(((10.0, 3.0, 14.0), (-12.0, 4.0, 9.0), (3.0, 6.0, -15.0))):
+			c = cam.looking(np.array(position), np.zeros(3), 3200.0)
+			names = list(self.truth)
+			pixels = cam.project(c, np.array([self.truth[n] for n in names]), (size[0] / 2, size[1] / 2))[0] + rng.normal(0, 0.3, (len(names), 2))
+			Image.new("L", size).save(root / "references" / "photos" / f"p{k}.png")
+			edge = cam.project(c, np.array([[4 - 8 * t, 0.5, 0.6] for t in (0.2, 0.4, 0.6, 0.8)]), (size[0] / 2, size[1] / 2))[0]
+			catalogue["photos"][f"p{k}"] = {"file": f"photos/p{k}.png", "marks": {n: list(map(float, p)) for n, p in zip(names, pixels)},
+				"edges": {"top": {"against": "top_right", "points": edge.tolist()}}}
+		(root / "photos.json").write_text(json.dumps(catalogue))
+		self.root = root
+
+	def tearDown(self):
+		self.dir.cleanup()
+
+	def test_measures_the_real_points(self):
+		r = self.root
+		match = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None)
+		report = match.report()
+		self.assertTrue(all(p["solved"] for p in report["photos"].values()))
+		frame = mod.Frame(JET)
+		for name, truth in self.truth.items():
+			np.testing.assert_allclose(report["points"][name]["measured"], frame.source(truth), atol=0.15, err_msg=name)
+		# the model's raised corner shows as a 3 in miss upward, the rest as none
+		self.assertAlmostEqual(report["points"]["front_right"]["miss"][1], 3.0, delta=0.15)
+		self.assertLess(max(abs(v) for v in report["points"]["tail_top_left"]["miss"]), 0.15)
+		self.assertLess(report["edges"]["p0:top"]["median"], 0.1)
+
+	def test_outline_edges_are_signed(self):
+		r = self.root
+		match = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None)
+		photo, c = match.photos[0], match.cameras[0]
+		# a traced outline 2 in below the box's lower right edge (on its silhouette from
+		# above): the model stands inside the traced edge (-)
+		down = np.array([0, -2 * 0.0254, 0])
+		line = cam.project(c, np.array([[4 - 8 * t, -0.5, 0.6] for t in (0.3, 0.5, 0.7)]) + down, photo["centre"])[0]
+		result = match.edge(0, {"against": "outline", "points": line.tolist()})
+		self.assertLess(result["worst"], -1.0)
+		self.assertGreater(result["worst"], -3.0)
+
+	def test_features_follow_the_pose(self):
+		r = self.root
+		m = mod.Model(r / "m.glb")
+		f = photos.Features(m, json.loads((r / "m.json").read_text())["joints"], r / "features.json")
+		tip = f.landmark("flap_tip_right", {"flap": 1})
+		# the flap swings a right angle about its hinge at x = -4: its tip, 1 m aft of the hinge, ends 1 m down
+		np.testing.assert_allclose(tip, [-4, -1, 2], atol=1e-6)
+
+
+if __name__ == "__main__":
+	unittest.main()

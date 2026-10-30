@@ -3,3 +3,11 @@
 *.glb
 *.png
 __pycache__
+
+# The F/A-18C build's sources: the manifest, the cited facts, the photos' marks and the shape checklist are tracked; the
+# fetched reference files are not (fetch.py downloads them, checked by hash)
+!references.json
+!facts.json
+!photos.json
+!checklist.json
+references/

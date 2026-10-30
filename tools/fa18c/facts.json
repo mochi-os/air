@@ -1,0 +1,1376 @@
+{
+	"about": "Every dimension the F/A-18C build uses, with its source (an id in references.json) and where in it. Values are in the source's own units; the build converts. Stations (FS) are inches aft of the fuselage datum, waterlines (WL) inches above it (WL 100 is the fuselage reference line), buttlines (BL) inches from the centreline, positive to starboard. Angles round the fuselage (theta) follow TM-101724 figure 3: looking aft, 0 is the bottom centreline, 180 the top, 90 starboard and 270 port. A fact taken from the old model, as a last resort, names the old model as its source and says why no other source had it (air-fa18c.md #2).",
+	"overall": {
+		"length": {
+			"value": 56.0,
+			"unit": "ft",
+			"source": "natops",
+			"where": "1.1.2",
+			"also": "hatp figure 2 (56.00 ft); tp209033 figure 2 (56.0 ft)"
+		},
+		"exhaust": {
+			"value": 54.4,
+			"unit": "ft",
+			"source": "tm101724",
+			"where": "PDF page 9, nomenclature (l)",
+			"note": "nose apex to the engine exhaust plane",
+			"also": "tp3478 PDF page 6 (54.4 ft, nose to exhaust nozzle exit plane, full scale)"
+		},
+		"span": {
+			"spread": {
+				"value": 37.5,
+				"unit": "ft",
+				"source": "natops",
+				"where": "1.1.2",
+				"note": "37 ft 6 in, without missiles. hatp figure 2 gives the reference span as 37.417 ft"
+			},
+			"missiles": {
+				"value": 40.417,
+				"unit": "ft",
+				"source": "natops",
+				"where": "1.1.2",
+				"note": "40 ft 5 in, with wingtip missiles"
+			},
+			"folded": {
+				"value": 27.5,
+				"unit": "ft",
+				"source": "natops",
+				"where": "1.1.2",
+				"note": "27 ft 6 in"
+			}
+		},
+		"height": {
+			"fins": {
+				"value": 15.25,
+				"unit": "ft",
+				"source": "natops",
+				"where": "1.1.2",
+				"note": "15 ft 3 in, to the top of the fins",
+				"also": "tp209033 figure 2 (15.3 ft, on its gear)"
+			},
+			"canopy": {
+				"value": 10.5,
+				"unit": "ft",
+				"source": "natops",
+				"where": "1.1.2",
+				"note": "10 ft 6 in, to the top of the closed canopy",
+				"also": "tp209033 figure 2 (10.5 ft, two-seat canopy)"
+			}
+		}
+	},
+	"reference": {
+		"area": {
+			"value": 400,
+			"unit": "ft2",
+			"source": "hatp",
+			"where": "figure 2"
+		},
+		"span": {
+			"value": 37.417,
+			"unit": "ft",
+			"source": "hatp",
+			"where": "figure 2"
+		},
+		"chord": {
+			"value": 11.517,
+			"unit": "ft",
+			"source": "hatp",
+			"where": "figure 2",
+			"note": "mean aerodynamic chord"
+		},
+		"gravity": {
+			"value": 0.25,
+			"unit": "chord",
+			"source": "hatp",
+			"where": "figure 2",
+			"note": "moment reference at 25% of the mean aerodynamic chord"
+		},
+		"station": {
+			"value": 458.56,
+			"unit": "FS in",
+			"waterline": 100.0,
+			"source": "tp209033",
+			"where": "table 1, PDF page 15",
+			"note": "moment reference at 25% of the mean aerodynamic chord, WL 100.00, BL 0"
+		},
+		"leading": {
+			"value": 423.99,
+			"unit": "FS in",
+			"source": "tp209033",
+			"where": "table 1, PDF page 15",
+			"note": "leading edge of the mean aerodynamic chord (11.52 ft)"
+		}
+	},
+	"nose": {
+		"apex": {
+			"value": 60.5,
+			"unit": "FS in",
+			"source": "tp3360",
+			"where": "figures 1 and 4",
+			"also": "tp209033 figure 2 (FS 59.82); tm110216 figure 3.1 (FS 59.9); tp3111 figure 7 (FS 60.60)"
+		},
+		"droop": {
+			"value": 5.6,
+			"unit": "deg",
+			"source": "tm101724",
+			"where": "PDF page 11, text on figure 3",
+			"note": "the nosecone centreline is depressed 5.6 deg; the first three stations are canted forward to match"
+		},
+		"junction": {
+			"value": 128.5,
+			"unit": "FS in",
+			"source": "tm101724",
+			"where": "PDF page 11",
+			"note": "nosecone-fuselage junction"
+		}
+	},
+	"sections": [
+		{
+			"station": 70,
+			"height": 11.07,
+			"width": 11.07,
+			"unit": "in",
+			"source": "tm101724",
+			"where": "figure 3(a)",
+			"note": "circular, canted forward 5.6 deg"
+		},
+		{
+			"station": 85,
+			"height": 20.42,
+			"width": 20.42,
+			"unit": "in",
+			"source": "tm101724",
+			"where": "figure 3(a)",
+			"note": "circular, canted forward 5.6 deg"
+		},
+		{
+			"station": 107,
+			"height": 29.82,
+			"width": 29.8,
+			"unit": "in",
+			"source": "tm101724",
+			"where": "figure 3(a)",
+			"note": "circular, canted forward 5.6 deg"
+		},
+		{
+			"station": 142,
+			"height": 39.25,
+			"width": 35.78,
+			"unit": "in",
+			"source": "tm101724",
+			"where": "figure 3(a)",
+			"note": "elliptical, major axis vertical (ratio 1.10)"
+		},
+		{
+			"station": 184,
+			"height": 49.3,
+			"width": 36.52,
+			"unit": "in",
+			"source": "tm101724",
+			"where": "figure 3(a)",
+			"note": "elliptical, major axis vertical (ratio 1.35)"
+		}
+	],
+	"lex": {
+		"sections": [
+			{
+				"station": 253,
+				"span": 14.84,
+				"unit": "in",
+				"source": "tm101724",
+				"where": "figure 3(b)",
+				"note": "from the LEX-fuselage junction to the LEX leading edge"
+			},
+			{
+				"station": 296,
+				"span": 19.39,
+				"unit": "in",
+				"source": "tm101724",
+				"where": "figure 3(b)"
+			},
+			{
+				"station": 357,
+				"span": 28.97,
+				"unit": "in",
+				"source": "tm101724",
+				"where": "figure 3(b)"
+			}
+		],
+		"graph": {
+			"value": [
+				[
+					200,
+					4
+				],
+				[
+					220,
+					11.5
+				],
+				[
+					240,
+					14
+				],
+				[
+					260,
+					15.3
+				],
+				[
+					280,
+					17.5
+				],
+				[
+					300,
+					21
+				],
+				[
+					320,
+					25
+				],
+				[
+					340,
+					28
+				],
+				[
+					360,
+					30.5
+				]
+			],
+			"unit": "[FS in, in]",
+			"source": "cr186938",
+			"where": "figure 13, PDF page 85",
+			"note": "LEX local span on the full-scale jet, read off the graph to about 1 in; runs about 1 in above tm101724's three stations"
+		},
+		"fence": {
+			"value": {
+				"leading": 378.17,
+				"trailing": 410.33,
+				"buttline": 42.0,
+				"height": 8.3,
+				"base": 32.18,
+				"top": 22.58,
+				"edge": 60
+			},
+			"unit": "in, FS in, BL in, deg",
+			"source": "tp3111",
+			"where": "figure 7, PDF page 33; text PDF page 8",
+			"note": "the 0.06-scale model's fence, in full-scale inches: normal to the LEX surface at its leading edge, about 25 deg from vertical"
+		},
+		"hardware": {
+			"value": {
+				"height": 8.375,
+				"base": 36.6,
+				"top": 27.9
+			},
+			"unit": "in",
+			"source": "aiaa933519",
+			"where": "PDF page 4",
+			"note": "the full-scale fence fitted to fleet jets; its lengths differ from tp3111's model fence, so the 2020s photos settle the shape"
+		}
+	},
+	"fittings": {
+		"gun": {
+			"station": 122,
+			"theta": 180,
+			"source": "tm101724",
+			"where": "PDF page 12",
+			"note": "the gun port exits, on the upper centreline near FS 122"
+		},
+		"probe": {
+			"from": 128.5,
+			"to": 188,
+			"theta": [
+				138,
+				165
+			],
+			"source": "tm101724",
+			"where": "PDF page 11",
+			"note": "the in-flight refuelling probe doors, upper starboard side"
+		},
+		"pitot": {
+			"from": 164,
+			"to": 177,
+			"theta": [
+				35,
+				325
+			],
+			"source": "tm101724",
+			"where": "PDF page 12",
+			"note": "the two production pitot-static probes, lower fuselage"
+		},
+		"ecm": {
+			"station": 134,
+			"theta": [
+				85,
+				275
+			],
+			"length": 9.5,
+			"width": 4,
+			"proud": 1.7,
+			"unit": "in",
+			"source": "tm101724",
+			"where": "PDF page 11",
+			"note": "two elliptical ECM antenna covers on the research jet; confirm on the 2020s reference airframe"
+		}
+	},
+	"model": {
+		"scale": {
+			"value": 0.06,
+			"source": "tp3360",
+			"where": "figure 2",
+			"note": "the 0.06-scale wind-tunnel model's three-view: b = 2.245 ft, length 3.360 ft, S = 1.44 ft2, mean chord 0.691 ft"
+		}
+	},
+	"surfaces": {
+		"about": "Surface positions NATOPS gives for each flap setting, in degrees down, and the mechanical limits (limits).",
+		"lef": {
+			"ground": {
+				"value": 12,
+				"unit": "deg",
+				"source": "natops",
+				"where": "2.8.4.1",
+				"note": "HALF or FULL on the ground; AUTO with weight on wheels is 0"
+			},
+			"fixed": {
+				"value": 17,
+				"unit": "deg",
+				"source": "natops",
+				"where": "2.8.4.2",
+				"note": "GAIN ORIDE with HALF or FULL"
+			},
+			"check": {
+				"value": 33,
+				"unit": "deg",
+				"source": "natops",
+				"where": "ground checklist, spin recovery mode check",
+				"note": "33 +/- 1 deg down with the spin recovery mode engaged: the most the flaps travel in NATOPS"
+			},
+			"differential": {
+				"value": 3,
+				"unit": "deg",
+				"source": "natops",
+				"where": "2.8.2.8",
+				"note": "up to +/-3 deg below 30,000 ft above Mach 0.7"
+			}
+		},
+		"tef": {
+			"half": {
+				"value": 30,
+				"unit": "deg",
+				"source": "natops",
+				"where": "2.8.4.1"
+			},
+			"full": {
+				"value": 45,
+				"unit": "deg",
+				"source": "natops",
+				"where": "2.8.4.1",
+				"note": "43 to 45 deg on the ground"
+			}
+		},
+		"droop": {
+			"half": {
+				"value": 30,
+				"unit": "deg",
+				"source": "natops",
+				"where": "2.8.4.1",
+				"note": "aileron droop; 0 with the wings unlocked"
+			},
+			"full": {
+				"value": 42,
+				"unit": "deg",
+				"source": "natops",
+				"where": "2.8.4.1",
+				"note": "aileron droop; 0 with the wings unlocked"
+			}
+		},
+		"trim": {
+			"value": 12,
+			"unit": "deg",
+			"source": "natops",
+			"where": "2.8.2.2.7",
+			"note": "takeoff trim drives the stabilator to 12 deg nose up"
+		},
+		"limits": {
+			"about": "Mechanical position and rate limits, deg and deg/s, from tp209033 table 2 (PDF page 16), which states they are the basic F-18A/B's. tm110216 table 6.2 (PDF page 99) gives the HARV's aileron as 25 up and 42 down.",
+			"stabilator": {
+				"up": 24.0,
+				"down": 10.5,
+				"rate": 40
+			},
+			"aileron": {
+				"up": 24.0,
+				"down": 45.0,
+				"rate": 100
+			},
+			"rudder": {
+				"left": 30.0,
+				"right": 30.0,
+				"rate": 82
+			},
+			"tef": {
+				"up": 8.0,
+				"down": 45.0,
+				"rate": 18
+			},
+			"lef": {
+				"up": 3.0,
+				"down": 33.0,
+				"rate": 15
+			},
+			"speedbrake": {
+				"up": 60.0,
+				"rate": [
+					20,
+					30
+				]
+			},
+			"source": "tp209033",
+			"where": "table 2, PDF page 16"
+		}
+	},
+	"datum": {
+		"waterline": {
+			"value": 100.0,
+			"unit": "WL in",
+			"source": "cr3608",
+			"where": "figure 3, PDF page 27",
+			"note": "the fuselage reference line corresponds to WL 100.0 on the airplane"
+		},
+		"buttline": {
+			"value": 0.0,
+			"unit": "BL in",
+			"source": "tm110216",
+			"where": "equation 5.25, PDF page 82",
+			"note": "BL 0 is the centreline; BL grows to starboard (Y is right of the c.g.)"
+		},
+		"apex": {
+			"value": 100.0,
+			"unit": "WL in",
+			"source": "cr3608",
+			"where": "figure 3, PDF page 27",
+			"note": "the fuselage reference line (WL 100) is drawn through the nose apex and on aft past the stabilator; tp209033 figure 2 points WL 100 at the stabilator"
+		}
+	},
+	"wing": {
+		"root": {
+			"value": 190.29,
+			"unit": "in",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "root chord (theoretical, on the centreline)"
+		},
+		"tip": {
+			"value": 66.28,
+			"unit": "in",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "tip chord"
+		},
+		"chord": {
+			"value": 138.9,
+			"unit": "in",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "mean aerodynamic chord, projected; tp209033 and hatp give 11.52 ft (138.24 in) as the reference chord"
+		},
+		"aspect": {
+			"value": 3.5,
+			"source": "cr201687",
+			"where": "table 1, PDF page 12"
+		},
+		"taper": {
+			"value": 0.35,
+			"source": "cr201687",
+			"where": "table 1, PDF page 12"
+		},
+		"sweep": {
+			"value": 20.0,
+			"unit": "deg",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "quarter-chord sweep"
+		},
+		"dihedral": {
+			"value": -3.0,
+			"unit": "deg",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12"
+		},
+		"incidence": {
+			"value": 0,
+			"unit": "deg",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "no twist distribution is published"
+		},
+		"airfoil": {
+			"root": {
+				"value": 5.0,
+				"unit": "% thick",
+				"source": "cr3608",
+				"where": "table I, PDF page 20",
+				"note": "NACA 65A with a sharp leading edge, at wing station 56.876 (cr201687 table 1: modified NACA 65A, 5.0%)"
+			},
+			"middle": {
+				"value": 3.5,
+				"unit": "% thick",
+				"source": "cr3608",
+				"where": "table I, PDF page 20",
+				"note": "at wing station 145.390"
+			},
+			"tip": {
+				"value": 3.5,
+				"unit": "% thick",
+				"source": "cr3608",
+				"where": "table I, PDF page 20",
+				"note": "cr201687 table 1 agrees (3.5%); secondary sources' 65A003 is not supported"
+			}
+		},
+		"fold": {
+			"value": 162.5,
+			"unit": "BL in",
+			"source": "tm210726",
+			"where": "figure 6, PDF page 8",
+			"note": "the wing fold line"
+		},
+		"span": {
+			"value": 222.1,
+			"unit": "in",
+			"source": "tm212861",
+			"where": "figure 2(a), PDF page 8",
+			"note": "span station of the wingtip at the launcher rail, on a sketch; the reference semispan is 224.5 in"
+		},
+		"junction": {
+			"value": 404.05,
+			"unit": "FS in",
+			"source": "tp3111",
+			"where": "figure 7, PDF page 33",
+			"note": "LEX-wing junction, leading-edge flap undeflected"
+		},
+		"lef": {
+			"value": 0.365,
+			"unit": "of total",
+			"source": "tp209033",
+			"where": "PDF page 17",
+			"note": "each inboard leading-edge flap is 36.5% of the total LEF area, each outboard 13.5%; one actuator drives both"
+		},
+		"areas": {
+			"value": {
+				"aileron": 24.4,
+				"lef": 61.9,
+				"tef": 48.4
+			},
+			"unit": "ft2",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "totals for both sides. cr3608's 1/10-scale model gives 0.19, 0.55 and 0.62 ft2, which scale to 19, 55 and 62"
+		}
+	},
+	"stabilator": {
+		"span": {
+			"value": 21.6,
+			"unit": "ft",
+			"also": "tp209033 figure 2",
+			"source": "tm4772",
+			"where": "table 1, PDF page 12",
+			"note": "tip to tip"
+		},
+		"exposed": {
+			"value": 14.67,
+			"unit": "ft",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "reference span of the exposed panels"
+		},
+		"area": {
+			"value": 88.0,
+			"unit": "ft2",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "theoretical exposed, both sides; tm4772 table 1 gives 88.26 unmodified"
+		},
+		"root": {
+			"value": 98.7,
+			"unit": "in",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12"
+		},
+		"tip": {
+			"value": 45.45,
+			"unit": "in",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12"
+		},
+		"sweep": {
+			"value": 42.83,
+			"unit": "deg",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "quarter-chord sweep"
+		},
+		"dihedral": {
+			"value": -2,
+			"unit": "deg",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12"
+		},
+		"airfoil": {
+			"value": {
+				"root": 6.0,
+				"tip": 2.0
+			},
+			"unit": "% thick",
+			"source": "cr3608",
+			"where": "table I, PDF page 20",
+			"note": "NACA 65A006 and 65A002"
+		}
+	},
+	"fin": {
+		"height": {
+			"value": 95.0,
+			"unit": "in",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12"
+		},
+		"root": {
+			"value": 113.0,
+			"unit": "in",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12"
+		},
+		"tip": {
+			"value": 45.0,
+			"unit": "in",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12"
+		},
+		"sweep": {
+			"value": 35.0,
+			"unit": "deg",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "quarter-chord sweep"
+		},
+		"cant": {
+			"value": 20,
+			"unit": "deg",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "outboard"
+		},
+		"toe": {
+			"value": 1,
+			"unit": "deg",
+			"source": "cr3608",
+			"where": "table I, PDF page 20",
+			"note": "toe out, as the model table gives it"
+		},
+		"area": {
+			"value": 104.0,
+			"unit": "ft2",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "effective area, both fins"
+		},
+		"rudder": {
+			"value": 15.4,
+			"unit": "ft2",
+			"source": "cr201687",
+			"where": "table 1, PDF page 12",
+			"note": "both rudders"
+		},
+		"airfoil": {
+			"value": {
+				"root": 5.0,
+				"tip": 3.0
+			},
+			"unit": "% thick",
+			"source": "cr3608",
+			"where": "table I, PDF page 20",
+			"note": "NACA 65A005 and 65A003"
+		},
+		"top": {
+			"value": 213.4,
+			"unit": "WL in",
+			"source": "cr3608",
+			"where": "figure 3, PDF page 27",
+			"note": "the fin tip 11.34 in above the fuselage reference line on the 1/10-scale model. Anchored at the apex, the HATP side view draws it about 4 in higher and its canopy top at WL 163, which this figure also draws"
+		}
+	},
+	"forebody": {
+		"value": [
+			{
+				"station": 80,
+				"height": 18.5,
+				"width": 18.5
+			},
+			{
+				"station": 100,
+				"height": 28,
+				"width": 28
+			},
+			{
+				"station": 120,
+				"height": 34,
+				"width": 34
+			},
+			{
+				"station": 140,
+				"height": 39.5,
+				"width": 35
+			},
+			{
+				"station": 160,
+				"height": 44.5,
+				"width": 36
+			},
+			{
+				"station": 180,
+				"height": 49,
+				"width": 37
+			}
+		],
+		"unit": "in",
+		"source": "cr186938",
+		"where": "figures 14-15, PDF page 86",
+		"note": "the McDonnell Douglas drawing's forebody height and width, read off the graphs to about 1 in; agrees with tm101724's sections"
+	},
+	"engine": {
+		"buttline": {
+			"value": 2.33,
+			"unit": "ft",
+			"source": "tm110216",
+			"where": "figure 4.2, PDF page 47",
+			"note": "TLOC: each engine axis 2.33 ft either side of the centreline at the aerodynamic reference centre (FS 458.56), where the figure draws it"
+		},
+		"angle": {
+			"value": 2,
+			"unit": "deg",
+			"source": "tm110216",
+			"where": "figure 4.2, PDF page 47",
+			"note": "EPS: the engine axis's angle to the aircraft's x axis in plan. The axes converge aft: hatp figure 2's top view draws the nozzles at BL 19.5 either side, nearly touching, as photo dvids9820758 shows, which 2 deg of convergence from 28 in at FS 458.56 gives (19.3 in at FS 707)"
+		},
+		"thrust": {
+			"value": 20.1,
+			"unit": "ft",
+			"source": "tm110216",
+			"where": "figure 4.2, PDF page 47",
+			"note": "DXTHRS: the thrust point's distance aft of the aerodynamic reference centre (FS 458.56)"
+		},
+		"inlet": {
+			"value": 23.34,
+			"unit": "in",
+			"source": "tm103703",
+			"where": "PDF pages 17 and 31 (figure 17)",
+			"note": "hydraulic diameter of the inlet duct entrance"
+		}
+	},
+	"canopy": {
+		"value": {
+			"longer": 54,
+			"higher": 8.4,
+			"wider": 4
+		},
+		"unit": "in",
+		"source": "tm101705",
+		"where": "PDF page 4",
+		"note": "how much bigger the two-seat canopy is than the single-seat one; tp209033 figure 2 draws the two-seat jet"
+	},
+	"gravity": [
+		{
+			"aircraft": "HARV phase 1, 60% fuel, clean, gear up",
+			"weight": 31980,
+			"station": 454.33,
+			"waterline": 105.24,
+			"chord": 21.9,
+			"source": "tm4772",
+			"where": "table 1, PDF page 12"
+		},
+		{
+			"aircraft": "HARV phases 2-3, 60% fuel, clean, gear up",
+			"weight": 36099,
+			"station": 456.88,
+			"waterline": 105.35,
+			"chord": 23.8,
+			"source": "tm4772",
+			"where": "table 1, PDF page 12"
+		},
+		{
+			"aircraft": "HARV simulation",
+			"station": 456.3,
+			"waterline": 105.4,
+			"source": "tm110216",
+			"where": "PDF page 82"
+		},
+		{
+			"aircraft": "F-18B SRA, 66% fuel, clean, gear up",
+			"weight": 32167,
+			"station": 455.32,
+			"waterline": 103.45,
+			"chord": 22.7,
+			"source": "tp209033",
+			"where": "table 3, PDF page 18"
+		}
+	],
+	"airfoils": {
+		"source": "tr84",
+		"where": "figures 21-24, PDF pages 15-16",
+		"note": "NACA 65A basic thickness forms: half-thickness y at chordwise station x, both in percent of chord. Another thickness takes y/t interpolated linearly in t between the tabulated forms (TR-84's own method, by its cross plots); above 5% the 5% ratios hold, which TR-84's 63-series cross plots show moving under 2% between 5% and 6%.",
+		"x": [
+			0,
+			0.5,
+			0.75,
+			1.25,
+			2.5,
+			5.0,
+			7.5,
+			10,
+			15,
+			20,
+			25,
+			30,
+			35,
+			40,
+			45,
+			50,
+			55,
+			60,
+			65,
+			70,
+			75,
+			80,
+			85,
+			90,
+			95,
+			100
+		],
+		"thickness": {
+			"2": [
+				0,
+				0.14,
+				0.168,
+				0.214,
+				0.312,
+				0.436,
+				0.527,
+				0.603,
+				0.724,
+				0.818,
+				0.89,
+				0.944,
+				0.98,
+				0.999,
+				0.999,
+				0.98,
+				0.938,
+				0.876,
+				0.799,
+				0.707,
+				0.603,
+				0.489,
+				0.368,
+				0.247,
+				0.126,
+				0.004
+			],
+			"3": [
+				0,
+				0.223,
+				0.269,
+				0.342,
+				0.479,
+				0.656,
+				0.793,
+				0.908,
+				1.091,
+				1.231,
+				1.339,
+				1.418,
+				1.471,
+				1.498,
+				1.498,
+				1.467,
+				1.404,
+				1.31,
+				1.193,
+				1.056,
+				0.901,
+				0.729,
+				0.55,
+				0.369,
+				0.188,
+				0.007
+			],
+			"4": [
+				0,
+				0.304,
+				0.368,
+				0.469,
+				0.647,
+				0.875,
+				1.059,
+				1.213,
+				1.459,
+				1.645,
+				1.788,
+				1.892,
+				1.962,
+				1.997,
+				1.996,
+				1.954,
+				1.868,
+				1.743,
+				1.586,
+				1.402,
+				1.195,
+				0.967,
+				0.729,
+				0.49,
+				0.25,
+				0.009
+			],
+			"5": [
+				0,
+				0.385,
+				0.467,
+				0.595,
+				0.815,
+				1.094,
+				1.326,
+				1.519,
+				1.826,
+				2.059,
+				2.237,
+				2.367,
+				2.453,
+				2.496,
+				2.494,
+				2.44,
+				2.331,
+				2.173,
+				1.976,
+				1.746,
+				1.487,
+				1.203,
+				0.907,
+				0.609,
+				0.31,
+				0.011
+			]
+		},
+		"radius": {
+			"2": 0.026,
+			"3": 0.058,
+			"4": 0.102,
+			"5": 0.15
+		}
+	},
+	"layout": {
+		"about": "Placements no source states, fitted to the NASA three-views with the published planforms (views.py's masks, the side view anchored at the apex on WL 100). Each says what it was fitted to. Provisional until the reference airframe's photos confirm them.",
+		"wing": {
+			"value": 113,
+			"unit": "WL in",
+			"buttline": 54.5,
+			"source": "tp3111",
+			"where": "figure 5, PDF page 31 (traced by views.py), with hatp figure 2's side view for the keel",
+			"note": "the wing's chord plane at the LEX-wing junction (BL 54.5, FS 404.05): the FS 357 section's LEX tip stands 31 in above its keel, and the keel is at WL 82.5. The HATP front view draws the outer wing about 10 in higher, which photos settle"
+		},
+		"stabilator": {
+			"value": 592.4,
+			"unit": "FS in",
+			"buttline": 41.6,
+			"waterline": 100,
+			"source": "hatp",
+			"where": "figure 2, top view; natops 1.1.2 for the length",
+			"note": "the root leading edge of the exposed panel (BL 41.6: the 21.6 ft span less the 14.67 ft exposed span), placed so the tips' trailing edges fall at FS 732.5, the 56 ft overall length from the apex (overall.length, the aftmost point); the top view's leading edge at BL 80-120 then lies within about 2 in. WL 100 from cr3608 figure 3 and tp209033 figure 2. The spindle is not published"
+		},
+		"fin": {
+			"root": {
+				"station": 530.0,
+				"buttline": 38.9,
+				"waterline": 124.1
+			},
+			"tip": {
+				"station": 613.6,
+				"buttline": 71.4,
+				"waterline": 213.4
+			},
+			"unit": "in",
+			"source": "photo match",
+			"where": "verify/photos.py over photos.json (12 photos solved together): the fin tips' four corners in 6-9 photos (+-1.8 in along, +-0.3 in across)",
+			"note": "leading edge at root and tip, on cr201687's planform, sweep and cant: the photos put the tips 8 in further aft and 7 in further outboard than the HATP views were fitted to give (FS 613.6, BL 71.4), the HATP side view's own top trailing corner standing 8.8 in aft of the old fit too; the root lies 95 in down the 20 deg cant from the tip (BL 38.9, on the nacelle's shoulder)"
+		},
+		"surfaces": {
+			"lef": {
+				"inner": [
+					54.5,
+					162.5
+				],
+				"outer": [
+					162.5,
+					224.5
+				]
+			},
+			"tef": [
+				50,
+				160
+			],
+			"aileron": [
+				165,
+				220
+			],
+			"rudder": [
+				0,
+				0.42
+			],
+			"unit": "BL in; the rudder as fractions of the fin's span from its root",
+			"source": "tp209033",
+			"where": "figure 2 (control surfaces labelled in the top and side views)",
+			"note": "spans of the hinged surfaces: the leading-edge flaps split at the fold (tp209033 PDF page 17) and run from the LEX-wing junction to the tip; the flap, aileron and rudder ends are read off figure 2's sketch. Each surface's chord fraction follows from its cr201687 area over these spans. Provisional until the reference airframe's photos confirm them"
+		},
+		"gear": {
+			"nose": 279.8,
+			"main": 493.0,
+			"unit": "FS in for the axle centres; WL in for the axles; in for the track (between the main wheels' centres) and the nose wheels' spacing",
+			"source": "photo match",
+			"where": "NATOPS 1.1.2's heights for the axles; verify/photos.py over photos.json for the track and the nose wheels' spacing (the wheels' hub faces in 6-9 photos, +-0.4 in across); tp209033 figure 2 for the stations, which the photos confirm (FS 495.1 and 280.9, +-1.2)",
+			"note": "the wheel centres' stations from the nose apex on tp209033 figure 2 (FS 59.82 marked) at its 56 ft scale, wheelbase 17.77 ft. The axles' heights are set so NATOPS's static heights hold over the ground beneath the tyres (fins 15 ft 3 in, canopy 10 ft 6 in): the jet then sits 0.9 deg nose down. The photos' taxiing jets put the main axle 2.9 in higher (WL 44.3 +-1.5) and the nose axle 0.8 in higher (45.6 +-0.9), more nose down, as a lighter or moving jet may sit. The track and the nose wheels' spacing are the photos': the main hub faces stand 66.2 in either side and the nose hub faces 8.9 in, less a third of each tyre's width to its centre (tp209033's rear view drew the track 116 in). Tyre diameters from dvids9820808's matched camera; widths read off the gear close-ups dvids8678626 and dvids8678628 against those diameters",
+			"track": 124.7,
+			"tyres": {
+				"main": {
+					"diameter": 29.5,
+					"width": 11.0
+				},
+				"nose": {
+					"diameter": 21.5,
+					"width": 6.6
+				}
+			},
+			"axles": {
+				"main": 47.2,
+				"nose": 46.4
+			},
+			"spacing": 13.3
+		},
+		"canopy": {
+			"windscreen": {
+				"station": 191.8,
+				"waterline": 140.0
+			},
+			"bow": {
+				"station": 235.8,
+				"waterline": 159.0,
+				"foot": 137.2
+			},
+			"crown": {
+				"station": 252.4,
+				"waterline": 162.1
+			},
+			"aft": {
+				"station": 325.0,
+				"waterline": 153.5
+			},
+			"sill": [
+				[
+					239.9,
+					137.2,
+					13.5
+				],
+				[
+					278.9,
+					139.9,
+					16.0
+				],
+				[
+					320.4,
+					142.3,
+					19.0
+				]
+			],
+			"unit": "FS in, WL in; the sill as [FS, WL, BL]",
+			"source": "photo match",
+			"where": "verify/photos.py over photos.json (12 photos solved together): windscreen_base in 5 photos, bow_top 2, canopy_aft 3, bow_foot 4, sill_aft 4 (+-1 in); canopy_crown and the sill's middle in dvids9820808 alone",
+			"note": "the windscreen's front base, the bow between windscreen and canopy, the canopy's crown and aft end on the centreline, and the canopy's sill from the bow's foot to the canopy's aft lower corner"
+		},
+		"eye": {
+			"station": 250.7,
+			"waterline": 152.6,
+			"source": "photo match",
+			"where": "verify/photos.py over photos.json: dvids9820808's helmet located from its camera solved with the other 11 photos, centre FS 254.5 WL 154.4, top WL 159.3",
+			"note": "the design eye, provisional: a little ahead of and below the helmet's centre in the reference photo, where the pilot sits reaching for the canopy bow"
+		},
+		"hardpoints": {
+			"source": "world/games/air/aircraft/fa18c/fa18c.go",
+			"where": "Stores: the store elements' buttlines, which it takes from NATOPS figure 4-4",
+			"note": "stations 1-9 (air-stores.md). Buttlines are the flight model's; the wing stations' mounts sit on the wing's lower surface at the chord fraction given, and the fuselage stations' on the nacelle and keel, all provisional until the reference photos with stores are matched",
+			"stations": [
+				{
+					"number": 1,
+					"kind": "tip",
+					"buttline": -224.5
+				},
+				{
+					"number": 2,
+					"kind": "wing",
+					"buttline": -131.9,
+					"chord": 0.42
+				},
+				{
+					"number": 3,
+					"kind": "wing",
+					"buttline": -88.2,
+					"chord": 0.42
+				},
+				{
+					"number": 4,
+					"kind": "fuselage",
+					"buttline": -21.7,
+					"station": 505,
+					"waterline": 86
+				},
+				{
+					"number": 5,
+					"kind": "fuselage",
+					"buttline": 0,
+					"station": 470,
+					"waterline": 84
+				},
+				{
+					"number": 6,
+					"kind": "fuselage",
+					"buttline": 21.7,
+					"station": 505,
+					"waterline": 86
+				},
+				{
+					"number": 7,
+					"kind": "wing",
+					"buttline": 88.2,
+					"chord": 0.42
+				},
+				{
+					"number": 8,
+					"kind": "wing",
+					"buttline": 131.9,
+					"chord": 0.42
+				},
+				{
+					"number": 9,
+					"kind": "tip",
+					"buttline": 224.5
+				}
+			]
+		},
+		"lights": {
+			"source": "natops",
+			"where": "2.6.1 (position, formation, strobe, approach, landing, hook and probe lights)",
+			"note": "what the jet carries and roughly where; every position here is provisional until the reference photos are matched, the position lights after the engine's own (LEX edge ahead of the wing root, under the wing at the fold)",
+			"points": {
+				"position_lex_left": {
+					"at": [
+						380,
+						116,
+						-50
+					],
+					"colour": "red",
+					"kind": "position"
+				},
+				"position_lex_right": {
+					"at": [
+						380,
+						116,
+						50
+					],
+					"colour": "green",
+					"kind": "position"
+				},
+				"position_fold_left": {
+					"at": [
+						470,
+						108,
+						-162
+					],
+					"colour": "red",
+					"kind": "position"
+				},
+				"position_fold_right": {
+					"at": [
+						470,
+						108,
+						162
+					],
+					"colour": "green",
+					"kind": "position"
+				},
+				"strobe_left": {
+					"at": [
+						652,
+						211,
+						-64
+					],
+					"colour": "white",
+					"kind": "strobe"
+				},
+				"strobe_right": {
+					"at": [
+						652,
+						211,
+						64
+					],
+					"colour": "white",
+					"kind": "strobe"
+				},
+				"formation_tip_left": {
+					"at": [
+						520,
+						106,
+						-215
+					],
+					"colour": "green",
+					"kind": "formation"
+				},
+				"formation_tip_right": {
+					"at": [
+						520,
+						106,
+						215
+					],
+					"colour": "green",
+					"kind": "formation"
+				},
+				"formation_body_left": {
+					"at": [
+						345,
+						140,
+						-21
+					],
+					"colour": "green",
+					"kind": "formation"
+				},
+				"formation_body_right": {
+					"at": [
+						345,
+						140,
+						21
+					],
+					"colour": "green",
+					"kind": "formation"
+				},
+				"formation_fin_left": {
+					"at": [
+						600,
+						170,
+						-50
+					],
+					"colour": "green",
+					"kind": "formation"
+				},
+				"formation_fin_right": {
+					"at": [
+						600,
+						170,
+						50
+					],
+					"colour": "green",
+					"kind": "formation"
+				},
+				"approach": {
+					"at": [
+						282,
+						62,
+						0
+					],
+					"colour": "amber",
+					"kind": "approach"
+				},
+				"landing": {
+					"at": [
+						278,
+						70,
+						0
+					],
+					"colour": "white",
+					"kind": "landing"
+				},
+				"hook": {
+					"at": [
+						630,
+						82,
+						0
+					],
+					"colour": "white",
+					"kind": "hook"
+				},
+				"probe": {
+					"at": [
+						150,
+						128,
+						10
+					],
+					"colour": "white",
+					"kind": "probe"
+				}
+			}
+		},
+		"lex": {
+			"apex": {
+				"station": 197.9,
+				"waterline": 125.1,
+				"buttline": 15.5
+			},
+			"fence": {
+				"front": [
+					385.6,
+					132.0,
+					44.8
+				],
+				"aft": [
+					409.4,
+					132.3,
+					44.8
+				]
+			},
+			"unit": "FS, WL, BL in",
+			"source": "photo match",
+			"where": "verify/photos.py over photos.json (12 photos solved together): lex_apex in 7 photos (+-0.8 in); the fence's top corners in 3 photos (+-1.8 in)",
+			"note": "where the LEX's edge leaves the body, 7 in aft of and 5 in below where cr186938's graph extrapolates it (FS 189); and the top corners of the fleet LEX fence, which stands on tp3111's base (lex.fence: FS 378.17 to 410.33 at BL 42)"
+		},
+		"probe": {
+			"from": 143.0,
+			"to": 186.5,
+			"lower": 26.0,
+			"upper": 0.0,
+			"unit": "FS in; degrees from the top centreline",
+			"source": "photo match",
+			"where": "verify/photos.py over photos.json (12 photos solved together): probe_door_front in 2 photos, probe_door_aft in 3 (+-1.7 in)",
+			"note": "the reference airframe's probe door, its lower corners 26 deg round from the top; shorter than the research jet's (fittings.probe, FS 128.5 to 188). Its upper edge is not seen: provisionally the top centreline"
+		},
+		"hook": {
+			"pivot": [
+				641.0,
+				80.0
+			],
+			"point": [
+				684.0,
+				82.6
+			],
+			"unit": "[FS, WL] in, on the centreline",
+			"source": "photo match",
+			"where": "dvids9820808: the stowed hook's shank (pivot from the old single-photo locate, point solved with the 12 photos, +-2 in)",
+			"note": "the stowed hook: its pivot forward and its point aft (dvids9820748 shows it lowered, trailing aft from the pivot). One photo shows the point stowed: provisional"
+		},
+		"nozzle": {
+			"start": 690.0,
+			"exit": 720.0,
+			"radius": [
+				17.5,
+				15.5
+			],
+			"waterline": 106.0,
+			"unit": "FS in; radius in at start and exit; WL in of the axis",
+			"source": "photo match",
+			"where": "verify/photos.py over photos.json (12 photos solved together): nozzle_exit_bottom in 4 photos (FS 720.0 +-2, WL 90.45 +-2.1)",
+			"note": "the nozzles' outer flaps on the engine axes: the exit's lower lip where the photos put it; the HARV's exhaust plane (overall.exhaust) stands 7 in further forward. The start and the start's radius are provisional (fitted to the HATP views)"
+		}
+	}
+}

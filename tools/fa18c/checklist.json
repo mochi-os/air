@@ -1,0 +1,64 @@
+{
+	"about": "Every visible shape on the F/A-18C, region by region, with the reference photos that show it and whether the model matches (../verify/README.md, step 7). status: matches, wrong (with what is wrong), or unchecked. Numbers are the photo match's (photos.json) or the facts check's (check.py) as of the date; a shape inside the outline is only ever verified here.",
+	"date": "2026-10-29",
+	"regions": {
+		"nose": [
+			{"shape": "radome and forebody sections", "status": "matches", "photos": ["dvids9820808", "dvids9820810", "dvids9820801", "dvids9820782", "dvids7418477"], "note": "TM-101724's sections within 0.3 in; nose top outlines within 0.1-1 in in five photos"},
+			{"shape": "nosecone droop", "status": "matches", "photos": [], "note": "5.6 deg on its axis through the apex (was 6.7)"},
+			{"shape": "gun port", "status": "matches", "photos": ["dvids9820808", "dvids9820810", "dvids9820801"], "note": "FS 122.3 measured, 122.0 built"},
+			{"shape": "radome joint", "status": "unchecked", "photos": ["dvids9820810", "dvids9820801"], "note": "the photos mark the gun slot's aft tip at FS 124.4; tm101724 gives the joint at 128.5. Same feature? To settle"},
+			{"shape": "refuelling probe door", "status": "wrong", "photos": ["dvids9820808", "dvids9820810", "dvids9820801"], "note": "was a plate standing 5.8 in proud; now a shell on the skin at the photos' FS 143-186.5. Its lower edge sits 2.3-3 in lower than built (nearer 30 deg from the top than 26); its upper edge is unseen"},
+			{"shape": "pitot-static probes", "status": "wrong", "photos": ["dvids9820810"], "note": "not built (fittings.pitot)"},
+			{"shape": "angle-of-attack probes, ECM and antenna fairings", "status": "wrong", "photos": ["dvids9820810", "dvids9820805"], "note": "not built"},
+			{"shape": "formation light strips", "status": "unchecked", "photos": ["dvids9820799", "dvids9820810", "dvids9820801"], "note": "the photos measure the forward strip's corners (FS 130.8 and 166.4, WL 113.6-115.2); the model has light points only"}
+		],
+		"canopy": [
+			{"shape": "windscreen base, bow, crown and aft end", "status": "matches", "photos": ["dvids9820808", "dvids9820810", "dvids9820801", "dvids9820749", "dvids7418477", "dvids9820791"], "note": "placed from the photos (windscreen 2 in higher, bow 2.3 in higher, aft end 4 in further aft than before); canopy outlines within 0.3-2 in from the side"},
+			{"shape": "canopy sill (lower edge)", "status": "wrong", "photos": ["dvids9820782", "dvids9820810", "dvids9820801"], "note": "the model's sill stands 2-2.4 in higher than the photos' (traced sills and bow foot): the canopy is narrower at its base than the sections between FS 184 and 253 make it. check.py fails on it"},
+			{"shape": "bow and aft closing lines", "status": "wrong", "photos": ["dvids9820810", "dvids9820801"], "note": "both lean in the photos (bow foot 4 in aft of the bow's top, the aft lower corner 4.6 in ahead of the aft end); the model cuts both square"}
+		],
+		"lex": [
+			{"shape": "LEX planform (span, edge)", "status": "matches", "photos": ["dvids9820808", "dvids9820810", "dvids9820801", "dvids9820799", "dvids9820782", "dvids8678629", "dvids9820744"], "note": "TM-101724's spans within 0.4 in; traced edges within 0.8-1.7 in in seven photos"},
+			{"shape": "LEX apex", "status": "matches", "photos": ["dvids9820810", "dvids9820801", "dvids9820799", "dvids9820782", "dvids8678629", "dvids7418477"], "note": "moved 8 in aft and 5 in down to where seven photos put it"},
+			{"shape": "LEX upper surface across its span", "status": "matches", "photos": ["dvids9820782", "dvids8678629", "dvids7418477"], "note": "was a straight slope root to edge, 4.6 in low mid-span; now TP-3111's traced fall. The photographed fence tops caught it"},
+			{"shape": "LEX-wing junction", "status": "matches", "photos": [], "note": "was a square end standing 9.5 in above the wing root; now a fairing settling onto the nacelle shoulder and wing (shape.lex checks). Not yet seen in a photo from above"},
+			{"shape": "LEX fence", "status": "matches", "photos": ["dvids9820782", "dvids8678629", "dvids7418477"], "note": "built: tp3111's base, the photos' top corners (within 1.6 in), 8.9 in tall over the LEX (tp3111: 8.3)"},
+			{"shape": "LEX slot and boarding ladder well", "status": "unchecked", "photos": [], "note": ""}
+		],
+		"inlets": [
+			{"shape": "inlet lip and duct", "status": "wrong", "photos": ["dvids9820808", "dvids9820799"], "note": "the traced lip misses by 9.6 in; the lips sit about 9 in further outboard and 5 in aft (one photo); the duct's hydraulic diameter is 19.7 in against tm103703's 23.34. Needs rebuilding from front views"},
+			{"shape": "boundary-layer splitter and bleed", "status": "wrong", "photos": [], "note": "not built"}
+		],
+		"wing": [
+			{"shape": "planform, sweep, chords, area", "status": "matches", "photos": ["dvids9820744"], "note": "cr201687's planform within 0.5 in; the underside photo's edges within 1-2 in on the right wing (4.3 in on the left's leading edge, its camera the weakest)"},
+			{"shape": "thickness", "status": "matches", "photos": [], "note": "cr3608's 5% to 3.5% stations (was linear root to tip)"},
+			{"shape": "height (chord plane)", "status": "unchecked", "photos": ["dvids9820799", "dvids9820744"], "note": "two photos put the wingtip's trailing corner 4.9 in higher than built (+-1.8); the HATP front view drew the outer wing 10 in higher. The head-on photo cannot be solved to settle it"},
+			{"shape": "fold line and folded span", "status": "matches", "photos": [], "note": "folds 90-plus degrees to NATOPS's 27 ft 6 in (was 1 radian, 33 ft 3 in)"},
+			{"shape": "leading-edge flaps, trailing-edge flaps, ailerons", "status": "unchecked", "photos": ["dvids9820744"], "note": "areas match cr201687; spans read off tp209033's sketch"},
+			{"shape": "outer leading-edge snag", "status": "wrong", "photos": ["dvids9820744"], "note": "not built"}
+		],
+		"fins": [
+			{"shape": "fin position", "status": "matches", "photos": ["dvids9820808", "dvids9820756", "dvids9820753", "dvids9820799", "dvids9820782", "dvids9820749", "dvids8678629", "dvids7418477", "dvids9820801"], "note": "moved 8 in aft and 7 in outboard to where nine photos put the tips; leading edges now within 0.1-0.5 in in most photos"},
+			{"shape": "fin toe", "status": "matches", "photos": [], "note": "1 deg out (was none)"},
+			{"shape": "tip antenna fairings, rudders", "status": "unchecked", "photos": ["dvids9820756", "dvids9820753"], "note": "fairings not built"}
+		],
+		"stabilators": [
+			{"shape": "planform", "status": "matches", "photos": [], "note": "cr201687's within 0.6 in; moved 2.4 in aft for the 56 ft length"},
+			{"shape": "height and pivot", "status": "unchecked", "photos": ["dvids9820756", "dvids9820758", "dvids9820753", "dvids9820744"], "note": "the photos put the left tip's leading corner 7 in higher than built, but every photo shows the stabilators deflected by amounts read only by eye; the HATP side view also draws them about 10 in higher. Needs a photo with them neutral"}
+		],
+		"fuselage": [
+			{"shape": "spine, canopy to fins", "status": "unchecked", "photos": ["dvids9820756", "dvids9820758", "dvids8678629"], "note": "outlines within 1-2 in from the rear, 4 in in dvids8678629"},
+			{"shape": "nacelles and belly", "status": "matches", "photos": ["dvids9820808"], "note": "the profile photo's belly line within a few cm (the HATP side view's is 12 in off)"},
+			{"shape": "speedbrake, blade antennas, panel lines", "status": "unchecked", "photos": ["dvids9820756"], "note": "blade antennas not built"}
+		],
+		"tail": [
+			{"shape": "nozzle exit", "status": "matches", "photos": ["dvids9820808", "dvids9820756", "dvids9820758", "dvids9820753"], "note": "exit moved to FS 720 where four photos put its lower lip (tm101724's 54.4 ft is the HARV's)"},
+			{"shape": "nozzle petals and diameter", "status": "wrong", "photos": ["dvids9820758"], "note": "a plain ring; no petals"},
+			{"shape": "arresting hook", "status": "matches", "photos": ["dvids9820808", "dvids9820748"], "note": "stowed point moved to FS 684 (was 714); one photo"}
+		],
+		"gear": [
+			{"shape": "axles, track, nose wheels' spacing", "status": "matches", "photos": ["dvids9820808", "dvids9820756", "dvids9820753", "dvids9820782", "dvids9820749", "dvids9820799", "dvids9820810", "dvids9820801", "dvids8678629", "dvids7418477"], "note": "track 124.7 in (was 116), nose wheels 13.3 in apart (was 10.4); axle heights set for NATOPS's static heights (the taxiing photos sit 1.4 deg nose down, the model 0.9)"},
+			{"shape": "struts, braces, doors", "status": "unchecked", "photos": ["dvids8678626", "dvids8678628"], "note": "provisional"}
+		]
+	}
+}
