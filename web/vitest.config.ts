@@ -5,8 +5,10 @@
 
 import { defineConfig } from "vitest/config";
 import path from "path";
+import { sizes } from "./sizes";
 
 export default defineConfig({
+  plugins: [sizes()],
   test: {
     environment: "node",
     globals: true,

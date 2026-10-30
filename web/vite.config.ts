@@ -9,6 +9,7 @@ import { lingui } from '@lingui/vite-plugin'
 import { mochiPlugin } from '@mochi/web/vite'
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import { sizes } from './sizes'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -24,6 +25,7 @@ export default defineConfig({
     }),
     lingui(),
     tailwindcss(),
+    sizes(),
   ],
   resolve: {
     alias: {

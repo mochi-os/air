@@ -215,7 +215,10 @@ describe('the wiring', () => {
     expect(preview).toMatch(
       /model\(fa18c_model_url, renderer\),\n\s+model\(stores_model_url, renderer\),\n\s+model\(amraam_model_url, renderer\),/
     )
-    expect(preview).toMatch(/airframe = jet\.scene\.clone\(true\)/)
+    expect(preview).toMatch(/airframe = posed\(jet\)/)
+    expect(loader).toMatch(
+      /export function posed\(jet: GLTF\): THREE\.Group \{\n\s+const airframe = jet\.scene\.clone\(true\)/
+    )
     expect(preview).toMatch(/racks = stores\.scene\.clone\(true\)/)
     expect(preview).toMatch(
       /amraam = normalize_round\(round\.scene\.clone\(true\)\)/

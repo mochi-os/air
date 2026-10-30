@@ -5,7 +5,9 @@
 // Single-flight loader for the big flight assets (models + flight core). The
 // menu calls preload() on open and the engine consumes the SAME in-flight
 // fetches through asset(), so nothing downloads twice. Bytes are counted to
-// drive the loading screen and stall signal.
+// drive the loading screen and stall signal, against each file's size as built:
+// the server compresses these files, and a compressed response carries no
+// length, or the compressed one, while the stream yields decoded bytes.
 import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import flight_wasm_url from '../assets/flight.wasm?url'
@@ -15,10 +17,29 @@ import stores_model_url from '../assets/stores.glb?url'
 interface Load {
   promise: Promise<ArrayBuffer>
   received: number
-  total: number // Content-Length when known, else 0
+  total: number // decoded bytes: the size as built, else an unencoded Content-Length, else 0
   done: boolean
   failed: boolean
 }
+
+// Every model and the flight core, by URL, to its size as built.
+const sizes = (() => {
+  const urls = import.meta.glob<string>('../assets/*.{glb,wasm}', {
+    query: '?url',
+    import: 'default',
+    eager: true,
+  })
+  const bytes = import.meta.glob<number>('../assets/*.{glb,wasm}', {
+    query: '?size',
+    import: 'default',
+    eager: true,
+  })
+  const sizes = new Map<string, number>()
+  for (const [path, url] of Object.entries(urls)) {
+    if (typeof bytes[path] === 'number') sizes.set(url, bytes[path])
+  }
+  return sizes
+})()
 
 const loads = new Map<string, Load>()
 let moved = 0 // performance.now() of the last byte progress anywhere
@@ -30,7 +51,7 @@ function begin(url: string): Load {
   const load: Load = {
     promise: Promise.resolve(new ArrayBuffer(0)),
     received: 0,
-    total: 0,
+    total: sizes.get(url) ?? 0,
     done: false,
     failed: false,
   }
@@ -38,7 +59,9 @@ function begin(url: string): Load {
     try {
       const response = await fetch(url)
       if (!response.ok) throw new Error('HTTP ' + response.status)
-      load.total = Number(response.headers.get('Content-Length')) || 0
+      if (!load.total && !response.headers.get('Content-Encoding')) {
+        load.total = Number(response.headers.get('Content-Length')) || 0
+      }
       if (!response.body) {
         const buffer = await response.arrayBuffer()
         load.received = buffer.byteLength
