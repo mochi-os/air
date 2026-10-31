@@ -15,6 +15,10 @@ import { DEGREE, HOME, MIDWAY, rotate } from './earth'
 
 export { MIDWAY }
 const METRES_PER_DEGREE = 111320
+// FLAT is the point the flat world's recordings were projected about: the
+// world frame's anchor while they were written (from #212 to #166), 2.9 km
+// south of the map's origin, where the map's (0, 0) was hung then.
+const FLAT = { latitude: 28.2072, longitude: -177.3735 } // degrees
 // EARTH is the header line a recording on the ellipsoid carries.
 export const EARTH = 'WGS84'
 
@@ -274,11 +278,11 @@ export function metres(
 ): { x: number; y: number; z: number } {
   if (earth)
     return HOME.position({ latitude: latitude * DEGREE, longitude: longitude * DEGREE, altitude })
-  const z = (MIDWAY.latitude - latitude) * METRES_PER_DEGREE
+  const z = (FLAT.latitude - latitude) * METRES_PER_DEGREE
   const x =
-    (longitude - MIDWAY.longitude) *
+    (longitude - FLAT.longitude) *
     METRES_PER_DEGREE *
-    Math.cos((MIDWAY.latitude * Math.PI) / 180)
+    Math.cos((FLAT.latitude * Math.PI) / 180)
   const sea = HOME.sea(x, z)
   const up = rotate(sea.level, { x: 0, y: 1, z: 0 })
   return { x: sea.point.x + up.x * altitude, y: sea.point.y + up.y * altitude, z: sea.point.z + up.z * altitude }

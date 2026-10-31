@@ -215,8 +215,10 @@ describe('scene', () => {
   })
 
   it('reads a recording from the flat world onto the curved sea at the heights it had', () => {
-    // No Earth line: degrees about Midway at 111,320 m to the degree, the
-    // height the flat world's y. 20 km out the sea lies 31 m under the level.
+    // No Earth line: degrees about the point the flat world was projected
+    // about (28.2072 N 177.3735 W, where the map's (0, 0) was hung then) at
+    // 111,320 m to the degree, the height the flat world's y. 20 km out the
+    // sea lies 31 m under the level.
     const text = [
       'FileType=text/acmi/tacview',
       'FileVersion=2.2',

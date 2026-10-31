@@ -931,8 +931,8 @@ describe('latitude and longitude', () => {
     const back = N.coordinates(fix)
     expect(back.latitude).toBeCloseTo(28.3, 9)
     expect(back.longitude).toBeCloseTo(-177.5, 9)
-    expect(N.coordinates({ x: 0, z: 0 }).latitude).toBeCloseTo(28.2072, 9)
-    expect(N.coordinates({ x: 0, z: 0 }).longitude).toBeCloseTo(-177.3735, 9)
+    expect(N.coordinates({ x: 0, z: 0 }).latitude).toBeCloseTo(28.2334, 9) // the world frame's anchor: the Midway map's origin
+    expect(N.coordinates({ x: 0, z: 0 }).longitude).toBeCloseTo(-177.3668, 9)
     expect(N.coordinates({ x: -400000, z: 0 }).longitude).toBeGreaterThan(170) // west across the date line
   })
   it("gives directions magnetic with HDG MAG, the system's choice at power up, or true", () => {

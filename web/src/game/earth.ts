@@ -207,8 +207,11 @@ export function tangent(latitude: number, longitude: number): Frame {
   return new Frame(latitude, longitude)
 }
 
-// MIDWAY is the world frame's anchor: Midway Atoll, the map's real position.
-export const MIDWAY = { latitude: 28.2072, longitude: -177.3735 } // degrees
+// MIDWAY is the world frame's anchor: the centre of Midway Atoll, the point
+// the map is projected about (midway-prep/prep.py ORIGIN, map.json "origin"),
+// so the map's (0, 0) is hung at its true place and everything on it lies
+// where it really is.
+export const MIDWAY = { latitude: 28.2334, longitude: -177.3668 } // degrees
 export const HOME = new Frame(MIDWAY.latitude * DEGREE, MIDWAY.longitude * DEGREE)
 
 // Rigid is a rigid motion from one frame to another: a point p in the first

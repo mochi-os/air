@@ -263,7 +263,7 @@ describe('the BIT display', () => {
   it('shows the INS post flight data: position, alignment and navigation time and the error rate, then the updates', () => {
     const logged = 'bit_state.level="ins"; nav.log={ alignment:322, navigation:2335, updates:1, error:{ north:-1852, east:926 }, cumulative:{ north:1852, east:926 }, rate:1852/3600 };'
     const one = show(logged), two = show(logged + 'bit_state.post=2;')
-    expect(texts(one)).toEqual(expect.arrayContaining(["POS N  28°12.432' W 177°22.410'", 'ALN TIME=0322 AQ=0.5', 'NAV TIME=02335 PER=01.0']))
+    expect(texts(one)).toEqual(expect.arrayContaining(["POS N  28°14.004' W 177°22.008'", 'ALN TIME=0322 AQ=0.5', 'NAV TIME=02335 PER=01.0']))
     expect(at(one, 'POST 1')).toEqual([502, 256]); expect(one.rects.length).toBe(1)
     expect(texts(two)).toEqual(expect.arrayContaining(['ERROR', 'CUM', 'N/S-01.0', '001.0', 'E/W+00.5', '000.5', 'UPDATE 1'])); expect(at(two, 'POST 2')).toEqual([502, 256])
     expect(texts(show('bit_state.level="ins";'))).toContain('NAV TIME=00000 PER=XX.X') // no update yet: no rate

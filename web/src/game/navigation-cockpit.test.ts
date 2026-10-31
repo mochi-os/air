@@ -473,15 +473,15 @@ describe('grid coordinates through the UFC and the grid display', () => {
   })
   it('turns an offset\'s grid into a range and bearing from its aimpoint, and holds one past 400,000 ft off, flashing', () => {
     // 733 556 lies 19.6 km off the aimpoint on the ellipsoid (the flat world's degrees made it 19.8)
-    const s = entry(`p(12); nav.waypoints[1]={ x:0, z:-18520, elevation:0, name:"", offset:null }; p(5); keys("opt4","opt3"); const up=[ufc.func, ddi_state.right.page]; grid_face(256,256); keys("7","3","3","5","5","6","ent");
+    const s = entry(`p(12); nav.waypoints[1]={ x:0, z:-18520, elevation:0, name:"", offset:null }; p(5); keys("opt4","opt3"); const up=[ufc.func, ddi_state.right.page]; grid_face(256,256); keys("7","3","9","5","8","6","ent");
       const o={ ...nav.waypoints[1].offset }; grid_face(76+4.5*72,256); const east=grid_state.chosen.id; keys("0","ent"); return [up, Math.abs(o.range-19639)<150, Math.abs(o.bearing/D2R-30)<0.5, o.elevation, east, nav.waypoints[1].offset.range===o.range, grid_state.far, ufc.error];`)
     expect(s).toEqual([['offset', 'grid'], true, true, 0, 'FM', true, { shown: 1, text: '1RFM000000' }, false])
   })
   it('keeps the offset\'s elevation when its grid is keyed', () => {
-    expect(entry('p(12); nav.waypoints[1]={ x:0, z:-18520, elevation:0, name:"", offset:{ range:5, bearing:1, elevation:100 } }; p(5); keys("opt4","opt3"); grid_face(256,256); keys("7","3","3","5","5","6","ent"); const o=nav.waypoints[1].offset; return [o.elevation, o.range>19000];')).toEqual([100, true])
+    expect(entry('p(12); nav.waypoints[1]={ x:0, z:-18520, elevation:0, name:"", offset:{ range:5, bearing:1, elevation:100 } }; p(5); keys("opt4","opt3"); grid_face(256,256); keys("7","3","9","5","8","6","ent"); const o=nav.waypoints[1].offset; return [o.elevation, o.range>19000];')).toEqual([100, true])
   })
   it('clears the offset held off when one inside the limit is keyed', () => {
-    expect(entry('p(12); p(5); keys("opt4","opt3"); grid_face(76+4.5*72,256); keys("0","ent"); const off=!!grid_state.far; grid_face(256,256); keys("7","3","3","5","5","6","ent"); return [off, grid_state.far];')).toEqual([true, null])
+    expect(entry('p(12); p(5); keys("opt4","opt3"); grid_face(76+4.5*72,256); keys("0","ent"); const off=!!grid_state.far; grid_face(256,256); keys("7","3","9","5","8","6","ent"); return [off, grid_state.far];')).toEqual([true, null])
   })
   it('shifts the grid a whole grid from the pushbuttons or under the cursor, only while the reference is in the centre square', () => {
     const s = entry(`p(5); keys("opt3"); const all=grid_shifts().sort((a,b)=>a-b); grid_state.chosen={ zone:1, band:"R", id:"DM" }; const north=[grid_press(8), { ...grid_state.shift }, grid_state.chosen, grid_shifts(), grid_press(13)];
