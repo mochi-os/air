@@ -431,16 +431,12 @@ msgstr "Բոլոր ռեժիմները"
 msgid "All servers"
 msgstr "Բոլոր սերվերները"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Թույլատրել"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Թույլատրել բոլորին որոնել {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Թույլատրել մշակողներին կարդալ ձեր թռիչքների գրառումները՝ խաղը բարելավելու համար"
 
@@ -707,10 +703,6 @@ msgstr "Բարձրացնել հետաքրքրությունը"
 msgid "Border colour"
 msgstr "Եզրագծի գույն"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "բոտ"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Բոտեր"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Մակագրություն"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Դեպք I (ցերեկ)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: թռիր նավի հետքով վեր, {heading}, 800', 350 հանգույց"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Դեպք II (եղանակ)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: վերջնական ուղղագծում, {heading}, 1200', շասսին, ֆլափերը ցած, on-speed 8.1° AOA, 140 հանգույց"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Ստեղծել {entityLabel}"
 msgid "Create and fly"
 msgstr "Ստեղծել և թռչել"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Ստեղծել թռիչք"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Ստեղծել խաղ"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Ստեղծել առաքելություն"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Ցուցադրում է բջջային կողագոտին։"
 msgid "Does not match the required pattern"
 msgstr "Չի համապատասխանում պահանջվող ձևանմուշին"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Չթույլատրել"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Ծավալել բոլորը"
 msgid "Expand sidebar"
 msgstr "Ընդարձակել կողագոտին"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Թռիչքի հուշումներ"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Թռիչքների մատյան"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Թռիչքների գրառումներ"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Ներմուծել"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Օդում"
 
@@ -2386,7 +2355,6 @@ msgstr "Հետաքրքրություն՝ {weight}"
 msgid "Interests"
 msgstr "Հետաքրքրություններ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "ՄԻԱՑԱՎ"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Մենամարտ"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Ծանուցումներ՝ {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Սկսնակ"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Միացված"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Ավիակրի վրա"
 
@@ -3211,7 +3176,6 @@ msgstr "Ավիակրի վրա"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Կատապուլտի վրա: կցվելու համար իջեցրու արձակման ձողը"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Թռիչքուղու վրա"
@@ -3410,6 +3374,7 @@ msgstr "Խաղացողներ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Ստուգեք ձեր ինտերնետ կապը և կրկին փորձեք։"
@@ -4282,7 +4247,6 @@ msgstr "Բաժանորդագրվել"
 msgid "Sunday"
 msgstr "Կիրակի"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

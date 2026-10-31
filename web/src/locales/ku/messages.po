@@ -431,16 +431,12 @@ msgstr "Hemû mod"
 msgid "All servers"
 msgstr "Hemû server"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Destûr bide"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Destûrê bide her kesî ku li {entityLabel} bigere"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Destûr bide pêşdebiran ku tomarên firînên te bixwînin da ku lîstik baştir bibe"
 
@@ -707,10 +703,6 @@ msgstr "Berjewendiyê zêde bike"
 msgid "Border colour"
 msgstr "Rengê sînor"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bot"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Binnivîs"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Rewş I (roj)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: li ser şopa keştiyê bifire, {heading}, 800', 350 girê"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Rewş II (hewa)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: li ser dawiyê, {heading}, 1200', teker, flap jêr, on-speed 8.1° AOA, 140 girê"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} çêbike"
 msgid "Create and fly"
 msgstr "Çêbike û bifire"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Firînê çêbike"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Maçê çêbike"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Peywirê çêbike"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Panela kêlekê ya mobîl nîşan dide."
 msgid "Does not match the required pattern"
 msgstr "Bi şablona pêwîst re li hev nake"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Destûr nede"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Hemûyan fireh bike"
 msgid "Expand sidebar"
 msgstr "Bargeyê fireh bike"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Şîretên firînê"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Deftera firînan"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Tomarên firînê"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Hawirdekirin"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Di hewa de"
 
@@ -2386,7 +2355,6 @@ msgstr "Eleqe {weight}"
 msgid "Interests"
 msgstr "Balkêşî"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "TEVLÎ BÛ"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Pevçûn"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Agahdarî: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Destpêker"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Vekirî"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Li ser keştiyê"
 
@@ -3211,7 +3176,6 @@ msgstr "Li ser keştiyê"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Li ser mancenîqê: ji bo girêdanê darika avêtinê dakêşe"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Li ser pîstê"
@@ -3410,6 +3374,7 @@ msgstr "Lîstikvan"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Ji kerema xwe girêdana xwe ya înternetê kontrol bike û dîsa biceribîne."
@@ -4282,7 +4247,6 @@ msgstr "Abone bibe"
 msgid "Sunday"
 msgstr "Yekşem"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

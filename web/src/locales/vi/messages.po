@@ -431,16 +431,12 @@ msgstr "Tất cả chế độ"
 msgid "All servers"
 msgstr "Tất cả máy chủ"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Cho phép"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Cho phép mọi người tìm kiếm {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Cho phép nhà phát triển đọc bản ghi chuyến bay của bạn để cải thiện trò chơi"
 
@@ -707,10 +703,6 @@ msgstr "Đẩy mạnh sở thích"
 msgid "Border colour"
 msgstr "Màu viền"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bot"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Chú thích"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Trường hợp I (ngày)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: bay dọc vệt nước tàu, {heading}, 800', 350 knot"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Trường hợp II (thời tiết)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: ở final, {heading}, 1200', càng, cánh tà xuống, on-speed 8.1° AOA, 140 knot"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Tạo {entityLabel}"
 msgid "Create and fly"
 msgstr "Tạo và bay ngay"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Tạo chuyến bay"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Tạo trận đấu"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Tạo nhiệm vụ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Hiển thị thanh bên di động."
 msgid "Does not match the required pattern"
 msgstr "Không khớp với mẫu bắt buộc"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Không cho phép"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Mở rộng tất cả"
 msgid "Expand sidebar"
 msgstr "Mở rộng thanh bên"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Gợi ý bay"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Nhật ký bay"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Bản ghi chuyến bay"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Nhập"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Trên không"
 
@@ -2386,7 +2355,6 @@ msgstr "Mức quan tâm {weight}"
 msgid "Interests"
 msgstr "Sở thích"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "ĐÃ THAM GIA"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Đối đầu"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Thông báo: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Người mới"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Bật"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Trên tàu sân bay"
 
@@ -3211,7 +3176,6 @@ msgstr "Trên tàu sân bay"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Trên máy phóng: hạ thanh phóng để móc vào"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Trên đường băng"
@@ -3410,6 +3374,7 @@ msgstr "Người chơi"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Vui lòng kiểm tra kết nối internet và thử lại."
@@ -4282,7 +4247,6 @@ msgstr "Đăng ký"
 msgid "Sunday"
 msgstr "Chủ nhật"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

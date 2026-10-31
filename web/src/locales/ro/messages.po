@@ -431,16 +431,12 @@ msgstr "Toate modurile"
 msgid "All servers"
 msgstr "Toate serverele"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Permite"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Permite oricui să caute {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Permite dezvoltatorilor să citească înregistrările zborurilor tale pentru a îmbunătăți jocul"
 
@@ -707,10 +703,6 @@ msgstr "Promovează interesul"
 msgid "Border colour"
 msgstr "Culoare contur"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Boți"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Legendă"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Caz I (zi)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: zboară deasupra siajului, {heading}, 800', 350 noduri"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Caz II (meteo)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: în final, {heading}, 1200', tren, flapsuri jos, viteză de apropiere 8.1° AOA, 140 noduri"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Creează {entityLabel}"
 msgid "Create and fly"
 msgstr "Creează și zboară"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Creează zbor"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Creează meci"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Creează misiune"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Afișează bara laterală mobilă."
 msgid "Does not match the required pattern"
 msgstr "Nu corespunde modelului necesar"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Nu permite"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Extinde tot"
 msgid "Expand sidebar"
 msgstr "Extinde bara laterală"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Indicii de zbor"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Jurnal de zbor"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Înregistrările zborurilor"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importă"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "În aer"
 
@@ -2386,7 +2355,6 @@ msgstr "Interes {weight}"
 msgid "Interests"
 msgstr "Interese"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "S-A ALĂTURAT"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Duel"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Notificări: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Începător"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Activat"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Pe portavion"
 
@@ -3211,7 +3176,6 @@ msgstr "Pe portavion"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Pe catapultă: coboară bara de lansare pentru agățare"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Pe pistă"
@@ -3410,6 +3374,7 @@ msgstr "Jucători"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Verifică conexiunea la internet și încearcă din nou."
@@ -4282,7 +4247,6 @@ msgstr "Abonează-te"
 msgid "Sunday"
 msgstr "Duminică"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

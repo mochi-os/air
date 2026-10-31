@@ -431,16 +431,12 @@ msgstr "A h-uile modh"
 msgid "All servers"
 msgstr "A h-uile frithealaiche"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Ceadaich"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Ceadaich do dhuine sam bith {entityLabel} a lorg"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Ceadaich do luchd-leasachaidh na clàraidhean itealaich agad a leughadh gus an geama a leasachadh"
 
@@ -707,10 +703,6 @@ msgstr "Brosnaich ùidh"
 msgid "Border colour"
 msgstr "Dath na crìche"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botaichean"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Caipsean"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Cùis I (latha)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: itealaich suas marbh-shruth na luinge, {heading}, 800', 350 snaidhm"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Cùis II (aimsir)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: air an ruighe dheireannach, {heading}, 1200', uidheam, fleapaichean sìos, on-speed 8.1° AOA, 140 snaidhm"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Cruthaich {entityLabel}"
 msgid "Create and fly"
 msgstr "Cruthaich agus itealaich"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Cruthaich turas-adhair"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Cruthaich maids"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Cruthaich misean"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Seallaidh am bàr-thaobh fòn-làimhe."
 msgid "Does not match the required pattern"
 msgstr "Chan eil e a' freagairt ris a' phàtran riatanach"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Na ceadaich"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Leudaich na h-uile"
 msgid "Expand sidebar"
 msgstr "Leudaich am bàr-taobh"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Oidheaman itealaich"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Loga itealaich"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Clàraidhean itealaich"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Ion-phortaich"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "San adhar"
 
@@ -2386,7 +2355,6 @@ msgstr "Ùidh {weight}"
 msgid "Interests"
 msgstr "Ùidhean"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "AIR TIGHINN A-STEACH"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Còmhrag-aghaidh"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Brathan: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Neach-tòiseachaidh"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Air"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Air a' ghiùlanair"
 
@@ -3211,7 +3176,6 @@ msgstr "Air a' ghiùlanair"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Air a' chatapult: leudaich am bàr cur air bhog gus dubhan a chur"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Air an raon-laighe"
@@ -3410,6 +3374,7 @@ msgstr "Cluicheadairean"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Thoir sùil air a' cheangal eadar-lìn agad agus feuch ris a-rithist."
@@ -4282,7 +4247,6 @@ msgstr "Fo-sgrìobh"
 msgid "Sunday"
 msgstr "Didòmhnaich"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

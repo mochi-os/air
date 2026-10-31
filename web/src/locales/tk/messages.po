@@ -431,16 +431,12 @@ msgstr "Ähli tertipler"
 msgid "All servers"
 msgstr "Ähli serwerler"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Rugsat ber"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Islendik adama {entityLabel} gözlemäge rugsat ber"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Oýny gowulandyrmak üçin döredijilere uçuş ýazgylaryňyzy okamaga rugsat ber"
 
@@ -707,10 +703,6 @@ msgstr "Gyzyklanmany ýokarlandyrmak"
 msgid "Border colour"
 msgstr "Çäk reňki"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botlar"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Düşündiriş"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Ýagdaý I (gündiz)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: gäminiň yzy boýunça uç, {heading}, 800', 350 uzel"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Ýagdaý II (howa)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: finalda, {heading}, 1200', şassi, flaplar aşak, on-speed 8.1° AOA, 140 uzel"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} döret"
 msgid "Create and fly"
 msgstr "Döret we uç"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Uçuş döret"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Duşuşyk döret"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Tabşyryk döret"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Mobil gapdal paneli görkezýär."
 msgid "Does not match the required pattern"
 msgstr "Talap edilýän nusga gabat gelmeýär"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Rugsat berme"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Hemmesini giňelt"
 msgid "Expand sidebar"
 msgstr "Gapdal paneli giňelt"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Uçuş maslahatlary"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Uçuş žurnaly"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Uçuş ýazgylary"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Import etmek"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Howada"
 
@@ -2386,7 +2355,6 @@ msgstr "Gyzyklanma {weight}"
 msgid "Interests"
 msgstr "Gyzyklanmalar"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "GOŞULDY"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Tutluşyk"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Bildirişler: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Täze öwreniji"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Açyk"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Göterijide"
 
@@ -3211,7 +3176,6 @@ msgstr "Göterijide"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapultda: birikmek üçin uçuryş ştangasyny düşür"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Uçuş zolagynda"
@@ -3410,6 +3374,7 @@ msgstr "Oýunçylar"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Internet birikmäňizi barlaň we täzeden synanyşyň."
@@ -4282,7 +4247,6 @@ msgstr "Abuna ýaz"
 msgid "Sunday"
 msgstr "Ýekşenbe"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

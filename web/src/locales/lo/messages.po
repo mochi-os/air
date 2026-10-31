@@ -431,16 +431,12 @@ msgstr "ທຸກໂໝດ"
 msgid "All servers"
 msgstr "ທຸກເຊີບເວີ"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "ອະນຸຍາດ"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "ອະນຸຍາດໃຫ້ທຸກຄົນຄົ້ນຫາ {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "ອະນຸຍາດໃຫ້ນັກພັດທະນາອ່ານບັນທຶກການບິນຂອງທ່ານ ເພື່ອປັບປຸງເກມ"
 
@@ -707,10 +703,6 @@ msgstr "ເພີ່ມຄວາມສົນໃຈ"
 msgid "Border colour"
 msgstr "ສີຂອບ"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "ບອດ"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "ຫຸ່ນຍົນ"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "ຄຳບັນຍາຍ"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "ກໍລະນີ I (ກາງເວັນ)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: ບິນຕາມຮ່ອງນ້ຳເຮືອ, {heading}, 800', 350 ນັອດ"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "ກໍລະນີ II (ອາກາດ)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: ຢູ່ຂາສຸດທ້າຍ, {heading}, 1200', ລໍ້, ແຜ່ນປີກລົງ, on-speed 8.1° AOA, 140 ນັອດ"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "ສ້າງ {entityLabel}"
 msgid "Create and fly"
 msgstr "ສ້າງແລ້ວບິນ"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "ສ້າງການບິນ"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "ສ້າງແມັດ"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "ສ້າງພາລະກິດ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "ສະແດງແຖບຂ້າງມືຖື."
 msgid "Does not match the required pattern"
 msgstr "ບໍ່ກົງກັບຮູບແບບທີ່ຕ້ອງການ"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "ບໍ່ອະນຸຍາດ"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "ຂະຫຍາຍທັງໝົດ"
 msgid "Expand sidebar"
 msgstr "ຂະຫຍາຍແຖບຂ້າງ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2061,10 +2035,6 @@ msgstr "ຄຳແນະນຳການບິນ"
 
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
-msgstr "ບັນທຶກການບິນ"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
 msgstr "ບັນທຶກການບິນ"
 
 #: src/components/MatchLog.tsx
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "ນຳເຂົ້າ"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "ຢູ່ໃນອາກາດ"
 
@@ -2386,7 +2355,6 @@ msgstr "ຄວາມສົນໃຈ {weight}"
 msgid "Interests"
 msgstr "ຄວາມສົນໃຈ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "ເຂົ້າຮ່ວມແລ້ວ"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "ການປະທະ"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "ການແຈ້ງເຕືອນ: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "ຜູ້ເລີ່ມຕົ້ນ"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "ເປີດ"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "ເທິງເຮືອບັນທຸກ"
 
@@ -3211,7 +3176,6 @@ msgstr "ເທິງເຮືອບັນທຸກ"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "ເທິງກາຕາປຸນ: ລົດຄານປ່ອຍຕົວລົງເພື່ອກ່ຽວ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "ເທິງທາງແລ່ນ"
@@ -3410,6 +3374,7 @@ msgstr "ຜູ້ຫຼິ້ນ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ອິນເຕີເນັດຂອງທ່ານ ແລະ ລອງໃໝ່ອີກຄັ້ງ."
@@ -4282,7 +4247,6 @@ msgstr "ສະໝັກສະມາຊິກ"
 msgid "Sunday"
 msgstr "ວັນອາທິດ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

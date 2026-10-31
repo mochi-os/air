@@ -431,16 +431,12 @@ msgstr "Lahat ng mode"
 msgid "All servers"
 msgstr "Lahat ng server"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Payagan"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Payagan ang sinuman na maghanap ng {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Payagan ang mga developer na basahin ang iyong mga recording ng paglipad para mapabuti ang laro"
 
@@ -707,10 +703,6 @@ msgstr "Palakasin ang interes"
 msgid "Border colour"
 msgstr "Kulay ng border"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Mga bot"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Caption"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Kaso I (araw)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: sundan ang bakas ng barko, {heading}, 800', 350 knots"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Kaso II (panahon)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: sa final, {heading}, 1200', gear, flaps pababa, on-speed 8.1° AOA, 140 knots"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Gumawa ng {entityLabel}"
 msgid "Create and fly"
 msgstr "Gumawa at lumipad"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Gumawa ng paglipad"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Gumawa ng match"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Gumawa ng misyon"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Ipinapakita ang mobile sidebar."
 msgid "Does not match the required pattern"
 msgstr "Hindi tumutugma sa kinakailangang pattern"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Huwag payagan"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Palawakin lahat"
 msgid "Expand sidebar"
 msgstr "I-expand ang sidebar"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Mga hint sa paglipad"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Talaan ng paglipad"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Mga recording ng paglipad"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "I-import"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Nasa himpapawid"
 
@@ -2386,7 +2355,6 @@ msgstr "Interes {weight}"
 msgid "Interests"
 msgstr "Mga interest"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "SUMALI"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Tagisan"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Mga notification: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Baguhan"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Naka-on"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Nasa carrier"
 
@@ -3211,7 +3176,6 @@ msgstr "Nasa carrier"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Sa katapulta: ibaba ang baras ng paglunsad para kumabit"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Nasa runway"
@@ -3410,6 +3374,7 @@ msgstr "Mga manlalaro"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Pakitingnan ang iyong koneksyon sa internet at subukang muli."
@@ -4282,7 +4247,6 @@ msgstr "Mag-subscribe"
 msgid "Sunday"
 msgstr "Linggo"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

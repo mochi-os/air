@@ -431,16 +431,12 @@ msgstr "همه حالت‌ها"
 msgid "All servers"
 msgstr "همه سرورها"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "اجازه"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "به همه اجازه بده {entityLabel} را جستجو کنند"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "اجازه به توسعه‌دهندگان برای خواندن ضبط‌های پرواز شما به‌منظور بهبود بازی"
 
@@ -707,10 +703,6 @@ msgstr "تقویت علاقه"
 msgid "Border colour"
 msgstr "رنگ حاشیه"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "بات"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "بات‌ها"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "شرح"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "حالت I (روز)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: روی رد آب کشتی پرواز کن، {heading}، 800'، 350 نات"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "حالت II (هوا)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: در فاینال، {heading}، 1200'، ارابه، فلپ پایین، on-speed 8.1° AOA، 140 نات"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "ایجاد {entityLabel}"
 msgid "Create and fly"
 msgstr "ایجاد و پرواز"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "ایجاد پرواز"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "ایجاد مسابقه"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "ایجاد مأموریت"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "نوار کناری موبایل را نمایش می‌دهد."
 msgid "Does not match the required pattern"
 msgstr "با الگوی موردنیاز مطابقت ندارد"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "عدم اجازه"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "گسترش همه"
 msgid "Expand sidebar"
 msgstr "گسترش نوار کناری"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "راهنمایی‌های پرواز"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "گزارش پروازها"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "ضبط‌های پرواز"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "وارد کردن"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "در هوا"
 
@@ -2386,7 +2355,6 @@ msgstr "علاقه {weight}"
 msgid "Interests"
 msgstr "علاقه‌مندی‌ها"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "پیوست"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "دوئل"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "اعلان‌ها: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "تازه‌کار"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "روشن"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "روی ناو"
 
@@ -3211,7 +3176,6 @@ msgstr "روی ناو"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "روی منجنیق: برای قلاب‌شدن، میله پرتاب را پایین بده"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "روی باند"
@@ -3410,6 +3374,7 @@ msgstr "بازیکنان"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "لطفاً اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید."
@@ -4282,7 +4247,6 @@ msgstr "اشتراک"
 msgid "Sunday"
 msgstr "یکشنبه"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

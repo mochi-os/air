@@ -431,16 +431,12 @@ msgstr "Minden mód"
 msgid "All servers"
 msgstr "Minden kiszolgáló"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Engedélyezés"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Bárki rákereshessen erre: {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "A fejlesztők olvashatják a repülési felvételeidet a játék fejlesztéséhez"
 
@@ -707,10 +703,6 @@ msgstr "Érdeklődés növelése"
 msgid "Border colour"
 msgstr "Szegélyszín"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botok"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Képaláírás"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Eset I (nappal)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: repülj fel a hajónyomon, {heading}, 800', 350 csomó"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Eset II (időjárás)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: a célegyenesen, {heading}, 1200', futómű, fékszárny ki, on-speed 8.1° AOA, 140 csomó"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} létrehozása"
 msgid "Create and fly"
 msgstr "Létrehozás és repülés"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Repülés létrehozása"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Meccs létrehozása"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Küldetés létrehozása"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Megjeleníti a mobil oldalsávot."
 msgid "Does not match the required pattern"
 msgstr "Nem felel meg a megadott mintának"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Tiltás"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Összes kibontása"
 msgid "Expand sidebar"
 msgstr "Oldalsáv kibontása"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Repülési tippek"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Repülési napló"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Repülési felvételek"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importálás"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Levegőben"
 
@@ -2386,7 +2355,6 @@ msgstr "Érdeklődés: {weight}"
 msgid "Interests"
 msgstr "Érdeklődések"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "CSATLAKOZOTT"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Párbaj"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Értesítések: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Kezdő"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Be"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Hordozón"
 
@@ -3211,7 +3176,6 @@ msgstr "Hordozón"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapulton: engedd ki az indítórudat a beakasztáshoz"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Kifutópályán"
@@ -3410,6 +3374,7 @@ msgstr "Játékosok"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Ellenőrizze az internetkapcsolatát, és próbálja újra."
@@ -4282,7 +4247,6 @@ msgstr "Feliratkozás"
 msgid "Sunday"
 msgstr "Vasárnap"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

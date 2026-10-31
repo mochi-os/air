@@ -431,16 +431,12 @@ msgstr "सभी मोड"
 msgid "All servers"
 msgstr "सभी सर्वर"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "अनुमति दें"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "किसी को भी {entityLabel} खोजने की अनुमति दें"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "गेम को बेहतर बनाने के लिए डेवलपर्स को आपकी उड़ान रिकॉर्डिंग पढ़ने की अनुमति दें"
 
@@ -707,10 +703,6 @@ msgstr "रुचि बढ़ाएँ"
 msgid "Border colour"
 msgstr "बॉर्डर रंग"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "बॉट"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "बॉट"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "कैप्शन"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "केस I (दिन)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: जहाज़ के वेक पर उड़ें, {heading}, 800', 350 नॉट"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "केस II (मौसम)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: फाइनल पर, {heading}, 1200', गियर, फ्लैप नीचे, on-speed 8.1° AOA, 140 नॉट"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} बनाएँ"
 msgid "Create and fly"
 msgstr "बनाएँ और उड़ान भरें"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "उड़ान बनाएँ"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "मैच बनाएँ"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "मिशन बनाएँ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "मोबाइल साइडबार प्रदर्शित क
 msgid "Does not match the required pattern"
 msgstr "आवश्यक पैटर्न से मेल नहीं खाता"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "अनुमति न दें"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "सभी विस्तृत करें"
 msgid "Expand sidebar"
 msgstr "साइडबार विस्तृत करें"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "उड़ान संकेत"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "उड़ान लॉग"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "उड़ान रिकॉर्डिंग"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "आयात"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "हवा में"
 
@@ -2386,7 +2355,6 @@ msgstr "रुचि {weight}"
 msgid "Interests"
 msgstr "रुचियाँ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "शामिल हुए"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "जौस्ट"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "सूचनाएँ: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "नौसिखिया"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "चालू"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "वाहक पर"
 
@@ -3211,7 +3176,6 @@ msgstr "वाहक पर"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "कैटापुल्ट पर: जुड़ने के लिए लॉन्च बार नीचे करें"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "रनवे पर"
@@ -3410,6 +3374,7 @@ msgstr "खिलाड़ी"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "कृपया अपना इंटरनेट कनेक्शन जाँचें और फिर से प्रयास करें।"
@@ -4282,7 +4247,6 @@ msgstr "सब्सक्राइब करें"
 msgid "Sunday"
 msgstr "रविवार"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

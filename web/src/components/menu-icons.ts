@@ -3,7 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 // One picture per setting value, for the two places that offer the same
-// choices: the Create mission dialog and the Create match form on the server
+// choices: the Create flight dialog and the Create match form on the server
 // page. Kept out of menu-parts.tsx so that file stays components-only.
 import {
   Cloud,

@@ -431,16 +431,12 @@ msgstr "Všechny režimy"
 msgid "All servers"
 msgstr "Všechny servery"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Povolit"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Povolit komukoli vyhledávat {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Povolit vývojářům číst vaše záznamy letů za účelem vylepšení hry"
 
@@ -707,10 +703,6 @@ msgstr "Zvýšit zájem"
 msgid "Border colour"
 msgstr "Barva okraje"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Boti"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Popisek"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Případ I (den)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: leť nad brázdou lodi, {heading}, 800', 350 uzlů"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Případ II (počasí)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: na finále, {heading}, 1200', podvozek, klapky dole, přibližovací rychlost 8.1° AOA, 140 uzlů"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Vytvořit {entityLabel}"
 msgid "Create and fly"
 msgstr "Vytvořit a letět"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Vytvořit let"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Vytvořit zápas"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Vytvořit misi"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Zobrazí mobilní postranní panel."
 msgid "Does not match the required pattern"
 msgstr "Neodpovídá požadovanému vzoru"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Nepovolit"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Rozbalit vše"
 msgid "Expand sidebar"
 msgstr "Rozbalit postranní panel"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Letové nápovědy"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Letový deník"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Záznamy letů"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importovat"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Ve vzduchu"
 
@@ -2386,7 +2355,6 @@ msgstr "Zájem {weight}"
 msgid "Interests"
 msgstr "Zájmy"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "SE PŘIPOJIL"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Klání"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Oznámení: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Začátečník"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Zapnuto"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Na letadlové lodi"
 
@@ -3211,7 +3176,6 @@ msgstr "Na letadlové lodi"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Na katapultu: vysuň startovací tyč pro zaháknutí"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Na ranveji"
@@ -3410,6 +3374,7 @@ msgstr "Hráči"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Zkontrolujte připojení k internetu a zkuste to znovu."
@@ -4282,7 +4247,6 @@ msgstr "Odebírat"
 msgid "Sunday"
 msgstr "Neděle"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

@@ -59,7 +59,7 @@ export function absorb(saved: Partial<MissionConfig>): MissionConfig {
 // seeded is what the first save on an account with nothing stored writes: the
 // config in memory, which on a shared browser can be another account's cached
 // settings - so never its answer on sharing, which only this account's player
-// can give. Without it the menu asks.
+// can give. Without it the switch reads as allowed.
 export function seeded(config: MissionConfig): MissionConfig {
   const out = { ...config }
   delete out.sharing

@@ -45,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@mochi/web/components/ui/select'
+import { Switch } from '@mochi/web/components/ui/switch'
 import { Tabs, TabsList, TabsTrigger } from '@mochi/web/components/ui/tabs'
 import {
   Tooltip,
@@ -54,7 +55,6 @@ import {
 import {
   Check,
   ChevronRight,
-  ClipboardList,
   CloudRain,
   Compass,
   Crosshair,
@@ -159,16 +159,13 @@ function Segmented<T extends string>({
   )
 }
 
-// The front page tiles. They are Cards rather than <button>s: a button's
-// content model has no room for the icon/title block, and wrapping one in
-// `display: contents` leaves no box for the focus ring to paint on. So the Card
-// carries the button role and answers Enter and Space itself, which is what a
-// real button would have given for free — without it the three dialogs behind
-// these tiles could not be opened from a keyboard at all. Flight log stays a
-// real link (middle-click, open in a new tab); its anchor has no box either, so
-// the ring is painted on the Card through the group.
+// The front page's buttons: compact cards, the icon beside its name. They are
+// real buttons, so Enter and Space open them as any button does, and a button
+// holds phrasing content only, so the parts are spans and the box is the Card's
+// classes rather than a Card. Flight log is a real link instead (middle-click,
+// open in a new tab), dressed the same.
 const TILE =
-  'hover:border-primary/40 hover:bg-hover flex flex-row items-center gap-3 px-3.5 py-3 text-start transition-all cursor-pointer group outline-none'
+  'group bg-surface-1 text-card-foreground border-border hover:border-primary/40 hover:bg-hover focus-visible:border-ring focus-visible:ring-ring/50 flex cursor-pointer flex-row items-center gap-3 rounded-lg border-[length:var(--card-border-width)] px-3.5 py-3 text-start shadow-[var(--card-shadow)] transition-all outline-none focus-visible:ring-[3px]'
 
 function TileFace({
   icon: Icon,
@@ -179,12 +176,12 @@ function TileFace({
 }) {
   return (
     <>
-      <div className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
+      <span className='text-foreground group-hover:text-primary flex size-8 shrink-0 items-center justify-center transition-colors'>
         <Icon className='size-4' />
-      </div>
-      <div className='min-w-0 flex-1'>
-        <div className='truncate text-sm font-semibold'>{title}</div>
-      </div>
+      </span>
+      <span className='min-w-0 flex-1 truncate text-sm font-semibold'>
+        {title}
+      </span>
     </>
   )
 }
@@ -201,23 +198,9 @@ function Tile({
   className?: string
 }) {
   return (
-    <Card
-      role='button'
-      tabIndex={0}
-      onClick={onOpen}
-      onKeyDown={(e) => {
-        if (e.key !== 'Enter' && e.key !== ' ') return
-        e.preventDefault() // Space scrolls the page otherwise
-        onOpen()
-      }}
-      className={cn(
-        TILE,
-        'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-        className
-      )}
-    >
+    <button type='button' onClick={onOpen} className={cn(TILE, className)}>
       <TileFace icon={icon} title={title} />
-    </Card>
+    </button>
   )
 }
 
@@ -1349,6 +1332,39 @@ function ServerFlow({
   )
 }
 
+// Whether the developers may read this player's flight recordings: beside the
+// create flight dialog's Fly button until the player has set it, and from then
+// on only in the general settings. Unset reads as allowed. Judged once per
+// opening, as the dialog mounts its footer afresh each time, so the switch
+// stays put while it is flipped.
+function SharingSwitch({
+  sharing,
+  onChange,
+}: {
+  sharing: boolean | undefined
+  onChange: (value: boolean) => void
+}) {
+  const [unset] = useState(() => sharing === undefined)
+  if (!unset) return null
+  return (
+    <div className='flex min-w-0 items-center gap-3'>
+      <Switch
+        id='mission-sharing'
+        checked={sharing !== false}
+        onCheckedChange={onChange}
+      />
+      <Label
+        htmlFor='mission-sharing'
+        className='text-card-foreground cursor-pointer text-sm leading-5 font-medium'
+      >
+        <Trans>
+          Allow developers to read your flight recordings to improve the game
+        </Trans>
+      </Label>
+    </div>
+  )
+}
+
 function MissionPanel({
   config,
   set,
@@ -1696,35 +1712,6 @@ export function MissionSetup({
   const alert = verdict ?? (strained ? 'performance' : null)
   const close = () => setDialog(null)
 
-  const BANDITS: Record<string, ReactNode> = {
-    novice: <Trans>Novice</Trans>,
-    intermediate: <Trans>Intermediate</Trans>,
-    expert: <Trans>Expert</Trans>,
-    superhuman: <Trans>Superhuman</Trans>,
-  }
-  const STARTS: Record<string, ReactNode> = {
-    air: <Trans>In air</Trans>,
-    runway: <Trans>On runway</Trans>,
-    carrier: <Trans>On carrier</Trans>,
-    case1: <Trans>Case I</Trans>,
-    case2: <Trans>Case II</Trans>,
-    case3: <Trans>Case III</Trans>,
-  }
-  const started =
-    config.task === 'joust' ? (
-      <>
-        <Trans>Joust</Trans> ·{' '}
-        {BANDITS[String(config.bandit || 'intermediate')] ?? BANDITS.intermediate}
-        {config.duel === 'bvr' ? ' · BVR' : ''}
-      </>
-    ) : config.start === 'case1' && config.demonstration ? (
-      <>
-        {STARTS.case1} · <Trans>bot</Trans>
-      </>
-    ) : (
-      STARTS[config.start === 'landing' ? 'case2' : config.start]
-    )
-
   return (
     <div className='bg-background fixed inset-0 z-50 overflow-x-hidden overflow-y-auto'>
       <div className='flex min-h-full items-center justify-center p-6'>
@@ -1778,55 +1765,32 @@ export function MissionSetup({
             </div>
           )}
 
-          <Card
-            className='border-primary/40 hover:border-primary cursor-pointer py-0 shadow-sm transition-all hover:shadow-md'
-            onClick={onStart}
-          >
-            <CardContent className='flex items-center justify-between px-5 py-3.5'>
-              <span className='text-foreground font-mono text-sm'>
-                {started}
-              </span>
-              <Button size='lg' className='gap-2 px-6 font-bold'>
-                <Play className='size-5 fill-current' />
-                <Trans>Fly</Trans>
-              </Button>
-            </CardContent>
-          </Card>
-
+          {/* Every flight starts at Fly, through the create flight dialog: the
+              menu never launches one unseen. */}
           <div className='grid grid-cols-2 gap-3'>
             <Tile
-              icon={ClipboardList}
-              title={<Trans>Create mission</Trans>}
+              icon={Plane}
+              title={<Trans>Fly</Trans>}
               onOpen={() => setDialog('mission')}
+              className='col-span-2'
             />
             <Tile
               icon={Users}
               title={<Trans>Join server</Trans>}
               onOpen={() => setDialog('server')}
             />
+            <Link to='/log' search={(prev) => prev} className={TILE}>
+              <TileFace icon={History} title={<Trans>Flight log</Trans>} />
+            </Link>
             <Tile
               icon={Settings}
               title={<Trans>Settings</Trans>}
               onOpen={() => setDialog('settings')}
             />
-            <Link
-              to='/log'
-              search={(prev) => prev}
-              className='group/tile contents'
-            >
-              <Card
-                className={`${TILE} group-focus-visible/tile:border-ring group-focus-visible/tile:ring-ring/50 group-focus-visible/tile:ring-[3px]`}
-              >
-                <TileFace icon={History} title={<Trans>Flight log</Trans>} />
-              </Card>
-            </Link>
-            {/* Across both columns and shallow: the way out of the game to the
-                people who make it, a step down from the four above. */}
             <Tile
               icon={MessageSquare}
               title={<Trans>Feedback</Trans>}
               onOpen={() => setDialog('feedback')}
-              className='col-span-2 py-1'
             />
           </div>
 
@@ -1841,14 +1805,22 @@ export function MissionSetup({
       <MenuDialog
         open={dialog === 'mission'}
         onClose={close}
-        title={<Trans>Create mission</Trans>}
+        title={<Trans>Create flight</Trans>}
         wide
         steady
         footer={
-          <div className='flex items-center justify-end'>
+          <div className='flex items-center gap-4'>
+            <SharingSwitch
+              sharing={config.sharing}
+              onChange={(v) => set('sharing', v)}
+            />
             <Button
-              className='min-w-36 gap-2 font-semibold shadow-sm'
+              className='ms-auto min-w-36 shrink-0 gap-2 font-semibold shadow-sm'
               onClick={() => {
+                // Flying with the switch shown answers it as shown: allowed
+                // unless turned off. Saved, so it shows on the first flight
+                // only.
+                if (config.sharing === undefined) set('sharing', true)
                 close()
                 onStart()
               }}

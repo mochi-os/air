@@ -431,16 +431,12 @@ msgstr "سڀ موڊ"
 msgid "All servers"
 msgstr "سڀ سرور"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "اجازت ڏيو"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "سڀ ڪنهن کي {entityLabel} ڳولڻ جي اجازت ڏيو"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "راند کي بهتر بڻائڻ لاءِ ڊولپرز کي توهان جون اڏام جون رڪارڊنگون پڙهڻ جي اجازت ڏيو"
 
@@ -707,10 +703,6 @@ msgstr "دلچسپي وڌايو"
 msgid "Border colour"
 msgstr "ڪناري جو رنگ"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "بوٽ"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "بوٽ"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "ڪيپشن"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "حالت I (ڏينهن)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: ٻيڙيءَ جي پوئين لهر مٿان اُڏامو، {heading}، 800'، 350 ناٽ"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "حالت II (موسم)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: فائنل تي، {heading}، 1200'، گيئر، فليپ هيٺ، لهڻ واري رفتار 8.1° AOA، 140 ناٽ"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} ٺاهيو"
 msgid "Create and fly"
 msgstr "ٺاهيو ۽ اڏامو"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "اڏام ٺاهيو"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "ميچ ٺاهيو"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "مشن ٺاهيو"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "موبائل سائڊبار ڏيکاري ٿو."
 msgid "Does not match the required pattern"
 msgstr "گهربل نموني سان ميل نٿو کائي"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "اجازت نه ڏيو"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "سڀ پکيڙيو"
 msgid "Expand sidebar"
 msgstr "سائڊبار وڌايو"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "اڏام جا اشارا"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "اڏام جو لاگ"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "اڏام جون رڪارڊنگون"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "درآمد"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "هوا ۾"
 
@@ -2386,7 +2355,6 @@ msgstr "دلچسپي {weight}"
 msgid "Interests"
 msgstr "دلچسپيون"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "شامل ٿي ويو"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "جوسٽ"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "اطلاعون: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "نئون سکندڙ"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "آن"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "جهازبردار تي"
 
@@ -3211,7 +3176,6 @@ msgstr "جهازبردار تي"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "ڪيٽاپلٽ تي: ڳنڍڻ لاءِ لانچ بار هيٺ ڪريو"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "رن وي تي"
@@ -3410,6 +3374,7 @@ msgstr "رانديگر"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "مهرباني ڪري پنهنجو انٽرنيٽ ڪنيڪشن چيڪ ڪريو ۽ ٻيهر ڪوشش ڪريو."
@@ -4282,7 +4247,6 @@ msgstr "سبسڪرائب ڪريو"
 msgid "Sunday"
 msgstr "آچر"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

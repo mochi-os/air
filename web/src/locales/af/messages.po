@@ -431,16 +431,12 @@ msgstr "Alle modusse"
 msgid "All servers"
 msgstr "Alle bedieners"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Laat toe"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Laat enigiemand toe om na {entityLabel} te soek"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Laat ontwikkelaars toe om jou vlugopnames te lees om die speletjie te verbeter"
 
@@ -707,10 +703,6 @@ msgstr "Versterk belangstelling"
 msgid "Border colour"
 msgstr "Randkleur"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bots"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Byskrif"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Geval I (dag)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: vlieg op met die skeepspoor, {heading}, 800', 350 knope"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Geval II (weer)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: op finaal, {heading}, 1200', onderstel, flappe af, op-spoed 8.1° AOA, 140 knope"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Skep {entityLabel}"
 msgid "Create and fly"
 msgstr "Skep en vlieg"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Skep vlug"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Skep wedstryd"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Skep missie"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Vertoon die mobiele sybalk."
 msgid "Does not match the required pattern"
 msgstr "Stem nie met die vereiste patroon ooreen nie"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Moenie toelaat nie"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Vou alles uit"
 msgid "Expand sidebar"
 msgstr "Brei sybalk uit"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Vlugwenke"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Vlugjoernaal"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Vlugopnames"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Voer in"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "In die lug"
 
@@ -2386,7 +2355,6 @@ msgstr "Belangstelling {weight}"
 msgid "Interests"
 msgstr "Belange"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "HET AANGESLUIT"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Steekspel"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Kennisgewings: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Beginner"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Aan"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Op vliegdekskip"
 
@@ -3211,7 +3176,6 @@ msgstr "Op vliegdekskip"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Op katapult: strek lanseerstang uit om vas te haak"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Op aanloopbaan"
@@ -3410,6 +3374,7 @@ msgstr "Spelers"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Gaan asseblief jou internetverbinding na en probeer weer."
@@ -4282,7 +4247,6 @@ msgstr "Teken in"
 msgid "Sunday"
 msgstr "Sondag"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

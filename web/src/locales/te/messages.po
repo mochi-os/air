@@ -431,16 +431,12 @@ msgstr "అన్ని మోడ్‌లు"
 msgid "All servers"
 msgstr "అన్ని సర్వర్‌లు"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "అనుమతించండి"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "{entityLabel} కోసం వెతకడానికి ఎవరినైనా అనుమతించు"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "గేమ్‌ను మెరుగుపరచడానికి డెవలపర్‌లు మీ విమాన రికార్డింగ్‌లను చదవడానికి అనుమతించండి"
 
@@ -707,10 +703,6 @@ msgstr "ఆసక్తిని పెంచండి"
 msgid "Border colour"
 msgstr "అంచు రంగు"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "బాట్"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "బాట్‌లు"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "క్యాప్షన్"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "కేసు I (పగలు)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: ఓడ జాడపై ఎగురు, {heading}, 800', 350 నాట్స్"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "కేసు II (వాతావరణం)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: ఫైనల్‌లో, {heading}, 1200', గేర్, ఫ్లాప్స్ కిందికి, అప్రోచ్ వేగం 8.1° AOA, 140 నాట్స్"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} సృష్టించు"
 msgid "Create and fly"
 msgstr "సృష్టించి ఎగరండి"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "విమానయానం సృష్టించు"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "మ్యాచ్ సృష్టించండి"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "మిషన్ సృష్టించు"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "మొబైల్ సైడ్‌బార్‌ను ప్రదర�
 msgid "Does not match the required pattern"
 msgstr "అవసరమైన నమూనాతో సరిపోలడం లేదు"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "అనుమతించవద్దు"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "అన్నీ విస్తరించు"
 msgid "Expand sidebar"
 msgstr "సైడ్‌బార్‌ను విస్తరించండి"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "విమాన సూచనలు"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "విమానయాన లాగ్"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "విమాన రికార్డింగ్‌లు"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "దిగుమతి"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "గాలిలో"
 
@@ -2386,7 +2355,6 @@ msgstr "ఆసక్తి {weight}"
 msgid "Interests"
 msgstr "ఆసక్తులు"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "చేరారు"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "ద్వంద్వ పోరు"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "నోటిఫికేషన్‌లు: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "కొత్తవారు"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "ఆన్"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "వాహక నౌకపై"
 
@@ -3211,7 +3176,6 @@ msgstr "వాహక నౌకపై"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "కేటాపుల్ట్‌పై: కట్టడానికి ప్రయోగ కడ్డీని దించు"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "రన్‌వేపై"
@@ -3410,6 +3374,7 @@ msgstr "ఆటగాళ్లు"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "దయచేసి మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేసి మళ్లీ ప్రయత్నించండి."
@@ -4282,7 +4247,6 @@ msgstr "చందా చేరండి"
 msgid "Sunday"
 msgstr "ఆదివారం"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

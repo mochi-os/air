@@ -431,16 +431,12 @@ msgstr "Opa reko"
 msgid "All servers"
 msgstr "Opa mohendaha"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Emoneĩ"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Emoneĩ opavavépe oheka {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Emoneĩ umi mbaʼeapoharakuérape olee hag̃ua nde veve ñongatupy, oñemyporãve hag̃ua ñembosarái"
 
@@ -707,10 +703,6 @@ msgstr "Embotuicha interés"
 msgid "Border colour"
 msgstr "Borde sa'y"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botkuéra"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Ñemyesakã"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Kaso I (ára)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: eveve várko rapykuere ári, {heading}, 800', 350 nudo"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Kaso II (arapytu)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: final-pe, {heading}, 1200', tren, flaps oguejy, on-speed 8.1° AOA, 140 nudo"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Emoheñói {entityLabel}"
 msgid "Create and fly"
 msgstr "Emoheñói ha eveve"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Emoheñói veve"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Emoheñói partida"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Emoheñói misión"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Ohechauka móvil yke panel."
 msgid "Does not match the required pattern"
 msgstr "Ndojojái pe patrón ojejeruréva ndive"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Ani emoneĩ"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Mbotuichamba"
 msgid "Expand sidebar"
 msgstr "Embotuicha yke panel"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Consejo veve rehegua"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Veve registro"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Veve ñongatupy"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Ñemoinge"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Yvytúpe"
 
@@ -2386,7 +2355,6 @@ msgstr "Interés {weight}"
 msgid "Interests"
 msgstr "Interéskuéra"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "OIKE"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Justa"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Momarandu: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Oñepyrũva"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Myendy"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Portaaviones ári"
 
@@ -3211,7 +3176,6 @@ msgstr "Portaaviones ári"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapúlta ári: emboguejy emosẽha yvyra rejoko hag̃ua"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Pista ári"
@@ -3410,6 +3374,7 @@ msgstr "Ñembosaráihára"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Ehechami nde internet conexión ha eha'ã jey."
@@ -4282,7 +4247,6 @@ msgstr "Esuscribi"
 msgid "Sunday"
 msgstr "Arapokõi"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

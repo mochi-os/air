@@ -431,16 +431,12 @@ msgstr "Svi načini"
 msgid "All servers"
 msgstr "Svi serveri"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Dozvoli"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Dozvoli svima da traže {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Dozvoli programerima da čitaju vaše snimke letova radi poboljšanja igre"
 
@@ -707,10 +703,6 @@ msgstr "Pojačaj interes"
 msgid "Border colour"
 msgstr "Boja okvira"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botovi"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Opis"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Slučaj I (dan)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: leti iznad brazde broda, {heading}, 800', 350 čvorova"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Slučaj II (vrijeme)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: na finalu, {heading}, 1200', trap, zakrilca spušteni, brzina prilaza 8.1° AOA, 140 čvorova"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Kreiraj {entityLabel}"
 msgid "Create and fly"
 msgstr "Kreiraj i leti"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Napravi let"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Kreiraj meč"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Napravi misiju"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Prikazuje mobilnu bočnu traku."
 msgid "Does not match the required pattern"
 msgstr "Ne odgovara traženom obrascu"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Ne dozvoli"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Proširi sve"
 msgid "Expand sidebar"
 msgstr "Proširi bočnu traku"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Savjeti za let"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Dnevnik letenja"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Snimci letova"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Uvezi"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "U zraku"
 
@@ -2386,7 +2355,6 @@ msgstr "Interes {weight}"
 msgid "Interests"
 msgstr "Interesi"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "SE PRIDRUŽIO"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Dvoboj"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Obavijesti: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Početnik"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Uključeno"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Na nosaču"
 
@@ -3211,7 +3176,6 @@ msgstr "Na nosaču"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Na katapultu: spusti startnu polugu da se zakačiš"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Na pisti"
@@ -3410,6 +3374,7 @@ msgstr "Igrači"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Provjerite svoju internetsku vezu i pokušajte ponovo."
@@ -4282,7 +4247,6 @@ msgstr "Pretplati se"
 msgid "Sunday"
 msgstr "Nedjelja"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

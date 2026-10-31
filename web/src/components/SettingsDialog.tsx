@@ -1377,8 +1377,8 @@ function GeneralPanel({
         />
       </div>
 
-      {/* The answer the first Fly asked for, changed here. Unset reads as
-          not allowed. */}
+      {/* The create flight dialog shows this switch only until it is set;
+          here it always shows. Unset reads as allowed. */}
       <div>
         <SwitchRow
           id='sharing'
@@ -1389,7 +1389,7 @@ function GeneralPanel({
               game
             </Trans>
           }
-          checked={config.sharing === true}
+          checked={config.sharing !== false}
           onChange={(v) => set('sharing', v)}
         />
       </div>

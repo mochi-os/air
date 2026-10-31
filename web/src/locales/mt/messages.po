@@ -431,16 +431,12 @@ msgstr "Il-modi kollha"
 msgid "All servers"
 msgstr "Is-servers kollha"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Ippermetti"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Ħalli lil kulħadd ifittex {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Ippermetti lill-iżviluppaturi jaqraw ir-reġistrazzjonijiet tat-titjiriet tiegħek biex itejbu l-logħba"
 
@@ -707,10 +703,6 @@ msgstr "Saħħaħ l-interess"
 msgid "Border colour"
 msgstr "Kulur tal-bord"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bots"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Didaskalija"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Każ I (jum)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: tir tul il-mogħdija tal-vapur, {heading}, 800', 350 nott"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Każ II (temp)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: fuq il-final, {heading}, 1200', gear, flaps 'l isfel, on-speed 8.1° AOA, 140 nott"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Oħloq {entityLabel}"
 msgid "Create and fly"
 msgstr "Oħloq u tir"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Oħloq titjira"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Oħloq partita"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Oħloq missjoni"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Juri l-barra tal-ġenb tal-mobile."
 msgid "Does not match the required pattern"
 msgstr "Ma jaqbilx mal-mudell meħtieġ"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Tippermettix"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Espandi kollox"
 msgid "Expand sidebar"
 msgstr "Espandi s-sidebar"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Suġġerimenti tat-titjir"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Ġurnal tat-titjiriet"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Reġistrazzjonijiet tat-titjiriet"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importa"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Fl-arja"
 
@@ -2386,7 +2355,6 @@ msgstr "Interess {weight}"
 msgid "Interests"
 msgstr "Interessi"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "INGĦAQAD"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Duell"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Notifiki: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Beġinner"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Mixgħul"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Fuq il-bastiment"
 
@@ -3211,7 +3176,6 @@ msgstr "Fuq il-bastiment"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Fuq il-katapulta: niżżel il-virga tat-tluq biex tinqabad"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Fuq il-pista"
@@ -3410,6 +3374,7 @@ msgstr "Plejers"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Jekk jogħġbok iċċekkja l-konnessjoni tal-internet tiegħek u erġa' pprova."
@@ -4282,7 +4247,6 @@ msgstr "Abbona"
 msgid "Sunday"
 msgstr "Il-Ħadd"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

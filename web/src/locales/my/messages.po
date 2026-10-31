@@ -431,16 +431,12 @@ msgstr "မုဒ်အားလုံး"
 msgid "All servers"
 msgstr "ဆာဗာအားလုံး"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "ခွင့်ပြုရန်"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "{entityLabel} ကို မည်သူမဆို ရှာဖွေခွင့်ပြုပါ"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "ဂိမ်းကို ပိုကောင်းအောင် ပြုလုပ်ရန် ဆော့ဖ်ဝဲရေးသားသူများအား သင့်ပျံသန်းမှု မှတ်တမ်းများကို ဖတ်ရှုခွင့်ပြုရန်"
 
@@ -707,10 +703,6 @@ msgstr "စိတ်ဝင်စားမှု မြှင့်တင်မ�
 msgid "Border colour"
 msgstr "ဘောင်အရောင်"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "ဘော့"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "ဘော့တ်များ"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "စာတန်း"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "ဖြစ်ရပ် I (နေ့)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: သင်္ဘောရေရာအတိုင်း ပျံပါ, {heading}, 800', 350 နော့တ်"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "ဖြစ်ရပ် II (မိုးလေဝသ)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: နောက်ဆုံးအဆင့်တွင်, {heading}, 1200', ဂီယာ, ဖလက်ချ, on-speed 8.1° AOA, 140 နော့တ်"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} ဖန်တီးရန်"
 msgid "Create and fly"
 msgstr "ဖန်တီးပြီး ပျံသန်းမည်"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "ပျံသန်းမှုဖန်တီး"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "ပွဲစဉ် ဖန်တီးမည်"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "မစ်ရှင်ဖန်တီး"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "မိုဘိုင်း ဘေးဘားကို ပြသသည�
 msgid "Does not match the required pattern"
 msgstr "လိုအပ်သော ပုံစံနှင့် မကိုက်ညီပါ"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "ခွင့်မပြုရန်"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "အားလုံး ချဲ့ရန်"
 msgid "Expand sidebar"
 msgstr "ဘေးဘားကို ချဲ့ပါ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "ပျံသန်းမှု လမ်းညွှန်ချက်�
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "ပျံသန်းမှုမှတ်တမ်း"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "ပျံသန်းမှု မှတ်တမ်းများ"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "တင်သွင်း"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "လေထဲတွင်"
 
@@ -2386,7 +2355,6 @@ msgstr "စိတ်ဝင်စားမှု {weight}"
 msgid "Interests"
 msgstr "စိတ်ဝင်စားမှုများ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "ဝင်လာသည်"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "မျက်နှာချင်းဆိုင်တိုက်ပွဲ"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "အကြောင်းကြားချက်များ- {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "အစပြုသူ"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "ဖွင့်"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "လေယာဉ်တင်သင်္ဘောပေါ်"
 
@@ -3211,7 +3176,6 @@ msgstr "လေယာဉ်တင်သင်္ဘောပေါ်"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "ကတ်တာပတ်ပေါ်တွင်: ချိတ်ရန် ပစ်လွှတ်တံကို ချပါ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "လေယာဉ်ပြေးလမ်းပေါ်"
@@ -3410,6 +3374,7 @@ msgstr "ကစားသမားများ"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "သင့်အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။"
@@ -4282,7 +4247,6 @@ msgstr "စာရင်းသွင်းမည်"
 msgid "Sunday"
 msgstr "တနင်္ဂနွေ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

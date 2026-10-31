@@ -431,16 +431,12 @@ msgstr "所有模式"
 msgid "All servers"
 msgstr "所有伺服器"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "允許"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "允許任何人搜尋{entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "允許開發者讀取你的飛行記錄以改進遊戲"
 
@@ -707,10 +703,6 @@ msgstr "提升興趣"
 msgid "Border colour"
 msgstr "邊框顏色"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "機器人"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "電腦玩家"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "說明文字"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "情況 I (晝間)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: 沿艦尾尾流飛行，{heading}，800'，350 節"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "情況 II (氣象)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: 最後進場，{heading}，1200'，起落架，襟翼放下，進場攻角 8.1° AOA，140 節"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "建立{entityLabel}"
 msgid "Create and fly"
 msgstr "建立並起飛"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "建立飛行"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "建立對戰"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "建立任務"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "顯示行動裝置側邊欄。"
 msgid "Does not match the required pattern"
 msgstr "與所需的模式不符"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "不允許"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "全部展開"
 msgid "Expand sidebar"
 msgstr "展開側邊欄"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "飛行提示"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "飛行日誌"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "飛行記錄"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "匯入"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "空中"
 
@@ -2386,7 +2355,6 @@ msgstr "興趣 {weight}"
 msgid "Interests"
 msgstr "興趣"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "已加入"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "對衝"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "通知：{0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "新手"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "開啟"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "在航艦上"
 
@@ -3211,7 +3176,6 @@ msgstr "在航艦上"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "在彈射器上: 放下彈射桿以掛接"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "在跑道上"
@@ -3410,6 +3374,7 @@ msgstr "玩家"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "請檢查您的網際網路連線後再試一次。"
@@ -4282,7 +4247,6 @@ msgstr "訂閱"
 msgid "Sunday"
 msgstr "星期日"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

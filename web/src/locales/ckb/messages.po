@@ -431,16 +431,12 @@ msgstr "هەموو دۆخەکان"
 msgid "All servers"
 msgstr "هەموو ڕاژەکان"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "ڕێگەپێدان"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "ڕێگە بدە بە هەموان بۆ گەڕان بەدوای {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "ڕێگە بە گەشەپێدەران بدە تۆمارەکانی فڕینەکانت بخوێننەوە بۆ باشترکردنی یارییەکە"
 
@@ -707,10 +703,6 @@ msgstr "بەهێزکردنی بایەخ"
 msgid "Border colour"
 msgstr "ڕەنگی سنوور"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "بۆت"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "بۆتەکان"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "ژێرنووس"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "حاڵەت I (ڕۆژ)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: بەسەر شوێنپێی کەشتیدا بفڕە، {heading}، 800'، 350 گرێ"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "حاڵەت II (کەشوهەوا)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: لە کۆتاییدا، {heading}، 1200'، گیڕ، فلاپ خوارەوە، خێرایی نزیکبوونەوە 8.1° AOA، 140 گرێ"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "دروستکردنی {entityLabel}"
 msgid "Create and fly"
 msgstr "دروستی بکە و بفڕە"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "دروستکردنی فڕین"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "یاری دروست بکە"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "دروستکردنی ئەرک"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "لاتەنیشتی مۆبایل پیشان دەدات."
 msgid "Does not match the required pattern"
 msgstr "لەگەڵ ئەو نەخشەیەی داواکراوە ناگونجێت"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "ڕێگەنەدان"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "فراوانکردنی هەموو"
 msgid "Expand sidebar"
 msgstr "فراوانکردنی لاتەنیشت"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "ئامۆژگارییەکانی فڕین"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "تۆماری فڕین"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "تۆمارەکانی فڕین"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "هاوردەکردن"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "لە هەوادا"
 
@@ -2386,7 +2355,6 @@ msgstr "ئارەزوو {weight}"
 msgid "Interests"
 msgstr "ئارەزووەکان"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "بەشداری کرد"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "دووەڵ"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "ئاگادارکردنەوەکان: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "دەستپێکەر"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "کارا"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "لەسەر هەڵگر"
 
@@ -3211,7 +3176,6 @@ msgstr "لەسەر هەڵگر"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "لەسەر مەنجەنیق: شیشی هەڵدان دابەزێنە بۆ بەستنەوە"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "لەسەر باندی فڕین"
@@ -3410,6 +3374,7 @@ msgstr "یاریزانان"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "تکایە پەیوەندی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە."
@@ -4282,7 +4247,6 @@ msgstr "بەشداربە"
 msgid "Sunday"
 msgstr "یەکشەممە"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

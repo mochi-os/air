@@ -431,16 +431,12 @@ msgstr "Visi režimai"
 msgid "All servers"
 msgstr "Visi serveriai"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Leisti"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Leisti visiems ieškoti: {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Leisti kūrėjams skaityti jūsų skrydžių įrašus, kad būtų patobulintas žaidimas"
 
@@ -707,10 +703,6 @@ msgstr "Padidinti susidomėjimą"
 msgid "Border colour"
 msgstr "Rėmelio spalva"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "botas"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botai"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Antraštė"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Atvejis I (diena)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: skrisk laivo vaga, {heading}, 800', 350 mazgų"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Atvejis II (oras)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: finale, {heading}, 1200', važiuoklė, užsparniai žemyn, on-speed 8.1° AOA, 140 mazgų"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Sukurti {entityLabel}"
 msgid "Create and fly"
 msgstr "Sukurti ir skristi"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Sukurti skrydį"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Sukurti mačą"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Sukurti misiją"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Rodo mobiliąją šoninę juostą."
 msgid "Does not match the required pattern"
 msgstr "Neatitinka reikalaujamo šablono"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Neleisti"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Išskleisti visus"
 msgid "Expand sidebar"
 msgstr "Išskleisti šoninę juostą"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Skrydžio patarimai"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Skrydžių žurnalas"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Skrydžių įrašai"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importuoti"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Ore"
 
@@ -2386,7 +2355,6 @@ msgstr "Susidomėjimas {weight}"
 msgid "Interests"
 msgstr "Pomėgiai"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "PRISIJUNGĖ"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Dvikova"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Pranešimai: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Naujokas"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Įjungta"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Lėktuvnešyje"
 
@@ -3211,7 +3176,6 @@ msgstr "Lėktuvnešyje"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Ant katapultos: nuleisk paleidimo štangą prisikabinti"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Ant kilimo tako"
@@ -3410,6 +3374,7 @@ msgstr "Žaidėjai"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Patikrinkite interneto ryšį ir bandykite dar kartą."
@@ -4282,7 +4247,6 @@ msgstr "Prenumeruoti"
 msgid "Sunday"
 msgstr "Sekmadienis"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

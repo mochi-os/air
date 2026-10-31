@@ -13,7 +13,7 @@ import { describe, expect, it } from 'vitest'
 // class string, because prettier-plugin-tailwindcss trims those when it sorts.
 // That is exactly what happened on 2026-09-11: the app-wide reformat turned
 // `${wide ? 'sm:max-w-4xl' : …}${steady ? ' h-[…]' : ''}` into
-// `sm:max-w-4xlh-[…]`, and the Create mission dialog silently fell back to the
+// `sm:max-w-4xlh-[…]`, and the Create flight dialog silently fell back to the
 // default width. Build the list and join it instead.
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 

@@ -431,16 +431,12 @@ msgstr "Visi režīmi"
 msgid "All servers"
 msgstr "Visi serveri"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Atļaut"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Atļaut ikvienam meklēt: {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Atļaut izstrādātājiem lasīt jūsu lidojumu ierakstus, lai uzlabotu spēli"
 
@@ -707,10 +703,6 @@ msgstr "Veicināt interesi"
 msgid "Border colour"
 msgstr "Apmales krāsa"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bots"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Boti"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Paraksts"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Gadījums I (diena)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: lido pa kuģa ķīlvagu, {heading}, 800', 350 mezgli"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Gadījums II (laikapstākļi)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: finālā, {heading}, 1200', šasija, aizplākšņi lejā, on-speed 8.1° AOA, 140 mezgli"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Izveidot {entityLabel}"
 msgid "Create and fly"
 msgstr "Izveidot un lidot"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Izveidot lidojumu"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Izveidot maču"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Izveidot misiju"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Parāda mobilo sānu joslu."
 msgid "Does not match the required pattern"
 msgstr "Neatbilst prasītajam šablonam"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Neatļaut"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Izvērst visu"
 msgid "Expand sidebar"
 msgstr "Izvērst sānjoslu"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Lidojuma padomi"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Lidojumu žurnāls"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Lidojumu ieraksti"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importēt"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Gaisā"
 
@@ -2386,7 +2355,6 @@ msgstr "Interese {weight}"
 msgid "Interests"
 msgstr "Intereses"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "PIEVIENOJĀS"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Duelis"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Paziņojumi: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Iesācējs"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Ieslēgts"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Uz kuģa"
 
@@ -3211,7 +3176,6 @@ msgstr "Uz kuģa"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Uz katapultas: nolaid palaišanas stieni, lai piekabinātos"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Uz skrejceļa"
@@ -3410,6 +3374,7 @@ msgstr "Spēlētāji"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Lūdzu, pārbaudiet interneta savienojumu un mēģiniet vēlreiz."
@@ -4282,7 +4247,6 @@ msgstr "Abonēt"
 msgid "Sunday"
 msgstr "Svētdiena"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

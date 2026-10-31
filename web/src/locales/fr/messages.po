@@ -431,16 +431,12 @@ msgstr "Tous les modes"
 msgid "All servers"
 msgstr "Tous les serveurs"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Autoriser"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Autoriser tout le monde à rechercher {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Autoriser les développeurs à lire vos enregistrements de vol pour améliorer le jeu"
 
@@ -707,10 +703,6 @@ msgstr "Augmenter l'intérêt"
 msgid "Border colour"
 msgstr "Couleur de la bordure"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bots"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Légende"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Cas I (jour)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I : remonter le sillage, {heading}, 800', 350 nœuds"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Cas II (météo)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II : en finale, {heading}, 1200', train, volets sortis, on-speed 8.1° AOA, 140 nœuds"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Créer {entityLabel}"
 msgid "Create and fly"
 msgstr "Créer et voler"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Créer un vol"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Créer un match"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Créer une mission"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Affiche la barre latérale mobile."
 msgid "Does not match the required pattern"
 msgstr "Ne correspond pas au motif requis"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Ne pas autoriser"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Tout développer"
 msgid "Expand sidebar"
 msgstr "Développer la barre latérale"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Conseils de vol"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Carnet de vol"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Enregistrements de vol"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importer"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "En vol"
 
@@ -2386,7 +2355,6 @@ msgstr "Intérêt {weight}"
 msgid "Interests"
 msgstr "Centres d'intérêt"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "A REJOINT LA PARTIE"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Joute"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Notifications : {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Débutant"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Activé"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Sur le porte-avions"
 
@@ -3211,7 +3176,6 @@ msgstr "Sur le porte-avions"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Sur la catapulte : sortir la barre de catapultage pour s'accrocher"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Sur la piste"
@@ -3410,6 +3374,7 @@ msgstr "Joueurs"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Veuillez vérifier votre connexion Internet et réessayer."
@@ -4282,7 +4247,6 @@ msgstr "S'abonner"
 msgid "Sunday"
 msgstr "Dimanche"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

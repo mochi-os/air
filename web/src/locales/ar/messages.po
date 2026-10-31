@@ -431,16 +431,12 @@ msgstr "كل الأوضاع"
 msgid "All servers"
 msgstr "كل الخوادم"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "السماح"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "السماح لأي شخص بالبحث عن {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "السماح للمطورين بقراءة تسجيلات رحلاتك لتحسين اللعبة"
 
@@ -707,10 +703,6 @@ msgstr "تعزيز الاهتمام"
 msgid "Border colour"
 msgstr "لون الحدود"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "بوت"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "البوتات"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "التسمية التوضيحية"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "حالة I (نهار)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: حلّق فوق أثر السفينة، {heading}، 800'، 350 عقدة"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "حالة II (طقس)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: على النهائي، {heading}، 1200'، العجلات، القلابات للأسفل، سرعة الاقتراب 8.1° AOA، 140 عقدة"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "إنشاء {entityLabel}"
 msgid "Create and fly"
 msgstr "إنشاء وتحليق"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "إنشاء رحلة"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "إنشاء مباراة"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "إنشاء مهمة"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "يعرض الشريط الجانبي للهاتف."
 msgid "Does not match the required pattern"
 msgstr "لا يطابق النمط المطلوب"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "عدم السماح"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "توسيع الكل"
 msgid "Expand sidebar"
 msgstr "توسيع الشريط الجانبي"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "تلميحات الطيران"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "سجل الرحلات"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "تسجيلات الرحلات"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "استيراد"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "في الجو"
 
@@ -2386,7 +2355,6 @@ msgstr "الاهتمام {weight}"
 msgid "Interests"
 msgstr "الاهتمامات"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "انضم"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "مبارزة"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "الإشعارات: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "مبتدئ"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "مفعّل"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "على الحاملة"
 
@@ -3211,7 +3176,6 @@ msgstr "على الحاملة"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "على المنجنيق: أنزل ذراع الإطلاق للارتباط"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "على المدرج"
@@ -3410,6 +3374,7 @@ msgstr "اللاعبون"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى."
@@ -4282,7 +4247,6 @@ msgstr "اشتراك"
 msgid "Sunday"
 msgstr "الأحد"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

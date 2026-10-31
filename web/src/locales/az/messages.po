@@ -431,16 +431,12 @@ msgstr "Bütün rejimlər"
 msgid "All servers"
 msgstr "Bütün serverlər"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "İcazə ver"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Hər kəsə {entityLabel} axtarmağa icazə ver"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Oyunu təkmilləşdirmək üçün tərtibatçılara uçuş yazılarınızı oxumağa icazə ver"
 
@@ -707,10 +703,6 @@ msgstr "Marağı artır"
 msgid "Border colour"
 msgstr "Sərhəd rəngi"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botlar"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "İzah"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Hal I (gündüz)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: gəmi izinin üstü ilə uç, {heading}, 800', 350 düyün"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Hal II (hava)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: son düzlükdə, {heading}, 1200', şassi, flaplar aşağı, 8.1° AOA yaxınlaşma sürəti, 140 düyün"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} yarat"
 msgid "Create and fly"
 msgstr "Yarat və uç"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Uçuş yarat"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Matç yarat"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Missiya yarat"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Mobil yan paneli göstərir."
 msgid "Does not match the required pattern"
 msgstr "Tələb olunan şablona uyğun gəlmir"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "İcazə vermə"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Hamısını genişlət"
 msgid "Expand sidebar"
 msgstr "Yan paneli genişləndir"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Uçuş məsləhətləri"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Uçuş jurnalı"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Uçuş yazıları"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "İdxal et"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Havada"
 
@@ -2386,7 +2355,6 @@ msgstr "Maraq {weight}"
 msgid "Interests"
 msgstr "Maraqlar"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "QOŞULDU"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Düello"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Bildirişlər: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Yeni başlayan"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Açıq"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Daşıyıcıda"
 
@@ -3211,7 +3176,6 @@ msgstr "Daşıyıcıda"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapultda: qarmaqlanmaq üçün buraxılış ştanqını endir"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Uçuş zolağında"
@@ -3410,6 +3374,7 @@ msgstr "Oyunçular"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "İnternet bağlantınızı yoxlayıb yenidən cəhd edin."
@@ -4282,7 +4247,6 @@ msgstr "Abunə ol"
 msgid "Sunday"
 msgstr "Bazar"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

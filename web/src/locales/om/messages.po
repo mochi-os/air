@@ -431,16 +431,12 @@ msgstr "Haala hunda"
 msgid "All servers"
 msgstr "Sarvara hunda"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Hayyami"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Namni kamiyyuu {entityLabel} akka barbaadu hayyami"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Taphicha fooyyessuuf misoomsitoonni waraabbii balali'insa kee akka dubbisan hayyami"
 
@@ -707,10 +703,6 @@ msgstr "Fedhii cimsi"
 msgid "Border colour"
 msgstr "Halluu marsaa"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "botii"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bootota"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Ibsa"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Haala I (guyyaa)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: faana doonii irra balali'i, {heading}, 800', 350 noottii"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Haala II (haala qilleensaa)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: xumura irratti, {heading}, 1200', giyaara, filaapii gadi, on-speed 8.1° AOA, 140 noottii"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} uumi"
 msgid "Create and fly"
 msgstr "Uumiitii balali'i"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Balalii uumi"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Dorgommii uumi"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Ergama uumi"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Cinaa moobaayilaa mul'isa."
 msgid "Does not match the required pattern"
 msgstr "Boca barbaachisu wajjin wal hin simu"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Hin hayyamin"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Hunda babalʼisi"
 msgid "Expand sidebar"
 msgstr "Sidebar baldhisi"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Gorsa balali'uu"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Galmee balali'uu"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Waraabbii balali'insaa"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Alaa galchuu"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Qilleensa keessa"
 
@@ -2386,7 +2355,6 @@ msgstr "Fedhii {weight}"
 msgid "Interests"
 msgstr "Fedhota"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "SEENEERA"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Wal-lola"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Beeksisawwan: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Jalqabaa"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Banaa"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Doonii irra"
 
@@ -3211,7 +3176,6 @@ msgstr "Doonii irra"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Furrisaa irratti: hidhamuuf ulee darbii gadi buusi"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Daandii balalii irra"
@@ -3410,6 +3374,7 @@ msgstr "Taphattoota"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Maaloo walqunnamtii intarneetii kee mirkaneeffadhuutii irra deebi'ii yaali."
@@ -4282,7 +4247,6 @@ msgstr "Galaa'i"
 msgid "Sunday"
 msgstr "Dilbata"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

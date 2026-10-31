@@ -88,9 +88,46 @@ describe('the Feedback dialog', () => {
 
 describe('the main menu', () => {
   const menu = read('../components/MissionSetup.tsx')
-  it('offers Feedback across both columns, shallow, below the four tiles', () => {
-    expect(menu).toMatch(/<Tile\s+icon=\{MessageSquare\}\s+title=\{<Trans>Feedback<\/Trans>\}\s+onOpen=\{\(\) => setDialog\('feedback'\)\}\s+className='col-span-2 py-1'\s+\/>/)
-    expect(menu.indexOf("setDialog('feedback')")).toBeGreaterThan(menu.indexOf('<Trans>Flight log</Trans>'))
+  const start = menu.indexOf("<div className='bg-background fixed inset-0", menu.indexOf('export function MissionSetup'))
+  const page = menu.slice(start, menu.indexOf('<MenuDialog', start)) // what the menu draws, before its dialogs
+  it('opens with Fly across both columns, an aircraft on it, and it shows the create flight dialog', () => {
+    expect(page).toMatch(/<Tile\s+icon=\{Plane\}\s+title=\{<Trans>Fly<\/Trans>\}\s+onOpen=\{\(\) => setDialog\('mission'\)\}\s+className='col-span-2'\s+\/>/)
+    expect(menu).toMatch(/open=\{dialog === 'mission'\}\s+onClose=\{close\}\s+title=\{<Trans>Create flight<\/Trans>\}/)
+    expect(menu).not.toContain('Create mission')
+  })
+  it('never flies from the menu itself: only the create flight dialog starts a flight', () => {
+    expect(page).not.toContain('onStart')
+    expect(menu.match(/onStart\(\)/g)).toHaveLength(1)
+  })
+  it('sets Join server and Flight log in the second row, Settings and Feedback in the third', () => {
+    const at = (s: string) => page.indexOf(s)
+    const order = ["setDialog('mission')", "setDialog('server')", '<Trans>Flight log</Trans>', "setDialog('settings')", "setDialog('feedback')"].map(at)
+    for (const i of order) expect(i).toBeGreaterThan(0)
+    expect([...order].sort((a, b) => a - b)).toEqual(order)
+    expect(page.match(/col-span-2/g)).toHaveLength(1) // Fly alone spans the row
     expect(menu).toContain("<FeedbackDialog open={dialog === 'feedback'} onClose={close} />")
+  })
+  it('asks about flight recordings with a switch left of the dialog\'s Fly, middle aligned, until it is set, allowed unless turned off, and never with a pop-up', () => {
+    const route = read('../routes/index.tsx')
+    const settings = read('../components/SettingsDialog.tsx')
+    // the footer's row: the switch at its start, Fly pushed to its end, their middles level
+    expect(menu).toMatch(/footer=\{\s*<div className='flex items-center gap-4'>\s*<SharingSwitch\s+sharing=\{config\.sharing\}\s+onChange=\{\(v\) => set\('sharing', v\)\}\s+\/>\s*<Button\s+className='ms-auto [^']*'\s+onClick=\{\(\) => \{\s*(?:\/\/[^\n]*\n\s*)*if \(config\.sharing === undefined\) set\('sharing', true\)\s*close\(\)\s*onStart\(\)/)
+    // so Fly answers it as shown and it is asked on the first flight only
+    const component = /function SharingSwitch\([^]*?\n\}\n/.exec(menu)![0]
+    // only until it is set, judged once per opening so it stays while flipped
+    expect(component).toMatch(/const \[unset\] = useState\(\(\) => sharing === undefined\)\s+if \(!unset\) return null/)
+    expect(component).toMatch(/<Switch\s+id='mission-sharing'\s+checked=\{sharing !== false\}\s+onCheckedChange=\{onChange\}\s+\/>\s*<Label\s+htmlFor='mission-sharing'/)
+    expect(menu.match(/mission-sharing/g)).toHaveLength(2) // nowhere else in the dialog
+    expect(settings).toContain('checked={config.sharing !== false}')
+    expect(route).not.toMatch(/SharingDialog|config\.sharing|ResponsiveDialog/)
+    expect(route).toMatch(/onStart=\{launch\}/)
+  })
+  it("draws each button as a compact card, the icon beside its name, and a rule over Reference and Credits", () => {
+    const tile = /const TILE =\s+'([^']*)'/.exec(menu)![1].split(' ')
+    for (const box of ['bg-surface-1', 'border-border', 'border-[length:var(--card-border-width)]', 'rounded-lg', 'shadow-[var(--card-shadow)]', 'flex-row', 'py-3']) expect(tile).toContain(box)
+    expect(menu).toMatch(/function TileFace\([\s\S]*?<span className='[^']*\bsize-8\b[^']*'>\s*<Icon className='size-4' \/>\s*<\/span>\s*<span className='[^']*\btruncate text-sm font-semibold'>/)
+    expect(menu).toMatch(/function Tile\([\s\S]*?<button type='button' onClick=\{onOpen\} className=\{cn\(TILE, className\)\}>/)
+    expect(page).toMatch(/<Link to='\/log' search=\{\(prev\) => prev\} className=\{TILE\}>/)
+    expect(page).toMatch(/<div className='text-muted-foreground border-border flex items-center justify-center gap-2 border-t pt-4 text-xs'>\s+<ReferenceDialog \/>/)
   })
 })

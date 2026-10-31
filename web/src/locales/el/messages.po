@@ -431,16 +431,12 @@ msgstr "Όλες οι λειτουργίες"
 msgid "All servers"
 msgstr "Όλοι οι διακομιστές"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Να επιτρέπεται"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Να επιτρέπεται σε οποιονδήποτε η αναζήτηση για {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Να επιτρέπεται στους προγραμματιστές να διαβάζουν τις καταγραφές των πτήσεών σας για τη βελτίωση του παιχνιδιού"
 
@@ -707,10 +703,6 @@ msgstr "Ενίσχυση ενδιαφέροντος"
 msgid "Border colour"
 msgstr "Χρώμα περιγράμματος"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "μποτ"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Μποτ"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Λεζάντα"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Περίπτωση I (ημέρα)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: πέτα πάνω από τα απόνερα, {heading}, 800', 350 κόμβοι"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Περίπτωση II (καιρός)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: στην τελική, {heading}, 1200', τροχοί, φλαπς κάτω, ταχύτητα προσέγγισης 8.1° AOA, 140 κόμβοι"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Δημιουργία {entityLabel}"
 msgid "Create and fly"
 msgstr "Δημιουργία και πτήση"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Δημιουργία πτήσης"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Δημιουργία αγώνα"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Δημιουργία αποστολής"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Εμφανίζει την πλευρική μπάρα κινητού."
 msgid "Does not match the required pattern"
 msgstr "Δεν ταιριάζει με το απαιτούμενο μοτίβο"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Να μην επιτρέπεται"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Ανάπτυξη όλων"
 msgid "Expand sidebar"
 msgstr "Επέκταση πλευρικής μπάρας"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Συμβουλές πτήσης"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Ημερολόγιο πτήσεων"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Καταγραφές πτήσεων"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Εισαγωγή"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Στον αέρα"
 
@@ -2386,7 +2355,6 @@ msgstr "Ενδιαφέρον {weight}"
 msgid "Interests"
 msgstr "Ενδιαφέροντα"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "ΜΠΗΚΕ"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Κονταρομαχία"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Ειδοποιήσεις: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Αρχάριος"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Ενεργό"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Στο αεροπλανοφόρο"
 
@@ -3211,7 +3176,6 @@ msgstr "Στο αεροπλανοφόρο"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Στον καταπέλτη: κατέβασε τη ράβδο εκτόξευσης για αγκίστρωση"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Στον διάδρομο"
@@ -3410,6 +3374,7 @@ msgstr "Παίκτες"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Ελέγξτε τη σύνδεσή σας στο διαδίκτυο και δοκιμάστε ξανά."
@@ -4282,7 +4247,6 @@ msgstr "Εγγραφή"
 msgid "Sunday"
 msgstr "Κυριακή"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

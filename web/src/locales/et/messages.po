@@ -431,16 +431,12 @@ msgstr "Kõik režiimid"
 msgid "All servers"
 msgstr "Kõik serverid"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Luba"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Luba kõigil otsida {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Luba arendajatel lugeda sinu lennusalvestisi, et mängu paremaks muuta"
 
@@ -707,10 +703,6 @@ msgstr "Tõsta huvi"
 msgid "Border colour"
 msgstr "Äärise värv"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botid"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Pealdis"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Juhtum I (päev)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: lenda mööda kiiluvett, {heading}, 800', 350 sõlme"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Juhtum II (ilm)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: lõppsirgel, {heading}, 1200', telik, klapid all, on-speed 8.1° AOA, 140 sõlme"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Loo {entityLabel}"
 msgid "Create and fly"
 msgstr "Loo ja lenda"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Loo lend"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Loo matš"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Loo missioon"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Kuvab mobiilse külgriba."
 msgid "Does not match the required pattern"
 msgstr "Ei vasta nõutud mustrile"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Ära luba"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Laienda kõik"
 msgid "Expand sidebar"
 msgstr "Laienda külgriba"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Lennuvihjed"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Lennupäevik"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Lennusalvestised"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Impordi"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Õhus"
 
@@ -2386,7 +2355,6 @@ msgstr "Huvi {weight}"
 msgid "Interests"
 msgstr "Huvid"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "LIITUS"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Duell"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Teatised: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Algaja"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Sees"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Lennukikandjal"
 
@@ -3211,7 +3176,6 @@ msgstr "Lennukikandjal"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapuldil: lase stardivarras alla, et haakida"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Lennurajal"
@@ -3410,6 +3374,7 @@ msgstr "Mängijad"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Kontrolli internetiühendust ja proovi uuesti."
@@ -4282,7 +4247,6 @@ msgstr "Telli"
 msgid "Sunday"
 msgstr "Pühapäev"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

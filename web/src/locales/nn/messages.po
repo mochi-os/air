@@ -431,16 +431,12 @@ msgstr "Alle modusar"
 msgid "All servers"
 msgstr "Alle tenarar"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Tillat"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "La kven som helst søkja etter {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Tillat utviklarane å lese flyopptaka dine for å forbetre spelet"
 
@@ -707,10 +703,6 @@ msgstr "Auk interesse"
 msgid "Border colour"
 msgstr "Kantfarge"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botar"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Bilettekst"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Tilfelle I (dag)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: flyg opp kjølvatnet, {heading}, 800', 350 knop"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Tilfelle II (vêr)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: på finalen, {heading}, 1200', understell, flaps ned, on-speed 8.1° AOA, 140 knop"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Opprett {entityLabel}"
 msgid "Create and fly"
 msgstr "Opprett og fly"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Lag flyging"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Opprett kamp"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Lag oppdrag"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Viser mobil sidestolpe."
 msgid "Does not match the required pattern"
 msgstr "Samsvarar ikkje med det påkravde mønsteret"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Ikkje tillat"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Utvid alle"
 msgid "Expand sidebar"
 msgstr "Utvid sidestolpe"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Flygehint"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Flygelogg"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Flyopptak"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importer"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "I lufta"
 
@@ -2386,7 +2355,6 @@ msgstr "Interesse {weight}"
 msgid "Interests"
 msgstr "Interesser"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "VART MED"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Dyst"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Varsel: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Nybyrjar"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "På"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "På hangarskipet"
 
@@ -3211,7 +3176,6 @@ msgstr "På hangarskipet"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "På katapulten: senk utskytingsstaget for å hekta på"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "På rullebana"
@@ -3410,6 +3374,7 @@ msgstr "Spelarar"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Sjekk internettsambandet ditt og prøv igjen."
@@ -4282,7 +4247,6 @@ msgstr "Abonner"
 msgid "Sunday"
 msgstr "Sundag"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

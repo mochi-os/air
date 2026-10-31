@@ -431,16 +431,12 @@ msgstr "Modu guztiak"
 msgid "All servers"
 msgstr "Zerbitzari guztiak"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Baimendu"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Baimendu edonork {entityLabel} bilatzea"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Baimendu garatzaileei zure hegaldi-grabazioak irakurtzea jokoa hobetzeko"
 
@@ -707,10 +703,6 @@ msgstr "Bultzatu interesa"
 msgid "Border colour"
 msgstr "Ertzaren kolorea"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botak"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Epigrafea"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Kasua I (eguna)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: hegan egin uberan, {heading}, 800', 350 korapilo"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Kasua II (eguraldia)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: azken tartean, {heading}, 1200', trena, flapak behera, on-speed 8.1° AOA, 140 korapilo"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Sortu {entityLabel}"
 msgid "Create and fly"
 msgstr "Sortu eta hegan egin"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Sortu hegaldia"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Sortu partida"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Sortu misioa"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Mugikorraren alboko barra erakusten du."
 msgid "Does not match the required pattern"
 msgstr "Ez dator bat beharrezko ereduarekin"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Ez baimendu"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Zabaldu guztiak"
 msgid "Expand sidebar"
 msgstr "Zabaldu alboko barra"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Hegaldi-aholkuak"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Hegaldi-erregistroa"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Hegaldi-grabazioak"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Inportatu"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Airean"
 
@@ -2386,7 +2355,6 @@ msgstr "Interesa {weight}"
 msgid "Interests"
 msgstr "Interesak"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "BATU DA"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Dueloa"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Jakinarazpenak: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Hasiberria"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Aktibatuta"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Ontzian"
 
@@ -3211,7 +3176,6 @@ msgstr "Ontzian"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapultan: jaitsi jaurtiketa-barra kakotzeko"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Pistan"
@@ -3410,6 +3374,7 @@ msgstr "Jokalariak"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Egiaztatu zure interneteko konexioa eta saiatu berriro."
@@ -4282,7 +4247,6 @@ msgstr "Harpidetu"
 msgid "Sunday"
 msgstr "Igandea"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

@@ -431,16 +431,12 @@ msgstr "Kaikki tilat"
 msgid "All servers"
 msgstr "Kaikki palvelimet"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Salli"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Salli kaikkien etsiä {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Salli kehittäjien lukea lentotallenteitasi pelin parantamiseksi"
 
@@ -707,10 +703,6 @@ msgstr "Korosta kiinnostusta"
 msgid "Border colour"
 msgstr "Reunan väri"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "botti"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botit"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Kuvateksti"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Tapaus I (päivä)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: lennä vanavettä pitkin, {heading}, 800', 350 solmua"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Tapaus II (sää)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: loppuosuudella, {heading}, 1200', teline, laipat alas, on-speed 8.1° AOA, 140 solmua"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Luo {entityLabel}"
 msgid "Create and fly"
 msgstr "Luo ja lennä"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Luo lento"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Luo ottelu"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Luo tehtävä"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Näyttää mobiilisivupalkin."
 msgid "Does not match the required pattern"
 msgstr "Ei vastaa vaadittua kaavaa"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Älä salli"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Laajenna kaikki"
 msgid "Expand sidebar"
 msgstr "Laajenna sivupalkki"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Lentovihjeet"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Lentopäiväkirja"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Lentotallenteet"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Tuo"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Ilmassa"
 
@@ -2386,7 +2355,6 @@ msgstr "Kiinnostus {weight}"
 msgid "Interests"
 msgstr "Kiinnostuksen kohteet"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "LIITTYI"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Kaksintaistelu"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Ilmoitukset: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Aloittelija"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Päällä"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Lentotukialuksella"
 
@@ -3211,7 +3176,6 @@ msgstr "Lentotukialuksella"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapultilla: laske laukaisuvarsi kiinnittyäksesi"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Kiitoradalla"
@@ -3410,6 +3374,7 @@ msgstr "Pelaajat"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Tarkista internetyhteytesi ja yritä uudelleen."
@@ -4282,7 +4247,6 @@ msgstr "Tilaa"
 msgid "Sunday"
 msgstr "Sunnuntai"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

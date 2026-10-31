@@ -431,16 +431,12 @@ msgstr "Ҳамаи ҳолатҳо"
 msgid "All servers"
 msgstr "Ҳамаи серверҳо"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Иҷозат додан"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Ба ҳама иҷозат диҳед, ки {entityLabel}-ро ҷустуҷӯ кунанд"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Ба таҳиягарон иҷозат додан, ки сабтҳои парвози шуморо барои беҳтар кардани бозӣ хонанд"
 
@@ -707,10 +703,6 @@ msgstr "Афзоиши таваҷҷуҳ"
 msgid "Border colour"
 msgstr "Ранги ҳошия"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "бот"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Ботҳо"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Зернавис"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Ҳолат I (рӯз)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: аз болои изи киштӣ парвоз кун, {heading}, 800', 350 гиреҳ"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Ҳолат II (обу ҳаво)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: дар хатти ниҳоӣ, {heading}, 1200', шассӣ, закрилкаҳо поён, суръати наздикшавӣ 8.1° AOA, 140 гиреҳ"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Сохтани {entityLabel}"
 msgid "Create and fly"
 msgstr "Эҷод кунед ва парвоз кунед"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Эҷоди парвоз"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Матч эҷод кунед"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Эҷоди супориш"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Панели канории мобилиро намоиш медиҳад
 msgid "Does not match the required pattern"
 msgstr "Ба намунаи талабшуда мувофиқат намекунад"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Иҷозат надодан"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Ҳамаро васеъ кардан"
 msgid "Expand sidebar"
 msgstr "Васеъ кардани панели канорӣ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Маслиҳатҳои парвоз"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Журнали парвозҳо"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Сабтҳои парвоз"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Воридот"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Дар ҳаво"
 
@@ -2386,7 +2355,6 @@ msgstr "Таваҷҷуҳ {weight}"
 msgid "Interests"
 msgstr "Шавқҳо"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "ҲАМРОҲ ШУД"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Дуэл"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Огоҳиномаҳо: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Навомӯз"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Фаъол"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Дар киштӣ"
 
@@ -3211,7 +3176,6 @@ msgstr "Дар киштӣ"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Дар катапулт: барои васл шудан штангаи партобро фуроред"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Дар хати парвоз"
@@ -3410,6 +3374,7 @@ msgstr "Бозигарон"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Лутфан пайвасти интернети худро санҷед ва аз нав кӯшиш кунед."
@@ -4282,7 +4247,6 @@ msgstr "Обуна шудан"
 msgid "Sunday"
 msgstr "Якшанбе"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

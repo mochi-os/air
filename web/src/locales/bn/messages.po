@@ -431,16 +431,12 @@ msgstr "সব মোড"
 msgid "All servers"
 msgstr "সব সার্ভার"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "অনুমতি দিন"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "যে কাউকে {entityLabel} খোঁজার অনুমতি দিন"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "গেমটি উন্নত করতে ডেভেলপারদের আপনার ফ্লাইট রেকর্ডিং পড়ার অনুমতি দিন"
 
@@ -707,10 +703,6 @@ msgstr "আগ্রহ বৃদ্ধি করুন"
 msgid "Border colour"
 msgstr "বর্ডারের রঙ"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "বট"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "বট"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "ক্যাপশন"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "কেস I (দিন)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: জাহাজের জলরেখা ধরে উড়ুন, {heading}, 800', 350 নট"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "কেস II (আবহাওয়া)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: ফাইনালে, {heading}, 1200', গিয়ার, ফ্ল্যাপ নিচে, 8.1° AOA অবতরণ গতি, 140 নট"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} তৈরি করুন"
 msgid "Create and fly"
 msgstr "তৈরি করে উড়ুন"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "উড়ান তৈরি"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "ম্যাচ তৈরি করুন"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "মিশন তৈরি"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "মোবাইল সাইডবার প্রদর্শন কর
 msgid "Does not match the required pattern"
 msgstr "প্রয়োজনীয় প্যাটার্নের সঙ্গে মেলে না"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "অনুমতি দেবেন না"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "সব প্রসারিত করুন"
 msgid "Expand sidebar"
 msgstr "সাইডবার প্রসারিত করুন"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "উড়ানের ইঙ্গিত"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "উড়ান লগ"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "ফ্লাইট রেকর্ডিং"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "ইমপোর্ট"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "আকাশে"
 
@@ -2386,7 +2355,6 @@ msgstr "আগ্রহ {weight}"
 msgid "Interests"
 msgstr "আগ্রহসমূহ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "যোগ দিয়েছেন"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "জাউস্ট"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "বিজ্ঞপ্তি: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "নবীন"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "চালু"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "রণতরীতে"
 
@@ -3211,7 +3176,6 @@ msgstr "রণতরীতে"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "ক্যাটাপাল্টে: হুক লাগাতে লঞ্চ বার নামান"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "রানওয়েতে"
@@ -3410,6 +3374,7 @@ msgstr "খেলোয়াড়"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।"
@@ -4282,7 +4247,6 @@ msgstr "সাবস্ক্রাইব করুন"
 msgid "Sunday"
 msgstr "রবিবার"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

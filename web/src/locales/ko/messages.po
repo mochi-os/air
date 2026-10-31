@@ -431,16 +431,12 @@ msgstr "모든 모드"
 msgid "All servers"
 msgstr "모든 서버"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "허용"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "누구나 {entityLabel} 검색을 허용"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "게임 개선을 위해 개발자가 내 비행 기록을 읽도록 허용"
 
@@ -707,10 +703,6 @@ msgstr "관심도 부스트"
 msgid "Border colour"
 msgstr "테두리 색상"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "봇"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "봇"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "캡션"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "케이스 I (주간)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: 항적을 따라 비행, {heading}, 800', 350노트"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "케이스 II (기상)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: 파이널, {heading}, 1200', 기어, 플랩 내림, 온스피드 8.1° AOA, 140노트"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} 만들기"
 msgid "Create and fly"
 msgstr "만들고 출격"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "비행 만들기"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "매치 만들기"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "미션 만들기"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "모바일 사이드바를 표시해요."
 msgid "Does not match the required pattern"
 msgstr "필요한 패턴과 일치하지 않습니다"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "허용 안 함"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "모두 펼치기"
 msgid "Expand sidebar"
 msgstr "사이드바 펼치기"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "비행 힌트"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "비행 일지"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "비행 기록"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "가져오기"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "공중"
 
@@ -2386,7 +2355,6 @@ msgstr "관심도 {weight}"
 msgid "Interests"
 msgstr "관심사"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "참가"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "정면 대결"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "알림: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "초보"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "켜짐"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "항공모함"
 
@@ -3211,7 +3176,6 @@ msgstr "항공모함"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "캐터펄트 위: 런치 바를 내려 후크 연결"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "활주로"
@@ -3410,6 +3374,7 @@ msgstr "플레이어 수"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "인터넷 연결을 확인하고 다시 시도하세요."
@@ -4282,7 +4247,6 @@ msgstr "구독"
 msgid "Sunday"
 msgstr "일요일"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

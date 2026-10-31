@@ -431,16 +431,12 @@ msgstr "Pob modd"
 msgid "All servers"
 msgstr "Pob gweinydd"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Caniatáu"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Caniatáu i unrhyw un chwilio am {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Caniatáu i ddatblygwyr ddarllen eich recordiadau hedfan i wella'r gêm"
 
@@ -707,10 +703,6 @@ msgstr "Hybu diddordeb"
 msgid "Border colour"
 msgstr "Lliw ymyl"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botiau"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Capsiwn"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Achos I (dydd)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: hedfan dros ôl y llong, {heading}, 800', 350 not"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Achos II (tywydd)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: ar y goes derfynol, {heading}, 1200', offer glanio, fflapiau i lawr, cyflymder glanio 8.1° AOA, 140 not"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Creu {entityLabel}"
 msgid "Create and fly"
 msgstr "Creu a hedfan"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Creu hediad"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Creu gêm"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Creu cenhadaeth"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Yn dangos y bar ochr symudol."
 msgid "Does not match the required pattern"
 msgstr "Nid yw'n cyfateb i'r patrwm gofynnol"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Peidio â chaniatáu"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Ehangu'r cyfan"
 msgid "Expand sidebar"
 msgstr "Ehangu'r bar ochr"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Awgrymiadau hedfan"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Log hedfan"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Recordiadau hedfan"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Mewnforio"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Yn yr awyr"
 
@@ -2386,7 +2355,6 @@ msgstr "Diddordeb {weight}"
 msgid "Interests"
 msgstr "Diddordebau"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "WEDI YMUNO"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Gornest"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Hysbysiadau: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Dechreuwr"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Ymlaen"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Ar y cludwr"
 
@@ -3211,7 +3176,6 @@ msgstr "Ar y cludwr"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Ar y catapwlt: estynna'r bar lansio i fachu"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Ar y rhedfa"
@@ -3410,6 +3374,7 @@ msgstr "Chwaraewyr"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Gwiriwch eich cysylltiad rhyngrwyd a rhowch gynnig arall arni."
@@ -4282,7 +4247,6 @@ msgstr "Tanysgrifio"
 msgid "Sunday"
 msgstr "Dydd Sul"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

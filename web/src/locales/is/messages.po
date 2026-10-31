@@ -431,16 +431,12 @@ msgstr "Allar stillingar"
 msgid "All servers"
 msgstr "Allir netþjónar"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Leyfa"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Leyfa öllum að leita að {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Leyfa forriturum að lesa flugupptökurnar þínar til að bæta leikinn"
 
@@ -707,10 +703,6 @@ msgstr "Auka áhuga"
 msgid "Border colour"
 msgstr "Litur ramma"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "vélmenni"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Vélmenni"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Myndatexti"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Tilvik I (dagur)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: fljúgðu upp kjölfarið, {heading}, 800', 350 hnútar"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Tilvik II (veður)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: í lokaaðflugi, {heading}, 1200', hjól, vængbörð niðri, on-speed 8.1° AOA, 140 hnútar"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Búa til {entityLabel}"
 msgid "Create and fly"
 msgstr "Stofna og fljúga"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Búa til flug"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Stofna leik"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Búa til verkefni"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Sýnir hliðarstiku farsíma."
 msgid "Does not match the required pattern"
 msgstr "Samsvarar ekki tilskildu mynstri"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Ekki leyfa"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Fletta öllu út"
 msgid "Expand sidebar"
 msgstr "Útvíkka hliðarstiku"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Flugábendingar"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Flugdagbók"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Flugupptökur"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Flytja inn"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Í lofti"
 
@@ -2386,7 +2355,6 @@ msgstr "Áhugi {weight}"
 msgid "Interests"
 msgstr "Áhugaefni"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "BÆTTIST VIÐ"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Einvígi"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Tilkynningar: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Byrjandi"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Kveikt"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Á flugmóðurskipi"
 
@@ -3211,7 +3176,6 @@ msgstr "Á flugmóðurskipi"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Á katapúltunni: lækkaðu skotstöngina til að tengjast"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Á flugbraut"
@@ -3410,6 +3374,7 @@ msgstr "Leikmenn"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Athugaðu nettenginguna og reyndu aftur."
@@ -4282,7 +4247,6 @@ msgstr "Gerast áskrifandi"
 msgid "Sunday"
 msgstr "Sunnudagur"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

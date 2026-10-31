@@ -431,16 +431,12 @@ msgstr "Duk hanyoyin"
 msgid "All servers"
 msgstr "Duk sabar"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Bayar da izini"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Bar kowa ya nemi {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Bayar da izini ga masu haɓakawa su karanta rikodin tashin jirginka don inganta wasan"
 
@@ -707,10 +703,6 @@ msgstr "Ƙara sha'awa"
 msgid "Border colour"
 msgstr "Launin kan iyaka"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bots"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Bayanin hoto"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Yanayi I (rana)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: bi hanyar ruwan jirgin ruwa, {heading}, 800', 350 knot"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Yanayi II (yanayi)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: a ƙarshe, {heading}, 1200', kaya, flaps ƙasa, on-speed 8.1° AOA, 140 knot"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Ƙirƙiri {entityLabel}"
 msgid "Create and fly"
 msgstr "Ƙirƙira sannan ka tashi"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Ƙirƙiri tashin jirgi"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Ƙirƙiri wasa"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Ƙirƙiri manufa"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Yana nuna sidebar na wayar hannu."
 msgid "Does not match the required pattern"
 msgstr "Bai dace da tsarin da ake buƙata ba"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Kada a bayar da izini"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Faɗaɗa duka"
 msgid "Expand sidebar"
 msgstr "Faɗaɗa sidebar"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Shawarwarin tashi"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Rajistar tashi"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Rikodin tashin jirgi"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Shigarwa"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "A sama"
 
@@ -2386,7 +2355,6 @@ msgstr "Sha'awa {weight}"
 msgid "Interests"
 msgstr "Abubuwan sha'awa"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "YA SHIGA"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Karawa"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Sanarwa: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Sabon koyo"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Kunna"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "A jirgin ruwa"
 
@@ -3211,7 +3176,6 @@ msgstr "A jirgin ruwa"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "A kan majajjawa: saukar da sandar harba don haɗawa"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "A titin jirgi"
@@ -3410,6 +3374,7 @@ msgstr "'Yan wasa"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Da fatan a duba haɗin intanet ɗinka sannan a sake gwadawa."
@@ -4282,7 +4247,6 @@ msgstr "Yi subscribe"
 msgid "Sunday"
 msgstr "Lahadi"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

@@ -431,16 +431,12 @@ msgstr "Semua mod"
 msgid "All servers"
 msgstr "Semua pelayan"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Benarkan"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Benarkan sesiapa sahaja mencari {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Benarkan pembangun membaca rakaman penerbangan anda untuk menambah baik permainan"
 
@@ -707,10 +703,6 @@ msgstr "Tingkatkan minat"
 msgid "Border colour"
 msgstr "Warna sempadan"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bot"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Kapsyen"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Kes I (siang)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: terbang ikut alur kapal, {heading}, 800', 350 knot"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Kes II (cuaca)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: di final, {heading}, 1200', roda, flap turun, on-speed 8.1° AOA, 140 knot"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Cipta {entityLabel}"
 msgid "Create and fly"
 msgstr "Cipta dan terbang"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Cipta penerbangan"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Cipta perlawanan"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Cipta misi"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Memaparkan bar sisi mudah alih."
 msgid "Does not match the required pattern"
 msgstr "Tidak sepadan dengan corak yang diperlukan"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Jangan benarkan"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Kembangkan semua"
 msgid "Expand sidebar"
 msgstr "Kembangkan bar sisi"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Petunjuk penerbangan"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Log penerbangan"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Rakaman penerbangan"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Import"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Di udara"
 
@@ -2386,7 +2355,6 @@ msgstr "Minat {weight}"
 msgid "Interests"
 msgstr "Minat"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "MENYERTAI"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Duel"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Pemberitahuan: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Pemula"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Hidup"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Di kapal induk"
 
@@ -3211,7 +3176,6 @@ msgstr "Di kapal induk"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Di atas ketapel: turunkan batang pelancar untuk tersangkut"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Di landasan"
@@ -3410,6 +3374,7 @@ msgstr "Pemain"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Sila semak sambungan internet anda dan cuba lagi."
@@ -4282,7 +4247,6 @@ msgstr "Langgan"
 msgid "Sunday"
 msgstr "Ahad"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

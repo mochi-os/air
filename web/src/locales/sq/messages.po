@@ -431,16 +431,12 @@ msgstr "Të gjitha mënyrat"
 msgid "All servers"
 msgstr "Të gjithë serverët"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Lejo"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Lejo këdo të kërkojë për {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Lejo zhvilluesit të lexojnë regjistrimet e fluturimeve tuaja për të përmirësuar lojën"
 
@@ -707,10 +703,6 @@ msgstr "Rrit interesin"
 msgid "Border colour"
 msgstr "Ngjyra e kornizës"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Bot-ët"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Legjenda"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Rast I (ditë)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: fluturo mbi gjurmën e anijes, {heading}, 800', 350 nyje"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Rast II (mot)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: në final, {heading}, 1200', trenat, flapsat poshtë, shpejtësia e afrimit 8.1° AOA, 140 nyje"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Krijo {entityLabel}"
 msgid "Create and fly"
 msgstr "Krijo dhe fluturo"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Krijo fluturim"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Krijo ndeshje"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Krijo mision"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Shfaq anën mobile."
 msgid "Does not match the required pattern"
 msgstr "Nuk përputhet me modelin e kërkuar"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Mos lejo"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Zgjero të gjitha"
 msgid "Expand sidebar"
 msgstr "Zgjero shiritin anësor"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Këshilla fluturimi"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Ditari i fluturimeve"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Regjistrimet e fluturimeve"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importo"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Në ajër"
 
@@ -2386,7 +2355,6 @@ msgstr "Interesi {weight}"
 msgid "Interests"
 msgstr "Interesat"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "U BASHKUA"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Duel"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Njoftimet: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Fillestar"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Aktiv"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Në portaavionë"
 
@@ -3211,7 +3176,6 @@ msgstr "Në portaavionë"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Në katapultë: ul shufrën e nisjes për t'u lidhur"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Në pistë"
@@ -3410,6 +3374,7 @@ msgstr "Lojtarët"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Kontrolloni lidhjen tuaj me internetin dhe provoni përsëri."
@@ -4282,7 +4247,6 @@ msgstr "Abonohu"
 msgid "Sunday"
 msgstr "E diel"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

@@ -431,16 +431,12 @@ msgstr "Modi zote"
 msgid "All servers"
 msgstr "Seva zote"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Ruhusu"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Ruhusu mtu yeyote kutafuta {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Ruhusu wasanidi wasome rekodi za safari zako za ndege ili kuboresha mchezo"
 
@@ -707,10 +703,6 @@ msgstr "Ongeza mvuto"
 msgid "Border colour"
 msgstr "Rangi ya mpaka"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "boti"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Boti"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Maelezo mafupi"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Hali I (mchana)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: ruka juu ya mkondo wa meli, {heading}, 800', mafundo 350"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Hali II (hali ya hewa)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: kwenye final, {heading}, 1200', gia, flapu chini, kasi ya kukaribia 8.1° AOA, mafundo 140"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Unda {entityLabel}"
 msgid "Create and fly"
 msgstr "Unda na uruke"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Unda safari ya ndege"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Unda mechi"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Unda misheni"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Huonyesha utepe wa simu."
 msgid "Does not match the required pattern"
 msgstr "Hailingani na muundo unaohitajika"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Usiruhusu"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Panua zote"
 msgid "Expand sidebar"
 msgstr "Panua utepe"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Vidokezo vya kuruka"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Kumbukumbu za safari za ndege"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Rekodi za safari za ndege"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Ingiza"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Angani"
 
@@ -2386,7 +2355,6 @@ msgstr "Shauku {weight}"
 msgid "Interests"
 msgstr "Mivuto"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "AMEJIUNGA"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Pambano"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Arifa: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Mwanafunzi"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Imewashwa"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Kwenye meli"
 
@@ -3211,7 +3176,6 @@ msgstr "Kwenye meli"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Kwenye manati: shusha fimbo ya kurusha ili kuunganishwa"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Kwenye njia ya kurukia"
@@ -3410,6 +3374,7 @@ msgstr "Wachezaji"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Tafadhali angalia muunganisho wako wa intaneti na ujaribu tena."
@@ -4282,7 +4247,6 @@ msgstr "Jiunge"
 msgid "Sunday"
 msgstr "Jumapili"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

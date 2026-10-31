@@ -431,16 +431,12 @@ msgstr "ሁሉም ሁነታዎች"
 msgid "All servers"
 msgstr "ሁሉም አገልጋዮች"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "ፍቀድ"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "ማንኛውም ሰው {entityLabel} እንዲፈልግ ፍቀድ"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "ጨዋታውን ለማሻሻል ገንቢዎች የበረራ ቅጂዎችዎን እንዲያነቡ ፍቀድ"
 
@@ -707,10 +703,6 @@ msgstr "ፍላጎትን አሳድግ"
 msgid "Border colour"
 msgstr "የጠርዝ ቀለም"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "ቦት"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "ቦቶች"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "መግለጫ ጽሑፍ"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "ሁኔታ I (ቀን)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: በመርከቧ ኩልኩል ላይ ብረር፣ {heading}፣ 800'፣ 350 ኖት"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "ሁኔታ II (አየር ሁኔታ)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: በመጨረሻው መስመር፣ {heading}፣ 1200'፣ ማረፊያ ጎማ፣ ፍላፕ አውርድ፣ 8.1° AOA የማረፊያ ፍጥነት፣ 140 ኖት"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} ፍጠር"
 msgid "Create and fly"
 msgstr "ፍጠር እና ብረር"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "በረራ ፍጠር"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "ግጥሚያ ፍጠር"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "ተልዕኮ ፍጠር"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "የሞባይል ጎንደርን ያሳያል።"
 msgid "Does not match the required pattern"
 msgstr "ከሚያስፈልገው ስርዓተ ጥለት ጋር አይዛመድም"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "አትፍቀድ"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "ሁሉንም ዘርጋ"
 msgid "Expand sidebar"
 msgstr "ጎንደርን ዘርጋ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "የበረራ ፍንጮች"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "የበረራ መዝገብ"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "የበረራ ቅጂዎች"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "አስገባ"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "በአየር ላይ"
 
@@ -2386,7 +2355,6 @@ msgstr "ፍላጎት {weight}"
 msgid "Interests"
 msgstr "ፍላጎቶች"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "ተቀላቅሏል"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "ፍልሚያ"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "ማሳወቂያዎች፦ {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "ጀማሪ"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "በርቷል"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "በተሸካሚው ላይ"
 
@@ -3211,7 +3176,6 @@ msgstr "በተሸካሚው ላይ"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "በወንጭፉ ላይ: ለመያያዝ የማስወንጨፊያ ዘንጉን ዘርጋ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "በማኮብኮቢያ መንገድ ላይ"
@@ -3410,6 +3374,7 @@ msgstr "ተጫዋቾች"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "እባክዎ የበይነመረብ ግንኙነትዎን አረጋግጠው እንደገና ይሞክሩ።"
@@ -4282,7 +4247,6 @@ msgstr "ይመዝገቡ"
 msgid "Sunday"
 msgstr "እሁድ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

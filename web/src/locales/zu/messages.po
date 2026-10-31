@@ -431,16 +431,12 @@ msgstr "Zonke izimo"
 msgid "All servers"
 msgstr "Wonke amaseva"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Vumela"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Vumela noma ubani ukusesha {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Vumela abathuthukisi bafunde amarekhodi akho okundiza ukuze bathuthukise umdlalo"
 
@@ -707,10 +703,6 @@ msgstr "Khulisa intshisekelo"
 msgid "Border colour"
 msgstr "Umbala womngcele"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "ibot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Amabhothi"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Umbhalo ochazayo"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Isimo I (imini)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: ndiza ulandela umzila womkhumbi, {heading}, 800', 350 knots"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Isimo II (isimo sezulu)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: ku-final, {heading}, 1200', i-gear, ama-flaps ehlile, on-speed 8.1° AOA, 140 knots"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "Dala {entityLabel}"
 msgid "Create and fly"
 msgstr "Dala bese undiza"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Dala ukundiza"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Dala umdlalo"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Dala umsebenzi"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Ibonisa ibha eseceleni yefoni."
 msgid "Does not match the required pattern"
 msgstr "Ayihambisani nephethini edingekayo"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Ungavumeli"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Nweba konke"
 msgid "Expand sidebar"
 msgstr "Nweba ibha eseceleni"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Amathiphu okundiza"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Ilogu yokundiza"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Amarekhodi okundiza"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Ngenisa"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Emoyeni"
 
@@ -2386,7 +2355,6 @@ msgstr "Intshisekelo {weight}"
 msgid "Interests"
 msgstr "Izintshisekelo"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "UJOYINILE"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Umqhudelwano"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Izaziso: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Umqalayo"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Kuvuliwe"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Emkhunjini"
 
@@ -3211,7 +3176,6 @@ msgstr "Emkhunjini"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Ku-catapult: yehlisa induku yokundulula ukuze uxhunywe"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Endleleni yokundiza"
@@ -3410,6 +3374,7 @@ msgstr "Abadlali"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Sicela uhlole uxhumano lwakho lwe-inthanethi bese uzama futhi."
@@ -4282,7 +4247,6 @@ msgstr "Bhalisa"
 msgid "Sunday"
 msgstr "ISonto"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

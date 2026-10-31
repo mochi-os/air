@@ -431,16 +431,12 @@ msgstr "ყველა რეჟიმი"
 msgid "All servers"
 msgstr "ყველა სერვერი"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "დაშვება"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "ყველას შეეძლოს მოძებნოს {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "დეველოპერებისთვის თქვენი ფრენის ჩანაწერების წაკითხვის დაშვება თამაშის გასაუმჯობესებლად"
 
@@ -707,10 +703,6 @@ msgstr "ინტერესის გაძლიერება"
 msgid "Border colour"
 msgstr "კონტურის ფერი"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "ბოტი"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "ბოტები"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "წარწერა"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "შემთხვევა I (დღე)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: იფრინე გემის კვალზე, {heading}, 800', 350 კვანძი"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "შემთხვევა II (ამინდი)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: საბოლოო სწორზე, {heading}, 1200', შასი, ფლაპები ქვევით, on-speed 8.1° AOA, 140 კვანძი"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel}-ის შექმნა"
 msgid "Create and fly"
 msgstr "შექმნა და აფრენა"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "ფრენის შექმნა"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "მატჩის შექმნა"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "მისიის შექმნა"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "აჩვენებს მობილურის გვერდი�
 msgid "Does not match the required pattern"
 msgstr "არ შეესაბამება საჭირო შაბლონს"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "აკრძალვა"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "ყველას გაშლა"
 msgid "Expand sidebar"
 msgstr "გვერდითი პანელის გაშლა"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "ფრენის მინიშნებები"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "ფრენების ჟურნალი"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "ფრენის ჩანაწერები"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "იმპორტი"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "ჰაერში"
 
@@ -2386,7 +2355,6 @@ msgstr "ინტერესი {weight}"
 msgid "Interests"
 msgstr "ინტერესები"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "შემოუერთდა"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "ორთაბრძოლა"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "შეტყობინებები: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "დამწყები"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "ჩართული"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "ავიამზიდზე"
 
@@ -3211,7 +3176,6 @@ msgstr "ავიამზიდზე"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "კატაპულტაზე: მისამაგრებლად ჩამოუშვი გაშვების ღერო"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "ასაფრენ ბილიკზე"
@@ -3410,6 +3374,7 @@ msgstr "მოთამაშეები"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "გთხოვთ, შეამოწმოთ ინტერნეტთან კავშირი და სცადოთ ხელახლა."
@@ -4282,7 +4247,6 @@ msgstr "გამოწერა"
 msgid "Sunday"
 msgstr "კვირა"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

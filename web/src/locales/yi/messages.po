@@ -431,16 +431,12 @@ msgstr "אַלע מאָדנס"
 msgid "All servers"
 msgstr "אַלע סערווערס"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "דערלויבן"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "דערלויב יעדן צו זוכן {entityLabel}"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "דערלויבן די אַנטוויקלער צו לייענען דײַנע פֿלי־רעקאָרדירונגען כּדי צו פֿאַרבעסערן די שפּיל"
 
@@ -707,10 +703,6 @@ msgstr "פֿאַרשטאַרקן אינטערעס"
 msgid "Border colour"
 msgstr "ראַנד פֿאַרב"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "באָט"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "באָטס"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "אונטערשריפֿט"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "פאַל I (טאָג)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: פֿלי לענג-אויס דעם שיפֿס שפּור, {heading}, 800', 350 קנאָטן"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "פאַל II (וועטער)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: אויפֿן ענדצוגאַנג, {heading}, 1200', לאַנדגעשטעל, פֿלאַפּן אַראָפּ, on-speed 8.1° AOA, 140 קנאָטן"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "שאַף {entityLabel}"
 msgid "Create and fly"
 msgstr "שאַף און פֿלי"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "שאַפֿן אַ פֿלי"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "שאַף אַ מאַטש"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "שאַפֿן מיסיע"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "ווײַזט די מאָבילע סײַדבאַר."
 msgid "Does not match the required pattern"
 msgstr "פּאַסט נישט צום פֿאָדערטן מוסטער"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "נישט דערלויבן"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "אויסשפּרייטן אַלץ"
 msgid "Expand sidebar"
 msgstr "פֿאַרברייטערן זײַטלאַסט"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "פֿלי־עצות"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "פֿלי־זשורנאַל"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "פֿלי־רעקאָרדירונגען"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "אימפּאָרט"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "אין דער לופֿט"
 
@@ -2386,7 +2355,6 @@ msgstr "אינטערעס {weight}"
 msgid "Interests"
 msgstr "אינטערעסן"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "האָט זיך אָנגעשלאָסן"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "צווייקאַמף"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "מעלדונגען: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "אָנהייבער"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "אָן"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "אויפֿן טרעגער"
 
@@ -3211,7 +3176,6 @@ msgstr "אויפֿן טרעגער"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "אויף דער קאַטאַפּולט: לאָז אַראָפּ די לאַנציר־שטאַנג צו צוהאָקן"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "אויפֿן לאַנדבאַן"
@@ -3410,6 +3374,7 @@ msgstr "שפּילער"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "זײַט אַזוי גוט קאָנטראָלירט אײַער אינטערנעץ פֿאַרבינדונג און פּרוּווט נאָך אַ מאָל."
@@ -4282,7 +4247,6 @@ msgstr "אַבאָנירן"
 msgid "Sunday"
 msgstr "זונטיק"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

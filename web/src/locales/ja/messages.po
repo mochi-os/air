@@ -431,16 +431,12 @@ msgstr "すべてのモード"
 msgid "All servers"
 msgstr "すべてのサーバー"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "許可"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "誰でも{entityLabel}を検索できるようにする"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "ゲーム改善のため、開発者があなたのフライト記録を閲覧することを許可する"
 
@@ -707,10 +703,6 @@ msgstr "関心を高める"
 msgid "Border colour"
 msgstr "枠線の色"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "ボット"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "ボット"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "キャプション"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "ケース I (昼)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: 航跡に沿って飛ぶ、{heading}、800'、350ノット"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "ケース II (気象)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: ファイナル、{heading}、1200'、ギア、フラップ下げ、オンスピード8.1° AOA、140ノット"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel}を作成"
 msgid "Create and fly"
 msgstr "作成して出撃"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "フライト作成"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "マッチを作成"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "ミッション作成"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "モバイルサイドバーを表示します。"
 msgid "Does not match the required pattern"
 msgstr "必要なパターンと一致しません"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "許可しない"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "すべて展開"
 msgid "Expand sidebar"
 msgstr "サイドバーを展開"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "飛行ヒント"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "フライトログ"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "フライト記録"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "インポート"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "空中"
 
@@ -2386,7 +2355,6 @@ msgstr "関心度 {weight}"
 msgid "Interests"
 msgstr "興味"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "参加"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "ジャウスト"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "通知: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "初心者"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "オン"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "空母上"
 
@@ -3211,7 +3176,6 @@ msgstr "空母上"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "カタパルト上: ランチバーを下げてフックアップ"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "滑走路上"
@@ -3410,6 +3374,7 @@ msgstr "プレイヤー数"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "インターネット接続を確認して、もう一度お試しください。"
@@ -4282,7 +4247,6 @@ msgstr "購読する"
 msgid "Sunday"
 msgstr "日曜日"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"

@@ -431,16 +431,12 @@ msgstr "Llapan modokuna"
 msgid "All servers"
 msgstr "Llapan servidorkuna"
 
-#: src/routes/index.tsx
-msgid "Allow"
-msgstr "Saqiy"
-
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Allow anyone to search for {entityLabel}"
 msgstr "Pillapas {entityLabel} maskananpaq saqiy"
 
+#: src/components/MissionSetup.tsx
 #: src/components/SettingsDialog.tsx
-#: src/routes/index.tsx
 msgid "Allow developers to read your flight recordings to improve the game"
 msgstr "Pukllayta allinchanapaq, ruraqkunaman phawayniykikunapa grabasqankunata ñawinchanankupaq saqiy"
 
@@ -707,10 +703,6 @@ msgstr "Munay yapay"
 msgid "Border colour"
 msgstr "Pata llimp'i"
 
-#: src/components/MissionSetup.tsx
-msgid "bot"
-msgstr "bot"
-
 #: src/components/Multiplayer.tsx
 msgid "Bots"
 msgstr "Botkuna"
@@ -845,10 +837,6 @@ msgid "Caption"
 msgstr "Sut'inchay"
 
 #: src/components/MissionSetup.tsx
-msgid "Case I"
-msgstr "Case I"
-
-#: src/components/MissionSetup.tsx
 msgid "Case I (day)"
 msgstr "Case I (p'unchaw)"
 
@@ -857,20 +845,12 @@ msgid "Case I: fly up wake, {heading}, 800', 350 knots"
 msgstr "Case I: barcoq estelanpa hawanta phaway, {heading}, 800', 350 nudos"
 
 #: src/components/MissionSetup.tsx
-msgid "Case II"
-msgstr "Case II"
-
-#: src/components/MissionSetup.tsx
 msgid "Case II (weather)"
 msgstr "Case II (clima)"
 
 #: src/components/GameCanvas.tsx
 msgid "Case II: on final, {heading}, 1200', gear, flaps down, on-speed 8.1° AOA, 140 knots"
 msgstr "Case II: finalpi, {heading}, 1200', tren, flaps uraypi, on-speed 8.1° AOA, 140 nudos"
-
-#: src/components/MissionSetup.tsx
-msgid "Case III"
-msgstr "Case III"
 
 #: src/components/MissionSetup.tsx
 msgid "Case III (night)"
@@ -1307,14 +1287,13 @@ msgstr "{entityLabel} kamariy"
 msgid "Create and fly"
 msgstr "Kamariy hinaspa phaway"
 
+#: src/components/MissionSetup.tsx
+msgid "Create flight"
+msgstr "Phaway kamariy"
+
 #: src/components/Multiplayer.tsx
 msgid "Create match"
 msgstr "Pukllayta kamariy"
-
-#: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
-msgid "Create mission"
-msgstr "Misión kamariy"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Create new item"
@@ -1608,10 +1587,6 @@ msgstr "Celular waqta barrata rikuchin."
 msgid "Does not match the required pattern"
 msgstr "Mana mañakusqa patrónwan tupanchu"
 
-#: src/routes/index.tsx
-msgid "Don't allow"
-msgstr "Ama saqiychu"
-
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 #: src/components/SettingsDialog.tsx
@@ -1828,7 +1803,6 @@ msgstr "Llapanta mast'ariy"
 msgid "Expand sidebar"
 msgstr "Waqta barrata mast'ariy"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Expert"
@@ -2062,10 +2036,6 @@ msgstr "Phaway yuyaychaykuna"
 #: src/components/MissionSetup.tsx
 msgid "Flight log"
 msgstr "Phaway registro"
-
-#: src/routes/index.tsx
-msgid "Flight recordings"
-msgstr "Phawaypa grabasqankuna"
 
 #: src/components/MatchLog.tsx
 msgid "Flights"
@@ -2350,7 +2320,6 @@ msgid "Import"
 msgstr "Importay"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "In air"
 msgstr "Wayrapi"
 
@@ -2386,7 +2355,6 @@ msgstr "Munay {weight}"
 msgid "Interests"
 msgstr "Munaykuna"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Intermediate"
@@ -2453,7 +2421,6 @@ msgid "JOINED"
 msgstr "YAYKUN"
 
 #: src/components/MatchLog.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Joust"
 msgstr "Tinkuy"
@@ -3165,7 +3132,6 @@ msgid "Notifications: {0}"
 msgstr "Willaykuna: {0}"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Novice"
 msgstr "Qallariq"
@@ -3203,7 +3169,6 @@ msgid "On"
 msgstr "Activasqa"
 
 #: src/components/MissionSetup.tsx
-#: src/components/MissionSetup.tsx
 msgid "On carrier"
 msgstr "Wamp'upi"
 
@@ -3211,7 +3176,6 @@ msgstr "Wamp'upi"
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Catapulta patapi: hap'ichikunapaq wikch'uy k'aspita uraykachiy"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "On runway"
 msgstr "Pistapi"
@@ -3410,6 +3374,7 @@ msgstr "Pukllaqkuna"
 
 #: ../../../lib/web/src/components/comment-composer.tsx
 #: ../../../lib/web/src/features/errors/general-error.tsx
+#: ../../../lib/web/src/features/errors/route-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 msgid "Please check your internet connection and try again."
 msgstr "Internet t'inkiyniykita qhaway hinaspa kutimanta ruway."
@@ -4282,7 +4247,6 @@ msgstr "Suscribiy"
 msgid "Sunday"
 msgstr "Intichaw"
 
-#: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 #: src/components/Multiplayer.tsx
 msgid "Superhuman"
