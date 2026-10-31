@@ -258,6 +258,26 @@ What went wrong on the F/A-18C, each a rule now:
   canopy's stations on every line of every view, so it never saw the forebody's sides from FS 178 to 347,
   where three of the cited sections lie, and a 22 in margin behind the canopy hid a 7 deg crease on the
   spine. Leave out an edge only on the lines that meet it.
+- **A cast is only as right as the skin it lands on.** The F/A-18C's dome antenna, cast from one photo that
+  looks along the spine onto a spine 5 in too broad, landed on the flank 20 in short of where its sight line
+  met the real crown; triangulated from two photos 81 deg apart it sits on the crown. When the skin moves,
+  cast again or triangulate. The test works the other way too: once the spine was refitted, joints cast
+  from one photo landed within 0.2-0.8 in of where two photos triangulated their ends, where on the old
+  skin they missed by 4-9.
+- **A drawing's top line can be inches off where a profile's skyline is clean.** The HATP side view ran 1.8-
+  2.9 in above the F/A-18C's spine. The profile photo's skyline, found column by column where the sky's
+  brightness gives way and cast onto the centreline, agreed with the triangulated panel joints within 0.5
+  in. Prefer it, and leave out antennas that break the skyline.
+- **A line that runs along the stations will not triangulate from two photos.** Its trace in each photo
+  lies near the other's epipolar lines, so every pairing fits with no gap and the answers scatter (BL -58
+  to +19 for one spine line). Triangulate only ends, corners and other points that both photos see as the
+  same point.
+- **A check that runs only in the slow build is skipped by every draft.** The F/A-18C's paint refuses a
+  panel line standing an inch off the skin, but drafts skip the paint, so the facts check and 28 mutant
+  builds all passed a spine that had moved off three cast lines, and only the painted build stopped. Put
+  every guard where the drafts run it. When a shape change moves the skin under a line cast from photos,
+  cast it again from the same pixels; recast onto the raised spine, the side line agreed better with its
+  second photo (median 0.73 in against 0.94).
 - **A check that skips steps can't see a cliff.** The bend check leaves out windows holding a jump between
   surfaces, which is right where parts meet. A fairing that stood level and then dropped 6.6 in within one
   ring span read as two surfaces and passed. Where no step is real, count a step as the bend it is.

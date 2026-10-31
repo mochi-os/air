@@ -15,6 +15,7 @@ BUDGET = {'airframe': 4200, 'up': 250, 'down': 700, 'burner': 80, 'far': 400}
 WELD = 0.0005    # model units (metres): soup corners closer than this are one vertex
 SHELL = 0.12     # the far silhouette is first remeshed to one watertight shell on a grid this fine: the jet is
                  # many separate panels, and a collapse cannot merge pieces that share no vertex
+PLANAR = 1.0     # degrees: faces this near coplanar are merged before the collapse
 SMOOTH = 40.0    # degrees: edges sharper than this stay hard
 
 argv = sys.argv[sys.argv.index('--') + 1:]
@@ -35,9 +36,14 @@ def collapse(o, budget, shell=0.0):
         bpy.ops.object.voxel_remesh()
         bpy.ops.object.mode_set(mode='EDIT'); bpy.ops.mesh.select_all(action='SELECT'); bpy.ops.mesh.quads_convert_to_tris(); bpy.ops.object.mode_set(mode='OBJECT')
     have = triangles(o)
-    if have > budget:
+    if have > budget and not shell:
         bpy.context.view_layer.objects.active = o
-        m = o.modifiers.new('collapse', 'DECIMATE'); m.decimate_type = 'COLLAPSE'; m.ratio = budget / have
+        m = o.modifiers.new('planar', 'DECIMATE'); m.decimate_type = 'DISSOLVE'; m.angle_limit = math.radians(PLANAR)
+        bpy.ops.object.modifier_apply(modifier=m.name)
+        bpy.ops.object.mode_set(mode='EDIT'); bpy.ops.mesh.select_all(action='SELECT'); bpy.ops.mesh.quads_convert_to_tris(); bpy.ops.object.mode_set(mode='OBJECT')
+    if triangles(o) > budget:
+        bpy.context.view_layer.objects.active = o
+        m = o.modifiers.new('collapse', 'DECIMATE'); m.decimate_type = 'COLLAPSE'; m.ratio = budget / triangles(o)
         bpy.ops.object.modifier_apply(modifier=m.name)
     bpy.ops.object.select_all(action='DESELECT'); o.select_set(True); bpy.context.view_layer.objects.active = o
     bpy.ops.object.shade_smooth_by_angle(angle=math.radians(SMOOTH))

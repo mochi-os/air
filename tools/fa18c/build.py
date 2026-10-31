@@ -1123,8 +1123,10 @@ def lex(side, widths):
 			edge = (wing_top(station, edge_bl) or meet) - 0.1 * e
 			thickness = 3.0 * (1 - e) + 0.3 * e
 		# behind the junction the root stays on the body's wall at the
-		# junction's root height, wherever the root itself has settled
-		body = body_at(station, root if station <= junction else root_line(junction)) - 1.0
+		# junction's root height, wherever the root itself has settled: the
+		# spine's wall, inboard of the deck that rises past that height under
+		# the fairing (the union's outline there jumps out to the deck's shoulder)
+		body = (body_at(station, root) if station <= junction else core_at(station, root_line(junction))) - 1.0
 		edge_bl = max(edge_bl, body + 1.0)
 		_, starboard = half_ring(station)
 		inlet = inlet_slice(station)
@@ -1241,12 +1243,14 @@ def fence(side, tops):
 def exit_distance(centre, half, exponent, origin, direction, reach=120.0):
 	# How far along a ray from origin a superellipse (|dx/a|^n + |dy/b|^n <= 1)
 	# extends: the farthest inside point, 0 if the ray misses it. half is (a,
-	# b), or (a, b above the centre, b below it)
+	# b), or (a, b above the centre, b below it); a may be a pair, (above the
+	# centre, below it)
 	t = np.linspace(0.0, reach, 961)
 	x = origin[0] + direction[0] * t - centre[0]
 	y = origin[1] + direction[1] * t - centre[1]
 	b = np.where(y > 0, half[1], half[-1])
-	inside = np.abs(x / half[0]) ** exponent + np.abs(y / b) ** exponent <= 1.0
+	a = np.where(y > 0, half[0][0], half[0][1]) if isinstance(half[0], tuple) else half[0]
+	inside = np.abs(x / a) ** exponent + np.abs(y / b) ** exponent <= 1.0
 	if not inside.any():
 		return 0.0
 	return float(t[np.nonzero(inside)[0][-1]])
@@ -1268,11 +1272,77 @@ def engine_buttline(station):
 # nothing measures yet), runs aft and inboard onto the engine axis by the
 # engine face, and ends at the nozzles: these are its knots from FS 445.
 # Below its centre it reaches down to layout.nacelle's line (nacelle_bottom()).
+# The body's top is the spine's crown the profile measures (layout.spine), to
+# FS 500, then on to the tail as fitted: the HATP side view's top line runs
+# 1.8-2.9 in above it over FS 455-500. Above its centre the body is narrower
+# than below ("upper"), fitted through the spine's flank points.
+SPINE = LAYOUT["spine"]
 CORE = {
-	"top": [(357, 151.3), (405, 150.0), (450, 148.4), (500, 145.6), (540, 140.9), (570, 135), (600, 130), (650, 127), (692, 124)],
+	"top": [(s, w) for s, w in SPINE["crown"] if s >= 357] + [(540, 138.2), (600, 130), (650, 127), (692, 124)],
 	"bottom": [(357, 84.2), (420, 83.5), (500, 84), (560, 85), (620, 88), (692, 93)],
 	"half": [(357, 23.2), (404, 24), (450, 22), (550, 20), (650, 17), (692, 12)],
 }
+
+
+def upper_widths():
+	# The body's half-width above its centre: as below it up to the LEX-wing
+	# junction, where the forebody has handed over, then through each flank
+	# point of layout.spine, which lies on the body's superellipse; narrowing
+	# on as it does over the last two points to the speedbrake's front (FS
+	# 545), and back to as below it by FS 620, between the fins, where the
+	# speedbrake (34 in wide) lies on a broad top the photos measure no flank
+	# of. (Turning at the last point measured, the flank creased 3-5 deg)
+	out = [(404.0, smooth(CORE["half"], 404))]
+	for s, wl, bl in SPINE["flank"]:
+		top, bottom = smooth(CORE["top"], s), smooth(CORE["bottom"], s)
+		share = abs((wl - (top + bottom) / 2) / ((top - bottom) / 2))
+		out.append((s, bl / (1 - share ** 2.6) ** (1 / 2.6)))
+	(s0, a0), (s1, a1) = out[-2], out[-1]
+	return out + [(545.0, a1 + (a1 - a0) / (s1 - s0) * (545.0 - s1) / 2), (620.0, smooth(CORE["half"], 620))]
+
+
+CORE["upper"] = upper_widths()
+# The deck behind the LEX: a flat top either side of the spine near the LEX
+# root's height (layout.spine deck), from the nacelles' tops at JOIN, risen
+# by FS 452 under the LEX's fairing; its shoulder falls outboard to WL 123 at BL
+# 40.5 (a line the panel tracing triangulated over FS 451-501), and it eases
+# back onto the nacelles' tops by FS 580, where the fins stand and the body
+# has broadened again, then on down inside them before it ends (ended level
+# with the nacelles' tops, a groove beside the spine opened in one ring)
+DECK_HALF, DECK_EXPONENT, DECK_END = 44.0, 5.0, 640.0   # its half-width at the nacelles' centre height, its superellipse's exponent
+
+
+def deck_top(station):
+	# The deck's top at a station, or None where it does not stand above the nacelles
+	if not JOIN - 1e-6 <= station <= DECK_END:
+		return None
+	start = (lambda b, w, a, up, down: w + up)(*nacelle_at(JOIN))
+	settled = (lambda b, w, a, up, down: w + up)(*nacelle_at(580.0))
+	floor = nacelle_at(DECK_END)[1] + 0.5
+	knots = [(JOIN - 4, start), (JOIN, start), (452.0, 128.05)] + [tuple(p) for p in SPINE["deck"] if p[0] > 455] + [(540.0, 126.8), (580.0, settled), (DECK_END, floor), (DECK_END + 4, floor)]
+	return smooth(knots, station)
+
+
+def deck_half(station):
+	# The deck's half-width at the nacelles' centre height: DECK_HALF over the
+	# shoulder the panel tracing measures (FS 451-501), then drawing in on to
+	# DECK_END as it sinks into the nacelles, so its edge, just inside their
+	# outboard sides, leaves them before it ends (ending at full width, it
+	# creased their sides 3-7 deg; drawn in over FS 580-640 only, 4)
+	return smooth([(490.0, DECK_HALF), (510.0, DECK_HALF), (DECK_END, DECK_HALF - 18.0), (DECK_END + 20, DECK_HALF - 18.0)], station)
+
+
+def core_at(station, waterline):
+	# The body's half-width at a waterline (its superellipse alone, without the
+	# nacelles or the deck), 0 above or below it
+	top, bottom = smooth(CORE["top"], station), smooth(CORE["bottom"], station)
+	y = waterline - (top + bottom) / 2
+	share = abs(y / ((top - bottom) / 2))
+	if share >= 1:
+		return 0.0
+	return (onward(CORE["upper"], station) if y > 0 else smooth(CORE["half"], station)) * (1 - share ** 2.6) ** (1 / 2.6)
+
+
 NACELLE = [(445, 30.3, 103.3, 15.3, 16.5), (470, None, 104.5, 17.5, 17.5), (520, None, 105.5, 19.5, 18.5), (580, None, 106.0, 21.0, 19.0), (640, None, 106.0, 20.0, 18.5), (692, None, 106.0, 18.5, 17.5)]
 NOZZLE = LAYOUT["nozzle"]   # the outer flaps' start and exit, their radii, and the axis's waterline
 # The fuselage station where each inlet's outer skin hands over to the rear
@@ -1288,12 +1358,16 @@ def union_ring(station, angles=None):
 	# the nacelles between its last station ahead of JOIN and JOIN itself,
 	# inside them, behind the plug
 	top, bottom, half = (smooth(CORE[k], station) for k in ("top", "bottom", "half"))
+	upper = onward(CORE["upper"], station)
 	centre = (0.0, (top + bottom) / 2)
-	parts = [((0.0, centre[1]), (half, (top - bottom) / 2), 2.6)]
+	parts = [((0.0, centre[1]), ((upper, half), (top - bottom) / 2), 2.6)]
 	if station >= JOIN - 1e-6:
 		b, w, a, up, down = nacelle_at(station)
 		for side in (1, -1):
 			parts.append(((side * b, w), (a, up, down), 2.3))
+		deck = deck_top(station)
+		if deck is not None and deck > w + 0.25:
+			parts.append(((0.0, w), (deck_half(station), deck - w, 0.5), DECK_EXPONENT))
 	ring = []
 	default = angles is None
 	for theta in angles or angles_at(station, centre):
@@ -1992,7 +2066,7 @@ def fittings():
 	MARKS["blade_nose_bottom_aft"] = (at(end, low, 0), "blade_nose")
 	# the antennas on the spine (layout.antennas): the swept dorsal blade and the
 	# small one ahead of it on the centreline, their bases sunk an inch into the
-	# skin; the dome on the left of the spine
+	# skin; the dome on the spine's crown
 	a = LAYOUT["antennas"]
 	for key, half in (("dorsal", 0.3), ("spine", 0.2)):
 		(f0, w0), (f1, w1), (f2, w2), (f3, w3) = a[key]

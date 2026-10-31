@@ -212,6 +212,19 @@ class ShapeTest(unittest.TestCase):
 		self.assertTrue(any(j == 2 and abs(c) > 0.1 for j, _, _, c in found))
 		self.assertFalse(any(j == 1 and abs(stations[i] - 300) < 8 and abs(c) > 0.1 for j, i, _, c in check.bends(np.stack([kink[0]] * 3), 1.5, np.stack([free, edge, free]))))
 
+	def test_surface_distance(self):
+		triangle = np.array([[[0, 0, 0], [4, 0, 0], [0, 4, 0]]], float)
+		points = np.array([[1, 1, 2], [1, 1, -0.5], [2, -3, 0], [6, 0, 0], [-1, -1, 1]], float)
+		got = check.surface_distance(points, triangle)
+		# over the face: to the plane; past an edge: to the edge; past a corner: to the corner
+		for value, want in zip(got, [2.0, 0.5, 3.0, 2.0, math.sqrt(3)]):
+			self.assertAlmostEqual(value, want)
+		# the nearest of several, and a degenerate triangle is no surface: a point on one measures to the skin
+		two = np.concatenate([triangle, triangle + [0, 0, 1]])
+		self.assertAlmostEqual(check.surface_distance(np.array([[1, 1, 2.0]]), two)[0], 1.0)
+		flat = np.concatenate([triangle + [0, 0, 1], np.zeros((1, 3, 3))])
+		self.assertAlmostEqual(check.surface_distance(np.zeros((1, 3)), flat)[0], 1.0)
+
 	def test_polygons(self):
 		square = np.array([[0, 0], [2, 0], [2, 2], [0, 2]], float)
 		self.assertTrue(check.inside_polygon(np.array([1.0, 1.0]), square))
@@ -219,6 +232,12 @@ class ShapeTest(unittest.TestCase):
 		segments = np.stack([square, np.roll(square, -1, axis=0)], 1)
 		self.assertAlmostEqual(check.segment_distance(np.array([2.5, 1.0]), segments), 0.5)
 		self.assertAlmostEqual(check.segment_distance(np.array([3.0, 3.0]), segments), math.sqrt(2))
+		# the same outline as segments in any order, some reversed
+		jumbled = segments[[2, 0, 3, 1]].copy()
+		jumbled[1] = jumbled[1][::-1]
+		self.assertTrue(check.inside_segments(np.array([1.0, 1.0]), jumbled))
+		self.assertFalse(check.inside_segments(np.array([2.5, 1.0]), jumbled))
+		self.assertFalse(check.inside_segments(np.array([1.0, -0.5]), jumbled))
 
 	def test_mirrored(self):
 		left = np.array([[400, 100, -20], [420, 110, -10]], float)

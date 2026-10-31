@@ -52,7 +52,11 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   (`destaired()`). Every run between cited values (section shapes, ratios, widths, the rear body's and the
   nacelles' knots) is a monotone cubic that arrives level at its last knot (`onward()`), never a straight run,
   which creases the skin at each knot. The top line follows the canopy's located points and then the rear
-  fuselage's top through the blend (FS 357-404). The loft has a ring every 3 in over the nose and every 4 in
+  fuselage's top through the blend (FS 357-404). Behind the LEX the rear fuselage is a narrow spine on a
+  broad deck (`layout.spine`): the crown is the profile photo's skyline cast onto the centreline (the HATP
+  side view runs up to 3 in above it), the spine's width above its centre runs through the triangulated
+  lower ends of its panel joints, and the deck stands near the LEX root's height from JOIN aft, joining the
+  nacelles smoothly with its edge inside their sides, and drawing in and down into them by FS 640. The loft has a ring every 3 in over the nose and every 4 in
   from the canopy's aft end to the nozzles. The fairing settles once onto the line the skin runs along where
   it lands (85% of `FAIRING` behind the junction), from the blade as it stands at the junction with its edge
   riding the wing. Each inlet is a raked D-shaped mouth through the lip points the photos measure
@@ -87,8 +91,12 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   counted where most of it lies within 2 in, so smooth curvature is not; the canopy is left out only on the
   lines that meet it; each view's tolerance lies between the fixed build and one with its rings spread out;
   on the fairing a step counts as a bend, not as an edge);
-  the belly between the nose and the inlets bending no more than its curve; and the fuselage's section,
-  where each inlet hands over, standing nowhere outside the inlet's last ring (`shape.joint`).
+  the belly between the nose and the inlets bending no more than its curve; the fuselage's section,
+  where each inlet hands over, standing nowhere outside the inlet's last ring where it juts out past the
+  section 4.5 in ahead (`shape.joint`); the spine's crown, flank and deck where the photos put them
+  (`layout.spine`); and each
+  panel line (`layout.panels`, cast onto the skin from the photos) within an inch of the skin as built,
+  which the paint otherwise finds only when it is baked.
 - **`outline.py`** - the outline check: the model's top, side and front silhouettes at the HATP masks' scale,
   registered on the apex and centreline, with the share of their union both cover, and every place the
   outlines part by more than a threshold, worst first, in stations, waterlines and buttlines.

@@ -64,7 +64,6 @@ EXEMPT = {
 	"layout.hardpoints": "store mounts the build writes as given, the fuselage ones draped onto the skin (shape.mount); step 5 checks them against the stores",
 	"layout.lights": "light points the build writes as given",
 	"layout.paint": "colours the paint bake writes into the atlas, not a shape (looked at on the comparison sheets)",
-	"layout.panels": "panel lines the paint bake draws into the atlas, not a shape",
 	"layout.stencils": "stencils the paint bake draws into the atlas, not a shape",
 }
 
@@ -340,6 +339,16 @@ def inside_polygon(point, polygon):
 	return bool(np.count_nonzero(cross & (at > x)) % 2)
 
 
+def inside_segments(point, segments):
+	# Whether a point (2) lies inside a closed outline given as segments (N, 2,
+	# 2) in any order, by crossings
+	x, y = point
+	a, b = segments[:, 0], segments[:, 1]
+	cross = (a[:, 1] > y) != (b[:, 1] > y)
+	at = a[:, 0] + (y - a[:, 1]) * (b[:, 0] - a[:, 0]) / np.where(b[:, 1] != a[:, 1], b[:, 1] - a[:, 1], 1)
+	return bool(np.count_nonzero(cross & (at > x)) % 2)
+
+
 def lines(tris, view, stations, across):
 	# The skin's fixed lines seen from a view ("above" and "below": waterline at
 	# fixed buttlines; "outboard" on the right: buttline at fixed waterlines),
@@ -378,6 +387,39 @@ def bends(H, step, free, jump=0.6):
 
 			wide, narrow = bend(4), bend(2)
 			out.append((j, i, wide, wide if abs(narrow) > 0.6 * abs(wide) else 0.0))
+	return out
+
+
+def surface_distance(points, tris, chunk=256):
+	# Each point's (N, 3) distance to the nearest of the triangles (M, 3, 3):
+	# to the plane where the point stands over a triangle, else to its edges
+	out = np.full(len(points), np.inf)
+	a, b, c = tris[:, 0], tris[:, 1], tris[:, 2]
+	n = np.cross(b - a, c - a)
+	size = np.linalg.norm(n, axis=1)
+	keep = size > 1e-12
+	if not keep.any():
+		return out
+	a, b, c, n = a[keep], b[keep], c[keep], n[keep] / size[keep, None]
+	v0, v1 = b - a, c - a
+	d00, d01, d11 = (v0 * v0).sum(1), (v0 * v1).sum(1), (v1 * v1).sum(1)
+	den = d00 * d11 - d01 * d01
+
+	def edge(p, s0, s1):
+		e = s1 - s0
+		t = np.clip(((p[:, None] - s0[None]) * e[None]).sum(-1) / np.maximum((e * e).sum(1), 1e-12)[None], 0, 1)
+		return np.linalg.norm(s0[None] + t[..., None] * e[None] - p[:, None], axis=-1)
+
+	for i in range(0, len(points), chunk):
+		p = points[i:i + chunk]
+		w = p[:, None] - a[None]
+		h = (w * n[None]).sum(-1)
+		q = w - h[..., None] * n[None]
+		d20, d21 = (q * v0[None]).sum(-1), (q * v1[None]).sum(-1)
+		u, v = (d11 * d20 - d01 * d21) / den, (d00 * d21 - d01 * d20) / den
+		over = (u >= 0) & (v >= 0) & (u + v <= 1)
+		rim = np.minimum(np.minimum(edge(p, a, b), edge(p, b, c)), edge(p, c, a))
+		out[i:i + chunk] = np.where(over, np.abs(h), rim).min(1)
 	return out
 
 
@@ -527,6 +569,28 @@ def checks(jet):
 			yield result("layout.lex", f"fence's top {key} corner", want[0], got[0], 0.6, "FS in")
 
 	yield from guard("lex.fence", "LEX fence", lex_parts)
+
+	# The panel lines, cast onto the skin as the photos saw it, lie on the skin
+	# as built: the paint lays each on the nearest surface and refuses one
+	# standing more than an inch off, so a skin moved since a line was cast
+	# shows here, in a draft, rather than only when the paint is baked
+	def panels():
+		p = F["layout"]["panels"]
+		skin = jet.points(every).reshape(-1, 3, 3)
+		for k, (line, sides) in enumerate([(l, [1]) for l in p["lines"]] + [(l, [1, -1]) for l in p["mirrored"]]):
+			worst = 0.0
+			for side in sides:
+				corners = np.array(line, float) * [1, 1, side]
+				dense = np.concatenate([np.linspace(q, r, max(2, int(np.ceil(np.linalg.norm(r - q) / 0.5)) + 1)) for q, r in zip(corners, corners[1:])])
+				low, high = dense.min(0) - 3, dense.max(0) + 3
+				# every triangle whose box meets the line's (a large one may have no corner near it)
+				near = skin[((skin.min(1) <= high) & (skin.max(1) >= low)).all(1)]
+				if not len(near):
+					raise KeyError(f"no skin near panel line {k}")
+				worst = max(worst, float(surface_distance(dense, near).max()))
+			yield result("layout.panels", f"panel line {k} (FS {line[0][0]:.0f}-{line[-1][0]:.0f}) off the skin, the furthest", 0.0, worst, 1.0)
+
+	yield from guard("layout.panels", "panel lines", panels)
 
 	# The LEX runs into the wing with no step: its aft end, behind the
 	# junction, settles onto what lies beneath it, and nothing beneath pokes up
@@ -822,6 +886,26 @@ def checks(jet):
 		yield result("layout.nacelle", "underside's fall over the 4 in behind the lip's rim", -0.15, (bottom(rim + 4, "left") - bottom(rim, "left")) / 4, 0.07, "in/in")
 
 	yield from guard("layout.nacelle", "nacelle", nacelle)
+
+	# The spine and the deck behind the LEX where the photos place them: the
+	# crown in the profile, the spine's flank at its panel joints' lower ends,
+	# and the deck where it meets the spine's wall
+	def spine():
+		sp = F["layout"]["spine"]
+		skin = jet.points(["fuselage", "canopy", "lex_left", "lex_right"]).reshape(-1, 3, 3)
+
+		def at(view, station, across):
+			# the skin's height seen from a view, at one station and line, on a small even grid round it
+			return float(lines(skin, view, np.array([station - 0.5, station, station + 0.5]), np.array([across - 0.5, across, across + 0.5]))[1, 1])
+
+		for station, waterline in sp["crown"]:
+			yield result("layout.spine", f"crown at FS {station:g} (dvids9820808's profile)", waterline, at("above", station, 0.0), 0.5, "WL in")
+		for station, waterline, buttline in sp["flank"]:
+			yield result("layout.spine", f"spine's flank at FS {station:g}, WL {waterline:g} (its panel joints' lower ends)", buttline, at("outboard", station, waterline), 1.0, "BL in")
+		for station, waterline in sp["deck"]:
+			yield result("layout.spine", f"deck beside the spine at FS {station:g} (dvids9820788)", waterline, at("above", station, 24.0), 1.0, "WL in")
+
+	yield from guard("layout.spine", "spine", spine)
 
 	# Fittings
 	def fittings():
@@ -1130,14 +1214,15 @@ def checks(jet):
 		# where each inlet's outer skin hands over to the fuselage: the part of the
 		# fuselage's section that the nacelle adds stands nowhere outside the
 		# inlet's last ring (its jump from the body to the nacelle, just ahead,
-		# would show beside the ring)
+		# would show beside the ring). Added: outside the section 4.5 in ahead,
+		# and away from it (the spine narrowing there moves its points inside)
 		end = jet.points(["inlet_right"])
 		ring = np.unique(end[end[:, 0] > join - 0.02][:, [2, 1]].round(4), axis=0)
 		middle = ring.mean(0)
 		ring = ring[np.argsort(np.arctan2(ring[:, 1] - middle[1], ring[:, 0] - middle[0]))]
 		behind = jet.cut(["fuselage"], [join + 0.1, 100, 0], [1, 0, 0])[:, [2, 1]]
 		ahead = jet.cut(["fuselage"], [join - 4.5, 100, 0], [1, 0, 0])[:, [2, 1]].reshape(-1, 2, 2)
-		added = [q for q in behind if q[0] > 0 and segment_distance(q, ahead) > 0.5]
+		added = [q for q in behind if q[0] > 0 and segment_distance(q, ahead) > 0.5 and not inside_segments(q, ahead)]
 		if not added:
 			raise KeyError("the fuselage adds no nacelle where the inlet ends")
 		outside = [segment_distance(q, np.stack([ring, np.roll(ring, -1, axis=0)], 1)) for q in added if not inside_polygon(q, ring)]
