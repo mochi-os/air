@@ -114,9 +114,11 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   ...), in Workbench: the rig contract's check that every joint turns, slides or shows as its keys say.
 
 ```
-python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --overlays DIR --cameras CAMERAS.json
+python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --check --overlays DIR --cameras CAMERAS.json
+python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json SKY
 blender -b --factory-startup -P ../verify/view.py -- OUT.glb OUT.json CAMERAS.json RENDERS
 python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --sheets RENDERS SHEETS
+python3 -I ../verify/page.py photos.json CAMERAS.json SKY SHEETS GATE.txt PAGE --kicker "F/A-18C · Air" --name "Hornet shape review"
 blender -b --factory-startup -P render.py -- OUT.glb OUT.json DIR gear=1 canopy=1
 python3 -I tips.py photos.json CAMERAS.json OUT.glb OUT.json FEATURES.json --photos ID,... [--drop ID:MARK,...] [--neutral] [--rotate]
 python3 -I test_check.py

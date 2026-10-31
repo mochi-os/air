@@ -107,6 +107,40 @@ only start the solve. It reports:
 A miss on a fitted placement settles it: move the layout entry and cite the photo match. A miss on a cited
 fact is a question: check the marks, then the citation.
 
+The match is a gate, not a report: `--check` holds it to the catalogue's `gate` and exits non-zero on a miss
+it does not already know of. A traced edge fails when its median miss passes `edge` inches; a point the
+photos measure fails when it misses on any coordinate by more than `sigmas` of its uncertainty and `floor`
+inches. A camera at the field-of-view floor (`field` degrees or less) or fitting its marks worse than `rms`
+pixels judges no edge, and its edges are listed as unjudged. `known` names the misses accepted for now, each
+with what is wrong; they print on every run, and each is a task. Run `--check` after every change to the
+model or the catalogue: while the match only reported, the F/A-18C's spine stood 3.7 in outside a traced
+outline for weeks, and the user found the shape wrong before any check did.
+
+### 5a. The outline against the sky: every photo, no tracing
+
+    python3 -I skyline.py CATALOGUE MODEL.glb POINTS.json CAMERAS.json OUT_DIR
+
+Through each camera `photos.py --cameras` solved, it walks the posed model's whole silhouette and, wherever
+the photo shows sky beyond it, finds the jet's own edge: walking in from the sky (fitted as a line, since it
+often darkens toward the jet), the first sharp change of brightness that holds, darker or brighter, at the
+half-way crossing. Each place is a miss in inches at the depth of the triangle making the outline there (+
+where the model stands outside), on the region of skin it belongs to: part family, 24 in of stations, and
+for the body the sector round the section. Left out: places on glass, places whose search crosses a store
+(the catalogue's `stores`, below), and weak cameras by the gate's rule.
+
+A region is a finding when two or more photos judge it (3 places each at least), the median over them passes
+1 in, and two thirds of them miss on that side: each photo is one measurement with its camera's own error.
+Findings on moving surfaces (rudders, flaps, ailerons, leading-edge flaps, stabilators, nozzles, gear) are
+listed apart: their misses follow each photo's pose. The report ends with the coverage: every region of the
+skin judged by one photo only or by none. It writes each photo's overlay (a line from the model's edge to the
+photo's, green within 1 in, yellow within 2.5, magenta beyond) and a sheet per finding with every photo's
+view of it. Check each finding's sheet by eye before it becomes a task.
+
+The model carries no stores, and a tank's or missile's skin passes for sky. The catalogue's `stores` gives
+each kind as boxes from a station's mount and the load every photo is taken to carry; a photo's own `stores`
+overrides it (`null` for an empty station). Default to a full load: a store left out reads as a false miss,
+an empty station masked only costs coverage.
+
 ### 6. Comparison sheets: look
 
     blender -b --factory-startup -P view.py -- MODEL.glb POINTS.json CAMERAS.json RENDERS
@@ -115,6 +149,14 @@ fact is a question: check the marks, then the citation.
 renders the posed model through every solved camera and lays it beside and over the straightened photo. This
 is where blends, creases, gaps and missing parts show, which no number above catches. Review every sheet,
 region by region.
+
+    python3 -I page.py CATALOGUE CAMERAS.json SKY SHEETS GATE.txt PAGE --kicker "F/A-18C · Air" --name "Hornet shape review"
+
+makes the review page for the build from the run: the gate's output (GATE.txt, `photos.py --check`
+captured), the sky check's findings with their sheets and its coverage map, and every photo beside the model
+through its camera, the two laid over each other and the sky check's overlay. Publish it with every build that
+changes the shape, to the same page, so the user reviews the model as it is, not as it was: the user found
+the F/A-18C's spine dip by eye while every number passed.
 
 ### 7. The checklist
 
@@ -140,6 +182,7 @@ sketch to several inches. Say which in the facts table.
 | facts | anything no source gives a number for; shape between the measured stations |
 | outline | the inside of the silhouette; the drawing's own errors |
 | photos | points no photo shows from two directions; parts that move between photos unless posed |
+| skyline | outline with no sky beyond it (flanks seen only from above or below); glass; moving surfaces until posed |
 | sheets | small offsets (use the numbers); colour and texture are not shape |
 
 ## Pitfalls
@@ -281,6 +324,25 @@ What went wrong on the F/A-18C, each a rule now:
 - **A check that skips steps can't see a cliff.** The bend check leaves out windows holding a jump between
   surfaces, which is right where parts meet. A fairing that stood level and then dropped 6.6 in within one
   ring span read as two surfaces and passed. Where no step is real, count a step as the bend it is.
+- **A traced edge against a curve has no side.** The photo match measures an outline trace with a sign (+
+  the model outside) but a trace against one of the build's curves as a distance only. The F/A-18C's fin
+  leading edges missed by 1.6-2.8 in against their curve, and were read as "always outward" for a day; the
+  sky check found the fins about 1 in aft, the leading edge inside. Read a curve's miss as a size, never a
+  direction.
+- **Brightness edges, against what the photos hold** (the sky check's lessons, each with its test):
+  - A sunlit top is brighter than an overcast sky. A rule that wants the jet darker walked inward past the
+    bright top to its shading, 10-12 px inside, and read the spine 4-5 in too high.
+  - Processing leaves a halo: the sky darkens 8-10 levels in a band beside a bright edge. Walk past changes
+    too weak to be the jet.
+  - Shading is not an edge: require the brightness to rise from a quarter to three quarters of the jet's level
+    within a few pixels.
+  - Glass shows the sky through it, so its outline is no step: the canopy read 3-7 in wrong until glass was
+    left out.
+  - Label each place by the frontmost triangle under it, not the nearest projected vertex: glass has few
+    vertices, and its outline was labelled as the fuselage beside it.
+  - A tank or missile the model does not carry passes for sky: mask the stores.
+  - Sample an edge by cells, not by every n-th boundary pixel: in row order a vertical edge's two sides
+    alternate, and a stride of four only ever reached one of them.
 - **Helpers mark well with a dictionary.** Three helpers marked twelve photos from `../fa18c/marking.md` in an
   hour or so each. Check their marks against the overlays and the flagged misses; they also found the wrong
   photo labels.
@@ -292,6 +354,9 @@ What went wrong on the F/A-18C, each a rule now:
 - `photos.py`: the photo match, overlays, cameras for `view.py`, comparison sheets.
 - `view.py`: Blender: renders the model through solved cameras.
 - `crop.py`: crops with a labelled pixel grid, for marking.
+- `skyline.py`: the outline against the sky in every solved photo, by region, with findings, coverage and
+  sheets.
+- `page.py`: the review page for one build, from its gate, sky check and sheets.
 - `cast.py`: casts a solved photo's pixels onto the posed model's surface or a plane of the project's frame,
   and projects coordinates into a photo to find where to look.
-- `test_verify.py`, `test_photos.py`: `python3 -I test_verify.py`, `python3 -I test_photos.py`.
+- `test_verify.py`, `test_photos.py`, `test_skyline.py`, `test_page.py`: `python3 -I test_verify.py`, and likewise.

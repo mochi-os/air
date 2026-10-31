@@ -19,7 +19,9 @@
 #
 # Overlays (--overlays DIR) draw the model and every mark on each photo;
 # --cameras FILE writes the solved cameras for view.py, and --sheets RENDERS
-# DIR lays view.py's renders beside and over the photos.
+# DIR lays view.py's renders beside and over the photos. --check holds the
+# match to the catalogue's gate (gate()) and exits non-zero on a miss it does
+# not already know of.
 #
 # The catalogue (JSON):
 #   frame    model.Frame's spec
@@ -28,8 +30,10 @@
 #   photos   {id: {"file": path under the catalogue's references folder, "pose": {drive: value}, "solve": false to leave it out,
 #                  "marks": {point: [x, y]}, "edges": {name: {"against": "outline" | curve name,
 #                  "points": [[x, y], ...], "snap": pixels}}, "locate": {name: [x, y, "plane=value"]}}}
+#   gate     {"edge": inches, "sigmas": n, "floor": inches, "field": degrees, "rms": pixels,
+#             "known": {"edge PHOTO:NAME" or "point NAME": why}}: what --check fails on (gate())
 #
-# usage: python3 -I photos.py CATALOGUE.json MODEL.glb POINTS.json FEATURES.json [--json]
+# usage: python3 -I photos.py CATALOGUE.json MODEL.glb POINTS.json FEATURES.json [--json] [--check]
 #        [--overlays DIR] [--cameras FILE] [--sheets RENDERS DIR] [--only ID,ID]
 import json, math, sys
 from pathlib import Path
@@ -50,8 +54,8 @@ def options(argv):
 	i = 0
 	while i < len(argv):
 		a = argv[i]
-		if a == "--json":
-			flags["json"] = True
+		if a in ("--json", "--check"):
+			flags[a[2:]] = True
 		elif a == "--sheets":
 			flags["sheets"] = (argv[i + 1], argv[i + 2])
 			i += 2
@@ -300,7 +304,9 @@ class Match:
 			sign = np.ones(len(points))
 			depths = (depth[i] + depth[i + 1]) / 2
 		inches = d * sign * depths / c[0] / f.unit
-		return {"against": edge["against"], "points": len(points), "median": round(float(np.median(np.abs(inches))), 2),
+		# an outline's misses are signed (+ the model outside); a curve's are
+		# distances only, with no side
+		return {"against": edge["against"], "points": len(points), "signed": edge["against"] == "outline", "median": round(float(np.median(np.abs(inches))), 2),
 			"worst": round(float(inches[np.argmax(np.abs(inches))]), 2), "misses": [round(float(v), 2) for v in inches]}
 
 	def overlays(self, directory, width=2400):
@@ -338,11 +344,15 @@ class Match:
 			out.save(Path(directory) / f"{photo['id']}.jpg", quality=88)
 
 	def write_cameras(self, path):
+		# each solved camera, with its field of view and fit (the gate's
+		# measure of a weak camera, which skyline.py applies too)
 		out = []
+		report = self.report()["photos"]
 		for k, photo in enumerate(self.photos):
 			if k in self.cameras:
+				fit = report[photo["id"]]
 				out.append({"photo": photo["id"], "file": photo["entry"]["file"], "size": photo["size"], "camera": [float(v) for v in self.cameras[k]],
-					"pose": photo["entry"].get("pose", {})})
+					"pose": photo["entry"].get("pose", {}), "field": fit["field"], "rms": fit["rms"]})
 		Path(path).write_text(json.dumps(out, indent="\t") + "\n")
 
 	def sheets(self, renders, directory, width=1600):
@@ -410,10 +420,53 @@ def text(report):
 		if e.get("missing"):
 			lines.append(f"edge {name:40s} against {e['against']:24s} {e['points']:3d} points: the model has no such curve")
 			continue
-		lines.append(f"edge {name:40s} against {e['against']:24s} {e['points']:3d} points, median {e['median']:5.2f} in, worst {e['worst']:+6.2f} in")
+		worst = f"{e['worst']:+6.2f} in" if e.get("signed", True) else f"{abs(e['worst']):6.2f} in, no side (a curve)"
+		lines.append(f"edge {name:40s} against {e['against']:24s} {e['points']:3d} points, median {e['median']:5.2f} in, worst {worst}")
 	for name, l in report["locate"].items():
 		lines.append(f"locate {name}: {l}")
 	return "\n".join(lines)
+
+
+def weak(field, rms, spec):
+	# A camera too narrow (spec["field"] degrees or less: its depth is barely
+	# fixed) or fitting its marks too loosely (spec["rms"] pixels) to judge an
+	# outline away from its marks
+	return field <= spec["field"] or rms > spec["rms"]
+
+
+def gate(report, spec):
+	# What the match fails on, against the catalogue's gate: each traced edge
+	# whose median miss passes spec["edge"] inches, and each point the photos
+	# measure whose miss on any coordinate passes both spec["sigmas"] of its
+	# uncertainty and spec["floor"] inches (a point one photo sees misses
+	# across its sight line only). A camera at the field-of-view floor
+	# (spec["field"] degrees or less) or fitting its marks worse than
+	# spec["rms"] pixels judges no edge: its outlines away from its marks
+	# cannot judge a shape. Returns (failures, known, unjudged), each a list of
+	# (name, text); a miss spec["known"] names goes to known, with its why
+	failures, known, unjudged = [], [], []
+	accepted = spec.get("known", {})
+
+	def add(name, text):
+		(known if name in accepted else failures).append((name, f"{text}: {accepted[name]}" if name in accepted else text))
+
+	weaks = {pid for pid, p in report["photos"].items() if p["solved"] and weak(p["field"], p["rms"], spec)}
+	for name, e in sorted(report["edges"].items()):
+		photo = name.split(":")[0]
+		if photo in weaks:
+			unjudged.append((f"edge {name}", f"camera {photo} at field {report['photos'][photo]['field']} deg, rms {report['photos'][photo]['rms']} px"))
+		elif e.get("missing"):
+			add(f"edge {name}", "the model has no such curve")
+		elif e["median"] > spec["edge"]:
+			worst = f"{e['worst']:+.2f}" if e.get("signed", True) else f"{abs(e['worst']):.2f} (a distance from the build's curve, without a side)"
+			add(f"edge {name}", f"median miss {e['median']:.2f} in, worst {worst}")
+	for name, p in sorted(report["points"].items()):
+		if "miss" not in p:
+			continue
+		over = [abs(m) > max(spec["sigmas"] * s, spec["floor"]) for m, s in zip(p["miss"], p["sigma"])]
+		if any(over):
+			add(f"point {name}", f"miss {p['miss']} in, uncertainty {p['sigma']} ({p['photos']} photos)")
+	return failures, known, unjudged
 
 
 def main():
@@ -422,6 +475,18 @@ def main():
 	match = Match(*args[:4], only=only).solve(log=lambda m: print(m, file=sys.stderr))
 	report = match.report()
 	print(json.dumps(report, indent="\t") if flags.get("json") else text(report))
+	if flags.get("check"):
+		spec = json.loads(Path(args[0]).read_text()).get("gate")
+		if spec is None:
+			sys.exit("the catalogue has no gate")
+		failures, known, unjudged = gate(report, spec)
+		print("")
+		for heading, rows in (("unjudged (a weak camera)", unjudged), ("known", known), ("FAILED", failures)):
+			for name, why in rows:
+				print(f"{heading}: {name}: {why}")
+		print(f"gate: {len(failures)} failed, {len(known)} known, {len(unjudged)} unjudged")
+		if failures:
+			sys.exit(1)
 	if "overlays" in flags:
 		match.overlays(flags["overlays"])
 	if "cameras" in flags:

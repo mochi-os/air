@@ -6078,5 +6078,119 @@
 			},
 			"notes": "SIDE: the jet's right (starboard) side from below and behind, confirmed from the photo (nose to photo-right, the near wing seen from beneath carries a 330-gal tank and an AIM-9 at its tip, the fin's outer face shows 300/NK). Rough single-photo solve (rms 21 px): camera about 39 deg behind abeam and 19 deg below the wing plane, field of view about 52 deg. In flight, gear up. The starboard flap's outboard trailing corner (fold_trailing_right) sits about 15 px forward of the aileron's trailing-edge line extended, the aileron's inboard corner at about 1406,764 with the chordwise gap between them: a step at the fold line (planform or a small flap/aileron difference). Stabilator deflection not judged. Fin, stabilator and wingtip corners are intersections of line fits to both edges (the outlines themselves are rounded there). UNDERSIDE: there is no sky silhouette of the starboard nacelle's underside here; the station-7 tank hides the lip's outer and upper parts and the centreline tank the belly between the nacelles. underside_right is a tonal boundary inside the shadowed underside: the lower edge of a lit strip along the starboard nacelle's lower side, starting where the cited lip bottom projects (1690,1217) and running aft. It is probably the nacelle's lower occluding contour against the farther belly, but that cannot be checked, so it is labelled contour_right, not outline (photos.py would score an outline against the model's outer silhouette, which here is a different edge). From x 1450 aft the lowest light edge is panel_lower_right: the lower edge of a light panel with a seam along its top, a rounded aft end at x ~1260 and a raked forward edge (x 1395-1500), at about FS 485-530: probably the main landing-gear door, possibly a launcher on station 6; unresolved, so this part may be a door edge rather than the contour. Cast with the rough camera onto BL +26: WL 78.3 at the lip end (FS ~416), 76.7 at FS 442, 74.1 at FS 465, 73.4 at FS 481, about 72.5 at FS 489-499 (lowest), then 74.1-74.9 along the panel edge at FS 509-528. In this view 6 in of buttline equals about 2.5 in of waterline, so a contour drifting inboard aft would read as part of this descent: the photo rules out a rise behind the lip but alone cannot fix how far the bottom drops. NOT MARKED: inlet points (behind the tank), nozzle_exit_bottom_* (the exit lips' lower ends are not crisp; the left one runs into the left stabilator's outline), hook_point (not identified with certainty), blade_nose_bottom_* (the blade is visible at 2316-2338, 1194-1222 but its bottom edge is rounded and blurred, corners not to 3 px), wingtip_trailing_left, fin_tip_*_left. LEAST SURE: pitot_tip_left (faint streak, +-3 px); aoa_right (base of the cone, plate not visible); stabilator_tip_leading_right (rounded corner with a light tip strip; line-fit intersection); wingtip_trailing_right (rounded corner; intersection of the trailing edge with the tip edge's outer boundary). Left out of the catalogue: the two lines traced along the right nacelle's underside (the lit strip, which cannot fix its buttline, and the light panel's lower edge, a door or a store); facts.json layout.nacelle describes what they show."
 		}
+	},
+	"gate": {
+		"edge": 1.5,
+		"sigmas": 3,
+		"floor": 1.0,
+		"field": 1.5,
+		"rms": 15.0,
+		"known": {
+			"edge dvids9820748:fin_leading_right": "the fins stand about 1 in aft of the photos' (the sky check: leading edge 0.6-1.0 in inside over FS 528-624, trailing edge 1.1 in outside near the tip); this trace is measured against the leading-edge curve, a distance without a side",
+			"edge dvids9820749:fin_leading_left": "the fins stand about 1 in aft of the photos' (the sky check: leading edge 0.6-1.0 in inside over FS 528-624, trailing edge 1.1 in outside near the tip); this trace is measured against the leading-edge curve, a distance without a side",
+			"edge dvids9820758:fin_leading_left": "the fins stand about 1 in aft of the photos' (the sky check: leading edge 0.6-1.0 in inside over FS 528-624, trailing edge 1.1 in outside near the tip); this trace is measured against the leading-edge curve, a distance without a side",
+			"edge dvids9820758:fin_leading_right": "the fins stand about 1 in aft of the photos' (the sky check: leading edge 0.6-1.0 in inside over FS 528-624, trailing edge 1.1 in outside near the tip); this trace is measured against the leading-edge curve, a distance without a side",
+			"edge dvids9820782:fin_leading_right": "the fins stand about 1 in aft of the photos' (the sky check: leading edge 0.6-1.0 in inside over FS 528-624, trailing edge 1.1 in outside near the tip); this trace is measured against the leading-edge curve, a distance without a side",
+			"edge dvids9820788:fin_leading_right": "the fins stand about 1 in aft of the photos' (the sky check: leading edge 0.6-1.0 in inside over FS 528-624, trailing edge 1.1 in outside near the tip); this trace is measured against the leading-edge curve, a distance without a side",
+			"edge dvids9820801:fin_left_leading": "the fins stand about 1 in aft of the photos' (the sky check: leading edge 0.6-1.0 in inside over FS 528-624, trailing edge 1.1 in outside near the tip); this trace is measured against the leading-edge curve, a distance without a side",
+			"edge dvids9820808:fin_leading_left": "the fins stand about 1 in aft of the photos' (the sky check: leading edge 0.6-1.0 in inside over FS 528-624, trailing edge 1.1 in outside near the tip); this trace is measured against the leading-edge curve, a distance without a side",
+			"edge dvids9820808:fin_leading_right": "the fins stand about 1 in aft of the photos' (the sky check: leading edge 0.6-1.0 in inside over FS 528-624, trailing edge 1.1 in outside near the tip); this trace is measured against the leading-edge curve, a distance without a side",
+			"edge dvids9820801:fin_right_trailing": "the fins stand about 1 in aft of the photos': the same fin finding, measured against the trailing-edge curve, a distance without a side",
+			"edge dvids9820744:nozzle_left_exit": "the nozzles' outlines miss in this photo; check its pose for the nozzle drive (open as parked, closed when running) before the shape",
+			"edge dvids9820744:nozzle_right_exit": "the nozzles' outlines miss in this photo; check its pose for the nozzle drive (open as parked, closed when running) before the shape",
+			"edge dvids9820758:right_nozzle_top": "the nozzles' outlines miss in this photo; check its pose for the nozzle drive (open as parked, closed when running) before the shape",
+			"point nozzle_root_bottom_right": "one photo; with the nozzle outlines' miss",
+			"edge dvids9820744:lex_edge_right": "a long-lens underside view (field 4.8 deg) whose nozzle exits also miss: judge it with the nozzle finding",
+			"edge dvids9820744:wing_left_leading": "a long-lens underside view (field 4.8 deg) whose nozzle exits also miss: judge it with the nozzle finding",
+			"edge dvids9820758:aft_fuselage_top": "the top between the fins (FS 570-640) stands 3-7 in inside this outline; nothing else measures it yet",
+			"edge dvids9820758:canopy_spine": "this camera's six marks all lie at the tail; the canopy, 20 ft forward, is beyond what it can judge",
+			"point stabilator_tip_leading_left": "the stabilator tips' leading corners miss by 9.5-9.8 in along the stations: the mark's definition, the pose or the planform, not yet settled",
+			"point stabilator_tip_leading_right": "the stabilator tips' leading corners miss by 9.5-9.8 in along the stations: the mark's definition, the pose or the planform, not yet settled",
+			"point fold_trailing_left": "the wing fold's trailing corner misses by 7 in across: the fold's buttline at the trailing edge or the mark's definition, not yet settled",
+			"point fold_trailing_right": "the wing fold's trailing corner misses by 7 in across: the fold's buttline at the trailing edge or the mark's definition, not yet settled",
+			"point wingtip_leading_right": "one in-flight photo: the wing bends up under load, which the model at rest does not (wing flex)"
+		}
+	},
+	"stores": {
+		"note": "Boxes round the stores a photo may show, for verify/skyline.py: where one lies, no outline is judged, since the model carries no stores and a store's skin passes for sky. Generous envelopes, not geometry: each box is centre and size in inches (station, waterline, buttline) from the station's mount in the points file, buttline taken outboard. Every photo is taken to carry the full load unless its own stores entry says otherwise (null for an empty station): a store left out of the load reads as a false miss, an empty station masked only costs coverage.",
+		"kinds": {
+			"tip missile": [
+				{
+					"centre": [
+						-15,
+						0,
+						0
+					],
+					"size": [
+						140,
+						30,
+						30
+					]
+				}
+			],
+			"tank": [
+				{
+					"centre": [
+						0,
+						-15,
+						0
+					],
+					"size": [
+						110,
+						30,
+						10
+					]
+				},
+				{
+					"centre": [
+						0,
+						-40,
+						0
+					],
+					"size": [
+						180,
+						36,
+						36
+					]
+				}
+			],
+			"body missile": [
+				{
+					"centre": [
+						0,
+						-12,
+						0
+					],
+					"size": [
+						160,
+						26,
+						26
+					]
+				}
+			]
+		},
+		"load": {
+			"1": "tip missile",
+			"2": "tank",
+			"3": "tank",
+			"4": "body missile",
+			"5": "tank",
+			"6": "body missile",
+			"7": "tank",
+			"8": "tank",
+			"9": "tip missile"
+		}
+	},
+	"skyline": {
+		"notes": {
+			"body FS 552-576 top": "Between the fins, at the far fin's root: two photos. The traced outline in dvids9820758 reads the top between the fins 3-7 in low instead; unsettled until a photo sees it against the sky from behind or above.",
+			"body FS 672-696 upper side": "The tail end: with the lower side's miss, the section reads about 2 in high rather than too big.",
+			"body FS 672-696 lower side": "The tail end: with the upper side's miss, the section reads about 2 in high rather than too big.",
+			"body FS 168-192 lower side": "Not the body's line: in two of its three photos the misses gather on small fittings (an antenna blade under the nose, the nose gear doors' edge).",
+			"body FS 192-216 top": "The windscreen's foot: the photos' windscreen glass starts here, its frame and the skin below 1-4 in lower than the model's skin beside the glass. The windscreen starts further forward and lower than built, or the forebody top rises too soon.",
+			"body FS 168-192 upper side": "Two photos, just ahead of the windscreen's foot finding: probably the same.",
+			"fin FS 552-576": "The fins stand about 1 in aft of the photos': the leading edge reads inside at every station from FS 528 to 624, the trailing edge outside near the tip.",
+			"fin FS 648-672": "The fins stand about 1 in aft of the photos': the trailing edge near the tip reads outside, the leading edge inside."
+		}
 	}
 }

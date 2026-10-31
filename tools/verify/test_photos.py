@@ -234,6 +234,32 @@ class MatchTest(unittest.TestCase):
 		self.assertLess(result["worst"], -1.0)
 		self.assertGreater(result["worst"], -3.0)
 
+	def test_gate(self):
+		report = {
+			"photos": {"good": {"solved": True, "field": 30.0, "rms": 4.0}, "far": {"solved": True, "field": 1.0, "rms": 4.0}, "loose": {"solved": True, "field": 30.0, "rms": 25.0}},
+			"edges": {"good:fin": {"median": 2.0, "worst": 3.0}, "good:nose": {"median": 0.4, "worst": 0.9}, "good:spoiler": {"missing": True},
+				"far:spine": {"median": 5.0, "worst": 6.0}, "loose:tail": {"median": 5.0, "worst": 6.0}, "good:known": {"median": 4.0, "worst": 5.0},
+				"good:curve": {"median": 2.5, "worst": 2.9, "signed": False}},
+			"points": {"near": {"photos": 3, "sigma": [1, 1, 1], "miss": [0.5, -2.5, 0.0]}, "off": {"photos": 3, "sigma": [1, 1, 1], "miss": [0.0, 3.5, 0.0]},
+				"small": {"photos": 3, "sigma": [0.1, 0.1, 0.1], "miss": [0.0, 0.9, 0.0]}, "unbuilt": {"photos": 3, "sigma": [1, 1, 1]}},
+		}
+		spec = {"edge": 1.5, "sigmas": 3, "floor": 1.0, "field": 1.5, "rms": 15, "known": {"edge good:known": "a finding"}}
+		failures, known, unjudged = photos.gate(report, spec)
+		# an edge past the line, an edge against a curve not built, a point past both lines
+		self.assertEqual(sorted(n for n, _ in failures), ["edge good:curve", "edge good:fin", "edge good:spoiler", "point off"])
+		# a curve's miss is a distance, printed without a side
+		self.assertIn(("edge good:curve", "median miss 2.50 in, worst 2.90 (a distance from the build's curve, without a side)"), failures)
+		self.assertIn(("edge good:fin", "median miss 2.00 in, worst +3.00"), failures)
+		# and the report's table says so too
+		table = photos.text({"photos": {}, "points": {}, "anchors": {}, "locate": {}, "edges": {"good:curve": dict(report["edges"]["good:curve"], against="fin_leading", points=4)}})
+		self.assertIn("worst   2.90 in, no side (a curve)", table)
+		# within 3 sigma, or within the inch floor however small the sigma: not a failure
+		self.assertNotIn("point near", [n for n, _ in failures])
+		self.assertNotIn("point small", [n for n, _ in failures])
+		# a known miss carries its why; a weak camera's edges are not judged
+		self.assertEqual(known, [("edge good:known", "median miss 4.00 in, worst +5.00: a finding")])
+		self.assertEqual(sorted(n for n, _ in unjudged), ["edge far:spine", "edge loose:tail"])
+
 	def test_features_follow_the_pose(self):
 		r = self.root
 		m = mod.Model(r / "m.glb")
