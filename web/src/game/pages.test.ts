@@ -913,7 +913,7 @@ describe('the HSI page', () => {
   })
 
   it('turns the rose to the ground track, with the lubber line and the T at the heading', () => {
-    const d = hsi({ heading: 40, track: 30 })
+    const d = hsi({ heading: 40, track: 30, nav: 'nav.magnetic=false;' }) // HDG TRUE selected
     expect(d.text.some(([s, fx, fy]) => s === '3' && near([fx, fy], polar(R + T / 2, 0)))).toBe(true) // 030 at the top
     expect(d.lines.some((l) => near(l.slice(0, 4) as number[], [...polar(R - 18, 10), ...polar(R + T + 6, 10)]))).toBe(true)
     expect(d.text.some(([s, fx, fy]) => s === 'T' && near([fx, fy], polar(R - 30, 10)))).toBe(true)
@@ -990,8 +990,9 @@ describe('the HSI page', () => {
     expect(texts(hsi({ timer: 'ztod' }))).not.toContain('01:30')
   })
 
-  it('writes TRUE under the scale', () => {
-    expect(at(hsi(), 'TRUE')).toEqual([256, 52])
+  it('writes TRUE under the scale with HDG TRUE, and nothing at power up, magnetic (24.2.5.7)', () => {
+    expect(at(hsi({ nav: 'nav.magnetic=false;' }), 'TRUE')).toEqual([256, 52])
+    for (const gone of ['TRUE', 'T']) expect(texts(hsi())).not.toContain(gone)
   })
 
   it('keeps DCTR, MAP and the orientation on the MODE sublevel, as figure 24-2 does', () => {
@@ -1164,7 +1165,7 @@ describe('the HSI\'s navigation symbology', () => {
     expect(d.text.some(([t, fx, fy]) => t === 'N' && near([fx, fy], polar(R + T / 2, 10)))).toBe(true)
     for (const gone of ['TRUE', 'T']) expect(texts(d)).not.toContain(gone)
     expect(texts(d)).toContain('350°/ 10.0'); expect(texts(d)).toContain('080°/ 10.0')
-    expect(texts(hsi())).toEqual(expect.arrayContaining(['TRUE', 'T']))
+    expect(texts(hsi({ nav: 'nav.magnetic=false;' }))).toEqual(expect.arrayContaining(['TRUE', 'T']))
   })
 
   it('reads the TACAN against the station\'s own variation with TCN MGVAR, and the course set while steering to it', () => {
@@ -1311,10 +1312,10 @@ describe('the HSI\'s DATA sublevels', () => {
   it('shows the aircraft\'s data: the source, the position kept, the wind, the variation, GPS\'s errors and time, and the altitude warnings', () => {
     const d = data({ tab: 'ac', nav: 'nav.ins.error={ x:0, z:-18520 }; nav.adc.wind={ x:-10.289, z:0 }; nav.variation=(8+52/60)*D2R;' })
     expect(d.text).toContainEqual(['INS', 256, 92]); expect(d.text).toContainEqual(['N  28°22\'28"', 150, 124])
-    expect(d.text).toContainEqual(['WSPD 20 KT', 150, 172]); expect(d.text).toContainEqual(['WDIR 090°', 150, 196]); expect(d.text).toContainEqual(['MVAR E 8°52\'', 150, 220])
+    expect(d.text).toContainEqual(['WSPD 20 KT', 150, 172]); expect(d.text).toContainEqual(['WDIR 081°', 150, 196]); expect(d.text).toContainEqual(['MVAR E 8°52\'', 150, 220]) // from 090 true: 081 magnetic, read against the heading reference
     expect(d.text).toContainEqual(['GPS HERR 33FT', 150, 262]); expect(d.text).toContainEqual(['GPS VERR 49FT', 150, 286]); expect(d.text).toContainEqual(['GPS TIME 12:34:56Z', 150, 310])
     expect(d.text).toContainEqual(['WARN ALT', 136, 416]); expect(d.text).toContainEqual(['5000', 96, 462]); expect(d.text).toContainEqual(['200', 176, 462])
-    for (const [label, px, py] of [['UFC', 10, 96], ['NOSEC GPS', 10, 336], ['NORM', 10, 416], ['HDG TRUE', 502, 256], ['LATLN SEC', 502, 416]] as [string, number, number][]) expect(at(d, label), label).toEqual([px, py])
+    for (const [label, px, py] of [['UFC', 10, 96], ['NOSEC GPS', 10, 336], ['NORM', 10, 416], ['HDG MAG', 502, 256], ['LATLN SEC', 502, 416]] as [string, number, number][]) expect(at(d, label), label).toEqual([px, py])
     expect(d.rects).toContainEqual([75, 16, 42, 28]) // A/C boxed
   })
   it('follows the A/C options: W for a westerly variation, the estimated wind, the phase, the reference and the format', () => {
@@ -1498,7 +1499,7 @@ describe('the MUMI display', () => {
 
 describe('the gauges the pages read', () => {
   it('carry a smoothed yaw rate, vertical speed, air temperature and zulu seconds from the IFEI\'s clock', () => {
-    expect(source).toMatch(/heading, yaw:yaw_state\.rate, vspeed:fpm, oat:15-0\.0065\*ownship\.pos\.y, zulu:ifei_zulu\(ifei_view\(\),now\),/)
+    expect(source).toMatch(/heading, compass:compass_card\(out,heading,t\), yaw:yaw_state\.rate, vspeed:fpm, oat:15-0\.0065\*ownship\.pos\.y, zulu:ifei_zulu\(ifei_view\(\),now\),/)
     expect(source).toMatch(/yaw_state\.rate\+=\(d\/\(t-yaw_state\.t\)-yaw_state\.rate\)\*Math\.min\(1,\(t-yaw_state\.t\)\/0\.5\);/)
   })
 })
@@ -1885,7 +1886,7 @@ describe('the UFC pushbuttons', () => {
   })
 
   it('are wired: built with the faces, redrawn on the 120 ms economy, clicked on the key caps, ATC on the throttle\'s key, and powered up clear with the radios tuned', () => {
-    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); \}/)
+    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); build_rivets\(g\); \}/)
     expect(source).toMatch(/if\(pit\)\{ if\(stale\) faces_sharpen\(dpr\); ifei_update\(stale\); ufc_update\(stale\); \}/)
     expect(source).toMatch(/\{ const button=ownship\.group\.userData\.ufc&&ufc_key_at\(e\.clientX,e\.clientY\);[^\n]*\n\t\tif\(button\)\{ ufc_press\(button\); return; \} \}/)
     expect(source).toMatch(/if\(ch===key_of\("atc"\)\)\{ hotas\.atc=glance; pit_press\("atc",0\); \}/)

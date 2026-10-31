@@ -5,6 +5,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import * as navigate from './navigation'
 
 // A hint that tells the pilot what to fly or roll out on must name the heading
 // (#90, #70, #91). The constants in HINT are only dedup keys; the displayed
@@ -74,5 +75,25 @@ describe('hint roll-out headings', () => {
     for (const helper of ['ship_course', 'ship_downwind', 'ship_groove', 'runway_heading', 'runway_reciprocal']) {
       expect(used.has(helper), `${helper} is defined but no hint carries it`).toBe(true)
     }
+  })
+})
+
+// The headings the hints give read against the north the displays read (#152): magnetic with HDG MAG, the
+// system's choice at power up, so "up the wake 083" is what the HUD's scale shows on the wake, as the ship's
+// BRC and the field's painted numbers are; true with HDG TRUE. compass() is run on the real navigation module.
+describe('the hints\' headings against the displays\' north', () => {
+  const start = source.indexOf('function compass(dx,dz)')
+  const compass = new Function('navigate', 'nav', `${source.slice(start, source.indexOf('\n', start))} return compass;`)
+  const D = Math.PI / 180
+  const read = (magnetic: boolean, variation: number, dx: number, dz: number) => (compass(navigate, { magnetic, variation: variation * D }) as (dx: number, dz: number) => string)(dx, dz)
+  it('gives the heading magnetic with HDG MAG: due east with 7° of easterly variation is 083', () => {
+    expect(start).toBeGreaterThan(0)
+    expect(read(true, 7, 1, 0)).toBe('083°')
+    expect(read(true, -10.8, 0, -1)).toBe('011°') // north, at Norfolk's westerly variation
+    expect(read(true, 7, 0.12, -1)).toBe('360°') // 6.8° true: magnetic north reads 360, never 000
+  })
+  it('gives it true with HDG TRUE', () => {
+    expect(read(false, 7, 1, 0)).toBe('090°')
+    expect(read(false, 7, 0, 1)).toBe('180°')
   })
 })

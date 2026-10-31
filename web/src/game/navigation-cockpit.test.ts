@@ -113,6 +113,27 @@ describe('a spawn', () => {
     expect(s.loaded).toEqual(['WYPT', 'TCN', 'GPS WYPT', 'GPS ALM', 'IFF', 'COMM']) // the mission's IFF codes and comm presets with them (23.6.1.5.1, G5)
     expect(s.one).toMatchObject({ x: -18500, z: 7500, name: 'NIM' }); expect(s.two).toMatchObject({ name: 'PMDY' })
   })
+  it('readies the suite with the model\'s variation where the jet starts, before its first step', () => {
+    expect(cockpit<number>('nav_reset(); nav_ready(); return nav.variation/D2R;', true)).toBeCloseTo(V, 9) // fly_player readies it before nav_frame runs
+  })
+  it('works the variation out where the jet is, once a second of sim time as it flies (#152)', () => {
+    const s = cockpit<number[]>('const a=nav.variation; ownship.pos.x=500000; nav_frame(0.1); const b=nav.variation; sim_time=1; nav_frame(0.1); return [a, b, nav.variation].map(v=>v/D2R);')
+    expect(s[0]).toBeCloseTo(V, 9)
+    expect(s[1]).toBe(s[0]) // inside the second: unchanged
+    expect(s[2]).toBeCloseTo(variation(500000, 3000, 0), 9) // 500 km east: the model's there
+    expect(Math.abs(s[2] - s[0])).toBeGreaterThan(0.3)
+  })
+  it('holds a variation keyed on the UFC as the jet flies on, until the next flight', () => {
+    const s = cockpit<unknown[]>('hsi_press(10,"left"); hsi_press(6,"left"); hsi_press(5,"left"); keys("opt4","4","1","0","3","0","ent"); ownship.pos.x=500000; sim_time=2; nav_frame(0.1); const kept=[nav.variation/D2R, nav.keyed]; nav_reset(); nav_frame(0.1); return [kept, nav.keyed, nav.variation/D2R];')
+    expect(s[0]).toEqual([-10.5, true]) // W 10°30'
+    expect(s[1]).toBe(false)
+    expect(s[2]).toBeCloseTo(variation(500000, 3000, 0), 9)
+  })
+  it('sets the standby compass\'s card at rest on the jet\'s magnetic heading', () => {
+    const card = cockpit<{ azimuth: number; rate: number }>('ownship.gauges.heading=1; nav_reset(); nav_frame(0.1); return magnetism.card;')
+    expect(card.azimuth / D).toBeCloseTo(V, 9) // its north on magnetic north, so it reads the heading less the variation
+    expect(card.rate).toBe(0)
+  })
   it('stores the place it aligned in waypoint 0: where it stands on the ground, the ship for a start in the air', () => {
     expect(cockpit('return nav.waypoints[0];')).toMatchObject({ x: -18500, z: 7500 })
     expect(cockpit('ownship.grounded=true; ownship.pos.x=40; ownship.pos.z=60; nav_reset(); nav_frame(0.1); return nav.waypoints[0];')).toMatchObject({ x: 40, z: 60 })

@@ -6,6 +6,8 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import * as countermeasures from './countermeasures'
+import { DEGREE } from './earth'
+import * as magnetic from './magnetic'
 
 // The standby attitude reference indicator (NATOPS 2.12.2) carries pitch,
 // roll, an OFF flag and a needle and ball - no ILS bars. The model has
@@ -34,14 +36,15 @@ describe('the standby attitude indicator', () => {
     expect(rig).not.toMatch(/AttitudeIndicator_(Glide|Localizer)/)
   })
 
-  it('leaves the magnetic compass card in the model\'s housing and keeps its heading drive', () => {
+  it('leaves the magnetic compass card in the model\'s housing and drives it with its own magnetic reading', () => {
     // NATOPS 2.12.9 and foldout FO-5 item 19: the standby magnetic compass sits
     // on the right windshield arch's foot beside the right DDI, which is where
     // the model spins its card. Nothing re-seats it.
     expect(source).not.toMatch(/function mount_compass\(/)
     expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); build_rivets\(g\); \}/)
     const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
-    expect(rig).toMatch(/name:"compass",\s+node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",\s+axis:"y", gauge:"heading"/)
+    expect(rig).toMatch(/name:"compass",\s+node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",\s+axis:"y", gauge:"compass"/)
+    expect(source).toContain('heading, compass:compass_card(out,heading,t), yaw:yaw_state.rate,') // the gauge the card turns by is the card's swing, on the core's clock
   })
 
   it('draws the radar altimeter bug and red light at the index the aural fires on, with a BIT light', () => {
@@ -757,3 +760,55 @@ describe('the radar altimeter height indicator', () => {
   })
 })
 
+// The standby compass's card in the jet (NATOPS 2.12.9): compass_card lifted from engine.ts and run on the
+// real model at Midway, the jet's load and speed given as the flight core's state words. magnetic.test.ts
+// holds the card's own physics; this holds what the engine feeds it.
+describe('the standby compass', () => {
+  const lift = (name: string) => {
+    const start = source.indexOf(`function ${name}(`)
+    const rest = source.slice(start)
+    return rest.slice(0, (/\n(?=\S)/.exec(rest.slice(1))?.index ?? rest.length) + 1)
+  }
+  const line = (name: string) => new RegExp(`\\n(?:const|let) ${name}=[^\\n]*\\n`).exec(source)![0]
+  const MIDWAY = { latitude: 28.2072 * DEGREE, longitude: -177.3735 * DEGREE, altitude: 3000 }, TIME = 2026.83
+  const field = magnetic.field(MIDWAY, TIME), V = magnetic.variation(MIDWAY, TIME) / DEGREE
+  // fly: the jet on a true heading, banked right, for seconds at 60 frames a second, its speed changing
+  // by gain each second; what the card reads at the end, degrees, and the speed change it measured
+  const fly = (heading: number, bank: number, seconds: number, gain = 0, turn = 0, pitch = 0) => new Function('magnetic', 'field', 'o', `const STATE={ velocity:3, nz:119, time:55 }, yaw_state={ rate:0 };
+      const ownship={ fwd:{ x:0, y:0, z:-1 }, up:{ x:0, y:1, z:0 } };
+      ${line('magnetism')} ${lift('compass_card')}
+      magnetism.field=field; magnetism.card=magnetic.settled(o.heading,o.heading-o.variation);
+      const out=new Array(130).fill(0); let reading=0, speed=200;
+      for(let k=0;k<o.seconds*60;k++){ const t=k/60, h=o.heading+o.turn*t, b=o.bank;
+        const c=Math.cos(o.pitch), s=Math.sin(o.pitch);
+        ownship.fwd={ x:Math.sin(h)*c, y:s, z:-Math.cos(h)*c };
+        ownship.up={ x:-Math.sin(h)*s*Math.cos(b)+Math.cos(h)*Math.sin(b), y:c*Math.cos(b), z:Math.cos(h)*s*Math.cos(b)+Math.sin(h)*Math.sin(b) };   // pitched up, and the lift tilted toward the low wing
+        speed+=o.gain/60; const r=o.rotate*t;   // the velocity's axes may turn (the engine's frame moving), its size kept
+        out[3]=speed*Math.cos(r); out[4]=0; out[5]=-speed*Math.sin(r); out[119]=Math.cos(o.pitch)/Math.cos(b); out[55]=t;
+        yaw_state.rate=o.turn; reading=compass_card(out,h,t); }
+      return [reading/(Math.PI/180), magnetism.along];`)(magnetic, field, { heading: heading * DEGREE, bank: bank * DEGREE, seconds, gain, variation: V * DEGREE, turn: 0, rotate: turn, pitch: pitch * DEGREE }) as [number, number]
+  const off = (reading: number, magnetic: number) => ((((reading - magnetic + 540) % 360) + 360) % 360) - 180
+
+  it('reads the magnetic heading in steady level flight: the true heading less Midway\'s variation', () => {
+    expect(off(fly(92, 0, 5)[0], 92 - V)).toBeCloseTo(0, 3)
+    expect(off(fly(250, 0, 5)[0], 250 - V)).toBeCloseTo(0, 3)
+  })
+  it('reads the magnetic heading in a steady climb inside the float\'s stop: gravity along the nose hangs it level', () => {
+    expect(off(fly(90 + V, 0, 6, 0, 0, 15)[0], 90)).toBeCloseTo(0, 2)
+    expect(off(fly(270 + V, 0, 6, 0, 0, -15)[0], 270)).toBeCloseTo(0, 2)
+  })
+  it('turns the wrong way banked off magnetic north, and leads off magnetic south, as the dip at Midway says', () => {
+    expect(off(fly(V, 30, 8)[0], 0)).toBeLessThan(-10)
+    expect(off(fly(180 + V, 30, 8)[0], 180)).toBeGreaterThan(10)
+  })
+  it('swings toward north as the jet speeds up heading east, from the change in its speed', () => {
+    const [reading, along] = fly(90 + V, 0, 6, 5)
+    expect(along).toBeCloseTo(5, 3)
+    expect(off(reading, 90)).toBeLessThan(-1)
+  })
+  it('measures no change of speed when only the velocity\'s axes turn, as they do when the engine moves its frame', () => {
+    const [reading, along] = fly(90 + V, 0, 3, 0, 0.05)
+    expect(along).toBeCloseTo(0, 9)
+    expect(off(reading, 90)).toBeCloseTo(0, 3)
+  })
+})

@@ -794,6 +794,22 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
+              Magnetic field from the <b>World Magnetic Model 2025</b> of{' '}
+              <b>NOAA NCEI</b> and the <b>British Geological Survey</b> (public
+              domain).
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://www.ncei.noaa.gov/products/world-magnetic-model'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: brand name */}
+              NOAA NCEI
+            </a>
+          </p>
+          <p className='leading-relaxed'>
+            <Trans>
               Moon from the <b>CGI Moon Kit</b> by{' '}
               <b>NASA’s Scientific Visualization Studio</b>, built from the{' '}
               <b>Lunar Reconnaissance Orbiter</b> camera mosaic (public
