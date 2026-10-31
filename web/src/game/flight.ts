@@ -179,6 +179,7 @@ interface Core {
   carrier?(time: number): number[] | null | string
   deck?(time: number): [number, number, number, number, number, number, number] | null | string
   reframe?(latitude: number, longitude: number): string | null
+  land?(bytes: Uint8Array): string
 }
 
 declare global {
@@ -278,6 +279,17 @@ export function flight_init(world: object): boolean {
   const error = core.init(JSON.stringify(world))
   if (error) console.error('flight init:', error)
   accumulator = 0
+  return !error
+}
+
+// flight_land gives the core the earth's land (land.bin, #162): every model
+// built after flies against it, and the one flying takes it at once. Returns
+// true on success; a core without it, or a broken file, leaves the sea
+// everywhere.
+export function flight_land(bytes: Uint8Array): boolean {
+  if (!core?.land) return false
+  const error = core.land(bytes)
+  if (error) console.error('flight land:', error)
   return !error
 }
 

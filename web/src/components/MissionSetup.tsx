@@ -794,6 +794,33 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
+              World map — <b>Blue Marble: Next Generation</b> imagery (July
+              2004) courtesy of <b>NASA Earth Observatory</b>; land outline from{' '}
+              <b>Natural Earth</b> 1:50m (public domain). Modified: resampled to
+              the game’s map grid.
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: brand name */}
+              NASA Earth Observatory
+            </a>{' '}
+            ·{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://www.naturalearthdata.com/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: brand name */}
+              Natural Earth
+            </a>
+          </p>
+          <p className='leading-relaxed'>
+            <Trans>
               Magnetic field from the <b>World Magnetic Model 2025</b> of{' '}
               <b>NOAA NCEI</b> and the <b>British Geological Survey</b> (public
               domain).

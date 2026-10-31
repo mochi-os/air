@@ -755,7 +755,7 @@ describe('the known picture: what the SA page and the map draw', () => {
     const sa = lift('ddi_sa'), map = lift('draw_map')
     expect(sa).toContain('for(const c of known()) jet(c.x,c.z,c.fx,c.fz,')
     expect(sa).toMatch(/if\(!fx&&!fz\)\{ [^\n]*x\.arc\(dx,dz,6,0,Math\.PI\*2\); x\.stroke\(\); return; \}/)
-    expect(map).toContain('for(const c of known()) jet(X(c.x),Y(c.z),c.fx,c.fz,')
+    expect(map).toContain('for(const c of known()){ const q=engine(theatre.frame.sea(c.x,c.z).point); if(q.seen) jet(q.x,q.y,c.fx,c.fz,')
     expect(map).toMatch(/if\(!fx&&!fz\)\{ [^\n]*mctx\.arc\(x2,y2,5,0,Math\.PI\*2\); mctx\.stroke\(\); return; \}/)
     expect(map).not.toMatch(/remotes\.entries\(\)|bandit\.pos/)
   })
