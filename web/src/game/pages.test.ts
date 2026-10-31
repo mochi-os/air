@@ -851,7 +851,7 @@ describe('the FPAS display', () => {
   })
 
   it('starts a joust with no home waypoint, so HOME FUEL has nothing to judge, and any other air start homed on the ship', () => {
-    const run = (task: string) => new Function('navigate', `let nav_cold=true, nav_fields=0; const nav=navigate.fresh(1), airports=[], VARIATION=0, CARRIER={ x:5000, z:7000, deckY:20 }, cfg={ task:${JSON.stringify(task)} }, mission=()=>({ identifier:"T", waypoints:[], stations:[], points:[] }), nav_sense=()=>({ x:0, z:0, heading:0, airborne:true }); ${lift('nav_ready')}\n nav_ready(); return nav.waypoints[0];`)(navigate)
+    const run = (task: string) => new Function('navigate', `let nav_cold=true, nav_fields=0; const nav=navigate.fresh(1), airports=[], magnetism={ variation:0 }, magnetic_frame=()=>{}, magnetic={ settled:()=>null }, CARRIER={ x:5000, z:7000, deckY:20 }, cfg={ task:${JSON.stringify(task)} }, mission=()=>({ identifier:"T", waypoints:[], stations:[], points:[] }), nav_sense=()=>({ x:0, z:0, heading:0, airborne:true }); ${lift('nav_ready')}\n nav_ready(); return nav.waypoints[0];`)(navigate)
     expect(run('joust')).toBeNull()
     expect(run('free')).toMatchObject({ x: 5000, z: 7000 })
   })

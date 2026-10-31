@@ -46,14 +46,49 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   NACA 65A sections from TR-84's tables; the hinged surfaces' chord fractions follow from their published
   areas over the spans in `facts.json` `layout`. The forebody lofts the cited sections over the HATP keel
   line, its nosecone on TM-101724's drooped axis; the LEX is a blade whose span and heights come from
-  TM-101724, cr186938 and the traced sections, faired behind the LEX-wing junction onto the wing root. Each
-  inlet is a raked D-shaped mouth through the lip points the photos measure (`layout.inlet`), its flat side
-  inboard beside a splitter plate, easing behind the lip into the nacelle. The third output, the features file, names points and curves on the model with the node each rides on, for the
-  photo match. `--draft` leaves out the paint bake (seconds instead of minutes).
+  TM-101724, cr186938 and the traced sections, faired behind the LEX-wing junction onto the wing root. Every
+  trace is read through its pixel steps, never step by step: the HATP profiles through each step's midpoint
+  and then a 4 in Gaussian (`smoothed()`), the traced sections' outlines by a 1 in Gaussian along them
+  (`destaired()`). Every run between cited values (section shapes, ratios, widths, the rear body's and the
+  nacelles' knots) is a monotone cubic that arrives level at its last knot (`onward()`), never a straight run,
+  which creases the skin at each knot. The top line follows the canopy's located points and then the rear
+  fuselage's top through the blend (FS 357-404). The loft has a ring every 3 in over the nose and every 4 in
+  from the canopy's aft end to the nozzles. The fairing settles once onto the line the skin runs along where
+  it lands (85% of `FAIRING` behind the junction), from the blade as it stands at the junction with its edge
+  riding the wing. Each inlet is a raked D-shaped mouth through the lip points the photos measure
+  (`layout.inlet`), its flat side inboard beside a splitter plate. Behind the lip its outer skin rides the
+  nacelle as it grows (`target()`), carrying the mouth's D as it stands off the nacelle at the lip, that
+  difference fading out by `JOIN` (FS 440), where it hands over to the rear fuselage on one ring, behind the
+  duct's plug, where the nacelles join the fuselage whole; each nacelle's bottom follows `layout.nacelle`.
+  From `JOIN` aft the points that bridge the tunnel between the nacelles run evenly along the outline
+  (`along()`). Behind the forebody the sections' lower
+  steps run evenly along the outline, not round its centre, and the fuselage is split into triangles before
+  any panel is cut from it, so panel and skin share them. The canopy's sill, top line and
+  leaning bow and aft edge are where the photos put them (`layout.canopy`), the glass's section a
+  superellipse fitted to the photos' outlines. The nose carries the probes, fairings, light strips and blade
+  the photos place (`layout.aoa`, `pitot`, `blisters`, `formation`, `blade`), the fins their tip pods
+  (`layout.pod`), and a simple cockpit with its pilot sits under the canopy (`layout.cockpit`). Each nozzle
+  is twelve outer flaps, each its own joint (`layout.petals`). Flush panels (the speedbrake, the nose-gear
+  doors) are cut from the fuselage's own built skin (`cut()`) and offset off every facet; parts that stow
+  inside it (the gear, the ladder in the LEX) are placed by ray casts on the built parts (`built()`). The third
+  output, the features file, names points and curves on the model with the node each rides on, for the photo
+  match. `--draft` leaves out the paint bake (seconds instead of minutes).
 - **`check.py`** - the facts check: measures the built model back against every `facts.json` entry, posed
   where the entry needs it, and fails outside each tolerance; entries it does not measure are listed in
   `EXEMPT` with the reason, and `test_check.py` fails on an entry that is neither. Shape checks (`shape.*`)
-  cover what no number does: the LEX running into the wing with no step.
+  cover what no number does: the LEX running into the wing with no step; every stowed part, and the
+  cockpit, inside the airframe at rest (`STOWED`: a ray each way along each axis meets it); each flush panel
+  0.15 in off the skin along its normal, with no skin poking through (`FLUSH`); each left part the mirror
+  image of its right twin, at rest and gear down; parts lying against each other (`SEAMS`: the inlets, the
+  LEX and its fairing, the wing root, the fuselage) never crossing back and forth where they show; nothing
+  poking through the LEX's fairing, which covers the wing's root end; the fuselage's store mounts on the
+  skin; no crease in the skin away from its real edges (`shape.bend`: fixed lines on the skin seen from
+  above, below and outboard, and over the LEX and its fairing from above, each bend over 4 in either side
+  counted where most of it lies within 2 in, so smooth curvature is not; the canopy is left out only on the
+  lines that meet it; each view's tolerance lies between the fixed build and one with its rings spread out;
+  on the fairing a step counts as a bend, not as an edge);
+  the belly between the nose and the inlets bending no more than its curve; and the fuselage's section,
+  where each inlet hands over, standing nowhere outside the inlet's last ring (`shape.joint`).
 - **`outline.py`** - the outline check: the model's top, side and front silhouettes at the HATP masks' scale,
   registered on the apex and centreline, with the share of their union both cover, and every place the
   outlines part by more than a threshold, worst first, in stations, waterlines and buttlines.
@@ -62,6 +97,11 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   mark them.
 - **`checklist.json`** - every visible shape, region by region, with the photos that show it and whether the
   model matches.
+- **`tips.py`** - the wing's and the stabilators' tip heights from the solved photos (`photos.py --cameras`):
+  one offset per surface shared by every photo, the whole surface raised or (`--rotate`) turned about its
+  root, each photo's deflections fitted beside it or (`--neutral`) held at rest, and each photo left out in
+  turn. Ground photos droop the flaps and ailerons 40-45 deg; in-flight photos show the wing bent up at 1 g.
+  The model rests at the ground shape (`layout.wing`).
 - **`render.py`** - renders the model posed from its points file as the engine poses it (`gear=1 canopy=1`
   ...), in Workbench: the rig contract's check that every joint turns, slides or shows as its keys say.
 
@@ -70,11 +110,27 @@ python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --over
 blender -b --factory-startup -P ../verify/view.py -- OUT.glb OUT.json CAMERAS.json RENDERS
 python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --sheets RENDERS SHEETS
 blender -b --factory-startup -P render.py -- OUT.glb OUT.json DIR gear=1 canopy=1
+python3 -I tips.py photos.json CAMERAS.json OUT.glb OUT.json FEATURES.json --photos ID,... [--drop ID:MARK,...] [--neutral] [--rotate]
 python3 -I test_check.py
 ```
 
 The build also unwraps every part into one atlas and bakes its ambient occlusion in Cycles (`paint.png`
-beside OUT.glb), the shading the paint is laid over.
+beside OUT.glb), the shading the paint is laid over, and each texel's surface normal, which picks the
+upper grey or, facing down, the lower (`layout.paint`, sampled in the reference photo).
+
+The distant stages come from the painted build (the old model's own pipeline is below):
+
+```
+python3 -I stages.py OUT.glb OUT.json PARTS.glb POSE.json   # coloured parts and the posed jet, gear up and down
+blender -b --factory-startup -P decimate.py -- PARTS.glb FAR.glb
+python3 -I farcheck.py [-v] FAR.glb POSE.json
+```
+
+- **`stages.py`** - poses our model gear up and gear down through its points file, colours every corner
+  from the paint atlas, splits what moves with the gear from the airframe, and drops the faces a flood from
+  outside never reaches. It writes the parts for `decimate.py` and the posed jet in the form `farcheck.py`
+  reads. `test_check.py` holds a provenance test: none of our model's scripts names the old model, its
+  stages or the vendor downloads.
 
 The model viewer (`/air/models`) shows the latest painted build as `fa18c-new.glb`, beside the model it
 replaces. After a build, copy it in: `cp OUT.glb ../../web/src/assets/fa18c-new.glb`, then `/build air`.

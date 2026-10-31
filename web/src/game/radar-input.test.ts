@@ -11,6 +11,7 @@ import * as identification from './identification'
 import * as mids from './mids'
 import * as countermeasures from './countermeasures'
 import * as helmet from './helmet'
+import { shown } from './navigation'
 import { amraams as stores_amraams, eject as stores_eject, sequence, departed } from './stores'
 
 // A pilot's account of a fight ("I couldn't get a lock") could not be checked
@@ -762,16 +763,25 @@ describe('the known picture: what the SA page and the map draw', () => {
   // The SA page's other marks (#110): the air-to-air waypoint, and at the rim the bearings the RWR hears. The page
   // runs against a recording context, the picture empty, at the 40 nm scale: 196 px to 20 nm.
   type Emitter = { bearing: number; at: number; locked?: boolean; missile?: boolean }
-  function sa(o: { air?: number | null; waypoint?: { x: number; z: number } | null; emitters?: Emitter[]; power?: boolean; limit?: boolean; heading?: number } = {}) {
-    return new Function('o', 'countermeasures', `const NM=1852, D2R=Math.PI/180, sa_state={ scale:40 }, wrap_axis=(v)=>v, CARRIER={ x:1e7, z:1e7 }, known=()=>[], link={ selected:false }, ddi_legend=()=>{};
-      const ownship={ pos:{ x:0, y:0, z:0 }, gauges:{ heading:o.heading||0 } }, hsi_state={ air:o.air??null }, nav={}, navigate={ spot:(n,i)=>i===3?o.waypoint:null };
+  function sa(o: { air?: number | null; waypoint?: { x: number; z: number } | null; emitters?: Emitter[]; power?: boolean; limit?: boolean; heading?: number; magnetic?: boolean; variation?: number } = {}) {
+    return new Function('o', 'countermeasures', 'shown', `const NM=1852, D2R=Math.PI/180, sa_state={ scale:40 }, wrap_axis=(v)=>v, CARRIER={ x:1e7, z:1e7 }, known=()=>[], link={ selected:false }, ddi_legend=()=>{};
+      const ownship={ pos:{ x:0, y:0, z:0 }, gauges:{ heading:o.heading||0 } }, hsi_state={ air:o.air??null }, nav={ magnetic:!!o.magnetic, variation:o.variation??0 }, navigate={ spot:(n,i)=>i===3?o.waypoint:null, shown };
       const suite=countermeasures.fresh(true); suite.receiver.power=o.power??true; suite.receiver.limit=!!o.limit; const RWR={ time:10, contacts:o.emitters||[] };
       const arcs=[], text=[], shifts=[], turns=[];
       const x=new Proxy({}, { get:(t,k)=>k==="arc"?(ax,ay,r)=>arcs.push([Math.round(ax),Math.round(ay),r]):k==="fillText"?(w,px,py)=>text.push([String(w),px,py]):k==="translate"?(px,py)=>shifts.push([Math.round(px)+0,Math.round(py)+0]):k==="rotate"?(a)=>turns.push(a):()=>{}, set:()=>true });
       ${lift('ddi_sa')}
-      ddi_sa(x,"left"); return { arcs, text, shifts, turns };`)(o, countermeasures) as { arcs: number[][]; text: [string, number, number][]; shifts: number[][]; turns: number[] }
+      ddi_sa(x,"left"); return { arcs, text, shifts, turns };`)(o, countermeasures, shown) as { arcs: number[][]; text: [string, number, number][]; shifts: number[][]; turns: number[] }
   }
   const rings = (d: ReturnType<typeof sa>) => d.arcs.filter((a) => a[2] === 8)
+  it('reads the heading and puts north as the HSI does: magnetic with HDG MAG, true with HDG TRUE (24.2.5.7)', () => {
+    const D = Math.PI / 180, heading = 92 * D, variation = 7 * D
+    const north = (d: ReturnType<typeof sa>) => d.text.find((t) => t[0] === 'N')!.slice(1).map((v) => Math.round(Number(v)))
+    const truly = sa({ heading, variation }), magnetic = sa({ heading, variation, magnetic: true })
+    expect(truly.text[0][0]).toBe('092')
+    expect(magnetic.text[0][0]).toBe('085')
+    expect(north(truly)).toEqual([Math.round(Math.cos(-heading - Math.PI / 2) * 166), Math.round(Math.sin(-heading - Math.PI / 2) * 166 + 6)])
+    expect(north(magnetic)).toEqual([Math.round(Math.cos(variation - heading - Math.PI / 2) * 166), Math.round(Math.sin(variation - heading - Math.PI / 2) * 166 + 6)]) // magnetic north, the variation east of true
+  })
   it('marks the air-to-air waypoint with a ring where it lies, north up the page', () => {
     expect(rings(sa())).toEqual([])
     expect(rings(sa({ air: 3, waypoint: { x: 10 * 1852, z: -10 * 1852 } }))).toEqual([[98, -98, 8]]) // ten miles east and ten north: half the scale each way

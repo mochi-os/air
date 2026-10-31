@@ -44,6 +44,25 @@ class EntriesTest(unittest.TestCase):
 			self.assertNotIn(fact, measured, f"{fact}: both measured and exempt")
 
 
+class ProvenanceTest(unittest.TestCase):
+	# Our model's scripts never open the old model or the vendor downloads (the
+	# plan's Provenance check): no line of their code names them. far.py,
+	# fresh.py and pose.json serve the old model until the swap retires them.
+	OURS = ["build.py", "stages.py", "check.py", "outline.py", "views.py", "fetch.py", "render.py",
+		"../verify/model.py", "../verify/camera.py", "../verify/photos.py", "../verify/cast.py", "../verify/crop.py", "../verify/view.py"]
+	FORBIDDEN = re.compile(r"downloads|fa18c-far|stores\.glb|fa18c\.glb|pose\.json|far\.py|fresh\.py")
+
+	def test_our_scripts_never_name_the_old_files(self):
+		for name in self.OURS:
+			for number, line in enumerate((HERE / name).read_text().splitlines(), 1):
+				code = line.split("#", 1)[0]
+				self.assertIsNone(self.FORBIDDEN.search(code), f"{name}:{number}: {line.strip()}")
+
+	def test_the_rule_bites(self):
+		self.assertIsNotNone(self.FORBIDDEN.search('ORIGINAL = HERE.parents[1] / "downloads" / "x.glb"'))
+		self.assertIsNone(self.FORBIDDEN.search("blender -b -P build.py -- OUT.glb OUT.json"))
+
+
 class GeometryTest(unittest.TestCase):
 	def test_loops_and_area(self):
 		square = np.array([[[0, 0], [2, 0]], [[2, 2], [2, 0]], [[2, 2], [0, 2]], [[0, 0], [0, 2]]], float)
@@ -70,6 +89,241 @@ class GeometryTest(unittest.TestCase):
 			self.assertAlmostEqual(q[:, 2].max(), 10, places=4)
 			with self.assertRaises(KeyError):
 				jet.tris(["wing_inner_right"])
+			# an empty selection is a missing part, reported, not a crash
+			with self.assertRaises(KeyError):
+				jet.tris([])
+
+
+def triangles(lo, hi):
+	# a closed box's triangles in source coordinates (FS, WL, BL)
+	v, f = box(lo, hi)
+	return v[f]
+
+
+class ShapeTest(unittest.TestCase):
+	HULL = triangles((400, 100, -10), (500, 120, 10))
+
+	def test_enclosed(self):
+		inside = np.array([[450, 110, 0], [401, 101, 9.5]], float)
+		self.assertTrue(check.enclosed(inside, self.HULL).all())
+		# just outside each face in turn
+		outside = np.array([[399, 110, 0], [501, 110, 0], [450, 99, 0], [450, 121, 0], [450, 110, -11], [450, 110, 11]], float)
+		self.assertFalse(check.enclosed(outside, self.HULL).any())
+		# a point under a lid with nothing beneath it: the stowed ladder beneath the LEX
+		lid = triangles((400, 120, -10), (500, 121, 10))
+		self.assertFalse(check.enclosed(np.array([[450, 110, 0]], float), lid).any())
+		# inside walls open below (the LEX over its ladder well): every way but down meets the hull
+		open_below = np.delete(self.HULL, [4, 5], axis=0)
+		self.assertFalse(check.enclosed(np.array([[450, 110, 0]], float), open_below).any())
+		# inside a tube open at its ends: along it nothing at all is met
+		tube = np.delete(self.HULL, [6, 7, 10, 11], axis=0)
+		self.assertFalse(check.enclosed(np.array([[450, 110, 0]], float), tube).any())
+
+	def test_standoff(self):
+		# a panel 0.15 in over the box's top, then one sunk 0.05 in into it, then one hanging under the belly
+		top = triangles((420, 119.9, -5), (480, 120.15, 5))
+		s = check.standoff(top, self.HULL)
+		self.assertTrue(len(s))
+		np.testing.assert_allclose(s, 0.15, atol=1e-6)
+		sunk = triangles((420, 119.8, -5), (480, 119.95, 5))
+		np.testing.assert_allclose(check.standoff(sunk, self.HULL), -0.05, atol=1e-6)
+		hanging = triangles((420, 95, -5), (480, 96, 5))
+		np.testing.assert_allclose(check.standoff(hanging, self.HULL, below=True), 5, atol=1e-6)
+		# on a slope the gap counts along the skin's normal: a 45 deg roof with a panel 0.3 in above it vertically
+		# a three-cornered panel whose edge walls lean out to its wider inner face, as an offset along
+		# a sloping skin's normals leaves them: a look straight down at its outline sees the walls, not the panel
+		outer = np.array([[420, 120.15, -5], [480, 120.15, -5], [420, 120.15, 5]], float)
+		inner = np.array([[419.8, 119.9, -5.2], [480.5, 119.9, -5.2], [419.8, 119.9, 5.5]], float)
+		walls = [t for i in range(3) for t in ((outer[i], outer[i - 1], inner[i - 1]), (outer[i], inner[i - 1], inner[i]))]
+		wedge = np.array([outer, inner[::-1]] + walls)
+		np.testing.assert_allclose(check.standoff(wedge, self.HULL), 0.15, atol=1e-6)
+		roof = np.array([[[400, 100, 0], [500, 100, 0], [500, 120, 20]], [[400, 100, 0], [500, 120, 20], [400, 120, 20]]], float)
+		panel = roof + np.array([0, 0.3, 0])
+		np.testing.assert_allclose(check.standoff(panel[:, :, :], roof), 0.3 / math.sqrt(2), atol=1e-6)
+		# over a crease each cell's gap counts along its own facet's normal: a 45 deg ridge, and a panel
+		# 0.15 in off each face along its normal, meeting above the ridge (the speedbrake on the spine's
+		# shoulder): a slope read across the cells either side of the ridge would see it level there
+		ridge = np.array([[[400, 100, -20], [500, 100, -20], [500, 120, 0]], [[400, 100, -20], [500, 120, 0], [400, 120, 0]],
+			[[400, 120, 0], [500, 120, 0], [500, 100, 20]], [[400, 120, 0], [500, 100, 20], [400, 100, 20]]], float)
+		cap = ridge + np.array([0, 0.15 * math.sqrt(2), 0])
+		np.testing.assert_allclose(check.standoff(cap, ridge), 0.15, atol=1e-6)
+
+	def test_seam(self):
+		# a plate lying 0.15 in over the box's top all along: one stays on top
+		lid = triangles((420, 120.1, -8), (480, 120.15, 8))
+		self.assertEqual(check.seam(lid, self.HULL, np.concatenate([lid, self.HULL]), "above"), 0.0)
+		# a plate tilted 0.1 in over its 60 in, crossing the top halfway: it stands on top over one half and under
+		# the other, all of it within half an inch, a ragged line
+		tilt = triangles((420, 119.95, -8), (480, 120.0, 8))
+		tilt[..., 1] += (tilt[..., 0] - 450) * 0.1 / 60
+		ragged = check.seam(tilt, self.HULL, np.concatenate([tilt, self.HULL]), "above")
+		self.assertGreater(ragged, 100)
+		# the same, seen from below, where the box's own bottom hides it
+		self.assertEqual(check.seam(tilt, self.HULL, np.concatenate([tilt, self.HULL]), "below"), 0.0)
+		# the same under a cover: hidden, so no seam
+		cover = triangles((410, 125, -12), (490, 126, 12))
+		self.assertEqual(check.seam(tilt, self.HULL, np.concatenate([tilt, self.HULL, cover]), "above"), 0.0)
+		# plates crossing the top off the grid's lines, steeply (45 deg) and less so (22 deg): clean lines, no
+		# seam, though cells either side of each, within half an inch, have each on top
+		for slope in (1.0, 0.4):
+			steep = triangles((420, 119.9, -8), (480, 120.0, 8))
+			steep[..., 1] += (steep[..., 0] - 450.2) * slope
+			self.assertEqual(check.seam(steep, self.HULL, np.concatenate([steep, self.HULL]), "above"), 0.0, slope)
+		# from outboard: the same tilted plate on the box's starboard side
+		side = triangles((420, 102, 9.95), (480, 118, 10.0))
+		side[..., 2] += (side[..., 0] - 450) * 0.1 / 60
+		self.assertGreater(check.seam(side, self.HULL, np.concatenate([side, self.HULL]), "outboard"), 100)
+
+	def test_bends(self):
+		stations = np.arange(200.0, 400.0, 1.0)
+		free = np.ones(len(stations), bool)
+		rows = lambda line: np.stack([line, line, line])
+
+		def creases(found):
+			return [(stations[i], round(c, 2)) for _, i, _, c in found if abs(c) > 0.1]
+
+		# a smooth curve, however tight, is no crease
+		curve = rows(0.004 * (stations - 300) ** 2)
+		found = check.bends(curve, 1.5, free)
+		self.assertTrue(found)
+		self.assertEqual(creases(found), [])
+		self.assertGreater(max(abs(b) for _, _, b, _ in found), 1.5)
+		# a kink is: the slope turning by 0.1 at FS 300 (5.7 deg), read at five-sixths of that (the 3 in average)
+		kink = rows(np.where(stations < 300, 0.0, 0.1 * (stations - 300)))
+		found = creases(check.bends(kink, 1.5, free))
+		self.assertTrue(found)
+		self.assertTrue(all(abs(s - 300) <= 2 for s, _ in found))
+		self.assertAlmostEqual(max(abs(c) for _, c in found), math.degrees(math.atan(0.1)) * 5 / 6, delta=0.3)
+		# not where the skin has a real edge, nor across a jump between surfaces, nor on a face turned away
+		edge = free & ~((stations >= 290) & (stations <= 310))
+		self.assertEqual(creases(check.bends(kink, 1.5, edge)), [])
+		jump = kink + rows(np.where(stations < 297, 0.0, 1.0))
+		self.assertEqual([s for s, _ in creases(check.bends(jump, 1.5, free)) if abs(s - 300) < 8], [])
+		# unless no step is an edge: a cliff then reads as a sharp bend
+		cliff = rows(np.where(stations < 300, 0.0, -6.0))
+		self.assertEqual(creases(check.bends(cliff, 1.5, free)), [])
+		self.assertGreater(max(abs(c) for _, c in creases(check.bends(cliff, 1.5, free, jump=None))), 30)
+		steep = np.stack([kink[0], kink[0] + 1.2, kink[0] + 2.4])
+		self.assertEqual(creases(check.bends(steep, 1.5, free)), [])
+		# a mask per line: left out on the line whose mask holds the edge, read on the others
+		wide = np.stack([kink[0]] * 4)
+		masks = np.stack([free, edge, free, free])
+		found = check.bends(wide, 1.5, masks)
+		self.assertTrue(any(j == 2 and abs(c) > 0.1 for j, _, _, c in found))
+		self.assertFalse(any(j == 1 and abs(stations[i] - 300) < 8 and abs(c) > 0.1 for j, i, _, c in check.bends(np.stack([kink[0]] * 3), 1.5, np.stack([free, edge, free]))))
+
+	def test_polygons(self):
+		square = np.array([[0, 0], [2, 0], [2, 2], [0, 2]], float)
+		self.assertTrue(check.inside_polygon(np.array([1.0, 1.0]), square))
+		self.assertFalse(check.inside_polygon(np.array([2.5, 1.0]), square))
+		segments = np.stack([square, np.roll(square, -1, axis=0)], 1)
+		self.assertAlmostEqual(check.segment_distance(np.array([2.5, 1.0]), segments), 0.5)
+		self.assertAlmostEqual(check.segment_distance(np.array([3.0, 3.0]), segments), math.sqrt(2))
+
+	def test_mirrored(self):
+		left = np.array([[400, 100, -20], [420, 110, -10]], float)
+		self.assertAlmostEqual(check.mirrored(left, left * [1, 1, -1]), 0)
+		# the same part on the same side is no mirror image
+		self.assertAlmostEqual(check.mirrored(left, left), 30)
+		self.assertAlmostEqual(check.mirrored(left, left * [1, 1, -1] + [0, 0.4, 0]), 0.4)
+
+
+class TipsTest(unittest.TestCase):
+	# A wing's two marked corners photographed by a known camera, their marks
+	# drawn where the corners would be raised: the fit finds the raise, as a
+	# shift of the whole surface or as a turn about its root
+	SPAN = (54.5, 224.5)
+
+	def setUp(self):
+		import camera as cam
+		import photos as ph
+		import tips
+		self.cam, self.tips = cam, tips
+		self.dir = tempfile.TemporaryDirectory()
+		root = Path(self.dir.name)
+		i = 0.0254
+		at = lambda fs, wl, bl: [(456 - fs) * i, (wl - 105) * i, bl * i]
+		self.corners = {"wingtip_trailing_right": at(556, 104, 224.5), "fold_trailing_right": at(560, 107, 160)}
+		# an aileron hinged at FS 540 on the tip's trailing corner, the fixed wing's leading corner ahead
+		hinge = np.array(at(540, 105, 0))
+		self.leading = at(500, 105, 224.5)
+		self.joints = {"aileron_right": {"motion": "rotate", "axis": [0, 0, 1], "drive": "flaperon.right", "keys": [[0, 0], [1, 1]]}}
+		glb(root / "m.glb", [{"name": "wing_right", "mesh": box(at(560, 103, 54.5), at(480, 108, 224.5))},
+			{"name": "aileron_right", "translation": tuple(hinge), "mesh": box(np.array(at(560, 104, 180)) - hinge, np.array(at(540, 106, 224.5)) - hinge)}])
+		landmarks = {n: {"at": p, "node": "wing_right"} for n, p in self.corners.items()}
+		(root / "f.json").write_text(json.dumps({"landmarks": landmarks}))
+		landmarks = {"wingtip_leading_right": {"at": self.leading, "node": "wing_right"}, "wingtip_trailing_right": {"at": self.corners["wingtip_trailing_right"], "node": "aileron_right"}}
+		(root / "hinged.json").write_text(json.dumps({"landmarks": landmarks}))
+		self.root = root
+		self.camera = cam.looking(np.array(at(500, 250, 400)), np.array(at(540, 105, 150)), 3000.0)
+		self.size = (3000, 2000)
+		self.frame = {"names": ["station", "waterline", "buttline"], "unit": i, "origin": [456, 105, 0], "axes": [[-1, 0, 0], [0, 1, 0], [0, 0, 1]], "mirror": "buttline"}
+		model = check.verify.Model(root / "m.glb")
+		self.features = ph.Features(model, {}, root / "f.json")
+		self.model = model
+
+	def tearDown(self):
+		self.dir.cleanup()
+
+	def marks(self, raise_, turned):
+		# where the corners stand raised `raise_` inches at the tip, in the photo
+		marks = {}
+		for name, p in self.corners.items():
+			share = (abs(p[2]) / 0.0254 - self.SPAN[0]) / (self.SPAN[1] - self.SPAN[0]) if turned else 1.0
+			point = np.array(p) + np.array([0, 0.0254, 0]) * raise_ * share
+			marks[name] = list(self.cam.project(self.camera, point[None], np.array(self.size, float) / 2)[0][0])
+		return marks
+
+	def fit(self, raise_, turned, rotate, **more):
+		# the fit over one photo, or more photos given as {id: raise}
+		raises = {"p": raise_, **more.pop("photos", {})}
+		catalogue = {"frame": self.frame, "photos": {k: {"marks": self.marks(r, turned)} for k, r in raises.items()}}
+		cameras = [{"photo": k, "size": list(self.size), "camera": list(self.camera)} for k in raises]
+		tips = self.tips.Tips(catalogue, cameras, self.model, {}, self.features)
+		kind = {"marks": list(self.corners), "span": self.SPAN}
+		return tips.fit(kind, neutral=True, rotate=rotate, **more)
+
+	def test_a_photo_left_out(self):
+		both = self.fit(5.0, False, False, photos={"q": 1.0})[0]
+		self.assertGreater(both, 1.5)
+		self.assertLess(both, 4.5)
+		self.assertAlmostEqual(self.fit(5.0, False, False, photos={"q": 1.0}, leave="q")[0], 5.0, places=3)
+
+	def test_a_raised_surface(self):
+		offset, _, misses = self.fit(5.0, False, False)
+		self.assertAlmostEqual(offset, 5.0, places=3)
+		self.assertLess(max(m[3] for m in misses), 0.01)
+
+	def test_a_turned_surface(self):
+		offset, _, misses = self.fit(5.0, True, True)
+		self.assertAlmostEqual(offset, 5.0, places=3)
+		self.assertLess(max(m[3] for m in misses), 0.01)
+		# fitted as a shift, a turn leaves the fold and the tip apart
+		offset, _, misses = self.fit(5.0, True, False)
+		self.assertGreater(max(m[3] for m in misses), 0.3)
+
+	def test_a_deflection_is_fitted_beside_the_raise(self):
+		import photos as ph
+		features = ph.Features(self.model, self.joints, self.root / "hinged.json")
+		marks = {}
+		for name in ("wingtip_leading_right", "wingtip_trailing_right"):
+			point = features.landmark(name, {"flaperon.right": 0.2}) + np.array([0, 0.0254, 0]) * 3.0
+			marks[name] = list(self.cam.project(self.camera, point[None], np.array(self.size, float) / 2)[0][0])
+		catalogue = {"frame": self.frame, "photos": {"p": {"marks": marks}}}
+		tips = self.tips.Tips(catalogue, [{"photo": "p", "size": list(self.size), "camera": list(self.camera)}], self.model, self.joints, features)
+		kind = {"marks": ["wingtip_leading_right", "wingtip_trailing_right"], "span": self.SPAN}
+		offset, deflections, _ = tips.fit(kind)
+		self.assertAlmostEqual(offset, 3.0, places=2)
+		self.assertAlmostEqual(deflections[("p", "flaperon.right")], 0.2, places=3)
+		# held neutral, the deflection has nowhere to go but the raise
+		offset, deflections, misses = tips.fit(kind, neutral=True)
+		self.assertEqual(deflections, {})
+		self.assertGreater(max(m[3] for m in misses), 0.3)
+
+	def test_the_spans_come_from_the_facts(self):
+		k = self.tips.kinds()
+		self.assertEqual(k["wing"]["span"][0], check.FACTS["layout"]["wing"]["buttline"])
+		self.assertAlmostEqual(k["stabilator"]["span"][1] - k["stabilator"]["span"][0], check.value(check.FACTS["stabilator"]["exposed"]) * 6)
 
 
 if __name__ == "__main__":

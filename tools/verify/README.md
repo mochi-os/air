@@ -29,6 +29,27 @@ the numbers they were given.
 Measure at the feature itself: an edge sampled 3% in from a swept root reads several inches off; extrapolate
 to the end instead.
 
+The same script checks what no fact states (`shape.*`), because every source can be met while the model is
+still visibly wrong. The F/A-18C passed every fact while its stowed gear, ladder and nose doors hung outside
+the skin and its speedbrake stood beside a fin, and the user saw them in the viewer first:
+
+- **Stowed parts lie inside the skin at rest:** a ray each way along each axis from every corner meets the
+  airframe. Name the parts (the gear, a ladder, the cockpit); hinged doors and panels are flush, not stowed.
+- **Flush panels lie on the skin:** the outer face a set standoff off it along the skin's normal, nowhere
+  through it. Measured straight down, times the cosine of the slope of the skin's own facet beneath (a slope
+  read across the height map's cells mixes the facets either side of a crease, and read the speedbrake 0.6
+  in proud on the spine's shoulder where it stood 0.18), leaving out a cell's margin at the panel's outline,
+  where its own edge walls lean.
+- **Parts lying against each other never cross back and forth where they show.** Seen from above, below and
+  outboard, where two parts lie within half an inch of each other, one stays on top: count the area, two
+  cells in from the overlap's edge (where they meet or cross along a line), where the other stands on top
+  and either is the outermost surface of the model. A near-level crossing renders as a ragged, flickering
+  line. The F/A-18C's facts and every other check passed while its inlet skins crossed the fuselage over 85
+  sq in a side and its LEX fairing let the fuselage through over 72; the user saw them first.
+- **Left and right mirror each other, at rest and with each mechanism moved,** pairing names whose side is
+  anywhere in them (`gear_left_wheel`, not only `aileron_left`); **every other part is symmetric about the
+  centreline** but a short list of one-sided parts.
+
 ### 3. Outline check: where the outlines part, not one score
 
 Lay the model's silhouettes on the drawing's views at true scale and report, for every outline pixel, its
@@ -152,6 +173,35 @@ What went wrong on the F/A-18C, each a rule now:
   right if the edge lies in it: the splitter's leading edge, cast onto a flat plane, disagreed by 15 in
   between photos because it bows outboard. Solve such an edge from two views together, refining each
   coordinate from the photo that sees it best, and check the result against a third.
+- **A mark on a surface lies on that surface.** The probe door's corners, marked in three right-side
+  photos, came out of the bundle 3-4 in inside the skin, along the sight lines all three share. Each
+  camera's sight line through the mark, cast onto the model's skin, put them within 0.4 in of each other
+  instead (`cast.py`). Cast any point that sits on a surface the model already has right; let the bundle
+  place only points that stand off it. The same casting measured the nose's small parts (probes,
+  fairings, light strips) from one sharp profile, each then checked against the other side's photo.
+- **Read each camera's field of view in the report.** A photo whose marks bunch at one end solves to the
+  field-of-view floor (1 degree) with its camera hundreds of metres off: nearly orthographic. Its fit to
+  the marks can still be good, but its outlines away from them can't judge a shape. The rear photos'
+  canopy outlines missed by 2-4 in for that reason; the photos with well-spread marks did not.
+- **Let the photos choose a free shape parameter, region by region.** Where no source gives a shape (the
+  canopy glass's section), build the model at a range of values and compare the traced outlines of the
+  well-solved photos; the cameras don't depend on the model, so only the shape changes between runs, and
+  one camera solve serves every build. Split each edge's misses by the station of the model's silhouette
+  nearest each point: one score over the whole canopy chose an exponent that was wrong fore and aft at
+  once, and an overlay read by eye got the direction backwards. Don't change anything else between the
+  builds.
+- **Before tuning a free shape, check the measured shape beside it.** The canopy's outlines stood outside
+  the photos whatever the glass's exponent, because its top line ran 0.5-1.3 in high behind the crown (the
+  traced section's own top kept rising past the crown the photos measure). Read off the profiles, the top
+  line took the canopy's median miss from 1.00 in to 0.28; the exponent then mattered by 0.05.
+- **Ground photos hide the heights of moving surfaces.** On the ground the flaps droop about 45 degrees,
+  the ailerons 42, and the tails tilt. A corner on them moves with an angle no photo states, and the
+  wing's height, the surfaces' chords and the droop all move the same corners. Fit the deflection per
+  photo with the camera held only where a photo shows two corners of one surface; for the structure's
+  height, use photos in flight.
+- **Say in the dictionary which part a corner is on.** The wingtip's trailing corner is the aileron's:
+  the aileron runs to the tip. The build had it on the fixed wing, so a drooped corner read as a wing
+  standing 5 in too high.
 - **Distrust a lone answer.** The reported uncertainty is optimistic for a coordinate few photos see across.
   Re-solve with photos added or removed: a value that moves by more than its uncertainty is not settled.
 - **Static is not taxiing.** Photos of moving jets sit at their own attitude; a manual's static heights describe
@@ -162,6 +212,55 @@ What went wrong on the F/A-18C, each a rule now:
   to ten billion pixels: 22 GB, and the out-of-memory killer took the whole session down. `crop.py` now holds
   a crop inside the photo and refuses an output over 4000 px; tell helpers to run any image script of their
   own under `systemd-run --user --scope -p MemoryMax=2G -p MemorySwapMax=0`.
+- **A thickness from a cross product changes side in the mirror.** Offsetting a plate along
+  `along.cross(across)` thickens the left one outboard and the right one inboard. Centre the thickness on the
+  plate.
+- **A negative control needs a control.** A mutated copy that cannot import its neighbours fails every test,
+  so every mutant reads as caught: the F/A-18C's first `enclosed` and `cast.py` controls ran that way, and two
+  breaks of each turned out unguarded once the copy kept its `verify` folder beside it. Run the unbroken copy
+  first; it must pass.
+- **Ground photos and flight photos show different wings.** On the ground the flaps and ailerons droop; in
+  flight the wing bends up under its load. The F/A-18C's tips stood about 5 in above its cited anhedral on
+  the ground and 10 in in flight. Fit each set apart (`../fa18c/tips.py`) and say which shape the model rests at.
+- **An empty selection is a failure, not a crash.** A check that asks for no parts (a part renamed, the old
+  build) must report the part missing and carry on.
+- **Ground photos with stores cannot place a lower outline.** Tanks, missiles and open gear doors hang
+  across it, and which tank is which is a guess: the F/A-18C's nacelle bottom was read off dvids9820808's
+  tank at WL 87, and a NASA side view's line rejected on a guess about which tank showed, 10 in from where
+  an in-flight photo's sky outline put it. Use a silhouette against the sky, gear up; a line that agrees with
+  it (the HATP keel line, within 0.3 in) is then a source, not an error.
+- **Break the model as well as the checks.** Revert each fix in a copy of the build (with `verify` beside it
+  and the references linked), rebuild a draft, and run the checks. Of fourteen fixes behind the F/A-18C's
+  inlet and LEX seams, five were caught at first; tightening the poke-through test to any depth and adding
+  the wing-root cover caught four more, two were removed as doing nothing visible, and three still pass
+  though the close renders show their defects, which is a task, not a pass.
+- **A tolerance that passes a visible defect is too loose.** The LEX's poke-through check allowed 1% of its
+  surface; the ragged patches the user saw were 0.82%. Set a shape check's tolerance from the broken model and
+  the fixed one, with the margin between them.
+- **Every number can pass while the skin creases.** The F/A-18C's forebody met all 404 facts, yet the
+  user saw a bend under the nacelles and the audit found ripples along the belly, a crease at each cited
+  section and a kink at each rear-body knot: the facts are measured at the knots, and the faults lay between
+  them. Follow fixed lines along the skin (constant buttline from above and below, constant waterline from
+  the side) and flag where they turn sharply away from a real edge (`../fa18c/check.py` `shape.bend`).
+- **Measure a crease, not a curve.** A bend over a few inches either side counts a tight but smooth curve
+  (the nose, the canopy's foot) the same as a kink. Count a bend only where most of it lies within the inner
+  half of the window: a smooth curve keeps about half its bend there, a kink nearly all. Average each line
+  over a few inches against the loft's facets, and leave out windows that cross a real edge, a jump between
+  surfaces, or a face turned more than about 35 degrees from the view. Set the tolerance between the broken
+  build and the fixed one, as for any shape check.
+- **A traced line is a staircase, and so is a traced section.** A silhouette traced at 600 DPI moves in
+  steps of one pixel (0.83 in at the F/A-18C's scale); read point by point, every step becomes a ledge in the
+  skin. Take the line through each step's midpoint, then smooth it over a few inches, and check that the
+  smoothing moves no cited number. A traced cross-section's outline is the same: resampled raw, each point
+  lands on a riser or a tread, and the skin between the sections carried 0.2 in bumps that flipped from one
+  ring to the next.
+- **A window left out of a check hides everything on its lines.** The F/A-18C's bend check left out the
+  canopy's stations on every line of every view, so it never saw the forebody's sides from FS 178 to 347,
+  where three of the cited sections lie, and a 22 in margin behind the canopy hid a 7 deg crease on the
+  spine. Leave out an edge only on the lines that meet it.
+- **A check that skips steps can't see a cliff.** The bend check leaves out windows holding a jump between
+  surfaces, which is right where parts meet. A fairing that stood level and then dropped 6.6 in within one
+  ring span read as two surfaces and passed. Where no step is real, count a step as the bend it is.
 - **Helpers mark well with a dictionary.** Three helpers marked twelve photos from `../fa18c/marking.md` in an
   hour or so each. Check their marks against the overlays and the flagged misses; they also found the wrong
   photo labels.
@@ -173,4 +272,6 @@ What went wrong on the F/A-18C, each a rule now:
 - `photos.py`: the photo match, overlays, cameras for `view.py`, comparison sheets.
 - `view.py`: Blender: renders the model through solved cameras.
 - `crop.py`: crops with a labelled pixel grid, for marking.
+- `cast.py`: casts a solved photo's pixels onto the posed model's surface or a plane of the project's frame,
+  and projects coordinates into a photo to find where to look.
 - `test_verify.py`, `test_photos.py`: `python3 -I test_verify.py`, `python3 -I test_photos.py`.

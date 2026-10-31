@@ -9,6 +9,13 @@ import { useLingui } from '@lingui/react'
 import { Plural, Trans, useLingui as useLinguiMacro } from '@lingui/react/macro'
 import { useFormat } from '@mochi/web'
 import { Button } from '@mochi/web/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@mochi/web/components/ui/select'
 import { Slider } from '@mochi/web/components/ui/slider'
 import {
   FastForward,
@@ -362,6 +369,13 @@ export function GameCanvas({
   onConfigRef.current = onConfig
   const chatRef = useRef<HTMLInputElement>(null)
   const [menu, setMenu] = useState(false)
+  // The temporary carrier speed select: single player's ship's speed into the
+  // wind in knots, read as the menu opens; null outside developer mode, in a
+  // match or in a replay, where it is not offered.
+  const [carrier, setCarrier] = useState<number | null>(null)
+  useEffect(() => {
+    if (menu) setCarrier(handleRef.current?.speed() ?? null)
+  }, [menu])
   const [settings, setSettings] = useState(false)
   const [settingsTab, setSettingsTab] = useState('general')
   // Unmount is not the pilot leaving. stop() ends through the engine's own
@@ -833,6 +847,36 @@ export function GameCanvas({
                 <Send className='size-4' />
                 <Trans>Send chat</Trans>
               </Button>
+            )}
+            {carrier != null && !over && (
+              // Temporary, English only by decision: hold single player's
+              // carrier to a speed, to see her bow wave and wake at each.
+              <div className='flex items-center justify-between gap-2'>
+                {/* jsx-text-ok: temporary developer select, English only */}
+                {/* eslint-disable-next-line lingui/no-unlocalized-strings -- temporary developer select, English only */}
+                <span className='text-sm'>Carrier speed</span>
+                <Select
+                  value={
+                    Math.abs(carrier - 5 * Math.round(carrier / 5)) < 0.3
+                      ? String(5 * Math.round(carrier / 5))
+                      : ''
+                  }
+                  onValueChange={(v) =>
+                    setCarrier(handleRef.current?.speed(Number(v)) ?? null)
+                  }
+                >
+                  <SelectTrigger size='sm' className='w-28'>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[5, 10, 15, 20, 25, 30].map((knots) => (
+                      <SelectItem key={knots} value={String(knots)}>
+                        {`${knots} kt`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             )}
             <Button
               type='button'

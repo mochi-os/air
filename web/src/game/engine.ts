@@ -37,7 +37,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_steer, flight_voyage, flight_carrier, flight_deck, flight_reframe, flight_wind, flight_footing, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
+import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_speed, flight_steer, flight_voyage, flight_carrier, flight_deck, flight_reframe, flight_wind, flight_footing, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
@@ -92,6 +92,7 @@ import { asset as asset_bytes, progress as load_progress } from './preload'
 import { Recorder, stamp, channels, MIDWAY, airspeed } from './acmi'
 import { between, settle, theatre, HOME, DEGREE, point as earth_point, vector as earth_vector, attitude as earth_attitude } from './earth'
 import * as navigate from './navigation'
+import * as magnetic from './magnetic'
 import * as avionics from './avionics'
 import * as autopilot from './autopilot'
 import * as datalink from './datalink'
@@ -124,6 +125,7 @@ export interface GameHandle {
   say: (text: string) => void                   // send one line to everyone on the server: the lobby ring beside the match list
   scope: () => string                           // what the chat key opens: "team" in a teams match, else "match"
   key: (action: string) => string               // an action's key chord as configured, so the open prompt can tell the chat keys apart
+  speed: (knots?: number) => number | null      // the temporary carrier speed select, developer mode only: hold single player's ship to a speed on her straight runs; her speed into the wind, knots, or null where it is not offered (outside developer mode, a match, a replay)
 }
 
 // The recording accessor lives in replay.ts, not here, so the log route can
@@ -1535,7 +1537,7 @@ const AIRCRAFT_MODELS={
 	      // the mixer fights the writes.
 	      { name:"adiPitch",  node:"INSTRUMENT_AttitudeIndicator_Pitch_AN_Pitch_503",        axis:"x", gauge:"pitch" },
 	      { name:"adiBank",   node:"INSTRUMENT_AttitudeIndicator_Bank_AN_Bank_505",          axis:"z", gauge:"bank" },
-	      { name:"compass",   node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",      axis:"y", gauge:"heading" },
+	      { name:"compass",   node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",      axis:"y", gauge:"compass" },   // the card's own reading, magnetic, as it swings (compass_card)
 	      { name:"throttleA", node:"ThrottleLever_LeftAction_AN_throttle0_579",              axis:"x", gain:0.698, gauge:"throttleL" },   // 0.698 rad, 40°: the clip's whole travel, IDLE to MAX
 	      { name:"throttleB", node:"Throttle_Lever_RightAction_AN_throttle1_585",            axis:"x", gain:0.698, gauge:"throttleR" },
 	      { name:"stickPitch",node:"Stick_ForeAft_Action_AN_Base_382",                       axis:"x", gain:-0.164, gauge:"stickPitch" },   // 3 in at the grip either way: the grip 0.466 m above this pivot. The manual gives the lateral throw (11.1.7) and no pitch figure; more forward travel puts the grip into the panel
@@ -1999,6 +2001,15 @@ const STAGES=["full","medium","far","dot"], STAGE_LIMITS=[80,8,2], STAGE_MARGIN=
 const DOT_SIZE=3, DOT_RANGE=25000, DOT_FADE=5000, DOT_GAIN=0.42, DOT_MAX=128;   // DOT_SIZE: POINT_HEIGHT pixels, 2 reference pixels
 const CARRIER_LIMIT=150, CARRIER_KEEP=/^deck_(baked|underside|skirt)$/;
 const fleet_far={};   // aircraft kind -> its distant stages (fa18c-far.glb: airframe, up, down, burner, far), or "loading"
+// carrier_depth draws the carrier into the sun's shadow map pushed back from the sun in proportion to how
+// slanted each face is to it, three texels' worth of its slope and never more than 4 m: the underside of her
+// flight deck lies too close below its top for the map's metre-and-a-half texels, so the deck shadowed itself
+// in stripes that crawled across it as she steamed on. The depth material packs a depth of its own making, not
+// the depth buffer's, so polygon offset cannot do this; the push is added to that depth here.
+const carrier_depth=new THREE.MeshDepthMaterial({ depthPacking:THREE.RGBADepthPacking });
+carrier_depth.onBeforeCompile=(sh)=>{ const at="float fragCoordZ = 0.5 * vHighPrecisionZW[0] / vHighPrecisionZW[1] + 0.5;";
+	if(!sh.fragmentShader.includes(at)) console.warn("carrier shadow depth: three's depth shader changed; the deck's slope push is OFF");   // i18n-format-ok: developer console output, never shown to a user
+	sh.fragmentShader=sh.fragmentShader.replace(at,at+"\n\tfragCoordZ+=min(3.0*max(abs(dFdx(fragCoordZ)),abs(dFdy(fragCoordZ))),5.0e-4);"); };
 let carrier_far=null;   // { group: the far model, near: the full model's meshes it replaces, far: drawn }
 let stage_dots=null;
 const _stage_eye=new THREE.Vector3(), _stage_light=new THREE.Color(), _carrier_at=new THREE.Vector3();
@@ -2058,7 +2069,7 @@ function update_stages(){ camera.getWorldPosition(_stage_eye);
 async function init_carrier_far(grp,gscene){ if(!SHIP.far) return;
 	try{ const gltf=await far_parse(await asset_bytes(SHIP.far)); const far=new THREE.Group();
 		gltf.scene.position.copy(gscene.position); far.add(gltf.scene); far.position.copy(grp.position); far.rotation.copy(grp.rotation); far.scale.copy(grp.scale);
-		far.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });   // as the full model's
+		far.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; o.customDepthMaterial=carrier_depth; } });   // as the full model's
 		far.visible=false; carrier_rig.add(far);
 		const near=[]; grp.traverse(o=>{ if(!o.isMesh) return; for(let p=o;p&&p!==grp;p=p.parent) if(CARRIER_KEEP.test(p.name||"")) return; near.push(o); });
 		carrier_far={ group:far, near, far:false }; }
@@ -3403,10 +3414,33 @@ function hsi_reset(){ hsi_state.scale=40; }   // 0: range to default — DCTR an
 // nav holds the INS, GPS, position keeping, the waypoints and the steering. A fresh
 // spawn's first frame loads the memory unit's mission data and leaves the suite as
 // the pre-flight does: the INS aligned with its knob at NAV, waypoint 0 the place it
-// aligned, TACAN steering to the ship selected. VARIATION: Midway's magnetic
-// variation, about 7° east.
-const VARIATION=7*D2R;
+// aligned, TACAN steering to the ship selected.
 let nav=navigate.fresh(1), nav_cold=true, nav_fields=-1, map_name="";
+// magnetism (#152): the earth's field at the jet from the World Magnetic Model (magnetic.ts), worked out
+// once a second of sim time as it flies, on the mission's date. The suite's variation is its declination
+// (24.2.5.6) unless the pilot has keyed one on the UFC, which then holds for the flight; the standby
+// compass's card swings in the whole field. along: the jet's acceleration along its path, smoothed, and
+// the speed and core time it was last measured from, which tilt the card's float.
+const MAGNETISM_EVERY=1;
+const magnetism={ at:-Infinity, field:{ north:1, east:0, down:0 }, variation:0, card:magnetic.settled(0,0), along:0, speed:null, time:null };
+function magnetic_place(p){ return theatre.frame.place({ x:p.x, y:p.y??0, z:p.z }); }   // a point of the engine's frame on the ellipsoid
+function magnetic_variation(p){ return magnetic.variation(magnetic_place(p),magnetic.year(mission_clock())); }
+function magnetic_frame(force){ if(!force&&Math.abs(sim_time-magnetism.at)<MAGNETISM_EVERY) return;   // either way: a new flight's clock starts again
+	magnetism.at=sim_time; magnetism.field=magnetic.field(magnetic_place(ownship.pos),magnetic.year(mission_clock()));
+	magnetism.variation=Math.atan2(magnetism.field.east,magnetism.field.north); }
+// compass_card swings the standby compass's card (NATOPS 2.12.9, magnetic.ts) over the core's time since it
+// last swung, and gives what it reads, radians: its float hangs along the jet's load - the normal load
+// factor along the jet's up, and along its nose the change of speed and the part of gravity that lies
+// there - so a bank, a pull or a change of speed tilts it into the field's dip; the case's turn drags its
+// fluid. The load across the wings is left out: a slip that swings the ball swings the card, but the
+// core gives no lateral load. heading: the jet's true heading.
+function compass_card(out,heading,t){ const m=magnetism, G=9.80665, f=ownship.fwd, u=ownship.up;
+	const speed=Math.hypot(out[STATE.velocity]||0,out[STATE.velocity+1]||0,out[STATE.velocity+2]||0), dt=m.time===null?0:Math.max(0,t-m.time);
+	if(dt>0&&m.speed!==null) m.along+=((speed-m.speed)/dt-m.along)*Math.min(1,dt/0.25);   // the speed's change, smoothed over a quarter second: a magnitude, so a move of the engine's frame cannot jolt it
+	m.speed=speed; m.time=t;
+	const nose=m.along+G*f.y, normal=(out[STATE.nz]||0)*G;
+	const r=magnetic.rest(m.field,f,u,{ x:f.x*nose+u.x*normal, y:f.y*nose+u.y*normal, z:f.z*nose+u.z*normal });
+	return magnetic.swing(m.card,heading,yaw_state.rate,r.heading,r.strength,dt); }
 function nav_reset(){ nav=navigate.fresh(Math.random()*1000); nav_cold=true; hsi_state.level=""; hsi_state.check=false; hsi_state.shown=0; hsi_state.air=null;
 	carrier_given.heading=carrier_given.speed=0; Object.assign(fpas,{ changed:-Infinity, at:-Infinity, best:null, survey:null, optimum:null }); }
 // aboard: on the ship's deck, where its inertial system reaches the jet for a carrier alignment (24.2.3.1.1)
@@ -3423,7 +3457,7 @@ function nav_sense(dt){ const gz=ownship.gauges||{}, station=tacan(), t=radios.t
 function mission(){ const ship={ name:SHIP.ident, x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.height };
 	const fields=airports.filter(ap=>ap.code).map(ap=>{ const p=theatre_point(HOME.sea(ap.x,ap.z).point); return { name:ap.code, x:p.x, y:p.y, z:p.z, elevation:ap.sy-2.2 }; });   // the field's sea-level point, laid in the world frame
 	return { identifier:map_name.split(" ")[0].slice(0,8), waypoints:[{ index:1, point:ship },...fields.slice(0,1).map(point=>({ index:2, point }))],
-		stations:[{ channel:SHIP.tacan.channel, band:SHIP.tacan.band, x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.height, name:SHIP.ident, variation:VARIATION }], points:[ship,...fields] }; }
+		stations:[{ channel:SHIP.tacan.channel, band:SHIP.tacan.band, x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.height, name:SHIP.ident, variation:magnetic_variation(CARRIER) }], points:[ship,...fields] }; }   // the station's variation is the model's where it lies (24.4.3)
 // INS_KNOB: the INS mode select knob's node, the axis it turns about in its parent's frame, and the turn
 // between positions. The placard spaces the eight 45° apart from OFF, where the model draws the knob; the
 // model's own clip turns it only 131°, so the node is turned directly (apply_anim).
@@ -3437,13 +3471,15 @@ function set_press(which,d){ navigate.set(nav,which,d>0?5:-5); ddi_dirty=true; }
 // a suite still off reads as a new INS ATT. nav_frame calls it for a frame the core does not step.
 function nav_ready(){ if(!nav_cold) return; const truth=nav_sense(0);
 	navigate.load(nav,mission()); nav_fields=airports.length;
-	nav_cold=false; navigate.ready(nav,truth); nav.variation=VARIATION; nav.heading=truth.heading; nav.steer="tcn";
+	nav_cold=false; navigate.ready(nav,truth); magnetic_frame(true); nav.variation=magnetism.variation; nav.heading=truth.heading; nav.steer="tcn";
+	magnetism.card=magnetic.settled(truth.heading,truth.heading-magnetism.variation); magnetism.speed=magnetism.time=null; magnetism.along=0;   // the card at rest on the jet's magnetic heading
 	if(truth.airborne) nav.waypoints[0]=cfg.task==="joust"?null:{ x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.deckY, name:"", offset:null }; }   // a jet that starts in the air aligned aboard the ship; a joust's has no home waypoint, so the FPAS cannot judge HOME FUEL and shows its advisory instead (2.3.1.2, 2.3.1.3): the ship was far off and every fight in burner called it within seconds
 // nav_frame steps the suite: the mission data when it is first there to load, the INS and GPS, AUTO
 // sequential steering's move to the next waypoint, and the set switches held on their keys - a degree
 // on the press, then 30° a second.
 function nav_frame(dt){ nav_ready(); const truth=nav_sense(dt);
 	if(nav_fields!==airports.length){ navigate.load(nav,mission()); nav_fields=airports.length; }   // the airfields arrive after the first spawn
+	magnetic_frame(false); if(!nav.keyed) nav.variation=magnetism.variation;   // the variation where the jet is now, unless the pilot keyed one
 	const before=nav.ins.mode+nav.source+nav.current;
 	navigate.step(nav,truth);
 	if(nav.steer==="wypt") navigate.sequential(nav,navigate.place(nav,truth),(ownship.gauges||{}).track??truth.heading);
@@ -4193,14 +4229,14 @@ function status_own(){ const power=buses.ac, tracks=[...new Set([...RADAR.tracks
 function ddi_sa(x,display){ const gz=ownship.gauges||{}; const hdg=gz.heading||0;
 	const scale=sa_state.scale, cy=266, R=196, ppm=R/(scale*NM/2);
 	const colour=display==="center";   // team colours on the AMPCD; the DDIs stay monochrome green
-	x.fillText(String(Math.round(hdg/D2R+360)%360).padStart(3,"0"),256,30);
+	x.fillText(String(Math.round(navigate.shown(nav,hdg)/D2R+360)%360).padStart(3,"0"),256,30);   // the heading, and the rose's north below, as the HSI reads them: magnetic with HDG MAG (24.2.5.7)
 	x.save(); x.translate(256,cy);
 	x.strokeStyle="rgba(57,224,122,0.45)"; x.lineWidth=1.5;   // half- and quarter-scale rings, ticks only — the SA picture stays uncluttered, the HSI owns full nav
 	x.beginPath(); x.arc(0,0,R,0,Math.PI*2); x.stroke();
 	x.strokeStyle="rgba(57,224,122,0.22)";
 	x.beginPath(); x.arc(0,0,R/2,0,Math.PI*2); x.stroke();
 	x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x.lineWidth=2; x.font="18px monospace"; x.textAlign="center";
-	for(let d=0;d<360;d+=30){ const a=(d*D2R)-hdg-Math.PI/2;
+	for(let d=0;d<360;d+=30){ const a=(d*D2R)+(nav.magnetic?nav.variation:0)-hdg-Math.PI/2;
 		x.beginPath(); x.moveTo(Math.cos(a)*196,Math.sin(a)*196); x.lineTo(Math.cos(a)*184,Math.sin(a)*184); x.stroke();
 		if(d===0) x.fillText("N",Math.cos(a)*166,Math.sin(a)*166+6); }
 	x.rotate(-hdg);   // heading-up frame: contacts draw at their north-up offsets
@@ -4593,7 +4629,7 @@ function data_enter(){ const units=ufc.back!=="", label=units?"":(UFC_PAGES[ufc.
 	if(label==="MVAR"){ const whole=Math.floor(value/100), minutes=value%100;
 		if(entry===""||!ufc.letter||minutes>59||whole>180) return false;
 		const angle=(ufc.letter==="W"?-1:1)*(whole+minutes/60)*D2R;
-		if(ufc.func==="station") station_edit().variation=angle; else nav.variation=angle;
+		if(ufc.func==="station") station_edit().variation=angle; else { nav.variation=angle; nav.keyed=true; }   // the pilot's own variation holds over the model's for the rest of the flight
 		return true; }
 	if(entry===""||(!units&&!label)) return false;
 	const done=(()=>{ switch(units?ufc.target:ufc.func+" "+label){
@@ -5376,7 +5412,7 @@ async function init_carrier_model(){
 			if(baseSrc&&typeof createImageBitmap==="function"){ try{ baseTex=await make_tex(baseSrc,true); }catch{ /* texture optional */ } }
 			if(normSrc&&typeof createImageBitmap==="function"){ try{ normTex=await make_tex(normSrc,false); }catch{ /* texture optional */ } }
 			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; const hasuv=!!(o.geometry&&o.geometry.attributes&&o.geometry.attributes.uv);
-				if(baseTex&&hasuv)mm.map=baseTex; if(normTex&&hasuv)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; } });   // the map goes only where UVs exist: on the Nimitz only the baked deck strip has them (a map without UVs renders garbage)
+				if(baseTex&&hasuv)mm.map=baseTex; if(normTex&&hasuv)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; o.customDepthMaterial=carrier_depth; } });   // the map goes only where UVs exist: on the Nimitz only the baked deck strip has them (a map without UVs renders garbage)
 			carrier_model=grp; carrier_rig.add(grp);
 			void init_carrier_far(grp,gscene);   // the far model follows; until it arrives the carrier is drawn in full
 			/* procedural carrier removed; nothing to hide */
@@ -7485,7 +7521,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	ownship.gauges={
 		pitch:Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1)),
 		bank:-Math.atan2(ownship.right.y,ownship.up.y),   // + = right wing down, the attitude displays' convention (right is the starboard wing)
-		heading, yaw:yaw_state.rate, vspeed:fpm, oat:15-0.0065*ownship.pos.y, zulu:ifei_zulu(ifei_view(),now),   // ISA air at altitude, °C; zulu seconds since midnight for the HSI's ZTOD
+		heading, compass:compass_card(out,heading,t), yaw:yaw_state.rate, vspeed:fpm, oat:15-0.0065*ownship.pos.y, zulu:ifei_zulu(ifei_view(),now),   // ISA air at altitude, °C; zulu seconds since midnight for the HSI's ZTOD
 		slip:THREE.MathUtils.clamp(out[STATE.beta]/0.10,-1,1),   // ±~6° of sideslip = full ball travel
 		throttleL:secured[0]?THROTTLE_OFF:throttle_travel(), throttleR:secured[1]?THROTTLE_OFF:throttle_travel(),   // the LEVERS show the hand, not the spool, through the MIL detent into MAX; a secured engine's lever lifted over its detent to OFF (#34)
 		stickPitch:last_controls?last_controls.pitch:0, stickRoll:last_controls?last_controls.roll:0,
@@ -7771,8 +7807,9 @@ const WAITING=new Set([HINT.bar,HINT.tension,HINT.salute,HINT.flyaway,HINT.posit
 let hinted={};
 // The pattern's roll-out headings (#90), from the live ship: the wake is the
 // hull course, the downwind its reciprocal, and the groove the angled deck's
-// landing line. Three digits, as the brief reads them.
-function compass(dx,dz){ return String(Math.round((Math.atan2(dx,-dz)*180/Math.PI+360)%360)||360).padStart(3,"0")+"\u00b0"; }
+// landing line. Three digits, as the brief reads them, against the north the displays read (#152): magnetic
+// with HDG MAG, as the ship's BRC and the painted runway numbers are.
+function compass(dx,dz){ return String(Math.round((navigate.shown(nav,Math.atan2(dx,-dz))*180/Math.PI+360)%360)||360).padStart(3,"0")+"\u00b0"; }
 function ship_course(){ return compass(CARRIER_C,-CARRIER_S); }
 function ship_downwind(){ return compass(-CARRIER_C,CARRIER_S); }
 function ship_groove(){ const a=carrier_world(...SHIP.landing.line[0]), b=carrier_world(...SHIP.landing.line[1]); return compass(b.x-a.x,b.z-a.z); }
@@ -12703,7 +12740,7 @@ function hud_cluster(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,rng,axes,worn=n
 	const keep=(symbol,level)=>worn?helmet.shown(worn.helmet,symbol):rej<level;   // a symbol the HUD's reject switch removes from REJ <level> (2.13.4.8.1) - on the helmet, at the level its REJECT SETUP gives it
 	const wly=cy-4*ppdv;                                // the waterline datum: the airspeed/altitude box TOPS sit here (NATOPS)
 	const aa=master!=="nav"&&!pa;                       // the A/A masters: heading scale raised, bank scale off, weapon and ranging blocks on
-	// ---- heading scale: a moving 30° window, three-digit labels over the 10° ticks and no baseline (figure 2-26), with the T for true heading beneath - every heading in the game is true, as the HSI's T says (NATOPS 2.13.4.8.11 item 1: a caret would mean magnetic); the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group.
+	// ---- heading scale: a moving 30° window, three-digit labels over the 10° ticks and no baseline (figure 2-26), with a caret beneath for magnetic heading, the system's choice at power up, or a T under the current heading with HDG TRUE selected (NATOPS 2.13.4.8.11 item 1, 24.2.5.7); the value reads off the scale (no digital box on the real HUD); REJ 2 removes the whole group.
 	// The helmet's (the DCS guide) is about the heading it looks along, with the jet's own heading in digits under its middle in place of the T, and the steering marks at their headings on it ----
 	const north=(v)=>((Math.atan2(v.x,-v.z)-(nav.magnetic?nav.variation:0))*180/Math.PI+720)%360;   // a direction's heading, degrees: magnetic with HDG MAG selected (24.2.5.7)
 	const hdg=north(ownship.fwd), middle=worn?north(worn.sight):hdg, hppx=7, halfd=15;
@@ -13679,6 +13716,7 @@ function start_mission(){
 	const duelq=devq.get("duel"); if(duelq==="bvr"||duelq==="merge") cfg.duel=duelq;   // &duel=bvr — the BVR start
 	const banditq=devq.get("bandit"); if(banditq==="novice"||banditq==="intermediate"||banditq==="expert"||banditq==="superhuman") cfg.bandit=banditq;   // &bandit=novice — the joust's tier, over the account's saved one
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
+	const shadowq=devq.get("shadows"); if(shadowq==="1"||shadowq==="0") cfg.shadows=shadowq==="1";   // &shadows=1|0: the sun's shadow map on or off, over the graphics preset, for headless checks of what it draws
 	if(devq.get("framerate")==="1") cfg.framerate=true;   // &framerate=1: the corner's frame rate readout, for headless checks of it
 	harm_pending=devq.get("harm");
 	blast_list=blast_plan(devq.get("blast")); blasts=null;   // &blast=1 or &blast=20,600,death (blast.ts): explosions on demand, paced afresh on each mission's clock
@@ -13877,5 +13915,6 @@ void flight_load();   // the wasm flight core loads alongside the GLBs; assets_r
     say: (words) => { if (MULTIPLAYER && join) world_say(join.server, join.name, String(words).slice(0, 200)).catch(() => {}) },   // the lobby echoes it back through the poll below, like the match wire echoes a match line
     scope: chat_scope,
     key: key_of,
+    speed: (knots) => { if (!DEV_MODE || MULTIPLAYER || playback) return null; const now = flight_speed(knots ? knots * 0.514444 : undefined); return now === null ? null : now / 0.514444 },
   }
 }

@@ -39,7 +39,7 @@ describe('the standby attitude indicator', () => {
     // on the right windshield arch's foot beside the right DDI, which is where
     // the model spins its card. Nothing re-seats it.
     expect(source).not.toMatch(/function mount_compass\(/)
-    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); \}/)
+    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); build_rivets\(g\); \}/)
     const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(rig).toMatch(/name:"compass",\s+node:"INSTRUMENT_MagneticCompass_AN_MagneticCompass_517",\s+axis:"y", gauge:"heading"/)
   })

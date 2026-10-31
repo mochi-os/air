@@ -114,8 +114,9 @@ class Model:
 
 		materials = [m.get("name", f"material{i}") for i, m in enumerate(gltf.get("materials", []))]
 		self.meshes = []
+		self.uvs = []   # per mesh, per primitive: each triangle's corners' UVs (n, 3, 2), or None
 		for mesh in gltf.get("meshes", []):
-			parts = []
+			parts, uvs = [], []
 			for p in mesh["primitives"]:
 				if p.get("mode", 4) != 4:
 					continue
@@ -123,7 +124,10 @@ class Model:
 				indices = accessor(p["indices"]).reshape(-1).astype(np.int64) if "indices" in p else np.arange(len(positions))
 				material = materials[p["material"]] if "material" in p else None
 				parts.append((positions[indices.reshape(-1, 3)], material))
+				uv = p["attributes"].get("TEXCOORD_0")
+				uvs.append(accessor(uv).astype(float)[indices.reshape(-1, 3)] if uv is not None else None)
 			self.meshes.append(parts)
+			self.uvs.append(uvs)
 		self.nodes = []
 		for i, n in enumerate(gltf.get("nodes", [])):
 			local = np.eye(4)

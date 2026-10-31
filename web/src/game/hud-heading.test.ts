@@ -47,10 +47,10 @@ describe('the heading scale', () => {
 })
 
 // NATOPS 2.13.4.8.11 item 1 and figure 2-26: three-digit labels over the 10°
-// ticks (350 000 010), no line under the ticks, and a T under the current
-// heading for true heading - every heading the game draws is true, as the HSI's
-// T says; a caret there would claim magnetic. The section is run against a
-// canvas that records its text and line segments.
+// ticks (350 000 010), no line under the ticks, and under the current heading
+// a T for true heading or a caret for magnetic, the system's choice at power
+// up (24.2.5.7). The section is run against a canvas that records its text and
+// line segments.
 describe('the heading scale face', () => {
   const start = source.indexOf('\t// ---- heading scale:'), end = source.indexOf('\t// ---- airspeed box', start)
   const section = source.slice(start, end)

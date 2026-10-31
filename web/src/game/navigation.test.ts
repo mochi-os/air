@@ -935,12 +935,14 @@ describe('latitude and longitude', () => {
     expect(N.coordinates({ x: 0, z: 0 }).longitude).toBeCloseTo(-177.3735, 9)
     expect(N.coordinates({ x: -400000, z: 0 }).longitude).toBeGreaterThan(170) // west across the date line
   })
-  it('gives directions true, or magnetic with HDG MAG', () => {
+  it('gives directions magnetic with HDG MAG, the system's choice at power up, or true', () => {
     const nav = N.fresh(1)
+    expect(nav.magnetic).toBe(true) // 24.2.5.7: "At power up with WOW the system initializes with magnetic heading selected"
+    expect(nav.keyed).toBe(false) // and no variation keyed: the one worked out where the jet is holds
     nav.variation = 10 * D
-    expect(N.shown(nav, 5 * D)).toBe(5 * D)
-    nav.magnetic = true
     expect(N.shown(nav, 5 * D) / D).toBeCloseTo(355, 9)
+    nav.magnetic = false
+    expect(N.shown(nav, 5 * D)).toBe(5 * D)
   })
 })
 

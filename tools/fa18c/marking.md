@@ -60,7 +60,16 @@ nose from the front, the aircraft's right is on the photo's left. Get this right
 - `nozzle_root_bottom_left` / `_right`: bottom of that engine nozzle where its petals start.
 - `nozzle_exit_bottom_left` / `_right`: bottom of that nozzle's exit lip.
 - `hook_point`: the tip of the stowed arresting hook (its aft, lower end) under the tail.
-- `fold_trailing_left` / `_right`: the trailing-edge end of the wing-fold line (between flap and aileron).
+- `fold_trailing_left` / `_right`: the trailing-edge flap's outboard trailing corner, at the wing-fold line
+  (the aileron's inboard corner lies just outboard of it, a few inches of gap between them).
+- `wingtip_trailing_*` is the aileron's outer trailing corner: the aileron runs to the tip. Both it and
+  `fold_trailing_*` droop with the flaps on the ground (often 40-45 deg); the solver fits that per photo.
+- `aoa_left` / `_right`: the centre of that angle-of-attack probe's round base plate, on the nose's side
+  ahead of the windscreen (a short cone stands straight out of it).
+- `pitot_tip_left` / `_right`: the front tip of that pitot-static tube, the L-shaped probe low on the nose's
+  side ahead of the nose gear.
+- `blade_nose_bottom_front` / `blade_nose_bottom_aft`: the lower corners of the blade antenna hanging under
+  the nose on the centreline (stencilled DO NOT PAINT).
 
 You may add other crisp, unambiguous points (panel corners, light fittings) that a second photo of yours
 also shows, with a descriptive snake_case name and a note: they help tie the cameras together.

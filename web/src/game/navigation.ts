@@ -213,8 +213,9 @@ export interface Navigation {
   station: number
   points: Named[] // the GPS's stored points
   memory: { identifier: string; files: string[]; loaded: string[] }
-  magnetic: boolean // HDG MAG selected
+  magnetic: boolean // HDG MAG selected: the system's choice at power up (24.2.5.7)
   variation: number // magnetic variation, east positive
+  keyed: boolean // MVAR keyed on the UFC: the pilot's variation, held in place of the one worked out where the jet is
   decimal: boolean // LATLN DCML
   precise: boolean // PRECISE boxed: hundredths of a second, and the grid to a metre (24.2.5.1)
   units: { waypoint: Unit; offset: Unit; station: Unit; range: Unit } // what a waypoint's, an offset's and a TACAN station's elevation and an offset's range are entered and shown in (24.2.5.1.2)
@@ -278,7 +279,7 @@ export function fresh(seed: number): Navigation {
     steer: '', course: null, kept: 0, heading: 0, sequences: Array.from({ length: SEQUENCES }, () => []), sequence: 0, lines: false, auto: false,
     designation: null, target: null, tot: null, speed: 0, updating: '', update: null, previous: null, slew: none(),
     stations: [], station: 0, points: [], memory: { identifier: '', files: [], loaded: [] },
-    magnetic: false, variation: 0, decimal: false, precise: false, units: { waypoint: 'feet', offset: 'feet', station: 'feet', range: 'feet' }, meridian: 'true', local: false, home: 0, limit: 'nav',
+    magnetic: true, variation: 0, keyed: false, decimal: false, precise: false, units: { waypoint: 'feet', offset: 'feet', station: 'feet', range: 'feet' }, meridian: 'true', local: false, home: 0, limit: 'nav',
   }
 }
 

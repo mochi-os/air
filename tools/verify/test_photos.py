@@ -13,6 +13,7 @@ import numpy as np  # noqa: E402
 from PIL import Image  # noqa: E402
 
 import camera as cam  # noqa: E402
+import cast  # noqa: E402
 import crop  # noqa: E402
 import model as mod  # noqa: E402
 import photos  # noqa: E402
@@ -53,6 +54,73 @@ class HelpersTest(unittest.TestCase):
 		d, i = photos.segment_distance([[5, 3], [12, 5], [-4, 0]], segments)
 		np.testing.assert_allclose(d, [3, 2, 4])
 		self.assertEqual(list(i), [0, 1, 0])
+
+
+class CastTest(unittest.TestCase):
+	# A box with a flap, photographed by a known camera: a pixel cast onto the
+	# surface lands on the point it shows, on the flap as the photo poses it,
+	# and the projection goes back the other way
+	def setUp(self):
+		self.dir = tempfile.TemporaryDirectory()
+		root = Path(self.dir.name)
+		glb(root / "m.glb", [{"name": "fuselage", "mesh": box((-4, -0.5, -0.6), (4, 0.5, 0.6))},
+			{"name": "flap", "translation": (-4, 0, 0), "mesh": box((-1, -0.05, -2), (0, 0.05, 2))}])
+		self.points = {"joints": {"flap": {"motion": "rotate", "axis": [0, 0, 1], "drive": "flap", "keys": [[0, 0], [1, math.pi / 2]]}}}
+		self.camera = cam.looking(np.array([3.0, 4.0, 9.0]), np.zeros(3), 3000.0)
+		self.size = (3000, 2000)
+		self.cameras = [{"photo": "p", "size": list(self.size), "camera": list(self.camera), "pose": {"flap": 1}}]
+		self.catalogue = {"frame": JET}
+		self.model = mod.Model(root / "m.glb")
+
+	def tearDown(self):
+		self.dir.cleanup()
+
+	def pixel(self, point):
+		return cam.project(self.camera, np.array([point], float), np.array(self.size, float) / 2)[0][0]
+
+	def test_a_pixel_lands_where_its_surface_is(self):
+		caster = cast.Caster(self.catalogue, self.model, self.points, self.cameras, "p")
+		frame = mod.Frame(JET)
+		# a point on the box's starboard face, which the camera sees
+		point = np.array([1.3, 0.2, 0.6])
+		how, at = caster.cast(self.pixel(point))
+		self.assertEqual(how, "surface")
+		np.testing.assert_allclose(at, frame.source(point), atol=1e-4)
+		# the camera's pixel for it comes back
+		np.testing.assert_allclose(caster.project(frame.source(point))[0], self.pixel(point), atol=1e-6)
+
+	def test_the_surface_is_posed_as_the_photo_has_it(self):
+		# the flap swung down a right angle about its hinge at x = -4: its tip,
+		# 1 m aft at rest, now hangs 1 m below the hinge, its face toward the
+		# camera at x = -3.95
+		caster = cast.Caster(self.catalogue, self.model, self.points, self.cameras, "p", onto=["flap"])
+		frame = mod.Frame(JET)
+		point = np.array([-3.95, -0.6, 0.05])
+		how, at = caster.cast(self.pixel(point))
+		self.assertEqual(how, "surface")
+		np.testing.assert_allclose(at, frame.source(point), atol=1e-4)
+
+	def test_a_pixel_off_the_model_needs_a_plane(self):
+		caster = cast.Caster(self.catalogue, self.model, self.points, self.cameras, "p", onto=["fuselage"])
+		frame = mod.Frame(JET)
+		off = np.array([2.0, 1.5, 0.0])
+		self.assertEqual(caster.cast(self.pixel(off)), ("missed", None))
+		station = frame.source(off)[0]
+		how, at = caster.cast(self.pixel(off), f"station={station}")
+		self.assertEqual(how, f"station={station}")
+		np.testing.assert_allclose(at, frame.source(off), atol=1e-4)
+
+	def test_a_plane_wins_over_the_surface_behind(self):
+		# a part standing off the skin (a probe's tip) is cast onto its plane
+		# even where the skin lies behind it along the sight line
+		caster = cast.Caster(self.catalogue, self.model, self.points, self.cameras, "p", onto=["fuselage"])
+		frame = mod.Frame(JET)
+		tip = np.array([1.3, 0.2, 1.0])   # in front of the box's starboard face
+		self.assertEqual(caster.cast(self.pixel(tip))[0], "surface")
+		buttline = frame.source(tip)[2]
+		how, at = caster.cast(self.pixel(tip), f"buttline={buttline}")
+		self.assertEqual(how, f"buttline={buttline}")
+		np.testing.assert_allclose(at, frame.source(tip), atol=1e-4)
 
 
 class MatchTest(unittest.TestCase):

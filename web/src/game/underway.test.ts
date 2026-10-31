@@ -2,10 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 
 // The carrier under way: the flight core flies the ship's track and the
 // engine poses the ship at the jet's own clock. What hangs on the ship is
@@ -429,6 +430,27 @@ describe('the carrier under way in the engine', () => {
     expect(model).not.toMatch(/scene\.add\(grp\)/)
   })
 
+  it("draws the ship into the sun's shadow map pushed back by each face's slant, so her deck never shadows itself", () => {
+    // three's depth material packs a depth of its own making, so the push is added to it, three texels of its
+    // slope at most 4 m; polygon offset would move only the depth buffer's, which the shadow map never reads
+    expect(source).toContain(
+      'const carrier_depth=new THREE.MeshDepthMaterial({ depthPacking:THREE.RGBADepthPacking });'
+    )
+    expect(source).toContain(
+      'const at="float fragCoordZ = 0.5 * vHighPrecisionZW[0] / vHighPrecisionZW[1] + 0.5;";'
+    )
+    expect(source).toContain(
+      'sh.fragmentShader=sh.fragmentShader.replace(at,at+"\\n\\tfragCoordZ+=min(3.0*max(abs(dFdx(fragCoordZ)),abs(dFdy(fragCoordZ))),5.0e-4);");'
+    )
+    const depth = readFileSync(
+      fileURLToPath(new URL('../../node_modules/three/src/renderers/shaders/ShaderLib/depth.glsl.js', import.meta.url)),
+      'utf8'
+    )
+    expect(depth).toContain('float fragCoordZ = 0.5 * vHighPrecisionZW[0] / vHighPrecisionZW[1] + 0.5;') // the line it patches is three's
+    expect(lift('init_carrier_model')).toMatch(/o\.receiveShadow=true; o\.customDepthMaterial=carrier_depth; \} \}\);/)
+    expect(lift('init_carrier_far')).toMatch(/o\.receiveShadow=true; o\.customDepthMaterial=carrier_depth; \} \}\);/)
+  })
+
   it('places what follows the jet on the deck in the frame of the rig it hangs from', () => {
     expect(lift('update_shuttles')).toMatch(/rig_local\(s\.mesh\.position\)\.y=s\.home\.y;/)
     expect(lift('update_wire_drag')).toMatch(/const h=rig_local\(_wireApex\.set\(hx,hy,hz\)\); hx=h\.x; hz=h\.z;[^\n]*\n\tseg_between\(o\.vsegs\[0\]/)
@@ -441,5 +463,79 @@ describe('the carrier under way in the engine', () => {
   it('waves off a jet in close while the deck is closed, as a foul deck', () => {
     expect(source).toMatch(/\|\| \(deck_closed && s\.along<1200\);/)
     expect(source).toMatch(/pass_end\(deck_closed\?"foul":"waveoff"\)/)
+  })
+})
+
+// The temporary carrier speed select, run in the flight core itself: the
+// built wasm under node, as autopilot-core.test.ts runs it, skipped without
+// one. Single player's ship is planned into the trades at steerage way; a
+// speed chosen is held on her straight runs, gathered within seconds, and a
+// fresh mission's plan starts her at steerage way again. The client keeps the
+// choice from mission to mission and offers it only in developer mode, where
+// it steers the ship.
+const assets = fileURLToPath(new URL('../assets/', import.meta.url))
+const built = existsSync(assets + 'flight.wasm') && existsSync(assets + 'wasm_exec.js')
+interface Core {
+  init(world: string): string
+  level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string
+  frame(input: Uint8Array, output: Uint8Array): string
+  plan(): string
+  steer(): boolean | string
+  speed(held: number): number | string
+  carrier(time: number): number[]
+}
+
+describe.skipIf(!built)('the temporary carrier speed select', () => {
+  let core: Core
+  beforeAll(async () => {
+    createRequire(import.meta.url)(assets + 'wasm_exec.js')
+    const g = globalThis as unknown as { Go: new () => { importObject: WebAssembly.Imports; run(instance: WebAssembly.Instance): Promise<void> }; air_flight?: Core }
+    const go = new g.Go()
+    const { instance } = await WebAssembly.instantiate(readFileSync(assets + 'flight.wasm'), go.importObject)
+    void go.run(instance)
+    for (let k = 0; k < 500 && !g.air_flight; k++) await new Promise((resolve) => setTimeout(resolve, 10))
+    core = g.air_flight as Core
+  }, 30000)
+
+  const input = new Float64Array(16), out = new Float64Array(125)
+  const sent = new Uint8Array(input.buffer), read = new Uint8Array(out.buffer)
+  const knots = 0.514444, steerage = 2.6
+  let sequence = 0
+  // start: a single-player mission in the trades, 25 kt from 070, the jet aloft.
+  const start = () => {
+    const trade = { X: -12.9 * Math.sin((70 * Math.PI) / 180), Z: 12.9 * Math.cos((70 * Math.PI) / 180) }
+    expect(core.init(JSON.stringify({ aircraft: 'fa18c', environment: { seed: 1, wind: trade }, world: { sea: 3, carrier: { position: { X: 0, Y: 20, Z: 0 }, heading: 0.349 } } }))).toBe('')
+    core.level(0, 3000, 5000, 0, -1, 200, 3000)
+    expect(core.plan()).toBe('')
+  }
+  // fly: seconds of frames, the ship steered after each as the engine does.
+  const fly = (seconds: number) => {
+    for (let k = 0; k < seconds * 60; k++) {
+      input.fill(0); input[3] = 0.8; input[6] = ++sequence; input[7] = 4
+      core.frame(sent, read)
+      core.steer()
+    }
+  }
+  const way = () => core.carrier(out[55])[4]
+
+  it('holds the speed chosen, gathered within seconds, and a fresh plan starts at steerage way', () => {
+    start()
+    expect(core.speed(0)).toBeCloseTo(steerage, 9)
+    expect(core.speed(20 * knots)).toBeCloseTo(20 * knots, 9)
+    fly(1)
+    expect(way()).toBeLessThan(steerage + 0.5)
+    fly(20)
+    expect(way()).toBeCloseTo(20 * knots, 6)
+    start()
+    expect(core.speed(0)).toBeCloseTo(steerage, 9)
+    fly(10)
+    expect(way()).toBeCloseTo(steerage, 6)
+  })
+
+  it('is kept from mission to mission, and offered only in developer mode where single player steers the ship', () => {
+    const client = readFileSync(fileURLToPath(new URL('./flight.ts', import.meta.url)), 'utf8')
+    expect(client).toMatch(/export function flight_plan\(\): void \{\n  core\?\.plan\?\.\(\)\n  if \(held > 0\) core\?\.speed\?\.\(held\)\n\}/)
+    expect(client).toMatch(/if \(speed && speed > 0\) held = speed\n/)
+    expect(source).toMatch(/speed: \(knots\) => \{ if \(!DEV_MODE \|\| MULTIPLAYER \|\| playback\) return null; const now = flight_speed\(knots \? knots \* 0\.514444 : undefined\); return now === null \? null : now \/ 0\.514444 \},/)
   })
 })

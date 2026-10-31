@@ -175,6 +175,7 @@ interface Core {
   plan?(): string
   steer?(): boolean | string
   voyage?(ship: string): string
+  speed?(held: number): number | string
   carrier?(time: number): number[] | null | string
   deck?(time: number): [number, number, number, number, number, number, number] | null | string
   reframe?(latitude: number, longitude: number): string | null
@@ -416,9 +417,25 @@ export function flight_clear(): void {
 // The core flies the ship's track, a pure function of time (world/wasm/ship.go):
 // single player plans and steers it here, a match takes the server's.
 
-// flight_plan sets single player's ship under way from the jet's clock.
+// held is the speed single player's temporary speed select holds the ship
+// to, m/s, kept from one mission to the next; 0 leaves her to her plan.
+let held = 0
+
+// flight_plan sets single player's ship under way from the jet's clock, at
+// the speed the select holds if one was chosen.
 export function flight_plan(): void {
   core?.plan?.()
+  if (held > 0) core?.speed?.(held)
+}
+
+// flight_speed is single player's temporary speed select, so her bow wave and
+// wake can be seen at every speed: given a speed in m/s she holds it on her
+// straight runs. Either way it returns her speed into the wind, m/s, or null
+// when this core does not steer her (a match, a replay).
+export function flight_speed(speed?: number): number | null {
+  if (speed && speed > 0) held = speed
+  const now = core?.speed?.(speed ?? 0)
+  return typeof now === 'number' && now >= 0 ? now : null
 }
 
 // flight_steer moves single player's ship on: into the wind while the jet

@@ -244,7 +244,7 @@ describe('the path the stern swept', () => {
         0.3536 * Math.min(end + length, REACH * length) - 1e-3
       )
       expect(reach).toBeGreaterThanOrEqual(
-        BAND * beam * (0.8 + 0.45 * Math.sqrt(AGE / 60))
+        BAND * beam * (0.8 + 0.45 * Math.sqrt(AGE / 60)) * 1.5 // the wash at its oldest, half as broad again at full power
       )
       // and the circle about everything holds each group's reach and the bow
       expect(
@@ -373,8 +373,9 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
   const breaking = expression(between(' breaking=', ';'), 'sea')
   const smooth = expression(between('\t\t\tslick=', '*exp(-age/calm)'), 'speed')
   const lasting = (name: string, to: string) => {
-    const f = expression(between(` ${name}=`, to), 'sea', 'slow')
-    return (speed: number, sea: number) => f(sea, Math.max(speed, 0.3)) * speed // metres astern it lasts, e-folding
+    const f = expression(between(` ${name}=`, to), 'sea', 'slow', 'speed')
+    return (speed: number, sea: number) =>
+      f(sea, Math.max(speed, 0.3), speed) * speed // metres astern it lasts, e-folding
   }
   const white = lasting('white', ', green=')
   const green = lasting('green', ', calm=')
@@ -395,12 +396,33 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
     expect(white(2.6, trades)).toBeGreaterThanOrEqual(100)
     expect(green(2.6, trades)).toBeGreaterThanOrEqual(300)
     expect(calm(2.6, trades)).toBeGreaterThanOrEqual(600)
-    expect(white(15.4, trades)).toBeCloseTo((35 / (1 + trades / 20)) * 15.4, 6)
-    expect(green(15.4, trades)).toBeCloseTo((70 / (1 + trades / 20)) * 15.4, 6)
-    expect(calm(15.4, trades)).toBeCloseTo(
-      (1200 / (1 + (trades * trades) / 25)) * 15.4,
-      6
+    // At speed the screws churn far harder, so it lasts far further: white for most of a kilometre in the trades,
+    // its smooth band for kilometres, each well past steerage way's, and the sea still undoes it sooner than a calm.
+    expect(white(15.4, trades)).toBeGreaterThan(800)
+    expect(white(15.4, trades)).toBeGreaterThan(5 * white(2.6, trades))
+    expect(green(15.4, trades)).toBeGreaterThan(4 * green(2.6, trades))
+    expect(calm(15.4, trades)).toBeGreaterThan(4000)
+    for (const last of [white, green, calm])
+      expect(last(15.4, trades)).toBeLessThan(last(15.4, 0))
+  })
+  it('at speed is broader and its white wider, and at steerage way as before', () => {
+    const power = expression(between('float power=', ', spread='), 'speed')
+    const spread = expression(
+      between('power=smoothstep(3.0,14.0,speed), spread=', ', behind='),
+      'u_hull_beam',
+      'age',
+      'power'
     )
+    expect(power(2.6)).toBe(0)
+    expect(power(15.4)).toBe(1)
+    expect(spread(40, 0, power(15.4))).toBeCloseTo(
+      1.5 * spread(40, 0, power(2.6)),
+      9
+    )
+    expect(spread(40, 0, power(2.6))).toBeCloseTo(32, 9) // four fifths of a breadth at the stern at steerage way, as before
+    expect(WAKE).toContain(
+      'float race=(1.0-smoothstep((0.15+0.15*power)*width,(0.45+0.15*power)*width,y*(0.8+0.4*lanes)))*behind;'
+    ) // solid white twice as far out from the track at full power
   })
   it('breaks the sea white on her in a working breeze and never in a calm', () => {
     expect(breaking(0)).toBe(0)
@@ -478,9 +500,23 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
       0.2 * (waterline.stem - waterline.stern)
     )
     expect(WAKE).toContain(
-      'cap=1.0-smoothstep(0.3*wide,wide,length(vec2(1.5*back,across-middle)));'
+      'cap=1.0-smoothstep(0.3*collar,collar,length(vec2(1.5*back,across-middle)));'
     )
-    expect(wide(15.4) / 1.5).toBeLessThan(0.5 * tip) // and the white ahead of the stem is a collar about it, no more
+    const collar = expression(between(' collar=', ','), 'v')
+    expect(collar(15.4) / 1.5).toBeLessThan(0.5 * tip) // and the white ahead of the stem is a collar about it, no more
+    // At speed the broken crests fan out as they run aft, twice their breadth at the stem 80 m back; at steerage
+    // way they do not.
+    const fan = expression(between('float fan=', ';'), 'wide', 'power', 'back')
+    expect(fan(wide(15.4), 1, 80)).toBeCloseTo(2 * wide(15.4), 9)
+    expect(fan(wide(2.6), 0, 80)).toBe(wide(2.6))
+    expect(wide(15.4)).toBeGreaterThan(10)
+    expect(broken(15.4)).toBeGreaterThan(
+      0.35 * (waterline.stem - waterline.stern)
+    )
+    // their white solid across more of them, and breaking on further aft before it thins
+    expect(WAKE).toContain(
+      'crest=(1.0-smoothstep((0.1+0.3*power)*fan,fan,abs(outside-course)))*(1.0-smoothstep((0.1+0.25*power)*broken,broken,back))*step(-0.5,outside);'
+    )
   })
   it('at steerage way keeps it under the deck, as the real ship does', () => {
     expect(past(2.6)).toBeLessThan(0)
@@ -533,9 +569,11 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
     }
     // The patches are the finest the pixel resolves: lumps close to, the long patches streaked along the track
     // from afar, both in the water.
-    expect(WAKE).toContain('float lumps=mix(fine,coarse,smoothstep(0.5,3.0,px));')
     expect(WAKE).toContain(
-      'float coarse=clamp(0.5+4.0*(0.5*lanes+0.5*texture2D(u_detail,world/240.0).b-0.5),0.0,1.0);'
+      'float lumps=mix(fine,coarse,smoothstep(0.5,3.0,px));'
+    )
+    expect(WAKE).toContain(
+      'float coarse=clamp(0.5+2.5*(0.5*lanes+0.5*texture2D(u_detail,world/240.0).b-0.5),0.0,1.0);'
     )
     // and how long the white lasts goes with its age alone, with no lengths of it ending at a set distance behind her
     expect(WAKE).toContain(
@@ -562,6 +600,35 @@ describe('the Kelvin waves the shader draws', () => {
     )
     expect(WAKE.match(/\*sin\(phase\)\*\(dir-off\*t\)\/q;/g)?.length).toBe(2)
     expect(WAKE).toContain('k0=9.81/max(speed*speed,0.25)')
+  })
+  it("stand out at speed, their crests breaking white along the wedge's edges for a few hull lengths, and are nothing at steerage way", () => {
+    const smoothstep = (a: number, b: number, x: number) => {
+      const t = Math.min(Math.max((x - a) / (b - a), 0), 1)
+      return t * t * (3 - 2 * t)
+    }
+    const read = (from: string, to: string, ...names: string[]) => {
+      const start = WAKE.indexOf(from)
+      expect(start, from).toBeGreaterThan(-1)
+      const text = WAKE.slice(start + from.length, WAKE.indexOf(to, start))
+      return (...values: number[]) =>
+        new Function('smoothstep', ...names, `return ${text}`)(
+          smoothstep,
+          ...values
+        ) as number
+    }
+    const length = waterline.stem - waterline.stern
+    const froude = (speed: number) => speed / Math.sqrt(9.81 * length)
+    const steep = read(' steep=', ';', 'froude')
+    const cusp = read('float cusp=', ';', 'froude', 'r', 'x', 'waterline')
+    expect(steep(froude(2.6))).toBe(0)
+    expect(steep(froude(15.4))).toBeGreaterThan(0.15) // steep enough to show through the trades' sea
+    expect(cusp(froude(15.4), 0.33, 1.5 * length, length)).toBeGreaterThan(0.5)
+    expect(cusp(froude(15.4), 0.1, 1.5 * length, length)).toBe(0) // only along the edges
+    expect(cusp(froude(15.4), 0.33, 3 * length, length)).toBe(0) // and only near her
+    expect(cusp(froude(2.6), 0.33, 1.5 * length, length)).toBe(0)
+    expect(WAKE).toContain(
+      'if(cusp>0.0) foam=max(foam,cusp*decay*resolved*smoothstep(0.6,0.95,cos(phase))*smoothstep(0.35,0.65,texture2D(u_detail,world/37.0).b));'
+    ) // on the divergent wave's crests, broken into patches laid in the water
   })
   it('meet a point inside the 19.47 degree wedge with the phase and slope of the wave stationary there', () => {
     for (const r of [0.01, 0.1, 0.2, 0.3, 0.35]) {

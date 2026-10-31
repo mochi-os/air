@@ -274,7 +274,7 @@ describe('the panels drawn over the model', () => {
     }
   })
   it('is built with the cockpit, once', () => {
-    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); \}/)
+    expect(source).toMatch(/build_ifei\(g\); build_ufc\(g\); build_faces\(g\); build_rivets\(g\); \}/)
     expect(pit('const before=g.children.length; build_faces(g); return g.children.length-before;')).toBe(0)
   })
   it('shows the panels\' own state: the switches, the A/A mode, the extinguisher\'s lights, the stations pressed, the RWR\'s lights', () => {

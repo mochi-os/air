@@ -12,6 +12,7 @@ import * as identification from './identification'
 import * as mids from './mids'
 import * as helmet from './helmet'
 import * as earth from './earth'
+import * as magnetic from './magnetic'
 
 // The cockpit's side of the navigation suite (G3): the engine's glue between the
 // jet and navigation.ts, the INS knob and the set switches, the HSI's pushbuttons
@@ -34,9 +35,15 @@ function line(name: string): string {
 }
 const pages = /\nconst UFC_PAGES=\{[\s\S]*?\n\tstation:[^\n]*\n/.exec(source)?.[0] ?? ''
 const D = Math.PI / 180, NM = 1852
+// The mission's date, and the variation the World Magnetic Model gives on it where the jet starts and where
+// the ship lies, degrees.
+const DATE = Date.UTC(2026, 9, 30)
+const variation = (x: number, y: number, z: number) => magnetic.variation(earth.HOME.place({ x, y, z }), magnetic.year(new Date(DATE))) / D
+const V = variation(0, 3000, 0), STATION = variation(-18500, 0, 7500)
 // The jet: at 3,000 m over the map's origin heading north at 200 m/s, the ship 10.8 nm to the west-south-west.
 const world = `const D2R=Math.PI/180, NM=1852;
   let sim_time=0, glance=0, beat=0.1, presenting=true, ddi_dirty=false, WORLD_WRAP=0, parking=false, master="nav", designator="center", last_out=null, ufc_dirty=false, law_primary=false, law_disabled=false, emcon=false, designated=-1, radar_calls=0;
+  const theatre=earth.theatre, mission_clock=()=>new Date(${DATE});
   const HOME=earth.HOME, homeward=(p)=>earth.point(earth.theatre.outward,{ x:p.x, y:p.y??0, z:p.z }), theatre_point=(p)=>earth.point(earth.theatre.inward,{ x:p.x, y:p.y??0, z:p.z });   // the engine's frame on the world frame
   const cfg={ task:"free" }, CARRIER={ x:-18500, z:7500, deckY:20, height:20 }, SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" } }, buses={ ac:true }, STATE={ mach:0 };
   const RADAR={ silent:()=>false, mode:"rws", stt:null, tracks:[], ls:null }, radar_undesignate=()=>{ radar_calls++; return false; }, radar_events=[], carrier_ols=true;
@@ -47,16 +54,16 @@ const world = `const D2R=Math.PI/180, NM=1852;
   const altitude_set={ radar:0, baro:5000 }, altitude_armed={ radar:true, baro:true };
   let computers={ one:true, two:true }, acl=0; const mc=()=>computers, acl_select=()=>{ acl++; };
   const uhf={ one:communication.fresh(), two:communication.fresh(), panel:communication.panel(11), keypad:communication.backup(), pulled:"" }, squawk=identification.fresh(), terminal=mids.fresh();`
-const defs = [line('HSI_SCALES'), line('hsi_state'), line('VARIATION'), line('nav'), line('INS_KNOB'), line('sets'), line('carrier_given'), line('mumi'), line('MUMI_FILES'), line('fpas'), pages, line('UFC_ENTRY'), line('UFC_UNITS'), line('ufc'), line('grid_state'), line('GRID_SHIFTS'), line('GRID_BOX')].join('')
-const functions = ['button_of', 'hundredths', 'tacan', 'tacan_variation', 'grid_reference', 'grid_open', 'grid_sync', 'grid_shifts', 'grid_press', 'tdc_grid', 'grid_designate', 'grid_slew', 'grid_face', 'nav_reset', 'aboard', 'nav_sense', 'mission', 'set_press', 'nav_ready', 'nav_frame', 'waypoint_edit', 'station_edit', 'tdc_hsi', 'hsi_designate', 'hsi_slew', 'hsi_press', 'data_press', 'data_enter', 'ufc_enter', 'ufc_press',
+const defs = [line('HSI_SCALES'), line('hsi_state'), line('nav'), line('MAGNETISM_EVERY'), line('magnetism'), line('INS_KNOB'), line('sets'), line('carrier_given'), line('mumi'), line('MUMI_FILES'), line('fpas'), pages, line('UFC_ENTRY'), line('UFC_UNITS'), line('ufc'), line('grid_state'), line('GRID_SHIFTS'), line('GRID_BOX')].join('')
+const functions = ['magnetic_place', 'magnetic_variation', 'magnetic_frame', 'button_of', 'hundredths', 'tacan', 'tacan_variation', 'grid_reference', 'grid_open', 'grid_sync', 'grid_shifts', 'grid_press', 'tdc_grid', 'grid_designate', 'grid_slew', 'grid_face', 'nav_reset', 'aboard', 'nav_sense', 'mission', 'set_press', 'nav_ready', 'nav_frame', 'waypoint_edit', 'station_edit', 'tdc_hsi', 'hsi_designate', 'hsi_slew', 'hsi_press', 'data_press', 'data_enter', 'ufc_enter', 'ufc_press',
   'hud_steer', 'mumi_press', 'undesignate_press'].map(lift).join('\n')
 // cockpit runs a body against the engine's navigation glue, booted as a spawn in the air is unless raw
 function cockpit<T>(body: string, raw = false): T {
-  return new Function('navigate', 'THREE', 'communication', 'identification', 'mids', 'helmet', 'earth', `${world} ${defs} ${functions}
+  return new Function('navigate', 'THREE', 'communication', 'identification', 'mids', 'helmet', 'earth', 'magnetic', `${world} ${defs} ${functions}
     const hmd=helmet.fresh(false,{ azimuth:0, elevation:0, roll:0 },0);   // the helmet off: the TDC is the displays' (helmet-cockpit.test.ts gives it to the HMD)
     map_name="MIDWAY ATOLL"; const point=(x,z,more)=>({ x, z, elevation:0, name:"", offset:null, ...more }), keys=(...b)=>{ for(const k of b) ufc_press(k); };
     ${raw ? '' : 'nav_reset(); nav_frame(0.1);'}
-    ${body}`)(navigate, THREE, communication, identification, mids, helmet, earth) as T
+    ${body}`)(navigate, THREE, communication, identification, mids, helmet, earth, magnetic) as T
 }
 
 describe('what the jet tells the suite', () => {
@@ -91,7 +98,7 @@ describe('the mission data load', () => {
     const m = cockpit<navigate.Mission>('return mission();')
     expect(m.identifier).toBe('MIDWAY')
     expect(m.waypoints).toEqual([{ index: 1, point: { name: 'NIM', x: -18500, z: 7500, elevation: 20 } }, { index: 2, point: { name: 'PMDY', x: -1429, y: earth.HOME.sea(-1429, 3537).point.y, z: 3537, elevation: 3.5 } }]) // the field on the sea where the world frame lays it
-    expect(m.stations).toEqual([{ channel: 74, band: 'X', x: -18500, z: 7500, elevation: 20, name: 'NIM', variation: 7 * D }])
+    expect(m.stations).toEqual([{ channel: 74, band: 'X', x: -18500, z: 7500, elevation: 20, name: 'NIM', variation: STATION * D }]) // the model's variation where the ship lies
     expect(m.points.map((p) => p.name)).toEqual(['NIM', 'PMDY']) // an airfield without a code is left out
   })
 })
@@ -101,7 +108,8 @@ describe('a spawn', () => {
     const s = cockpit<{ knob: string; mode: string; source: string; steer: string; variation: number; heading: number; identifier: string; loaded: string[]; one: unknown; two: unknown; stations: number; points: number; cautions: string[] }>(
       'ownship.gauges.heading=1; nav_reset(); nav_frame(0.1); return { knob:nav.ins.knob, mode:nav.ins.mode, source:nav.source, steer:nav.steer, variation:nav.variation, heading:nav.heading, identifier:nav.memory.identifier, loaded:nav.memory.loaded, one:nav.waypoints[1], two:nav.waypoints[2], stations:nav.stations.length, points:nav.points.length, cautions:navigate.cautions(nav) };')
     expect(s).toMatchObject({ knob: 'nav', mode: 'nav', source: 'ins', steer: 'tcn', heading: 1, identifier: 'MIDWAY', stations: 1, points: 2, cautions: [] })
-    expect(s.variation).toBeCloseTo(7 * D, 9)
+    expect(s.variation).toBeCloseTo(V * D, 9) // the model's where the jet is: Midway's 7° east
+    expect(V).toBeCloseTo(7.07, 1)
     expect(s.loaded).toEqual(['WYPT', 'TCN', 'GPS WYPT', 'GPS ALM', 'IFF', 'COMM']) // the mission's IFF codes and comm presets with them (23.6.1.5.1, G5)
     expect(s.one).toMatchObject({ x: -18500, z: 7500, name: 'NIM' }); expect(s.two).toMatchObject({ name: 'PMDY' })
   })
@@ -312,7 +320,7 @@ describe('the DATA sublevels\' pushbuttons', () => {
   })
   it('works the A/C options: the UFC, NOSEC GPS restarting acquisition, the flight phase, the heading reference and the lat/long format', () => {
     expect(data(`p(6); const r=[p(5), ufc.func, p(2), nav.gps.secure, nav.gps.search, p(2), nav.gps.secure, p(1), nav.gps.phase, p(1), nav.gps.phase, p(13), nav.magnetic, p(15), nav.decimal, p(12)]; return r;`))
-      .toEqual([true, 'ac', true, false, navigate.ACQUIRE, true, true, true, 'appr', true, 'norm', true, true, true, true, false])
+      .toEqual([true, 'ac', true, false, navigate.ACQUIRE, true, true, true, 'appr', true, 'norm', true, false, true, true, false]) // HDG MAG at power up (24.2.5.7), so PB13 selects HDG TRUE
   })
   it('gives the UFC the ALT option for the barometric or the radar warning', () => {
     expect(data('p(6); const r=[p(20), ufc.func, ufc.kind, ufc.option, p(19), ufc.func, ufc.kind, p(19), ufc.func]; return r;')).toEqual([true, 'alt', 'baro', 0, true, 'alt', 'radar', true, ''])
@@ -368,7 +376,8 @@ describe('the UFC\'s data entry', () => {
     const s = entry(`p(6); p(5); keys("opt0","2","2","8","0","0","0","0","ent","4","1","7","7","3","0","0","0","ent"); const here=navigate.coordinates(navigate.place(nav,nav_sense(0)));
       keys("opt2","2","0","ent","opt3","9","0","ent"); const wind={ ...nav.adc.wind }; keys("opt4","4","1","0","3","0","ent"); const west=nav.variation; keys("opt4","6","5","ent");
       return [Math.round(here.latitude*1e4)/1e4, Math.round(here.longitude*1e4)/1e4, Math.round(wind.x*100)/100, Math.round(wind.z*100)/100, Math.round(west/D2R*1000)/1000, Math.round(nav.variation/D2R*1000)/1000];`)
-    expect(s).toEqual([28, -177.5, -10.29, 0, -10.5, 0.083]) // 20 kt from the east; W 10°30'; E 0°05'
+    const knots = 20 * 0.514444, round = (v: number) => Math.round(v * 100) / 100 + 0
+    expect(s).toEqual([28, -177.5, round(-knots * Math.cos(V * D)), round(-knots * Math.sin(V * D)), -10.5, 0.083]) // 20 kt from 090 magnetic, with HDG MAG: from the variation east of east; W 10°30'; E 0°05'
   })
   it('sets the low altitude warnings: to 25,000 ft barometric, the radar\'s held to 5,000', () => {
     expect(entry('p(6); p(20); keys("3","0","0","0","0","ent"); const high=[ufc.error, altitude_set.baro]; keys("clr","8","0","0","0","ent"); p(19); keys("9","0","0","0","ent"); return [high, altitude_set.baro, altitude_set.radar, altitude_armed.baro, altitude_armed.radar];'))
@@ -405,8 +414,8 @@ describe('the UFC\'s units pages', () => {
   })
   it('takes an offset\'s bearing true or magnetic, the option changing the meridian', () => {
     const s = entry(`p(12); p(5); keys("opt4","opt1"); const page=[ufc.func, ufc.back, nav.meridian]; keys("0","9","0","ent"); const truly=nav.waypoints[1].offset.bearing/D2R;
-      keys("opt1","opt0"); const meridian=nav.meridian; keys("0","9","0","ent"); const magnetic=nav.waypoints[1].offset.bearing/D2R; keys("opt1","opt0"); return [page, Math.round(truly*1e6)/1e6, meridian, Math.round(magnetic*1e6)/1e6, nav.meridian];`)
-    expect(s).toEqual([['bearing', 'offset', 'true'], 90, 'magnetic', 97, 'true']) // 090 magnetic with 7° E variation
+      keys("opt1","opt0"); const meridian=nav.meridian; keys("0","9","0","ent"); const reckoned=nav.waypoints[1].offset.bearing/D2R; keys("opt1","opt0"); return [page, Math.round(truly*1e6)/1e6, meridian, Math.round(reckoned*1e6)/1e6, nav.meridian];`)
+    expect(s).toEqual([['bearing', 'offset', 'true'], 90, 'magnetic', Math.round((90 + V) * 1e6) / 1e6, 'true']) // 090 magnetic: the variation east of it, true
   })
   it('takes a TACAN station\'s elevation in its own unit', () => {
     expect(entry('p(8); p(5); keys("opt3"); const page=[ufc.func, ufc.back, ufc.unit]; keys("opt1","1","0","0","ent"); return [page, nav.stations[0].elevation, nav.units.station, nav.units.waypoint, ufc.func];'))
@@ -541,7 +550,8 @@ describe('the TACAN data\'s magnetic variation option', () => {
   it('changes between the aircraft\'s variation and the station\'s for the TACAN readouts', () => {
     const s = cockpit<unknown[]>(`hsi_press(10,"left"); hsi_press(8,"left"); nav.stations[0].variation=10*D2R; const own=tacan_variation()/D2R; const r=[hsi_press(1,"left"), nav.local]; const local=tacan_variation()/D2R;
       radios.tacan.channel=12; const other=tacan_variation()/D2R; radios.tacan.channel=74; delete nav.stations[0].variation; const none=tacan_variation()/D2R; hsi_press(1,"left"); return [own, r, local, other, none, nav.local].map(v=>typeof v==="number"?Math.round(v*1e6)/1e6:v);`)
-    expect(s).toEqual([7, [true, true], 10, 7, 7, false]) // a station not stored, or stored without one, leaves the aircraft's
+    const own = Math.round(V * 1e6) / 1e6
+    expect(s).toEqual([own, [true, true], 10, own, own, false]) // a station not stored, or stored without one, leaves the aircraft's
   })
 })
 

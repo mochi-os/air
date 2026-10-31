@@ -13,7 +13,8 @@
 //   hull on either side and flaring out aft, and a white line along the
 //   waterline inside them that thins out within the first third of the hull.
 //   They grow with the speed from a lip at steerage way, where the flight deck
-//   overhanging the bow hides them from above, as it does on the real ship.
+//   overhanging the bow hides them from above, as it does on the real ship, to
+//   broken crests fanning out white for a third of her length at full speed.
 // - The sea against her: in a working sea its waves break white where they
 //   meet the hull, at any speed, most where the hull faces into them (the bow,
 //   when she heads into the wind). The white is thrown out off her and left
@@ -23,8 +24,10 @@
 //   long smooth band where it has flattened the ripples. It follows the path
 //   the stern swept, so it bends through her turns. The screws churn the water
 //   for some distance astern at any speed, so a slow ship's wash is fainter but
-//   no shorter; at speed its foam and smooth band last as long as the sea lets
-//   them. Its pattern is laid in the water, which she leaves behind.
+//   no shorter. At speed they churn it far harder: it is half as broad again,
+//   its white lasting most of a kilometre and its smooth band kilometres, as
+//   long as the sea lets them. Its pattern is laid in the water, which she
+//   leaves behind.
 // - The Kelvin waves: the V of ridges either side of the track, 19.47 degrees
 //   off it, their wavelength 2 pi v^2 / g (150 m at 30 kt, 4 m at 5 kt, where
 //   the chop hides them). They come from the hull's wave-making, which is
@@ -357,14 +360,15 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 			// The bow wave: the water heaped against the stem, a collar of white about it, and its crests peeling off the
 			// hull from the stem on either side and flaring out aft, wider, whiter and further the faster she goes, until
 			// they run on unbroken as the Kelvin waves; along the waterline inside them a white line thins out aft.
-			float wide=1.0+0.02*v*v, broken=10.0+0.3*v*v, cap=0.0, line=0.0, crest=0.0;
-			if(back<0.0) cap=1.0-smoothstep(0.3*wide,wide,length(vec2(1.5*back,across-middle)));
+			float collar=1.0+0.02*v*v, wide=1.0+0.05*v*v, broken=10.0+0.5*v*v, power=smoothstep(3.0,14.0,v), cap=0.0, line=0.0, crest=0.0;
+			if(back<0.0) cap=1.0-smoothstep(0.3*collar,collar,length(vec2(1.5*back,across-middle)));
 			else if(back<waterline){
 				float band=(0.6+0.035*v*v)*exp(-back/(0.08*waterline))+0.4+0.8*push;
 				float strength=(0.3+0.7*exp(-back/(0.12*waterline)))*(1.0-smoothstep(0.25*waterline,0.5*waterline,back));
 				line=strength*(1.0-smoothstep(0.35*band,band,outside))*step(-0.5,outside);
 				float course=back*(0.14+0.33*smoothstep(2.0,12.0,v));   // how far off the hull the crest has flared: ~8 degrees at steerage way, ~25 at speed
-				crest=(1.0-smoothstep(0.1*wide,wide,abs(outside-course)))*(1.0-smoothstep(0.1*broken,broken,back))*step(-0.5,outside);
+				float fan=wide*(1.0+power*back/80.0);   // at speed the broken crest fans out as it runs aft
+				crest=(1.0-smoothstep((0.1+0.3*power)*fan,fan,abs(outside-course)))*(1.0-smoothstep((0.1+0.25*power)*broken,broken,back))*step(-0.5,outside);
 				crest*=mix(1.0,smoothstep(0.4,0.6,texture2D(u_detail,world/31.0).b),min(1.5*back/broken,1.0)); }   // solid at the stem, breaking up into patches aft
 			foam=push*max(max(cap,line),crest)*(0.55+0.6*texture2D(u_detail,world/23.0).b);
 			if(breaking>0.0&&outside<45.0){   // what is thrown off her never reaches further
@@ -405,17 +409,18 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 		float along=a.z+f*l, side=dir.x*d.y-dir.y*d.x, y=abs(side), w=clamp(f,0.0,1.0), age=mix(a.w,b.w,w);
 		float speed=mix(wake_speed(nearest),wake_speed(nearest+1),w);
 		float oldest=u_wake[int(u_wake_count)-1].w, fade=1.0-smoothstep(0.7*oldest,oldest,age);
-		// The screws' wash: about the hull's breadth, spreading slowly, its foam and its pale green going with the
-		// power the screws turn. The sea undoes it: its foam goes in seconds and its smooth band in minutes in a calm,
-		// far sooner in a working sea. The screws go on churning the water for some way astern, so at steerage way,
+		// The screws' wash: about the hull's breadth, half as broad again at full power, spreading slowly, its foam
+		// and its pale green going with the power the screws turn and lasting the longer the harder they churn it. The
+		// sea undoes it: its foam goes in a minute or so and its smooth band in minutes in a calm, far sooner in a
+		// working sea. The screws go on churning the water for some way astern, so at steerage way,
 		// where that takes minutes, the wash lasts as far as that and no further. It lies in streaks along the track
 		// with edges that wander along it, so it is read in the path's own frame, at the place in the water the run
 		// back from the stern reaches: the pattern stays where it was laid. Its greatest half-width is ${BAND}
-		// breadths at its age; past that nothing is read.
-		float spread=u_hull_beam*(0.8+0.45*sqrt(age/60.0)), behind=smoothstep(-6.0,6.0,along), core=0.0;
+		// times its breadth; past that nothing is read.
+		float power=smoothstep(3.0,14.0,speed), spread=u_hull_beam*(0.8+0.45*sqrt(age/60.0))*(1.0+0.5*power), behind=smoothstep(-6.0,6.0,along), core=0.0;
 		if(y<${BAND}*spread&&behind>0.0){
 			float water=u_wake_travelled-along, churn=clamp(0.35*smoothstep(0.3,2.5,speed)+speed*speed/150.0,0.0,1.0), slow=max(speed,0.3);
-			float white=max(35.0/(1.0+sea/20.0),100.0/slow), green=max(70.0/(1.0+sea/20.0),300.0/slow), calm=max(1200.0/(1.0+sea*sea/25.0),600.0/slow);
+			float white=max((35.0+3.5*speed)/(1.0+sea/20.0),100.0/slow), green=max((70.0+5.0*speed)/(1.0+sea/20.0),300.0/slow), calm=max(1200.0*(1.0+0.07*speed)/(1.0+sea*sea/25.0),600.0/slow);
 			float streak=textureGrad(u_detail,vec2(water/${STREAK}.0,side/30.0),vec2(px/${STREAK}.0,0.0),vec2(0.0,px/30.0)).b;   // streaks along the track a few metres across
 			float lanes=textureGrad(u_detail,vec2(water/${LANE}.0,side/90.0),vec2(px/${LANE}.0,0.0),vec2(0.0,px/90.0)).b;   // and lanes of them, ten across the wash
 			float wander=textureGrad(u_detail,vec2(water/${WANDER}.0,0.31),vec2(px/${WANDER}.0,0.0),vec2(0.0,px/${WANDER}.0)).b;   // the texture's ripples run 6-24 to its tile: a 3 km tile wanders the edges every few hundred metres
@@ -429,10 +434,10 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 			// narrower than the churned water and ragged at its edges. Its pale green wells up in boils.
 			float fresh=clamp(1.6*sqrt(churn)*exp(-age/white),0.0,1.0);
 			float fine=clamp(0.5+2.5*(0.65*streak+0.35*texture2D(u_detail,world/45.0).b-0.5),0.0,1.0);
-			float coarse=clamp(0.5+4.0*(0.5*lanes+0.5*texture2D(u_detail,world/240.0).b-0.5),0.0,1.0);
+			float coarse=clamp(0.5+2.5*(0.5*lanes+0.5*texture2D(u_detail,world/240.0).b-0.5),0.0,1.0);
 			float lumps=mix(fine,coarse,smoothstep(0.5,3.0,px));
 			float cover=mix(smoothstep(1.0-fresh,1.25-fresh,lumps),smoothstep(0.15,0.85,fresh),smoothstep(8.0,24.0,px));
-			float race=(1.0-smoothstep(0.15*width,0.45*width,y*(0.8+0.4*lanes)))*behind;
+			float race=(1.0-smoothstep((0.15+0.15*power)*width,(0.45+0.15*power)*width,y*(0.8+0.4*lanes)))*behind;
 			float boils=smoothstep(0.3,0.7,texture2D(u_detail,world/150.0).b);
 			foam=max(foam,cover*min(1.0,2.0*churn)*race*fade);
 			air=sqrt(churn)*exp(-age/green)*core*fade*(0.4+0.3*streak+0.5*boils);
@@ -442,7 +447,7 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 		// wave running at theta to the track keeps pace with the ship at k = k0 / cos^2(theta); for a point off to
 		// one side the stationary one leans the other way, tan(theta) = -t, so its phase is k0 (x - y t) q and it
 		// slopes along (1, -t) / q.
-		float x=along+waterline, steep=0.08*smoothstep(0.06,0.30,speed/sqrt(9.81*waterline));
+		float froude=speed/sqrt(9.81*waterline), x=along+waterline, steep=0.2*smoothstep(0.06,0.30,froude);
 		if(steep>0.0&&x>0.0&&x<u_wake_bounds.w&&y<0.3536*x){
 			float k0=9.81/max(speed*speed,0.25), r=y/x, disc=sqrt(max(1.0-8.0*r*r,0.0));
 			float decay=sqrt(waterline/max(x,0.5*waterline))*(1.0-smoothstep(0.6*u_wake_bounds.w,u_wake_bounds.w,x))*(1.0-0.85*core)*fade;
@@ -450,4 +455,9 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 			float t=2.0*r/(1.0+disc), q=sqrt(1.0+t*t), phase=k0*(x-y*t)*q;
 			lean+=0.35*steep*decay*(1.0-smoothstep(0.5,1.5,k0*q*q*px))*sin(phase)*(dir-off*t)/q;
 			t=(1.0+disc)/(4.0*max(r,1.0e-4)); q=sqrt(1.0+t*t); phase=k0*(x-y*t)*q;
-			lean+=steep*decay*(1.0-smoothstep(0.5,1.5,k0*q*q*px))*sin(phase)*(dir-off*t)/q; } }`
+			float resolved=1.0-smoothstep(0.5,1.5,k0*q*q*px);
+			lean+=steep*decay*resolved*sin(phase)*(dir-off*t)/q;
+			// At speed the divergent waves stand up steepest along the wedge's edges, where they meet the transverse ones,
+			// and their crests break there for a few hull lengths astern: the white V that marks a fast ship from afar.
+			float cusp=smoothstep(0.15,0.30,froude)*smoothstep(0.22,0.33,r)*(1.0-smoothstep(waterline,3.0*waterline,x));
+			if(cusp>0.0) foam=max(foam,cusp*decay*resolved*smoothstep(0.6,0.95,cos(phase))*smoothstep(0.35,0.65,texture2D(u_detail,world/37.0).b)); } }`
