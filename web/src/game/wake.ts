@@ -9,12 +9,15 @@
 // brings its own) and her speed through the water, and the sea's own state
 // decides how long the wake lasts.
 //
-// - The bow wave: a collar of white about the stem, its crests peeling off the
-//   hull on either side and flaring out aft, and a white line along the
-//   waterline inside them that thins out within the first third of the hull.
-//   They grow with the speed from a lip at steerage way, where the flight deck
-//   overhanging the bow hides them from above, as it does on the real ship, to
-//   broken crests fanning out white for a third of her length at full speed.
+// - The bow wave: a wave, one smooth surface, not shapes painted on the sea.
+//   Her stem heaps up a ridge of water that runs off either side along the
+//   edge of the Kelvin wedge, its height the measured one for a fine bow
+//   (growing as the square of her speed at low speed, nearer the speed at
+//   high) and its length her bow's own and its wavelength's. Its slope shades
+//   the sea, and it breaks white as it stands, in patches laid in the water.
+//   At steerage way it is a ripple; at 10 kt a little white at the stem; at
+//   full speed it breaks for a third of her length, mostly under the deck
+//   overhanging her bow until it runs out past.
 // - The sea against her: in a working sea its waves break white where they
 //   meet the hull, at any speed, most where the hull faces into them (the bow,
 //   when she heads into the wind). The white is thrown out off her and left
@@ -347,30 +350,37 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 		float board=across>0.5*(sides.x+sides.y)?1.0:-1.0; facing=vec2(0.0,board);   // the side, by the transom
 		if(hull_at(fore-4.0,aft)) facing=normalize(board>0.0?vec2(aft.y-sides.y,4.0):vec2(sides.x-aft.x,-4.0));   // the side's outward normal
 		return board>0.0?across-sides.y:sides.x-across; }
+	float bow_height(float back, float lateral, float v){   // the bow wave's surface at a point of her frame, metres (see wake_at)
+		float aft=max(back,0.0), ahead=min(back,0.0), d=(lateral-0.3536*aft)/(1.0+0.15*aft);
+		float peak=0.2435*v*v/(9.81*(1.0+v/10.53));   // 2.2 tan a / cos a for her entrance, tan a 0.11; F over her 11.3 m draft
+		return peak*exp(-0.25*ahead*ahead-aft/(12.0+0.107*v*v)-d*d); }
 	void wake_at(vec2 p, float px, out float foam, out float air, out float slick, out vec2 lean){
 		foam=0.0; air=0.0; slick=0.0; lean=vec2(0.0);
 		if(u_wake_count<1.0||length(p-u_wake_bounds.xy)>u_wake_bounds.z) return;
 		float waterline=u_hull_span.y-u_hull_span.x, sea=u_wake_sea; vec2 world=p+u_wake_origin+u_chart;   // the foam's pattern is read where it lies on the sea's chart, which she moves through
 		// The bow wave and the sea against her, in the ship's own frame.
 		vec2 rel=p-u_ship.xy; float c=cos(u_ship.z), s=sin(u_ship.z), v=u_ship.w;
-		float fore=rel.x*c-rel.y*s, across=rel.x*s+rel.y*c, push=clamp(0.45*smoothstep(0.3,2.5,v)+v*v/120.0,0.0,1.0), breaking=smoothstep(5.0,15.0,sea);
-		if((push>0.0||breaking>0.0)&&fore>u_hull_span.x-4.0&&fore<u_hull_span.y+50.0&&abs(across)<90.0){
+		float fore=rel.x*c-rel.y*s, across=rel.x*s+rel.y*c, breaking=smoothstep(5.0,15.0,sea);
+		if((v>0.5||breaking>0.0)&&fore>u_hull_span.x-4.0&&fore<u_hull_span.y+50.0&&abs(across)<140.0){
 			vec2 stem=hull_station(int(u_hull_span.w)-1); float middle=0.5*(stem.x+stem.y), back=u_hull_span.y-fore;
 			vec2 facing; float outside=hull_off(fore,across,middle,facing);
-			// The bow wave: the water heaped against the stem, a collar of white about it, and its crests peeling off the
-			// hull from the stem on either side and flaring out aft, wider, whiter and further the faster she goes, until
-			// they run on unbroken as the Kelvin waves; along the waterline inside them a white line thins out aft.
-			float collar=1.0+0.02*v*v, wide=1.0+0.05*v*v, broken=10.0+0.5*v*v, power=smoothstep(3.0,14.0,v), cap=0.0, line=0.0, crest=0.0;
-			if(back<0.0) cap=1.0-smoothstep(0.3*collar,collar,length(vec2(1.5*back,across-middle)));
-			else if(back<waterline){
-				float band=(0.6+0.035*v*v)*exp(-back/(0.08*waterline))+0.4+0.8*push;
-				float strength=(0.3+0.7*exp(-back/(0.12*waterline)))*(1.0-smoothstep(0.25*waterline,0.5*waterline,back));
-				line=strength*(1.0-smoothstep(0.35*band,band,outside))*step(-0.5,outside);
-				float course=back*(0.14+0.33*smoothstep(2.0,12.0,v));   // how far off the hull the crest has flared: ~8 degrees at steerage way, ~25 at speed
-				float fan=wide*(1.0+power*back/80.0);   // at speed the broken crest fans out as it runs aft
-				crest=(1.0-smoothstep((0.1+0.3*power)*fan,fan,abs(outside-course)))*(1.0-smoothstep((0.1+0.25*power)*broken,broken,back))*step(-0.5,outside);
-				crest*=mix(1.0,smoothstep(0.4,0.6,texture2D(u_detail,world/31.0).b),min(1.5*back/broken,1.0)); }   // solid at the stem, breaking up into patches aft
-			foam=push*max(max(cap,line),crest)*(0.55+0.6*texture2D(u_detail,world/23.0).b);
+			// The bow wave is a wave: a ridge of water her stem heaps up and sends off either side along the edge of the
+			// Kelvin wedge, 19.47 degrees off her track (arcsin 1/3) whatever her speed, the edge every wave she makes lies
+			// within. Its height is Noblesse et al.'s for a fine bow (J. Fluid Mech. 600, 2008): 2.2 tan a / ((1 + F) cos a)
+			// of v^2/g, a her waterline's half entrance angle and F her speed's Froude number over her draft, so it grows
+			// as v^2 at low speed and nearer v at high. It broadens as it runs aft and dies away over her bow's own 12 m
+			// and a sixth of its wavelength, 2 pi v^2/g; ahead of the stem and at it, only a point. A bow as fine as hers
+			// (an entrance under 25 degrees) makes a bow wave that overturns at any speed, so it breaks as soon as it
+			// stands at all, its white growing with its height to all white at 0.8 m, in patches laid in the water. It is
+			// one smooth surface,
+			// with no parts and no cut: its slope shades the sea, and wherever it ends it frays out into the sea.
+			float lateral=abs(across-middle), height=bow_height(back,lateral,v);
+			float rise=bow_height(back+0.5,lateral,v)-bow_height(back-0.5,lateral,v), rise_across=bow_height(back,lateral+0.5,v)-bow_height(back,abs(lateral-0.5),v);   // per metre aft and out to her side
+			vec2 gradient=-rise*vec2(c,-s)+(across>middle?1.0:-1.0)*rise_across*vec2(s,c);   // aft is against her heading
+			lean-=gradient*min(1.0,0.35/max(length(gradient),1.0e-4));
+			float broken=smoothstep(0.05,0.8,height);
+			float lumps=clamp(0.5+2.5*(0.5*texture2D(u_detail,world/29.0).b+0.5*texture2D(u_detail,world/11.0).b-0.5),0.0,1.0);   // the same lumps as her wash's white
+			foam=smoothstep(1.0-broken,1.25-broken,lumps);
 			if(breaking>0.0&&outside<45.0){   // what is thrown off her never reaches further
 				// The sea's crests run downwind at about 0.8 of the wind's speed, a wavelength of 2 pi c^2 / g apart, their
 				// lines wandering. Each breaks white against the hull as it meets her, more where the hull faces into it,
@@ -385,8 +395,11 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 				float forward=exp(-max(u_hull_span.y-then,0.0)/(0.1*waterline));   // the bow, whose flare meets a sea from ahead however fine her waterline is there
 				float exposed=max(sqrt(max(dot(faced,up),0.0)),forward*max(up.x,0.0)), spread=1.5+4.0*breaking*exposed*since;
 				float hard=smoothstep(0.35,0.65,texture2D(u_detail,vec2(floor(phase)*0.137,dot(world,vec2(-u_downwind.y,u_downwind.x))/120.0)).b);
-				float burst=min(2.0*breaking*(0.15+0.85*exposed)*(0.6+0.4*hard)*exp(-since/(1.0+exposed))*smoothstep(0.0,0.6,since),1.0);
-				foam=max(foam,burst*(1.0-smoothstep(0.5*spread,spread,off))*step(-0.5,off)*(0.6+0.8*texture2D(u_detail,world/11.0).b)); } }
+				float burst=min(2.0*breaking*(0.15+0.85*exposed)*(0.6+0.4*hard)*exp(-since/(1.0+exposed))*smoothstep(0.0,1.5,since),1.0);
+				// Its white is the water the crest broke, in patches thinning out at a ragged edge as it falls back and spreads,
+				// never a sheet: a sheet whitened full on the crest's straight line, the sea's foam turning even faint white full.
+				float thrown=burst*(1.0-smoothstep(0.5*spread,spread,off+0.8*spread*(texture2D(u_detail,world/29.0).b-0.5)))*step(-0.5,off);
+				foam=max(foam,smoothstep(1.0-2.0*thrown,1.3-2.0*thrown,smoothstep(0.3,0.7,texture2D(u_detail,world/11.0).b))); } }   // the patches about twice as much of the water as the white is strong, faint white a scatter of them
 		if(u_wake_count<2.0) return;
 		// The stretch of the path the stern swept nearest the point, skipping each group of stretches whose reach the
 		// point lies past. Ahead of the stern the first stretch runs on unclamped, so the hull's own length is
@@ -450,7 +463,7 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 		float froude=speed/sqrt(9.81*waterline), x=along+waterline, steep=0.2*smoothstep(0.06,0.30,froude);
 		if(steep>0.0&&x>0.0&&x<u_wake_bounds.w&&y<0.3536*x){
 			float k0=9.81/max(speed*speed,0.25), r=y/x, disc=sqrt(max(1.0-8.0*r*r,0.0));
-			float decay=sqrt(waterline/max(x,0.5*waterline))*(1.0-smoothstep(0.6*u_wake_bounds.w,u_wake_bounds.w,x))*(1.0-0.85*core)*fade;
+			float decay=sqrt(waterline/max(x,0.5*waterline))*(1.0-smoothstep(0.6*u_wake_bounds.w,u_wake_bounds.w,x))*(1.0-0.85*core)*fade*(1.0-smoothstep(0.3536*x-max(0.044*x,6.0),0.3536*x,y))*smoothstep(0.0,0.5*waterline,x);   // dying away into the wedge's edge rather than stopping at it, where the sea's shading and the crests' white ended on a straight line, and growing over her first half length, where the bow wave itself is the wave
 			vec2 off=vec2(-dir.y,dir.x)*(side<0.0?-1.0:1.0);
 			float t=2.0*r/(1.0+disc), q=sqrt(1.0+t*t), phase=k0*(x-y*t)*q;
 			lean+=0.35*steep*decay*(1.0-smoothstep(0.5,1.5,k0*q*q*px))*sin(phase)*(dir-off*t)/q;

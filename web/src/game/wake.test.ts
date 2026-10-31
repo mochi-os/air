@@ -369,7 +369,6 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
         ...values
       ) as number
   const churn = expression(between(' churn=', ', slow='), 'speed')
-  const push = expression(between(' push=', ', breaking='), 'v')
   const breaking = expression(between(' breaking=', ';'), 'sea')
   const smooth = expression(between('\t\t\tslick=', '*exp(-age/calm)'), 'speed')
   const lasting = (name: string, to: string) => {
@@ -386,9 +385,6 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
     expect(churn(2.6)).toBeGreaterThan(0.3)
     expect(churn(2.6)).toBeLessThan(0.5)
     expect(churn(15.4)).toBe(1)
-    expect(push(0)).toBe(0)
-    expect(push(2.6)).toBeGreaterThan(0.45)
-    expect(push(15.4)).toBe(1)
     expect(smooth(2.6)).toBeGreaterThan(0.5)
     expect(smooth(15.4)).toBe(1)
   })
@@ -428,7 +424,7 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
     expect(breaking(0)).toBe(0)
     expect(breaking(5)).toBe(0)
     expect(breaking(trades)).toBeGreaterThan(0.8)
-    expect(WAKE).toContain('if((push>0.0||breaking>0.0)&&')
+    expect(WAKE).toContain('if((v>0.5||breaking>0.0)&&')
     expect(WAKE).toContain(
       'float phase=-dot(world,u_downwind)/wavelength+u_time*sea_drift(vec2(pace/wavelength,0.0)).x+texture2D(u_detail,world/170.0).b-0.5;'
     ) // crests laid in the water, running downwind, seamless as the sea's clock wraps, their lines wandering
@@ -451,75 +447,127 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
     })
     return most
   }
-  const step = (waterline.stem - waterline.stern) / (waterline.sides.length - 1)
-  const hull = waterline.sides.flatMap((side, i) => [
-    [waterline.stern + i * step, side[0]],
-    [waterline.stern + i * step, side[1]],
-  ])
-  const flank = (fore: number, board: number) => {
-    // the waterline's z at a station, to one side, from the centre line
-    const k = Math.min(
-      Math.floor((fore - waterline.stern) / step),
-      waterline.sides.length - 2
+  // The shader's own bow wave surface, run as written: its height in metres at a point of her frame.
+  const surface = (() => {
+    const start = WAKE.indexOf('float bow_height(')
+    expect(start).toBeGreaterThan(-1)
+    const open = WAKE.indexOf('{', start)
+    const body = WAKE.slice(open + 1, WAKE.indexOf('}', open)).replace(
+      /float /g,
+      'let '
     )
-    const f = (fore - waterline.stern) / step - k
-    const j = board > 0 ? 1 : 0
-    const z =
-      waterline.sides[k][j] +
-      (waterline.sides[k + 1][j] - waterline.sides[k][j]) * f
-    return board * (z - middle)
+    const f = new Function('max', 'min', 'exp', 'back', 'lateral', 'v', body)
+    return (back: number, lateral: number, v: number) =>
+      f(Math.max, Math.min, Math.exp, back, lateral, v) as number
+  })()
+  const kelvin = Math.tan(Math.asin(1 / 3))
+  // the crest at a station: the lateral where the surface stands highest
+  const ridge = (back: number, v: number) => {
+    let best = 0
+    for (let l = 0; l < 120; l += 0.02)
+      if (surface(back, l, v) > surface(back, best, v)) best = l
+    return best
   }
-  const wide = expression(between(' wide=', ','), 'v')
-  const broken = expression(between(' broken=', ','), 'v')
-  const course = expression(between(' course=', ';'), 'back', 'v')
-  // how far past the deck's edge the crests' white reaches, at its furthest along the stretch where they break hard,
-  // on the side where it reaches least
+  const breaks = expression(between('float broken=', ';'), 'height')
+  // Noblesse et al.'s height for a fine bow's bow wave (J. Fluid Mech. 600, 2008): 2.2 tan a / ((1 + F) cos a) of
+  // v^2/g, F = v / sqrt(g D), for her waterline's entrance (tan a 0.11) and her 11.3 m draft
+  const measured = (v: number) => {
+    const a = Math.atan(0.11)
+    const F = v / Math.sqrt(9.81 * 11.3)
+    return (((2.2 * Math.tan(a)) / ((1 + F) * Math.cos(a))) * v * v) / 9.81
+  }
+  it("is a wave: a ridge her stem heaps up and sends off along the Kelvin wedge's edge, as high as a fine bow's is measured", () => {
+    for (const v of [7.7, 10.3, 15.4])
+      for (const back of [20, 60, 100])
+        expect(Math.abs(ridge(back, v) - kelvin * back)).toBeLessThan(0.05)
+    for (const v of [2.6, 5.1, 7.7, 10.3, 15.4])
+      expect(surface(0, 0, v) / measured(v)).toBeCloseTo(1, 3)
+    // so at half speed it stands more than the quarter of full speed's height v^2 alone would give
+    expect(surface(0, 0, 7.7) / surface(0, 0, 15.4)).toBeGreaterThan(0.33)
+    // and it dies away over her bow's own 12 m and a sixth of its wavelength, 2 pi v^2/g
+    for (const v of [5.1, 7.7, 15.4]) {
+      const decay = 12 + (2 * Math.PI * v * v) / 9.81 / 6
+      expect(surface(decay, kelvin * decay, v) / surface(0, 0, v)).toBeCloseTo(
+        Math.exp(-1),
+        2
+      )
+    }
+    // at and ahead of the stem only a point, never a disc or a front: within a few metres of it, nothing
+    expect(surface(0, 3, 15.4) / surface(0, 0, 15.4)).toBeLessThan(0.001)
+    expect(surface(-3, 0, 15.4) / surface(0, 0, 15.4)).toBeLessThan(0.15)
+    // one smooth surface: no step anywhere, across the stem or out from it
+    expect(
+      Math.abs(surface(1e-6, 0, 15.4) - surface(-1e-6, 0, 15.4))
+    ).toBeLessThan(1e-4)
+    for (let l = 0; l < 60; l += 0.5)
+      expect(
+        Math.abs(surface(40, l + 0.01, 15.4) - surface(40, l, 15.4))
+      ).toBeLessThan(0.01)
+  })
+  // how far aft along its crest it breaks white enough to show, a tenth of the water white
+  const reach = (v: number) => {
+    let most = 0
+    for (let back = 0; back < 300; back += 0.5)
+      if (breaks(surface(back, kelvin * back, v)) >= 0.1) most = back
+    return most
+  }
+  it('overturns at any speed, as a bow as fine as hers does, its white growing with its height, in patches laid in the water: no other white', () => {
+    expect(breaks(0.05)).toBe(0)
+    expect(breaks(0.8)).toBe(1)
+    // at steerage way a ripple, only a trace of white; at 10 kt white at the stem; at full speed all white there
+    expect(breaks(surface(0, 0, 2.6))).toBeGreaterThan(0)
+    expect(breaks(surface(0, 0, 2.6))).toBeLessThan(0.05)
+    expect(breaks(surface(0, 0, 5.14))).toBeGreaterThan(0.4)
+    expect(breaks(surface(0, 0, 15.4))).toBe(1)
+    expect(WAKE).toContain(
+      'float lumps=clamp(0.5+2.5*(0.5*texture2D(u_detail,world/29.0).b+0.5*texture2D(u_detail,world/11.0).b-0.5),0.0,1.0);'
+    )
+    expect(WAKE).toContain('foam=smoothstep(1.0-broken,1.25-broken,lumps);')
+    // nothing painted on: no collar, band, crest mask, spill or taper of its own
+    for (const shape of [
+      'collar',
+      'cap=',
+      'float crest',
+      'spill',
+      'taper',
+      'band=',
+    ])
+      expect(WAKE).not.toContain(shape)
+  })
+  it('shows at low and medium speeds, running further aft the faster she goes, and at full speed as far as before', () => {
+    expect(reach(5.14)).toBeGreaterThan(8) // 10 kt
+    expect(reach(7.72)).toBeGreaterThan(20) // 15 kt
+    expect(reach(10.29)).toBeGreaterThan(35) // 20 kt
+    expect(reach(15.43)).toBeGreaterThan(85) // 30 kt, about a third of her length
+    expect(reach(15.43)).toBeLessThan(105)
+  })
+  it('shades the sea with its slope, as a wave does', () => {
+    expect(WAKE).toContain(
+      'vec2 gradient=-rise*vec2(c,-s)+(across>middle?1.0:-1.0)*rise_across*vec2(s,c);'
+    )
+    expect(WAKE).toContain(
+      'lean-=gradient*min(1.0,0.35/max(length(gradient),1.0e-4));'
+    )
+  })
+  // how far past the deck's edge its white reaches, at its furthest 30-70 m aft, on the side where it reaches least
   const past = (v: number) =>
     Math.min(
       ...[1, -1].map((board) => {
         let most = -Infinity
-        for (let back = 1; back < 0.5 * broken(v); back++) {
-          const fore = waterline.stem - back
-          most = Math.max(
-            most,
-            flank(fore, board) +
-              course(back, v) +
-              wide(v) -
-              across(fore, board, deck)
-          )
-        }
+        for (let back = 30; back <= 70; back += 2)
+          for (let l = 0; l < 80; l += 0.5)
+            if (breaks(surface(back, l, v)) > 0)
+              most = Math.max(
+                most,
+                l - across(waterline.stem - back, board, deck)
+              )
         return most
       })
     )
-  it('at speed throws its bow wave out past the deck: crests peeling off the hull from the stem and flaring out', () => {
+  it('at speed runs out past the deck that overhangs her bow, and at steerage way stays under it, as the real ship does', () => {
     expect(tip).toBeGreaterThan(12)
-    expect(hull.length).toBe(2 * waterline.sides.length)
-    expect(course(0, 15.4)).toBe(0) // they start at the hull, not out from it
     expect(past(15.4)).toBeGreaterThan(5)
-    expect(broken(15.4)).toBeGreaterThan(
-      0.2 * (waterline.stem - waterline.stern)
-    )
-    expect(WAKE).toContain(
-      'cap=1.0-smoothstep(0.3*collar,collar,length(vec2(1.5*back,across-middle)));'
-    )
-    const collar = expression(between(' collar=', ','), 'v')
-    expect(collar(15.4) / 1.5).toBeLessThan(0.5 * tip) // and the white ahead of the stem is a collar about it, no more
-    // At speed the broken crests fan out as they run aft, twice their breadth at the stem 80 m back; at steerage
-    // way they do not.
-    const fan = expression(between('float fan=', ';'), 'wide', 'power', 'back')
-    expect(fan(wide(15.4), 1, 80)).toBeCloseTo(2 * wide(15.4), 9)
-    expect(fan(wide(2.6), 0, 80)).toBe(wide(2.6))
-    expect(wide(15.4)).toBeGreaterThan(10)
-    expect(broken(15.4)).toBeGreaterThan(
-      0.35 * (waterline.stem - waterline.stern)
-    )
-    // their white solid across more of them, and breaking on further aft before it thins
-    expect(WAKE).toContain(
-      'crest=(1.0-smoothstep((0.1+0.3*power)*fan,fan,abs(outside-course)))*(1.0-smoothstep((0.1+0.25*power)*broken,broken,back))*step(-0.5,outside);'
-    )
-  })
-  it('at steerage way keeps it under the deck, as the real ship does', () => {
-    expect(past(2.6)).toBeLessThan(0)
+    expect(past(2.6)).toBe(-Infinity) // nothing breaks at all
   })
   it("throws the sea's white out off her from the hull as it falls back, left behind as she steams on", () => {
     const spread = expression(
@@ -541,6 +589,14 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
     expect(spread(b, 0, 2)).toBeLessThanOrEqual(1.5) // but runs along her flanks
     expect(burst(b, 1, 1, 0)).toBe(0) // it whitens, it does not switch on
     expect(burst(b, 1, 1, 0.3)).toBeLessThan(burst(b, 1, 1, 0.8))
+    expect(burst(b, 1, 1, 0.8)).toBeLessThan(burst(b, 1, 1, 1.4)) // building over a second and a half
+    // in patches thinning out at a ragged edge as it spreads, never a sheet whitened full on the crest's line
+    expect(WAKE).toContain(
+      'float thrown=burst*(1.0-smoothstep(0.5*spread,spread,off+0.8*spread*(texture2D(u_detail,world/29.0).b-0.5)))*step(-0.5,off);'
+    )
+    expect(WAKE).toContain(
+      'foam=max(foam,smoothstep(1.0-2.0*thrown,1.3-2.0*thrown,smoothstep(0.3,0.7,texture2D(u_detail,world/11.0).b)));'
+    )
     expect(burst(b, 0, 1, 1)).toBeLessThan(0.5 * burst(b, 1, 1, 1)) // less on her flanks than at the bow
     expect(WAKE).toContain('float then=fore+v*since;') // the water it lies in was that much further forward along her when the crest struck
     // and gone before the next crest strikes, so nothing vanishes as it does
@@ -600,6 +656,11 @@ describe('the Kelvin waves the shader draws', () => {
     )
     expect(WAKE.match(/\*sin\(phase\)\*\(dir-off\*t\)\/q;/g)?.length).toBe(2)
     expect(WAKE).toContain('k0=9.81/max(speed*speed,0.25)')
+    // they die away into the wedge's edge over at least 6 m rather than stopping at it, and grow over her first half
+    // length, where the bow wave itself is the wave: no straight line in the sea's shading or the crests' white
+    expect(WAKE).toContain(
+      '*(1.0-smoothstep(0.3536*x-max(0.044*x,6.0),0.3536*x,y))*smoothstep(0.0,0.5*waterline,x);'
+    )
   })
   it("stand out at speed, their crests breaking white along the wedge's edges for a few hull lengths, and are nothing at steerage way", () => {
     const smoothstep = (a: number, b: number, x: number) => {

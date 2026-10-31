@@ -430,6 +430,41 @@ describe('the carrier under way in the engine', () => {
     expect(model).not.toMatch(/scene\.add\(grp\)/)
   })
 
+  it("carries the sun's shadow map with her while the jet is aboard or near, and in whole texels elsewhere", () => {
+    const make = new Function(
+      'THREE', 'carrier_model', 'CARRIER', 'ownship', 'sun_dir', 'sun', 'SUN_TEXEL', '_sun_focus', '_sun_right', '_sun_up',
+      lift('sun_follow') + 'return sun_follow'
+    )
+    const texel = 1600 / 1024
+    const ship = { x: -18500, z: 7500, deckY: 20 }
+    const jet = { pos: new THREE.Vector3(-18450, 25, 7480) }
+    const dir = new THREE.Vector3(0.4, 0.8, -0.3).normalize()
+    const sun = { position: new THREE.Vector3(), target: new THREE.Object3D() }
+    const follow = make(THREE, {}, ship, jet, dir, sun, texel, new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3())
+    // aboard: the map's centre is her own, so as she steams on her shadows keep their texels
+    follow()
+    expect(sun.target.position.toArray()).toEqual([ship.x, ship.deckY, ship.z])
+    expect(sun.position.clone().sub(sun.target.position).normalize().dot(dir)).toBeCloseTo(1, 9)
+    ship.x += 0.37; jet.pos.x += 0.37
+    follow()
+    expect(sun.target.position.x).toBeCloseTo(ship.x, 9)
+    // away from her: about the jet, on whole texels across the sun's beam, so it does not creep as the jet flies
+    jet.pos.set(-15000, 900, 9000)
+    follow()
+    const right = new THREE.Vector3(0, 1, 0).cross(dir).normalize(), up = new THREE.Vector3().crossVectors(dir, right)
+    for (const axis of [right, up]) {
+      const steps = sun.target.position.dot(axis) / texel
+      expect(Math.abs(steps - Math.round(steps))).toBeLessThan(1e-6)
+    }
+    expect(sun.target.position.distanceTo(jet.pos)).toBeLessThan(2 * texel + 1e-6)
+    const before = sun.target.position.clone()
+    jet.pos.addScaledVector(right, 0.2 * texel)
+    follow()
+    expect(sun.target.position.distanceTo(before) === 0 || sun.target.position.distanceTo(before) > 0.99 * texel).toBe(true)
+    // before anything is drawn each frame
+    expect(source).toMatch(/function render_frame\(\)\{\n\tif\(cfg\.view==="ddi"\) return;[^\n]*\n\tsun_follow\(\);/)
+  })
+
   it("draws the ship into the sun's shadow map pushed back by each face's slant, so her deck never shadows itself", () => {
     // three's depth material packs a depth of its own making, so the push is added to it, three texels of its
     // slope at most 4 m; polygon offset would move only the depth buffer's, which the shadow map never reads
@@ -469,7 +504,7 @@ describe('the carrier under way in the engine', () => {
 // The temporary carrier speed select, run in the flight core itself: the
 // built wasm under node, as autopilot-core.test.ts runs it, skipped without
 // one. Single player's ship is planned into the trades at steerage way; a
-// speed chosen is held on her straight runs, gathered within seconds, and a
+// speed chosen is taken at once and held on her straight runs, and a
 // fresh mission's plan starts her at steerage way again. The client keeps the
 // choice from mission to mission and offers it only in developer mode, where
 // it steers the ship.
@@ -518,14 +553,12 @@ describe.skipIf(!built)('the temporary carrier speed select', () => {
   }
   const way = () => core.carrier(out[55])[4]
 
-  it('holds the speed chosen, gathered within seconds, and a fresh plan starts at steerage way', () => {
+  it('takes the speed chosen at once and holds it, and a fresh plan starts at steerage way', () => {
     start()
     expect(core.speed(0)).toBeCloseTo(steerage, 9)
     expect(core.speed(20 * knots)).toBeCloseTo(20 * knots, 9)
     fly(1)
-    expect(way()).toBeLessThan(steerage + 0.5)
-    fly(20)
-    expect(way()).toBeCloseTo(20 * knots, 6)
+    expect(way()).toBeCloseTo(20 * knots, 6) // at once, as the select is resumed from
     start()
     expect(core.speed(0)).toBeCloseTo(steerage, 9)
     fly(10)

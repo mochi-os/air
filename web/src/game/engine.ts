@@ -1399,8 +1399,21 @@ function world_rate(){ return MULTIPLAYER?1:playback?(playback_follow?playback_r
 // further between frames than the reprojection follows, down to half from 16×.
 function cloud_history(){ const rate=world_rate(); return rate<=1?0.90:Math.max(0.5,0.90-0.1*Math.log2(rate)); }
 const fog_direction=new THREE.Vector3();
+// sun_follow carries the sun's shadow map with what the eye is on. With the jet aboard the ship or within a few
+// hundred metres of her it rides with her, so her shadows - the jets', the island's, her fittings' - sit still in
+// its texels as she steams on: left fixed in the engine's frame, its metre-and-a-half texels swept across her deck
+// at her speed and every shadow edge on it shimmered. Elsewhere it follows the jet in whole texels, so shadows
+// ashore stay put as it flies.
+const SUN_TEXEL=1600/1024, _sun_focus=new THREE.Vector3(), _sun_right=new THREE.Vector3(), _sun_up=new THREE.Vector3();
+function sun_follow(){ const aboard=!!carrier_model&&Math.hypot(ownship.pos.x-CARRIER.x,ownship.pos.z-CARRIER.z)<600;
+	if(aboard) _sun_focus.set(CARRIER.x,CARRIER.deckY,CARRIER.z);
+	else { _sun_focus.copy(ownship.pos);
+		_sun_right.set(0,1,0).cross(sun_dir); if(_sun_right.lengthSq()<1e-6) _sun_right.set(1,0,0); _sun_right.normalize(); _sun_up.crossVectors(sun_dir,_sun_right);   // the shadow map's axes across the sun's beam
+		for(const axis of [_sun_right,_sun_up]){ const a=_sun_focus.dot(axis); _sun_focus.addScaledVector(axis,Math.round(a/SUN_TEXEL)*SUN_TEXEL-a); } }
+	sun.target.position.copy(_sun_focus); sun.position.copy(_sun_focus).addScaledVector(sun_dir,4000); sun.target.updateMatrixWorld(); }
 function render_frame(){
 	if(cfg.view==="ddi") return;   // head-down: the opaque 2D panel covers the screen — skip the world passes entirely (the sim and audio run on; set_view marks cloud history stale for the return cut)
+	sun_follow();
 	{ const f=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion), u=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);
 		audio_listener(camera.position.x,camera.position.y,camera.position.z,f.x,f.y,f.z,u.x,u.y,u.z); }
 	// Cockpit split (#99), stateless per frame so nothing can strand a stale mask:
