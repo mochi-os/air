@@ -3,7 +3,6 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { FUEL, PRESETS, matches } from '../game/stores'
-import { FREE } from '../game/position'
 
 // One joystick's bindings: which pad axis drives each aircraft axis ('' = none),
 // and which pad button provides each action ('' = none). Missing entries fall
@@ -274,15 +273,10 @@ export interface MissionConfig {
   joystick: string // menu-selected stick id ('' = first connected)
   sticks: Record<string, StickBindings> // per-device axis/button maps, keyed by pad id
   keys: Record<string, string> // keyboard remaps: action -> key code (defaults live in the engine's KEYS table)
-  start: 'air' | 'position' | 'runway' | 'apron' | 'final' | 'carrier' | 'deck' | 'groove' | 'case1' | 'case2' | 'case3' | 'landing' // landing = legacy saved value, read as case2 (#205); apron and deck the parked starts, final and groove the approaches (#133); position a place chosen on the world map (#167)
+  start: 'air' | 'runway' | 'apron' | 'final' | 'carrier' | 'deck' | 'groove' | 'case1' | 'case2' | 'case3' | 'landing' // landing = legacy saved value, read as case2 (#205); apron and deck the parked starts, final and groove the approaches (#133)
   demonstration: boolean // a Case I start flown by the scripted pilot while the player watches (engine demonstration.ts); inert for every other start
   cold: boolean // a parked start cold and dark rather than ready (#133); inert for every other start
   end: '06' | '24' // the runway end a runway start or final uses (#133), 06 into the trades
-  latitude: number // the position start's place (#167, game/position.ts): degrees north
-  longitude: number // degrees east
-  altitude: number // feet
-  heading: number // degrees true
-  airspeed: number // knots calibrated
   servers: string // recently joined world servers, newline-separated, most recent first (#77) — the config's index signature is scalar-or-record, and a bare array does not fit it
   pilot: string // this player's stable token: identifies the owner of a match offer across reconnects (#77)
   cat: number // carrier-start catapult 1-4
@@ -390,7 +384,6 @@ export const DEFAULT_CONFIG: MissionConfig = {
   demonstration: false,
   cold: false,
   end: '06',
-  ...FREE, // the position start's choice (#167)
   servers: '',
   pilot: '',
   cat: 2,

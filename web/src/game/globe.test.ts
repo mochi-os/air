@@ -5,7 +5,8 @@
 
 import { describe, expect, it } from 'vitest'
 import { centred, DEGREE, destination, geodesic, tangent } from './earth'
-import { heading, offset, project, ring, step } from './globe'
+import * as THREE from 'three'
+import { aim, heading, offset, project, ring, step } from './globe'
 
 const NM = 1852
 
@@ -65,5 +66,27 @@ describe('the map panned', () => {
     expect(there.bearing).toBeCloseTo(Math.PI / 2, 6)
     const round = offset(from, 0, -40007863) // north, once round the earth through both poles: home again
     expect(geodesic(from, round).distance).toBeLessThan(2000)
+  })
+})
+
+describe("the globe's shader frame", () => {
+  it("lays the view's axes and centre as the earth's own frame there, turned onto its meridian", () => {
+    const turn = new THREE.Matrix3(), anchor = new THREE.Vector3()
+    for (const latitude of [-80, -33.9, 0, 28.2334, 64.1]) {
+      const view = tangent(latitude * DEGREE, 0)
+      aim(turn, anchor, view)
+      const axis = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z).applyMatrix3(turn)
+      for (const [mine, theirs] of [
+        [axis(1, 0, 0), view.east],
+        [axis(0, 1, 0), view.up],
+        [axis(0, 0, 1), view.south],
+      ] as const) {
+        expect(mine.x).toBeCloseTo(theirs.x, 9)
+        expect(mine.y).toBeCloseTo(theirs.y, 9)
+        expect(mine.z).toBeCloseTo(theirs.z, 9)
+      }
+      const centre = centred({ latitude: latitude * DEGREE, longitude: 0, altitude: 0 })
+      expect(anchor.distanceTo(new THREE.Vector3(centre.x, centre.y, centre.z))).toBeLessThan(1e-6)
+    }
   })
 })

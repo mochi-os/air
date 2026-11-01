@@ -86,11 +86,6 @@ describe('DEFAULT_CONFIG', () => {
     expect(DEFAULT_CONFIG.end).toBe('06')
   })
 
-  it("holds the position start's choice, Midway's place at a height and speed to fly from (#167)", () => {
-    expect(DEFAULT_CONFIG).toMatchObject({ latitude: 28.2334, longitude: -177.3668, altitude: 10000, heading: 0, airspeed: 350 })
-    expect(seedStart(DEFAULT_CONFIG, 'position').fuel).toBe(FUEL[matches(DEFAULT_CONFIG.stores)]) // a launch's fuel, as the other air start
-  })
-
   it('declares hints, defaulted ON', () => {
     // A COMPILE-TIME assertion, and it needs to be: MissionConfig carries a
     // catch-all index signature, so DEFAULT_CONFIG type-checks whether or not

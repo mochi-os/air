@@ -7,14 +7,14 @@
 // centre, from far enough off that every line of sight is parallel - an
 // orthographic projection. Close in it is the flat map the game always drew,
 // and zoomed out it is the whole planet with its limb. The map draws its
-// marks through project; the globe itself is the global map (atlas.ts) on a
-// canvas of its own beneath them.
+// marks through project; the globe itself is a plain sea on a canvas of its
+// own beneath them, until the earth has terrain to show.
 
 import * as THREE from 'three'
-import { ATLAS, ATLAS_COVER, aim, framing, type Atlas } from './atlas'
 import { EQUATOR, FLATTENING, destination, type Frame, type Place, type Vec } from './earth'
 
 const OBLATENESS = 1 / (1 - FLATTENING)
+const ECCENTRIC = FLATTENING * (2 - FLATTENING) // first eccentricity squared
 
 // project is a point's place on the map, metres east and south of the view's
 // centre, and whether the earth hides it: seen from above the centre, a point
@@ -57,35 +57,39 @@ export function offset(from: Place, east: number, south: number): Place {
 }
 
 const VERTEX = `void main(){ gl_Position=vec4(position.xy,0.0,1.0); }`
-const FRAGMENT = `uniform vec4 u_view; uniform vec2 u_screen; uniform vec3 u_sea,u_space; uniform float u_bright;
-	${ATLAS}
-	${ATLAS_COVER}
+const FRAGMENT = `uniform vec4 u_view; uniform vec2 u_screen; uniform vec3 u_sea,u_space;
+	uniform mat3 u_turn; uniform vec3 u_anchor;   // the view's frame: its axes and centre earth-centred, turned onto its own meridian
 	const float OBLATENESS=${OBLATENESS}, EQUATOR=${EQUATOR}.0;
 	void main(){ vec2 css=vec2(gl_FragCoord.x,u_screen.y*u_view.w-gl_FragCoord.y)/u_view.w, m=(css-u_view.xy)*u_view.z;   // metres east and south of the centre, across the view's level
-		vec3 b=(u_atlas_turn*vec3(m.x,0.0,m.y)+u_atlas_anchor)/EQUATOR, up=u_atlas_turn*vec3(0.0,1.0,0.0);   // the line of sight down through it, earth-centred in earth radii
+		vec3 b=(u_turn*vec3(m.x,0.0,m.y)+u_anchor)/EQUATOR, up=u_turn*vec3(0.0,1.0,0.0);   // the line of sight down through it, earth-centred in earth radii
 		vec3 bs=vec3(b.xy,b.z*OBLATENESS), us=vec3(up.xy,up.z*OBLATENESS);   // where the ellipsoid is the unit sphere
 		float A=dot(us,us), B=dot(bs,us), D=B*B-A*(dot(bs,bs)-1.0);
 		float limb=clamp(D/max(fwidth(D),1.0e-12),0.0,1.0);   // the limb, drawn across a pixel
-		float t=(-B+sqrt(max(D,0.0)))/A;   // the near side
-		vec2 g=atlas_grid(vec3(m.x,t*EQUATOR,m.y)); vec4 earth=atlas_area(g,atlas_step(dFdx(g)),atlas_step(dFdy(g)));
-		gl_FragColor=vec4(mix(u_space,mix(u_sea,earth.rgb*u_bright,atlas_cover(earth.a)),limb),1.0);
+		gl_FragColor=vec4(mix(u_space,u_sea,limb),1.0);
 		#include <colorspace_fragment>
 	}`
 
+// aim lays a view's frame in the shader's uniforms. Turned onto its own
+// meridian the frame's east is the y axis, its up (cos, 0, sin) of its
+// latitude and its south (sin, 0, -cos); the sea is the same all round the
+// axis, so the longitude does not matter.
+export function aim(turn: THREE.Matrix3, anchor: THREE.Vector3, view: Frame): void {
+  const sin = Math.sin(view.latitude), cos = Math.cos(view.latitude)
+  const normal = EQUATOR / Math.sqrt(1 - ECCENTRIC * sin * sin)
+  turn.set(0, cos, sin, 1, 0, 0, 0, sin, -cos)
+  anchor.set(normal * cos, 0, normal * (1 - ECCENTRIC) * sin)
+}
+
 // Globe draws the earth on its own canvas, its own renderer: the map sits over
-// the scene, which goes on drawing beneath it. Its textures are the atlas's,
-// which each renderer uploads for itself.
+// the scene, which goes on drawing beneath it.
 export class Globe {
   readonly canvas: HTMLCanvasElement
   private readonly renderer: THREE.WebGLRenderer
   private readonly scene = new THREE.Scene()
   private readonly camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
   private readonly material: THREE.ShaderMaterial
-  private readonly frame = framing()
-  private readonly atlas: Atlas
 
-  constructor(atlas: Atlas, canvas: HTMLCanvasElement) {
-    this.atlas = atlas
+  constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false })
     this.material = new THREE.ShaderMaterial({
@@ -94,13 +98,12 @@ export class Globe {
       depthTest: false,
       depthWrite: false,
       uniforms: {
-        ...atlas.uniforms,
-        ...this.frame,
+        u_turn: { value: new THREE.Matrix3() },
+        u_anchor: { value: new THREE.Vector3() },
         u_view: { value: new THREE.Vector4() },
         u_screen: { value: new THREE.Vector2() },
         u_sea: { value: new THREE.Color('#0b1d3a') },
         u_space: { value: new THREE.Color('#020408') },
-        u_bright: { value: 0.85 }, // the imagery a little dimmed, so the marks drawn over it read
       },
     })
     const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), this.material)
@@ -115,7 +118,7 @@ export class Globe {
       this.renderer.setPixelRatio(ratio)
       this.renderer.setSize(width, height)
     }
-    aim(this.frame, view, this.atlas.manifest)
+    aim(this.material.uniforms.u_turn.value, this.material.uniforms.u_anchor.value, view)
     this.material.uniforms.u_view.value.set(x, y, metres, ratio)
     this.material.uniforms.u_screen.value.set(width, height)
     this.renderer.render(this.scene, this.camera)
@@ -124,7 +127,7 @@ export class Globe {
   dispose(): void {
     this.material.dispose()
     for (const o of this.scene.children) (o as THREE.Mesh).geometry?.dispose()
-    this.renderer.dispose() // the atlas's textures stay: the scene's renderer holds them too
+    this.renderer.dispose()
     this.renderer.forceContextLoss()
     this.canvas.remove()
   }

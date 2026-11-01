@@ -32,8 +32,8 @@ describe('the HUD face', () => {
   it('is registered from the bundled WOFF2 before the first frame', () => {
     expect(source).toMatch(/^import hornet_font_url from '\.\.\/assets\/hornet\.woff2\?url'$/m)
     expect(source).toMatch(/new FontFace\("Hornet Display","url\("\+hornet_font_url\+"\)"\); document\.fonts\.add\(face\);/)
-    expect(source).toMatch(/function assets_ready\(\)\{ return [^\n]*&& face_ready && earth_done; \}/)
-    expect(source).toMatch(/core:flight_ready\(\), face:face_ready, land:earth_done \}/)
+    expect(source).toMatch(/function assets_ready\(\)\{ return [^\n]*&& face_ready; \}/)
+    expect(source).toMatch(/core:flight_ready\(\), face:face_ready \}/)
   })
 
   it('falls back to the system monospace when the load fails, rather than holding LOADING', () => {

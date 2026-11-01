@@ -8,7 +8,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type MouseEvent,
   type ReactNode,
 } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -85,7 +84,6 @@ import {
   X,
 } from 'lucide-react'
 import { flight_catalog, flight_load } from '../game/flight'
-import { LIMITS, at, clamp, on, parse, type Choice as Free } from '../game/position'
 import {
   default_server,
   normalize_server,
@@ -250,7 +248,7 @@ function Picker<T extends string>({
 // earth chosen on the map.
 type Place = 'air' | 'field' | 'ship'
 const PLACE: Record<MissionConfig['start'], Place> = {
-  air: 'air', position: 'air',
+  air: 'air',
   runway: 'field', apron: 'field', final: 'field',
   carrier: 'ship', deck: 'ship', groove: 'ship', case1: 'ship', case2: 'ship', case3: 'ship', landing: 'ship',
 }
@@ -277,10 +275,7 @@ function StartPosition({ config, onChange }: { config: MissionConfig; onChange: 
   }
   const first: Record<Place, string> = { air: 'air', field: 'runway:06', ship: `carrier:${config.cat || 2}` } // where each place starts when it is picked
   const points: Record<Place, Choice<string>[]> = {
-    air: [
-      { value: 'air', label: <Trans>Midway Island</Trans>, icon: Plane },
-      { value: 'position', label: <Trans>Select position</Trans>, icon: MapPin },
-    ],
+    air: [{ value: 'air', label: <Trans>Midway Island</Trans>, icon: Plane }],
     field: [
       { value: 'runway:06', label: <Runway end='06' />, icon: PlaneTakeoff },
       { value: 'runway:24', label: <Runway end='24' />, icon: PlaneTakeoff },
@@ -336,64 +331,6 @@ function StartPosition({ config, onChange }: { config: MissionConfig; onChange: 
           onChange={(v) => onChange({ ...config, demonstration: v })}
         />
       )}
-
-      {config.start === 'position' && <FreePosition config={config} onChange={onChange} />}
-    </div>
-  )
-}
-
-// FreePosition is the position start's place and flight (#167): the earth's
-// global map (public/maps/world/global.webp), clicked or typed into as
-// latitude and longitude, and the altitude, true heading and airspeed.
-function FreePosition({ config, onChange }: { config: MissionConfig; onChange: (config: MissionConfig) => void }) {
-  const { formatNumber } = useFormat()
-  const choice = clamp(config)
-  const [typed, setTyped] = useState<{ latitude: string | null; longitude: string | null }>({ latitude: null, longitude: null })
-  const set = (patch: Partial<Free>) => onChange({ ...config, ...clamp({ ...choice, ...patch }) })
-  const mark = at(choice.latitude, choice.longitude)
-  const image = new URL('maps/world/global.webp', location.href).href
-  const pick = (e: MouseEvent<HTMLDivElement>) => {
-    const r = e.currentTarget.getBoundingClientRect(), p = on((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height)
-    const four = (v: number) => Math.round(v * 1e4) / 1e4
-    setTyped({ latitude: null, longitude: null })
-    set({ latitude: four(p.latitude), longitude: four(p.longitude) })
-  }
-  const field = (axis: 'latitude' | 'longitude', label: ReactNode) => (
-    <div className='space-y-1'>
-      <Label htmlFor={`position-${axis}`} className='text-muted-foreground text-xs font-medium'>
-        {label}
-      </Label>
-      <Input
-        id={`position-${axis}`}
-        inputMode='decimal'
-        value={typed[axis] ?? formatNumber(choice[axis], 4)}
-        onChange={(e) => {
-          const text = e.target.value
-          setTyped({ ...typed, [axis]: text })
-          const v = parse(text, axis)
-          if (v !== null) set({ [axis]: v })
-        }}
-        onBlur={() => setTyped({ ...typed, [axis]: null })}
-      />
-    </div>
-  )
-  return (
-    <div className='space-y-1'>
-      {/* The map is the pointer's way in; the latitude and longitude fields below are the keyboard's. */}
-      <div aria-hidden className='border-border relative cursor-crosshair overflow-hidden rounded-lg border' onClick={pick}>
-        <img src={image} alt='' draggable={false} className='block w-full select-none' />
-        <span
-          className='bg-primary pointer-events-none absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white'
-          style={{ left: `${mark.across * 100}%`, top: `${mark.down * 100}%` }}
-        />
-      </div>
-      <div className='grid grid-cols-2 gap-2 pt-1'>
-        {field('latitude', <Trans>Latitude</Trans>)}
-        {field('longitude', <Trans>Longitude</Trans>)}
-      </div>
-      <SliderRow label={<Trans>Altitude</Trans>} value={choice.altitude} min={LIMITS.altitude.minimum} max={LIMITS.altitude.maximum} step={LIMITS.altitude.step} suffix=' ft' tight onChange={(v) => set({ altitude: v })} />
-      <SliderRow label={<Trans context='compass'>Heading</Trans>} value={choice.heading} min={LIMITS.heading.minimum} max={LIMITS.heading.maximum} step={LIMITS.heading.step} suffix='°' tight onChange={(v) => set({ heading: v })} />
-      <SliderRow label={<Trans>Airspeed</Trans>} value={choice.airspeed} min={LIMITS.airspeed.minimum} max={LIMITS.airspeed.maximum} step={LIMITS.airspeed.step} suffix=' kt' tight onChange={(v) => set({ airspeed: v })} />
     </div>
   )
 }
@@ -958,33 +895,6 @@ function CreditsDialog() {
             >
               {/* jsx-text-ok: brand name */}
               NOAA NCCOS
-            </a>
-          </p>
-          <p className='leading-relaxed'>
-            <Trans>
-              World map — <b>Blue Marble: Next Generation</b> imagery (July
-              2004) courtesy of <b>NASA Earth Observatory</b>; land outline from{' '}
-              <b>Natural Earth</b> 1:50m (public domain). Modified: resampled to
-              the game’s map grid.
-            </Trans>{' '}
-            <a
-              className='text-primary hover:underline'
-              href='https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              {/* jsx-text-ok: brand name */}
-              NASA Earth Observatory
-            </a>{' '}
-            ·{' '}
-            <a
-              className='text-primary hover:underline'
-              href='https://www.naturalearthdata.com/'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              {/* jsx-text-ok: brand name */}
-              Natural Earth
             </a>
           </p>
           <p className='leading-relaxed'>

@@ -37,7 +37,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_land, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_speed, flight_steer, flight_voyage, flight_carrier, flight_deck, flight_reframe, flight_wind, flight_footing, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
+import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_speed, flight_steer, flight_voyage, flight_carrier, flight_deck, flight_reframe, flight_wind, flight_footing, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
@@ -91,9 +91,7 @@ import { DAY as MOON_DAY, NIGHT as MOON_NIGHT, SIZE as MOON_SIZE } from './moon'
 import { asset as asset_bytes, progress as load_progress } from './preload'
 import { Recorder, stamp, channels, MIDWAY, airspeed } from './acmi'
 import { between, settle, theatre, HOME, DEGREE, point as earth_point, vector as earth_vector, attitude as earth_attitude, tangent as earth_tangent, centred as earth_centred } from './earth'
-import { Atlas, ATLAS, ATLAS_COVER, framing as atlas_framing, aim as atlas_aim } from './atlas'
 import { Globe, project as globe_project, heading as globe_heading, step as globe_step, ring as globe_ring, offset as globe_offset } from './globe'
-import { outline as land_outline, landed as land_landed } from './land'
 import * as navigate from './navigation'
 import * as magnetic from './magnetic'
 import * as avionics from './avionics'
@@ -107,7 +105,6 @@ import * as mids from './mids'
 import * as helmet from './helmet'
 import * as faces from './faces'
 import * as plates from './plates'
-import { spawn as free_spawn } from './position'   // the position start, anywhere on the earth (#167)
 import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, planet as sky_planet, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
@@ -603,19 +600,15 @@ const CLOUD_SHADOW_RESOLVE=`uniform sampler2D u_shadow; uniform vec3 u_shadow_su
 		return mix(1.0, texture2D(u_shadow,uv).r, u_shadow_patch.w*ground*rim); }
 	float cloud_shadow_level(float open){ return mix(u_shadow_level.x,u_shadow_level.y,open); }`;   // linear fraction of open-sun illumination
 
-// The low quality global map (atlas.ts, #162): the land the sea draws wherever the jet flies, in the engine's frame
-const atlas=new Atlas(), ocean_atlas=atlas_framing();
-let earth_land=null, earth_bytes=null, earth_done=false;   // land.bin (earth_load): the outline ground_height reads, its bytes for the flight core, and whether the read is over
 const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 	uniforms:{ u_time:{value:0}, u_sun:{value:sun_dir}, u_deep:{value:col_deep}, u_deep2:{value:col_deep2}, u_shallow:{value:col_shallow}, u_fog_density:{value:0.000060},
 		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_downwind:downwind, ...atmosphere_uniforms, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
 		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0}, u_slope:{value:0.069}, u_displacement0:{value:null}, u_displacement1:{value:null}, u_derivative0:{value:null}, u_derivative1:{value:null}, u_derivative2:{value:null}, u_lengths:{value:new THREE.Vector3(CASCADES[0],CASCADES[1],CASCADES[2])}, u_spectrum:{value:new THREE.Vector3()}, u_beam:{value:new THREE.Color(1,1,1)},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
 		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms,
 		u_wake:{value:new Float32Array(WAKE_POINTS*4)}, u_trail:{value:new THREE.DataTexture(new Float32Array(WAKE_TRAIL*2),WAKE_TRAIL,1,THREE.RGFormat,THREE.FloatType)}, u_trail_step:{value:0}, u_wake_group:{value:new Float32Array(WAKE_GROUPS*4)}, u_wake_count:{value:0}, u_wake_origin:{value:new THREE.Vector2()}, u_wake_bounds:{value:new THREE.Vector4()}, u_ship:{value:new THREE.Vector4()}, u_hull_span:{value:new THREE.Vector4(0,1,1,2)}, u_hull:{value:new Float32Array(WAKE_HULL*4)}, u_hull_beam:{value:0}, u_screws:{value:new THREE.Vector4(-1,-1,-1,-1)}, u_screw:{value:0}, u_wake_sea:{value:0}, u_wake_travelled:{value:0}, u_wake_turn:{value:new THREE.Vector2(1,0)},   // the ship's bow wave and wake (wake.ts), set each frame by wake_frame
-		u_chart:{value:new THREE.Vector2()}, u_curve:{value:new THREE.Vector2()}, u_home:{value:new THREE.Vector4(1,0,0,1)}, u_home_shift:{value:new THREE.Vector2()}, ...atlas.uniforms, ...ocean_atlas },   // the chart the sea's patterns are laid on; how the sea falls away from the frame's anchor; the world frame's plan, where the atoll's imagery is laid (chart_settle)   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
-	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh,u_chart,u_curve,u_home_shift; uniform vec4 u_home; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm; varying vec2 v_plan; varying vec3 v_ground;
+		u_chart:{value:new THREE.Vector2()}, u_curve:{value:new THREE.Vector2()}, u_home:{value:new THREE.Vector4(1,0,0,1)}, u_home_shift:{value:new THREE.Vector2()} },   // the chart the sea's patterns are laid on; how the sea falls away from the frame's anchor; the world frame's plan, where the atoll's imagery is laid (chart_settle)   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
+	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh,u_chart,u_curve,u_home_shift; uniform vec4 u_home; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm; varying vec2 v_plan;
 		`+SEA_TURN+`
-		`+ATLAS+`
 		#ifdef WAVES
 		uniform sampler2D u_displacement0,u_displacement1; uniform vec3 u_lengths; varying vec2 v_origin;
 		vec3 cascade(sampler2D map, vec2 p, float L, float gap){ return textureLod(map,p/L,log2(max(512.0*gap/L,1.0))).xyz; }   // the mip whose texels are twice the local vertex spacing: the waves the mesh cannot carry average away, as fit() fades the sines
@@ -629,7 +622,6 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		float ring=length(position.xz); float gap=max(u_mesh.x*sqrt(ring),u_mesh.y*ring);   // local grid spacing of the quadratic polar disc: radial 2*sqrt(r*R)/rings, azimuthal 2*pi*r/sectors
 		float calm=0.0; if(u_water_on>0.5){ vec2 wuv=clamp((home+u_water_half)/(2.0*u_water_half),0.0,1.0); calm=texture2D(u_lagoon,wuv).r; }   // atoll interior (reef flat + lagoon incl. the deep basin) = calm
 		v_calm=calm; float ws=mix(1.0,0.12,calm);   // damp wave amplitude inside the reef
-		v_ground=vec3(wp.x,-fall,wp.z); ws*=1.0-atlas_point(atlas_grid(v_ground)).a;   // the earth's land (#162) lies flat at sea level: no waves on it, and none in the share of a coast's texel that is land
 		h+=wave(xz,W0,2.0*fit(gap,W0.z),g);gt+=g;
 		#ifdef WAVES
 		vec3 d=(cascade(u_displacement0,xz,u_lengths.x,gap)+cascade(u_displacement1,xz,u_lengths.y,gap))*ws;   // the wind's sea from its spectrum (waves.ts), in place of the three sines; the crossing ground swell stays
@@ -640,10 +632,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		h*=ws; gt*=ws;
 		#endif
 		wp.y+=h-fall; v_height=h; v_normal=normalize(vec3(-gt.x+sag.x,1.0,-gt.y+sag.y)); v_world=wp.xyz; v_plan=home; gl_Position=projectionMatrix*viewMatrix*wp; }`,
-	fragmentShader:`varying vec3 v_ground;
-		`+ATLAS+`
-		`+ATLAS_COVER+`
-		uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_water_tint,u_sss; uniform float u_exposure,u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_cloud_flat,u_light,u_foam_gain,u_foam_debug,u_slope; uniform vec3 u_beam; uniform vec2 u_chart,u_wake_turn; uniform sampler2D u_water,u_detail,u_foam; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm; varying vec2 v_plan;
+	fragmentShader:`uniform vec3 u_sun,u_deep,u_deep2,u_shallow,u_water_tint,u_sss; uniform float u_exposure,u_fog_density,u_time,u_water_half,u_water_on,u_wind,u_cloud_flat,u_light,u_foam_gain,u_foam_debug,u_slope; uniform vec3 u_beam; uniform vec2 u_chart,u_wake_turn; uniform sampler2D u_water,u_detail,u_foam; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm; varying vec2 v_plan;
 		`+CLOUD_SHADOW_RESOLVE+`
 		`+ATMOSPHERE+`
 		`+SKY_SHOWN+`
@@ -829,8 +818,6 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 			if(u_foam_debug>2.5){ mask=clamp(foam,0.0,0.85); tint=vec3(0.92,0.96,1.0); }   // dev_sea: the soft foam alone, drawn, to compare
 			else if(u_foam_debug>0.5){ gl_FragColor=v_calm>0.01?vec4(0.0,0.0,1.0,1.0):vec4(vec3(u_foam_debug>1.5?clamp(foam,0.0,0.85):mask),1.0); return; }   // dev_foam_cover: the mask, or the soft cover alone (2); the reef and lagoon, which never foam, in blue
 			col=mix(col,tint*shade*u_light,mask);   // u_light: this hour's light against noon's - a fixed white left every whitecap glowing on a black night sea
-			{ vec2 g=atlas_grid(v_ground); vec4 earth=atlas_area(g,atlas_step(dFdx(g)),atlas_step(dFdy(g))); float cover=atlas_cover(earth.a);   // the earth's land (#162), over the sea it stands in
-				if(cover>0.0) col=mix(col,pow(earth.rgb,vec3(1.0/2.2))*u_water_tint*(0.55+0.45*max(dot(normalize(v_normal),L),0.0))*shade,cover); }   // the imagery as it was photographed (the sea writes display-referred), lit by the flat ground's own normal: no ripple, glint or foam
 			float fog=1.0-exp(-u_fog_density*u_fog_density*dist*dist);
 			fog=max(fog, smoothstep(70000.0,112000.0,dist));   // absolute saturation before the disc rim — a safety net; the density fog completes far earlier
 			vec3 horizon=shown(at_sky(normalize(vec3(-V.x,0.0,-V.z)+vec3(0.0,0.02,0.0)),normalize(u_sun))*u_illuminance,u_exposure);   // the dome's own horizon, this way
@@ -6635,15 +6622,6 @@ async function generate_world(){
 		if(["runway","apron","final"].includes(mission_start()) && running && airports.length) reset_ownship();
 	}catch(error){ console.error("midway map load failed",error); }
 }
-// earth_load reads the earth beyond the map (#162): the global map the sea and the map draw, and land.bin, the outline
-// the flight core and ground_height collide with. The loading gate waits for the outline, read or failed; the map
-// draws as it arrives.
-const WORLD_BASE=new URL("maps/world/",location.href).href;   // web/public/maps/world (tools/world.py)
-async function earth_load(){
-	void atlas.load(WORLD_BASE,renderer.capabilities.maxTextureSize).then(()=>atlas_aim(ocean_atlas,theatre.frame,atlas.manifest));
-	try{ earth_bytes=new Uint8Array(await asset_bytes(WORLD_BASE+"land.bin")); earth_land=land_outline(earth_bytes); }
-	catch(error){ earth_bytes=null; earth_land=null; console.error("the earth's land failed to load",error); }   // the sea everywhere, as before the land
-	earth_done=true; }
 const ISLAND_H=3.5;   // island top; the airfield surfaces + runway sit ~1.5 m above it (floating read fine for runway/taxiways; coplanar z-fought worse). Runway height tuned to the y=8 aircraft floor.
 const AIRFIELD_FLOAT=1.46;   // how far the airfield ground floats above the island top
 const RUNWAY_FLOAT=1.5;   // the runway floats slightly PROUD of the taxiways/aprons (they z-fought when coplanar). Both the drawn surface and the capsule the flight core collides with must use this one figure: they were 1.5 drawn against 1.46 collided, so the jet rested 4 cm below the runway it is drawn on and every wheel began 4 cm buried (#220)
@@ -6947,7 +6925,6 @@ function chart_settle(){ const was=chart_anchor; const at=theatre.frame;
 	u.uMerge.value.x=fold(merge.x+chart.x,CLOUD_SPAN); u.uMerge.value.y=fold(merge.z+chart.z,CLOUD_SPAN);
 	const sin=Math.sin(at.latitude), meridian=6378137*(1-0.00669437999014)/Math.pow(1-0.00669437999014*sin*sin,1.5), prime=6378137/Math.sqrt(1-0.00669437999014*sin*sin);
 	ocean_mat.uniforms.u_curve.value.set(0.5/prime,0.5/meridian);   // the sea falls away from the anchor: east-west on the prime vertical's curve, north-south on the meridian's
-	atlas_aim(ocean_atlas,at,atlas.manifest); atlas.follow(at.latitude,at.longitude);   // the global map's land under the frame, and its window kept about the jet
 	cloud_field_uniforms.uCurve.value.set(0.5/prime,0.5/meridian); }
 let chart_anchor=null;
 function runway_texture(nTop,nBottom){ const c=document.createElement("canvas"); c.width=128; c.height=1024; const x=c.getContext("2d");
@@ -10066,11 +10043,11 @@ if(DEV_MODE) (globalThis as any).dev_smoke=function(){ return smoke.activeList.l
 if(DEV_MODE) (globalThis as any).dev_earth=()=>{ const f=theatre.frame, p=f.place(ownship.pos);   // #134 probe: the engine's frame and where the jet is on the earth
 	return { anchor:[f.latitude/DEGREE,f.longitude/DEGREE], moves:theatre_moves, place:[p.latitude/DEGREE,p.longitude/DEGREE,p.altitude], pos:[ownship.pos.x,ownship.pos.y,ownship.pos.z], altitude:ownship.altitude, carrier:[CARRIER.x,CARRIER.deckY,CARRIER.z], speed:ownship.speed,
 		hull:carrier_model?(b=>[b.min.y,b.max.y])(new THREE.Box3().setFromObject(carrier_model)):null, ocean:ocean?[ocean.position.y,ocean.quaternion.w]:null }; };   // the ship's keel and top in the frame, and the sea mesh's height and turn: level at 0 in every frame
-if(DEV_MODE) (globalThis as any).dev_world=(set={})=>{   // #162 probe: the global map and the earth's land under the jet; set.range (metres) zooms the map
+if(DEV_MODE) (globalThis as any).dev_world=(set={})=>{   // #162 probe: the map's globe and the ground under the jet; set.range (metres) zooms the map, set.pan moves its centre
 	if(set.range!==undefined) map_range=Math.min(MAP_RANGE_MAX,Math.max(MAP_RANGE_MIN,+set.range));
 	if(set.pan) [map_px,map_pz]=set.pan;
 	const g=ground_height(ownship.pos.x,ownship.pos.z), kind=_ground_kind, broken=r=>r?(r.info.programs||[]).filter(q=>q.diagnostics&&!q.diagnostics.runnable).length:0;
-	return { loaded:!!atlas.manifest, failed:atlas.failed, window:atlas.window, land:!!earth_land, done:earth_done, ground:g, kind, sea:theatre.frame.sea(ownship.pos.x,ownship.pos.z).point.y,
+	return { ground:g, kind, sea:theatre.frame.sea(ownship.pos.x,ownship.pos.z).point.y,
 		crashed:crash_t>0, fate:ownship.fate||null, borne:flight_active?flight_get()[STATE.wow]>0.5:null, speed:ownship.speed, altitude:theatre.frame.altitude(ownship.pos),
 		map:map_on, range:map_range, globe:!!globe, broken:broken(renderer), globe_broken:globe?broken(globe.renderer):0 }; };
 if(DEV_MODE) (globalThis as any).dev_magnetic=()=>{ const gz=ownship.gauges||{}, p=theatre.frame.place(ownship.pos);   // #152 probe: the variation the suite uses, the field at the jet, and what the standby compass reads, degrees
@@ -10101,7 +10078,7 @@ if(DEV_MODE) (globalThis as any).dev_start=()=>{ const g=ownship.gauges||{};
 		ins:{ knob:nav.ins.knob, mode:nav.ins.mode }, grounded:!!ownship.grounded, speed:ownship.speed, pos:[ownship.pos.x,ownship.pos.y,ownship.pos.z], fwd:[ownship.fwd.x,ownship.fwd.z],
 		deck:{ fa:carrier_fore_aft(ownship.pos.x,ownship.pos.z), lat:carrier_lateral(ownship.pos.x,ownship.pos.z), y:CARRIER.deckY, island:deck_grid?deck_grid.island:null,
 			forward:[carrier_fore_aft(ownship.pos.x+ownship.fwd.x,ownship.pos.z+ownship.fwd.z)-carrier_fore_aft(ownship.pos.x,ownship.pos.z), carrier_lateral(ownship.pos.x+ownship.fwd.x,ownship.pos.z+ownship.fwd.z)-carrier_lateral(ownship.pos.x,ownship.pos.z)] },
-		home:(()=>{ const h=homeward(ownship.pos); return [h.x,h.y,h.z]; })(), heading:((ownship.gauges||{}).heading??0)/DEGREE, cas:(ownship.gauges||{}).casKt??null, hint:hint_key, shown:hint_rows?hint_rows.join(' '):null, ols:carrier_ols?ols_dev(ownship.pos,carrier_ols):null, end:airports[0]?{ x:airports[0].start.x, z:airports[0].start.z, dx:airports[0].dir.x, dz:airports[0].dir.z, y:airports[0].sy }:null }); };
+		home:(()=>{ const h=homeward(ownship.pos); return [h.x,h.y,h.z]; })(), hint:hint_key, shown:hint_rows?hint_rows.join(' '):null, ols:carrier_ols?ols_dev(ownship.pos,carrier_ols):null, end:airports[0]?{ x:airports[0].start.x, z:airports[0].start.z, dx:airports[0].dir.x, dz:airports[0].dir.z, y:airports[0].sy }:null }); };
 // dev_switch (#133): throws a travel-only control to a position, as clicks would
 if(DEV_MODE) (globalThis as any).dev_switch=(name,at)=>{ thrown[name]=at; return travel_at(name); };
 const soot_queue=[];   // air bursts soot AFTER the fireball: the dark cloud is the fire's product, not its curtain (#92)
@@ -10248,13 +10225,8 @@ function ground_height(x,z){   // top of the solid surface under (x,z): carrier 
 		if(h>-1e8 && h<CARRIER.deckY+4){ _ground_kind="deck"; return h>CARRIER.deckY-2.5?CARRIER.deckY:h; }   // the flight deck is one horizontal plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to the measured plane; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
 	}
 	const home=homeward({ x, y:0, z }), h=land_height(home.x,home.z);   // the map is laid in the world frame
-	return h>-1e8?theatre_point({ x:home.x, y:h, z:home.z }).y:earth_ground(x,z);
+	return h>-1e8?theatre_point({ x:home.x, y:h, z:home.z }).y:h;
 }
-// earth_ground is the earth's own land under (x, z) of the engine's frame (#162): flat soft ground at sea level wherever
-// the outline says land, where the flight core finds it (flight/land.go); -inf over the sea
-function earth_ground(x,z){ if(!earth_land) return -1e9; const sea=theatre.frame.sea(x,z).point, place=theatre.frame.place(sea);
-	if(!land_landed(earth_land,place.latitude,place.longitude)) return -1e9;
-	_ground_kind="ground"; return sea.y; }
 function land_height(x,z){   // the map's own surface at a world frame (x, z)
 	if(obstacles.runway && over_runway({x,z})){ _ground_kind="runway"; return ISLAND_H+RUNWAY_FLOAT; }
 	for(const a of obstacles.aprons){ if(pip(x,z,a)){ _ground_kind="apron"; return ISLAND_H+AIRFIELD_FLOAT; } }
@@ -10953,7 +10925,7 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 		flight_stores(own_mask());   // trimmed as loaded, as Case II is: mounted after, the loadout's weight and drag took 14 kt and 31 m off a Case I entry in 30 s
 		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		{ const entry=mission_start();
-			if(entry==="case1"||entry==="case3"||entry==="position"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor back to a lever position
+			if(entry==="case1"||entry==="case3"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor back to a lever position
 				const trimmed=flight_get(); ownship.throttle=Math.max(0,Math.min(1,(trimmed[STATE.engine]-IDLE)/(1-IDLE))); } }
 		sync_core(flight_get()); return;
 	}
@@ -11020,7 +10992,6 @@ function fly_player(dt){
 		if(!flight_ready()){ if(flight_failure()) notice(translate("FLIGHT CORE FAILED")); return; }
 		const world=flight_world();
 		flight_reframe(theatre.frame.latitude,theatre.frame.longitude);   // the core's positions are the engine's frame's, whichever it was left in
-		if(earth_bytes) flight_land(earth_bytes);   // the earth's land, for every model the core builds
 		if(!flight_init(world)){ notice(translate("FLIGHT CORE FAILED")); return; }
 		if(MULTIPLAYER) flight_voyage(ship_track||net.welcome.spawn.ship); else flight_plan();   // the ship under way: a match's track from the server, planned here in single player
 		carrier_pose(flight_get()[STATE.time]||0); if(MULTIPLAYER) placed=null; else carry_start();
@@ -11705,11 +11676,6 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false }; }   // configured and in the groove: only the ball remains
-	else if(st==="position"){   // anywhere on the earth (#167): the dialog's latitude, longitude, feet, true heading and knots, trimmed level by flight_push
-		const s=free_spawn({ latitude:cfg.latitude, longitude:cfg.longitude, altitude:cfg.altitude, heading:cfg.heading, airspeed:cfg.airspeed });
-		ownship.pos.set(s.position.x,s.position.y,s.position.z); ownship.fwd.set(s.direction.x,0,s.direction.z); ownship.speed=s.speed; ownship.throttle=0.85;   // the direction the core's trim turns into the heading where the jet is; the throttle a pre-core fallback, flight_push holds the trimmed power
-		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
-		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	else if(st==="case1"){   // Case I (#205): initial — up the WAKE (hull axis, not the angled centreline) at 800 ft, 350 kt, clean. The break, the dirty-up, and the pattern are the mission
 		const O=carrier_world(0,0), F=carrier_world(100,0);
 		let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
@@ -11760,7 +11726,7 @@ function reset_ownship(){
 		ownship.fwd.set(CARRIER.x-ownship.pos.x,0,CARRIER.z-ownship.pos.z).normalize(); ownship.speed=220; ownship.throttle=0.85;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
-	placed=(st==="carrier"||st==="deck"||st==="groove"||st==="case1"||st==="case2"||st==="case3")?{ x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z, turn:carrier_turn.clone() }:(st==="joust"||st==="position"||((st==="runway"||st==="apron"||st==="final")&&airports.length))?null:{ aim:true };   // what the start was laid against, for carry_start
+	placed=(st==="carrier"||st==="deck"||st==="groove"||st==="case1"||st==="case2"||st==="case3")?{ x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z, turn:carrier_turn.clone() }:(st==="joust"||((st==="runway"||st==="apron"||st==="final")&&airports.length))?null:{ aim:true };   // what the start was laid against, for carry_start
 	start_fresh(parked?(st==="deck"?"ship":"field"):null);   // the APU stopped, and a parked jet's cart plugged in where it stands (#133)
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
 	{ const down=wheels||st==="case2"||st==="groove"||st==="final"; ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
@@ -11972,7 +11938,7 @@ let globe=null, globe_tried=false;
 function globe_show(on){
 	if(on&&!globe_tried){ globe_tried=true;
 		try{ const c=document.createElement("canvas"); c.style.cssText="position:fixed;inset:0;z-index:23;pointer-events:none;display:none";
-			map_el.parentNode.insertBefore(c,map_el); globe=new Globe(atlas,c); map_el.style.background="transparent"; }
+			map_el.parentNode.insertBefore(c,map_el); globe=new Globe(c); map_el.style.background="transparent"; }
 		catch(error){ console.error("the map's globe failed to start",error); globe=null; } }
 	if(globe) globe.canvas.style.display=on?"block":"none"; }
 function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
@@ -13953,7 +13919,6 @@ function start_mission(){
 	const scq=devq.get("scenario"); if(scq!==null){ const n=parseInt(scq)||0; const arm=setInterval(()=>{ if(TESTS[n]&&TESTS[n].carrier?carrier_ols:airports.length){ clearInterval(arm); start_test(n); } }, 500); }   // &scenario=N: fire a landing test once ITS surface data exists (carrier scenarios need the OLS survey, not just the airfield list) — a fixed 3 s timer lost the race to the map load and the hook silently never ran
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
 	{ const coldq=devq.get("cold"), endq=devq.get("end"); if(coldq!==null) cfg.cold=coldq!=="0"; if(endq) cfg.end=endq; }   // ?cold=1 a parked start cold and dark, ?end=24 the runway end (#133)
-	for(const k of ["latitude","longitude","altitude","heading","airspeed"]){ const v=parseFloat(devq.get(k)??""); if(Number.isFinite(v)) cfg[k]=v; }   // the position start's choice (#167)
 	const hintq=devq.get("hints"); if(hintq==="1") cfg.hints=true; else if(hintq==="0") cfg.hints=false;   // &hints=0|1 — force the flight hints for headless verification (#70)
 	const demonstrationq=devq.get("demonstration"); if(demonstrationq==="1") cfg.demonstration=true; else if(demonstrationq==="0") cfg.demonstration=false;   // &demonstration=0|1 — the scripted Case I pilot, for headless verification of the pattern it flies
 	demonstration_seed=parseInt(devq.get("seed")||"0",10)||0;   // &seed=N — replay one pilot's habits, the demonstration's and the bandit's (bandit_seed); 0 draws a fresh one per mission
@@ -13995,7 +13960,7 @@ function start_mission(){
 let face_ready=false;
 { const face=new FontFace("Hornet Display","url("+hornet_font_url+")"); document.fonts.add(face);
 	face.load().then(()=>{ face_ready=true; },(e)=>{ console.warn("HUD font failed to load:",e); face_ready=true; }); }   // i18n-format-ok: developer console output, never shown to a user
-function assets_ready(){ return !!carrier_model && model_active && airports.length>0 && flight_ready() && face_ready && earth_done; }   // the async loads: carrier GLB (+deck aids), fighter GLB, map/airfield, flight core wasm, HUD face, the earth's land
+function assets_ready(){ return !!carrier_model && model_active && airports.length>0 && flight_ready() && face_ready; }   // the async loads: carrier GLB (+deck aids), fighter GLB, map/airfield, flight core wasm, HUD face
 
 // ============================================================================ boot
 apply_time_of_day(cfg.tod); apply_effects(); apply_size(); apply_wind();
@@ -14039,7 +14004,7 @@ function frame(){ const wall=clock.getDelta(); let dt=Math.min(wall,0.05);   // 
 	audio_enable(cfg.sound!==false && running && !game_paused && !(playback&&playback_held));   // FIRST thing every frame — silence must not depend on anything below surviving (silent in the menu and paused)
 	audio_volumes(cfg.volume);
 	if(running && loading){   // hold on a black LOADING screen, then jump straight to the fully rendered scene (no piecemeal pop-in)
-		{ const parts={ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready(), face:face_ready, land:earth_done };   // load profiling: stamp each gate the first time it opens, report the breakdown once done
+		{ const parts={ carrier:!!carrier_model, aircraft:model_active, map:airports.length>0, core:flight_ready(), face:face_ready };   // load profiling: stamp each gate the first time it opens, report the breakdown once done
 			for(const k of Object.keys(parts)) if(parts[k]&&load_marks[k]===undefined) load_marks[k]=performance.now()-loading_t0;
 			load_pending=Object.keys(parts).filter(k=>!parts[k]); }
 		if(assets_ready()){ loading=false; pacing.reset();
@@ -14097,7 +14062,6 @@ __raf = requestAnimationFrame(frame);
 void init_external_model(cfg.aircraft||"fa18c");   // one airframe today: ownship, bandit, and remotes all fly it (a second type would preload here too)
 init_carrier_model();
 void flight_load();   // the wasm flight core loads alongside the GLBs; assets_ready() gates on it
-void earth_load();
 
   function stop() {
     // #57 parked: head_close()

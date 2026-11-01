@@ -125,7 +125,7 @@ export default defineConfig(
             // Attribution link labels in the credits: platform / data-source
             // proper nouns and a license identifier — brand names kept verbatim
             // (the glossary guard requires it), not translatable prose.
-            '^(Sketchfab|Copernicus|OpenStreetMap|NOAA NCCOS|NOAA NCEI|NASA SVS|NASA Earth Observatory|Natural Earth|JPL Horizons|Unity Labs|CC BY 4\\.0)$',
+            '^(Sketchfab|Copernicus|OpenStreetMap|NOAA NCCOS|NOAA NCEI|NASA SVS|JPL Horizons|Unity Labs|CC BY 4\\.0)$',
             // Missile designations in the loadout summary, alone or with a
             // count ("AIM-9M", "2× AIM-120C") — military type numbers, printed
             // as the jet prints them, like the Reference dialog's V-speeds.
