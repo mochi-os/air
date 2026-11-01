@@ -475,6 +475,7 @@ def main():
 	match = Match(*args[:4], only=only).solve(log=lambda m: print(m, file=sys.stderr))
 	report = match.report()
 	print(json.dumps(report, indent="\t") if flags.get("json") else text(report))
+	failures = []
 	if flags.get("check"):
 		spec = json.loads(Path(args[0]).read_text()).get("gate")
 		if spec is None:
@@ -485,14 +486,16 @@ def main():
 			for name, why in rows:
 				print(f"{heading}: {name}: {why}")
 		print(f"gate: {len(failures)} failed, {len(known)} known, {len(unjudged)} unjudged")
-		if failures:
-			sys.exit(1)
+	# the outputs first, so a run that fails the gate still leaves its
+	# cameras and overlays to look into the failure with
 	if "overlays" in flags:
 		match.overlays(flags["overlays"])
 	if "cameras" in flags:
 		match.write_cameras(flags["cameras"])
 	if "sheets" in flags:
 		match.sheets(*flags["sheets"])
+	if flags.get("check") and failures:
+		sys.exit(1)
 
 
 if __name__ == "__main__":

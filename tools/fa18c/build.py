@@ -1847,17 +1847,60 @@ def mechanisms():
 	# and the boarding ladder. Placements are provisional: the hook's pivot is
 	# located on the reference photo dvids9820808 (FS 641, WL 80); the rest
 	# wait on photos that show them open.
-	# Hook: swings sideways on its pivot (NATOPS 2.10.5's lateral liquid
-	# spring), then lowers
+	# The keel under the centreline (layout.keel): a narrow wedge from where
+	# it leaves the body to the hook's pivot fitting at its aft end, its
+	# bottom on the photos' line, rising to the body over its unseen front
+	keel = LAYOUT["keel"]
+	front, back = keel["stations"]
+	(s0, w0), (s1, w1) = keel["bottom"]
+	top = 92.0   # inside the body between the nacelles, so the keel joins the skin
+
+	def keel_bottom(station):
+		if station >= s0:
+			return w0 + (w1 - w0) * min(1.0, (station - s0) / (s1 - s0))
+		return top - (top - w0) * ease((station - front) / (s0 - front))
+
+	rings = []
+	for station in [front + (back - front) * i / 20 for i in range(21)]:
+		half = max(0.25, keel["width"] / 2 * (station - front) / (back - front))
+		b = keel_bottom(station)
+		# round from the top toward starboard, as the other lofts go
+		rings.append([at(station, top, -half), at(station, top, half), at(station, b + 1.0, half), at(station, b, 0.6 * half),
+			at(station, b, -0.6 * half), at(station, b + 1.0, -half)])
 	hook = LAYOUT["hook"]
 	pivot = at(*hook["pivot"], 0)
-	# the shank ends 4 in above and 3 in ahead of the point, where the shoe hangs
-	point = at(hook["point"][0] - 3, hook["point"][1] + 4, 0)
+	fitting = hook["fitting"]
+	node("keel", mesh=merge([loft(rings), cylinder(at(hook["pivot"][0], hook["pivot"][1], -fitting["width"] / 2), at(hook["pivot"][0], hook["pivot"][1], fitting["width"] / 2), fitting["radius"])]))
+	# Hook: swings sideways on its pivot (NATOPS 2.10.5's lateral liquid
+	# spring), then lowers. Stowed, its shank climbs from the pivot into the
+	# channel between the nacelles, the shoe tucked between the nozzles
+	# (layout.hook): a tapered bar, then the shoe, deeper below the line, its
+	# tip at the point
 	node("hook_swing", hinge=pivot)
 	joint("hook_swing", UP, AFT, -PORT, "swing", IDENTITY)
-	shank = merge([cylinder(pivot, point, 2.0, 1.6), cylinder(point, point + DOWN * (4 * INCH) + AFT * (3 * INCH), 2.2, 1.8)])
-	node("hook", parent="hook_swing", hinge=pivot, mesh=shank)
-	MARKS["hook_point"] = (point + DOWN * (4 * INCH) + AFT * (3 * INCH), "hook")
+	tip = at(*hook["point"], 0)
+	along = (tip - pivot).normalized()
+	side = Vector(at(0, 0, 1) - at(0, 0, 0)).normalized()
+	up = side.cross(along).normalized()
+	if up.dot(UP) < 0:
+		up = -up
+	length = (tip - pivot).length / INCH
+
+	def section(distance, width, above, below):
+		c = pivot + along * (distance * INCH)
+		return [c + up * (above * INCH) - side * (width / 2 * INCH), c + up * (above * INCH) + side * (width / 2 * INCH),
+			c - up * (below * INCH) + side * (width / 2 * INCH), c - up * (below * INCH) - side * (width / 2 * INCH)]
+
+	depth, width = hook["shank"]["depth"], hook["shank"]["width"]
+	shank = loft([section(0.0, width, depth / 2, depth / 2), section(length - 6, width * 0.7, depth * 0.4, depth * 0.4)])
+	# the tip's end face is square to the shank, which climbs: set back by the
+	# depth below the line times the climb, its lowest corner lands on the point
+	back = (depth / 2 + 0.6) * along.dot(UP)
+	shoe = loft([section(length - 6, width * 0.7, depth * 0.4, depth * 0.4), section(length - 5, width, depth / 2, depth / 2 + 1.6),
+		section(length - 1.5, width, depth / 2, depth / 2 + 1.6), section(length - back, width * 0.7, depth * 0.35, depth / 2 + 0.6)])
+	node("hook", parent="hook_swing", hinge=pivot, mesh=merge([shank, shoe]))
+	MARKS["hook_point"] = (tip, "hook")
+	MARKS["hook_pivot"] = (pivot, "hook")
 	joint("hook", PORT, AFT, DOWN, "hook", [[0, 0], [1, math.radians(62)]])
 	# Probe: its door on the upper starboard nose where the photos put the
 	# reference airframe's (layout.probe; the research jet's, TM-101724's, ran

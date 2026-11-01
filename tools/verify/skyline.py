@@ -41,6 +41,10 @@ from photos import weak  # noqa: E402
 Image.MAX_IMAGE_PIXELS = None
 WIDTH = 3000     # pixels the longer side is worked at
 REACH = 24       # pixels either side of the model's edge searched, at that width
+BAND = REACH // 2   # the outermost samples, the sky the walk starts from
+GREEN = 8.0      # the band's green over its red and blue, past which it is grass or trees, not sky
+HORIZON = 1.5    # degrees under the model frame's horizontal before a ground photo's ray meets ground: the jet sits about 1 deg off level on its gear
+REACHES = (REACH, 2 * REACH, 3 * REACH)   # tried in turn where the shorter finds no edge: a miss past the reach is no sky there
 STEP = 4         # pixels between places tried along the model's edge
 SKY = {"bright": 110, "even": 7.0, "contrast": 25, "depart": 8.0}   # the sky beyond: at least this bright and no rougher; the jet this far from it
 SUSTAIN = 3      # samples a change in brightness must hold to be the jet, not a panel line or a halo
@@ -77,7 +81,7 @@ def edge_along(profile):
 	p = np.asarray(profile, float)
 	n = len(p) // 2
 	x = np.arange(len(p))
-	band = x[-(n // 2):]
+	band = x[-BAND:]
 	slope, base = np.polyfit(band, p[band], 1)
 	sky = base + slope * x
 	rough = (p[band] - sky[band]).std()
@@ -95,7 +99,7 @@ def edge_along(profile):
 				return j + (a - f) / (a - b)
 		return None
 
-	for i in range(len(p) - n // 2, SUSTAIN - 1, -1):
+	for i in range(len(p) - BAND, SUSTAIN - 1, -1):
 		run = off[i - SUSTAIN + 1:i + 1]
 		if not (np.all(run > depart) or np.all(run < -depart)):
 			continue
@@ -213,31 +217,68 @@ def blocked(stores, load, hardpoints, frame, camera, centre, work, scale):
 	return np.asarray(image.filter(ImageFilter.MaxFilter(7))) > 0
 
 
-def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None):
+def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None):
 	# Every place along the model's edge where the photo shows sky beyond it:
 	# [{pixel, edge, miss (inches), part, point}]. gray and ids (each pixel's
 	# frontmost triangle, frontmost()) are at the working scale; names,
 	# points (source coordinates) and depths are each triangle's, a name of
 	# None for glass, which shows the sky through it and is not judged. No
-	# place whose profile crosses blocked (a store, blocked()) is judged
+	# place whose profile crosses blocked (a store, blocked()) is judged, nor
+	# one whose band of sky is green (green: each pixel's green over its red
+	# and blue): grass and trees, bright and even in grey, pass for sky. In a
+	# photo taken on the ground, below (a mask at the working scale) is what
+	# lies under the horizon: ground, never sky, however bright and even
 	mask = ids >= 0
 	nx, ny = outward(mask)
 	out = []
-	t = np.arange(-REACH, REACH + 1)
+
+	def clear(row, column, dx, dy, reach):
+		# how far out from the model's edge the normal stays off the model: past
+		# that it meets another of the model's parts (the hook below the body,
+		# the body past a concave corner), whose own edge in the photo is not
+		# this one's
+		t = np.arange(2, reach + 1)
+		xs, ys = np.round(column + t * dx).astype(int), np.round(row + t * dy).astype(int)
+		inside = (xs >= 0) & (ys >= 0) & (xs < mask.shape[1]) & (ys < mask.shape[0])
+		hit = np.zeros(len(t), bool)
+		hit[inside] = mask[ys[inside], xs[inside]]
+		return int(t[np.argmax(hit)]) - 2 if hit.any() else reach
+
+	def search(row, column, dx, dy, reach):
+		# the photo's edge along the normal within reach, or None
+		t = np.arange(-reach, reach + 1)
+		xs, ys = column + t * dx, row + t * dy
+		if xs.min() < 0 or ys.min() < 0 or xs.max() > gray.shape[1] - 2 or ys.max() > gray.shape[0] - 2:
+			return None
+		x0, y0 = np.floor(xs).astype(int), np.floor(ys).astype(int)
+		if blocked is not None and blocked[y0, x0].any():
+			return None
+		if green is not None and green[y0[-BAND:], x0[-BAND:]].mean() > GREEN:
+			return None
+		if below is not None and below[y0[-BAND:], x0[-BAND:]].any():
+			return None
+		fx, fy = xs - x0, ys - y0
+		return edge_along(gray[y0, x0] * (1 - fx) * (1 - fy) + gray[y0, x0 + 1] * fx * (1 - fy) + gray[y0 + 1, x0] * (1 - fx) * fy + gray[y0 + 1, x0 + 1] * fx * fy)
+
 	for row, column in rim(mask):
 		j = ids[row, column]
 		if names[j] is None:
 			continue
 		dx, dy = nx[row, column], ny[row, column]
-		xs, ys = column + t * dx, row + t * dy
-		if xs.min() < 0 or ys.min() < 0 or xs.max() > gray.shape[1] - 2 or ys.max() > gray.shape[0] - 2:
-			continue
-		x0, y0 = np.floor(xs).astype(int), np.floor(ys).astype(int)
-		if blocked is not None and blocked[y0, x0].any():
-			continue
-		fx, fy = xs - x0, ys - y0
-		profile = (gray[y0, x0] * (1 - fx) * (1 - fy) + gray[y0, x0 + 1] * fx * (1 - fy) + gray[y0 + 1, x0] * (1 - fx) * fy + gray[y0 + 1, x0 + 1] * fx * fy)
-		found = edge_along(profile)
+		# where the model's edge lies more than the reach inside or outside
+		# the photo's, the shorter search sees no sky beyond it, or no edge
+		found = None
+		room = clear(row, column, dx, dy, REACHES[-1])
+		for reach in REACHES:
+			if reach > room:
+				# the search would cross another of the model's parts: a shorter one
+				# only, with room for its band of sky
+				if room >= 2 * BAND:
+					found = search(row, column, dx, dy, room)
+				break
+			found = search(row, column, dx, dy, reach)
+			if found is not None:
+				break
 		if found is None:
 			continue
 		# measured from the edge pixel's centre, half a pixel inside the silhouette's own edge
@@ -264,6 +305,22 @@ def overlay(gray, mask, places, scale, path):
 		pen.line([x, y, ex, ey], fill=colour)
 		pen.ellipse([ex - 1.5, ey - 1.5, ex + 1.5, ey + 1.5], fill=colour)
 	image.save(path)
+
+
+def horizon(camera, centre, work, scale, up):
+	# What a camera on the ground sees under the horizon, as a mask at the
+	# working scale: every pixel whose ray points more than HORIZON degrees
+	# below the model frame's horizontal (up: the frame's upward unit vector),
+	# on a coarse grid
+	rows, columns = np.mgrid[0:work[1]:8, 0:work[0]:8]
+	rotation = cam.rotation(camera[1:4]).T
+	up = np.asarray(up, float) / np.linalg.norm(up)
+	coarse = np.zeros(rows.shape, bool)
+	for (i, j), r in np.ndenumerate(rows):
+		x = cam.undistort(camera, [(columns[i, j] / scale, r / scale)], centre)[0]
+		d = rotation @ np.array([x[0], x[1], 1.0])
+		coarse[i, j] = d @ up / np.linalg.norm(d) < -np.sin(np.radians(HORIZON))
+	return np.repeat(np.repeat(coarse, 8, axis=0), 8, axis=1)[:work[1], :work[0]]
 
 
 def label(key):
@@ -420,7 +477,9 @@ def main():
 		work = (int(size[0] * scale), int(size[1] * scale))
 		ids = frontmost(flat * scale, depth, work)
 		with Image.open(root / "references" / entry["file"]) as image:
-			gray = np.asarray(image.convert("L").resize(work), float)
+			colour = np.asarray(image.convert("RGB").resize(work), float)
+		gray = colour @ np.array([0.299, 0.587, 0.114])
+		green = colour[..., 1] - np.maximum(colour[..., 0], colour[..., 2])
 		points = frame.source(tris.mean(axis=1))
 		stores = catalogue.get("stores")
 		hidden = None
@@ -428,7 +487,9 @@ def main():
 			load = dict(stores["load"])
 			load.update(catalogue["photos"][photo].get("stores", {}))
 			hidden = blocked(stores, load, hardpoints, frame, camera, centre, work, scale)
-		places = measure(gray, ids, names, points, depth.mean(axis=1), camera[0], frame.unit, scale, hidden)
+		# a photo with the gear down was taken on the ground: under its horizon lies ground
+		ground = horizon(camera, centre, work, scale, frame.model([0, 1, 0]) - frame.model([0, 0, 0])) if entry.get("pose", {}).get("gear", 0) >= 1 else None
+		places = measure(gray, ids, names, points, depth.mean(axis=1), camera[0], frame.unit, scale, hidden, green, ground)
 		mask = ids >= 0
 		results[photo] = {"tried": len(rim(mask)), "places": places, "scale": scale}
 		overlay(gray, mask, places, scale, out / f"{photo}.png")

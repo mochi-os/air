@@ -3,6 +3,7 @@
 # Mochi Application Interface Exception - see license.txt and license-exception.md.
 #
 # usage: python3 -I test_photos.py
+import io
 import json, math, sys, tempfile, unittest
 from pathlib import Path
 
@@ -259,6 +260,25 @@ class MatchTest(unittest.TestCase):
 		# a known miss carries its why; a weak camera's edges are not judged
 		self.assertEqual(known, [("edge good:known", "median miss 4.00 in, worst +5.00: a finding")])
 		self.assertEqual(sorted(n for n, _ in unjudged), ["edge far:spine", "edge loose:tail"])
+
+	def test_a_failed_gate_still_writes_its_cameras(self):
+		# a gate nothing can pass (no edge may miss at all): the run fails, but the cameras are written first
+		r = self.root
+		catalogue = json.loads((r / "photos.json").read_text())
+		catalogue["gate"] = {"edge": -1.0, "sigmas": 0, "floor": -1.0, "field": 0.0, "rms": 1e9, "known": {}}
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		out = r / "cameras.json"
+		argv, stdout = sys.argv, sys.stdout
+		sys.argv = ["photos.py", str(r / "photos.json"), str(r / "m.glb"), str(r / "m.json"), str(r / "features.json"), "--check", "--cameras", str(out)]
+		sys.stdout = io.StringIO()
+		try:
+			with self.assertRaises(SystemExit) as caught:
+				photos.main()
+		finally:
+			sys.argv, sys.stdout = argv, stdout
+		self.assertEqual(caught.exception.code, 1)
+		self.assertTrue(out.exists())
+		self.assertTrue(json.loads(out.read_text()))
 
 	def test_features_follow_the_pose(self):
 		r = self.root

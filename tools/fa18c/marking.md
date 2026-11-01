@@ -59,7 +59,10 @@ nose from the front, the aircraft's right is on the photo's left. Get this right
   behind): the centre of the tyre's silhouette.
 - `nozzle_root_bottom_left` / `_right`: bottom of that engine nozzle where its petals start.
 - `nozzle_exit_bottom_left` / `_right`: bottom of that nozzle's exit lip.
-- `hook_point`: the tip of the stowed arresting hook (its aft, lower end) under the tail.
+- `hook_point`: the tip of the stowed arresting hook's shoe, under the tail between the nozzles (not where the
+  shank passes into the body's outline in a side view, about 35 in forward of it).
+- `hook_pivot`: the centre of the round end cap on the arresting hook's pivot fitting, at the shank's forward
+  end under the aft fuselage.
 - `fold_trailing_left` / `_right`: the trailing-edge flap's outboard trailing corner, at the wing-fold line
   (the aileron's inboard corner lies just outboard of it, a few inches of gap between them).
 - `wingtip_trailing_*` is the aileron's outer trailing corner: the aileron runs to the tip. Both it and

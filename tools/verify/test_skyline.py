@@ -112,9 +112,43 @@ class SkylineTest(unittest.TestCase):
 		left = [p["miss"] for p in two if p["pixel"][0] < 70]
 		self.assertAlmostEqual(float(np.median(left)), -3.0, delta=0.3)
 		self.assertAlmostEqual(float(np.median(right)), -6.0, delta=0.6)
+		# the photo's jet standing 50 px outside the model's edge, past the first reach: found by a longer one
+		big = np.full((320, 320), -1)
+		big[60:140, 60:140] = 0
+		wide = Image.new("L", (320, 320), 200)
+		ImageDraw.Draw(wide).rectangle([60, 60, 139, 189], fill=60)
+		far = skyline.measure(np.asarray(wide, float), big, names, points, depths, focal, unit, 1.0)
+		bottom = [p["miss"] for p in far if p["pixel"][1] >= 138 and 70 < p["pixel"][0] < 130]
+		self.assertTrue(bottom)
+		self.assertAlmostEqual(float(np.median(bottom)), -50.0, delta=1.0)
+		# another of the model's parts just below the edge, as the hook hangs below the body, with the
+		# photo's own such part where the model has it: the short search sees that part, not sky; a longer
+		# one would walk in from the sky below it and take its far edge for the body's. It stops at the
+		# model's own part instead, and with no room for sky there it judges nothing
+		hung = np.full((320, 320), -1)
+		hung[60:140, 60:140] = 0
+		hung[150:160, 60:140] = 0
+		scene = Image.new("L", (320, 320), 200)
+		ImageDraw.Draw(scene).rectangle([60, 60, 139, 141], fill=60)
+		ImageDraw.Draw(scene).rectangle([60, 150, 139, 159], fill=60)
+		under = skyline.measure(np.asarray(scene, float), hung, names, points, depths, focal, unit, 1.0)
+		body = [p["miss"] for p in under if 138 <= p["pixel"][1] <= 140 and 70 < p["pixel"][0] < 130]
+		self.assertFalse([m for m in body if m < -5.0])
 		# with the ground beyond instead of sky, nothing is judged
 		dark = np.where(gray > 100, 80.0, gray)
 		self.assertEqual(skyline.measure(dark, ids, names, points, depths, focal, unit, 1.0), [])
+		# nor where the bright, even background is green: grass or trees, not sky
+		grass = np.zeros_like(gray)
+		grass[150:, :] = 30.0
+		kept = skyline.measure(gray, ids, names, points, depths, focal, unit, 1.0, green=grass)
+		self.assertTrue([p for p in kept if p["pixel"][1] < 70])
+		self.assertFalse([p for p in kept if p["pixel"][1] >= 138 and 70 < p["pixel"][0] < 130])
+		# nor under the horizon in a photo taken on the ground, however much the ground there looks like sky
+		ground = np.zeros(gray.shape, bool)
+		ground[150:, :] = True
+		kept = skyline.measure(gray, ids, names, points, depths, focal, unit, 1.0, below=ground)
+		self.assertTrue([p for p in kept if p["pixel"][1] < 70])
+		self.assertFalse([p for p in kept if p["pixel"][1] >= 138 and 70 < p["pixel"][0] < 130])
 		# nor is glass, whose outline shows the sky through it
 		self.assertEqual(skyline.measure(gray, ids, [None], points, depths, focal, unit, 1.0), [])
 		# nor any place whose search crosses a store the model does not carry: here, the square's right side
@@ -139,6 +173,27 @@ class SkylineTest(unittest.TestCase):
 		yy, xx = np.mgrid[:100, :100]
 		diamond = np.abs(xx - 50) + np.abs(yy - 50) <= 30
 		self.assertGreater(len(skyline.rim(diamond)), 4 * 30 / skyline.STEP)
+
+	def test_horizon(self):
+		# a level camera looking along the model's x axis from 30 m: the horizon is the image's middle row
+		import camera as cam
+		import model as mod
+		frame = mod.Frame({"names": ["station", "waterline", "buttline"], "unit": 0.0254, "origin": [456, 105, 0],
+			"axes": [[-1, 0, 0], [0, 1, 0], [0, 0, 1]], "mirror": "buttline"})
+		camera = cam.looking(np.array([30.0, 0.0, 0.0]), np.array([0.0, 0.0, 0.0]), 500.0)
+		up = frame.model([0, 1, 0]) - frame.model([0, 0, 0])
+		mask = skyline.horizon(camera, (200, 200), (400, 400), 1.0, up)
+		# ground begins HORIZON degrees under the middle row
+		row = 200 + 500 * np.tan(np.radians(skyline.HORIZON))
+		self.assertFalse(mask[int(row) - 10, 200])
+		self.assertTrue(mask[int(row) + 10, 200])
+		self.assertFalse(mask[203, 200])
+		# tilted down 10 deg, the line rises by the focal length times the tangent
+		tilted = cam.looking(np.array([30.0, 0.0, 0.0]), np.array([0.0, -30.0 * np.tan(np.radians(10)), 0.0]), 500.0)
+		mask = skyline.horizon(tilted, (200, 200), (400, 400), 1.0, up)
+		row = 200 - 500 * np.tan(np.radians(10 - skyline.HORIZON))
+		self.assertFalse(mask[int(row) - 12, 200])
+		self.assertTrue(mask[int(row) + 12, 200])
 
 	def test_hull(self):
 		square = [(0, 0), (4, 0), (4, 4), (0, 4)]

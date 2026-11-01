@@ -209,6 +209,15 @@
 			],
 			"sigma": 0.3,
 			"why": "on the centreline, by symmetry"
+		},
+		"hook_pivot": {
+			"at": [
+				null,
+				null,
+				0.0
+			],
+			"sigma": 0.3,
+			"why": "on the centreline, by symmetry"
 		}
 	},
 	"photos": {
@@ -278,10 +287,6 @@
 					5225,
 					2440
 				],
-				"hook_point": [
-					735,
-					3055
-				],
 				"gun_port": [
 					6682,
 					2622
@@ -305,6 +310,10 @@
 				"splitter_bottom_right": [
 					3591,
 					3056
+				],
+				"hook_pivot": [
+					1043,
+					3118
 				]
 			},
 			"locate": {
@@ -517,7 +526,13 @@
 					]
 				}
 			},
-			"notes": "The far main wheel shows its inboard face, so it is not marked as axle_main_left (the outboard hub face). The canopy's aft lower corner is not separable from its aft end at this angle. hook_point is the aft end of the stowed hook's visible shank. radome_top and probe_door_front are left to dvids9820810 and dvids9820801, which mark them on the same construction. Inlets (added later): The existing inlet_lip_top_right [3591, 2727] and inlet_lip_bottom_right [3591, 3055] are NOT on the lip. They sit at the splitter plate's leading edge, about 420 px forward of the lip: the bottom one is the plate's lower front corner (splitter_bottom_right here) and the top one is in the dark boundary-layer gap about 30 px forward of the plate's top end under the LEX. The existing inlet_lip_right edge also traces the splitter's leading edge, not the lip, and should be dropped (splitter_right here replaces it). The lip is the D-shaped edge at x 3125-3205 with the JET INTAKE DANGER chevron behind it; the large lit plate with streaks from x 3130 to 3590 is the splitter plate continuing into the duct's inboard wall. The view is about 27 deg ahead of the beam (fin-tip parallax), so the wall shows through the mouth. inlet_lip_top_right corrected to [3174, 2792]: the top of the lit lip band against the dark recess under the LEX, flat over x 3165-3185 (x +-8, y +-3). inlet_lip_bottom_right has no corrected value: the lip's lowest point is hidden, the lit bottom lip running down into the external tank's upper outline at x 3130-3185, y 3097-3105; delete the existing mark. inlet_lip_outer_right not marked: the lip's front edge reaches its outboard extreme at x 3125, flat over y 2905-2955 (centre about 2940), but the outer-side point the dictionary asks for has no visible feature here (the cowl behind the lip is evenly lit). inlet_corner_top_right is where the top lip band ends at the inboard wall, beside a dark corner shadow (+-6). inlet_corner_bottom_right is where the lip's lower outline turns into the splitter plate's straight bottom edge (+-6 along the curve), the same construction as dvids9820788. splitter_top_right is where the leading edge meets the LEX underside (the edge stays visible in the shadow up to y 2705); splitter_bottom_right is the plate's rounded lower front corner. The lip's front edge, for reference (not recorded as an edge because its bottom is hidden): [3151, 2810], [3140, 2830], [3134, 2850], [3130, 2870], [3127, 2890], [3125, 2910], [3125, 2950], [3127, 2990], [3129, 3030]."
+			"notes": "The far main wheel shows its inboard face, so it is not marked as axle_main_left (the outboard hub face). The canopy's aft lower corner is not separable from its aft end at this angle. hook_point is the aft end of the stowed hook's visible shank. radome_top and probe_door_front are left to dvids9820810 and dvids9820801, which mark them on the same construction. Inlets (added later): The existing inlet_lip_top_right [3591, 2727] and inlet_lip_bottom_right [3591, 3055] are NOT on the lip. They sit at the splitter plate's leading edge, about 420 px forward of the lip: the bottom one is the plate's lower front corner (splitter_bottom_right here) and the top one is in the dark boundary-layer gap about 30 px forward of the plate's top end under the LEX. The existing inlet_lip_right edge also traces the splitter's leading edge, not the lip, and should be dropped (splitter_right here replaces it). The lip is the D-shaped edge at x 3125-3205 with the JET INTAKE DANGER chevron behind it; the large lit plate with streaks from x 3130 to 3590 is the splitter plate continuing into the duct's inboard wall. The view is about 27 deg ahead of the beam (fin-tip parallax), so the wall shows through the mouth. inlet_lip_top_right corrected to [3174, 2792]: the top of the lit lip band against the dark recess under the LEX, flat over x 3165-3185 (x +-8, y +-3). inlet_lip_bottom_right has no corrected value: the lip's lowest point is hidden, the lit bottom lip running down into the external tank's upper outline at x 3130-3185, y 3097-3105; delete the existing mark. inlet_lip_outer_right not marked: the lip's front edge reaches its outboard extreme at x 3125, flat over y 2905-2955 (centre about 2940), but the outer-side point the dictionary asks for has no visible feature here (the cowl behind the lip is evenly lit). inlet_corner_top_right is where the top lip band ends at the inboard wall, beside a dark corner shadow (+-6). inlet_corner_bottom_right is where the lip's lower outline turns into the splitter plate's straight bottom edge (+-6 along the curve), the same construction as dvids9820788. splitter_top_right is where the leading edge meets the LEX underside (the edge stays visible in the shadow up to y 2705); splitter_bottom_right is the plate's rounded lower front corner. The lip's front edge, for reference (not recorded as an edge because its bottom is hidden): [3151, 2810], [3140, 2830], [3134, 2850], [3130, 2870], [3127, 2890], [3125, 2910], [3125, 2950], [3127, 2990], [3129, 3030]. HOOK (2026-10-31): hook_pivot is the centre of the round end cap on the stowed hook's pivot fitting; hook_point the shoe's aft tip. The cap with its dark bore at (1043, 3118) (+-4 px); hook_point is not marked: the old mark (735, 3055) and the kink at (718, 3049) are where the shank passes into the body's outline (FS ~680), not the shoe, which the navy photo puts by the nozzles; here the shoe is lost in the shadow under the nozzles (a faint step in the outline at (507, 3013), FS ~709, is too faint to mark).",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids9820756": {
 			"file": "photos/164718_right-rear-quarter_dvids9820756.jpg",
@@ -868,7 +883,13 @@
 					]
 				}
 			},
-			"notes": "SIDES: the nozzles face the camera and the canopy/nose recede to photo-left, so the camera is behind the jet's LEFT quarter, not its right: the left fuselage side, the outer face of the left fin (AM, 04) and MARINES lettering reading nose-to-tail are what face the camera. Photo-left fin/stab/wing/nozzle = aircraft left. Camera is below the wing/stab plane (stabs sit above the horizon), so wing and stab undersides are seen. DEFLECTIONS: trailing-edge flaps and ailerons are drooped, roughly 25-35 deg by eye (their lower surfaces show as broad white panels below each wing, the aileron's outboard edge a diagonal at each tip); stabilators look trailing-edge-up (leading edge down) roughly 5-12 deg on both sides (each tip chord rises from the LE corner to the TE corner); LE flaps not judged. SKIPPED: wingtip corners (the trailing corner is on the drooped aileron; the leading corner is hidden by the tip rail and AIM-9); stab trailing tip corners are heavily rounded and the right stab's leading tip corner has no visible kink; right main wheel hub hidden behind a firefighter; hook point not identifiable; nozzle root not distinct. LEAST CERTAIN: stabilator_tip_leading_left (+-5 px along the edge, it touches the dark wing trailing-edge band behind it); axle marks (+-5 px, centre of the hub/rim ellipse); nozzle_exit_bottom_* are the half-intensity edge between the lit inner surface and the dark lip at the bottom of each exit (+-4 px). TIE POINTS (no model counterpart): spine_blade_top = top of the small blade antenna on the spine behind the canopy; lettering_dash_left = centre of the dash in VMFA-112 on the left fuselage side. Both also marked in dvids9820753 and dvids9820758. fin_leading_right has no snap: the background changes from sky to trees along it, so the contrast flips sign (point at 5298,2342 left out there)."
+			"notes": "SIDES: the nozzles face the camera and the canopy/nose recede to photo-left, so the camera is behind the jet's LEFT quarter, not its right: the left fuselage side, the outer face of the left fin (AM, 04) and MARINES lettering reading nose-to-tail are what face the camera. Photo-left fin/stab/wing/nozzle = aircraft left. Camera is below the wing/stab plane (stabs sit above the horizon), so wing and stab undersides are seen. DEFLECTIONS: trailing-edge flaps and ailerons are drooped, roughly 25-35 deg by eye (their lower surfaces show as broad white panels below each wing, the aileron's outboard edge a diagonal at each tip); stabilators look trailing-edge-up (leading edge down) roughly 5-12 deg on both sides (each tip chord rises from the LE corner to the TE corner); LE flaps not judged. SKIPPED: wingtip corners (the trailing corner is on the drooped aileron; the leading corner is hidden by the tip rail and AIM-9); stab trailing tip corners are heavily rounded and the right stab's leading tip corner has no visible kink; right main wheel hub hidden behind a firefighter; hook point not identifiable; nozzle root not distinct. LEAST CERTAIN: stabilator_tip_leading_left (+-5 px along the edge, it touches the dark wing trailing-edge band behind it); axle marks (+-5 px, centre of the hub/rim ellipse); nozzle_exit_bottom_* are the half-intensity edge between the lit inner surface and the dark lip at the bottom of each exit (+-4 px). TIE POINTS (no model counterpart): spine_blade_top = top of the small blade antenna on the spine behind the canopy; lettering_dash_left = centre of the dash in VMFA-112 on the left fuselage side. Both also marked in dvids9820753 and dvids9820758. fin_leading_right has no snap: the background changes from sky to trees along it, so the contrast flips sign (point at 5298,2342 left out there).",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids9820758": {
 			"file": "photos/164718_nozzles-closeup_dvids9820758.jpg",
@@ -1127,7 +1148,13 @@
 					]
 				}
 			},
-			"notes": "Same scene and camera side as dvids9820756 (jet's LEFT rear quarter, camera below the stab plane); photo-left = aircraft left. Both fin tips are cut off by the top of the frame. DEFLECTIONS: as in dvids9820756 - stabilators trailing-edge-up roughly 5-12 deg, TE flaps/ailerons drooped. right_nozzle_top runs along the top of the right nacelle/boattail and on round the right nozzle's dark outer flaps to where the right stabilator begins; no snap because a strong internal white/dark boundary lies a few px inside the outline at the nozzle. The left nozzle's lip never stands against background here (fuselage and other nozzle behind it). SKIPPED: hook point (cannot pick the stowed hook out under the nozzles); right stab tip (only its rounded trailing corner shows); nozzle roots. LEAST CERTAIN: axle_main_left (+-6 px, centre of the rim/hub ellipse); stabilator_tip_leading_left (+-4 px, touches the wing trailing-edge band behind it); nozzle exit bottoms (+-4 px, same definition as dvids9820756). spine_blade_top and lettering_dash_left are tie points shared with dvids9820756 and dvids9820753."
+			"notes": "Same scene and camera side as dvids9820756 (jet's LEFT rear quarter, camera below the stab plane); photo-left = aircraft left. Both fin tips are cut off by the top of the frame. DEFLECTIONS: as in dvids9820756 - stabilators trailing-edge-up roughly 5-12 deg, TE flaps/ailerons drooped. right_nozzle_top runs along the top of the right nacelle/boattail and on round the right nozzle's dark outer flaps to where the right stabilator begins; no snap because a strong internal white/dark boundary lies a few px inside the outline at the nozzle. The left nozzle's lip never stands against background here (fuselage and other nozzle behind it). SKIPPED: hook point (cannot pick the stowed hook out under the nozzles); right stab tip (only its rounded trailing corner shows); nozzle roots. LEAST CERTAIN: axle_main_left (+-6 px, centre of the rim/hub ellipse); stabilator_tip_leading_left (+-4 px, touches the wing trailing-edge band behind it); nozzle exit bottoms (+-4 px, same definition as dvids9820756). spine_blade_top and lettering_dash_left are tie points shared with dvids9820756 and dvids9820753.",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids9820744": {
 			"file": "photos/164718_underside-flight_dvids9820744.jpg",
@@ -1818,7 +1845,13 @@
 					]
 				}
 			},
-			"notes": "Same scene as dvids9820756, slightly closer: camera behind the jet's LEFT quarter (left fuselage side and left fin's outer face toward camera), below the stab plane; photo-left = aircraft left. Fin tips: the antenna/ECM pods hang below the trailing corners; the marks are the fins' own top corners. fin_tip_leading_right is a slightly rounded corner (+-3 px). DEFLECTIONS: TE flaps and ailerons drooped roughly 25-35 deg (white lower-surface panels under both wings); stabilators trailing-edge-up roughly 5-12 deg, as in dvids9820756. Nose gear: axle_nose_left is the near (left) nose wheel's light-coloured hub; the right nose wheel is mostly hidden behind the strut. axle_main_left is the larger spoked wheel with the main leg rising aft of it. SKIPPED: wingtip corners (drooped aileron / tip rail and missile), stab trailing tip corners (rounded) and the right stab's leading tip corner (no kink), right main wheel (hidden), hook, nozzle roots; the right nozzle's lip stands against sky for only ~60 px with weak contrast, so no nozzle edge here. LEAST CERTAIN: axle marks (+-5 px); nozzle exit bottoms (+-4 px, same definition as dvids9820756); spine_blade_top (+-3 px, soft top)."
+			"notes": "Same scene as dvids9820756, slightly closer: camera behind the jet's LEFT quarter (left fuselage side and left fin's outer face toward camera), below the stab plane; photo-left = aircraft left. Fin tips: the antenna/ECM pods hang below the trailing corners; the marks are the fins' own top corners. fin_tip_leading_right is a slightly rounded corner (+-3 px). DEFLECTIONS: TE flaps and ailerons drooped roughly 25-35 deg (white lower-surface panels under both wings); stabilators trailing-edge-up roughly 5-12 deg, as in dvids9820756. Nose gear: axle_nose_left is the near (left) nose wheel's light-coloured hub; the right nose wheel is mostly hidden behind the strut. axle_main_left is the larger spoked wheel with the main leg rising aft of it. SKIPPED: wingtip corners (drooped aileron / tip rail and missile), stab trailing tip corners (rounded) and the right stab's leading tip corner (no kink), right main wheel (hidden), hook, nozzle roots; the right nozzle's lip stands against sky for only ~60 px with weak contrast, so no nozzle edge here. LEAST CERTAIN: axle marks (+-5 px); nozzle exit bottoms (+-4 px, same definition as dvids9820756); spine_blade_top (+-3 px, soft top).",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids7418477": {
 			"file": "photos/unknown_left-profile-2022_dvids7418477.jpg",
@@ -2353,7 +2386,13 @@
 					]
 				}
 			},
-			"notes": "Camera is above the LEX plane: the LEX top surface shows as a lit band and lex_edge_left is its lower (outer) boundary against the shadow beneath. Takeoff configuration: leading-edge flaps, trailing-edge flaps and ailerons drooped well down (the drooped flap and aileron undersides hang visibly below the wing), so no wingtip or fold marks and no lex_wing_left (the drooped LEF's root splits the kink). canopy_sill_left is the dark canopy-to-fuselage seam from just aft of the bow to sill_aft_left; it carries no snap because it is a thin line, and the points are on its centre. lex_fence_* are the top corners of the left LEX fence (also marked in the other two shelter/profile photos). Not marked: bow_foot_left (frame foot vs canopy corner differ by ~30 px), canopy_crown/canopy_aft (flat top, seam meets the outline unclearly), gun port, radome joint, inlet lip, right nose axle (hub behind the strut). windscreen_base is not marked: from above, the frame's side corner is not the centreline point."
+			"notes": "Camera is above the LEX plane: the LEX top surface shows as a lit band and lex_edge_left is its lower (outer) boundary against the shadow beneath. Takeoff configuration: leading-edge flaps, trailing-edge flaps and ailerons drooped well down (the drooped flap and aileron undersides hang visibly below the wing), so no wingtip or fold marks and no lex_wing_left (the drooped LEF's root splits the kink). canopy_sill_left is the dark canopy-to-fuselage seam from just aft of the bow to sill_aft_left; it carries no snap because it is a thin line, and the points are on its centre. lex_fence_* are the top corners of the left LEX fence (also marked in the other two shelter/profile photos). Not marked: bow_foot_left (frame foot vs canopy corner differ by ~30 px), canopy_crown/canopy_aft (flat top, seam meets the outline unclearly), gun port, radome joint, inlet lip, right nose axle (hub behind the strut). windscreen_base is not marked: from above, the frame's side corner is not the centreline point.",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids9820749": {
 			"file": "photos/164718_left-front-quarter_dvids9820749.jpg",
@@ -2522,7 +2561,13 @@
 					]
 				}
 			},
-			"notes": "This is a left-REAR quarter near profile, not front: both nozzle exits face the camera, the near (left) fin sits forward of the far one in the image and the far main wheel appears aft of the near one. Long lens, some heat shimmer. Fin tip trailing marks are the fins' own corners above the antenna fairings. windscreen_base is where the white-reflecting windscreen meets the dark nose silhouette (+-5 px). Stabilators look strongly deflected and the right rudder shows a pale sliver (rudders probably toed in), so no stabilator marks. Not marked: nozzle exit/root bottoms (flat-bottomed ellipses, x uncertain), right main axle (hub in deep shadow), wingtip (missile in front), nose top outline (radome nearly the same brightness as the sky)."
+			"notes": "This is a left-REAR quarter near profile, not front: both nozzle exits face the camera, the near (left) fin sits forward of the far one in the image and the far main wheel appears aft of the near one. Long lens, some heat shimmer. Fin tip trailing marks are the fins' own corners above the antenna fairings. windscreen_base is where the white-reflecting windscreen meets the dark nose silhouette (+-5 px). Stabilators look strongly deflected and the right rudder shows a pale sliver (rudders probably toed in), so no stabilator marks. Not marked: nozzle exit/root bottoms (flat-bottomed ellipses, x uncertain), right main axle (hub in deep shadow), wingtip (missile in front), nose top outline (radome nearly the same brightness as the sky). HOOK (2026-10-31): the hook is down and on the arresting cable; the shoe's tip at [5525, 2935] is cast onto the centreline (cast.py), not marked: the two photos catch the hook at different moments, so it is no single point, and a mark would pull the camera, the shank's round aft end on the cable, motion-blurred (+-8 px). The pivot is hidden.",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids8678629": {
 			"file": "photos/165221_left-front-quarter-shelter_dvids8678629.jpg",
@@ -3301,7 +3346,13 @@
 					]
 				}
 			},
-			"notes": "Near (right) fin is the one at photo-left (x 3800-4400); the far (left) fin rises behind the canopy (x 5400-5650). Forward is photo-right. Right wingtip carries a pod on its rail (rounded nose with a small probe below, extending ahead of the LE and behind the TE). wingtip_trailing_right / wingtip_leading_right are where the wing's trailing / leading edge meets that pod, i.e. the wing's own corners as seen against the rail (+-3 px; leading corner is the end of the shadowed LE line). In this view the wing's leading edge is the LOWER edge of the white wing band (pylons hang from it) and the trailing edge is the upper one; wing_right_trailing is that upper edge against trees. sill_aft_right: where the dark canopy-sill gap line ends; the canopy's aft edge rising from it is faint (+-3 px, least sure of this one). Nose axles are the visible hub centres of obliquely seen wheels (+-4 px; the left one is the far wheel's inboard face). Right main axle not marked: wheel nearly edge-on, hub ambiguous by ~10 px. Apex NOT marked: the radome tip is seen obliquely as a rounded glossy blob (~(7082,2529)); its forward-most point is ambiguous by ~10 px. Gun port / radome joint / windscreen base NOT marked (not resolvable to a few px at this angle). light_strip_aft_corner = top-aft corner of the aft-most of the three formation-light strips under the '04'; light_strip_forward_corner = bottom-forward corner of the forward-most strip (same points marked in dvids9820810 and dvids9820801). Canopy edge is the canopy glass outline aft of the crown only. Stabilators hidden behind pylons/stores. Arresting cable lies on the runway in front."
+			"notes": "Near (right) fin is the one at photo-left (x 3800-4400); the far (left) fin rises behind the canopy (x 5400-5650). Forward is photo-right. Right wingtip carries a pod on its rail (rounded nose with a small probe below, extending ahead of the LE and behind the TE). wingtip_trailing_right / wingtip_leading_right are where the wing's trailing / leading edge meets that pod, i.e. the wing's own corners as seen against the rail (+-3 px; leading corner is the end of the shadowed LE line). In this view the wing's leading edge is the LOWER edge of the white wing band (pylons hang from it) and the trailing edge is the upper one; wing_right_trailing is that upper edge against trees. sill_aft_right: where the dark canopy-sill gap line ends; the canopy's aft edge rising from it is faint (+-3 px, least sure of this one). Nose axles are the visible hub centres of obliquely seen wheels (+-4 px; the left one is the far wheel's inboard face). Right main axle not marked: wheel nearly edge-on, hub ambiguous by ~10 px. Apex NOT marked: the radome tip is seen obliquely as a rounded glossy blob (~(7082,2529)); its forward-most point is ambiguous by ~10 px. Gun port / radome joint / windscreen base NOT marked (not resolvable to a few px at this angle). light_strip_aft_corner = top-aft corner of the aft-most of the three formation-light strips under the '04'; light_strip_forward_corner = bottom-forward corner of the forward-most strip (same points marked in dvids9820810 and dvids9820801). Canopy edge is the canopy glass outline aft of the crown only. Stabilators hidden behind pylons/stores. Arresting cable lies on the runway in front.",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids9820810": {
 			"file": "photos/164718_right-side-forward_dvids9820810.jpg",
@@ -3588,7 +3639,13 @@
 					]
 				}
 			},
-			"notes": "Close shot, strong perspective (the nose is relatively larger than in dvids9820801). Canopy closed, pilot aboard. The gun muzzle slot is cut into the top of the nose at the radome joint: the circumferential seam runs down the side from the slot's aft lower corner, and meets the top silhouette at the slot's aft tip, so radome_top = slot aft tip and gun_port = centroid of the slot opening (slot runs ~4549-4632 px), i.e. the port is just ahead of the joint as the brief says. Probe door = long panel on the upper right nose ahead of the windscreen; its lower edge runs from probe_door_aft to probe_door_front. canopy_aft = where the canopy's aft edge line (which comes down to sill_aft_right) meets the top silhouette, ~70 px aft of where the glass ends (+-4 px, least sure). Canopy outline is the thin dark top line of the transparent glass (no snap). Sill edge is the centre of the dark canopy/fuselage gap line (no snap). axle_nose_right = centre of the near nose wheel hub rings. The left nose wheel hub is hidden behind the strut; inlet not visible (below LEX, behind stores). nose_bottom stops at x 4600: a fairing under the nose at ~4300-4450."
+			"notes": "Close shot, strong perspective (the nose is relatively larger than in dvids9820801). Canopy closed, pilot aboard. The gun muzzle slot is cut into the top of the nose at the radome joint: the circumferential seam runs down the side from the slot's aft lower corner, and meets the top silhouette at the slot's aft tip, so radome_top = slot aft tip and gun_port = centroid of the slot opening (slot runs ~4549-4632 px), i.e. the port is just ahead of the joint as the brief says. Probe door = long panel on the upper right nose ahead of the windscreen; its lower edge runs from probe_door_aft to probe_door_front. canopy_aft = where the canopy's aft edge line (which comes down to sill_aft_right) meets the top silhouette, ~70 px aft of where the glass ends (+-4 px, least sure). Canopy outline is the thin dark top line of the transparent glass (no snap). Sill edge is the centre of the dark canopy/fuselage gap line (no snap). axle_nose_right = centre of the near nose wheel hub rings. The left nose wheel hub is hidden behind the strut; inlet not visible (below LEX, behind stores). nose_bottom stops at x 4600: a fairing under the nose at ~4300-4450.",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids9820801": {
 			"file": "photos/164718_right-side-full_dvids9820801.jpg",
@@ -4053,7 +4110,13 @@
 					]
 				}
 			},
-			"notes": "Firefighters in the foreground hide the tail cone, nozzles, hook, stabilator and nose gear; nothing marked near them. Below y~1230 the sky-facing edge right of the near fin is the FAR (left) fin's leading edge (offset ~55 px right of the near fin's LE line); the near fin's LE is only against sky above y~1215. fin_tip_leading_left is the far fin's top-forward corner peeking above; its trailing corner is hidden. fin_tip_leading_right is on the rounded tip corner (intersection of the top-edge and LE lines is ~2 px outside it, at (2879,1037)). fin_right_trailing includes the rudder's trailing edge (rudder looks neutral). apex +-4 px: the radome's lower side is in shadow against dark trees. radome_top / gun_port: same construction as dvids9820810 (slot aft tip on the silhouette; centroid of the slot opening). Canopy outline = thin glass edge against sky (no snap), skipping the bow at x~6400 where the frame sits a few px below the glass line. canopy_aft +-4 px (where the canopy aft edge line leaves the top silhouette). light_strip_* = the formation-light strip corners also marked in dvids9820810 and dvids9820799."
+			"notes": "Firefighters in the foreground hide the tail cone, nozzles, hook, stabilator and nose gear; nothing marked near them. Below y~1230 the sky-facing edge right of the near fin is the FAR (left) fin's leading edge (offset ~55 px right of the near fin's LE line); the near fin's LE is only against sky above y~1215. fin_tip_leading_left is the far fin's top-forward corner peeking above; its trailing corner is hidden. fin_tip_leading_right is on the rounded tip corner (intersection of the top-edge and LE lines is ~2 px outside it, at (2879,1037)). fin_right_trailing includes the rudder's trailing edge (rudder looks neutral). apex +-4 px: the radome's lower side is in shadow against dark trees. radome_top / gun_port: same construction as dvids9820810 (slot aft tip on the silhouette; centroid of the slot opening). Canopy outline = thin glass edge against sky (no snap), skipping the bow at x~6400 where the frame sits a few px below the glass line. canopy_aft +-4 px (where the canopy aft edge line leaves the top silhouette). light_strip_* = the formation-light strip corners also marked in dvids9820810 and dvids9820799.",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids9820748": {
 			"file": "photos/164718_left-front-quarter-hook_dvids9820748.jpg",
@@ -4587,7 +4650,13 @@
 					]
 				}
 			},
-			"notes": "Camera ahead of the jet's left side, roughly 35-40 deg off the nose, above the LEX (its top surface shows) and below the canopy top. Photo-right = aft and aircraft-left; the photo-right fin is the left fin. DEFLECTIONS: leading-edge flaps drooped, roughly 10-20 deg by eye (the LEF's inboard end stands below the LEX edge at the junction, x 4715-4915); trailing-edge flaps and ailerons drooped well down, roughly 30-40 deg (their lower surfaces hang as a dark band below the wing, the aileron's outboard edge a diagonal from about 6952,3172 to 7015,3275); the left stabilator's outboard tip shows past the wingtip (white, x 6955-7305, y 3115-3220) with its tip edge rising steeply to the trailing corner, consistent with trailing-edge-up roughly 5-12 deg as in dvids9820756; rudders not judged. Hook down (not marked); canopy closed. INLET: the lip is a bright rim round the outboard side of a dark mouth; its inboard ends meet the splitter plate's outboard face, which runs on aft as the duct's inboard wall (perforated/streaked band x 4440-4530 ahead of the mouth). inlet_lip_top/bottom/outer are on the rim's outer boundary (top boundary against the shadow under the LEX, bottom boundary against the shadow below, outboard boundary against the inlet's outer face); the inlet_lip_left edge is the centre of the rim highlight (the leading edge), with no snap because the rim is 10-15 px wide and either of its boundaries could capture a snap. splitter_left is the plate's leading edge from where it meets the LEX underside (splitter_top_left) to its rounded lower-front corner (splitter_bottom_left). LEAST CERTAIN: inlet_corner_bottom_left (+-6 px along the outline: the lip's lower curve fairs smoothly into the plate's lower edge, read where the rim highlight ends and the outline leaves the plate's straight lower edge; it sits about 50 px left of the top corner, so the inboard wall leans or the lower lip is filleted forward); inlet_lip_top_left (rim top is nearly flat from x 4555 to 4600, so +-15 px along it, +-2 px in height); inlet_lip_outer_left (rim is near vertical from y 3305 to 3345, so +-15 px in height, +-2 px across); bow_top (+-15 px along the flat top of the bow arch, seen through the glass below the canopy silhouette); canopy_crown (+-25 px along a flat top); canopy_aft (+-5 px, low contrast); axle_nose_left (+-4 px). The canopy and windscreen outline edges are glass against sky with weak contrast, so no snap; the windscreen and canopy edges stop short of the bow (x 2990-3140), where the bow frame and glass outlines cross. nose_top skips x 2230-2430, where the gun muzzle fairing sits on the silhouette. fin_leading_left stops at y 2800 (lower down the right fin's trailing edge meets it); fin_leading_right stops at y 2750 above the spine. SKIPPED: wingtip corners (the trailing corner is on the drooped aileron, the leading corner hidden by the tip rail and AIM-9); stabilator tip corners (leading corner hidden behind the drooped aileron, trailing corner rounded); lex_wing_left (drooped LEF splits the kink); nozzles (hidden behind the drooped flaps); the far (right) main wheel and the right nose wheel show their inboard faces, so no axle marks for them; gun_port and radome_top (the muzzle fairing is seen obliquely from below and the radome seam does not reach the silhouette visibly); sill_aft_left (no clear corner); hook_point (hook down). The axle marks are left out: the jet is decelerating in the arresting wire, its struts compressed, a pose the model does not take (they missed by 2-5 in while the rest fit within 1.5 in)."
+			"notes": "Camera ahead of the jet's left side, roughly 35-40 deg off the nose, above the LEX (its top surface shows) and below the canopy top. Photo-right = aft and aircraft-left; the photo-right fin is the left fin. DEFLECTIONS: leading-edge flaps drooped, roughly 10-20 deg by eye (the LEF's inboard end stands below the LEX edge at the junction, x 4715-4915); trailing-edge flaps and ailerons drooped well down, roughly 30-40 deg (their lower surfaces hang as a dark band below the wing, the aileron's outboard edge a diagonal from about 6952,3172 to 7015,3275); the left stabilator's outboard tip shows past the wingtip (white, x 6955-7305, y 3115-3220) with its tip edge rising steeply to the trailing corner, consistent with trailing-edge-up roughly 5-12 deg as in dvids9820756; rudders not judged. Hook down (not marked); canopy closed. INLET: the lip is a bright rim round the outboard side of a dark mouth; its inboard ends meet the splitter plate's outboard face, which runs on aft as the duct's inboard wall (perforated/streaked band x 4440-4530 ahead of the mouth). inlet_lip_top/bottom/outer are on the rim's outer boundary (top boundary against the shadow under the LEX, bottom boundary against the shadow below, outboard boundary against the inlet's outer face); the inlet_lip_left edge is the centre of the rim highlight (the leading edge), with no snap because the rim is 10-15 px wide and either of its boundaries could capture a snap. splitter_left is the plate's leading edge from where it meets the LEX underside (splitter_top_left) to its rounded lower-front corner (splitter_bottom_left). LEAST CERTAIN: inlet_corner_bottom_left (+-6 px along the outline: the lip's lower curve fairs smoothly into the plate's lower edge, read where the rim highlight ends and the outline leaves the plate's straight lower edge; it sits about 50 px left of the top corner, so the inboard wall leans or the lower lip is filleted forward); inlet_lip_top_left (rim top is nearly flat from x 4555 to 4600, so +-15 px along it, +-2 px in height); inlet_lip_outer_left (rim is near vertical from y 3305 to 3345, so +-15 px in height, +-2 px across); bow_top (+-15 px along the flat top of the bow arch, seen through the glass below the canopy silhouette); canopy_crown (+-25 px along a flat top); canopy_aft (+-5 px, low contrast); axle_nose_left (+-4 px). The canopy and windscreen outline edges are glass against sky with weak contrast, so no snap; the windscreen and canopy edges stop short of the bow (x 2990-3140), where the bow frame and glass outlines cross. nose_top skips x 2230-2430, where the gun muzzle fairing sits on the silhouette. fin_leading_left stops at y 2800 (lower down the right fin's trailing edge meets it); fin_leading_right stops at y 2750 above the spine. SKIPPED: wingtip corners (the trailing corner is on the drooped aileron, the leading corner hidden by the tip rail and AIM-9); stabilator tip corners (leading corner hidden behind the drooped aileron, trailing corner rounded); lex_wing_left (drooped LEF splits the kink); nozzles (hidden behind the drooped flaps); the far (right) main wheel and the right nose wheel show their inboard faces, so no axle marks for them; gun_port and radome_top (the muzzle fairing is seen obliquely from below and the radome seam does not reach the silhouette visibly); sill_aft_left (no clear corner); hook_point (hook down). The axle marks are left out: the jet is decelerating in the arresting wire, its struts compressed, a pose the model does not take (they missed by 2-5 in while the rest fit within 1.5 in). HOOK (2026-10-31): the hook is down and on the arresting cable; the shoe's tip at [6243, 3700] is cast onto the centreline (cast.py), not marked: the two photos catch the hook at different moments, so it is no single point, and a mark would pull the camera, where the dark shank meets the arresting cable (+-8 px). The pivot is hidden.",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids8678631": {
 			"file": "photos/165221_front-shelter_dvids8678631.jpg",
@@ -5616,7 +5685,13 @@
 					]
 				}
 			},
-			"notes": "Front-left quarter, about 45 deg ahead of the beam (fin-tip parallax), camera near the height of the inlet's bottom; canopy closed. INLET: the lip points are on the lip's outer side. inlet_lip_top_left is the top boundary of the bright lip band against the dark recess under the LEX (flat between x 5100 and 5120, so x +-10; y +-2). inlet_lip_bottom_left is the lower boundary of the lit bottom lip against the shadow below (flat between x 5105 and 5120, x +-8). inlet_lip_outer_left is on a faint seam line about 8 px outboard of the lip's bright inner edge (that edge peaks at x 5166); y 2853 from the symmetry of the curve (+-6); the seam is faint and the DANGER placard crosses it below y 2856, so x +-3. inlet_corner_top_left is the inboard end of the top lip band, where it turns down the flat wall (+-4). inlet_corner_bottom_left is where the lip's lower outline turns into the straight bottom edge of the splitter plate (+-5 along the curve). The inlet_lip_left edge follows the lip's crest (the middle of the band at the top and bottom, about 2 px outboard of its bright inner edge on the outboard side); no snap, because the strongest nearby edge switches between the band's inner and outer boundaries round the curve. The splitter's leading edge is the boundary between the lit plate and the dark boundary-layer gap ahead of it: splitter_top_left where it meets the LEX underside, splitter_bottom_left the plate's lower front corner. CANOPY: canopy_aft is where the glass ends on the top silhouette, merging tangentially into the spine (x +-5), as 808 marks it. sill_aft_left is the opening canopy's aft lower corner (aft end of the sill seam, where the canopy's curved aft edge comes down), about 60 px aft of the glass end. bow_top is the top of the bow frame on the silhouette (x +-6). canopy_crown: the top is flat to 0.5 px between x 4090 and 4135; the centre of a symmetric fit is taken, x +-15. windscreen_base: the glass edge meets the nose top at a shallow angle, x +-5. Least sure: canopy_crown (x), inlet_lip_outer_left, windscreen_base, canopy_aft. LEFT OUT: radome_top and gun_port (the radome seam crosses the top under the gun fairing, and the slot's centre cannot be placed to a few px); lex_wing_left (the drooped leading-edge flap opens a wedge-shaped gap at the LEX junction, so there is no single kink); wingtip_leading_left (rail and AIM-9); wingtip_trailing_left and fold_trailing_left (on the drooped aileron and flap, not fixed structure); stabilator tips, nozzles and hook_point (hidden behind the drooped left trailing edge and the tanks); the right main and right nose wheels (seen from inboard, so no axle marks). Nose outline split around the gun fairing hump (x 3310-3430); spine outline starts aft of the antenna hump and skips the small blade at x 4865-4895. DEFLECTIONS: leading-edge flaps drooped (wedge gap at the LEX/LEF junction; amount not measurable, looks substantial); trailing-edge flaps drooped; ailerons drooped strongly, roughly 40-50 deg judging by the left aileron's two side edges (the bright diagonal at x 6365-6410 is its inboard side edge); right rudder toed in (its surface is lit much brighter than the fin and its trailing edge stands out beyond the fin's trailing-edge line); left rudder not assessable; stabilators not visible."
+			"notes": "Front-left quarter, about 45 deg ahead of the beam (fin-tip parallax), camera near the height of the inlet's bottom; canopy closed. INLET: the lip points are on the lip's outer side. inlet_lip_top_left is the top boundary of the bright lip band against the dark recess under the LEX (flat between x 5100 and 5120, so x +-10; y +-2). inlet_lip_bottom_left is the lower boundary of the lit bottom lip against the shadow below (flat between x 5105 and 5120, x +-8). inlet_lip_outer_left is on a faint seam line about 8 px outboard of the lip's bright inner edge (that edge peaks at x 5166); y 2853 from the symmetry of the curve (+-6); the seam is faint and the DANGER placard crosses it below y 2856, so x +-3. inlet_corner_top_left is the inboard end of the top lip band, where it turns down the flat wall (+-4). inlet_corner_bottom_left is where the lip's lower outline turns into the straight bottom edge of the splitter plate (+-5 along the curve). The inlet_lip_left edge follows the lip's crest (the middle of the band at the top and bottom, about 2 px outboard of its bright inner edge on the outboard side); no snap, because the strongest nearby edge switches between the band's inner and outer boundaries round the curve. The splitter's leading edge is the boundary between the lit plate and the dark boundary-layer gap ahead of it: splitter_top_left where it meets the LEX underside, splitter_bottom_left the plate's lower front corner. CANOPY: canopy_aft is where the glass ends on the top silhouette, merging tangentially into the spine (x +-5), as 808 marks it. sill_aft_left is the opening canopy's aft lower corner (aft end of the sill seam, where the canopy's curved aft edge comes down), about 60 px aft of the glass end. bow_top is the top of the bow frame on the silhouette (x +-6). canopy_crown: the top is flat to 0.5 px between x 4090 and 4135; the centre of a symmetric fit is taken, x +-15. windscreen_base: the glass edge meets the nose top at a shallow angle, x +-5. Least sure: canopy_crown (x), inlet_lip_outer_left, windscreen_base, canopy_aft. LEFT OUT: radome_top and gun_port (the radome seam crosses the top under the gun fairing, and the slot's centre cannot be placed to a few px); lex_wing_left (the drooped leading-edge flap opens a wedge-shaped gap at the LEX junction, so there is no single kink); wingtip_leading_left (rail and AIM-9); wingtip_trailing_left and fold_trailing_left (on the drooped aileron and flap, not fixed structure); stabilator tips, nozzles and hook_point (hidden behind the drooped left trailing edge and the tanks); the right main and right nose wheels (seen from inboard, so no axle marks). Nose outline split around the gun fairing hump (x 3310-3430); spine outline starts aft of the antenna hump and skips the small blade at x 4865-4895. DEFLECTIONS: leading-edge flaps drooped (wedge gap at the LEX/LEF junction; amount not measurable, looks substantial); trailing-edge flaps drooped; ailerons drooped strongly, roughly 40-50 deg judging by the left aileron's two side edges (the bright diagonal at x 6365-6410 is its inboard side edge); right rudder toed in (its surface is lit much brighter than the fin and its trailing edge stands out beyond the fin's trailing-edge line); left rudder not assessable; stabilators not visible.",
+			"stores": {
+				"2": "pylon",
+				"3": "pylon",
+				"7": "pylon",
+				"8": "pylon"
+			}
 		},
 		"dvids8901347": {
 			"file": "photos/fa18d-vmfa232-26_port-front-above_dvids8901347.jpg",
@@ -6074,9 +6149,17 @@
 				"fold_trailing_right": [
 					1396,
 					789
+				],
+				"hook_pivot": [
+					684,
+					1296
+				],
+				"hook_point": [
+					349,
+					1221
 				]
 			},
-			"notes": "SIDE: the jet's right (starboard) side from below and behind, confirmed from the photo (nose to photo-right, the near wing seen from beneath carries a 330-gal tank and an AIM-9 at its tip, the fin's outer face shows 300/NK). Rough single-photo solve (rms 21 px): camera about 39 deg behind abeam and 19 deg below the wing plane, field of view about 52 deg. In flight, gear up. The starboard flap's outboard trailing corner (fold_trailing_right) sits about 15 px forward of the aileron's trailing-edge line extended, the aileron's inboard corner at about 1406,764 with the chordwise gap between them: a step at the fold line (planform or a small flap/aileron difference). Stabilator deflection not judged. Fin, stabilator and wingtip corners are intersections of line fits to both edges (the outlines themselves are rounded there). UNDERSIDE: there is no sky silhouette of the starboard nacelle's underside here; the station-7 tank hides the lip's outer and upper parts and the centreline tank the belly between the nacelles. underside_right is a tonal boundary inside the shadowed underside: the lower edge of a lit strip along the starboard nacelle's lower side, starting where the cited lip bottom projects (1690,1217) and running aft. It is probably the nacelle's lower occluding contour against the farther belly, but that cannot be checked, so it is labelled contour_right, not outline (photos.py would score an outline against the model's outer silhouette, which here is a different edge). From x 1450 aft the lowest light edge is panel_lower_right: the lower edge of a light panel with a seam along its top, a rounded aft end at x ~1260 and a raked forward edge (x 1395-1500), at about FS 485-530: probably the main landing-gear door, possibly a launcher on station 6; unresolved, so this part may be a door edge rather than the contour. Cast with the rough camera onto BL +26: WL 78.3 at the lip end (FS ~416), 76.7 at FS 442, 74.1 at FS 465, 73.4 at FS 481, about 72.5 at FS 489-499 (lowest), then 74.1-74.9 along the panel edge at FS 509-528. In this view 6 in of buttline equals about 2.5 in of waterline, so a contour drifting inboard aft would read as part of this descent: the photo rules out a rise behind the lip but alone cannot fix how far the bottom drops. NOT MARKED: inlet points (behind the tank), nozzle_exit_bottom_* (the exit lips' lower ends are not crisp; the left one runs into the left stabilator's outline), hook_point (not identified with certainty), blade_nose_bottom_* (the blade is visible at 2316-2338, 1194-1222 but its bottom edge is rounded and blurred, corners not to 3 px), wingtip_trailing_left, fin_tip_*_left. LEAST SURE: pitot_tip_left (faint streak, +-3 px); aoa_right (base of the cone, plate not visible); stabilator_tip_leading_right (rounded corner with a light tip strip; line-fit intersection); wingtip_trailing_right (rounded corner; intersection of the trailing edge with the tip edge's outer boundary). Left out of the catalogue: the two lines traced along the right nacelle's underside (the lit strip, which cannot fix its buttline, and the light panel's lower edge, a door or a store); facts.json layout.nacelle describes what they show."
+			"notes": "SIDE: the jet's right (starboard) side from below and behind, confirmed from the photo (nose to photo-right, the near wing seen from beneath carries a 330-gal tank and an AIM-9 at its tip, the fin's outer face shows 300/NK). Rough single-photo solve (rms 21 px): camera about 39 deg behind abeam and 19 deg below the wing plane, field of view about 52 deg. In flight, gear up. The starboard flap's outboard trailing corner (fold_trailing_right) sits about 15 px forward of the aileron's trailing-edge line extended, the aileron's inboard corner at about 1406,764 with the chordwise gap between them: a step at the fold line (planform or a small flap/aileron difference). Stabilator deflection not judged. Fin, stabilator and wingtip corners are intersections of line fits to both edges (the outlines themselves are rounded there). UNDERSIDE: there is no sky silhouette of the starboard nacelle's underside here; the station-7 tank hides the lip's outer and upper parts and the centreline tank the belly between the nacelles. underside_right is a tonal boundary inside the shadowed underside: the lower edge of a lit strip along the starboard nacelle's lower side, starting where the cited lip bottom projects (1690,1217) and running aft. It is probably the nacelle's lower occluding contour against the farther belly, but that cannot be checked, so it is labelled contour_right, not outline (photos.py would score an outline against the model's outer silhouette, which here is a different edge). From x 1450 aft the lowest light edge is panel_lower_right: the lower edge of a light panel with a seam along its top, a rounded aft end at x ~1260 and a raked forward edge (x 1395-1500), at about FS 485-530: probably the main landing-gear door, possibly a launcher on station 6; unresolved, so this part may be a door edge rather than the contour. Cast with the rough camera onto BL +26: WL 78.3 at the lip end (FS ~416), 76.7 at FS 442, 74.1 at FS 465, 73.4 at FS 481, about 72.5 at FS 489-499 (lowest), then 74.1-74.9 along the panel edge at FS 509-528. In this view 6 in of buttline equals about 2.5 in of waterline, so a contour drifting inboard aft would read as part of this descent: the photo rules out a rise behind the lip but alone cannot fix how far the bottom drops. NOT MARKED: inlet points (behind the tank), nozzle_exit_bottom_* (the exit lips' lower ends are not crisp; the left one runs into the left stabilator's outline), hook_point (not identified with certainty), blade_nose_bottom_* (the blade is visible at 2316-2338, 1194-1222 but its bottom edge is rounded and blurred, corners not to 3 px), wingtip_trailing_left, fin_tip_*_left. LEAST SURE: pitot_tip_left (faint streak, +-3 px); aoa_right (base of the cone, plate not visible); stabilator_tip_leading_right (rounded corner with a light tip strip; line-fit intersection); wingtip_trailing_right (rounded corner; intersection of the trailing edge with the tip edge's outer boundary). Left out of the catalogue: the two lines traced along the right nacelle's underside (the lit strip, which cannot fix its buttline, and the light panel's lower edge, a door or a store); facts.json layout.nacelle describes what they show. HOOK (2026-10-31): hook_pivot is the centre of the round end cap on the stowed hook's pivot fitting; hook_point the shoe's aft tip. The shoe is the bright white block by the right nozzle (+-4 px); the cap is seen from below (+-4 px)."
 		}
 	},
 	"gate": {
@@ -6107,12 +6190,11 @@
 			"point stabilator_tip_leading_left": "the stabilator tips' leading corners miss by 9.5-9.8 in along the stations: the mark's definition, the pose or the planform, not yet settled",
 			"point stabilator_tip_leading_right": "the stabilator tips' leading corners miss by 9.5-9.8 in along the stations: the mark's definition, the pose or the planform, not yet settled",
 			"point fold_trailing_left": "the wing fold's trailing corner misses by 7 in across: the fold's buttline at the trailing edge or the mark's definition, not yet settled",
-			"point fold_trailing_right": "the wing fold's trailing corner misses by 7 in across: the fold's buttline at the trailing edge or the mark's definition, not yet settled",
-			"point wingtip_leading_right": "one in-flight photo: the wing bends up under load, which the model at rest does not (wing flex)"
+			"point fold_trailing_right": "the wing fold's trailing corner misses by 7 in across: the fold's buttline at the trailing edge or the mark's definition, not yet settled"
 		}
 	},
 	"stores": {
-		"note": "Boxes round the stores a photo may show, for verify/skyline.py: where one lies, no outline is judged, since the model carries no stores and a store's skin passes for sky. Generous envelopes, not geometry: each box is centre and size in inches (station, waterline, buttline) from the station's mount in the points file, buttline taken outboard. Every photo is taken to carry the full load unless its own stores entry says otherwise (null for an empty station): a store left out of the load reads as a false miss, an empty station masked only costs coverage.",
+		"note": "Boxes round the stores a photo may show, for verify/skyline.py: where one lies, no outline is judged, since the model carries no stores and a store's skin passes for sky. Generous envelopes, not geometry: each box is centre and size in inches (station, waterline, buttline) from the station's mount in the points file, buttline taken outboard. Every photo is taken to carry the full load unless its own stores entry says otherwise (null for an empty station): a store left out of the load reads as a false miss, an empty station masked only costs coverage. The ground photos of 164718 (dvids9820748-9820810, one day) carry empty wing pylons: dvids9820808 shows stations 7 and 8 bare, and with tanks there its camera, ahead of the jet, would lose the tail's underside behind the boxes; the in-flight dvids9820744 carries wing tanks and keeps the full load.",
 		"kinds": {
 			"tip missile": [
 				{
@@ -6167,6 +6249,20 @@
 						26
 					]
 				}
+			],
+			"pylon": [
+				{
+					"centre": [
+						0,
+						-15,
+						0
+					],
+					"size": [
+						110,
+						30,
+						10
+					]
+				}
 			]
 		},
 		"load": {
@@ -6184,13 +6280,13 @@
 	"skyline": {
 		"notes": {
 			"body FS 552-576 top": "Between the fins, at the far fin's root: two photos. The traced outline in dvids9820758 reads the top between the fins 3-7 in low instead; unsettled until a photo sees it against the sky from behind or above.",
-			"body FS 672-696 upper side": "The tail end: with the lower side's miss, the section reads about 2 in high rather than too big.",
-			"body FS 672-696 lower side": "The tail end: with the upper side's miss, the section reads about 2 in high rather than too big.",
 			"body FS 168-192 lower side": "Not the body's line: in two of its three photos the misses gather on small fittings (an antenna blade under the nose, the nose gear doors' edge).",
 			"body FS 192-216 top": "The windscreen's foot: the photos' windscreen glass starts here, its frame and the skin below 1-4 in lower than the model's skin beside the glass. The windscreen starts further forward and lower than built, or the forebody top rises too soon.",
 			"body FS 168-192 upper side": "Two photos, just ahead of the windscreen's foot finding: probably the same.",
 			"fin FS 552-576": "The fins stand about 1 in aft of the photos': the leading edge reads inside at every station from FS 528 to 624, the trailing edge outside near the tip.",
-			"fin FS 648-672": "The fins stand about 1 in aft of the photos': the trailing edge near the tip reads outside, the leading edge inside."
+			"fin FS 648-672": "The fins stand about 1 in aft of the photos': the trailing edge near the tip reads outside, the leading edge inside.",
+			"body FS 672-696 lower side": "The tail end's underside, lowered to dvids9820808's outline on 2026-10-31 (it read 2 in high); the three photos now read 0.1-1.6 in.",
+			"body FS 624-648 lower side": "Two photos only, neither a side view at the underside's height: dvids8901347 looks down from above and navy090707N7665E003 reads where the fuselage meets the far stabilator, whose deflection is not posed."
 		}
 	}
 }

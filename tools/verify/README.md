@@ -343,6 +343,13 @@ What went wrong on the F/A-18C, each a rule now:
   - A tank or missile the model does not carry passes for sky: mask the stores.
   - Sample an edge by cells, not by every n-th boundary pixel: in row order a vertical edge's two sides
     alternate, and a stride of four only ever reached one of them.
+  - A miss bigger than the search's reach is invisible, not small: past the reach the search sees no sky and
+    judges nothing. The F/A-18C's aft underside sat 5-9 in inside its photo's outline and read as unjudged,
+    so the search retries at two and three times the reach, with a band of sky of fixed size.
+  - Stop each search where it meets another of the model's parts. Under the F/A-18C's tail the long
+    search crossed the hook and took the photo's hook for the body's edge, 7 in off.
+  - Give every photo its own stores where its load is known: a default box for a tank under the outer
+    pylon, seen from ahead of the jet, hid the whole tail's underside, the one place the model was wrong.
 - **Helpers mark well with a dictionary.** Three helpers marked twelve photos from `../fa18c/marking.md` in an
   hour or so each. Check their marks against the overlays and the flagged misses; they also found the wrong
   photo labels.

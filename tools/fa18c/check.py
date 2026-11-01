@@ -876,7 +876,7 @@ def checks(jet):
 		for side in ("left", "right"):
 			misses = [bottom(s, side) - keel[s] for s in range(int(low), int(high) + 1, 8)]
 			yield result("layout.nacelle", f"{side} nacelle's bottom off the HATP keel line, FS {low}-{high}, worst", 0.0, max(misses, key=abs), 1.0)
-			for s in (640, 680):
+			for s in (650, 666, 685):
 				yield result("layout.nacelle", f"{side} nacelle's bottom at FS {s}", float(np.interp(s, [k[0] for k in aft], [k[1] for k in aft])), bottom(s, side), 1.0, "WL in")
 		for s, w, sigma in n["photo"]:
 			yield result("layout.nacelle", f"left nacelle's bottom at FS {s} (dvids6696790's outline)", w, bottom(s, "left"), sigma, "WL in")
@@ -1070,7 +1070,34 @@ def checks(jet):
 		yield result("layout.blade", "nose blade on the centreline", 0.0, (p[:, 2].min() + p[:, 2].max()) / 2, 0.1, "BL in")
 		hook = F["layout"]["hook"]
 		h = jet.points(["hook"])
-		yield result("layout.hook", "stowed hook's aftmost point (its shoe's round end past the point)", hook["point"][0], h[:, 0].max(), 2.0, "FS in")
+		yield result("layout.hook", "stowed hook's aftmost point, the shoe's tip", hook["point"][0], h[:, 0].max(), 0.5, "FS in")
+		# the photo marks the middle of the shoe's end face: the mean of the four
+		# corners furthest along the shank from the pivot
+		pivot = np.array(jet.hinge("hook"))
+		corners = np.unique(np.round(h, 4), axis=0)
+		axis = (np.array(hook["point"]) - pivot[:2]) / np.linalg.norm(np.array(hook["point"]) - pivot[:2])
+		face = corners[np.argsort((corners[:, :2] - pivot[:2]) @ axis)[-4:]]
+		yield result("layout.hook", "stowed hook's tip height, its end face's middle", hook["point"][1], float(face[:, 1].mean()), 1.0, "WL in")
+		yield result("layout.hook", "hook's pivot station", hook["pivot"][0], pivot[0], 0.1, "FS in")
+		yield result("layout.hook", "hook's pivot height", hook["pivot"][1], pivot[1], 0.1, "WL in")
+		yield result("layout.hook", "hook's length, pivot to tip", hook["length"], float(np.hypot(*(np.array(hook["point"]) - pivot[:2]))), 0.3, "in")
+		# the keel: its bottom on the photos' line, its aft end at the pivot,
+		# its forward end where it leaves the body
+		keel = F["layout"]["keel"]
+		k = jet.points(["keel"])
+		for station, waterline in keel["bottom"]:
+			near = k[np.abs(k[:, 0] - station) < 2.0]
+			yield result("layout.keel", f"keel's bottom at FS {station}", waterline, float(near[:, 1].min()) if len(near) else 999.0, 0.5, "WL in")
+		blade = k[k[:, 1] < 90]
+		# its aft end along its bottom, below the pivot fitting that closes it
+		fitting = F["layout"]["hook"]["pivot"][1] - F["layout"]["hook"]["fitting"]["radius"]
+		bottom = k[k[:, 1] < fitting - 0.3]
+		yield result("layout.keel", "keel's aft end, along its bottom below the pivot fitting", keel["stations"][1], float(bottom[:, 0].max()) if len(bottom) else 0.0, 1.0, "FS in")
+		# measured just forward of the pivot fitting, against the taper's width there
+		front, back = keel["stations"]
+		at = back - F["layout"]["hook"]["fitting"]["radius"] - 2.0
+		near = blade[np.abs(blade[:, 0] - at) < 1.5]
+		yield result("layout.keel", f"keel's width at FS {at:.0f}, tapering to its front", keel["width"] * (at - front) / (back - front), float(np.ptp(near[:, 2])) if len(near) else 0.0, 0.6, "in")
 
 	yield from guard("fittings", "fittings", fittings)
 
