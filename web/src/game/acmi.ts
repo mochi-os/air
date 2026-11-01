@@ -5,13 +5,13 @@
 
 // Flight recorder (#212): a rolling buffer of the last few minutes written out
 // as TacView ACMI 2.2 text; it unit-tests in isolation. Positions are recorded
-// in the world frame (earth.ts HOME, the tangent frame at Midway extended over
-// the whole earth) and written as their true latitude, longitude and height on
-// the WGS84 ellipsoid, which the header says (EARTH). A recording from before
-// the earth was round carries no such line: its world was flat about Midway,
-// and its degrees convert back to that flat world as they were written.
+// in the world frame (earth.ts EARTH, Earth-centred) and written as their true
+// latitude, longitude and height above sea level on the WGS84 earth, which the
+// header says (EARTH). A recording from before the earth was round carries no
+// such line: its world was flat about Midway, and its degrees convert back to
+// that flat world as they were written.
 
-import { DEGREE, HOME, MIDWAY, rotate } from './earth'
+import { DEGREE, EARTH as WORLD, HOME, MIDWAY, between, point, rotate } from './earth'
 
 export { MIDWAY }
 const METRES_PER_DEGREE = 111320
@@ -29,7 +29,7 @@ export interface Sample {
 
 export interface Recorded {
   id: number // stable per object for the whole recording
-  x: number // world frame metres (earth.ts HOME): +x east, +y up, +z south at Midway
+  x: number // world frame metres (earth.ts EARTH): Earth-centred, Earth-fixed
   y: number
   z: number
   roll: number // degrees
@@ -254,13 +254,13 @@ interface Flight {
 }
 
 // position converts a world frame point to the degrees and height ACMI
-// carries: its place on the ellipsoid.
+// carries: its place on the earth, its height above sea level.
 export function position(p: { x: number; y: number; z: number }): {
   longitude: number
   latitude: number
   altitude: number
 } {
-  const place = HOME.place(p)
+  const place = WORLD.place(p)
   const longitude = ((((place.longitude / DEGREE + 180) % 360) + 360) % 360) - 180
   return { longitude, latitude: place.latitude / DEGREE, altitude: place.altitude }
 }
@@ -269,7 +269,7 @@ export function position(p: { x: number; y: number; z: number }): {
 // height back to the world frame. earth says the recording is on the
 // ellipsoid (its header carries EARTH); one from the flat world converts as
 // it was written, about Midway at a constant metres to the degree, and stands
-// at the height it had over the sea, which now curves away below the frame.
+// at the height it had over the sea, which curves away below Midway's chart.
 export function metres(
   longitude: number,
   latitude: number,
@@ -277,7 +277,7 @@ export function metres(
   earth: boolean
 ): { x: number; y: number; z: number } {
   if (earth)
-    return HOME.position({ latitude: latitude * DEGREE, longitude: longitude * DEGREE, altitude })
+    return WORLD.position({ latitude: latitude * DEGREE, longitude: longitude * DEGREE, altitude })
   const z = (FLAT.latitude - latitude) * METRES_PER_DEGREE
   const x =
     (longitude - FLAT.longitude) *
@@ -285,7 +285,7 @@ export function metres(
     Math.cos((FLAT.latitude * Math.PI) / 180)
   const sea = HOME.sea(x, z)
   const up = rotate(sea.level, { x: 0, y: 1, z: 0 })
-  return { x: sea.point.x + up.x * altitude, y: sea.point.y + up.y * altitude, z: sea.point.z + up.z * altitude }
+  return point(between(HOME, WORLD), { x: sea.point.x + up.x * altitude, y: sea.point.y + up.y * altitude, z: sea.point.z + up.z * altitude })
 }
 
 // airspeed is the true airspeed, m/s, that the flight core flew at Mach

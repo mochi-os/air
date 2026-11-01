@@ -3,18 +3,23 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// The WGS84 ellipsoid and the frames the game works in: the twin of the flight
-// core's earth.go, which flies the same maths natively and in the wasm. The
-// earth does not turn, and sea level is the ellipsoid itself.
+// The WGS84 ellipsoid, the geoid and the frames the game works in: the twin of
+// the flight core's earth.go, which flies the same maths natively and in the
+// wasm. The earth does not turn, and sea level is the geoid, mean sea level
+// (geoid.ts, EGM2008): every altitude is a height above it.
 //
-// A frame is the tangent frame of the ellipsoid at an anchor: origin on the
-// ellipsoid, x east, y up along its normal, z south - the axes the game has
-// always used. Every frame is Cartesian, so lines, distances and angles
-// between points are exact in any of them; only "up" and "level" belong to
-// one place. The world frame, HOME, is the frame at Midway extended over the
-// whole earth: the server simulates in it and the wire carries it. The
-// engine works in a frame near its own jet, moved under it as it flies
-// (rebase), where +y is up and y is the height above the sea to centimetres.
+// The world frame, EARTH, is Earth-centred: the server keeps its state in it
+// and the wire carries it. A tangent frame is laid at an anchor: origin at
+// sea level there, x east, y up along the ellipsoid's normal, z south - the
+// axes the game has always used. Every frame is Cartesian, so lines, distances
+// and angles between points are exact in any of them; only "up" and "level"
+// belong to one place. HOME is the tangent frame at Midway, where the map is
+// charted and the ship's track and the wakes are laid (the core's
+// flight.Midway, an environment's chart). The engine works in a frame near its
+// own jet, moved under it as it flies (rebase), where +y is up and y is the
+// height above the sea to centimetres.
+
+import { COLUMNS, GEOID, ROWS } from './geoid'
 
 export const EQUATOR = 6378137 // semi-major axis, m
 export const FLATTENING = 1 / 298.257223563
@@ -26,7 +31,7 @@ export const DEGREE = Math.PI / 180
 
 export interface Vec { x: number; y: number; z: number }
 export interface Quat { x: number; y: number; z: number; w: number }
-export interface Place { latitude: number; longitude: number; altitude: number } // radians, radians, metres above the ellipsoid
+export interface Place { latitude: number; longitude: number; altitude: number } // radians, radians, metres above sea level (the geoid)
 
 const vec = (x: number, y: number, z: number): Vec => ({ x, y, z })
 const dot = (a: Vec, b: Vec) => a.x * b.x + a.y * b.y + a.z * b.z
@@ -34,9 +39,33 @@ const cross = (a: Vec, b: Vec): Vec => vec(a.y * b.z - a.z * b.y, a.z * b.x - a.
 const scale = (a: Vec, s: number): Vec => vec(a.x * s, a.y * s, a.z * s)
 const add = (a: Vec, b: Vec): Vec => vec(a.x + b.x, a.y + b.y, a.z + b.z)
 const subtract = (a: Vec, b: Vec): Vec => vec(a.x - b.x, a.y - b.y, a.z - b.z)
-const unit = (a: Vec): Vec => {
-  const l = Math.sqrt(dot(a, a))
-  return l > 0 ? scale(a, 1 / l) : a
+
+// The geoid's table, decoded once: decimetres, 181 rows from 90 N, 361
+// columns from 180 W (geoid.ts).
+let table: Int16Array | null = null
+function nodes(): Int16Array {
+  if (!table) {
+    const bytes = Uint8Array.from(atob(GEOID), (c) => c.charCodeAt(0))
+    table = new Int16Array(ROWS * COLUMNS)
+    const view = new DataView(bytes.buffer)
+    for (let i = 0; i < table.length; i++) table[i] = view.getInt16(i * 2, true)
+  }
+  return table
+}
+
+// geoid is the height of mean sea level above the ellipsoid at a latitude and
+// longitude, radians: EGM2008 at whole degrees, bilinear between, as the
+// core's Geoid.
+export function geoid(latitude: number, longitude: number): number {
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return 0 // a place that is not one reads the ellipsoid
+  const g = nodes()
+  const row = Math.min(180, Math.max(0, (Math.PI / 2 - latitude) / DEGREE))
+  let column = (longitude / DEGREE + 180) % 360
+  if (column < 0) column += 360
+  const r = Math.min(Math.floor(row), 179), c = Math.min(Math.floor(column), 359)
+  const u = row - r, v = column - c, i = r * COLUMNS + c
+  const a = g[i], b = g[i + 1], d = g[i + COLUMNS], e = g[i + COLUMNS + 1]
+  return ((a * (1 - v) + b * v) * (1 - u) + (d * (1 - v) + e * v) * u) / 10
 }
 
 // centred is the earth-centred, earth-fixed position of a place: x through the
@@ -44,7 +73,8 @@ const unit = (a: Vec): Vec => {
 export function centred(p: Place): Vec {
   const sin = Math.sin(p.latitude), cos = Math.cos(p.latitude)
   const normal = EQUATOR / Math.sqrt(1 - ECCENTRIC * sin * sin)
-  return vec((normal + p.altitude) * cos * Math.cos(p.longitude), (normal + p.altitude) * cos * Math.sin(p.longitude), (normal * (1 - ECCENTRIC) + p.altitude) * sin)
+  const h = p.altitude + geoid(p.latitude, p.longitude) // above the ellipsoid
+  return vec((normal + h) * cos * Math.cos(p.longitude), (normal + h) * cos * Math.sin(p.longitude), (normal * (1 - ECCENTRIC) + h) * sin)
 }
 
 // geodetic is the place of an earth-centred point, in closed form
@@ -65,7 +95,8 @@ export function geodetic(e: Vec): Place {
   const u = Math.sqrt((p - ECCENTRIC * root) ** 2 + z * z)
   const v = Math.sqrt((p - ECCENTRIC * root) ** 2 + (1 - ECCENTRIC) * z * z)
   const lift = (b * b * z) / (a * v)
-  return { latitude: Math.atan2(z + SECOND * lift, p), longitude: Math.atan2(e.y, e.x), altitude: u * (1 - (b * b) / (a * v)) }
+  const latitude = Math.atan2(z + SECOND * lift, p), longitude = Math.atan2(e.y, e.x)
+  return { latitude, longitude, altitude: u * (1 - (b * b) / (a * v)) - geoid(latitude, longitude) }
 }
 
 // columns is the rotation taking the unit axes to a, b and c.
@@ -110,7 +141,8 @@ const normalise = (q: Quat): Quat => {
   return { x: q.x / l, y: q.y / l, z: q.z / l, w: q.w / l }
 }
 
-// Frame is the tangent frame of the ellipsoid at an anchor.
+// Frame is a Cartesian frame of the earth: EARTH itself (centre), or the
+// tangent frame at an anchor, origin at sea level there.
 export class Frame {
   readonly latitude: number
   readonly longitude: number
@@ -119,10 +151,20 @@ export class Frame {
   readonly up: Vec
   readonly south: Vec
   readonly turn: Quat // frame to earth-centred
+  readonly centre: boolean // EARTH: its origin the earth's centre, its axes the earth's own
 
-  constructor(latitude: number, longitude: number) {
+  constructor(latitude: number, longitude: number, centre = false) {
     this.latitude = latitude
     this.longitude = longitude
+    this.centre = centre
+    if (centre) {
+      this.east = vec(1, 0, 0)
+      this.up = vec(0, 1, 0)
+      this.south = vec(0, 0, 1)
+      this.origin = vec(0, 0, 0)
+      this.turn = { x: 0, y: 0, z: 0, w: 1 }
+      return
+    }
     const sinφ = Math.sin(latitude), cosφ = Math.cos(latitude), sinλ = Math.sin(longitude), cosλ = Math.cos(longitude)
     this.east = vec(-sinλ, cosλ, 0)
     this.up = vec(cosφ * cosλ, cosφ * sinλ, sinφ)
@@ -132,7 +174,7 @@ export class Frame {
   }
 
   same(o: Frame): boolean {
-    return this.latitude === o.latitude && this.longitude === o.longitude
+    return this.centre === o.centre && this.latitude === o.latitude && this.longitude === o.longitude
   }
   // centred is the earth-centred position of a point given in the frame.
   centred(p: Vec): Vec {
@@ -169,22 +211,19 @@ export class Frame {
   }
   // sea is the point of the sea straight down this frame's own up from (x, 0,
   // z), and the rotation from the tangent frame there to this frame's axes:
-  // how a ship placed by its chart position sits on the curved water. Closed
-  // form, as the core's.
+  // how a ship placed by her chart position sits on the curved water. Newton
+  // steps until a step moves under a tenth of a millimetre, as the core's.
   sea(x: number, z: number): { point: Vec; level: Quat } {
-    const start = add(add(this.origin, scale(this.east, x)), scale(this.south, z))
-    const c = vec(start.x, start.y, start.z * OBLATENESS)
-    const u = vec(this.up.x, this.up.y, this.up.z * OBLATENESS)
-    const a = dot(u, u), b = dot(c, u), k = dot(c, c) - EQUATOR * EQUATOR
-    const y = -k / (b + Math.sqrt(Math.max(b * b - a * k, 0)))
-    const e = add(start, scale(this.up, y))
-    const normal = unit(vec(e.x, e.y, e.z * OBLATENESS * OBLATENESS))
-    let east = vec(-normal.y, normal.x, 0)
-    if (Math.sqrt(dot(east, east)) < 1e-12) east = this.east
-    east = unit(east)
-    const south = cross(east, normal)
-    const into = (v: Vec) => vec(dot(v, this.east), dot(v, this.up), dot(v, this.south))
-    return { point: vec(x, y, z), level: columns(into(east), into(normal), into(south)) }
+    const at = vec(x, 0, z)
+    let place = this.place(at)
+    for (let step = 0; step < 8; step++) {
+      const fall = place.altitude / Math.max(this.normal(place).y, 0.1)
+      at.y -= fall
+      place = this.place(at)
+      if (Math.abs(fall) < 1e-4) break
+    }
+    const level = new Frame(place.latitude, place.longitude)
+    return { point: at, level: between(level, this).turn }
   }
   // clear reports whether the straight line between two points of the frame
   // passes above the sea everywhere: the earth's bulge hides a low jet from a
@@ -207,11 +246,19 @@ export function tangent(latitude: number, longitude: number): Frame {
   return new Frame(latitude, longitude)
 }
 
-// MIDWAY is the world frame's anchor: the centre of Midway Atoll, the point
-// the map is projected about (midway-prep/prep.py ORIGIN, map.json "origin"),
-// so the map's (0, 0) is hung at its true place and everything on it lies
-// where it really is.
+// MIDWAY is the chart's anchor: the centre of Midway Atoll, the point the map
+// is projected about (midway-prep/prep.py ORIGIN, map.json "origin"), so the
+// map's (0, 0) is hung at its true place and everything on it lies where it
+// really is.
 export const MIDWAY = { latitude: 28.2334, longitude: -177.3668 } // degrees
+
+// EARTH is the world frame: Earth-centred, Earth-fixed coordinates, x through
+// the equator at Greenwich, z through the north pole. The server keeps its
+// state in it and the wire carries it.
+export const EARTH = new Frame(0, 0, true)
+
+// HOME is the chart: the tangent frame at Midway, where the map is charted and
+// the ship's track and the wakes are laid.
 export const HOME = new Frame(MIDWAY.latitude * DEGREE, MIDWAY.longitude * DEGREE)
 
 // Rigid is a rigid motion from one frame to another: a point p in the first
@@ -239,15 +286,19 @@ export function inverse(r: Rigid): Rigid {
 }
 
 // theatre is the frame the engine works in now, and the motions between it
-// and the world frame: inward carries a world point into it, outward back.
+// and the world frame - inward carries a point of EARTH into it, outward back
+// - and the chart: charted carries a point of HOME into it, charting back.
 // The engine settles it as its jet flies on; the modules that turn its
 // positions into latitudes and longitudes (navigation, the recorder) read it.
-export const theatre = { frame: HOME, inward: IDENTITY, outward: IDENTITY }
+export const theatre = { frame: HOME, inward: IDENTITY, outward: IDENTITY, charted: IDENTITY, charting: IDENTITY }
 export function settle(frame: Frame): void {
   theatre.frame = frame
-  theatre.inward = between(HOME, frame)
+  theatre.inward = between(EARTH, frame)
   theatre.outward = inverse(theatre.inward)
+  theatre.charted = between(HOME, frame)
+  theatre.charting = inverse(theatre.charted)
 }
+settle(HOME)
 
 // level is a point given only across the frame's horizontal, at sea level:
 // the sea straight down the frame's up from (x, z). A point that knows its

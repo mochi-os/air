@@ -7,7 +7,9 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
 import { GROUND, radiance, sunlight, tables, transmittance } from './atmosphere'
-import { DAY as MOON_DAY, NIGHT as MOON_NIGHT } from './moon'
+import { DEGREE, tangent } from './earth'
+import { DAY as MOON_DAY, NIGHT as MOON_NIGHT, OBSERVER } from './moon'
+import { moon as sky_moon, seen as sky_seen } from './sky'
 
 const air = tables(2.5)
 const noon: [number, number, number] = [0, 0.866, 0.5]
@@ -473,9 +475,10 @@ describe('the moon', () => {
     const ocean = { uniforms: { u_beam: { value: new THREE.Color(2.4, 2.2, 1.9) } } }
     const TOD = { day: { sky: 4.5 }, night: { sky: 0.1 } }
     const sun = new THREE.Vector3(0, 0.866, 0.5).normalize()
-    new Function('THREE', 'TOD', 'MOON_DAY', 'MOON_NIGHT', 'MOON_NIGHT_GAIN', 'atmosphere_uniforms', 'moon_faces', 'sun_dir', 'glare_mat', 'ocean_mat',
+    const theatre = { frame: tangent(OBSERVER.latitude * DEGREE, OBSERVER.longitude * DEGREE) } // the engine's frame over where the moments were seen from
+    new Function('THREE', 'TOD', 'MOON_DAY', 'MOON_NIGHT', 'MOON_NIGHT_GAIN', 'atmosphere_uniforms', 'moon_faces', 'sun_dir', 'glare_mat', 'ocean_mat', 'sky_moon', 'sky_seen', 'theatre',
       `const _moon_up=new THREE.Vector3();\n${lift('moon_place')}\nmoon_place(TOD.${hour});`)(
-      THREE, TOD, MOON_DAY, MOON_NIGHT, Number(gain![1]), atmosphere, { day: 'day face', night: 'night face' }, sun, glare, ocean)
+      THREE, TOD, MOON_DAY, MOON_NIGHT, Number(gain![1]), atmosphere, { day: 'day face', night: 'night face' }, sun, glare, ocean, sky_moon, sky_seen, theatre)
     return { u: atmosphere, glare: glare.uniforms, beam: ocean.uniforms.u_beam.value, sun, gain: Number(gain![1]) }
   }
 

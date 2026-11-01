@@ -42,7 +42,7 @@ function vector3(value: unknown): [number, number, number] | null {
   return v.every(Number.isFinite) ? v : null
 }
 
-// local carries a pose from the world frame the server keeps (earth.ts HOME)
+// local carries a pose from the world frame the server keeps (earth.ts EARTH)
 // into the engine's own: its position, attitude and direction. The rings hold
 // world positions, so a pose stays right however the engine's frame moves
 // while it waits to be drawn.

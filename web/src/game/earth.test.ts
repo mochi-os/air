@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { between, centred, DEGREE, destination, geodesic, geodetic, HOME, inverse, MIDWAY, point, tangent } from './earth'
+import { between, centred, DEGREE, destination, geodesic, geodetic, geoid, HOME, inverse, MIDWAY, point, tangent } from './earth'
 
 const near = (a: { x: number; y: number; z: number }, b: { x: number; y: number; z: number }, tolerance: number) =>
   Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z) <= tolerance
@@ -25,19 +25,32 @@ describe('the earth', () => {
       expect(Math.abs(back.latitude - p.latitude)).toBeLessThan(1e-11)
       expect(Math.abs(back.altitude - p.altitude)).toBeLessThan(1e-6)
     }
-    expect(near(centred({ latitude: 0, longitude: 0, altitude: 0 }), { x: 6378137, y: 0, z: 0 }, 1e-6)).toBe(true)
-    expect(Math.abs(centred({ latitude: Math.PI / 2, longitude: 0, altitude: 0 }).z - 6356752.314245)).toBeLessThan(1e-5)
+    // A place's altitude is its height above sea level, the geoid, which stands 17.2 m over the ellipsoid
+    // at 0 N 0 E and 14.9 m at the north pole.
+    expect(near(centred({ latitude: 0, longitude: 0, altitude: 0 }), { x: 6378137 + 17.2, y: 0, z: 0 }, 1e-6)).toBe(true)
+    expect(Math.abs(centred({ latitude: Math.PI / 2, longitude: 0, altitude: 0 }).z - (6356752.314245 + 14.9))).toBeLessThan(1e-5)
   })
 
   it('agrees with the flight core to the millimetre', () => {
     // The flight core's own answers (earth.go), printed from Go.
-    expect(near(HOME.sea(100000, -40000).point, { x: 100000, y: -909.379550335, z: -40000 }, 1e-6)).toBe(true)
-    expect(near(point(between(HOME, tangent(0.4, 2)), { x: 1234.5, y: 8000, z: -4321 }), { x: 5220678.774308, y: -3266457.000346, z: -1965709.901979 }, 1e-3)).toBe(true)
+    expect(near(HOME.sea(100000, -40000).point, { x: 100000, y: -910.475330903, z: -40000 }, 1e-6)).toBe(true)
+    expect(near(point(between(HOME, tangent(0.4, 2)), { x: 1234.5, y: 8000, z: -4321 }), { x: 5220677.181135, y: -3266456.358108, z: -1965709.302567 }, 1e-3)).toBe(true)
     const p = HOME.place({ x: 300000, y: 9000, z: 200000 })
-    expect(Math.abs(p.latitude - 0.46077009537113)).toBeLessThan(1e-12)
-    expect(Math.abs(p.longitude - -3.043290568805753)).toBeLessThan(1e-12)
-    expect(Math.abs(p.altitude - 19178.207886655)).toBeLessThan(1e-6)
-    expect(near(HOME.upAt({ x: 300000, y: 9000, z: 200000 }), { x: 0.046863722461501, y: 0.998407337198624, z: 0.031409879735612 }, 1e-12)).toBe(true)
+    expect(Math.abs(p.latitude - 0.46077008541085)).toBeLessThan(1e-12)
+    expect(Math.abs(p.longitude - -3.043290553131493)).toBeLessThan(1e-12)
+    expect(Math.abs(p.altitude - 19174.441863124)).toBeLessThan(1e-6)
+    expect(near(HOME.upAt({ x: 300000, y: 9000, z: 200000 }), { x: 0.04686373671358, y: 0.998407336227485, z: 0.031409889340437 }, 1e-12)).toBe(true)
+  })
+
+  it('lays sea level on the geoid the flight core lays it on', () => {
+    // EGM2008 at whole degrees, interpolated as geoid.go does: the flight core's own answers, metres.
+    const core: [number, number, number][] = [
+      [28.2334, -177.3668, -1.949756], [5, 79, -106.5], [-4, 138, 84.6], [51.5, -0.1, 46.125],
+      [-33.9, 151.2, 21.622], [64.1, -21.9, 66.482], [-89.5, 10, -29.9], [12.34, -179.99, 10.75802],
+    ]
+    for (const [latitude, longitude, height] of core) expect(Math.abs(geoid(latitude * DEGREE, longitude * DEGREE) - height)).toBeLessThan(1e-6)
+    // The sea under the chart's origin is where the chart lays it, at no height above sea level.
+    expect(Math.abs(HOME.place({ x: 0, y: 0, z: 0 }).altitude)).toBeLessThan(1e-6)
   })
 
   it('lays a frame east, up and south, and carries points between frames exactly', () => {
@@ -56,6 +69,10 @@ describe('the earth', () => {
   it('drops the sea 785 m below a level line a hundred kilometres out, and hides a low jet past the horizon', () => {
     expect(HOME.sea(100000, 0).point.y).toBeGreaterThan(-790)
     expect(HOME.sea(100000, 0).point.y).toBeLessThan(-780)
+    // 5,000 km out, where the frame's up leans 45 degrees off the vertical, a navigation station stored by its
+    // chart position still finds the sea where it lies.
+    const far = HOME.position({ latitude: 38.4183 * DEGREE, longitude: -112.5083 * DEGREE, altitude: 0 })
+    expect(near(HOME.sea(far.x, far.z).point, far, 1e-3)).toBe(true)
     const at = (d: number, h: number) => {
       const { point: p } = HOME.sea(d, 0)
       const up = HOME.upAt(p)

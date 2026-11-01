@@ -41,7 +41,7 @@ describe('the arrival set follows the jet, not the Start selector (#204)', () =>
 
   it('measures both surfaces and hands the arrival to the nearer one', () => {
     expect(watch).toMatch(/ownship\.pos\.x-CARRIER\.x/)
-    expect(watch).toMatch(/own\.x-ap\.start\.x/) // the field in the world frame, from where the jet is there (homeward)
+    expect(watch).toMatch(/own\.x-ap\.start\.x/) // the field in the chart, from where the jet is there (homeward)
     expect(watch).toMatch(/field<=ship\s*\?|if\(field<=ship\)/)
   })
 

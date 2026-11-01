@@ -398,7 +398,7 @@ describe('the carrier under way in recordings', () => {
   })
 
   it('replays a recording without the ship against the ship where the map charts it', () => {
-    expect(lift('playback_arm')).toMatch(/^function playback_arm\(text\)\{\n\tcarrier_place\(theatre_point\(HOME\.sea\(CHART\.x,CHART\.z\)\.point\),Math\.PI\/2-CHART\.yaw\);/)
+    expect(lift('playback_arm')).toMatch(/^function playback_arm\(text\)\{\n\tcarrier_place\(chart_point\(HOME\.sea\(CHART\.x,CHART\.z\)\.point\),Math\.PI\/2-CHART\.yaw\);/)
     expect(lift('carrier_pose')).toMatch(/carrier_hang\(d\.position,d\.quaternion\);/)
   })
 })

@@ -11,7 +11,7 @@
 // own beneath them, until the earth has terrain to show.
 
 import * as THREE from 'three'
-import { EQUATOR, FLATTENING, destination, type Frame, type Place, type Vec } from './earth'
+import { EQUATOR, FLATTENING, destination, geoid, type Frame, type Place, type Vec } from './earth'
 
 const OBLATENESS = 1 / (1 - FLATTENING)
 const ECCENTRIC = FLATTENING * (2 - FLATTENING) // first eccentricity squared
@@ -76,8 +76,9 @@ const FRAGMENT = `uniform vec4 u_view; uniform vec2 u_screen; uniform vec3 u_sea
 export function aim(turn: THREE.Matrix3, anchor: THREE.Vector3, view: Frame): void {
   const sin = Math.sin(view.latitude), cos = Math.cos(view.latitude)
   const normal = EQUATOR / Math.sqrt(1 - ECCENTRIC * sin * sin)
+  const sea = geoid(view.latitude, view.longitude) // the view's origin is at sea level, the geoid's height off the ellipsoid
   turn.set(0, cos, sin, 1, 0, 0, 0, sin, -cos)
-  anchor.set(normal * cos, 0, normal * (1 - ECCENTRIC) * sin)
+  anchor.set((normal + sea) * cos, 0, (normal * (1 - ECCENTRIC) + sea) * sin)
 }
 
 // Globe draws the earth on its own canvas, its own renderer: the map sits over

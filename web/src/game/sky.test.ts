@@ -5,8 +5,9 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { NIGHT } from './moon'
-import { decode, direction, light, planet, sidereal, tint, type Star } from './sky'
+import { tangent } from './earth'
+import { DAY, NIGHT, OBSERVER } from './moon'
+import { decode, direction, light, moon, planet, seen, sidereal, tint, type Star } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 
 const DEGREE = Math.PI / 180
@@ -167,5 +168,30 @@ describe('a planet', () => {
     expect(mars.magnitude).toBeLessThan(Math.min(...stars.map((s) => s.magnitude)))
     const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
     expect(engine).toContain('const star_catalogue=[...sky_decode(STAR_DATA,STAR_COUNT), sky_planet("mars",MOON_NIGHT.time)]')
+  })
+})
+
+describe("the moment's sun and moon over a frame", () => {
+  const over = (latitude: number, longitude: number) => tangent(latitude * DEGREE, longitude * DEGREE)
+  const angle = (a: { x: number; y: number; z: number }, b: { x: number; y: number; z: number }) =>
+    Math.acos(Math.min(1, (a.x * b.x + a.y * b.y + a.z * b.z) / Math.hypot(a.x, a.y, a.z) / Math.hypot(b.x, b.y, b.z))) / DEGREE
+  const as = (v: readonly [number, number, number]) => ({ x: v[0], y: v[1], z: v[2] })
+  it('stands them where the observer saw them, over the observer', () => {
+    const here = over(OBSERVER.latitude, OBSERVER.longitude)
+    expect(angle(seen(DAY.sun!, here), as(DAY.sun!))).toBeLessThan(1e-6)
+    expect(angle(moon(NIGHT, here), as(NIGHT.direction))).toBeLessThan(1e-6)
+  })
+  it('lays the sun 60 degrees up due south over Midway, to a few hundredths of a degree', () => {
+    expect(angle(seen(DAY.sun!, over(28.2334, -177.3668)), { x: 0, y: 0.866, z: 0.5 })).toBeLessThan(0.05)
+  })
+  it('sets the noon sun for a jet a quarter of the way round the earth to the west, at night there', () => {
+    expect(seen(DAY.sun!, over(28.2334, 92.6332)).y).toBeLessThan(0) // 90 degrees west of Midway: about six in the morning, before the sun rises
+    expect(seen(DAY.sun!, over(50, -10)).y).toBeLessThan(0) // Europe at Midway's noon: the middle of the night
+  })
+  it('moves the moon by its parallax, up to a degree, where the sun only turns with the place', () => {
+    const far = over(-20, 30)
+    const parallax = angle(moon(NIGHT, far), seen(NIGHT.direction, far))
+    expect(parallax).toBeGreaterThan(0.3)
+    expect(parallax).toBeLessThan(1)
   })
 })

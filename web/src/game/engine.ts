@@ -106,7 +106,7 @@ import * as helmet from './helmet'
 import * as faces from './faces'
 import * as plates from './plates'
 import { humidity, vapour as vapour_show } from './vapour'
-import { decode as sky_decode, direction as sky_direction, light as sky_light, planet as sky_planet, sidereal as sky_sidereal, tint as sky_tint } from './sky'
+import { decode as sky_decode, direction as sky_direction, light as sky_light, moon as sky_moon, planet as sky_planet, seen as sky_seen, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 import { subdivide } from './subdivide'
 
@@ -425,9 +425,9 @@ const stars=new THREE.Points(star_geo,new THREE.ShaderMaterial({ transparent:tru
 		void main(){ vec2 c=gl_PointCoord*2.0-1.0; float r2=dot(c,c); if(r2>1.0) discard;
 			gl_FragColor=vec4(v_light*exp(-r2*2.0)*u_opacity,1.0); }` }));   // display-referred, as the sky dome it sits in front of
 stars.frustumCulled=false; stars.userData.framed=true; scene.add(stars);   // turned by sky_place, never by a move of the frame
-let sky_latitude=MIDWAY.latitude;
-function sky_place(latitude,longitude){   // re-placed once the map's own origin is known, and as the jet flies north or south
-	sky_latitude=latitude;
+let sky_latitude=MIDWAY.latitude, sky_longitude=MIDWAY.longitude;
+function sky_place(latitude,longitude){   // re-placed once the map's own origin is known, and as the jet flies on
+	sky_latitude=latitude; sky_longitude=longitude;
 	const local=sky_sidereal(MOON_NIGHT.time)+longitude*Math.PI/180, pos=star_geo.attributes.position.array;
 	star_catalogue.forEach((s,i)=>{ const d=sky_direction(s,latitude,local); pos[i*3]=d[0]*STAR_RADIUS; pos[i*3+1]=d[1]*STAR_RADIUS; pos[i*3+2]=d[2]*STAR_RADIUS; });
 	star_geo.attributes.position.needsUpdate=true; }
@@ -451,16 +451,22 @@ const MOON_NIGHT_GAIN=1.35;
 const _moon_up=new THREE.Vector3();
 function moon_place(p){ const night=p===TOD.night, m=night?MOON_NIGHT:MOON_DAY, u=atmosphere_uniforms;
 	u.u_moon.value=night?moon_faces.night:moon_faces.day; u.u_moon_radius.value=m.radius; u.u_sun_disc.value=night?0:1;
-	if(night) u.u_moon_dir.value.copy(sun_dir); else u.u_moon_dir.value.fromArray(m.direction);   // by night in the slot the night is lit from, 0.1 degrees from where the moment put it, so the glare finds it where the light comes from
-	_moon_up.fromArray(m.up); _moon_up.addScaledVector(u.u_moon_dir.value,-_moon_up.dot(u.u_moon_dir.value)).normalize();
+	if(night) u.u_moon_dir.value.copy(sun_dir); else { const d=sky_moon(m,theatre.frame); u.u_moon_dir.value.set(d.x,d.y,d.z); }   // by night the light the night is lit from (moment_light), by day where the moment had it over the frame
+	const up=sky_seen(m.up,theatre.frame); _moon_up.set(up.x,up.y,up.z); _moon_up.addScaledVector(u.u_moon_dir.value,-_moon_up.dot(u.u_moon_dir.value)).normalize();
 	u.u_moon_up.value.copy(_moon_up); u.u_moon_right.value.crossVectors(u.u_moon_dir.value,_moon_up);   // looking along the moon with the zenith above: right as the image's +x
 	if(night) u.u_moon_gain.value.setScalar(MOON_NIGHT_GAIN); else u.u_moon_gain.value.setScalar(m.scale*p.sky);   // by day its radiance per unit of the sun's light, in the sky table's own units
 	const mean=m.mean*u.u_moon_gain.value.x;
 	glare_mat.uniforms.u_moon_mean.value.setScalar(mean);
 	if(night) glare_mat.uniforms.u_veil.value.setScalar(mean*Math.PI*m.radius*m.radius);   // the moon's glare is its own displayed light over its solid angle: as a disc that bright makes it, not as the 200,000-times light the screen cannot show
 	else glare_mat.uniforms.u_veil.value.copy(ocean_mat.uniforms.u_beam.value); }   // the sun's: its true beam against the sky, as the disc the screen clips stands for
-function apply_time_of_day(t){ const p=TOD[t]||TOD.day;
-	sun_dir.set(p.sun[0],p.sun[1],p.sun[2]).normalize(); sun.position.copy(sun_dir).multiplyScalar(4000); sun.target.position.set(0,0,0);
+// moment_light points the light where the moment's sun stood over the engine's frame by day, and its
+// moon by night (sky.ts): over Midway the preset's slot to a few hundredths of a degree, far off lower in
+// the sky or set. The presets' sun stays the slot their lighting was set for.
+let tod_preset=TOD.day;
+function moment_light(p){ const f=theatre.frame, l=p===TOD.night?sky_moon(MOON_NIGHT,f):sky_seen(MOON_DAY.sun,f);
+	sun_dir.set(l.x,l.y,l.z).normalize(); sun.position.copy(sun_dir).multiplyScalar(4000); }
+function apply_time_of_day(t){ const p=TOD[t]||TOD.day; tod_preset=p;
+	moment_light(p); sun.target.position.set(0,0,0);
 	sun.color.setHex(p.sunCol); sun.intensity=p.sunI; ocean_mat.uniforms.u_beam.value.copy(sun.color).multiplyScalar(p.sunI);   // the sun's (or the moon's) beam, for the sea's glint
 	col_sundisc.setHex(p.disc); sky_horizon.setHex(p.hor); sky_zenith.setHex(p.zen); col_deep.setHex(p.deep); col_shallow.setHex(p.shal);
 	scene.fog.color.setHex(p.fog); fog_colour.setHex(p.fog);
@@ -6893,7 +6899,9 @@ function theatre_settled(){ const r=theatre.charted;   // the map is hung where 
 	home_root.position.set(r.move.x,r.move.y,r.move.z); home_root.quaternion.set(r.turn.x,r.turn.y,r.turn.z,r.turn.w); home_root.updateMatrixWorld(true);
 	if(flight_active) carrier_pose(carrier_time);
 	chart_settle();
-	const latitude=theatre.frame.latitude/DEGREE; if(Math.abs(latitude-sky_latitude)>0.05) sky_place(latitude,MIDWAY.longitude); }   // the stars stand over where the jet is at Midway's hour: the mission's time of day is the place's own, as the sun's is
+	const latitude=theatre.frame.latitude/DEGREE, longitude=theatre.frame.longitude/DEGREE;
+	if(Math.abs(latitude-sky_latitude)>0.05||Math.abs(longitude-sky_longitude)>0.05) sky_place(latitude,longitude);   // the stars stand over where the jet is at the moment's instant
+	moment_light(tod_preset); moon_place(tod_preset); }   // and the sun and the moon as they stood there then, in the frame's own axes
 // theatre_reset puts the engine's frame back on the chart, Midway's: every
 // spawn is laid there.
 function theatre_reset(){ if(!theatre.frame.same(HOME)) reframe(HOME); }

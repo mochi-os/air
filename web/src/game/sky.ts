@@ -3,11 +3,37 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// The real night sky: catalogue stars placed for an observer at a latitude and
-// longitude on a given date. Dependency-free so it unit-tests in isolation.
-// World axes follow the engine: +x east, +y up, -z north.
+// The real sky: catalogue stars placed for an observer at a latitude and
+// longitude on a given date, and the sun and moon of the game's moments over
+// any frame. World axes follow the engine: +x east, +y up, -z north.
+
+import { between, point, tangent, vector, type Frame, type Vec } from './earth'
+import { OBSERVER, type Moment } from './moon'
 
 const DEGREE = Math.PI / 180
+
+// The moments' sun and moon over a frame. moon.ts holds them as the chart's
+// observer saw them at the game's two moments, in the level frame there. At
+// that one instant the sun lies the same way from everywhere on the earth, and
+// the moon, 384,000 km off, up to a degree another way from across the earth,
+// so a frame far from the chart sees them where they really stood.
+const observed = tangent(OBSERVER.latitude * DEGREE, OBSERVER.longitude * DEGREE)
+const LUNAR = 1737400 // the moon's mean radius, m
+
+// seen carries a direction on the moment's sky, as the observer saw it, into a
+// frame: the sun's, or an axis of the moon's image.
+export function seen(v: readonly [number, number, number], frame: Frame): Vec {
+  return vector(between(observed, frame), { x: v[0], y: v[1], z: v[2] })
+}
+
+// moon is the direction to the moon's centre from a frame's anchor at a
+// moment, with the parallax of the place.
+export function moon(m: Moment, frame: Frame): Vec {
+  const distance = LUNAR / Math.sin(m.radius)
+  const at = point(between(observed, frame), { x: m.direction[0] * distance, y: m.direction[1] * distance, z: m.direction[2] * distance })
+  const length = Math.hypot(at.x, at.y, at.z)
+  return { x: at.x / length, y: at.y / length, z: at.z / length }
+}
 
 export interface Star {
   ascension: number // right ascension, radians (J2000)

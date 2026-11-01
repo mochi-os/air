@@ -44,7 +44,7 @@ const V = variation(0, 3000, 0), STATION = variation(-18500, 0, 7500)
 const world = `const D2R=Math.PI/180, NM=1852;
   let cold_start=false, sim_time=0, glance=0, beat=0.1, presenting=true, ddi_dirty=false, WORLD_WRAP=0, parking=false, master="nav", designator="center", last_out=null, ufc_dirty=false, law_primary=false, law_disabled=false, emcon=false, designated=-1, radar_calls=0;
   const theatre=earth.theatre, mission_clock=()=>new Date(${DATE});
-  const HOME=earth.HOME, homeward=(p)=>earth.point(earth.theatre.outward,{ x:p.x, y:p.y??0, z:p.z }), theatre_point=(p)=>earth.point(earth.theatre.inward,{ x:p.x, y:p.y??0, z:p.z });   // the engine's frame on the world frame
+  const HOME=earth.HOME, homeward=(p)=>earth.point(earth.theatre.charting,{ x:p.x, y:p.y??0, z:p.z }), chart_point=(p)=>earth.point(earth.theatre.charted,{ x:p.x, y:p.y??0, z:p.z }), theatre_point=(p)=>earth.point(earth.theatre.inward,{ x:p.x, y:p.y??0, z:p.z });   // the engine's frame on the chart and on the world frame
   const cfg={ task:"free" }, CARRIER={ x:-18500, z:7500, deckY:20, height:20 }, SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" } }, buses={ ac:true }, STATE={ mach:0 };
   const RADAR={ silent:()=>false, mode:"rws", stt:null, tracks:[], ls:null }, radar_undesignate=()=>{ radar_calls++; return false; }, radar_events=[], carrier_ols=true;
   const ownship={ pos:{ x:0, y:3000, z:0 }, velx:0, vely:0, velz:-200, speed:200, grounded:false, vel_dir:{ x:0, y:0, z:-1 }, gauges:{ heading:0, pitch:0, bank:0, track:0, ground:389, zulu:0 } };
@@ -97,7 +97,7 @@ describe('the mission data load', () => {
   it('carries the ship and the first airfield as waypoints 1 and 2, the ship\'s TACAN station, and the GPS points', () => {
     const m = cockpit<navigate.Mission>('return mission();')
     expect(m.identifier).toBe('MIDWAY')
-    expect(m.waypoints).toEqual([{ index: 1, point: { name: 'NIM', x: -18500, z: 7500, elevation: 20 } }, { index: 2, point: { name: 'PMDY', x: -1429, y: earth.HOME.sea(-1429, 3537).point.y, z: 3537, elevation: 3.5 } }]) // the field on the sea where the world frame lays it
+    expect(m.waypoints).toEqual([{ index: 1, point: { name: 'NIM', x: -18500, z: 7500, elevation: 20 } }, { index: 2, point: { name: 'PMDY', x: -1429, y: earth.HOME.sea(-1429, 3537).point.y, z: 3537, elevation: 3.5 } }]) // the field on the sea where the chart lays it
     expect(m.stations).toEqual([{ channel: 74, band: 'X', x: -18500, z: 7500, elevation: 20, name: 'NIM', variation: STATION * D }]) // the model's variation where the ship lies
     expect(m.points.map((p) => p.name)).toEqual(['NIM', 'PMDY']) // an airfield without a code is left out
   })

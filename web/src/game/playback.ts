@@ -11,7 +11,7 @@ import { EARTH, metres } from './acmi'
 
 export interface Frame {
   time: number // s from the start of the recording
-  x: number // world frame metres (earth.ts HOME); the engine carries them into its own
+  x: number // world frame metres (earth.ts EARTH); the engine carries them into its own
   y: number
   z: number
   roll: number // degrees, the recorder's own conventions

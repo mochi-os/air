@@ -4,7 +4,17 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, expect, it } from 'vitest'
 import { acmi, metres, position, type Recorded, type Sample } from './acmi'
-import { items, number, parse, scene } from './playback'
+import { between, EARTH, HOME, point, vector } from './earth'
+import { items, number, parse, type Playback, type Pose, scene as world } from './playback'
+
+// The tests lay their jets on Midway's chart, and a recording keeps the world frame, Earth-centred:
+// outward carries a chart point into it as the engine does before writing, inward back as a replay does.
+const outward = between(HOME, EARTH), inward = between(EARTH, HOME)
+const scene = (p: Playback, time: number): Pose[] =>
+  world(p, time).map((pose) => {
+    const at = point(inward, pose), v = vector(inward, { x: pose.vx, y: pose.vy, z: pose.vz })
+    return { ...pose, x: at.x, y: at.y, z: at.z, vx: v.x, vy: v.y, vz: v.z }
+  })
 
 // Recordings are made by the recorder's own writer, so a change on either side
 // that parts them fails here.
@@ -23,7 +33,12 @@ const jet = (over: Partial<Recorded> = {}): Recorded => ({
   ...over,
 })
 const record = (samples: Sample[], match?: Record<string, string>) =>
-  acmi(samples, new Date('2026-09-25T10:00:00Z'), 'Mochi Air: flight', match)
+  acmi(
+    samples.map((sample) => ({ ...sample, objects: sample.objects.map((o) => ({ ...o, ...point(outward, o) })) })),
+    new Date('2026-09-25T10:00:00Z'),
+    'Mochi Air: flight',
+    match
+  )
 
 describe('metres', () => {
   it('is position undone', () => {
@@ -32,8 +47,8 @@ describe('metres', () => {
       [12345.6, -9876.5],
       [-120000, 80000],
     ]) {
-      const p = position({ x, y: 1000, z })
-      const back = metres(p.longitude, p.latitude, p.altitude, true)
+      const p = position(point(outward, { x, y: 1000, z }))
+      const back = point(inward, metres(p.longitude, p.latitude, p.altitude, true))
       expect(back.x).toBeCloseTo(x, 6)
       expect(back.y).toBeCloseTo(1000, 6)
       expect(back.z).toBeCloseTo(z, 6)

@@ -915,6 +915,33 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
+              Sea level from the <b>Earth Gravitational Model 2008</b> of the{' '}
+              <b>National Geospatial-Intelligence Agency</b> (a US government
+              work), as <b>GeographicLib</b> distributes it. Modified: sampled
+              at every whole degree.
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://earth-info.nga.mil/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: brand name */}
+              NGA
+            </a>{' '}
+            ·{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://geographiclib.sourceforge.io/C++/doc/geoid.html'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: brand name */}
+              GeographicLib
+            </a>
+          </p>
+          <p className='leading-relaxed'>
+            <Trans>
               Moon from the <b>CGI Moon Kit</b> by{' '}
               <b>NASA’s Scientific Visualization Studio</b>, built from the{' '}
               <b>Lunar Reconnaissance Orbiter</b> camera mosaic (public
