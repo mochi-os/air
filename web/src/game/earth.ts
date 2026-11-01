@@ -212,7 +212,8 @@ export class Frame {
   // sea is the point of the sea straight down this frame's own up from (x, 0,
   // z), and the rotation from the tangent frame there to this frame's axes:
   // how a ship placed by her chart position sits on the curved water. Newton
-  // steps until a step moves under a tenth of a millimetre, as the core's.
+  // steps until a step moves under a tenth of a millimetre: the sea the core
+  // finds, to that tenth.
   sea(x: number, z: number): { point: Vec; level: Quat } {
     const at = vec(x, 0, z)
     let place = this.place(at)
