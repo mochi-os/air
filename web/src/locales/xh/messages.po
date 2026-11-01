@@ -410,6 +410,10 @@ msgstr "Inqanawa ethwala iinqwelomoya <0>“USS Nimitz CVN-68 Aircraft Carrier�
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Imodeli yenqwelomoya <0>“F/A-18C Hornet”</0> eyenziwe ngu-<1>CreadorDeMu</1> (Sketchfab), inikwe ilayisensi phantsi kwe-<2>CC BY 4.0</2>. Iguqulwe: kutshintshwe ukujonga nobungakanani, kususwe idatha yetekstura engasetyenziswanga, izixhobo zangaphandle zahlulwa zafakwa kwifayile eyahlukileyo, kwaye enye imeshi yesigqubuthelo yenziwe njengomfanekiso wesipili."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Isantya somoya"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Izilumkiso"
@@ -443,6 +447,10 @@ msgstr "Vumela abaphuhlisi bafunde iirekhodi zokubhabha kwakho ukuze baphucule u
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Vumela ukuhlela nge-"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Ukuphakama"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: marshal 6000', 250 knots, isikhokelo sokugqibela {heading}, qalisa kuziro"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Ikatapulti"
+msgid "Catapult {number}"
+msgstr "Ikatapulti {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Kucinyiwe"
 msgid "Deleted {field}"
 msgstr "Kucinyiwe {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Ukunduluka / Ukuhla"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Ukwehla"
@@ -1989,6 +1993,10 @@ msgstr "UMLO UQALILE"
 msgid "Files"
 msgstr "Iifayile"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "I-final, ibala lokundiza {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: ikhosi ye-runway {heading}, amandla afanele izibane ezibini ezibomvu, ezibini ezimhlophe kwi-PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Intloko"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Ukulandelela intloko"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Ikhosi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Inkulu"
 msgid "LATE"
 msgstr "EMVA KWEXESHA"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "I-latitude"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Ndulula (ikhathaphali)"
@@ -2661,6 +2678,10 @@ msgstr "Uphume ngempumelelo"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Iyaphuma…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "I-longitude"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Ungquzulwano emoyeni"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Imephu ye-Midway Atoll — imifanekiso iqulethe idatha ye-<0>Copernicus Sentinel-2</0> elungiselelweyo (2026); ulwakhiwo lwesikhululo seenqwelomoya (indlela yokundiza, iindlela zokuhamba kweenqwelomoya, iindawo zokupaka) © abanikeli be-<1>OpenStreetMap</1>, elinelayisensi phantsi kwe-<2>ODbL</2>; idatha yonxweme neriphu ivela kwi-<3>NOAA NCCOS</3> (kwimimandla yoluntu)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Isiqithi saseMidway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Ivuliwe"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Kwinqanawa ethwala iinqwelomoya"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Kwikhathaphali: yehlisa intonga yokundulula ukuze uxhonywe"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Kwi-final"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Kwibala lokundiza"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "IIBHREKI ZOKUPAKA ZIBAMBILE"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Imiswe kwisikhululo seenqwelomoya"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Imiswe kwinqanawa ethwala iinqwelomoya"
+msgid "Parking"
+msgstr "Indawo yokupaka"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Nceda uzame kwakhona."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Nceda ulinde umzuzwana uze uzame kwakhona."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Indawo"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "AMANDLA APHELELEYO"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Ibala lokundiza"
+msgid "Runway {end}"
+msgstr "Ibala lokundiza {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Khetha ikhadi elilandelayo"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Khetha umntu..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Khetha indawo"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Layisha"
 msgid "Upload progress"
 msgstr "Inkqubela yokulayisha"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "IMelika · IHawaii · Isiqithi saseMidway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Sebenzisa isitshixo sakho sokungena"
@@ -4714,6 +4737,10 @@ msgstr "Sebenzisa isitshixo sakho sokungena"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Umsebenzisi"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

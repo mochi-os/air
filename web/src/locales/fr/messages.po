@@ -410,6 +410,10 @@ msgstr "Porte-avions <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> par <1>Muha
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Modèle d’avion <0>“F/A-18C Hornet”</0> par <1>CreadorDeMu</1> (Sketchfab), sous licence <2>CC BY 4.0</2>. Modifié : réorienté et redimensionné, données de texture inutilisées supprimées, emports externes séparés dans un fichier distinct, un maillage de carénage mis en miroir."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Vitesse air"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Alertes"
@@ -443,6 +447,10 @@ msgstr "Autoriser les développeurs à lire vos enregistrements de vol pour amé
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Autoriser le tri"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Altitude"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III : marshal 6000', 250 nœuds, cap final {heading}, commencer à zéro"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Catapulte"
+msgid "Catapult {number}"
+msgstr "Catapulte {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Supprimé"
 msgid "Deleted {field}"
 msgstr "{field} supprimé"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Catapultage / Appontage"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Décroissant"
@@ -1989,6 +1993,10 @@ msgstr "LE COMBAT COMMENCE"
 msgid "Files"
 msgstr "Fichiers"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Finale, piste {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Finale : cap de piste {heading}, puissance pour deux rouges, deux blanches au PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Tête"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Suivi de tête"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Cap"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Grand"
 msgid "LATE"
 msgstr "EN RETARD"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Latitude"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Lancement (catapulte)"
@@ -2661,6 +2678,10 @@ msgstr "Déconnexion réussie"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Déconnexion en cours…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Longitude"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Collision en plein vol"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Carte de l'atoll de Midway — les images contiennent des données <0>Copernicus Sentinel-2</0> modifiées (2026) ; la géométrie de l'aérodrome (piste, voies de circulation, aires de stationnement) © les contributeurs d'<1>OpenStreetMap</1>, sous licence <2>ODbL</2> ; données de littoral et de récifs de <3>NOAA NCCOS</3> (domaine public)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Île Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Activé"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Sur le porte-avions"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Sur la catapulte : sortir la barre de catapultage pour s'accrocher"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "En finale"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Sur la piste"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "FREIN PARC SERRÉ"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Stationné sur l'aérodrome"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Stationné sur le porte-avions"
+msgid "Parking"
+msgstr "Parking"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Veuillez réessayer."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Veuillez patienter un instant, puis réessayer."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Position"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "PLEINE PUISSANCE"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Piste"
+msgid "Runway {end}"
+msgstr "Piste {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Sélectionner la carte suivante"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Sélectionner une personne..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Sélectionner une position"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Téléverser"
 msgid "Upload progress"
 msgstr "Progression du téléversement"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "États-Unis · Hawaï · Île Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Utiliser votre clé d'accès"
@@ -4714,6 +4737,10 @@ msgstr "Utiliser votre clé d'accès"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Utilisateur"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

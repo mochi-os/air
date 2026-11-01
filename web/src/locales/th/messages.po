@@ -410,6 +410,10 @@ msgstr "เรือบรรทุกเครื่องบิน <0>“USS N
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "โมเดลอากาศยาน <0>“F/A-18C Hornet”</0> โดย <1>CreadorDeMu</1> (Sketchfab) อนุญาตภายใต้ <2>CC BY 4.0</2> แก้ไข: ปรับทิศทางและปรับขนาดใหม่ ลบข้อมูลเท็กซ์เจอร์ที่ไม่ได้ใช้ออก แยกอุปกรณ์ติดตั้งภายนอกออกเป็นไฟล์ต่างหาก และทำเมชฝาครอบหนึ่งชิ้นเป็นภาพสะท้อนกระจก"
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "ความเร็วอากาศ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "การแจ้งเตือน"
@@ -443,6 +447,10 @@ msgstr "อนุญาตให้นักพัฒนาอ่านบัน
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "อนุญาตให้เรียงตาม"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "ความสูง"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: วนรอ 6000', 250 นอต, ทิศสุดท้าย {heading}, เริ่มที่ศูนย์"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "เครื่องดีดส่ง"
+msgid "Catapult {number}"
+msgstr "เครื่องดีดส่ง {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "ลบแล้ว"
 msgid "Deleted {field}"
 msgstr "ลบ {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "บินขึ้น / ลงจอด"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "จากมากไปน้อย"
@@ -1989,6 +1993,10 @@ msgstr "การต่อสู้เริ่มแล้ว"
 msgid "Files"
 msgstr "ไฟล์"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "ช่วงสุดท้าย รันเวย์ {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "ช่วงสุดท้าย: ทิศทางวิ่ง {heading}, ใช้กำลังให้เห็นแดงสอง ขาวสอง บน PAPI"
@@ -2252,6 +2260,11 @@ msgstr "ศีรษะ"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "การติดตามศีรษะ"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "ทิศหัวเครื่อง"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "ใหญ่"
 msgid "LATE"
 msgstr "ช้า"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "ละติจูด"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "การปล่อยตัว (เครื่องดีด)"
@@ -2661,6 +2678,10 @@ msgstr "ออกจากระบบเรียบร้อยแล้ว"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "กำลังออกจากระบบ…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "ลองจิจูด"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "ชนกันกลางอากาศ"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "แผนที่อะทอลล์มิดเวย์ — ภาพถ่ายมีข้อมูล <0>Copernicus Sentinel-2</0> ที่ปรับแก้แล้ว (2026); เรขาคณิตของสนามบิน (ทางวิ่ง ทางขับ ลานจอด) © ผู้ร่วมสร้าง <1>OpenStreetMap</1> ได้รับอนุญาตภายใต้ <2>ODbL</2>; ข้อมูลแนวชายฝั่งและแนวปะการังจาก <3>NOAA NCCOS</3> (สาธารณสมบัติ)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "เกาะมิดเวย์"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "เปิด"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "บนเรือบรรทุกเครื่องบิน"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "บนเครื่องดีด: ลดคานปล่อยตัวลงเพื่อเกี่ยว"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "ในช่วงสุดท้าย"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "บนรันเวย์"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "เบรกจอดทำงาน"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "จอดที่สนามบิน"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "จอดบนเรือบรรทุกเครื่องบิน"
+msgid "Parking"
+msgstr "ที่จอด"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "โปรดลองอีกครั้ง"
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "โปรดรอสักครู่แล้วลองอีกครั้ง"
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "ตำแหน่ง"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "กำลังเต็มที่"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "รันเวย์"
+msgid "Runway {end}"
+msgstr "รันเวย์ {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "เลือกการ์ดถัดไป"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "เลือกบุคคล..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "เลือกตำแหน่ง"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "อัปโหลด"
 msgid "Upload progress"
 msgstr "ความคืบหน้าการอัปโหลด"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "สหรัฐฯ · ฮาวาย · เกาะมิดเวย์ · สนามบินเฮนเดอร์สัน · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "ใช้พาสคีย์ของคุณ"
@@ -4714,6 +4737,10 @@ msgstr "ใช้พาสคีย์ของคุณ"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "ผู้ใช้"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "ยูเอสเอส เจอรัลด์ อาร์. ฟอร์ด"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

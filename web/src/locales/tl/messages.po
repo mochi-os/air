@@ -410,6 +410,10 @@ msgstr "Barkong tagapaglulan ng eroplano na <0>“USS Nimitz CVN-68 Aircraft Car
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Modelo ng eroplano <0>“F/A-18C Hornet”</0> ni <1>CreadorDeMu</1> (Sketchfab), nilisensyahan sa ilalim ng <2>CC BY 4.0</2>. Binago: binago ang oryentasyon at sukat, inalis ang hindi ginagamit na datos ng texture, inihiwalay ang mga panlabas na kargamento sa hiwalay na file, at isinalamin ang isang shroud mesh."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Bilis sa hangin"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Mga babala"
@@ -443,6 +447,10 @@ msgstr "Payagan ang mga developer na basahin ang iyong mga recording ng paglipad
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Payagan ang pag-sort ayon sa"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Altitude"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: marshal 6000', 250 knots, huling bearing {heading}, magsimula sa zero"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapulta"
+msgid "Catapult {number}"
+msgstr "Katapulta {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Tinanggal"
 msgid "Deleted {field}"
 msgstr "Tinanggal ang {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Pag-alis / Paglapag"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Pababa"
@@ -1989,6 +1993,10 @@ msgstr "LABAN NA"
 msgid "Files"
 msgstr "Mga file"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Final, runway {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: heading ng runway {heading}, lakas para sa dalawang pula, dalawang puti sa PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Ulo"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Pagsubaybay sa ulo"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Heading"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Malaki"
 msgid "LATE"
 msgstr "HULI"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Latitud"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Ilunsad (katapulta)"
@@ -2661,6 +2678,10 @@ msgstr "Matagumpay na nag-log out"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Nagla-log out…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Longhitud"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Banggaan sa himpapawid"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mapa ng Midway Atoll — naglalaman ang mga imahe ng binagong datos ng <0>Copernicus Sentinel-2</0> (2026); ang heometriya ng paliparan (runway, mga taxiway, mga apron) © mga kontribyutor ng <1>OpenStreetMap</1>, lisensyado sa ilalim ng <2>ODbL</2>; datos ng baybayin at bahura mula sa <3>NOAA NCCOS</3> (pampublikong domain)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Isla ng Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Naka-on"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Nasa carrier"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Sa katapulta: ibaba ang baras ng paglunsad para kumabit"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Nasa final"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Nasa runway"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "PRENO SA PARADA NAKATAKDA"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Nakaparada sa paliparan"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Nakaparada sa carrier"
+msgid "Parking"
+msgstr "Paradahan"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Pakisubukan muli."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Mangyaring maghintay sandali at subukang muli."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Posisyon"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "BUONG LAKAS"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Runway"
+msgid "Runway {end}"
+msgstr "Runway {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Piliin ang susunod na card"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Pumili ng tao..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Pumili ng posisyon"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Mag-upload"
 msgid "Upload progress"
 msgstr "Progreso ng pag-upload"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "Estados Unidos · Hawaii · Isla ng Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Gamitin ang iyong passkey"
@@ -4714,6 +4737,10 @@ msgstr "Gamitin ang iyong passkey"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "User"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

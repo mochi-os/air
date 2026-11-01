@@ -410,6 +410,10 @@ msgstr "Jirgin ruwa mai ɗaukar jiragen sama <0>“USS Nimitz CVN-68 Aircraft Ca
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Samfurin jirgin sama <0>“F/A-18C Hornet”</0> na <1>CreadorDeMu</1> (Sketchfab), mai lasisin <2>CC BY 4.0</2>. An gyara: an sake fuskantarwa da sake awo, an cire bayanan texture da ba a amfani da su, an raba kayan ɗauka na waje zuwa wani fayil daban, kuma an mai da raga ɗaya ta murfi kamar ta madubi."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Gudun jirgi a iska"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Gargaɗi"
@@ -443,6 +447,10 @@ msgstr "Bayar da izini ga masu haɓakawa su karanta rikodin tashin jirginka don 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Ba da damar tsara ta"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Tsayi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: marshal 6000', 250 knot, hanyar ƙarshe {heading}, fara a sifili"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katafult"
+msgid "Catapult {number}"
+msgstr "Katafult {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "An share"
 msgid "Deleted {field}"
 msgstr "An share {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Tashi / Sauka"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Sauka ƙasa"
@@ -1989,6 +1993,10 @@ msgstr "FADA YA FARA"
 msgid "Files"
 msgstr "Fayiloli"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Ƙarshe, titin jirgi {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Ƙarshe: hanyar titin jirgi {heading}, ƙarfi don ja biyu, fari biyu a PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Kai"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Bin diddigin kai"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Alkibla"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Babba"
 msgid "LATE"
 msgstr "A MAKARE"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Latitud"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Harba (majajjawa)"
@@ -2661,6 +2678,10 @@ msgstr "An fita cikin nasara"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Ana fita…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Longitud"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Karo a sama"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Taswirar Midway Atoll — hotunan sun ƙunshi bayanan <0>Copernicus Sentinel-2</0> da aka gyara (2026); tsarin filin jirgi (titin tashi da sauka, hanyoyin tasi, faifan ajiye jirgi) © masu ba da gudummawa na <1>OpenStreetMap</1>, an ba da lasisi ƙarƙashin <2>ODbL</2>; bayanan gaɓar teku da murjani daga <3>NOAA NCCOS</3> (mallakar jama'a)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Tsibirin Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Kunna"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "A jirgin ruwa"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "A kan majajjawa: saukar da sandar harba don haɗawa"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "A hanyar sauka ta ƙarshe"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "A titin jirgi"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "BIREKIN AJIYE A KUNNE"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "An ajiye a filin jirgi"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "An ajiye a jirgin ruwa"
+msgid "Parking"
+msgstr "Wurin ajiye jirgi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Da fatan za a sake gwadawa."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Da fatan za a jira ɗan lokaci sannan a sake gwadawa."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Wuri"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "CIKAKKEN ƘARFI"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Titin jirgi"
+msgid "Runway {end}"
+msgstr "Titin jirgi {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Zaɓi kati na gaba"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Zaɓi mutum..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Zaɓi wuri"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Loda"
 msgid "Upload progress"
 msgstr "Ci gaban lodawa"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "Amurka · Hawai · Tsibirin Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Yi amfani da maɓallin shiga naka"
@@ -4714,6 +4737,10 @@ msgstr "Yi amfani da maɓallin shiga naka"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Mai amfani"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

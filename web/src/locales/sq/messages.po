@@ -410,6 +410,10 @@ msgstr "Anije aeroplanmbajtëse <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> 
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Model avioni <0>“F/A-18C Hornet”</0> nga <1>CreadorDeMu</1> (Sketchfab), i licencuar sipas <2>CC BY 4.0</2>. Modifikuar: riorientuar dhe rishkallëzuar, të dhënat e papërdorura të teksturave u hoqën, ngarkesat e jashtme u ndanë në një skedar më vete, një rrjetë mbulese u pasqyrua."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Shpejtësia ajrore"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Sinjalizimet"
@@ -443,6 +447,10 @@ msgstr "Lejo zhvilluesit të lexojnë regjistrimet e fluturimeve tuaja për të 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Lejo renditjen sipas"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Lartësia"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: pritje 6000', 250 nyje, drejtimi final {heading}, fillo në zero"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapulta"
+msgid "Catapult {number}"
+msgstr "Katapulta {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "U fshi"
 msgid "Deleted {field}"
 msgstr "U fshi {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Ngritje / Ulje"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Në zbritje"
@@ -1989,6 +1993,10 @@ msgstr "LUFTA FILLOI"
 msgid "Files"
 msgstr "Skedarët"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Final, pista {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: drejtimi i pistës {heading}, fuqi për dy të kuqe, dy të bardha në PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Koka"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Ndjekja e kokës"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Drejtimi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "I madh"
 msgid "LATE"
 msgstr "VONË"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Gjerësia gjeografike"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Nisje (katapultë)"
@@ -2661,6 +2678,10 @@ msgstr "U dol me sukses"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Duke dalë…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Gjatësia gjeografike"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Përplasje në ajër"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Harta e Atolit Midway — imazhet përmbajnë të dhëna të modifikuara <0>Copernicus Sentinel-2</0> (2026); gjeometria e aerodromit (pista, rrugët e taksimit, platformat) © kontribuesit e <1>OpenStreetMap</1>, licencuar sipas <2>ODbL</2>; të dhënat e vijës bregdetare dhe shkëmbinjve koralorë nga <3>NOAA NCCOS</3> (domen publik)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Ishulli Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Aktiv"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Në portaavionë"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Në katapultë: ul shufrën e nisjes për t'u lidhur"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Në final"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Në pistë"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "FRENI I PARKIMIT AKTIV"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "I parkuar në aerodrom"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "I parkuar në portaavionë"
+msgid "Parking"
+msgstr "Vendparkimi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Provoni përsëri."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Ju lutemi prisni një moment dhe provoni sërish."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Pozicioni"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "FUQI E PLOTË"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Pista"
+msgid "Runway {end}"
+msgstr "Pista {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Zgjidh kartën tjetër"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Zgjidhni një person..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Zgjidh pozicionin"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Ngarko"
 msgid "Upload progress"
 msgstr "Ecuria e ngarkimit"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "SHBA · Havai · Ishulli Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Përdorni kyçin tuaj"
@@ -4714,6 +4737,10 @@ msgstr "Përdorni kyçin tuaj"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Përdoruesi"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

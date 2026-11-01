@@ -410,6 +410,10 @@ msgstr "航空母艦 <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>，作者 <1
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "飛機模型 <0>“F/A-18C Hornet”</0>，由 <1>CreadorDeMu</1>（Sketchfab）製作，依據 <2>CC BY 4.0</2> 授權。已修改：重新定向並重新縮放，移除未使用的紋理資料，外掛裝備分拆至獨立檔案，一個護罩網格做了鏡像處理。"
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "空速"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "警報"
@@ -443,6 +447,10 @@ msgstr "允許開發者讀取你的飛行記錄以改進遊戲"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "允許排序依據"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "高度"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: 待命 6000'，250 節，最後進場方位 {heading}，歸零即開始"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "彈射器"
+msgid "Catapult {number}"
+msgstr "{number} 號彈射器"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "已刪除"
 msgid "Deleted {field}"
 msgstr "已刪除{field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "起飛 / 著艦"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "降冪"
@@ -1989,6 +1993,10 @@ msgstr "戰鬥開始"
 msgid "Files"
 msgstr "檔案"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "最後進場，跑道 {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "最後進場: 跑道航向 {heading}，用油門保持 PAPI 兩紅兩白"
@@ -2252,6 +2260,11 @@ msgstr "頭部"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "頭部追蹤"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "航向"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "大"
 msgid "LATE"
 msgstr "延遲"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "緯度"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "彈射起飛 (彈射器)"
@@ -2661,6 +2678,10 @@ msgstr "已成功登出"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "正在登出…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "經度"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "空中相撞"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "中途島環礁地圖 — 影像包含經過修改的 <0>Copernicus Sentinel-2</0> 資料（2026）；機場幾何資料（跑道、滑行道、停機坪）© <1>OpenStreetMap</1> 貢獻者，依據 <2>ODbL</2> 授權；海岸線與珊瑚礁資料來自 <3>NOAA NCCOS</3>（公有領域）。"
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "中途島"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "開啟"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "在航艦上"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "在彈射器上: 放下彈射桿以掛接"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "最後進場中"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "在跑道上"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "停機煞車接通"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "停放在機場"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "停放在航艦上"
+msgid "Parking"
+msgstr "停機位"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "請再試一次。"
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "請稍候片刻，然後再試一次。"
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "位置"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "滿油門"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "跑道"
+msgid "Runway {end}"
+msgstr "跑道 {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "選擇下一張卡片"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "選擇人員..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "選擇位置"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "上傳"
 msgid "Upload progress"
 msgstr "上傳進度"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "美國 · 夏威夷 · 中途島 · 韓德森機場 · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "使用您的通行密鑰"
@@ -4714,6 +4737,10 @@ msgstr "使用您的通行密鑰"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "使用者"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "傑拉德·R·福特號航艦"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

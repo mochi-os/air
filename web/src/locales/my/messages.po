@@ -410,6 +410,10 @@ msgstr "လေယာဉ်တင်သင်္ဘော <0>“USS Nimitz CVN-68
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "လေယာဉ်ပုံစံ <0>“F/A-18C Hornet”</0>၊ ဖန်တီးသူ <1>CreadorDeMu</1> (Sketchfab)၊ <2>CC BY 4.0</2> လိုင်စင်ဖြင့်။ ပြင်ဆင်ထားသည်- ဦးတည်ရာနှင့် အရွယ်အစားကို ပြန်လည်ချိန်ညှိ၍ အသုံးမပြုသော တက်စ်ချာ ဒေတာများကို ဖယ်ရှားကာ ပြင်ပတွဲချိတ်ပစ္စည်းများကို သီးခြားဖိုင်အဖြစ် ခွဲထုတ်ပြီး အဖုံးအကာ မက်ရှ် တစ်ခုကို မှန်ပြောင်းပြန်ပုံစံသို့ ပြောင်းလဲထားသည်။"
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "ပျံသန်းအမြန်နှုန်း"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "သတိပေးချက်များ"
@@ -443,6 +447,10 @@ msgstr "ဂိမ်းကို ပိုကောင်းအောင် ပ�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "စီစဉ်ခွင့်ပြုသည်"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "အမြင့်"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: မာရှယ် 6000', 250 နော့တ်, နောက်ဆုံးဦးတည်ရာ {heading}, သုညတွင် စတင်ပါ"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "ကက်တာပတ်"
+msgid "Catapult {number}"
+msgstr "ကက်တာပတ် {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "ဖျက်ခဲ့သည်"
 msgid "Deleted {field}"
 msgstr "{field} ကို ဖျက်ခဲ့သည်"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "ပျံတက်ခြင်း / ဆင်းသက်ခြင်း"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "ကြီးစဉ်ငယ်လိုက်"
@@ -1989,6 +1993,10 @@ msgstr "တိုက်ပွဲ စတင်ပြီ"
 msgid "Files"
 msgstr "ဖိုင်များ"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "နောက်ဆုံးအဆင့်, ပြေးလမ်း {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "နောက်ဆုံးအဆင့်: ပြေးလမ်းဦးတည်ရာ {heading}, PAPI တွင် အနီနှစ်လုံး, အဖြူနှစ်လုံး ရအောင် ပါဝါထား"
@@ -2252,6 +2260,11 @@ msgstr "ဦးခေါင်း"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "ဦးခေါင်းခြေရာခံခြင်း"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "ဦးတည်ရာ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "ကြီး"
 msgid "LATE"
 msgstr "နောက်ကျ"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "လတ္တီတွဒ်"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "ပစ်လွှတ်ခြင်း (ကတ်တာပတ်)"
@@ -2661,6 +2678,10 @@ msgstr "အောင်မြင်စွာ ထွက်ပြီးပါပ�
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "ထွက်နေသည်…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "လောင်ဂျီတွဒ်"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "လေထဲတွင် တိုက်မိသည်"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "မစ်ဝေး သန္တာကျွန်း မြေပုံ — ရုပ်ပုံများတွင် ပြင်ဆင်ထားသော <0>Copernicus Sentinel-2</0> ဒေတာ (2026) ပါဝင်သည်။ လေယာဉ်ကွင်း ဂျီဩမေတြီ (ပြေးလမ်း၊ တက္ကစီလမ်း၊ ရပ်နားကွင်း) © <1>OpenStreetMap</1> ပံ့ပိုးသူများ၊ <2>ODbL</2> ဖြင့် လိုင်စင်ချထားသည်။ ကမ်းရိုးတန်းနှင့် ကျောက်တန်းဒေတာကို <3>NOAA NCCOS</3> မှ (အများပိုင်)။"
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "မစ်ဝေးကျွန်း"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "ဖွင့်"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "လေယာဉ်တင်သင်္ဘောပေါ်"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "ကတ်တာပတ်ပေါ်တွင်: ချိတ်ရန် ပစ်လွှတ်တံကို ချပါ"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "နောက်ဆုံးအဆင့်တွင်"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "လေယာဉ်ပြေးလမ်းပေါ်"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "ရပ်နားဘရိတ် ဖွင့်"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "လေယာဉ်ကွင်းတွင် ရပ်နား"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "လေယာဉ်တင်သင်္ဘောပေါ်တွင် ရပ်နား"
+msgid "Parking"
+msgstr "ရပ်နားရာ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "ကျေးဇူးပြု၍ ထပ်ကြိုးစားပ�
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "ကျေးဇူးပြု၍ ခဏစောင့်ပြီး ထပ်စမ်းကြည့်ပါ။"
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "တည်နေရာ"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "အားအပြည့်"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "ပြေးလမ်း"
+msgid "Runway {end}"
+msgstr "ပြေးလမ်း {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "နောက်ကတ်ကို ရွေးပါ"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "လူရွေးပါ..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "တည်နေရာ ရွေးရန်"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "အပ်လုဒ် လုပ်မည်"
 msgid "Upload progress"
 msgstr "အပ်လုဒ်တိုးတက်မှု"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "အမေရိကန် · ဟာဝိုင်အီ · မစ်ဝေးကျွန်း · ဟင်ဒါဆန် လေယာဉ်ကွင်း · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "သင့်ဝင်ရောက်ခွင့်သော့ကို သုံးပါ"
@@ -4714,6 +4737,10 @@ msgstr "သင့်ဝင်ရောက်ခွင့်သော့ကို
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "သုံးစွဲသူ"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "Gerald R. Ford လေယာဉ်တင်သင်္ဘော"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

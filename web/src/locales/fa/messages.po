@@ -410,6 +410,10 @@ msgstr "ناو هواپیمابر <0>“USS Nimitz CVN-68 Aircraft Carrier”</0
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "مدل هواپیمای <0>“F/A-18C Hornet”</0> ساختهٔ <1>CreadorDeMu</1> (Sketchfab)، تحت مجوز <2>CC BY 4.0</2>. تغییر یافته: جهت‌گیری مجدد و تغییر مقیاس، داده‌های بافتِ استفاده‌نشده حذف شد، تجهیزات خارجی به فایل جداگانه‌ای منتقل شد، و یک مش غلاف آینه‌ای شد."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "سرعت هوایی"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "هشدارها"
@@ -443,6 +447,10 @@ msgstr "اجازه به توسعه‌دهندگان برای خواندن ضبط
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "اجازهٔ مرتب‌سازی بر اساس"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "ارتفاع"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: مارشال 6000'، 250 نات، سمت نهایی {heading}، در صفر شروع کن"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "منجنیق"
+msgid "Catapult {number}"
+msgstr "منجنیق {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "حذف شد"
 msgid "Deleted {field}"
 msgstr "{field} حذف شد"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "برخاست / فرود"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "نزولی"
@@ -1989,6 +1993,10 @@ msgstr "نبرد آغاز شد"
 msgid "Files"
 msgstr "فایل‌ها"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "فاینال، باند {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "فاینال: سمت باند {heading}، قدرت برای دو قرمز و دو سفید روی PAPI"
@@ -2252,6 +2260,11 @@ msgstr "سر"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "ردیابی سر"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "سمت"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "بزرگ"
 msgid "LATE"
 msgstr "دیر"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "عرض جغرافیایی"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "پرتاب (منجنیق)"
@@ -2661,6 +2678,10 @@ msgstr "با موفقیت خارج شد"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "در حال خروج…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "طول جغرافیایی"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "برخورد در هوا"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "نقشهٔ آتول میدوی — تصاویر حاوی داده‌های اصلاح‌شدهٔ <0>Copernicus Sentinel-2</0> هستند (۲۰۲۶)؛ هندسهٔ فرودگاه (باند، مسیرهای تاکسی‌رو، اپرون‌ها) © مشارکت‌کنندگان <1>OpenStreetMap</1>، تحت مجوز <2>ODbL</2>؛ داده‌های خط ساحلی و آبسنگ‌ها از <3>NOAA NCCOS</3> (مالکیت عمومی)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "جزیرهٔ میدوی"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "روشن"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "روی ناو"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "روی منجنیق: برای قلاب‌شدن، میله پرتاب را پایین بده"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "در فاینال"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "روی باند"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "ترمز پارک درگیر"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "پارک‌شده در فرودگاه"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "پارک‌شده روی ناو"
+msgid "Parking"
+msgstr "پارکینگ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "لطفاً دوباره تلاش کنید."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "لطفاً چند لحظه صبر کنید و دوباره امتحان کنید."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "موقعیت"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "قدرت کامل"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "باند"
+msgid "Runway {end}"
+msgstr "باند {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "انتخاب کارت بعدی"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "شخصی را انتخاب کنید..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "انتخاب موقعیت"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "بارگذاری"
 msgid "Upload progress"
 msgstr "پیشرفت بارگذاری"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "آمریکا · هاوایی · جزیرهٔ میدوی · هندرسون فیلد · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "از پسکی خود استفاده کنید"
@@ -4714,6 +4737,10 @@ msgstr "از پسکی خود استفاده کنید"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "کاربر"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "یواس‌اس جرالد آر. فورد"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

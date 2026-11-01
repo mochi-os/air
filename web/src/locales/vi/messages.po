@@ -410,6 +410,10 @@ msgstr "Tàu sân bay <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> của <1>M
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Mô hình máy bay <0>“F/A-18C Hornet”</0> của <1>CreadorDeMu</1> (Sketchfab), được cấp phép theo <2>CC BY 4.0</2>. Đã chỉnh sửa: thay đổi hướng và tỉ lệ, loại bỏ dữ liệu texture không sử dụng, tách các thiết bị treo ngoài thành tệp riêng, lật gương một lưới vỏ chụp."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Tốc độ bay"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Cảnh báo"
@@ -443,6 +447,10 @@ msgstr "Cho phép nhà phát triển đọc bản ghi chuyến bay của bạn �
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Cho phép sắp xếp theo"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Độ cao"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: marshal 6000', 250 knot, phương vị final {heading}, bắt đầu ở số không"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Máy phóng"
+msgid "Catapult {number}"
+msgstr "Máy phóng {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Đã xóa"
 msgid "Deleted {field}"
 msgstr "Đã xóa {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Cất cánh / Hạ cánh"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Giảm dần"
@@ -1989,6 +1993,10 @@ msgstr "TRẬN CHIẾN BẮT ĐẦU"
 msgid "Files"
 msgstr "Tệp"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Final, đường băng {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: hướng đường băng {heading}, giữ ga cho hai đỏ, hai trắng trên PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Đầu"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Theo dõi đầu"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Hướng mũi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Lớn"
 msgid "LATE"
 msgstr "MUỘN"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Vĩ độ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Phóng (máy phóng)"
@@ -2661,6 +2678,10 @@ msgstr "Đăng xuất thành công"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Đang đăng xuất…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Kinh độ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Va chạm trên không"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Bản đồ đảo san hô Midway — hình ảnh chứa dữ liệu <0>Copernicus Sentinel-2</0> đã chỉnh sửa (2026); hình học sân bay (đường băng, đường lăn, sân đỗ) © những người đóng góp <1>OpenStreetMap</1>, cấp phép theo <2>ODbL</2>; dữ liệu đường bờ biển và rạn san hô từ <3>NOAA NCCOS</3> (phạm vi công cộng)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Đảo Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Bật"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Trên tàu sân bay"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Trên máy phóng: hạ thanh phóng để móc vào"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Ở final"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Trên đường băng"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "PHANH ĐỖ ĐANG KÉO"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Đỗ tại sân bay"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Đỗ trên tàu sân bay"
+msgid "Parking"
+msgstr "Chỗ đỗ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Vui lòng thử lại."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Vui lòng đợi một lát rồi thử lại."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Vị trí"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "HẾT CÔNG SUẤT"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Đường băng"
+msgid "Runway {end}"
+msgstr "Đường băng {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Chọn thẻ tiếp theo"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Chọn người..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Chọn vị trí"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Tải lên"
 msgid "Upload progress"
 msgstr "Tiến trình tải lên"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "Hoa Kỳ · Hawaii · Đảo Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Dùng mã khóa của bạn"
@@ -4714,6 +4737,10 @@ msgstr "Dùng mã khóa của bạn"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Người dùng"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

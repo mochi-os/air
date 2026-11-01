@@ -410,6 +410,10 @@ msgstr "Dooniin xiyyaa <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> kan <1>Mu
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Moodeelii xayyaaraa <0>“F/A-18C Hornet”</0> kan <1>CreadorDeMu</1> (Sketchfab), hayyama <2>CC BY 4.0</2> jalatti. Jijjiirame: kallattiin isaa jijjiiramee irra deebiʼamee safarame, daataan teekstarii hin fayyadamne haqame, feʼumsawwan alaa gara faayilii addaatti addaan baafaman, meshiin golgaa tokko akka daawwitiitti garagalfame."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Saffisa qilleensaa"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Akeekkachiisa"
@@ -443,6 +447,10 @@ msgstr "Taphicha fooyyessuuf misoomsitoonni waraabbii balali'insa kee akka dubbi
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Akkaataa kana taasifachuu hayyami"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Olka'iinsa"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: maarshaalii 6000', 250 noottii, kallattii xumuraa {heading}, zeeroo irratti jalqabi"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Kaatapultii"
+msgid "Catapult {number}"
+msgstr "Kaatapultii {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Haqameera"
 msgid "Deleted {field}"
 msgstr "{field} haqameera"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Ka'iinsa / qubannaa"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Gad buʼaa"
@@ -1989,6 +1993,10 @@ msgstr "LOLLI JALQABAME"
 msgid "Files"
 msgstr "Faayilota"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Xumura, daandii balalii {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Xumura: kallattii daandii {heading}, PAPI irratti diimaa lama, adii lama argachuuf humna"
@@ -2252,6 +2260,11 @@ msgstr "Mataa"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Hordoffii mataa"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Kallattii"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Guddaa"
 msgid "LATE"
 msgstr "TURE"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Sarara ballinaa"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Darbi (furrisaa)"
@@ -2661,6 +2678,10 @@ msgstr "Milkaa'inaan ba'e"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Ba'aa jiraa…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Sarara dheerinaa"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Qilleensa keessatti walitti bu'e"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Kaartaa Midway Atoll — suuraaleen daataa <0>Copernicus Sentinel-2</0> fooyya'e (2026) qabu; geometrii buufata xayyaaraa (daandii ka'umsaa, daandiiwwan taaksii, iddoo dhaabbii) © gumaachitoota <1>OpenStreetMap</1>, <2>ODbL</2> jalatti eeyyamame; daataan qarqara galaanaatii fi soodduu <3>NOAA NCCOS</3> irraa (qabeenya uummataa)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Odola Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Banaa"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Doonii irra"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Furrisaa irratti: hidhamuuf ulee darbii gadi buusi"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Xumura irra"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Daandii balalii irra"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "BIREEKII DHAABBII QABATAMEERA"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Buufata xayyaaraa irratti dhaabbate"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Doonii irratti dhaabbate"
+msgid "Parking"
+msgstr "Bakka dhaabbii"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Maaloo irra deebi'ii yaali."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Maaloo yeroo xiqqoo eegiitii irra deebi'ii yaali."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Bakka"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "HUMNA GUUTUU"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Daandii balalii"
+msgid "Runway {end}"
+msgstr "Daandii balalii {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Kaardii itti aanu filadhu"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Nama filadhu..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Bakka filadhu"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Olfe'i"
 msgid "Upload progress"
 msgstr "Adeemsa fe'umsaa"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "Ameerikaa · Hawaayii · Odola Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Passkey kee fayyadami"
@@ -4714,6 +4737,10 @@ msgstr "Passkey kee fayyadami"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Fayyadamaa"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

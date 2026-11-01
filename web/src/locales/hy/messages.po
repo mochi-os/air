@@ -410,6 +410,10 @@ msgstr "<0>“USS Nimitz CVN-68 Aircraft Carrier”</0> ինքնաթիռակիր
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Օդանավի մոդել <0>“F/A-18C Hornet”</0>, հեղինակ՝ <1>CreadorDeMu</1> (Sketchfab), լիցենզավորված <2>CC BY 4.0</2>-ի ներքո: Փոփոխված է. վերակողմնորոշված և վերասանդղակավորված, չօգտագործվող տեքստուրային տվյալները հեռացվել են, արտաքին կախովի բեռներն առանձնացվել են առանձին ֆայլում, և պատյանի մեկ ցանց հայելային է դարձվել:"
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Օդային արագություն"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Զգուշացումներ"
@@ -443,6 +447,10 @@ msgstr "Թույլատրել մշակողներին կարդալ ձեր թռիչ
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Թույլատրել տեսակավորել ըստ"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Բարձրություն"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: սպասման կետ 6000', 250 հանգույց, վերջնական կուրս {heading}, սկսիր զրոյին"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Կատապուլտ"
+msgid "Catapult {number}"
+msgstr "Կատապուլտ {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Ջնջվել է"
 msgid "Deleted {field}"
 msgstr "Ջնջվել է {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Թռիչք / վայրէջք"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Նվազման կարգով"
@@ -1989,6 +1993,10 @@ msgstr "ՄԱՐՏԸ ՍԿՍՎԵՑ"
 msgid "Files"
 msgstr "Ֆայլեր"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Վերջնական ուղղագիծ, թռիչքուղի {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Վերջնական ուղղագիծ: թռիչքուղու կուրս {heading}, գազը՝ PAPI-ում երկու կարմիր, երկու սպիտակ"
@@ -2252,6 +2260,11 @@ msgstr "Գլուխ"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Գլխի հետագծում"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Կուրս"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Մեծ"
 msgid "LATE"
 msgstr "ՈՒՇ"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Լայնություն"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Արձակում (կատապուլտ)"
@@ -2661,6 +2678,10 @@ msgstr "Հաջողությամբ դուրս եկաք"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Դուրս գալիս…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Երկայնություն"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Բախում օդում"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Միդուեյ ատոլի քարտեզ — պատկերները պարունակում են ձևափոխված <0>Copernicus Sentinel-2</0> տվյալներ (2026); օդանավակայանի երկրաչափությունը (թռիչքուղի, ղեկավարման ուղիներ, կայանատեղիներ) © <1>OpenStreetMap</1>-ի ներդրողներ, արտոնագրված <2>ODbL</2>-ի ներքո; ափագծի և խութերի տվյալները՝ <3>NOAA NCCOS</3>-ից (հանրային սեփականություն)։"
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Միդուեյ կղզի"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Միացված"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Ավիակրի վրա"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Կատապուլտի վրա: կցվելու համար իջեցրու արձակման ձողը"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Վերջնական ուղղագծի վրա"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Թռիչքուղու վրա"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "ԿԱՅԱՆՄԱՆ ԱՐԳԵԼԱԿԸ ՄԻԱՑՎԱԾ Է"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Կայանված օդանավակայանում"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Կայանված ավիակրի վրա"
+msgid "Parking"
+msgstr "Կայանատեղի"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Խնդրում ենք կրկին փորձել։"
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Խնդրում ենք մի փոքր սպասել և նորից փորձել։"
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Դիրք"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "ԼՐԻՎ ՀԶՈՐՈՒԹՅՈՒՆ"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Թռիչքուղի"
+msgid "Runway {end}"
+msgstr "Թռիչքուղի {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Ընտրել հաջորդ քարտը"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Ընտրեք անձ..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Ընտրել դիրքը"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Վերբեռնել"
 msgid "Upload progress"
 msgstr "Վերբեռնման ընթացքը"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "ԱՄՆ · Հավայի · Միդուեյ կղզի · Հենդերսոն Ֆիլդ · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Օգտագործեք ձեր անցաբանալին"
@@ -4714,6 +4737,10 @@ msgstr "Օգտագործեք ձեր անցաբանալին"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Օգտատեր"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "«Ջերալդ Ռ. Ֆորդ» ավիակիր"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

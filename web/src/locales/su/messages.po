@@ -410,6 +410,10 @@ msgstr "Kapal pangbawa pesawat <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> k
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Modél pesawat <0>“F/A-18C Hornet”</0> ku <1>CreadorDeMu</1> (Sketchfab), dilisénsian dina <2>CC BY 4.0</2>. Dirobah: diarahkeun deui jeung diskalakeun deui, data tékstur nu teu dipaké dipiceun, muatan luar dipisahkeun kana file nu misah, hiji mesh panutup dieunteungkeun."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Laju hawa"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Bewara"
@@ -443,6 +447,10 @@ msgstr "Idinan pamekar maca rékaman hiber anjeun pikeun ningkatkeun kaulinan"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Idinkeun urutkeun ku"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Kaluhuran"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: ngantosan 6000', 250 knot, arah final {heading}, mimitian dina nol"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapel"
+msgid "Catapult {number}"
+msgstr "Katapel {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Dipupus"
 msgid "Deleted {field}"
 msgstr "{field} dipupus"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Miang / Badarat"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Turun"
@@ -1989,6 +1993,10 @@ msgstr "TARUNG DIMIMITIAN"
 msgid "Files"
 msgstr "Berkas"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Final, landasan {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: arah landasan {heading}, kakuatan pikeun dua beureum, dua bodas dina PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Sirah"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Nyukcruk sirah"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Arah"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Gedé"
 msgid "LATE"
 msgstr "TELAT"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Lintang"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Luncurkeun (katapel)"
@@ -2661,6 +2678,10 @@ msgstr "Hasil kaluar"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Keur kaluar…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Bujur"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Tabrakan di awang-awang"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Peta Atol Midway — citra ngandung data <0>Copernicus Sentinel-2</0> anu dirobih (2026); géométri lapangan terbang (landasan pacu, jalur taksi, apron) © kontributor <1>OpenStreetMap</1>, dilisensikeun dina <2>ODbL</2>; data garis basisir jeung karang ti <3>NOAA NCCOS</3> (domain publik)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Pulo Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Hurung"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Dina kapal indung"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Dina katapel: turunkeun batang peluncur pikeun kakait"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Dina final"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Dina landasan"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "REM PARKIR AKTIP"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Diparkir di bandara"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Diparkir dina kapal indung"
+msgid "Parking"
+msgstr "Tempat parkir"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Mangga cobian deui."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Mangga antosan sakedap teras cobian deui."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Posisi"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "TANAGA PINUH"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Landasan"
+msgid "Runway {end}"
+msgstr "Landasan {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Pilih kartu salajengna"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Pilih jalma..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Pilih posisi"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Unggah"
 msgid "Upload progress"
 msgstr "Kamajuan unggah"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "AS · Hawaii · Pulo Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Anggo konci akses anjeun"
@@ -4714,6 +4737,10 @@ msgstr "Anggo konci akses anjeun"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Pamaké"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

@@ -410,6 +410,10 @@ msgstr "விமானந்தாங்கிக் கப்பல் <0>“U
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "விமான மாதிரி <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> (Sketchfab) உருவாக்கியது, <2>CC BY 4.0</2> உரிமத்தின் கீழ். மாற்றப்பட்டது: திசை மாற்றப்பட்டது மற்றும் அளவு மாற்றப்பட்டது, பயன்படுத்தப்படாத டெக்ஸ்சர் தரவு நீக்கப்பட்டது, வெளிப்புற இணைப்புச் சுமைகள் தனி கோப்பாகப் பிரிக்கப்பட்டன, ஒரு உறை மெஷ் கண்ணாடிப் பிரதிபலிப்பாக மாற்றப்பட்டது."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "வான்வேகம்"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "எச்சரிக்கைகள்"
@@ -443,6 +447,10 @@ msgstr "விளையாட்டை மேம்படுத்த, உங்
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "வரிசைப்படுத்துதலை அனுமதி"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "உயரம்"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: காத்திருப்பு 6000', 250 நாட், இறுதி திசை {heading}, பூஜ்ஜியத்தில் தொடங்கு"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "கவண்பொறி"
+msgid "Catapult {number}"
+msgstr "கவண்பொறி {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "நீக்கப்பட்டது"
 msgid "Deleted {field}"
 msgstr "{field} நீக்கப்பட்டது"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "புறப்பாடு / தரையிறக்கம்"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "இறங்குவரிசை"
@@ -1989,6 +1993,10 @@ msgstr "சண்டை தொடங்கியது"
 msgid "Files"
 msgstr "கோப்புகள்"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "இறுதிப் பாதை, ஓடுபாதை {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "இறுதிப் பாதை: ஓடுபாதைத் திசை {heading}, PAPI இல் இரண்டு சிவப்பு, இரண்டு வெள்ளைக்குச் சக்தி"
@@ -2252,6 +2260,11 @@ msgstr "தலை"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "தலை கண்காணிப்பு"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "திசை"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "பெரியது"
 msgid "LATE"
 msgstr "தாமதம்"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "அட்சரேகை"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "ஏவுதல் (கேட்டப்பல்ட்)"
@@ -2661,6 +2678,10 @@ msgstr "வெற்றிகரமாக வெளியேறியது"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "வெளியேறுகிறது…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "தீர்க்கரேகை"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "நடுவானில் மோதல்"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "மிட்வே பவளத்தீவு வரைபடம் — படங்களில் மாற்றப்பட்ட <0>Copernicus Sentinel-2</0> தரவு உள்ளது (2026); விமானத்தள வடிவியல் (ஓடுபாதை, நகர்வுப் பாதைகள், நிறுத்துமிடங்கள்) © <1>OpenStreetMap</1> பங்களிப்பாளர்கள், <2>ODbL</2> கீழ் உரிமம் பெற்றது; கடற்கரை மற்றும் பவளப்பாறை தரவு <3>NOAA NCCOS</3> இலிருந்து (பொதுக் களம்)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "மிட்வே தீவு"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "இயக்கத்தில்"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "தாங்கி கப்பலில்"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "கேட்டப்பல்ட்டில்: இணைக்க ஏவுதல் கம்பியை இறக்கு"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "இறுதிப் பாதையில்"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "ஓடுபாதையில்"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "நிறுத்த பிரேக் இயக்கத்தில்"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "விமானநிலையத்தில் நிறுத்தப்பட்டது"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "தாங்கி கப்பலில் நிறுத்தப்பட்டது"
+msgid "Parking"
+msgstr "நிறுத்துமிடம்"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "தயவுசெய்து மீண்டும் முயற்�
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "சிறிது நேரம் காத்திருந்து மீண்டும் முயற்சிக்கவும்."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "இருப்பிடம்"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "முழு சக்தி"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "ஓடுபாதை"
+msgid "Runway {end}"
+msgstr "ஓடுபாதை {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "அடுத்த அட்டையை தேர்ந்தெடு"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "நபரைத் தேர்ந்தெடுக்கவும்..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "இருப்பிடத்தைத் தேர்ந்தெடுக்கவும்"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "பதிவேற்று"
 msgid "Upload progress"
 msgstr "பதிவேற்ற முன்னேற்றம்"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "அமெரிக்கா · ஹவாய் · மிட்வே தீவு · ஹென்டர்சன் ஃபீல்ட் · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "உங்கள் கடவுக்குறியைப் பயன்படுத்தவும்"
@@ -4714,6 +4737,10 @@ msgstr "உங்கள் கடவுக்குறியைப் பயன�
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "பயனர்"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "யுஎஸ்எஸ் ஜெரால்ட் ஆர். ஃபோர்டு"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

@@ -410,6 +410,10 @@ msgstr "Flugzeugträger <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> von <1>M
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Flugzeugmodell <0>“F/A-18C Hornet”</0> von <1>CreadorDeMu</1> (Sketchfab), lizenziert unter <2>CC BY 4.0</2>. Bearbeitet: neu ausgerichtet und neu skaliert, ungenutzte Texturdaten entfernt, Außenlasten in eine separate Datei ausgelagert, ein Mesh der Verkleidung gespiegelt."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Fluggeschwindigkeit"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Warnungen"
@@ -443,6 +447,10 @@ msgstr "Entwicklern erlauben, Ihre Flugaufzeichnungen zu lesen, um das Spiel zu 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Sortierung erlauben nach"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Höhe"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: Warteschleife 6000', 250 Knoten, Endkurs {heading}, bei null beginnen"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapult"
+msgid "Catapult {number}"
+msgstr "Katapult {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Gelöscht"
 msgid "Deleted {field}"
 msgstr "{field} gelöscht"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Start / Landung"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Absteigend"
@@ -1989,6 +1993,10 @@ msgstr "KAMPF FREI"
 msgid "Files"
 msgstr "Dateien"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Endanflug, Bahn {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Endanflug: Bahnkurs {heading}, Schub für zwei Rot, zwei Weiß auf PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Kopf"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Kopfverfolgung"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Steuerkurs"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Groß"
 msgid "LATE"
 msgstr "SPÄT"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Breitengrad"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Start (Katapult)"
@@ -2661,6 +2678,10 @@ msgstr "Erfolgreich abgemeldet"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Abmelden …"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Längengrad"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Kollision in der Luft"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Karte des Midway-Atolls — die Bilddaten enthalten modifizierte <0>Copernicus Sentinel-2</0>-Daten (2026); Flugplatzgeometrie (Start- und Landebahn, Rollwege, Vorfelder) © <1>OpenStreetMap</1>-Mitwirkende, lizenziert unter <2>ODbL</2>; Küsten- und Riffdaten von <3>NOAA NCCOS</3> (gemeinfrei)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Midway-Insel"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Ein"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Auf dem Träger"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Auf dem Katapult: Startstange ausfahren zum Einhängen"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Im Endanflug"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Auf der Startbahn"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "PARKBREMSE GEZOGEN"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Geparkt am Flugplatz"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Geparkt auf dem Träger"
+msgid "Parking"
+msgstr "Parkposition"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Bitte versuche es erneut."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Bitte warten Sie einen Moment und versuchen Sie es erneut."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Position"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "VOLLGAS"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Bahn"
+msgid "Runway {end}"
+msgstr "Bahn {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Nächste Karte auswählen"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Person auswählen …"
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Position auswählen"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Hochladen"
 msgid "Upload progress"
 msgstr "Upload-Fortschritt"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "USA · Hawaii · Midway-Insel · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Passkey verwenden"
@@ -4714,6 +4737,10 @@ msgstr "Passkey verwenden"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Benutzer"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

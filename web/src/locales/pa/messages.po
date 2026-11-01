@@ -410,6 +410,10 @@ msgstr "ਏਅਰਕ੍ਰਾਫਟ ਕੈਰੀਅਰ <0>“USS Nimitz CVN-68 A
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "ਹਵਾਈ ਜਹਾਜ਼ ਮਾਡਲ <0>“F/A-18C Hornet”</0> <1>CreadorDeMu</1> (Sketchfab) ਵੱਲੋਂ, <2>CC BY 4.0</2> ਤਹਿਤ ਲਾਇਸੰਸਸ਼ੁਦਾ। ਸੋਧਿਆ ਗਿਆ: ਮੁੜ-ਦਿਸ਼ਾ ਦਿੱਤੀ ਅਤੇ ਮੁੜ-ਪੈਮਾਨਾ ਕੀਤਾ, ਅਣਵਰਤਿਆ ਟੈਕਸਚਰ ਡਾਟਾ ਹਟਾਇਆ ਗਿਆ, ਬਾਹਰੀ ਲਟਕਵੇਂ ਸਾਜ਼ੋ-ਸਮਾਨ ਨੂੰ ਵੱਖਰੀ ਫ਼ਾਈਲ ਵਿੱਚ ਵੱਖ ਕੀਤਾ ਗਿਆ, ਇੱਕ ਸ਼ਰਾਊਡ ਮੈਸ਼ ਨੂੰ ਸ਼ੀਸ਼ੇ-ਰੂਪ ਵਿੱਚ ਉਲਟਾਇਆ ਗਿਆ।"
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "ਹਵਾਈ ਗਤੀ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "ਚੇਤਾਵਨੀਆਂ"
@@ -443,6 +447,10 @@ msgstr "ਗੇਮ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ ਡਿਵੈ�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "ਇਸ ਅਨੁਸਾਰ ਛਾਂਟਣ ਦੀ ਆਗਿਆ ਦਿਓ"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "ਉਚਾਈ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: ਮਾਰਸ਼ਲ 6000', 250 ਨਾਟ, ਫਾਈਨਲ ਬੇਅਰਿੰਗ {heading}, ਸਿਫ਼ਰ ਉੱਤੇ ਸ਼ੁਰੂ ਕਰੋ"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "ਕੈਟਾਪਲਟ"
+msgid "Catapult {number}"
+msgstr "ਕੈਟਾਪਲਟ {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "ਮਿਟਾਇਆ ਗਿਆ"
 msgid "Deleted {field}"
 msgstr "{field} ਮਿਟਾਇਆ ਗਿਆ"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "ਰਵਾਨਗੀ / ਉਤਰਾਈ"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "ਘਟਦੇ ਕ੍ਰਮ ਵਿੱਚ"
@@ -1989,6 +1993,10 @@ msgstr "ਲੜਾਈ ਸ਼ੁਰੂ"
 msgid "Files"
 msgstr "ਫਾਈਲਾਂ"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "ਫਾਈਨਲ, ਰਨਵੇ {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "ਫਾਈਨਲ: ਰਨਵੇ ਹੈਡਿੰਗ {heading}, PAPI ਉੱਤੇ ਦੋ ਲਾਲ, ਦੋ ਚਿੱਟੀਆਂ ਲਈ ਪਾਵਰ"
@@ -2252,6 +2260,11 @@ msgstr "ਸਿਰ"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "ਹੈੱਡ ਟਰੈਕਿੰਗ"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "ਹੈਡਿੰਗ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "ਵੱਡਾ"
 msgid "LATE"
 msgstr "ਦੇਰ"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "ਅਕਸ਼ਾਂਸ਼"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "ਪ੍ਰਖੇਪਣ (ਕੈਟਾਪਲਟ)"
@@ -2661,6 +2678,10 @@ msgstr "ਸਫਲਤਾਪੂਰਵਕ ਲੌਗ ਆਊਟ ਹੋ ਗਏ"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "ਲੌਗ ਆਊਟ ਹੋ ਰਿਹਾ ਹੈ…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "ਰੇਖਾਂਸ਼"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "ਹਵਾ ਵਿੱਚ ਟੱਕਰ"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "ਮਿਡਵੇ ਐਟੋਲ ਦਾ ਨਕਸ਼ਾ — ਤਸਵੀਰਾਂ ਵਿੱਚ ਸੋਧਿਆ ਹੋਇਆ <0>Copernicus Sentinel-2</0> ਡਾਟਾ (2026) ਸ਼ਾਮਲ ਹੈ; ਹਵਾਈ ਅੱਡੇ ਦੀ ਜਿਓਮੈਟਰੀ (ਰਨਵੇ, ਟੈਕਸੀਵੇ, ਏਪਰਨ) © <1>OpenStreetMap</1> ਯੋਗਦਾਨੀ, <2>ODbL</2> ਅਧੀਨ ਲਾਇਸੰਸਸ਼ੁਦਾ; ਤੱਟਰੇਖਾ ਅਤੇ ਰੀਫ਼ ਡਾਟਾ <3>NOAA NCCOS</3> ਤੋਂ (ਜਨਤਕ ਡੋਮੇਨ)।"
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "ਮਿਡਵੇ ਟਾਪੂ"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "ਚਾਲੂ"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "ਕੈਰੀਅਰ ਉੱਤੇ"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "ਕੈਟਾਪਲਟ 'ਤੇ: ਹੁੱਕ ਲਗਾਉਣ ਲਈ ਲਾਂਚ ਬਾਰ ਹੇਠਾਂ ਕਰੋ"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "ਫਾਈਨਲ ਉੱਤੇ"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "ਰਨਵੇ ਉੱਤੇ"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "ਪਾਰਕਿੰਗ ਬ੍ਰੇਕ ਲੱਗੀ"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "ਹਵਾਈ ਅੱਡੇ ਉੱਤੇ ਪਾਰਕ ਕੀਤਾ"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "ਕੈਰੀਅਰ ਉੱਤੇ ਪਾਰਕ ਕੀਤਾ"
+msgid "Parking"
+msgstr "ਪਾਰਕਿੰਗ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ �
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "ਕਿਰਪਾ ਕਰਕੇ ਥੋੜ੍ਹੀ ਦੇਰ ਉਡੀਕ ਕਰੋ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "ਸਥਾਨ"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "ਪੂਰੀ ਤਾਕਤ"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "ਰਨਵੇ"
+msgid "Runway {end}"
+msgstr "ਰਨਵੇ {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "ਅਗਲਾ ਕਾਰਡ ਚੁਣੋ"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "ਵਿਅਕਤੀ ਚੁਣੋ..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "ਸਥਾਨ ਚੁਣੋ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "ਅੱਪਲੋਡ ਕਰੋ"
 msgid "Upload progress"
 msgstr "ਅੱਪਲੋਡ ਪ੍ਰਗਤੀ"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "ਅਮਰੀਕਾ · ਹਵਾਈ · ਮਿਡਵੇ ਟਾਪੂ · ਹੈਂਡਰਸਨ ਫੀਲਡ · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "ਆਪਣੀ ਪਾਸਕੀ ਵਰਤੋ"
@@ -4714,6 +4737,10 @@ msgstr "ਆਪਣੀ ਪਾਸਕੀ ਵਰਤੋ"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "ਉਪਭੋਗਤਾ"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "ਯੂਐਸਐਸ ਜੈਰਾਲਡ ਆਰ. ਫੋਰਡ"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

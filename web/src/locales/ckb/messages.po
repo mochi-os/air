@@ -410,6 +410,10 @@ msgstr "هەڵگری فڕۆکە <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> 
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "مۆدێلی فڕۆکە <0>“F/A-18C Hornet”</0> لەلایەن <1>CreadorDeMu</1> (Sketchfab)، بە مۆڵەتی <2>CC BY 4.0</2>. دەستکاریکراو: ئاراستە و قەبارە گۆڕدراوە، داتای تێکسچەری بەکارنەهاتوو لابراوە، بارە دەرەکییەکان بۆ فایلێکی جیا جیاکراونەتەوە، مێشێکی داپۆشەر بە شێوەی ئاوێنەیی هەڵگەڕێنراوەتەوە."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "خێرایی هەوایی"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "ھۆشدارییەکان"
@@ -443,6 +447,10 @@ msgstr "ڕێگە بە گەشەپێدەران بدە تۆمارەکانی فڕی�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "ڕێگە بدە بە ڕیزکردن بەپێی"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "بەرزی"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: چاوەڕوانی 6000'، 250 گرێ، ئاراستەی کۆتایی {heading}، لە سفردا دەست پێ بکە"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "کاتاپولت"
+msgid "Catapult {number}"
+msgstr "کاتاپولت {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "سڕایەوە"
 msgid "Deleted {field}"
 msgstr "{field} سڕایەوە"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "هەڵفڕین / نیشتنەوە"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "داکەوتوو"
@@ -1989,6 +1993,10 @@ msgstr "شەڕ دەستی پێکرد"
 msgid "Files"
 msgstr "فایلەکان"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "نزیکبوونەوەی کۆتایی، باندی فڕین {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "کۆتایی: ئاراستەی ڕێڕەو {heading}، هێز بۆ دوو سوور، دوو سپی لەسەر PAPI"
@@ -2252,6 +2260,11 @@ msgstr "سەر"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "شوێنکەوتنی سەر"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "ئاراستە"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "گەورە"
 msgid "LATE"
 msgstr "درەنگ"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "هێڵی پانی"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "هەڵدان (مەنجەنیق)"
@@ -2661,6 +2678,10 @@ msgstr "بە سەرکەوتوویی دەرچوو"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "دەردەچێت…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "هێڵی درێژی"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "پێکدادان لە ئاسماندا"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "نەخشەی ئەتۆڵی میدوەی — وێنەکان داتای دەستکاریکراوی <0>Copernicus Sentinel-2</0> لەخۆدەگرن (2026)؛ جیۆمەتری فڕۆکەخانە (باندی فڕین، ڕێگا تاکسییەکان، شوێنەکانی وەستان) © بەشداربووانی <1>OpenStreetMap</1>، مۆڵەتپێدراو بەپێی <2>ODbL</2>؛ داتای کەناری دەریا و ڕیف لە <3>NOAA NCCOS</3> (خاوەندارێتی گشتی)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "دوورگەی میدوەی"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "کارا"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "لەسەر هەڵگر"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "لەسەر مەنجەنیق: شیشی هەڵدان دابەزێنە بۆ بەستنەوە"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "لە نزیکبوونەوەی کۆتاییدا"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "لەسەر باندی فڕین"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "بڕەیکی وەستان چالاکە"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "وەستاو لە فڕۆکەخانە"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "وەستاو لەسەر هەڵگر"
+msgid "Parking"
+msgstr "وەستانگە"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "تکایە دووبارە هەوڵ بدەرەوە."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "تکایە کەمێک چاوەڕوان بە و دووبارە هەوڵ بدەوە."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "شوێن"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "هێزی تەواو"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "باندی فڕین"
+msgid "Runway {end}"
+msgstr "باندی فڕین {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "کارتی دواتر هەڵبژێرە"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "کەسێک هەڵبژێرە..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "شوێن هەڵبژێرە"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "بارکردن"
 msgid "Upload progress"
 msgstr "پێشکەوتنی بارکردن"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "ئەمریکا · هاوای · دوورگەی میدوەی · هێندەرسن فیڵد · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "پاسکییەکەت بەکاربهێنە"
@@ -4714,6 +4737,10 @@ msgstr "پاسکییەکەت بەکاربهێنە"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "بەکارهێنەر"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "یو ئێس ئێس جێراڵد ئاڕ. فۆرد"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

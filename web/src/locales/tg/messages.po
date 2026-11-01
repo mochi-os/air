@@ -410,6 +410,10 @@ msgstr "Киштии ҳавопаймобар <0>“USS Nimitz CVN-68 Aircraft C
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Модели ҳавопаймо <0>“F/A-18C Hornet”</0> аз ҷониби <1>CreadorDeMu</1> (Sketchfab), таҳти иҷозатномаи <2>CC BY 4.0</2>. Тағйир дода шуд: самт ва андоза иваз карда шуданд, маълумоти текстураи истифоданашуда нест карда шуд, овезаҳои беруна ба файли алоҳида ҷудо карда шуданд, як меши ғилоф бо нусхаи оинавӣ иваз карда шуд."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Суръати ҳавоӣ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Огоҳиҳо"
@@ -443,6 +447,10 @@ msgstr "Ба таҳиягарон иҷозат додан, ки сабтҳои �
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Иҷозати ҷобаҷогузорӣ аз рӯи"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Баландӣ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: интизорӣ 6000', 250 гиреҳ, самти ниҳоӣ {heading}, дар сифр оғоз кун"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Катапулта"
+msgid "Catapult {number}"
+msgstr "Катапулта {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Нест карда шуд"
 msgid "Deleted {field}"
 msgstr "{field} нест карда шуд"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Болоравӣ / Фуруд"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Камшаванда"
@@ -1989,6 +1993,10 @@ msgstr "ҶАНГ ОҒОЗ ШУД"
 msgid "Files"
 msgstr "Файлҳо"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Ниҳоӣ, хати парвоз {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Ниҳоӣ: самти хатти парвоз {heading}, қувва барои ду сурх, ду сафед дар PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Сар"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Пайгирии сар"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Самт"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Калон"
 msgid "LATE"
 msgstr "ДЕР"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Арзи ҷуғрофӣ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Партоб (катапулт)"
@@ -2661,6 +2678,10 @@ msgstr "Бомуваффақият баромад"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Баромадан…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Тӯли ҷуғрофӣ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Бархӯрд дар ҳаво"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Харитаи Атолли Мидвей — тасвирҳо дорои маълумоти тағйирёфтаи <0>Copernicus Sentinel-2</0> мебошанд (2026); геометрияи майдони ҳавоӣ (хатти парвоз, роҳҳои ҳаракат, майдончаҳо) © ҳиссагузорони <1>OpenStreetMap</1>, таҳти иҷозатномаи <2>ODbL</2>; маълумоти хатти соҳил ва рифҳо аз <3>NOAA NCCOS</3> (моликияти умумӣ)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Ҷазираи Мидвей"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Фаъол"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Дар киштӣ"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Дар катапулт: барои васл шудан штангаи партобро фуроред"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Дар хатти ниҳоӣ"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Дар хати парвоз"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "ТОРМОЗИ ИСТОДАН ФАЪОЛ"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Дар фурудгоҳ истода"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Дар киштӣ истода"
+msgid "Parking"
+msgstr "Таваққуфгоҳ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Лутфан, бори дигар кӯшиш кунед."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Лутфан каме интизор шавед ва аз нав кӯшиш кунед."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Мавқеъ"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "ҚУВВАИ ПУРРА"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Хати парвоз"
+msgid "Runway {end}"
+msgstr "Хати парвоз {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Корти навбатиро интихоб кунед"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Шахсро интихоб кунед..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Мавқеъро интихоб кунед"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Бор кардан"
 msgid "Upload progress"
 msgstr "Рафти боркунӣ"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "ИМА · Ҳавайӣ · Ҷазираи Мидвей · Ҳендерсон Филд · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Калиди дастрасии худро истифода баред"
@@ -4714,6 +4737,10 @@ msgstr "Калиди дастрасии худро истифода баред"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Корбар"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "Ҳавопаймобари «Ҷералд Р. Форд»"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

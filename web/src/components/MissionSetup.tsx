@@ -8,6 +8,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type MouseEvent,
   type ReactNode,
 } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
@@ -53,7 +54,6 @@ import {
   TooltipTrigger,
 } from '@mochi/web/components/ui/tooltip'
 import {
-  Anchor,
   Check,
   ChevronRight,
   CircleDot,
@@ -65,6 +65,7 @@ import {
   LogIn,
   MessageSquare,
   Moon,
+  MapPin,
   Plane,
   PlaneLanding,
   PlaneTakeoff,
@@ -84,6 +85,7 @@ import {
   X,
 } from 'lucide-react'
 import { flight_catalog, flight_load } from '../game/flight'
+import { LIMITS, at, clamp, on, parse, type Choice as Free } from '../game/position'
 import {
   default_server,
   normalize_server,
@@ -212,14 +214,22 @@ function Picker<T extends string>({
   value,
   onChange,
   options,
+  wrap,
 }: {
   value: T
   onChange: (value: T) => void
   options: Choice<T>[]
+  wrap?: boolean // a long choice runs onto a second line rather than being cut (#167: the airfield's full name)
 }) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v as T)}>
-      <SelectTrigger className='w-full'>
+      <SelectTrigger
+        className={
+          wrap
+            ? 'min-h-[var(--control-height-md)] w-full text-start whitespace-normal data-[size=default]:h-auto *:data-[slot=select-value]:line-clamp-none *:data-[slot=select-value]:flex!'
+            : 'w-full'
+        }
+      >
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
@@ -231,6 +241,160 @@ function Picker<T extends string>({
         ))}
       </SelectContent>
     </Select>
+  )
+}
+
+// The free flight's Position (#167): the place it starts - in the air, at
+// Henderson Field on Midway, or aboard the carrier - then the starting point
+// there: a runway end, a catapult, parking, an approach, or anywhere on the
+// earth chosen on the map.
+type Place = 'air' | 'field' | 'ship'
+const PLACE: Record<MissionConfig['start'], Place> = {
+  air: 'air', position: 'air',
+  runway: 'field', apron: 'field', final: 'field',
+  carrier: 'ship', deck: 'ship', groove: 'ship', case1: 'ship', case2: 'ship', case3: 'ship', landing: 'ship',
+}
+// point is the second select's value: the start, with the runway end or the
+// catapult it uses.
+function point(config: MissionConfig): string {
+  const start = config.start === 'landing' ? 'case2' : config.start
+  if (start === 'runway' || start === 'final') return `${start}:${config.end === '24' ? '24' : '06'}`
+  if (start === 'carrier') return `carrier:${config.cat}`
+  return start
+}
+const Runway = ({ end }: { end: string }) => <Trans>Runway {end}</Trans>
+const Final = ({ end }: { end: string }) => <Trans>Final, runway {end}</Trans>
+const Catapult = ({ number }: { number: number }) => <Trans>Catapult {number}</Trans>
+
+function StartPosition({ config, onChange }: { config: MissionConfig; onChange: (config: MissionConfig) => void }) {
+  const place = PLACE[config.start] ?? 'air'
+  const choose = (value: string) => {
+    const [start, detail] = value.split(':') as [MissionConfig['start'], string | undefined]
+    const seeded = seedStart(config, start)
+    if (start === 'runway' || start === 'final') seeded.end = detail === '24' ? '24' : '06'
+    if (start === 'carrier' && detail) seeded.cat = parseInt(detail, 10)
+    onChange(seeded)
+  }
+  const first: Record<Place, string> = { air: 'air', field: 'runway:06', ship: `carrier:${config.cat || 2}` } // where each place starts when it is picked
+  const points: Record<Place, Choice<string>[]> = {
+    air: [
+      { value: 'air', label: <Trans>Midway Island</Trans>, icon: Plane },
+      { value: 'position', label: <Trans>Select position</Trans>, icon: MapPin },
+    ],
+    field: [
+      { value: 'runway:06', label: <Runway end='06' />, icon: PlaneTakeoff },
+      { value: 'runway:24', label: <Runway end='24' />, icon: PlaneTakeoff },
+      { value: 'apron', label: <Trans>Parking</Trans>, icon: SquareParking },
+      { value: 'final:06', label: <Final end='06' />, icon: PlaneLanding },
+      { value: 'final:24', label: <Final end='24' />, icon: PlaneLanding },
+    ],
+    ship: [
+      ...[1, 2, 3, 4].map((n) => ({ value: `carrier:${n}`, label: <Catapult number={n} />, icon: PlaneTakeoff })),
+      { value: 'deck', label: <Trans>Parking</Trans>, icon: SquareParking },
+      { value: 'groove', label: <Trans>In the groove</Trans>, icon: CircleDot },
+      { value: 'case1', label: <Trans>Case I (day)</Trans>, icon: Sun },
+      { value: 'case2', label: <Trans>Case II (weather)</Trans>, icon: CloudRain },
+      { value: 'case3', label: <Trans>Case III (night)</Trans>, icon: Moon },
+    ],
+  }
+  return (
+    <div className='space-y-2 pt-1'>
+      <div className='space-y-1'>
+        <Label className='text-muted-foreground text-xs font-medium uppercase'>
+          <Trans context='flight start'>Position</Trans>
+        </Label>
+        <Picker
+          value={place}
+          wrap
+          onChange={(v) => choose(first[v])}
+          options={[
+            { value: 'air', label: <Trans>In air</Trans>, icon: Plane },
+            { value: 'field', label: <Trans>USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY</Trans>, icon: MapPin },
+            { value: 'ship', label: <Trans>USS Gerald R. Ford</Trans>, icon: Ship },
+          ]}
+        />
+        <Picker value={point(config)} onChange={choose} options={points[place]} />
+      </div>
+
+      {(config.start === 'apron' || config.start === 'deck') && (
+        <Segmented
+          value={config.cold ? 'cold' : 'ready'}
+          onChange={(v) => onChange({ ...config, cold: v === 'cold' })}
+          options={[
+            { value: 'ready', label: <Trans context='aircraft state'>Ready</Trans> },
+            { value: 'cold', label: <Trans>Cold and dark</Trans> },
+          ]}
+        />
+      )}
+
+      {config.start === 'case1' && (
+        <SwitchRow
+          id='demonstration'
+          tight
+          label={<Trans>Watch a bot fly it</Trans>}
+          checked={!!config.demonstration}
+          onChange={(v) => onChange({ ...config, demonstration: v })}
+        />
+      )}
+
+      {config.start === 'position' && <FreePosition config={config} onChange={onChange} />}
+    </div>
+  )
+}
+
+// FreePosition is the position start's place and flight (#167): the earth's
+// global map (public/maps/world/global.webp), clicked or typed into as
+// latitude and longitude, and the altitude, true heading and airspeed.
+function FreePosition({ config, onChange }: { config: MissionConfig; onChange: (config: MissionConfig) => void }) {
+  const { formatNumber } = useFormat()
+  const choice = clamp(config)
+  const [typed, setTyped] = useState<{ latitude: string | null; longitude: string | null }>({ latitude: null, longitude: null })
+  const set = (patch: Partial<Free>) => onChange({ ...config, ...clamp({ ...choice, ...patch }) })
+  const mark = at(choice.latitude, choice.longitude)
+  const image = new URL('maps/world/global.webp', location.href).href
+  const pick = (e: MouseEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect(), p = on((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height)
+    const four = (v: number) => Math.round(v * 1e4) / 1e4
+    setTyped({ latitude: null, longitude: null })
+    set({ latitude: four(p.latitude), longitude: four(p.longitude) })
+  }
+  const field = (axis: 'latitude' | 'longitude', label: ReactNode) => (
+    <div className='space-y-1'>
+      <Label htmlFor={`position-${axis}`} className='text-muted-foreground text-xs font-medium'>
+        {label}
+      </Label>
+      <Input
+        id={`position-${axis}`}
+        inputMode='decimal'
+        value={typed[axis] ?? formatNumber(choice[axis], 4)}
+        onChange={(e) => {
+          const text = e.target.value
+          setTyped({ ...typed, [axis]: text })
+          const v = parse(text, axis)
+          if (v !== null) set({ [axis]: v })
+        }}
+        onBlur={() => setTyped({ ...typed, [axis]: null })}
+      />
+    </div>
+  )
+  return (
+    <div className='space-y-1'>
+      {/* The map is the pointer's way in; the latitude and longitude fields below are the keyboard's. */}
+      <div aria-hidden className='border-border relative cursor-crosshair overflow-hidden rounded-lg border' onClick={pick}>
+        <img src={image} alt='' draggable={false} className='block w-full select-none' />
+        <span
+          className='bg-primary pointer-events-none absolute size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white'
+          style={{ left: `${mark.across * 100}%`, top: `${mark.down * 100}%` }}
+        />
+      </div>
+      <div className='grid grid-cols-2 gap-2 pt-1'>
+        {field('latitude', <Trans>Latitude</Trans>)}
+        {field('longitude', <Trans>Longitude</Trans>)}
+      </div>
+      <SliderRow label={<Trans>Altitude</Trans>} value={choice.altitude} min={LIMITS.altitude.minimum} max={LIMITS.altitude.maximum} step={LIMITS.altitude.step} suffix=' ft' tight onChange={(v) => set({ altitude: v })} />
+      <SliderRow label={<Trans context='compass'>Heading</Trans>} value={choice.heading} min={LIMITS.heading.minimum} max={LIMITS.heading.maximum} step={LIMITS.heading.step} suffix='°' tight onChange={(v) => set({ heading: v })} />
+      <SliderRow label={<Trans>Airspeed</Trans>} value={choice.airspeed} min={LIMITS.airspeed.minimum} max={LIMITS.airspeed.maximum} step={LIMITS.airspeed.step} suffix=' kt' tight onChange={(v) => set({ airspeed: v })} />
+    </div>
   )
 }
 
@@ -1517,129 +1681,7 @@ function MissionPanel({
             )}
 
             {config.task === 'free' && (
-              <div className='space-y-2 pt-1'>
-                <div className='space-y-1'>
-                  <Label className='text-muted-foreground text-xs font-medium uppercase'>
-                    <Trans>Departure / Recovery</Trans>
-                  </Label>
-                  <Picker
-                    value={config.start === 'landing' ? 'case2' : config.start}
-                    onChange={(v) => {
-                      onChange(seedStart(config, v as MissionConfig['start']))
-                    }}
-                    options={[
-                      {
-                        value: 'air',
-                        label: <Trans>In air</Trans>,
-                        icon: Plane,
-                      },
-                      {
-                        value: 'runway',
-                        label: <Trans>On runway</Trans>,
-                        icon: PlaneTakeoff,
-                      },
-                      {
-                        value: 'apron',
-                        label: <Trans>Parked at airfield</Trans>,
-                        icon: SquareParking,
-                      },
-                      {
-                        value: 'final',
-                        label: <Trans>On final</Trans>,
-                        icon: PlaneLanding,
-                      },
-                      {
-                        value: 'carrier',
-                        label: <Trans>On carrier</Trans>,
-                        icon: Ship,
-                      },
-                      {
-                        value: 'deck',
-                        label: <Trans>Parked on carrier</Trans>,
-                        icon: Anchor,
-                      },
-                      {
-                        value: 'groove',
-                        label: <Trans>In the groove</Trans>,
-                        icon: CircleDot,
-                      },
-                      {
-                        value: 'case1',
-                        label: <Trans>Case I (day)</Trans>,
-                        icon: Sun,
-                      },
-                      {
-                        value: 'case2',
-                        label: <Trans>Case II (weather)</Trans>,
-                        icon: CloudRain,
-                      },
-                      {
-                        value: 'case3',
-                        label: <Trans>Case III (night)</Trans>,
-                        icon: Moon,
-                      },
-                    ]}
-                  />
-                </div>
-
-                {config.start === 'case1' && (
-                  <SwitchRow
-                    id='demonstration'
-                    tight
-                    label={<Trans>Watch a bot fly it</Trans>}
-                    checked={!!config.demonstration}
-                    onChange={(v) => set('demonstration', v)}
-                  />
-                )}
-
-                {(config.start === 'apron' || config.start === 'deck') && (
-                  <Segmented
-                    value={config.cold ? 'cold' : 'ready'}
-                    onChange={(v) => set('cold', v === 'cold')}
-                    options={[
-                      {
-                        value: 'ready',
-                        label: <Trans context='aircraft state'>Ready</Trans>,
-                      },
-                      { value: 'cold', label: <Trans>Cold and dark</Trans> },
-                    ]}
-                  />
-                )}
-
-                {(config.start === 'runway' || config.start === 'final') && (
-                  <div className='space-y-1'>
-                    <Label className='text-muted-foreground text-xs font-medium uppercase'>
-                      <Trans>Runway</Trans>
-                    </Label>
-                    <Segmented
-                      value={config.end === '24' ? '24' : '06'}
-                      onChange={(v) => set('end', v)}
-                      options={[
-                        { value: '06', label: '06' },
-                        { value: '24', label: '24' },
-                      ]}
-                    />
-                  </div>
-                )}
-
-                {config.start === 'carrier' && (
-                  <div className='space-y-1'>
-                    <Label className='text-muted-foreground text-xs font-medium uppercase'>
-                      <Trans>Catapult</Trans>
-                    </Label>
-                    <Segmented
-                      value={String(config.cat)}
-                      onChange={(v) => set('cat', parseInt(v, 10))}
-                      options={[
-                        { value: '4', label: '4' },
-                        { value: '3', label: '3' },
-                        { value: '2', label: '2' },
-                        { value: '1', label: '1' },
-                      ]}
-                    />
-                  </div>
-                )}
-              </div>
+              <StartPosition config={config} onChange={onChange} />
             )}
           </div>
         </section>

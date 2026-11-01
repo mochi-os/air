@@ -410,6 +410,10 @@ msgstr "Samolyot tashuvchi kema <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> 
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Samolyot modeli <0>“F/A-18C Hornet”</0>, muallif <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2> litsenziyasi asosida. O‘zgartirildi: yo‘nalishi va o‘lchami o‘zgartirildi, ishlatilmaydigan tekstura ma’lumotlari olib tashlandi, tashqi osma yuklar alohida faylga ajratildi, bitta g‘ilof meshi ko‘zgu aksi bilan almashtirildi."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Havo tezligi"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Ogohlantirishlar"
@@ -443,6 +447,10 @@ msgstr "O‘yinni yaxshilash uchun dasturchilarga parvoz yozuvlaringizni o‘qis
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Saralashga ruxsat berish"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Balandlik"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: marshal 6000', 250 tugun, yakuniy yoʻnalish {heading}, nolda boshla"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapult"
+msgid "Catapult {number}"
+msgstr "Katapult {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Oʻchirildi"
 msgid "Deleted {field}"
 msgstr "{field} oʻchirildi"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Uchish / Qo‘nish"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Kamayish boʻyicha"
@@ -1989,6 +1993,10 @@ msgstr "JANG BOSHLANDI"
 msgid "Files"
 msgstr "Fayllar"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Final, uchish yoʻlagi {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: yoʻlak kursi {heading}, PAPI da ikki qizil, ikki oq uchun gaz"
@@ -2252,6 +2260,11 @@ msgstr "Bosh"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Bosh kuzatuvi"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Kurs"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Katta"
 msgid "LATE"
 msgstr "KECH"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Kenglik"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Uchirish (katapulta)"
@@ -2661,6 +2678,10 @@ msgstr "Muvaffaqiyatli chiqildi"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Chiqilmoqda…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Uzunlik"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Havoda toʻqnashuv"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll xaritasi — tasvirlar oʻzgartirilgan <0>Copernicus Sentinel-2</0> maʼlumotlarini oʻz ichiga oladi (2026); aerodrom geometriyasi (uchish-qoʻnish yoʻlagi, rulash yoʻllari, perronlar) © <1>OpenStreetMap</1> ishtirokchilari, <2>ODbL</2> litsenziyasi asosida; qirgʻoq chizigʻi va rif maʼlumotlari <3>NOAA NCCOS</3> dan (jamoat mulki)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Midway oroli"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Yoniq"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Aviatashuvchida"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapultada: ulanish uchun uchirish shtangasini tushir"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Finalda"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Uchish yoʻlagida"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "STOYANKA TORMOZI YOQILGAN"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Aerodromda turgan"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Aviatashuvchida turgan"
+msgid "Parking"
+msgstr "Toʻxtash joyi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Iltimos, qayta urinib ko'ring."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Biroz kuting va qayta urinib koʻring."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Joylashuv"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "TO'LIQ QUVVAT"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Uchish yoʻlagi"
+msgid "Runway {end}"
+msgstr "Uchish yoʻlagi {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Keyingi kartani tanlang"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Odamni tanlang..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Joylashuvni tanlang"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Yuklash"
 msgid "Upload progress"
 msgstr "Yuklash jarayoni"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "AQSH · Gavayi · Midway oroli · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Kirish kalitingizdan foydalaning"
@@ -4714,6 +4737,10 @@ msgstr "Kirish kalitingizdan foydalaning"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Foydalanuvchi"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

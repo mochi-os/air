@@ -410,6 +410,10 @@ msgstr "Lentotukialus <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, tekijä <
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Lentokoneen malli <0>“F/A-18C Hornet”</0>, tekijä <1>CreadorDeMu</1> (Sketchfab), lisensoitu <2>CC BY 4.0</2> -lisenssillä. Muokattu: suunnattu uudelleen ja uudelleenskaalattu, käyttämätön tekstuuridata poistettu, ulkoiset kuormat erotettu erilliseen tiedostoon, yksi suojuksen verkko peilattu."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Ilmanopeus"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Varoitukset"
@@ -443,6 +447,10 @@ msgstr "Salli kehittäjien lukea lentotallenteitasi pelin parantamiseksi"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Salli järjestäminen"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Korkeus"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: odotus 6000', 250 solmua, loppusuunta {heading}, aloita nollassa"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapultti"
+msgid "Catapult {number}"
+msgstr "Katapultti {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Poistettu"
 msgid "Deleted {field}"
 msgstr "{field} poistettu"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Lentoonlähtö / Lasku"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Laskeva"
@@ -1989,6 +1993,10 @@ msgstr "TAISTELU ALKAA"
 msgid "Files"
 msgstr "Tiedostot"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Loppuosuus, kiitotie {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Loppuosuus: kiitotien suunta {heading}, teho kahdelle punaiselle ja kahdelle valkoiselle PAPIssa"
@@ -2252,6 +2260,11 @@ msgstr "Pää"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Pään seuranta"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Ohjaussuunta"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Suuri"
 msgid "LATE"
 msgstr "MYÖHÄSSÄ"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Leveysaste"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Laukaisu (katapultti)"
@@ -2661,6 +2678,10 @@ msgstr "Uloskirjautuminen onnistui"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Kirjaudutaan ulos…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Pituusaste"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Yhteentörmäys ilmassa"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midwayn atollin kartta — kuvat sisältävät muokattua <0>Copernicus Sentinel-2</0> -dataa (2026); lentokentän geometria (kiitotie, rullaustiet, asematasot) © <1>OpenStreetMap</1>-avustajat, lisensoitu <2>ODbL</2>-lisenssillä; rannikko- ja riuttatiedot lähteestä <3>NOAA NCCOS</3> (tekijänoikeudesta vapaa)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Midwaysaari"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Päällä"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Lentotukialuksella"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapultilla: laske laukaisuvarsi kiinnittyäksesi"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Loppuosuudella"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Kiitoradalla"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "SEISONTAJARRU PÄÄLLÄ"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Pysäköitynä lentokentällä"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Pysäköitynä lentotukialuksella"
+msgid "Parking"
+msgstr "Pysäköintipaikka"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Yritä uudelleen."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Odota hetki ja yritä uudelleen."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Sijainti"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "TÄYSI TEHO"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Kiitotie"
+msgid "Runway {end}"
+msgstr "Kiitotie {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Valitse seuraava kortti"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Valitse henkilö..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Valitse sijainti"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Lähetä"
 msgid "Upload progress"
 msgstr "Latauksen edistyminen"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "Yhdysvallat · Havaiji · Midwaysaari · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Käytä avainkoodiasi"
@@ -4714,6 +4737,10 @@ msgstr "Käytä avainkoodiasi"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Käyttäjä"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

@@ -410,6 +410,10 @@ msgstr "Nosač aviona <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> autor <1>M
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Model aviona <0>“F/A-18C Hornet”</0> autora <1>CreadorDeMu</1> (Sketchfab), licenciran pod <2>CC BY 4.0</2>. Izmijenjeno: preorijentiran i promijenjena veličina, uklonjeni neiskorišteni podaci tekstura, vanjski tereti izdvojeni u zasebnu datoteku, jedan mesh obloge zrcalno preslikan."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Vazdušna brzina"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Upozorenja"
@@ -443,6 +447,10 @@ msgstr "Dozvoli programerima da čitaju vaše snimke letova radi poboljšanja ig
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Dozvoli sortiranje po"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Visina"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: čekanje 6000', 250 čvorova, finalni kurs {heading}, počni na nuli"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapult"
+msgid "Catapult {number}"
+msgstr "Katapult {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Obrisano"
 msgid "Deleted {field}"
 msgstr "Obrisano {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Polijetanje / Slijetanje"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Opadajuće"
@@ -1989,6 +1993,10 @@ msgstr "BORBA POČINJE"
 msgid "Files"
 msgstr "Datoteke"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Finale, pista {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Finale: kurs piste {heading}, snaga za dva crvena, dva bijela na PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Glava"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Praćenje glave"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Kurs"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Veliko"
 msgid "LATE"
 msgstr "KASNO"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Geografska širina"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Lansiranje (katapult)"
@@ -2661,6 +2678,10 @@ msgstr "Uspješno odjavljeni"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Odjavljivanje…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Geografska dužina"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Sudar u zraku"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Karta atola Midway — snimci sadrže modifikovane podatke <0>Copernicus Sentinel-2</0> (2026); geometrija aerodroma (uzletno-sletna staza, rulne staze, platforme) © saradnici <1>OpenStreetMap</1>, licencirano pod <2>ODbL</2>; podaci o obali i grebenima iz <3>NOAA NCCOS</3> (javno vlasništvo)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Ostrvo Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Uključeno"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Na nosaču"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Na katapultu: spusti startnu polugu da se zakačiš"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Na finalu"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Na pisti"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "PARKIRNA KOČNICA UKLJUČENA"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Parkiran na aerodromu"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Parkiran na nosaču"
+msgid "Parking"
+msgstr "Parking mjesto"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Pokušajte ponovo."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Sačekajte trenutak i pokušajte ponovo."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Pozicija"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "PUNI GAS"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Pista"
+msgid "Runway {end}"
+msgstr "Pista {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Odaberi sljedeću karticu"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Odaberite osobu..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Odaberi poziciju"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Otpremi"
 msgid "Upload progress"
 msgstr "Napredak otpremanja"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "SAD · Havaji · Ostrvo Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Koristite svoj pristupni ključ"
@@ -4714,6 +4737,10 @@ msgstr "Koristite svoj pristupni ključ"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Korisnik"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

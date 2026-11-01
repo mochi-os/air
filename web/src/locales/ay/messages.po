@@ -410,6 +410,10 @@ msgstr "Avión apaña wampu <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> <1>M
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Avión modelo <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> lurata (Sketchfab), <2>CC BY 4.0</2> liwri manqhan. Mayjt'ayata: uñtawipax mayjt'ayata ukat ch'iyjata, jan apnaqat textura yänakax apsutawa, anqa q'ipinakax mä yaqha archivoru jaljatawa, mä shroud mesh espejo ukhama kuttayatawa."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Wayra velocidad"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Yatiyawinaka"
@@ -443,6 +447,10 @@ msgstr "Anatäwi askichañataki, lurayirinakaru jaltäwi qillqatanakam ullañapa
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Akhamat siqichañ iyawsaña"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Altura"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: 6000'-na suyt'ama, 250 nudos, qhipa rumbo {heading}, cero-na qalltma"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapulta"
+msgid "Catapult {number}"
+msgstr "Katapulta {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Chhaqtayata"
 msgid "Deleted {field}"
 msgstr "{field} chhaqtayata"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Despegue / Aterrizaje"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Jach'at jisk'aru"
@@ -1989,6 +1993,10 @@ msgstr "CH'AXWA QALLTIWA"
 msgid "Files"
 msgstr "Archivonaka"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Final, pista {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: pista rumbo {heading}, PAPI-na pä wila, pä janq'u uñstañapataki ch'ama churma"
@@ -2252,6 +2260,11 @@ msgstr "P'iqi"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "P'iqi arknaqaña"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Rumbo"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Jach'a"
 msgid "LATE"
 msgstr "QHIPA"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Latitud"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Jalaya (q'urawa)"
@@ -2661,6 +2678,10 @@ msgstr "Suma mistutawa"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Mistuskiwa…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Longitud"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Alaxpachan tinkusiwi"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll mapa — imaginakax <0>Copernicus Sentinel-2</0> mayjt'ayat yänaka apnaqi (2026); aeropuerto geometría (pista, calle de rodaje, plataformanaka) © <1>OpenStreetMap</1> yanapt'irinaka, <2>ODbL</2> ukampi licenciat; lamar thiya ukat arrecife yänakax <3>NOAA NCCOS</3> ukankiwa (dominio público)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Midway wat'a"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Activata"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Portaaviones patxana"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Q'urawa patxaru: katuntañataki jalaya thuru apsuma"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Final tuqina"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Pista patxana"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "SAYT'AYIRI FRENO UCHATA"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Aeropuertona sayt'ayata"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Portaaviones patxana sayt'ayata"
+msgid "Parking"
+msgstr "Sayaña"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Wasitat yant'am."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Mä juk'a suyt'am, ukat wasitat yant'am."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Chiqa"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "TAQI CH'AMA"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Pista"
+msgid "Runway {end}"
+msgstr "Pista {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Arkir tarjeta ajlliña"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Jaqi ajlliña..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Chiqa ajlliña"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Apkataña"
 msgid "Upload progress"
 msgstr "Apkatäwi sarantawi"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "EE. UU. · Hawái · Midway wat'a · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Mantañ llawima apnaqam"
@@ -4714,6 +4737,10 @@ msgstr "Mantañ llawima apnaqam"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Apnaqiri"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

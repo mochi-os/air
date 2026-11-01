@@ -410,6 +410,10 @@ msgstr "נושאת מטוסים <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> 
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "דגם מטוס <0>“F/A-18C Hornet”</0> מאת <1>CreadorDeMu</1> (Sketchfab), ברישיון <2>CC BY 4.0</2>. שונה: כוון מחדש ושונה קנה המידה, נתוני טקסטורה שאינם בשימוש הוסרו, מטענים חיצוניים הופרדו לקובץ נפרד, ורשת מעטפת אחת הוחלפה בתמונת מראה."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "מהירות אוויר"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "התראות"
@@ -443,6 +447,10 @@ msgstr "לאפשר למפתחים לקרוא את הקלטות הטיסה שלך
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "אפשר מיון לפי"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "גובה"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: המתנה 6000', 250 קשרים, אזימוט סופי {heading}, התחל באפס"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "מקלעת שיגור"
+msgid "Catapult {number}"
+msgstr "מקלעת שיגור {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "נמחק"
 msgid "Deleted {field}"
 msgstr "{field} נמחק"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "המראה / נחיתה"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "סדר יורד"
@@ -1989,6 +1993,10 @@ msgstr "הקרב החל"
 msgid "Files"
 msgstr "קבצים"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "סופית, מסלול {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "סופית: כיוון המסלול {heading}, הספק לשני אדומים, שני לבנים ב-PAPI"
@@ -2252,6 +2260,11 @@ msgstr "ראש"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "מעקב ראש"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "כיוון טיסה"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "גדול"
 msgid "LATE"
 msgstr "מאוחר"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "קו רוחב"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "שיגור (קטפולטה)"
@@ -2661,6 +2678,10 @@ msgstr "ההתנתקות בוצעה בהצלחה"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "מתנתק…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "קו אורך"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "התנגשות אווירית"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "מפת אטול מידווי — התצלומים מכילים נתוני <0>Copernicus Sentinel-2</0> ששונו (2026); גאומטריית שדה התעופה (מסלול המראה, נתיבי הסעה, מדרכות חנייה) © תורמי <1>OpenStreetMap</1>, ברישיון <2>ODbL</2>; נתוני קו החוף והשונית מ־<3>NOAA NCCOS</3> (נחלת הכלל)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "האי מידוויי"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "פעיל"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "על נושאת המטוסים"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "על הקטפולטה: הורד את מוט השיגור כדי להתחבר"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "בסופית"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "על המסלול"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "בלם חניה מופעל"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "חונה בשדה התעופה"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "חונה על נושאת המטוסים"
+msgid "Parking"
+msgstr "חניה"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "אנא נסה שוב."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "יש להמתין מעט ולנסות שוב."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "מיקום"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "עוצמה מלאה"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "מסלול"
+msgid "Runway {end}"
+msgstr "מסלול {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "בחר את הכרטיס הבא"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "בחר אדם..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "בחירת מיקום"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "העלה"
 msgid "Upload progress"
 msgstr "התקדמות ההעלאה"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "ארה״ב · הוואי · האי מידוויי · הנדרסון פילד · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "השתמש במפתח הגישה שלך"
@@ -4714,6 +4737,10 @@ msgstr "השתמש במפתח הגישה שלך"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "משתמש"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "נושאת המטוסים ג'רלד ר. פורד"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

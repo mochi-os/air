@@ -410,6 +410,10 @@ msgstr "Mba'yru-veve rerahaha <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> oj
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Avión ta'anga <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> ojapo va'ekue (Sketchfab), licencia <2>CC BY 4.0</2> reheve. Oñemoambue: oñembohape jey ha oñemomichĩ jey, oñenohẽ umi textura dato ojeporu'ỹva, umi carga okapegua oñemohenda ambue archivo-pe, ha peteĩ malla carenado rehegua oñemoespejo."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Pya'ekue yvytúpe"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Ñemomarandu"
@@ -443,6 +447,10 @@ msgstr "Emoneĩ umi mbaʼeapoharakuérape olee hag̃ua nde veve ñongatupy, oñe
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Eipysyrõ emoĩporã ko'ã rupive"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Yvatekue"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: marshal 6000', 250 nudo, rumbo final {heading}, eñepyrũ cero-pe"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapulta"
+msgid "Catapult {number}"
+msgstr "Katapulta {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Oñemboguete"
 msgid "Deleted {field}"
 msgstr "{field} oñemboguete"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Ñesẽ / Jeguejy"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Oguejýva"
@@ -1989,6 +1993,10 @@ msgstr "OÑEPYRŨ ÑORAIRÕ"
 msgid "Files"
 msgstr "Archivokuéra"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Final, pista {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: pista rumbo {heading}, potencia mokõi pytã, mokõi morotĩ PAPI-pe"
@@ -2252,6 +2260,11 @@ msgstr "Akã"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Akã jehapykuehóva"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Rumbo"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Tuicha"
 msgid "LATE"
 msgstr "TARDE"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Latitud"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Emosẽ (katapúlta)"
@@ -2661,6 +2678,10 @@ msgstr "Osẽ porã"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Osẽhína…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Longitud"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Oñembota árape"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway Atoll mapa — ta'angakuéra oguereko <0>Copernicus Sentinel-2</0> mba'ekuaarã oñemoambuéva (2026); aeropuerto rysýi (pista, taxiway, apron) © <1>OpenStreetMap</1> pytyvõhakuéra, lisénsia <2>ODbL</2> guýpe; y rembe'y ha arrecife mba'ekuaarã <3>NOAA NCCOS</3>-gui (dominio público)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Midway ypa'ũ"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Myendy"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Portaaviones ári"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapúlta ári: emboguejy emosẽha yvyra rejoko hag̃ua"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Final-pe"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Pista ári"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "FRENO PYTA OÑEMOĨ"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Aeropuerto-pe oñembopyta"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Portaaviones ári oñembopyta"
+msgid "Parking"
+msgstr "Ñembopytaha"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Eha'ãjey angána."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Eha'arõmi sapy'aite ha eha'ã jey."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Tenda"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "EMOMBARETE MOTOR"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Pista"
+msgid "Runway {end}"
+msgstr "Pista {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Eiporavo kuatia oúva"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Eiporavo tapicha..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Eiporavo tenda"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Ehupi"
 msgid "Upload progress"
 msgstr "Jehupi jeku'e"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "EE. UU. · Hawái · Midway ypa'ũ · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Eipuru nde jeike rape"
@@ -4714,6 +4737,10 @@ msgstr "Eipuru nde jeike rape"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Puruhára"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

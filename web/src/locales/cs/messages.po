@@ -410,6 +410,10 @@ msgstr "Letadlová loď <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> od <1>Mu
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Model letadla <0>“F/A-18C Hornet”</0> od <1>CreadorDeMu</1> (Sketchfab), licencováno pod <2>CC BY 4.0</2>. Upraveno: změněna orientace a měřítko, odstraněna nepoužívaná texturová data, vnější podvěsy vyčleněny do samostatného souboru, jeden mesh krytu zrcadlově převrácen."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Vzdušná rychlost"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Výstrahy"
@@ -443,6 +447,10 @@ msgstr "Povolit vývojářům číst vaše záznamy letů za účelem vylepšen�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Povolit řazení podle"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Výška"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: vyčkávání 6000', 250 uzlů, finální kurz {heading}, začni na nule"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapult"
+msgid "Catapult {number}"
+msgstr "Katapult {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Smazáno"
 msgid "Deleted {field}"
 msgstr "Smazáno {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Vzlet / Přistání"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Sestupně"
@@ -1989,6 +1993,10 @@ msgstr "BOJ ZAČÍNÁ"
 msgid "Files"
 msgstr "Soubory"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Finále, dráha {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Finále: kurz dráhy {heading}, výkon na dvě červené, dvě bílé na PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Hlava"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Sledování hlavy"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Kurz"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Velké"
 msgid "LATE"
 msgstr "POZDĚ"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Zeměpisná šířka"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Vypuštění (katapult)"
@@ -2661,6 +2678,10 @@ msgstr "Úspěšně odhlášeno"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Odhlašování…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Zeměpisná délka"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Srážka ve vzduchu"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mapa atolu Midway — snímky obsahují upravená data <0>Copernicus Sentinel-2</0> (2026); geometrie letiště (dráha, pojezdové dráhy, odbavovací plochy) © přispěvatelé <1>OpenStreetMap</1>, licencováno pod <2>ODbL</2>; data o pobřeží a útesech od <3>NOAA NCCOS</3> (volné dílo)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Ostrov Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Zapnuto"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Na letadlové lodi"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Na katapultu: vysuň startovací tyč pro zaháknutí"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Na finále"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Na ranveji"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "PARKOVACÍ BRZDA ZATAŽENA"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Zaparkováno na letišti"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Zaparkováno na letadlové lodi"
+msgid "Parking"
+msgstr "Stání"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Zkuste to prosím znovu."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Chvíli počkejte a zkuste to znovu."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Pozice"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "PLNÝ PLYN"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Dráha"
+msgid "Runway {end}"
+msgstr "Dráha {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Vybrat další kartu"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Vyberte osobu..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Vybrat pozici"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Nahrát"
 msgid "Upload progress"
 msgstr "Průběh nahrávání"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "USA · Havaj · Ostrov Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Použijte svůj přístupový klíč"
@@ -4714,6 +4737,10 @@ msgstr "Použijte svůj přístupový klíč"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Uživatel"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

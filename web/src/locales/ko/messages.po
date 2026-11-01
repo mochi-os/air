@@ -410,6 +410,10 @@ msgstr "항공모함 <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, <1>Muhamad
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "항공기 모델 <0>“F/A-18C Hornet”</0>, 제작 <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2>에 따라 라이선스됨. 수정됨: 방향 재정렬 및 크기 재조정, 사용하지 않는 텍스처 데이터 제거, 외부 장착물을 별도 파일로 분리, 슈라우드 메시 하나를 미러링."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "대기속도"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "경고"
@@ -443,6 +447,10 @@ msgstr "게임 개선을 위해 개발자가 내 비행 기록을 읽도록 허�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "정렬 허용"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "고도"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: 마셜 6000', 250노트, 최종 방위 {heading}, 영에서 개시"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "캐터펄트"
+msgid "Catapult {number}"
+msgstr "캐터펄트 {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "삭제됨"
 msgid "Deleted {field}"
 msgstr "{field} 삭제됨"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "이륙 / 착함"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "내림차순"
@@ -1989,6 +1993,10 @@ msgstr "전투 개시"
 msgid "Files"
 msgstr "파일"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "파이널, 활주로 {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "파이널: 활주로 방위 {heading}, PAPI가 적색 두 개, 백색 두 개가 되도록 출력"
@@ -2252,6 +2260,11 @@ msgstr "헤드"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "헤드 트래킹"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "기수 방위"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "크게"
 msgid "LATE"
 msgstr "늦음"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "위도"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "발진 (캐터펄트)"
@@ -2661,6 +2678,10 @@ msgstr "성공적으로 로그아웃되었어요"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "로그아웃 중…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "경도"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "공중 충돌"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "미드웨이 환초 지도 — 위성 영상에는 수정된 <0>Copernicus Sentinel-2</0> 데이터가 포함되어 있습니다(2026); 비행장 형상(활주로, 유도로, 계류장)은 © <1>OpenStreetMap</1> 기여자, <2>ODbL</2> 라이선스에 따라 제공됩니다; 해안선 및 산호초 데이터는 <3>NOAA NCCOS</3> 제공(퍼블릭 도메인)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "미드웨이섬"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "켜짐"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "항공모함"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "캐터펄트 위: 런치 바를 내려 후크 연결"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "파이널"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "활주로"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "주차 브레이크 작동"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "비행장 주기"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "항공모함 주기"
+msgid "Parking"
+msgstr "주기장"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "다시 시도해 주세요."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "잠시 후 다시 시도해 주세요."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "위치"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "최대 출력"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "활주로"
+msgid "Runway {end}"
+msgstr "활주로 {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "다음 카드 선택"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "사람 선택..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "위치 선택"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "업로드"
 msgid "Upload progress"
 msgstr "업로드 진행률"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "미국 · 하와이 · 미드웨이섬 · 헨더슨 비행장 · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "패스키 사용"
@@ -4714,6 +4737,10 @@ msgstr "패스키 사용"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "사용자"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "제럴드 R. 포드 항공모함"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

@@ -410,6 +410,10 @@ msgstr "Pòtavyon <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> pa <1>Muhamad 
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Modèl avyon <0>“F/A-18C Hornet”</0> pa <1>CreadorDeMu</1> (Sketchfab), ki gen lisans anba <2>CC BY 4.0</2>. Modifye: reoryante epi rechanje echèl, done tekstur ki pa itilize yo retire, chay eksteryè yo mete nan yon fichye apa, epi yon mayaj karenaj ranplase ak yon kopi miwa."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Vitès nan lè"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Alèt"
@@ -443,6 +447,10 @@ msgstr "Pèmèt devlopè yo li anrejistreman vòl ou yo pou amelyore jwèt la"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Pèmèt klasman pa"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Altitid"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: tann 6000', 250 ne, kap final {heading}, kòmanse nan zewo"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapil"
+msgid "Catapult {number}"
+msgstr "Katapil {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Efase"
 msgid "Deleted {field}"
 msgstr "{field} efase"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Dekolaj / aterisaj"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Desann"
@@ -1989,6 +1993,10 @@ msgstr "BATAY LA KÒMANSE"
 msgid "Files"
 msgstr "Fichye"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Final, pis {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: kap pis la {heading}, pisans pou de wouj, de blan sou PAPI a"
@@ -2252,6 +2260,11 @@ msgstr "Tèt"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Swiv tèt"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Kap"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Gwo"
 msgid "LATE"
 msgstr "ANRETA"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Latitid"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Lanse (katapil)"
@@ -2661,6 +2678,10 @@ msgstr "Dekonekte avèk siksè"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Ap dekonekte…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Lonjitid"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Kolizyon nan lè a"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Kat Midway Atoll — imaj yo gen done <0>Copernicus Sentinel-2</0> ki modifye (2026); jeyometri ayewopò a (pist, wout taksi, apwon) © kontribitè <1>OpenStreetMap</1>, ki gen lisans anba <2>ODbL</2>; done kòt ak resif soti nan <3>NOAA NCCOS</3> (domèn piblik)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Zile Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Aktive"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Sou pòtavyon"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Sou katapil la: desann ba lansman an pou kwoke"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Sou final"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Sou pis"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "FREN PAKING MOUTE"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Pake nan ayewopò"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Pake sou pòtavyon"
+msgid "Parking"
+msgstr "Pakin"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Tanpri, eseye ankò."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Tanpri tann yon ti moman epi eseye ankò."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Pozisyon"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "PLEN GAZ"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Pis"
+msgid "Runway {end}"
+msgstr "Pis {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Chwazi pwochen kat la"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Chwazi yon moun..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Chwazi pozisyon"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Telechaje"
 msgid "Upload progress"
 msgstr "Pwogrè chajman an"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "Etazini · Awayi · Zile Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Sèvi ak kle aksè ou"
@@ -4714,6 +4737,10 @@ msgstr "Sèvi ak kle aksè ou"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Itilizatè"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

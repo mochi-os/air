@@ -410,6 +410,10 @@ msgstr "വിമാനവാഹിനിക്കപ്പൽ <0>“USS Nimitz 
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "വിമാന മാതൃക <0>“F/A-18C Hornet”</0>, നിർമ്മിച്ചത് <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2> പ്രകാരം ലൈസൻസ് ചെയ്തിരിക്കുന്നു. പരിഷ്കരിച്ചു: ദിശ മാറ്റി വലുപ്പം പുനഃക്രമീകരിച്ചു, ഉപയോഗിക്കാത്ത ടെക്സ്ചർ ഡാറ്റ നീക്കം ചെയ്തു, ബാഹ്യമായി ഘടിപ്പിച്ച ഉപകരണങ്ങൾ പ്രത്യേക ഫയലിലേക്ക് വേർതിരിച്ചു, ഒരു ഷ്രൗഡ് മെഷ് കണ്ണാടിപ്രതിബിംബമാക്കി."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "വായുവേഗം"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "മുന്നറിയിപ്പുകൾ"
@@ -443,6 +447,10 @@ msgstr "ഗെയിം മെച്ചപ്പെടുത്താൻ ഡെ�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "സോർട്ട് ചെയ്യാൻ അനുവദിക്കുക"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "ഉയരം"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: മാർഷൽ 6000', 250 നോട്ട്, ഫൈനൽ ബെയറിങ് {heading}, പൂജ്യത്തിൽ തുടങ്ങുക"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "കാറ്റപ്പൾട്ട്"
+msgid "Catapult {number}"
+msgstr "കാറ്റപ്പൾട്ട് {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "ഇല്ലാതാക്കി"
 msgid "Deleted {field}"
 msgstr "{field} ഇല്ലാതാക്കി"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "ടേക്ക്ഓഫ് / ലാൻഡിംഗ്"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "അവരോഹണ ക്രമം"
@@ -1989,6 +1993,10 @@ msgstr "പോരാട്ടം തുടങ്ങി"
 msgid "Files"
 msgstr "ഫയലുകൾ"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "ഫൈനൽ, റൺവേ {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "ഫൈനൽ: റൺവേ ഹെഡിങ് {heading}, PAPI യിൽ രണ്ട് ചുവപ്പ്, രണ്ട് വെള്ള കിട്ടാൻ പവർ"
@@ -2252,6 +2260,11 @@ msgstr "തല"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "ഹെഡ് ട്രാക്കിംഗ്"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "ഹെഡിങ്"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "വലുത്"
 msgid "LATE"
 msgstr "വൈകി"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "അക്ഷാംശം"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "വിക്ഷേപണം (കാറ്റപൾട്ട്)"
@@ -2661,6 +2678,10 @@ msgstr "വിജയകരമായി ലോഗ് ഔട്ട് ചെയ്
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "ലോഗ് ഔട്ട് ചെയ്യുന്നു…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "രേഖാംശം"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "ആകാശത്ത് കൂട്ടിയിടി"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "മിഡ്‌വേ അറ്റോൾ ഭൂപടം — ചിത്രങ്ങളിൽ പരിഷ്‌കരിച്ച <0>Copernicus Sentinel-2</0> ഡാറ്റ ഉൾപ്പെടുന്നു (2026); വിമാനത്താവളത്തിന്റെ ജ്യാമിതി (റൺവേ, ടാക്‌സിവേകൾ, അപ്രണുകൾ) © <1>OpenStreetMap</1> സംഭാവകർ, <2>ODbL</2> പ്രകാരം ലൈസൻസ് ചെയ്‌തത്; തീരരേഖയും പവിഴപ്പുറ്റ് ഡാറ്റയും <3>NOAA NCCOS</3> ൽ നിന്ന് (പൊതുസഞ്ചയം)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "മിഡ്‌വേ ദ്വീപ്"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "ഓൺ"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "വാഹിനിക്കപ്പലിൽ"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "കാറ്റപൾട്ടിൽ: ഹുക്ക് അപ്പ് ചെയ്യാൻ ലോഞ്ച് ബാർ താഴ്ത്തുക"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "ഫൈനലിൽ"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "റൺവേയിൽ"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "പാർക്കിംഗ് ബ്രേക്ക് ഓൺ"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "വിമാനത്താവളത്തിൽ പാർക്ക് ചെയ്തത്"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "വാഹിനിക്കപ്പലിൽ പാർക്ക് ചെയ്തത്"
+msgid "Parking"
+msgstr "പാർക്കിംഗ് സ്ഥലം"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "ദയവായി വീണ്ടും ശ്രമിക്കുക.
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "അൽപ്പനേരം കാത്തിരുന്ന് വീണ്ടും ശ്രമിക്കുക."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "സ്ഥാനം"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "പൂർണ്ണ ശക്തി"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "റൺവേ"
+msgid "Runway {end}"
+msgstr "റൺവേ {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "അടുത്ത കാർഡ് തിരഞ്ഞെടുക്ക�
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "വ്യക്തിയെ തിരഞ്ഞെടുക്കുക..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "സ്ഥാനം തിരഞ്ഞെടുക്കുക"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "അപ്‌ലോഡ് ചെയ്യുക"
 msgid "Upload progress"
 msgstr "അപ്‌ലോഡ് പുരോഗതി"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "യുഎസ്എ · ഹവായ് · മിഡ്‌വേ ദ്വീപ് · ഹെൻഡേഴ്സൺ ഫീൽഡ് · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "നിങ്ങളുടെ പാസ്കീ ഉപയോഗിക്കുക"
@@ -4714,6 +4737,10 @@ msgstr "നിങ്ങളുടെ പാസ്കീ ഉപയോഗിക്�
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "ഉപയോക്താവ്"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "യുഎസ്എസ് ജെറാൾഡ് ആർ. ഫോർഡ്"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

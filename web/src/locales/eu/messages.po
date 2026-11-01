@@ -410,6 +410,10 @@ msgstr "<0>“USS Nimitz CVN-68 Aircraft Carrier”</0> hegazkin-ontzia, <1>Muha
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Hegazkin-eredua <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1>-k egina (Sketchfab), <2>CC BY 4.0</2> lizentziapean. Aldatua: berbideratua eta birreskalatua, erabili gabeko testura-datuak kenduta, kanpoko kargak fitxategi bereizi batera bereizita, eta estalki-sare bat ispilatuta."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Aire-abiadura"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Alertak"
@@ -443,6 +447,10 @@ msgstr "Baimendu garatzaileei zure hegaldi-grabazioak irakurtzea jokoa hobetzeko
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Baimendu honela ordenatzea"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Altuera"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: itxarote-eremua 6000', 250 korapilo, azken norabidea {heading}, hasi zeroan"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapulta"
+msgid "Catapult {number}"
+msgstr "Katapulta {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Ezabatuta"
 msgid "Deleted {field}"
 msgstr "{field} ezabatu da"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Aireratzea / Lurreratzea"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Beherakorra"
@@ -1989,6 +1993,10 @@ msgstr "BORROKA HASI DA"
 msgid "Files"
 msgstr "Fitxategiak"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Azken tartea, pista {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Azken tartea: pistaren norabidea {heading}, potentzia bi gorri eta bi zuri PAPI-n"
@@ -2252,6 +2260,11 @@ msgstr "Burua"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Buruaren jarraipena"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Norabidea"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Handia"
 msgid "LATE"
 msgstr "BERANDU"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Latitudea"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Jaurtiketa (katapulta)"
@@ -2661,6 +2678,10 @@ msgstr "Saioa ondo amaituta"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Saioa amaitzen…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Longitudea"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Aireko talka"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway atoloiaren mapa — irudiek <0>Copernicus Sentinel-2</0> datu aldatuak dituzte (2026); aerodromoaren geometria (pista, errodaje-bideak, plataformak) © <1>OpenStreetMap</1> laguntzaileak, <2>ODbL</2> lizentziapean; kostaldearen eta arrezifeen datuak <3>NOAA NCCOS</3>-etik (jabari publikoa)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Midway uhartea"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Aktibatuta"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Ontzian"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapultan: jaitsi jaurtiketa-barra kakotzeko"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Azken tartean"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Pistan"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "APARKATZE BALAZTA JARRITA"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Aerodromoan aparkatuta"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Ontzian aparkatuta"
+msgid "Parking"
+msgstr "Aparkalekua"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Saiatu berriro."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Itxaron pixka bat eta saiatu berriro."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Posizioa"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "POTENTZIA OSOA"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Pista"
+msgid "Runway {end}"
+msgstr "Pista {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Hautatu hurrengo txartela"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Hautatu pertsona..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Hautatu posizioa"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Igo"
 msgid "Upload progress"
 msgstr "Igoeraren aurrerapena"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "AEB · Hawaii · Midway uhartea · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Erabili zure sarbide-gakoa"
@@ -4714,6 +4737,10 @@ msgstr "Erabili zure sarbide-gakoa"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Erabiltzailea"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

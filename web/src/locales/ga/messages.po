@@ -410,6 +410,10 @@ msgstr "Iompróir aerárthaí <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> le
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Múnla aerárthaigh <0>“F/A-18C Hornet”</0> le <1>CreadorDeMu</1> (Sketchfab), ceadúnaithe faoi <2>CC BY 4.0</2>. Athraithe: atreoraithe agus athscálaithe, sonraí uigeachta nár úsáideadh bainte amach, lastais sheachtracha scartha amach i gcomhad ar leith, agus mogalra cochaill amháin scáthánaithe."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Luas aeir"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Foláirimh"
@@ -443,6 +447,10 @@ msgstr "Ceadaigh d'fhorbróirí do thaifeadtaí eitilte a léamh chun an cluiche
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Ceadaigh sórtáil de réir"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Airde"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: fanacht 6000', 250 cnota, treo deiridh {heading}, tosaigh ag nialas"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Crann tabhaill"
+msgid "Catapult {number}"
+msgstr "Crann tabhaill {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Scriosta"
 msgid "Deleted {field}"
 msgstr "Scriosadh {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Imeacht / Tuirlingt"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Íslitheach"
@@ -1989,6 +1993,10 @@ msgstr "TÁ AN TROID AR SIÚL"
 msgid "Files"
 msgstr "Comhaid"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Cuid deiridh, rúidbhealach {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Deiridh: treo an rúidbhealaigh {heading}, cumhacht do dhá dhearg, dhá bhán ar an PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Ceann"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Rianú cinn"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Treo"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Mór"
 msgid "LATE"
 msgstr "DÉANACH"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Domhanleithead"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Seoladh (catapult)"
@@ -2661,6 +2678,10 @@ msgstr "Logáilte amach go rathúil"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Á logáil amach…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Domhanfhad"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Imbhualadh san aer"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Léarscáil Atal Midway — tá sonraí <0>Copernicus Sentinel-2</0> mionathraithe sna híomhánna (2026); céimseata an aeradróim (rúidbhealach, tacsaíbhealaí, naprúin) © rannpháirtithe <1>OpenStreetMap</1>, ceadúnaithe faoi <2>ODbL</2>; sonraí cósta agus sceire ó <3>NOAA NCCOS</3> (fearann poiblí)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Oileán Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Ann"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Ar an iompróir"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Ar an gcatapult: leathnaigh an barra seolta le crochadh"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Ar an gcuid deiridh"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Ar an rúidbhealach"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "COSCÁN PÁIRCEÁLA AIR"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Páirceáilte ag an aeradróm"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Páirceáilte ar an iompróir"
+msgid "Parking"
+msgstr "Ionad páirceála"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Bain triail eile as."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Fan nóiméad agus bain triail eile as, le do thoil."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Suíomh"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "CUMHACHT IOMLÁN"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Rúidbhealach"
+msgid "Runway {end}"
+msgstr "Rúidbhealach {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Roghnaigh an chéad chárta eile"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Roghnaigh duine..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Roghnaigh suíomh"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Uaslódáil"
 msgid "Upload progress"
 msgstr "Dul chun cinn an uaslódála"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "SAM · Haváí · Oileán Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Úsáid do phasluiche"
@@ -4714,6 +4737,10 @@ msgstr "Úsáid do phasluiche"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Úsáideoir"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

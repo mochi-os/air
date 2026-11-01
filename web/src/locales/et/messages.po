@@ -410,6 +410,10 @@ msgstr "Lennukikandja <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> autor <1>M
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Lennuki mudel <0>“F/A-18C Hornet”</0> autor <1>CreadorDeMu</1> (Sketchfab), litsentsitud <2>CC BY 4.0</2> alusel. Muudetud: ümber orienteeritud ja ümber skaleeritud, kasutamata tekstuuriandmed eemaldatud, välised riputised tõstetud eraldi faili, üks katte mesh peegeldatud."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Õhukiirus"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Hoiatused"
@@ -443,6 +447,10 @@ msgstr "Luba arendajatel lugeda sinu lennusalvestisi, et mängu paremaks muuta"
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Luba sortimine"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Kõrgus"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: ooteala 6000', 250 sõlme, lõppkurss {heading}, alusta nullis"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapult"
+msgid "Catapult {number}"
+msgstr "Katapult {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Kustutatud"
 msgid "Deleted {field}"
 msgstr "{field} kustutatud"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Õhkutõus / Maandumine"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Kahanev"
@@ -1989,6 +1993,10 @@ msgstr "LAHING ALGAS"
 msgid "Files"
 msgstr "Failid"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Lõppsirge, lennurada {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Lõppsirge: raja kurss {heading}, võimsus kahe punase ja kahe valge jaoks PAPI-l"
@@ -2252,6 +2260,11 @@ msgstr "Pea"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Pea jälgimine"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Kurss"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Suur"
 msgid "LATE"
 msgstr "HILJA"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Laiuskraad"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Start (katapult)"
@@ -2661,6 +2678,10 @@ msgstr "Edukalt välja logitud"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Välja logimine…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Pikkuskraad"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Kokkupõrge õhus"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway atolli kaart — pildid sisaldavad muudetud <0>Copernicus Sentinel-2</0> andmeid (2026); lennuvälja geomeetria (lennurada, ruleerimisteed, perroonid) © <1>OpenStreetMap</1> kaastöölised, litsentsitud <2>ODbL</2> alusel; ranniku- ja rifiandmed pärinevad <3>NOAA NCCOS</3>-lt (avalik omand)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Midway saar"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Sees"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Lennukikandjal"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapuldil: lase stardivarras alla, et haakida"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Lõppsirgel"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Lennurajal"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "SEISUPIDUR PEAL"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Pargitud lennuväljal"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Pargitud lennukikandjal"
+msgid "Parking"
+msgstr "Parkimiskoht"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Proovi uuesti."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Palun oota hetk ja proovi uuesti."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Asukoht"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "TÄISGAAS"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Lennurada"
+msgid "Runway {end}"
+msgstr "Lennurada {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Vali järgmine kaart"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Valige inimene..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Vali asukoht"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Lae üles"
 msgid "Upload progress"
 msgstr "Üleslaadimise edenemine"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "USA · Hawaii · Midway saar · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Kasutage oma pääsuvõtit"
@@ -4714,6 +4737,10 @@ msgstr "Kasutage oma pääsuvõtit"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Kasutaja"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

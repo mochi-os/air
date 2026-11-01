@@ -410,6 +410,10 @@ msgstr "విమాన వాహక నౌక <0>“USS Nimitz CVN-68 Aircraft 
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "విమానం మోడల్ <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> (Sketchfab) రూపొందించారు, <2>CC BY 4.0</2> కింద లైసెన్స్ పొందింది. మార్చబడింది: దిశ మరియు పరిమాణం మార్చబడ్డాయి, ఉపయోగించని టెక్స్చర్ డేటా తొలగించబడింది, బాహ్యంగా అమర్చిన సామగ్రి వేరే ఫైల్‌లోకి వేరు చేయబడింది, ఒక ష్రౌడ్ మెష్ అద్దపు ప్రతిబింబంగా మార్చబడింది."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "వాయువేగం"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "హెచ్చరికలు"
@@ -443,6 +447,10 @@ msgstr "గేమ్‌ను మెరుగుపరచడానికి డ�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "వీటి ద్వారా క్రమబద్ధీకరణను అనుమతించండి"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "ఎత్తు"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: వేచి ఉండటం 6000', 250 నాట్స్, చివరి దిశ {heading}, సున్నా వద్ద మొదలుపెట్టు"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "క్యాటపల్ట్"
+msgid "Catapult {number}"
+msgstr "క్యాటపల్ట్ {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "తొలగించబడింది"
 msgid "Deleted {field}"
 msgstr "{field} తొలగించబడింది"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "బయలుదేరడం / తిరిగి దిగడం"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "అవరోహణ"
@@ -1989,6 +1993,10 @@ msgstr "పోరాటం మొదలైంది"
 msgid "Files"
 msgstr "ఫైళ్లు"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "ఫైనల్, రన్‌వే {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "ఫైనల్: రన్‌వే దిశ {heading}, PAPI పై రెండు ఎరుపు, రెండు తెలుపు కోసం శక్తి"
@@ -2252,6 +2260,11 @@ msgstr "తల"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "హెడ్ ట్రాకింగ్"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "దిశ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "పెద్దది"
 msgid "LATE"
 msgstr "ఆలస్యం"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "అక్షాంశం"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "ప్రయోగం (కేటాపుల్ట్)"
@@ -2661,6 +2678,10 @@ msgstr "విజయవంతంగా లాగ్ అవుట్ అయ్య
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "లాగ్ అవుట్ చేస్తోంది…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "రేఖాంశం"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "గాల్లో ఢీకొనడం"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "మిడ్‌వే అటోల్ పటం — చిత్రాలలో సవరించిన <0>Copernicus Sentinel-2</0> డేటా ఉంది (2026); విమానాశ్రయ జ్యామితి (రన్‌వే, టాక్సీవేలు, ఆప్రాన్‌లు) © <1>OpenStreetMap</1> సహకారులు, <2>ODbL</2> కింద లైసెన్స్ పొందింది; తీరప్రాంతం మరియు పగడపు దిబ్బ డేటా <3>NOAA NCCOS</3> నుండి (పబ్లిక్ డొమైన్)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "మిడ్‌వే ద్వీపం"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "ఆన్"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "వాహక నౌకపై"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "కేటాపుల్ట్‌పై: కట్టడానికి ప్రయోగ కడ్డీని దించు"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "ఫైనల్‌లో"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "రన్‌వేపై"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "పార్కింగ్ బ్రేక్ ఆన్"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "విమానాశ్రయంలో నిలిపి ఉంది"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "వాహక నౌకపై నిలిపి ఉంది"
+msgid "Parking"
+msgstr "పార్కింగ్"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "దయచేసి మళ్లీ ప్రయత్నించండ�
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "కాసేపు వేచి ఉండి, మళ్లీ ప్రయత్నించండి."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "స్థానం"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "పూర్తి శక్తి"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "రన్‌వే"
+msgid "Runway {end}"
+msgstr "రన్‌వే {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "తదుపరి కార్డును ఎంచుకోండి"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "వ్యక్తిని ఎంచుకోండి..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "స్థానాన్ని ఎంచుకోండి"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "అప్‌లోడ్ చేయండి"
 msgid "Upload progress"
 msgstr "అప్‌లోడ్ పురోగతి"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "అమెరికా · హవాయి · మిడ్‌వే ద్వీపం · హెండర్సన్ ఫీల్డ్ · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "మీ పాస్‌కీని ఉపయోగించండి"
@@ -4714,6 +4737,10 @@ msgstr "మీ పాస్‌కీని ఉపయోగించండి"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "యూజర్"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "యూఎస్ఎస్ జెరాల్డ్ ఆర్. ఫోర్డ్"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

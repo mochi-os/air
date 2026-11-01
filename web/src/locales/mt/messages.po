@@ -410,6 +410,10 @@ msgstr "Bastiment tal-ajruplani <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> 
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Mudell tal-ajruplan <0>“F/A-18C Hornet”</0> minn <1>CreadorDeMu</1> (Sketchfab), liċenzjat taħt <2>CC BY 4.0</2>. Immodifikat: orjentat mill-ġdid u skalat mill-ġdid, tneħħiet id-data tat-tessituri mhux użata, it-tagħmir imdendel estern infired f'fajl separat, mesh waħda tal-għata ġiet riflessa bħal f'mera."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Veloċità fl-arja"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Twissijiet"
@@ -443,6 +447,10 @@ msgstr "Ippermetti lill-iżviluppaturi jaqraw ir-reġistrazzjonijiet tat-titjiri
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Ippermetti ssortjar bi"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Altitudni"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: stennija f'6000', 250 nott, bearing finali {heading}, ibda f'żero"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapulta"
+msgid "Catapult {number}"
+msgstr "Katapulta {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Tħassar"
 msgid "Deleted {field}"
 msgstr "Tħassar {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Tluq / inżul"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Dixxendenti"
@@ -1989,6 +1993,10 @@ msgstr "IL-ĠLIEDA BDIET"
 msgid "Files"
 msgstr "Fajls"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Final, pista {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Final: heading tal-pista {heading}, qawwa għal żewġ ħomor, żewġ bojod fuq il-PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Ras"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Traċċar tar-ras"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Rotta"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Kbir"
 msgid "LATE"
 msgstr "TARD"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Latitudni"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Tluq (katapulta)"
@@ -2661,6 +2678,10 @@ msgstr "Ħareġ b'suċċess"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Qed joħroġ…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Lonġitudni"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Ħabta fl-ajru"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Mappa tal-Atoll ta' Midway — l-immaġni fiha data <0>Copernicus Sentinel-2</0> modifikata (2026); il-ġeometrija tal-ajrudrom (runway, passaġġi tat-taxi, aprons) © kontributuri ta' <1>OpenStreetMap</1>, liċenzjata taħt <2>ODbL</2>; data tal-kosta u tas-sikek tal-qroll minn <3>NOAA NCCOS</3> (dominju pubbliku)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Gżira ta' Midway"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Mixgħul"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Fuq il-bastiment"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Fuq il-katapulta: niżżel il-virga tat-tluq biex tinqabad"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Fil-final"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Fuq il-pista"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "BREJK TAL-IPPARKJAR MIXGĦUL"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Ipparkjat fl-ajrudrom"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Ipparkjat fuq il-bastiment"
+msgid "Parking"
+msgstr "Parkeġġ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Erġa' pprova."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Jekk jogħġbok stenna ftit u erġa' pprova."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Pożizzjoni"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "QAWWA SĦIĦA"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Pista"
+msgid "Runway {end}"
+msgstr "Pista {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Agħżel il-karta li jmiss"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Agħżel persuna..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Agħżel pożizzjoni"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Tella'"
 msgid "Upload progress"
 msgstr "Il-progress tat-tlugħ"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "USA · Hawaii · Gżira ta' Midway · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Uża ċ-ċavetta tal-aċċess tiegħek"
@@ -4714,6 +4737,10 @@ msgstr "Uża ċ-ċavetta tal-aċċess tiegħek"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Utent"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

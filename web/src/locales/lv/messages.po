@@ -410,6 +410,10 @@ msgstr "Lidmašīnu bāzes kuģis <0>“USS Nimitz CVN-68 Aircraft Carrier”</0
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Lidmašīnas modelis <0>“F/A-18C Hornet”</0>, autors <1>CreadorDeMu</1> (Sketchfab), licencēts saskaņā ar <2>CC BY 4.0</2>. Pārveidots: mainīta orientācija un mērogs, noņemti neizmantotie tekstūru dati, ārējais piekaramais aprīkojums atdalīts atsevišķā failā, viens apvalka tīkls atspoguļots spoguļveidā."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Gaisa ātrums"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Brīdinājumi"
@@ -443,6 +447,10 @@ msgstr "Atļaut izstrādātājiem lasīt jūsu lidojumu ierakstus, lai uzlabotu 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Atļaut kārtot pēc"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Augstums"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: marshal 6000', 250 mezgli, gala kurss {heading}, sāc nullē"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapulta"
+msgid "Catapult {number}"
+msgstr "Katapulta {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Dzēsts"
 msgid "Deleted {field}"
 msgstr "Dzēsts {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Pacelšanās / nosēšanās"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Dilstošā secībā"
@@ -1989,6 +1993,10 @@ msgstr "CĪŅA SĀKAS"
 msgid "Files"
 msgstr "Faili"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Fināls, skrejceļš {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Fināls: skrejceļa kurss {heading}, jauda divām sarkanām, divām baltām uz PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Galva"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Galvas izsekošana"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Kurss"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Liels"
 msgid "LATE"
 msgstr "VĒLU"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Platums"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Palaišana (katapulta)"
@@ -2661,6 +2678,10 @@ msgstr "Izrakstīšanās veiksmīga"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Izrakstās…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Garums"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Sadursme gaisā"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midvejas atola karte — attēli satur modificētus <0>Copernicus Sentinel-2</0> datus (2026); lidlauka ģeometrija (skrejceļš, manevrēšanas ceļi, peroni) © <1>OpenStreetMap</1> līdzautori, licencēts saskaņā ar <2>ODbL</2>; krasta līnijas un rifu dati no <3>NOAA NCCOS</3> (publiskais īpašums)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Midvejas sala"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Ieslēgts"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Uz kuģa"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Uz katapultas: nolaid palaišanas stieni, lai piekabinātos"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Finālā"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Uz skrejceļa"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "STĀVBREMZE IESLĒGTA"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Stāvvietā lidlaukā"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Stāvvietā uz kuģa"
+msgid "Parking"
+msgstr "Stāvvieta"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Mēģini vēlreiz."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Lūdzu, uzgaidiet brīdi un mēģiniet vēlreiz."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Pozīcija"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "PILNA JAUDA"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Skrejceļš"
+msgid "Runway {end}"
+msgstr "Skrejceļš {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Izvēlieties nākamo karti"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Atlasiet personu..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Izvēlēties pozīciju"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Augšupielādēt"
 msgid "Upload progress"
 msgstr "Augšupielādes norise"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "ASV · Havaji · Midvejas sala · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Izmantojiet savu piekļuves atslēgu"
@@ -4714,6 +4737,10 @@ msgstr "Izmantojiet savu piekļuves atslēgu"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Lietotājs"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

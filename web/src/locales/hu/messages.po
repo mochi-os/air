@@ -410,6 +410,10 @@ msgstr "<0>“USS Nimitz CVN-68 Aircraft Carrier”</0> repülőgép-hordozó, k
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Repülőgépmodell <0>“F/A-18C Hornet”</0>, készítette <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2> licenc alatt. Módosítva: újratájolva és átméretezve, a nem használt textúraadatok eltávolítva, a külső függesztmények külön fájlba leválasztva, egy burkolatháló tükrözve."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Légsebesség"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Riasztások"
@@ -443,6 +447,10 @@ msgstr "A fejlesztők olvashatják a repülési felvételeidet a játék fejlesz
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Rendezési lehetőség engedélyezése"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Magasság"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: marshal 6000', 250 csomó, végső irányszög {heading}, indíts nullánál"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Katapult"
+msgid "Catapult {number}"
+msgstr "Katapult {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Törölve"
 msgid "Deleted {field}"
 msgstr "{field} törölve"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Felszállás / leszállás"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Csökkenő"
@@ -1989,6 +1993,10 @@ msgstr "KEZDŐDIK A HARC"
 msgid "Files"
 msgstr "Fájlok"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Célegyenes, kifutópálya {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Célegyenes: futópálya iránya {heading}, gázzal két piros, két fehér a PAPI-n"
@@ -2252,6 +2260,11 @@ msgstr "Fej"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Fejkövetés"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Irány"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Nagy"
 msgid "LATE"
 msgstr "KÉSŐN"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Szélesség"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Indítás (katapult)"
@@ -2661,6 +2678,10 @@ msgstr "Sikeres kijelentkezés"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Kijelentkezés…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Hosszúság"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Ütközés a levegőben"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Midway-atoll térkép — a felvételek módosított <0>Copernicus Sentinel-2</0> adatokat tartalmaznak (2026); a repülőtér geometriája (kifutópálya, gurulóutak, előterek) © <1>OpenStreetMap</1> közreműködők, <2>ODbL</2> licenc alatt; a partvonal- és zátonyadatok forrása a <3>NOAA NCCOS</3> (közkincs)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Midway-sziget"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Be"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Hordozón"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Katapulton: engedd ki az indítórudat a beakasztáshoz"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Célegyenesben"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Kifutópályán"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "RÖGZÍTŐFÉK BEHÚZVA"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Parkolva a repülőtéren"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Parkolva a hordozón"
+msgid "Parking"
+msgstr "Parkolóhely"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Próbálja újra."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Kérjük, várjon egy kicsit, majd próbálja újra."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Pozíció"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "TELJES GÁZ"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Kifutópálya"
+msgid "Runway {end}"
+msgstr "Kifutópálya {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Következő kártya kijelölése"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Válasszon személyt…"
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Pozíció kiválasztása"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Feltöltés"
 msgid "Upload progress"
 msgstr "Feltöltés folyamata"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "USA · Hawaii · Midway-sziget · Henderson Field · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Használja a hozzáférési kulcsát"
@@ -4714,6 +4737,10 @@ msgstr "Használja a hozzáférési kulcsát"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Felhasználó"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "USS Gerald R. Ford"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

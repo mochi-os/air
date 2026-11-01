@@ -410,6 +410,10 @@ msgstr "Самолетоносач <0>“USS Nimitz CVN-68 Aircraft Carrier”</
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Модел на самолет <0>“F/A-18C Hornet”</0> от <1>CreadorDeMu</1> (Sketchfab), лицензиран под <2>CC BY 4.0</2>. Променен: преориентиран и преоразмерен, премахнати са неизползваните текстурни данни, външните товари са изнесени в отделен файл, един меш на кожуха е огледално обърнат."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Въздушна скорост"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Предупреждения"
@@ -443,6 +447,10 @@ msgstr "Разрешаване на разработчиците да четат
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Позволи сортиране по"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Височина"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: изчакване 6000', 250 възела, финален пеленг {heading}, започни на нула"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Катапулт"
+msgid "Catapult {number}"
+msgstr "Катапулт {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Изтрито"
 msgid "Deleted {field}"
 msgstr "Изтрито {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Излитане / Кацане"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Низходящ"
@@ -1989,6 +1993,10 @@ msgstr "БОЯТ ЗАПОЧНА"
 msgid "Files"
 msgstr "Файлове"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Права за кацане, писта {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Права: курс на пистата {heading}, тяга за две червени, две бели на PAPI"
@@ -2252,6 +2260,11 @@ msgstr "Глава"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Проследяване на главата"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Курс"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Голям"
 msgid "LATE"
 msgstr "КЪСНО"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Географска ширина"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Изстрелване (катапулта)"
@@ -2661,6 +2678,10 @@ msgstr "Успешен изход"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Излизане…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Географска дължина"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Сблъсък във въздуха"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Карта на атола Мидуей — изображенията съдържат модифицирани данни от <0>Copernicus Sentinel-2</0> (2026); геометрия на летището (писта, пътеки за рулиране, перони) © сътрудници на <1>OpenStreetMap</1>, лицензирани по <2>ODbL</2>; данни за бреговата линия и рифовете от <3>NOAA NCCOS</3> (обществено достояние)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Остров Мидуей"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Вкл."
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "На самолетоносача"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "На катапулта: спусни стартовата щанга, за да се закачиш"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "На правата за кацане"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "На пистата"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "РЪЧНА СПИРАЧКА ВКЛ"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "На стоянка на летището"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "На стоянка на самолетоносача"
+msgid "Parking"
+msgstr "Стоянка"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Опитайте отново."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Моля, изчакайте малко и опитайте отново."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Позиция"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "ПЪЛНА ГАЗ"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Писта"
+msgid "Runway {end}"
+msgstr "Писта {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Избор на следваща карта"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Изберете човек..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Избор на позиция"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Качи"
 msgid "Upload progress"
 msgstr "Напредък на качването"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "САЩ · Хаваи · Остров Мидуей · Хендерсън Фийлд · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Използвайте своя ключ за достъп"
@@ -4714,6 +4737,10 @@ msgstr "Използвайте своя ключ за достъп"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Потребител"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "Самолетоносач „Джералд Р. Форд“"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

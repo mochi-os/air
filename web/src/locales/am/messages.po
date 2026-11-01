@@ -410,6 +410,10 @@ msgstr "አውሮፕላን ተሸካሚ መርከብ <0>“USS Nimitz CVN-68 Air
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "የአውሮፕላን ሞዴል <0>“F/A-18C Hornet”</0> በ<1>CreadorDeMu</1> (Sketchfab)፣ በ<2>CC BY 4.0</2> ፈቃድ ስር። ተስተካክሏል፦ አቅጣጫው ተቀይሯል እና መጠኑ ተስተካክሏል፣ ጥቅም ላይ ያልዋለ የቴክስቸር ውሂብ ተወግዷል፣ የውጭ ጭነቶች ወደ ተለየ ፋይል ተነጥለዋል፣ አንድ የሽፋን ሜሽ በመስታወት ተገልብጧል።"
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "የአየር ፍጥነት"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "ማስጠንቀቂያዎች"
@@ -443,6 +447,10 @@ msgstr "ጨዋታውን ለማሻሻል ገንቢዎች የበረራ ቅጂዎ�
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "ደርድር በ ፍቀድ"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "ከፍታ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: በ6000' ጠብቅ፣ 250 ኖት፣ የመጨረሻ አቅጣጫ {heading}፣ በዜሮ ጀምር"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "ካታፑልት"
+msgid "Catapult {number}"
+msgstr "ካታፑልት {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "ተሰርዟል"
 msgid "Deleted {field}"
 msgstr "{field} ተሰርዟል"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "መነሳት / ማረፍ"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "ከላይ ወደ ታች"
@@ -1989,6 +1993,10 @@ msgstr "ውጊያው ተጀመረ"
 msgid "Files"
 msgstr "ፋይሎች"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "የመጨረሻ መስመር፣ ማኮብኮቢያ {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "የመጨረሻ: የማኮብኮቢያ አቅጣጫ {heading}፣ በPAPI ሁለት ቀይ፣ ሁለት ነጭ እንዲሆን ኃይል ስጥ"
@@ -2252,6 +2260,11 @@ msgstr "ራስ"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "የራስ ክትትል"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "አቅጣጫ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "ትልቅ"
 msgid "LATE"
 msgstr "ዘግይቷል"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "ኬክሮስ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "ማስወንጨፍ (ወንጭፍ)"
@@ -2661,6 +2678,10 @@ msgstr "በተሳካ ሁኔታ ወጥቷል"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "በመውጣት ላይ…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "ኬንትሮስ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "በአየር ላይ ግጭት"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "የሚድዌይ አቶል ካርታ — ምስሎቹ የተስተካከሉ የ<0>Copernicus Sentinel-2</0> ውሂብ ይይዛሉ (2026)፤ የአየር ማረፊያ ጂኦሜትሪ (ማኮብኮቢያ፣ የማንሸራተቻ መንገዶች፣ የማቆሚያ ሜዳዎች) © <1>OpenStreetMap</1> አበርካቾች፣ በ<2>ODbL</2> ፈቃድ የተሰጠ፤ የባህር ዳርቻና ሪፍ ውሂብ ከ<3>NOAA NCCOS</3> (የሕዝብ ንብረት)።"
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "ሚድዌይ ደሴት"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "በርቷል"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "በተሸካሚው ላይ"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "በወንጭፉ ላይ: ለመያያዝ የማስወንጨፊያ ዘንጉን ዘርጋ"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "በመጨረሻው መስመር ላይ"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "በማኮብኮቢያ መንገድ ላይ"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "የማቆሚያ ብሬክ ተይዟል"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "በአየር ማረፊያ ላይ የቆመ"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "በተሸካሚው ላይ የቆመ"
+msgid "Parking"
+msgstr "ማቆሚያ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "እባክዎ እንደገና ይሞክሩ።"
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "እባክዎ ትንሽ ይጠብቁና እንደገና ይሞክሩ።"
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "ቦታ"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "ሙሉ ኃይል"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "ማኮብኮቢያ"
+msgid "Runway {end}"
+msgstr "ማኮብኮቢያ {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "ቀጣዩን ካርድ ምረጥ"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "ሰው ይምረጡ..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "ቦታ ምረጥ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "ይስቀሉ"
 msgid "Upload progress"
 msgstr "የመስቀል ሂደት"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "አሜሪካ · ሃዋይ · ሚድዌይ ደሴት · ሄንደርሰን ፊልድ · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "ፓስኪዎን ይጠቀሙ"
@@ -4714,6 +4737,10 @@ msgstr "ፓስኪዎን ይጠቀሙ"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "ተጠቃሚ"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "ዩኤስኤስ ጄራልድ አር. ፎርድ"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

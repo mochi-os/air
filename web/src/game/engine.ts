@@ -107,6 +107,7 @@ import * as mids from './mids'
 import * as helmet from './helmet'
 import * as faces from './faces'
 import * as plates from './plates'
+import { spawn as free_spawn } from './position'   // the position start, anywhere on the earth (#167)
 import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, planet as sky_planet, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
@@ -10100,7 +10101,7 @@ if(DEV_MODE) (globalThis as any).dev_start=()=>{ const g=ownship.gauges||{};
 		ins:{ knob:nav.ins.knob, mode:nav.ins.mode }, grounded:!!ownship.grounded, speed:ownship.speed, pos:[ownship.pos.x,ownship.pos.y,ownship.pos.z], fwd:[ownship.fwd.x,ownship.fwd.z],
 		deck:{ fa:carrier_fore_aft(ownship.pos.x,ownship.pos.z), lat:carrier_lateral(ownship.pos.x,ownship.pos.z), y:CARRIER.deckY, island:deck_grid?deck_grid.island:null,
 			forward:[carrier_fore_aft(ownship.pos.x+ownship.fwd.x,ownship.pos.z+ownship.fwd.z)-carrier_fore_aft(ownship.pos.x,ownship.pos.z), carrier_lateral(ownship.pos.x+ownship.fwd.x,ownship.pos.z+ownship.fwd.z)-carrier_lateral(ownship.pos.x,ownship.pos.z)] },
-		home:(()=>{ const h=homeward(ownship.pos); return [h.x,h.y,h.z]; })(), hint:hint_key, shown:hint_rows?hint_rows.join(' '):null, ols:carrier_ols?ols_dev(ownship.pos,carrier_ols):null, end:airports[0]?{ x:airports[0].start.x, z:airports[0].start.z, dx:airports[0].dir.x, dz:airports[0].dir.z, y:airports[0].sy }:null }); };
+		home:(()=>{ const h=homeward(ownship.pos); return [h.x,h.y,h.z]; })(), heading:((ownship.gauges||{}).heading??0)/DEGREE, cas:(ownship.gauges||{}).casKt??null, hint:hint_key, shown:hint_rows?hint_rows.join(' '):null, ols:carrier_ols?ols_dev(ownship.pos,carrier_ols):null, end:airports[0]?{ x:airports[0].start.x, z:airports[0].start.z, dx:airports[0].dir.x, dz:airports[0].dir.z, y:airports[0].sy }:null }); };
 // dev_switch (#133): throws a travel-only control to a position, as clicks would
 if(DEV_MODE) (globalThis as any).dev_switch=(name,at)=>{ thrown[name]=at; return travel_at(name); };
 const soot_queue=[];   // air bursts soot AFTER the fireball: the dark cloud is the fire's product, not its curtain (#92)
@@ -10951,7 +10952,7 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 		flight_stores(own_mask());   // trimmed as loaded, as Case II is: mounted after, the loadout's weight and drag took 14 kt and 31 m off a Case I entry in 30 s
 		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		{ const entry=mission_start();
-			if(entry==="case1"||entry==="case3"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor back to a lever position
+			if(entry==="case1"||entry==="case3"||entry==="position"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor back to a lever position
 				const trimmed=flight_get(); ownship.throttle=Math.max(0,Math.min(1,(trimmed[STATE.engine]-IDLE)/(1-IDLE))); } }
 		sync_core(flight_get()); return;
 	}
@@ -11703,6 +11704,11 @@ function reset_ownship(){
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
 		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false }; }   // configured and in the groove: only the ball remains
+	else if(st==="position"){   // anywhere on the earth (#167): the dialog's latitude, longitude, feet, true heading and knots, trimmed level by flight_push
+		const s=free_spawn({ latitude:cfg.latitude, longitude:cfg.longitude, altitude:cfg.altitude, heading:cfg.heading, airspeed:cfg.airspeed });
+		ownship.pos.set(s.position.x,s.position.y,s.position.z); ownship.fwd.set(s.direction.x,0,s.direction.z); ownship.speed=s.speed; ownship.throttle=0.85;   // the direction the core's trim turns into the heading where the jet is; the throttle a pre-core fallback, flight_push holds the trimmed power
+		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
 	else if(st==="case1"){   // Case I (#205): initial — up the WAKE (hull axis, not the angled centreline) at 800 ft, 350 kt, clean. The break, the dirty-up, and the pattern are the mission
 		const O=carrier_world(0,0), F=carrier_world(100,0);
 		let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
@@ -11753,7 +11759,7 @@ function reset_ownship(){
 		ownship.fwd.set(CARRIER.x-ownship.pos.x,0,CARRIER.z-ownship.pos.z).normalize(); ownship.speed=220; ownship.throttle=0.85;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
-	placed=(st==="carrier"||st==="deck"||st==="groove"||st==="case1"||st==="case2"||st==="case3")?{ x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z, turn:carrier_turn.clone() }:(st==="joust"||((st==="runway"||st==="apron"||st==="final")&&airports.length))?null:{ aim:true };   // what the start was laid against, for carry_start
+	placed=(st==="carrier"||st==="deck"||st==="groove"||st==="case1"||st==="case2"||st==="case3")?{ x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z, turn:carrier_turn.clone() }:(st==="joust"||st==="position"||((st==="runway"||st==="apron"||st==="final")&&airports.length))?null:{ aim:true };   // what the start was laid against, for carry_start
 	start_fresh(parked?(st==="deck"?"ship":"field"):null);   // the APU stopped, and a parked jet's cart plugged in where it stands (#133)
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
 	{ const down=wheels||st==="case2"||st==="groove"||st==="final"; ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
@@ -13946,6 +13952,7 @@ function start_mission(){
 	const scq=devq.get("scenario"); if(scq!==null){ const n=parseInt(scq)||0; const arm=setInterval(()=>{ if(TESTS[n]&&TESTS[n].carrier?carrier_ols:airports.length){ clearInterval(arm); start_test(n); } }, 500); }   // &scenario=N: fire a landing test once ITS surface data exists (carrier scenarios need the OLS survey, not just the airfield list) — a fixed 3 s timer lost the race to the map load and the hook silently never ran
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
 	{ const coldq=devq.get("cold"), endq=devq.get("end"); if(coldq!==null) cfg.cold=coldq!=="0"; if(endq) cfg.end=endq; }   // ?cold=1 a parked start cold and dark, ?end=24 the runway end (#133)
+	for(const k of ["latitude","longitude","altitude","heading","airspeed"]){ const v=parseFloat(devq.get(k)??""); if(Number.isFinite(v)) cfg[k]=v; }   // the position start's choice (#167)
 	const hintq=devq.get("hints"); if(hintq==="1") cfg.hints=true; else if(hintq==="0") cfg.hints=false;   // &hints=0|1 — force the flight hints for headless verification (#70)
 	const demonstrationq=devq.get("demonstration"); if(demonstrationq==="1") cfg.demonstration=true; else if(demonstrationq==="0") cfg.demonstration=false;   // &demonstration=0|1 — the scripted Case I pilot, for headless verification of the pattern it flies
 	demonstration_seed=parseInt(devq.get("seed")||"0",10)||0;   // &seed=N — replay one pilot's habits, the demonstration's and the bandit's (bandit_seed); 0 draws a fresh one per mission

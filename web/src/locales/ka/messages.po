@@ -410,6 +410,10 @@ msgstr "ავიამზიდი <0>“USS Nimitz CVN-68 Aircraft Carrier”<
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "თვითმფრინავის მოდელი <0>“F/A-18C Hornet”</0>, ავტორი <1>CreadorDeMu</1> (Sketchfab), ლიცენზირებულია <2>CC BY 4.0</2>-ის ქვეშ. შეცვლილია: ორიენტაცია და მასშტაბი შეცვლილია, წაშლილია გამოუყენებელი ტექსტურის მონაცემები, გარე დაკიდებული აღჭურვილობა გამოტანილია ცალკე ფაილში, ერთი გარსაცმის ბადე სარკისებურად არეკლილია."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "საჰაერო სიჩქარე"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "გაფრთხილებები"
@@ -443,6 +447,10 @@ msgstr "დეველოპერებისთვის თქვენი �
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "დახარისხების დაშვება"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "სიმაღლე"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: მოლოდინის წერტილი 6000', 250 კვანძი, საბოლოო კურსი {heading}, დაიწყე ნულზე"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "კატაპულტა"
+msgid "Catapult {number}"
+msgstr "კატაპულტა {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "წაიშალა"
 msgid "Deleted {field}"
 msgstr "წაიშალა {field}"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "აფრენა / დაშვება"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "კლებადობით"
@@ -1989,6 +1993,10 @@ msgstr "ბრძოლა დაიწყო"
 msgid "Files"
 msgstr "ფაილები"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "საბოლოო სწორი, ასაფრენი ბილიკი {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "საბოლოო სწორი: ზოლის კურსი {heading}, სიმძლავრე ორ წითელსა და ორ თეთრზე PAPI-ზე"
@@ -2252,6 +2260,11 @@ msgstr "თავი"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "თავის თვალთვალი"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "კურსი"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "დიდი"
 msgid "LATE"
 msgstr "ᲒᲕᲘᲐᲜ"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "განედი"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "გაშვება (კატაპულტი)"
@@ -2661,6 +2678,10 @@ msgstr "წარმატებით გავიდა"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "გასვლა…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "გრძედი"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "შეჯახება ჰაერში"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "მიდუეის ატოლის რუკა — გამოსახულებები შეიცავს <0>Copernicus Sentinel-2</0>-ის მოდიფიცირებულ მონაცემებს (2026); აეროდრომის გეომეტრია (ასაფრენ-დასაფრენი ბილიკი, სარულო ბილიკები, სადგომები) © <1>OpenStreetMap</1>-ის კონტრიბუტორები, ლიცენზირებულია <2>ODbL</2>-ის მიხედვით; სანაპირო ზოლისა და რიფის მონაცემები — <3>NOAA NCCOS</3>-დან (საჯარო დომენი)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "მიდუეის კუნძული"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "ჩართული"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "ავიამზიდზე"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "კატაპულტაზე: მისამაგრებლად ჩამოუშვი გაშვების ღერო"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "საბოლოო სწორზე"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "ასაფრენ ბილიკზე"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "სადგომი მუხრუჭი ჩართული"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "აეროდრომის სადგომზე"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "ავიამზიდის სადგომზე"
+msgid "Parking"
+msgstr "სადგომი"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "გთხოვთ, კიდევ სცადეთ."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "გთხოვთ, ცოტა ხნით მოიცადოთ და ხელახლა სცადოთ."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "პოზიცია"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "სრული სიმძლავრე"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "ასაფრენი ბილიკი"
+msgid "Runway {end}"
+msgstr "ასაფრენი ბილიკი {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "აირჩიეთ შემდეგი ბარათი"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "აირჩიეთ პიროვნება..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "პოზიციის არჩევა"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "ატვირთვა"
 msgid "Upload progress"
 msgstr "ატვირთვის მიმდინარეობა"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "აშშ · ჰავაი · მიდუეის კუნძული · ჰენდერსონ-ფილდი · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "გამოიყენეთ თქვენი წვდომის გასაღები"
@@ -4714,6 +4737,10 @@ msgstr "გამოიყენეთ თქვენი წვდომის 
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "მომხმარებელი"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "ავიამზიდი „ჯერალდ რ. ფორდი“"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

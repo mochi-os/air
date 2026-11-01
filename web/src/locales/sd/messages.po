@@ -410,6 +410,10 @@ msgstr "هوائي جهاز کڻندڙ ٻيڙو <0>“USS Nimitz CVN-68 Aircraft
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "جهاز جو ماڊل <0>“F/A-18C Hornet”</0> پاران <1>CreadorDeMu</1> (Sketchfab)، <2>CC BY 4.0</2> تحت لائسنس يافته. تبديل ٿيل: رخ تبديل ڪيو ويو ۽ نئين سر ماپيو ويو، اڻ استعمال ٿيل ٽيڪسچر ڊيٽا هٽائي وئي، ٻاهريون لٽڪيل سامان الڳ فائل ۾ ڌار ڪيو ويو، هڪ ڍڪ واري ميش کي آئيني عڪس ۾ تبديل ڪيو ويو."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "هوائي رفتار"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "ڊيڄاريون"
@@ -443,6 +447,10 @@ msgstr "راند کي بهتر بڻائڻ لاءِ ڊولپرز کي توهان 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "ترتيب جي اجازت ڏيو"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "اوچائي"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: مارشل 6000'، 250 ناٽ، آخري رخ {heading}، صفر تي شروع ڪريو"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "ڪيٽاپلٽ"
+msgid "Catapult {number}"
+msgstr "ڪيٽاپلٽ {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "ختم ڪيو ويو"
 msgid "Deleted {field}"
 msgstr "{field} ختم ڪيو ويو"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "روانگي / واپسي"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "وڌيڪ کان گهٽ"
@@ -1989,6 +1993,10 @@ msgstr "ويڙهه شروع ٿي"
 msgid "Files"
 msgstr "فائلون"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "فائنل، رن وي {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "فائنل: رن وي جو رخ {heading}، PAPI تي ٻه ڳاڙها، ٻه اڇا رکڻ لاءِ طاقت"
@@ -2252,6 +2260,11 @@ msgstr "مٿو"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "مٿي جي ٽريڪنگ"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "رخ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "وڏو"
 msgid "LATE"
 msgstr "دير"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "ويڪرائي ڦاڪ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "اُڇلاءُ (ڪيٽاپلٽ)"
@@ -2661,6 +2678,10 @@ msgstr "ڪاميابيءَ سان لاگ آئوٽ ٿيو"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "لاگ آئوٽ ٿي رهيو آهي…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "ڊگهائي ڦاڪ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "هوا ۾ ٽڪر"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "ميڊوي ايٽول جو نقشو — تصويرن ۾ ترميم ٿيل <0>Copernicus Sentinel-2</0> ڊيٽا شامل آهي (2026)؛ هوائي اڏي جي جاميٽري (رن وي، ٽيڪسي وي، ايپرن) © <1>OpenStreetMap</1> مددگار، <2>ODbL</2> تحت لائسنس يافته؛ ساحلي پٽي ۽ ريف جي ڊيٽا <3>NOAA NCCOS</3> کان (عوامي ملڪيت)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "ميڊوي ٻيٽ"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "آن"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "جهازبردار تي"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "ڪيٽاپلٽ تي: ڳنڍڻ لاءِ لانچ بار هيٺ ڪريو"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "فائنل تي"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "رن وي تي"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "پارڪنگ بريڪ لڳل"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "هوائي اڏي تي پارڪ ٿيل"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "جهازبردار تي پارڪ ٿيل"
+msgid "Parking"
+msgstr "پارڪنگ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "مهرباني ڪري ٻيهر ڪوشش ڪريو."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "مهرباني ڪري ٿورو انتظار ڪريو ۽ ٻيهر ڪوشش ڪريو."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "پوزيشن"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "پوري طاقت"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "رن وي"
+msgid "Runway {end}"
+msgstr "رن وي {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "اڳيون ڪارڊ چونڊيو"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "شخص چونڊيو..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "پوزيشن چونڊيو"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "اپ لوڊ ڪريو"
 msgid "Upload progress"
 msgstr "اپلوڊ جي پيش رفت"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "آمريڪا · هوائي · ميڊوي ٻيٽ · هينڊرسن فيلڊ · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "پنهنجي پاس ڪي استعمال ڪريو"
@@ -4714,6 +4737,10 @@ msgstr "پنهنجي پاس ڪي استعمال ڪريو"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "صارف"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "يو ايس ايس جيرالڊ آر. فورڊ"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"

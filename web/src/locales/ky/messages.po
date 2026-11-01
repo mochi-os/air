@@ -410,6 +410,10 @@ msgstr "Авианосец <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, ав
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "Учак модели <0>“F/A-18C Hornet”</0>, автору <1>CreadorDeMu</1> (Sketchfab), <2>CC BY 4.0</2> лицензиясы менен таркатылат. Өзгөртүлдү: багыты жана масштабы өзгөртүлдү, колдонулбаган текстура маалыматтары алынып салынды, сырткы асма жүктөр өзүнчө файлга бөлүндү, бир каптама тору күзгүдөй чагылдырылды."
 
+#: src/components/MissionSetup.tsx
+msgid "Airspeed"
+msgstr "Аба ылдамдыгы"
+
 #: src/components/SettingsDialog.tsx
 msgid "Alerts"
 msgstr "Эскертүүлөр"
@@ -443,6 +447,10 @@ msgstr "Оюнду жакшыртуу үчүн иштеп чыгуучуларг
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Allow sort by"
 msgstr "Иргөөгө уруксат"
+
+#: src/components/MissionSetup.tsx
+msgid "Altitude"
+msgstr "Бийиктик"
 
 #: src/components/SettingsDialog.tsx
 msgid "Ambient"
@@ -865,8 +873,8 @@ msgid "Case III: marshal 6000', 250 knots, final bearing {heading}, commence at 
 msgstr "Case III: маршал 6000', 250 түйүн, акыркы курс {heading}, нөлдө башта"
 
 #: src/components/MissionSetup.tsx
-msgid "Catapult"
-msgstr "Катапульта"
+msgid "Catapult {number}"
+msgstr "Катапульта {number}"
 
 #: ../../../lib/web/src/components/notification-category-button.tsx
 msgid "Category for these notifications"
@@ -1460,10 +1468,6 @@ msgstr "Өчүрүлдү"
 msgid "Deleted {field}"
 msgstr "{field} өчүрүлдү"
 
-#: src/components/MissionSetup.tsx
-msgid "Departure / Recovery"
-msgstr "Учуп чыгуу / Конуу"
-
 #: ../../../lib/web/src/components/ui/sort-direction-button.tsx
 msgid "Descending"
 msgstr "Кемүү тартибинде"
@@ -1989,6 +1993,10 @@ msgstr "САЛГЫЛАШУУ БАШТАЛДЫ"
 msgid "Files"
 msgstr "Файлдар"
 
+#: src/components/MissionSetup.tsx
+msgid "Final, runway {end}"
+msgstr "Акыркы түзүк, учуу-конуу тилкеси {end}"
+
 #: src/components/GameCanvas.tsx
 msgid "Final: runway heading {heading}, power for two red, two white on PAPI"
 msgstr "Акыркы түзүк: тилке курсу {heading}, PAPI-де эки кызыл, эки ак болгондой кубат"
@@ -2252,6 +2260,11 @@ msgstr "Баш"
 #: src/lib/parked.ts
 msgid "Head tracking"
 msgstr "Башты көзөмөлдөө"
+
+#: src/components/MissionSetup.tsx
+msgctxt "compass"
+msgid "Heading"
+msgstr "Курс"
 
 #: src/components/SettingsDialog.tsx
 msgid "Heading set left"
@@ -2519,6 +2532,10 @@ msgstr "Чоң"
 msgid "LATE"
 msgstr "КЕЧ"
 
+#: src/components/MissionSetup.tsx
+msgid "Latitude"
+msgstr "Кеңдик"
+
 #: src/components/SettingsDialog.tsx
 msgid "Launch (catapult)"
 msgstr "Учуруу (катапульта)"
@@ -2661,6 +2678,10 @@ msgstr "Ийгиликтүү чыгылды"
 #: ../../../lib/web/src/components/sign-out-dialog.tsx
 msgid "Logging out…"
 msgstr "Чыгууда…"
+
+#: src/components/MissionSetup.tsx
+msgid "Longitude"
+msgstr "Узундук"
 
 #: src/components/SettingsDialog.tsx
 msgid "Look"
@@ -2834,6 +2855,10 @@ msgstr "Абада кагылышуу"
 #: src/components/MissionSetup.tsx
 msgid "Midway Atoll map — imagery contains modified <0>Copernicus Sentinel-2</0> data (2026); airfield geometry (runway, taxiways, aprons) © <1>OpenStreetMap</1> contributors, licensed under <2>ODbL</2>; coastline and reef data from <3>NOAA NCCOS</3> (public domain)."
 msgstr "Мидуэй атоллунун картасы — сүрөттөрдө өзгөртүлгөн <0>Copernicus Sentinel-2</0> дайындары камтылат (2026); аэродромдун геометриясы (учуу-конуу тилкеси, рулдоо жолдору, перрондор) © <1>OpenStreetMap</1> салымчылары, <2>ODbL</2> лицензиясы боюнча берилген; жээк сызыгы жана риф дайындары <3>NOAA NCCOS</3> булагынан (коомдук менчик)."
+
+#: src/components/MissionSetup.tsx
+msgid "Midway Island"
+msgstr "Мидуэй аралы"
 
 #: src/components/GameCanvas.tsx
 msgid "military power"
@@ -3192,21 +3217,9 @@ msgstr "OK"
 msgid "On"
 msgstr "Күйүк"
 
-#: src/components/MissionSetup.tsx
-msgid "On carrier"
-msgstr "Авианосецте"
-
 #: src/components/GameCanvas.tsx
 msgid "On catapult: extend launch bar to hook up"
 msgstr "Катапультада: илинүү үчүн учуруу штангасын түшүр"
-
-#: src/components/MissionSetup.tsx
-msgid "On final"
-msgstr "Акыркы түзүктө"
-
-#: src/components/MissionSetup.tsx
-msgid "On runway"
-msgstr "Учуу-конуу тилкесинде"
 
 #: src/components/GameCanvas.tsx
 msgid "On runway: half flaps, run up to military power, brakes off"
@@ -3304,12 +3317,9 @@ msgid "PARK BRK"
 msgstr "ТОКТОТУУ ТОРМОЗУ КҮЙҮК"
 
 #: src/components/MissionSetup.tsx
-msgid "Parked at airfield"
-msgstr "Аэродромдо токтотулган"
-
 #: src/components/MissionSetup.tsx
-msgid "Parked on carrier"
-msgstr "Авианосецте токтотулган"
+msgid "Parking"
+msgstr "Токтотуу жайы"
 
 #: src/components/SettingsDialog.tsx
 msgid "Parking brake"
@@ -3425,6 +3435,11 @@ msgstr "Кайра аракет кылыңыз."
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Please wait a moment and try again."
 msgstr "Бир аз күтүп, кайра аракет кылыңыз."
+
+#: src/components/MissionSetup.tsx
+msgctxt "flight start"
+msgid "Position"
+msgstr "Орун"
 
 #: src/components/GameCanvas.tsx
 msgid "Positive rate: gear up; flaps auto passing 250 knots"
@@ -3869,8 +3884,8 @@ msgid "RUN UP ENGINE"
 msgstr "ТОЛУК КУБАТ"
 
 #: src/components/MissionSetup.tsx
-msgid "Runway"
-msgstr "Учуу-конуу тилкеси"
+msgid "Runway {end}"
+msgstr "Учуу-конуу тилкеси {end}"
 
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
@@ -4002,6 +4017,10 @@ msgstr "Кийинки картаны тандоо"
 #: ../../../lib/web/src/components/person-picker.tsx
 msgid "Select person..."
 msgstr "Адамды тандаңыз..."
+
+#: src/components/MissionSetup.tsx
+msgid "Select position"
+msgstr "Орун тандоо"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4705,6 +4724,10 @@ msgstr "Жүктөө"
 msgid "Upload progress"
 msgstr "Жүктөө жүрүшү"
 
+#: src/components/MissionSetup.tsx
+msgid "USA · Hawaii · Midway Island · Henderson Field · MDY · PMDY"
+msgstr "АКШ · Гавайи · Мидуэй аралы · Хендерсон-Филд · MDY · PMDY"
+
 #: ../../../lib/web/src/components/step-up-dialog.tsx
 msgid "Use your passkey"
 msgstr "Кирүү ачкычыңызды колдонуңуз"
@@ -4714,6 +4737,10 @@ msgstr "Кирүү ачкычыңызды колдонуңуз"
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "User"
 msgstr "Колдонуучу"
+
+#: src/components/MissionSetup.tsx
+msgid "USS Gerald R. Ford"
+msgstr "«Джеральд Р. Форд» авианосеци"
 
 #: ../../../lib/web/src/components/ai-prompts-editor.tsx
 msgid "Variables: {variables}"
