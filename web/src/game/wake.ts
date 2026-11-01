@@ -39,9 +39,10 @@
 // Every host flies the same track (the core's, or the recording's), so every
 // player sees the same wake behind the same ship.
 
-export const AGE = 720 // s: how far back the wake is drawn
+export const AGE = 1800 // s: how far back the wake is drawn: a real carrier's stays in sight for tens of kilometres
 export const STEP = 2 // s: how often where the ship has been is sampled
-export const POINTS = 41 // points of the path the stern swept that the shader reads
+export const POINTS = 73 // points of the path the stern swept that the shader reads
+export const CLOSE = 720 // s: as far back as its first 40 points close up toward the ship (see ago)
 export const GROUP = 8 // stretches of the path to a group: the shader skips a group whose reach a point lies past
 export const GROUPS = (POINTS - 1) / GROUP
 export const HULL = 21 // the shader's waterline: up to 42 stations, two to a vec4
@@ -50,7 +51,7 @@ export const BAND = 2.6 // the wash's greatest half-width, in hull breadths at i
 export const STREAK = 400 // m: the length the wash's streaks repeat over along the track
 export const LANE = 1200 // m: the same for the long patches its white lies in from afar
 export const WANDER = 3000 // m: the same for the wandering of its edges
-export const TRAIL = 1024 // texels of her trail: the water's age and her speed when her stern churned it, by distance astern
+export const TRAIL = 2048 // texels of her trail: the water's age and her speed when her stern churned it, by distance astern
 export const LAID = 60000 // m: how far the stern's travel is counted before it starts again, whole repeats of all three, so it starts again unseen
 
 // Pose is the ship at a moment: her reference point, heading (radians, as the
@@ -104,6 +105,17 @@ export interface Waterline {
 export interface Screws {
   lateral: number[]
   diameter: number
+}
+
+// ago is how long ago point i of the path the stern swept is: its first 40
+// points close together near the ship, where the wake is busiest, apart as the
+// square of their number out to CLOSE, and the rest evenly apart, as far apart
+// as those, back to AGE.
+export function ago(i: number) {
+  const bend = 40
+  return i <= bend
+    ? CLOSE * (i / bend) ** 2
+    : CLOSE + ((AGE - CLOSE) * (i - bend)) / (POINTS - 1 - bend)
 }
 
 // point is a place in the ship's own frame (fore-aft, to starboard) in the world.
@@ -293,7 +305,7 @@ export class Wake {
     const xs: number[] = []
     const zs: number[] = []
     for (let i = 0; i < POINTS; i++) {
-      const age = AGE * (i / (POINTS - 1)) ** 2
+      const age = ago(i)
       const pose = i === 0 ? current : when(time - age)
       if (!pose) break
       const stern = point(pose, waterline.stern, lateral)

@@ -207,6 +207,13 @@ describe('the path the stern swept', () => {
     }
     expect(path.step * (TRAIL - 1)).toBeGreaterThan(15.4 * AGE)
     expect(path.at(POINTS - 1).age).toBe(AGE)
+    expect(AGE).toBe(1800) // half an hour: 28 km at 30 kt, as a real carrier's wake stays in sight for tens of kilometres
+    // the points close together near the ship and evenly apart further back, never further apart than at 12 minutes
+    for (let i = 1; i < POINTS; i++) {
+      expect(path.at(i).age).toBeGreaterThan(path.at(i - 1).age)
+      expect(path.at(i).age - path.at(i - 1).age).toBeLessThan(36.1)
+    }
+    expect(path.at(40).age).toBe(720)
     expect(path.at(1).age).toBeLessThan(STEP) // closer together near the ship
   })
   it('has no two points together while she moves, between her newest sample and now as anywhere', () => {
@@ -243,7 +250,7 @@ describe('the path the stern swept', () => {
       expect(r, `point ${i}, ${Math.round(p.age)} s ago`).toBeCloseTo(radius, 0)
       inside++
     }
-    expect(inside).toBe(19) // the points 150 s old or less: ages AGE (i / 40)^2
+    expect(inside).toBe(19) // the points 150 s old or less: ages CLOSE (i / 40)^2
   })
   it('lays a change of speed in the water where she made it, moving away from her with it, not by stretches between the points', () => {
     // steerage way until 1000 s, then 30 kt: where the fast water ends lies where she was at 1000 s
@@ -305,7 +312,7 @@ describe('the path the stern swept', () => {
       ) {
         expect(
           Math.hypot(path.at(i).x - x, path.at(i).z - z)
-        ).toBeLessThanOrEqual(radius + 1e-3)
+        ).toBeLessThanOrEqual(radius + 1e-2) // float32, as below
       }
       const end = path.at(Math.min((k + 1) * GROUP, path.count - 1)).run
       expect(reach).toBeGreaterThanOrEqual(
@@ -317,7 +324,7 @@ describe('the path the stern swept', () => {
       // and the circle about everything holds each group's reach and the bow
       expect(
         Math.hypot(x - path.centre[0], z - path.centre[1]) + radius + reach
-      ).toBeLessThanOrEqual(path.radius + 1e-3)
+      ).toBeLessThanOrEqual(path.radius + 1e-2) // the groups are float32: a couple of millimetres at half an hour's range
     }
     expect(
       Math.hypot(path.centre[0], path.centre[1]) + length
