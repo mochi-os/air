@@ -61,7 +61,7 @@ import { impact as pipper_impact } from './pipper'
 import { Hysteresis, Pacing } from './pacing'
 import { PATTERN_VERTEX as FOAM_VERTEX, PATTERN_FRAGMENT as FOAM_FRAGMENT } from './foam'
 import { Waves } from './waves'
-import { Wake, WAKE, POINTS as WAKE_POINTS, GROUPS as WAKE_GROUPS, HULL as WAKE_HULL, hull as wake_hull, before as wake_before, point as wake_point } from './wake'
+import { Wake, WAKE, POINTS as WAKE_POINTS, GROUPS as WAKE_GROUPS, HULL as WAKE_HULL, TRAIL as WAKE_TRAIL, hull as wake_hull, before as wake_before, point as wake_point } from './wake'
 import { slopes as spectrum_slopes, CASCADES } from './spectrum'
 import { tables as atmosphere_tables, radiance as sky_radiance, ATMOSPHERE, SKY as SKY_SIZE, TRANSMITTANCE, SCATTERING, SKY_VIEW_VERTEX, SKY_VIEW_FRAGMENT } from './atmosphere'
 import { shellStorage } from '@mochi/web'
@@ -611,7 +611,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_downwind:downwind, ...atmosphere_uniforms, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
 		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0}, u_slope:{value:0.069}, u_displacement0:{value:null}, u_displacement1:{value:null}, u_derivative0:{value:null}, u_derivative1:{value:null}, u_derivative2:{value:null}, u_lengths:{value:new THREE.Vector3(CASCADES[0],CASCADES[1],CASCADES[2])}, u_spectrum:{value:new THREE.Vector3()}, u_beam:{value:new THREE.Color(1,1,1)},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
 		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms,
-		u_wake:{value:new Float32Array(WAKE_POINTS*4)}, u_wake_speed:{value:new Float32Array(Math.ceil(WAKE_POINTS/4)*4)}, u_wake_group:{value:new Float32Array(WAKE_GROUPS*4)}, u_wake_count:{value:0}, u_wake_origin:{value:new THREE.Vector2()}, u_wake_bounds:{value:new THREE.Vector4()}, u_ship:{value:new THREE.Vector4()}, u_hull_span:{value:new THREE.Vector4(0,1,1,2)}, u_hull:{value:new Float32Array(WAKE_HULL*4)}, u_hull_beam:{value:0}, u_wake_sea:{value:0}, u_wake_travelled:{value:0}, u_wake_turn:{value:new THREE.Vector2(1,0)},   // the ship's bow wave and wake (wake.ts), set each frame by wake_frame
+		u_wake:{value:new Float32Array(WAKE_POINTS*4)}, u_trail:{value:new THREE.DataTexture(new Float32Array(WAKE_TRAIL*2),WAKE_TRAIL,1,THREE.RGFormat,THREE.FloatType)}, u_trail_step:{value:0}, u_wake_group:{value:new Float32Array(WAKE_GROUPS*4)}, u_wake_count:{value:0}, u_wake_origin:{value:new THREE.Vector2()}, u_wake_bounds:{value:new THREE.Vector4()}, u_ship:{value:new THREE.Vector4()}, u_hull_span:{value:new THREE.Vector4(0,1,1,2)}, u_hull:{value:new Float32Array(WAKE_HULL*4)}, u_hull_beam:{value:0}, u_screws:{value:new THREE.Vector4(-1,-1,-1,-1)}, u_screw:{value:0}, u_wake_sea:{value:0}, u_wake_travelled:{value:0}, u_wake_turn:{value:new THREE.Vector2(1,0)},   // the ship's bow wave and wake (wake.ts), set each frame by wake_frame
 		u_chart:{value:new THREE.Vector2()}, u_curve:{value:new THREE.Vector2()}, u_home:{value:new THREE.Vector4(1,0,0,1)}, u_home_shift:{value:new THREE.Vector2()}, ...atlas.uniforms, ...ocean_atlas },   // the chart the sea's patterns are laid on; how the sea falls away from the frame's anchor; the world frame's plan, where the atoll's imagery is laid (chart_settle)   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh,u_chart,u_curve,u_home_shift; uniform vec4 u_home; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm; varying vec2 v_plan; varying vec3 v_ground;
 		`+SEA_TURN+`
@@ -10164,8 +10164,9 @@ function with_charted(build){ const x=CARRIER.x, z=CARRIER.z, yaw=CARRIER_YD, y=
 // has been, on the clock that poses her - the core's track in flight, the recording's in a
 // replay - so every player sees the same wake behind the same ship. A hull whose ship file
 // carries no waterline draws neither.
-const wake=new Wake(), wake_shape=SHIP.waterline?wake_hull(SHIP.waterline):null;
-if(wake_shape){ const u=ocean_mat.uniforms; u.u_hull_span.value.fromArray(wake_shape.span); u.u_hull.value.set(wake_shape.stations); u.u_hull_beam.value=wake_shape.beam; }
+const wake=new Wake(), wake_shape=SHIP.waterline?wake_hull(SHIP.waterline,SHIP.screws):null;
+if(wake_shape){ const u=ocean_mat.uniforms; u.u_hull_span.value.fromArray(wake_shape.span); u.u_hull.value.set(wake_shape.stations); u.u_hull_beam.value=wake_shape.beam;
+	u.u_screws.value.fromArray(wake_shape.screws); u.u_screw.value=wake_shape.screw; }
 function ship_known(t){ const p=flight_carrier(t); if(!p) return null;   // before the earliest time her track covers, she was steaming steadily on as it begins
 	if(t>=p.known) return p; const k=flight_carrier(p.known); return k?wake_before(k,p.known-t):null; }
 function ship_recorded(t){ const s=playback?playback_scene(playback,t).find(o=>(o.properties.Type||"").includes("Watercraft")):null;   // the recording's ship: a recording made before the ship sailed has none
@@ -10175,8 +10176,8 @@ function wake_frame(){ const u=ocean_mat.uniforms;
 	const now=running&&wake_shape?source(time):null;
 	if(!now){ u.u_wake_count.value=0; return; }
 	wake.follow(time,source);
-	const drawn=wake.path(time,now,SHIP.waterline,u.u_wake.value,u.u_wake_speed.value,u.u_wake_group.value);
-	u.u_wake_count.value=drawn.count;
+	const drawn=wake.path(time,now,SHIP.waterline,u.u_wake.value,u.u_trail.value.image.data,u.u_wake_group.value);
+	u.u_wake_count.value=drawn.count; u.u_trail.value.needsUpdate=true; u.u_trail_step.value=drawn.step;
 	{ const at=theatre_point(HOME.sea(now.x,now.z).point), bow=earth_vector(theatre.inward,{ x:Math.cos(now.heading), y:0, z:-Math.sin(now.heading) }), turn=Math.atan2(-bow.z,bow.x)-now.heading;   // her track is the world frame's: her reference point in the engine's frame, and how far its axes turn from the world frame's there
 		u.u_wake_origin.value.set(at.x,at.z); u.u_wake_turn.value.set(Math.cos(turn),Math.sin(turn)); }
 	u.u_wake_bounds.value.set(drawn.centre[0],drawn.centre[1],drawn.radius,drawn.reach);

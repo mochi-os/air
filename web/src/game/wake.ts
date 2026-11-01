@@ -50,6 +50,7 @@ export const BAND = 2.6 // the wash's greatest half-width, in hull breadths at i
 export const STREAK = 400 // m: the length the wash's streaks repeat over along the track
 export const LANE = 1200 // m: the same for the long patches its white lies in from afar
 export const WANDER = 3000 // m: the same for the wandering of its edges
+export const TRAIL = 1024 // texels of her trail: the water's age and her speed when her stern churned it, by distance astern
 export const LAID = 60000 // m: how far the stern's travel is counted before it starts again, whole repeats of all three, so it starts again unseen
 
 // Pose is the ship at a moment: her reference point, heading (radians, as the
@@ -98,6 +99,13 @@ export interface Waterline {
   sides: number[][]
 }
 
+// Screws is the ship file's: how far each pair of screws stands either side
+// of her centre line (a single screw on it at 0), and their diameter, metres.
+export interface Screws {
+  lateral: number[]
+  diameter: number
+}
+
 // point is a place in the ship's own frame (fore-aft, to starboard) in the world.
 export function point(pose: Pose, fore: number, lateral: number) {
   const c = Math.cos(pose.heading)
@@ -135,8 +143,10 @@ function blend(a: Pose, b: Pose, f: number): Pose {
 }
 
 // hull is the waterline as the shader reads it: [stern, stem, station
-// spacing, stations], the stations two to a vec4, and the greatest breadth.
-export function hull(waterline: Waterline) {
+// spacing, stations], the stations two to a vec4, and the greatest breadth;
+// and her screws, up to four pairs' offsets from her centre line (-1 for
+// none) and their diameter (0 for a ship without them, which draws no races).
+export function hull(waterline: Waterline, screws?: Screws) {
   const sides = waterline.sides.slice(0, HULL * 2)
   const count = sides.length
   const stations = new Float32Array(HULL * 4)
@@ -153,6 +163,8 @@ export function hull(waterline: Waterline) {
     ],
     stations,
     beam: Math.max(...sides.map((side) => side[1] - side[0])),
+    screws: [0, 1, 2, 3].map((i) => screws?.lateral[i] ?? -1),
+    screw: screws?.diameter ?? 0,
   }
 }
 
@@ -231,19 +243,22 @@ export class Wake {
   // where her stern was, relative to her reference point now, the distance
   // along the path to it, and
   // how long ago, from now back AGE, closer together near the ship where the
-  // wake is busiest), speeds (her speed at each, four to a vec4) and groups
+  // wake is busiest), trail (TRAIL of [age, speed]: how long ago her stern
+  // passed, and how fast she went, every step metres astern along the way it
+  // went, read from her whole history, so that what she did at a moment lies
+  // in the water where she did it, not wherever the points fall) and groups
   // (GROUPS of [x, z, radius, reach]: a circle about each run of GROUP
   // stretches, and how far off it anything they draw reaches - the wash, and
   // the Kelvin waves out to REACH hull lengths; a negative radius is a group
   // past the path's end). Returns how many points it wrote, a circle holding
   // everything drawn, the bow wave included, the Kelvin waves' reach, her
-  // speed now and how far her stern has travelled.
+  // speed now, how far her stern has travelled and the trail's step.
   path(
     time: number,
     now: Pose,
     waterline: Waterline,
     points: Float32Array,
-    speeds: Float32Array,
+    trail: Float32Array,
     groups: Float32Array
   ) {
     const length = waterline.stem - waterline.stern
@@ -286,16 +301,39 @@ export class Wake {
       const z = stern.z - now.z
       if (count) run += Math.hypot(x - xs[count - 1], z - zs[count - 1])
       points.set([x, z, run, age], count * 4)
-      speeds[count] = Math.max(pose.speed, 0)
       xs.push(x)
       zs.push(z)
       count++
     }
     points.fill(0, count * 4)
-    speeds.fill(0, count)
+    // The trail, back from her stern now through every sample of her history.
+    const way = [{ run: 0, age: 0, speed: Math.max(speed, 0) }]
+    let last = stern
+    for (let i = this.times.length - 1; i >= 0; i--) {
+      const age = time - this.times[i]
+      if (age <= 0) continue
+      const at = point(this.poses[i], waterline.stern, lateral)
+      const run =
+        way[way.length - 1].run + Math.hypot(at.x - last.x, at.z - last.z)
+      last = at
+      way.push({ run, age, speed: Math.max(this.poses[i].speed, 0) })
+    }
+    const step = Math.max(way[way.length - 1].run / (TRAIL - 1), 0.05)
+    for (let j = 0, k = 0; j < TRAIL; j++) {
+      const d = j * step
+      while (k + 2 < way.length && way[k + 1].run < d) k++
+      const a = way[k]
+      const b = way[Math.min(k + 1, way.length - 1)]
+      const f =
+        b.run > a.run
+          ? Math.min(Math.max((d - a.run) / (b.run - a.run), 0), 1)
+          : 0
+      trail[j * 2] = a.age + (b.age - a.age) * f
+      trail[j * 2 + 1] = a.speed + (b.speed - a.speed) * f
+    }
     const reach = REACH * length
     const kelvin = (along: number) => 0.3536 * Math.min(along + length, reach)
-    const band = BAND * beam * (0.8 + 0.45 * Math.sqrt(AGE / 60)) * 1.6
+    const band = BAND * beam * (2.0 + 0.5 * Math.sqrt(AGE / 60)) * 1.05
     let low = [-length - 60, -length - 60]
     let high = [length + 60, length + 60]
     for (let k = 0; k < GROUPS; k++) {
@@ -326,7 +364,15 @@ export class Wake {
     }
     const centre = [(low[0] + high[0]) / 2, (low[1] + high[1]) / 2]
     const radius = Math.hypot(high[0] - low[0], high[1] - low[1]) / 2
-    return { count, centre, radius, reach, speed, travelled: this.travelled }
+    return {
+      count,
+      centre,
+      radius,
+      reach,
+      speed,
+      travelled: this.travelled,
+      step,
+    }
   }
 }
 
@@ -337,9 +383,11 @@ export class Wake {
 // the Kelvin waves' slope, as the sea's lean (the minus gradient of height).
 // It reads the sea's own clock, chart and wind (u_time, u_chart and SEA_TURN's
 // u_downwind and sea_drift), so it follows SEA_TURN in the sea's shader.
-export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[${Math.ceil(POINTS / 4)}]; uniform vec4 u_wake_group[${GROUPS}]; uniform float u_wake_count; uniform vec2 u_wake_origin; uniform vec4 u_wake_bounds;
-	uniform vec4 u_ship; uniform vec4 u_hull_span; uniform vec4 u_hull[${HULL}]; uniform float u_hull_beam,u_wake_sea,u_wake_travelled;
-	float wake_speed(int i){ vec4 v=u_wake_speed[i/4]; int j=i-(i/4)*4; return j==0?v.x:j==1?v.y:j==2?v.z:v.w; }
+export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform sampler2D u_trail; uniform float u_trail_step; uniform vec4 u_wake_group[${GROUPS}]; uniform float u_wake_count; uniform vec2 u_wake_origin; uniform vec4 u_wake_bounds;
+	uniform vec4 u_ship; uniform vec4 u_hull_span; uniform vec4 u_hull[${HULL}]; uniform float u_hull_beam,u_wake_sea,u_wake_travelled; uniform vec4 u_screws; uniform float u_screw;
+	vec2 trail_at(float along){   // how long ago her stern passed a place along metres astern on its way, and how fast she went
+		float k=clamp(along/max(u_trail_step,1.0e-4),0.0,${TRAIL - 1}.0), i=min(floor(k),${TRAIL - 2}.0);
+		return mix(texture2D(u_trail,vec2((i+0.5)/${TRAIL}.0,0.5)).rg,texture2D(u_trail,vec2((i+1.5)/${TRAIL}.0,0.5)).rg,k-i); }
 	vec2 hull_station(int j){ vec4 h=u_hull[j/2]; return j-(j/2)*2==0?h.xy:h.zw; }
 	bool hull_at(float fore, out vec2 sides){   // the hull's port and starboard z at a fore-aft station, false off its ends
 		float f=(fore-u_hull_span.x)/u_hull_span.z; if(f<0.0||f>u_hull_span.w-1.0) return false;
@@ -419,18 +467,19 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 		// How far astern along the path, how far to one side, how old the water there is and how fast the ship was going
 		// when she churned it.
 		vec4 a=u_wake[nearest], b=u_wake[nearest+1]; vec2 e=b.xy-a.xy; float l=length(e); vec2 dir=e/l, d=p-a.xy-e*f;
-		float along=a.z+f*l, side=dir.x*d.y-dir.y*d.x, y=abs(side), w=clamp(f,0.0,1.0), age=mix(a.w,b.w,w);
-		float speed=mix(wake_speed(nearest),wake_speed(nearest+1),w);
+		float along=a.z+f*l, side=dir.x*d.y-dir.y*d.x, y=abs(side); vec2 trail=trail_at(along); float age=trail.x, speed=trail.y;
 		float oldest=u_wake[int(u_wake_count)-1].w, fade=1.0-smoothstep(0.7*oldest,oldest,age);
-		// The screws' wash: about the hull's breadth, half as broad again at full power, spreading slowly, its foam
+		// The screws' wash: at full power twice her breadth, as broad as the flight deck above it, within her own
+		// breadth astern of the transom it leaves at half that, and spreading slowly on, about two and a half times
+		// her breadth a kilometre astern; at steerage way it is less than half as broad. Its foam
 		// and its pale green going with the power the screws turn and lasting the longer the harder they churn it. The
-		// sea undoes it: its foam goes in a minute or so and its smooth band in minutes in a calm, far sooner in a
-		// working sea. The screws go on churning the water for some way astern, so at steerage way,
+		// sea undoes it: its white goes over minutes, its middle first, and its smooth band over many in a calm, far
+		// sooner in a working sea. The screws go on churning the water for some way astern, so at steerage way,
 		// where that takes minutes, the wash lasts as far as that and no further. It lies in streaks along the track
 		// with edges that wander along it, so it is read in the path's own frame, at the place in the water the run
 		// back from the stern reaches: the pattern stays where it was laid. Its greatest half-width is ${BAND}
 		// times its breadth; past that nothing is read.
-		float power=smoothstep(3.0,14.0,speed), spread=u_hull_beam*(0.8+0.45*sqrt(age/60.0))*(1.0+0.5*power), behind=smoothstep(-6.0,6.0,along), core=0.0;
+		float power=smoothstep(3.0,14.0,speed), spread=u_hull_beam*(2.0+0.5*sqrt(age/60.0))*(0.6+0.4*power)*(0.55+0.45*smoothstep(0.0,80.0,along)), behind=smoothstep(-6.0,6.0,along), core=0.0;
 		if(y<${BAND}*spread&&behind>0.0){
 			float water=u_wake_travelled-along, churn=clamp(0.35*smoothstep(0.3,2.5,speed)+speed*speed/150.0,0.0,1.0), slow=max(speed,0.3);
 			float white=max((35.0+3.5*speed)/(1.0+sea/20.0),100.0/slow), green=max((70.0+5.0*speed)/(1.0+sea/20.0),300.0/slow), calm=max(1200.0*(1.0+0.07*speed)/(1.0+sea*sea/25.0),600.0/slow);
@@ -439,21 +488,35 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform vec4 u_wake_speed[$
 			float wander=textureGrad(u_detail,vec2(water/${WANDER}.0,0.31),vec2(px/${WANDER}.0,0.0),vec2(0.0,px/${WANDER}.0)).b;   // the texture's ripples run 6-24 to its tile: a 3 km tile wanders the edges every few hundred metres
 			float width=spread*(0.7+0.6*wander)*(1.0+0.35*(texture2D(u_detail,world/53.0).b-0.5)+0.8*(texture2D(u_detail,world/260.0).b-0.5));   // its edges lumpy with eddies about a breadth across
 			core=(1.0-smoothstep(0.3*width,0.5*width,y))*behind; float wide=(1.0-smoothstep(0.45*width,0.7*width,y))*behind;
-			// Fresh, the wash is white throughout, thinning to boils at steerage way. Its white lies in patches fixed in the
-			// water, which thin and go out one by one as it ages: a patch is white while its noise (spread to 0-1 about its
-			// middle) stands above what the freshness has fallen to. They are read at the finest scale the pixel resolves:
-			// lumps a few metres across close to, patches tens of metres across and streaked along the track from afar.
-			// Only beyond that is the white the share of the water they would cover. The white is the screws' race,
-			// narrower than the churned water and ragged at its edges. Its pale green wells up in boils.
-			float fresh=clamp(1.6*sqrt(churn)*exp(-age/white),0.0,1.0);
-			float fine=clamp(0.5+2.5*(0.65*streak+0.35*texture2D(u_detail,world/45.0).b-0.5),0.0,1.0);
-			float coarse=clamp(0.5+2.5*(0.5*lanes+0.5*texture2D(u_detail,world/240.0).b-0.5),0.0,1.0);
+			// The white is the screws' and the hull's work, and it does not go all at once. Behind her stern the wash is
+			// white across its breadth, thinning to boils at steerage way. At speed its middle clears first. The races, the
+			// stream behind each screw, about its breadth at first and spreading as it ages into its neighbours, stay
+			// white longer, lines along it; and longest of all the white lies in a band along each of its edges, where
+			// the water churned against her sides meets the sea, which at speed runs on for kilometres. How long it
+			// lasts differs from stretch to stretch of the water, so wherever it ends it frays out raggedly.
+			// The white lies in patches fixed in the water, which thin and go out one by one as it ages: a patch is
+			// white while its noise (spread to 0-1 about its middle) stands above what the freshness has fallen to, and
+			// the fainter the less fresh the water, so its last patches fade out rather than standing out bright. They
+			// are read at the finest scale the pixel resolves: lumps a few metres across close to, patches tens of
+			// metres across and streaked along the track from afar. Only beyond that is the white the share of the
+			// water they would cover. Both are handed to the sea scaled to the cover it draws foam opaque at, so that a
+			// patch's strength and the share show as they are rather than all white.
+			// Its pale green wells up in boils.
+			float races=0.0;
+			if(u_screw>0.0){
+				float r=0.35*u_screw+0.6*sqrt(age), seen=sqrt(r*r+0.25*px*px);   // a race's half-breadth, and as the pixel sees it
+				for(int i=0;i<4;i++){ float o=u_screws[i]; if(o<0.0) continue;
+					float d=(y-o)/seen; races=1.0-(1.0-races)*(1.0-r/seen*exp(-d*d)); } }
+			float last=white*(0.8+0.4*smoothstep(0.3,0.7,lanes)), edge=y*(0.9+0.2*lanes)/max((0.45+0.15*power)*width,1.0);   // how long its white lasts here; 0 on her track, 1 at the white's edge
+			float rim=(edge-0.78)/0.16, within=(1.0-smoothstep(0.8,1.0,edge))*behind;
+			float fresh=clamp(1.6*sqrt(churn)*within*max(max(exp(-age/((1.0-0.4*power)*last)),(0.3+0.7*power)*exp(-rim*rim-age/(3.0*last))),power*races*exp(-age/(2.0*last))),0.0,1.0);
+			float fine=clamp(0.5+5.0*(0.65*streak+0.35*texture2D(u_detail,world/45.0).b-0.5),0.0,1.0);
+			float coarse=clamp(0.5+5.0*(0.5*lanes+0.5*texture2D(u_detail,world/240.0).b-0.5),0.0,1.0);
 			float lumps=mix(fine,coarse,smoothstep(0.5,3.0,px));
-			float cover=mix(smoothstep(1.0-fresh,1.25-fresh,lumps),smoothstep(0.15,0.85,fresh),smoothstep(8.0,24.0,px));
-			float race=(1.0-smoothstep((0.15+0.15*power)*width,(0.45+0.15*power)*width,y*(0.8+0.4*lanes)))*behind;
+			float cover=0.6*mix(smoothstep(1.0-fresh,1.25-fresh,lumps)*smoothstep(0.1,0.8,fresh),fresh,smoothstep(8.0,24.0,px));   // 0.6: the cover the sea draws its foam opaque at
 			float boils=smoothstep(0.3,0.7,texture2D(u_detail,world/150.0).b);
-			foam=max(foam,cover*min(1.0,2.0*churn)*race*fade);
-			air=sqrt(churn)*exp(-age/green)*core*fade*(0.4+0.3*streak+0.5*boils);
+			foam=max(foam,cover*min(1.0,2.0*churn)*fade);
+			air=sqrt(churn)*max(exp(-age/green)*core*(0.4+0.3*streak+0.5*boils),power*races*behind*exp(-age/(1.5*green)))*fade;
 			slick=clamp(0.35*smoothstep(0.3,2.5,speed)+speed/12.0,0.0,1.0)*exp(-age/calm)*wide*fade; }
 		// The Kelvin waves, x astern of the stem and y off the track: two systems meet each point inside the
 		// 19.47 degree wedge, the transverse and the divergent, each the wave whose phase is stationary there. A

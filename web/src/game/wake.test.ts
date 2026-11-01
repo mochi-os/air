@@ -17,6 +17,7 @@ import {
   REACH,
   STEP,
   STREAK,
+  TRAIL,
   WAKE,
   WANDER,
   Wake,
@@ -62,17 +63,26 @@ function turning(v: number) {
 }
 function drawn(wake: Wake, time: number, now: Pose) {
   const points = new Float32Array(POINTS * 4)
-  const speeds = new Float32Array(Math.ceil(POINTS / 4) * 4)
+  const trail = new Float32Array(TRAIL * 2)
   const groups = new Float32Array(GROUPS * 4)
-  const result = wake.path(time, now, waterline, points, speeds, groups)
+  const result = wake.path(time, now, waterline, points, trail, groups)
   const at = (i: number) => ({
     x: points[i * 4],
     z: points[i * 4 + 1],
     run: points[i * 4 + 2],
     age: points[i * 4 + 3],
-    speed: speeds[i],
   })
-  return { ...result, points, speeds, groups, at }
+  // the trail as the shader reads it: the water's age and her speed when her stern churned it, along metres astern
+  const along = (metres: number) => {
+    const k = Math.min(Math.max(metres / result.step, 0), TRAIL - 1)
+    const i = Math.min(Math.floor(k), TRAIL - 2)
+    const f = k - i
+    return {
+      age: trail[i * 2] + (trail[i * 2 + 2] - trail[i * 2]) * f,
+      speed: trail[i * 2 + 1] + (trail[i * 2 + 3] - trail[i * 2 + 1]) * f,
+    }
+  }
+  return { ...result, points, trail, groups, at, along }
 }
 
 describe("the ship file's waterline", () => {
@@ -98,6 +108,25 @@ describe("the ship file's waterline", () => {
       expect(shape.stations[i * 2 + 1]).toBeCloseTo(starboard, 4)
     })
     expect(shape.beam).toBeCloseTo(38.54, 2)
+    // a ship without screws in her file draws no races
+    expect(shape.screws).toEqual([-1, -1, -1, -1])
+    expect(shape.screw).toBe(0)
+  })
+  it('carries her four screws, a pair either side of her centre line, 6.4 m across, which the engine hands the shader', () => {
+    expect(nimitz.screws.lateral).toEqual([6, 13])
+    expect(nimitz.screws.diameter).toBe(6.4)
+    const shape = hull(waterline, nimitz.screws)
+    expect(shape.screws).toEqual([6, 13, -1, -1])
+    expect(shape.screw).toBe(6.4)
+    expect(source).toContain(
+      'wake_shape=SHIP.waterline?wake_hull(SHIP.waterline,SHIP.screws):null;'
+    )
+    expect(source).toContain(
+      'u.u_screws.value.fromArray(wake_shape.screws); u.u_screw.value=wake_shape.screw;'
+    )
+    expect(source).toContain(
+      'u_screws:{value:new THREE.Vector4(-1,-1,-1,-1)}, u_screw:{value:0}'
+    )
   })
 })
 
@@ -170,8 +199,13 @@ describe('the path the stern swept', () => {
       expect(p.x).toBeCloseTo(stern.x - now.x, 2)
       expect(p.z).toBeCloseTo(stern.z - now.z, 2)
       expect(p.run).toBeCloseTo(15.4 * p.age, 2)
-      expect(p.speed).toBeCloseTo(15.4, 4)
     }
+    // the trail: every step metres astern the water's age, from her whole history, and her speed then
+    for (const metres of [0, 7, 400, 3001, 11000]) {
+      expect(path.along(metres).age).toBeCloseTo(metres / 15.4, 3)
+      expect(path.along(metres).speed).toBeCloseTo(15.4, 4)
+    }
+    expect(path.step * (TRAIL - 1)).toBeGreaterThan(15.4 * AGE)
     expect(path.at(POINTS - 1).age).toBe(AGE)
     expect(path.at(1).age).toBeLessThan(STEP) // closer together near the ship
   })
@@ -211,6 +245,40 @@ describe('the path the stern swept', () => {
     }
     expect(inside).toBe(19) // the points 150 s old or less: ages AGE (i / 40)^2
   })
+  it('lays a change of speed in the water where she made it, moving away from her with it, not by stretches between the points', () => {
+    // steerage way until 1000 s, then 30 kt: where the fast water ends lies where she was at 1000 s
+    const change = 1000
+    const ship = (t: number): Pose => ({
+      x: 2.6 * Math.min(t, change) + 15.4 * Math.max(t - change, 0),
+      z: 0,
+      heading: 0,
+      speed: t < change ? 2.6 : 15.4,
+    })
+    const ends = [] as number[]
+    for (const after of [20, 20.5, 21, 60, 60.25, 61, 200, 201]) {
+      const wake = new Wake()
+      wake.follow(change + after, ship)
+      const path = drawn(wake, change + after, ship(change + after))
+      let end = 0
+      for (let metres = 0; metres < 6000; metres += 0.5)
+        if (path.along(metres).speed > 9) end = metres
+      expect(Math.abs(end - 15.4 * after), `${after} s on`).toBeLessThan(16) // within a history sample of it
+      ends.push(end)
+    }
+    // and it moves away from her as fast as she leaves it: half a second, a quarter, a second later
+    expect(ends[1] - ends[0]).toBeCloseTo(7.7, 0)
+    expect(ends[2] - ends[0]).toBeCloseTo(15.4, 0)
+    expect(ends[4] - ends[3]).toBeCloseTo(3.85, 0)
+    expect(ends[5] - ends[3]).toBeCloseTo(15.4, 0)
+    expect(ends[7] - ends[6]).toBeCloseTo(15.4, 0)
+    // the shader reads both from the trail, by the distance along her way
+    expect(WAKE).toContain(
+      'vec2 trail=trail_at(along); float age=trail.x, speed=trail.y;'
+    )
+    expect(source).toContain(
+      'u.u_trail.value.needsUpdate=true; u.u_trail_step.value=drawn.step;'
+    )
+  })
   it('stands still with a ship that does', () => {
     const wake = new Wake()
     const ship = steady(0.2, 0)
@@ -244,7 +312,7 @@ describe('the path the stern swept', () => {
         0.3536 * Math.min(end + length, REACH * length) - 1e-3
       )
       expect(reach).toBeGreaterThanOrEqual(
-        BAND * beam * (0.8 + 0.45 * Math.sqrt(AGE / 60)) * 1.5 // the wash at its oldest, half as broad again at full power
+        BAND * beam * (2.0 + 0.5 * Math.sqrt(AGE / 60)) // the wash at its oldest, at full power
       )
       // and the circle about everything holds each group's reach and the bow
       expect(
@@ -401,24 +469,69 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
     for (const last of [white, green, calm])
       expect(last(15.4, trades)).toBeLessThan(last(15.4, 0))
   })
-  it('at speed is broader and its white wider, and at steerage way as before', () => {
+  it('is as broad as her flight deck at speed, leaving the transom at half that and spreading slowly, and less than half as broad at steerage way', () => {
     const power = expression(between('float power=', ', spread='), 'speed')
     const spread = expression(
       between('power=smoothstep(3.0,14.0,speed), spread=', ', behind='),
       'u_hull_beam',
       'age',
-      'power'
+      'power',
+      'along'
     )
     expect(power(2.6)).toBe(0)
     expect(power(15.4)).toBe(1)
-    expect(spread(40, 0, power(15.4))).toBeCloseTo(
-      1.5 * spread(40, 0, power(2.6)),
+    expect(spread(41, 0, 1, 80)).toBeCloseTo(82, 6) // twice her breadth once clear of the transom: her flight deck's
+    expect(spread(41, 0, 1, 0)).toBeCloseTo(0.55 * 82, 6) // leaving the transom
+    expect(spread(41, 65, 1, 1000) / 41).toBeGreaterThan(2.4) // a kilometre astern at 30 kt
+    expect(spread(41, 65, 1, 1000) / 41).toBeLessThan(2.6)
+    expect(spread(41, 0, 0, 80)).toBeCloseTo(0.6 * spread(41, 0, 1, 80), 6)
+    // its white reaches out to its edge, ending raggedly over the last fifth of the way
+    expect(WAKE).toContain(
+      'float rim=(edge-0.78)/0.16, within=(1.0-smoothstep(0.8,1.0,edge))*behind;'
+    )
+  })
+  it("clears from its middle first, its screws' races later and its edges last, so its white never ends square across", () => {
+    const fresh = expression(
+      between('float fresh=', ';'),
+      'churn',
+      'within',
+      'age',
+      'last',
+      'power',
+      'rim',
+      'races'
+    )
+    const last = 54 // s: its white's lasting at 30 kt in the trades (white above)
+    const middle = (age: number) => fresh(1, 1, age, last, 1, 5, 0) // clear of the races and the edge bands
+    const race = (age: number) => fresh(1, 1, age, last, 1, 5, 1)
+    const edge = (age: number) => fresh(1, 1, age, last, 1, 0, 0)
+    for (const age of [60, 120, 240]) {
+      expect(race(age)).toBeGreaterThan(1.5 * middle(age))
+      expect(edge(age)).toBeGreaterThan(race(age))
+    }
+    // white across its breadth as it leaves her; at 30 kt its edges are still a third white 4 km astern, its middle long clear
+    expect(middle(0)).toBe(1)
+    expect(race(120)).toBeGreaterThan(0.5) // a race still half white nearly 2 km astern at 30 kt
+    expect(edge(4000 / 15.4)).toBeGreaterThan(0.3)
+    expect(middle(4000 / 15.4)).toBeLessThan(0.01)
+    // at steerage way the screws only churn it: no races, and its white lasts as long as their churn, as before
+    expect(fresh(1, 1, last, last, 0, 5, 0)).toBeCloseTo(1.6 * Math.exp(-1), 9)
+    expect(fresh(0.39, 1, 30, last, 0, 5, 1)).toBeCloseTo(
+      fresh(0.39, 1, 30, last, 0, 5, 0),
       9
     )
-    expect(spread(40, 0, power(2.6))).toBeCloseTo(32, 9) // four fifths of a breadth at the stern at steerage way, as before
+    // a race behind each of the ship file's screws, spreading as the water ages, and its share where it is narrower than the pixel
     expect(WAKE).toContain(
-      'float race=(1.0-smoothstep((0.15+0.15*power)*width,(0.45+0.15*power)*width,y*(0.8+0.4*lanes)))*behind;'
-    ) // solid white twice as far out from the track at full power
+      'float r=0.35*u_screw+0.6*sqrt(age), seen=sqrt(r*r+0.25*px*px);'
+    )
+    expect(WAKE).toContain(
+      'float d=(y-o)/seen; races=1.0-(1.0-races)*(1.0-r/seen*exp(-d*d)); } }'
+    )
+    // how long it lasts differs from stretch to stretch of the water, by the lane it lies in, and goes with the
+    // water's age and its place across the wash alone: no length of it ends at a set distance behind her
+    expect(WAKE).toContain(
+      'float last=white*(0.8+0.4*smoothstep(0.3,0.7,lanes)), edge=y*(0.9+0.2*lanes)/max((0.45+0.15*power)*width,1.0);'
+    )
   })
   it('breaks the sea white on her in a working breeze and never in a calm', () => {
     expect(breaking(0)).toBe(0)
@@ -613,9 +726,14 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
     )
     // A patch is white while its noise stands above what the freshness has fallen to, close to (pixels a few
     // centimetres across) and from afar (metres across) alike: what is white is decided by the water itself.
+    // The sea draws its foam opaque from a cover of 0.6.
     for (const px of [0.1, 3, 6]) {
-      expect(cover(0.4, 0.9, px), `${px} m`).toBeGreaterThan(0.9)
-      expect(cover(0.4, 0.3, px), `${px} m`).toBeLessThan(0.1)
+      expect(cover(0.8, 0.9, px), `${px} m`).toBeCloseTo(0.6, 9)
+      expect(cover(0.8, 0.1, px), `${px} m`).toBeLessThan(0.06)
+      expect(cover(0.4, 0.3, px), `${px} m`).toBeLessThan(0.06)
+      // and the less fresh the water, the fainter its patches: its last ones fade out, never bright spots
+      expect(cover(0.4, 1, px), `${px} m`).toBeLessThan(0.3)
+      expect(cover(0.15, 1, px), `${px} m`).toBeLessThan(0.03)
     }
     // Only past what even the long patches resolve is it the share they would cover, which never steps.
     const far = [0.2, 0.35, 0.5, 0.65, 0.8].map((f) => cover(f, 0.5, 40))
@@ -628,13 +746,15 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
     expect(WAKE).toContain(
       'float lumps=mix(fine,coarse,smoothstep(0.5,3.0,px));'
     )
+    // its noise spread over the whole of 0-1, so the white thins out in proportion as it ages, not all at once
     expect(WAKE).toContain(
-      'float coarse=clamp(0.5+2.5*(0.5*lanes+0.5*texture2D(u_detail,world/240.0).b-0.5),0.0,1.0);'
+      'float fine=clamp(0.5+5.0*(0.65*streak+0.35*texture2D(u_detail,world/45.0).b-0.5),0.0,1.0);'
     )
-    // and how long the white lasts goes with its age alone, with no lengths of it ending at a set distance behind her
     expect(WAKE).toContain(
-      'float fresh=clamp(1.6*sqrt(churn)*exp(-age/white),0.0,1.0);'
+      'float coarse=clamp(0.5+5.0*(0.5*lanes+0.5*texture2D(u_detail,world/240.0).b-0.5),0.0,1.0);'
     )
+    // and from afar the share is handed to the sea so that its foam shows that share, not all white
+    expect(cover(0.5, 0.5, 40)).toBeCloseTo(0.3, 9) // half of 0.6
   })
 })
 
