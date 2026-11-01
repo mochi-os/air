@@ -1056,10 +1056,11 @@ def checks(jet):
 			yield result("layout.pod", f"{name} aft end", pd["to"], p[:, 0].max(), 0.5, "FS in")
 			yield result("layout.pod", f"{name} middle", pd["waterline"], (p[:, 1].min() + p[:, 1].max()) / 2, 0.5, "WL in")
 			yield result("layout.pod", f"{name} diameter", pd["diameter"], p[:, 1].max() - p[:, 1].min(), 0.3)
-			fin = jet.cut([name.replace("pod", "fin")], [pd["to"] - 3, 100, 0], [1, 0, 0])
+			# the pod straddles the fin at its middle; its blunt end stands past the trailing edge
+			fin = jet.cut([name.replace("pod", "fin")], [(pd["from"] + pd["to"]) / 2, 100, 0], [1, 0, 0])
 			level = fin[np.abs(fin[:, 1] - pd["waterline"]) < 1.0]
-			yield result("layout.pod", f"{name} on its fin", (level[:, 2].min() + level[:, 2].max()) / 2,
-				(p[:, 2].min() + p[:, 2].max()) / 2, 0.5, "BL in") if len(level) else None
+			yield result("layout.pod", f"{name} on its fin", (level[:, 2].min() + level[:, 2].max()) / 2 if len(level) else np.inf,
+				(p[:, 2].min() + p[:, 2].max()) / 2, 0.5, "BL in")
 		# the blade antenna under the nose
 		b = F["layout"]["blade"]
 		p = jet.points(["blade_nose"])
@@ -1152,6 +1153,15 @@ def checks(jet):
 		yield result("layout.canopy", "canopy crown", c["crown"]["waterline"], hood[:, 1].max(), 0.4, "WL in")
 		whole = jet.points(["canopy"])
 		yield result("layout.canopy", "canopy's aft end", c["aft"]["station"], whole[:, 0].max(), 0.6, "FS in")
+		# the windscreen's glass reaches its frame along the sides at the base
+		# line, from the front base down to the bow's foot (a wide U in plan)
+		front, bow = c["windscreen"]["station"], c["bow"]["station"]
+		glass = jet.points(["windscreen"])
+		for station in (front + 8, (front + bow) / 2, bow - 6):
+			base = c["windscreen"]["waterline"] + (c["bow"]["foot"] - c["windscreen"]["waterline"]) * (station - front) / (bow - front)
+			# within 3 in: the rings near the bow lean with it, their columns moved along
+			near = glass[np.abs(glass[:, 0] - station) < 3.0]
+			yield result("layout.canopy", f"windscreen glass's lowest at FS {station:.0f}, on its base line", base, float(near[:, 1].min()) if len(near) else 999.0, 1.0, "WL in")
 		screen = jet.points(["windscreen"])
 		yield result("layout.canopy", "windscreen's front base", c["windscreen"]["station"], screen[:, 0].min(), 0.6, "FS in")
 		bow = jet.cut(["canopy", "windscreen"], [c["bow"]["station"], 100, 0], [1, 0, 0])

@@ -662,7 +662,7 @@ def half_ring(station):
 	fore = narrowed(station, [(x * width, keel + y * height) for x, y in points])
 	if station <= BLEND[0]:
 		centre = (0.0, keel + height / 2)
-		return centre, polar(fore, centre, angles_at(station, centre))
+		return centre, polar(fore, centre, angles_at(station, centre, fore))
 	centre, union = union_ring(station)
 	w = min(1.0, (station - BLEND[0]) / (BLEND[1] - BLEND[0]))
 	w = w * w * (3 - 2 * w)
@@ -931,17 +931,39 @@ def sill_point(station):
 	return between([(p[0], p[2]) for p in sill], station), between(waterlines, station)
 
 
-def angles_at(station, centre):
+def windscreen_edge(station, outline, centre):
+	# The windscreen's lower edge ahead of the bow, as an angle round centre:
+	# where the outline (top centreline down) first crosses its base line,
+	# which runs from the front base on the centreline down to the bow's
+	# foot. The photos show the glass reaching its frame along the sides at
+	# that height all the way from the front, a wide U in plan, not a point
+	layout = LAYOUT["canopy"]
+	front, bow = layout["windscreen"]["station"], layout["bow"]["station"]
+	w = layout["windscreen"]["waterline"] + (layout["bow"]["foot"] - layout["windscreen"]["waterline"]) * (station - front) / (bow - front)
+	for (x0, y0), (x1, y1) in zip(outline, outline[1:]):
+		if (y0 - w) * (y1 - w) <= 0 and y0 != y1:
+			return math.atan2(x0 + (x1 - x0) * (w - y0) / (y1 - y0), w - centre[1])
+	return None
+
+
+WINDSCREEN_NOSE = 4.0   # inches behind the windscreen's front base over which its edge widens to the base line
+
+
+def angles_at(station, centre, outline=None):
 	# The half-ring's angles: SILL even steps from the top down to the sill's
 	# angle, and even steps on to the keel, so one column runs on the sill
 	b, w = sill_point(station)
 	sill = math.atan2(b, w - centre[1])
-	# Ahead of the bow the column follows the windscreen's lower edge, which
-	# rises to the centreline at its front base; ahead of that it eases back
+	# Ahead of the bow the column follows the windscreen's lower edge (on the
+	# outline, where given), rounding into the centreline at its front base
+	# over WINDSCREEN_NOSE inches; ahead of that it eases back
 	layout = LAYOUT["canopy"]
 	front, bow = layout["windscreen"]["station"], layout["bow"]["station"]
 	least = 0.03
-	if front <= station < bow:
+	edge = windscreen_edge(station, outline, centre) if outline is not None and front <= station < bow else None
+	if edge is not None:
+		sill = max(least, least + (edge - least) * ease((station - front) / WINDSCREEN_NOSE))
+	elif front <= station < bow:
 		sill = max(least, sill * (station - front) / (bow - front))
 	elif front - 12 < station < front:
 		f = (front - station) / 12
