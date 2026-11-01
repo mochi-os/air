@@ -23,10 +23,11 @@
 // arriving on speed, on the ball, and on the 2 or 3 wire.
 //
 // Its power and energy are tuned on the Fox 2 fit at 4,500 lb, which the
-// demonstration therefore always flies (engine.ts DEMONSTRATION). In the 25
-// knot trade wind the 180 drifts aft and the 90 falls about 3.6 km out, where
-// the slope stands near 800 ft over the 600 ft pattern. On Fox 2 the pass
-// still traps on the 3 wire, FAIR or OK. On a clean jet it bolters: the
+// demonstration therefore always flies (engine.ts DEMONSTRATION), against the
+// ship steaming at steerage way into the 25 knot trade wind, near 40 knots
+// down her deck at pattern height: the 180 drifts aft and the groove begins
+// about 2.7 km out, and the angled deck's line slides to the right as she
+// steams. On Fox 2 the pass traps on the 3 wire, FAIR or OK. On a clean jet it bolters: the
 // inbound turn rides the slope's descent rate from under it and rolls out some
 // 50 m low, the jet levels, meets the slope sinking too slowly, rises through
 // it and floats the hook past the 4 wire. Holding height until the slope comes
@@ -72,6 +73,7 @@ export interface Picture {
     deviation: number // the hook's glideslope deviation, degrees, + high
     slope: number // the eye height that puts the hook on the 3.5° slope here, m
     heading: number // the landing line's heading, degrees
+    drift: number // m/s the landing line itself moves to the pilot's right: the ship's way across her angled deck
   }
 }
 
@@ -88,13 +90,7 @@ export interface Commands {
 }
 
 export type Phase =
-  | 'wake'
-  | 'break'
-  | 'downwind'
-  | 'turn'
-  | 'groove'
-  | 'around'
-  | 'released'
+  'wake' | 'break' | 'downwind' | 'turn' | 'groove' | 'around' | 'released'
 
 // One pilot's habits, drawn once per pattern from the seed.
 export interface Habits {
@@ -149,7 +145,7 @@ const WAKE_ALTITUDE = 800 * FEET
 const WAKE_SPEED = 350 * KNOT
 const DIRTY_SPEED = 250 * KNOT
 const DOWNWIND_ALTITUDE = 600 * FEET
-const BREAK_SPEED = 215 * KNOT // held through the back half of the break: at idle with the boards out a 64° break is below 210 knots before the nose is round
+const BREAK_SPEED = 195 * KNOT // held through the back half of the break: at idle with the boards out a 64° break is below it before the nose is round. Rolled out at 215 the dirty jet, bleeding 2.4 kt a second at idle, was still above 150 knots 1.7 km past the turn point
 const SETTLED_SPEED = 150 * KNOT // the turn waits for this: above it the arc from a mile abeam needs more bank than the pattern allows, and the groove is entered fast
 const ONSPEED_CAS = 140 * KNOT // the lever's speed target while the jet is dirty and fast; on-speed itself is the alpha the stick holds
 const ONSPEED_ALPHA = 8.1 // degrees: the indexer's doughnut, and the alpha the approach law's datum settles on
@@ -242,7 +238,13 @@ export function demonstration_start(seed: number): Demonstration {
     nose: 0,
     carry: 0,
     seated: false,
-    targets: { altitude: WAKE_ALTITUDE, vertical: 0, cas: WAKE_SPEED, heading: 0, bank: 0 },
+    targets: {
+      altitude: WAKE_ALTITUDE,
+      vertical: 0,
+      cas: WAKE_SPEED,
+      heading: 0,
+      bank: 0,
+    },
   }
 }
 
@@ -274,11 +276,14 @@ export function demonstration_step(
   const step = Math.max(dt, 1e-3)
   // Filtered derivatives: the vertical acceleration and the airspeed trend
   // damp their loops, and the closure rides the slope's own descent rate.
-  d.acceleration += ((pic.vertical - d.vertical) / step - d.acceleration) * Math.min(1, step * 4)
+  d.acceleration +=
+    ((pic.vertical - d.vertical) / step - d.acceleration) *
+    Math.min(1, step * 4)
   d.vertical = pic.vertical
   d.trend += ((pic.cas - d.cas) / step - d.trend) * Math.min(1, step * 2)
   d.cas = pic.cas
-  d.closing += ((d.along - pic.groove.along) / step - d.closing) * Math.min(1, step * 2)
+  d.closing +=
+    ((d.along - pic.groove.along) / step - d.closing) * Math.min(1, step * 2)
   d.along = pic.groove.along
   if (!d.seated && pic.speed > 50) {
     d.seated = true
@@ -294,7 +299,12 @@ export function demonstration_step(
   // From the track, not the heading: a crosswind puts the two apart by the
   // crab, and a lineup held on the nose drifts downwind of the line.
   const crab = wrap(pic.track - pic.heading)
-  const drifting = pic.speed * Math.sin(wrap(pic.track - pic.groove.heading) * DEGREE) // m/s, + moving right
+  // Across the line, not across the sea: under way the angled deck's line
+  // slides to the right as the ship steams, a fifth of her way, and a jet
+  // judged on its own motion alone corrected left of it all the way down.
+  const drifting =
+    pic.speed * Math.sin(wrap(pic.track - pic.groove.heading) * DEGREE) -
+    pic.groove.drift // m/s, + moving right of the line
   const lead = pic.groove.right + drifting * 2.5 // the roll to the correcting bank and the turn through it: at four seconds the roll-out came 250 m short of the line and the whole groove was flown in a correcting bank
 
   let altitude: number | null = null // m, held through the vertical-speed loop
@@ -322,7 +332,11 @@ export function demonstration_step(
   // A wave-off, or wheels on the deck with no wire (a bolter, or a touch
   // past the wires), goes around: full power, boards in, wings level, climb
   // to 600 ft and turn downwind.
-  if ((pic.waving || pic.grounded) && (d.phase === 'groove' || d.phase === 'turn') && !pic.trapped) {
+  if (
+    (pic.waving || pic.grounded) &&
+    (d.phase === 'groove' || d.phase === 'turn') &&
+    !pic.trapped
+  ) {
     enter(d, 'around', time)
   }
 
@@ -332,7 +346,8 @@ export function demonstration_step(
       altitude = WAKE_ALTITUDE + wander(time, h.height, h.phase[0])
       cas = WAKE_SPEED + wander(time, h.pace, h.phase[1])
       const offset = 60 + (h.late / 500) * 200 // this pilot's starboard offset, m
-      heading = pic.ship.course + clamp((offset - pic.ship.starboard) * 0.02, -15, 15)
+      heading =
+        pic.ship.course + clamp((offset - pic.ship.starboard) * 0.02, -15, 15)
       if (pic.ship.along > pic.ship.bow + h.late) enter(d, 'break', time)
       break
     }
@@ -346,7 +361,8 @@ export function demonstration_step(
       if (pic.cas > 235 * KNOT) power = 0
       else cas = BREAK_SPEED // and never past 80%: a lever at the wall through the roll-out climbs the jet out of the pattern band
       speedbrake = pic.cas > DIRTY_SPEED ? 1 : 0
-      if (Math.abs(wrap(pic.heading - downwind)) < 25) enter(d, 'downwind', time)
+      if (Math.abs(wrap(pic.heading - downwind)) < 25)
+        enter(d, 'downwind', time)
       break
     }
     case 'downwind': {
@@ -359,8 +375,12 @@ export function demonstration_step(
       speedbrake = pic.cas > DIRTY_SPEED ? 1 : 0
       if (pic.cas < DIRTY_SPEED && d.told < 0) d.told = time
       // "descend to 600', slow to on-speed": both at once, from the
-      // dirty-up - the downwind here is short, the ship being stationary.
-      const settled = d.configured && pic.cas < SETTLED_SPEED && pic.altitude < DOWNWIND_ALTITUDE + 20 // slow AND down: a tight break rolled out at 800 ft turned 180 ft high into a 1.4 km groove
+      // dirty-up - the downwind here is short, the trades and her way behind
+      // the jet.
+      const settled =
+        d.configured &&
+        pic.cas < SETTLED_SPEED &&
+        pic.altitude < DOWNWIND_ALTITUDE + 20 // slow AND down: a tight break rolled out at 800 ft turned 180 ft high into a 1.4 km groove
       altitude =
         (d.configured ? DOWNWIND_ALTITUDE : WAKE_ALTITUDE) +
         wander(time, h.height, h.phase[0])
@@ -389,14 +409,19 @@ export function demonstration_step(
       const g = pic.groove
       cas = ONSPEED_CAS
       const remaining = Math.abs(wrap(pic.heading - g.heading))
-      limit = PATTERN_BANK + 3
+      limit = PATTERN_BANK + 8 // up to 35°: the arc is sized on the ground speed, and with the trades and her way behind it the outbound half needs 38°. Held to 30 it ran the jet a kilometre and a half aft of where the turn began, and the groove ran 3 km
       if (remaining > 60) {
         // The bank the arc needs at the speed flown, to the pattern's limit:
         // on-speed alpha in a bank is a faster jet, so the arc steepens a
         // little, and a bank sized for on-speed instead let a jet ten knots
         // over cross the line by 285 m. Past the limit the intercept absorbs it.
-        const radius = clamp(Math.abs(g.right) / Math.max(1 - Math.cos(remaining * DEGREE), 0.02), 400, 6000)
-        const needed = Math.atan((pic.speed * pic.speed) / (9.81 * radius)) / DEGREE
+        const radius = clamp(
+          Math.abs(g.right) / Math.max(1 - Math.cos(remaining * DEGREE), 0.02),
+          400,
+          6000
+        )
+        const needed =
+          Math.atan((pic.speed * pic.speed) / (9.81 * radius)) / DEGREE
         bank = -clamp(needed, 10, limit)
       } else {
         // The last of the turn is an intercept: the angle off the landing
@@ -429,7 +454,8 @@ export function demonstration_step(
         const riding = -Math.max(0, Math.min(80, d.closing)) * SLOPE
         const high = pic.altitude - Math.min(DOWNWIND_ALTITUDE, g.slope + 2)
         vertical = clamp(riding - high * 0.05 * h.ball, riding - 2.5, 3) // and up to the slope when the roll-out lands under it, as a go-around's wide re-entry does
-        if (pic.altitude > DOWNWIND_ALTITUDE) vertical = Math.max(vertical, NINETY_SINK) // still above the pattern: down at the 90's rate, no faster
+        if (pic.altitude > DOWNWIND_ALTITUDE)
+          vertical = Math.max(vertical, NINETY_SINK) // still above the pattern: down at the 90's rate, no faster
       }
       if (Math.abs(g.right) < 300 && remaining < 12 && Math.abs(lead) < 250) {
         enter(d, 'groove', time)
@@ -449,20 +475,30 @@ export function demonstration_step(
       // yawed the jet twenty degrees and rolled it onto its back on the
       // deck. So the drift habit is gone by 800 m, and the correction
       // tightens as the deck nears, under a bank that cannot strike a tip.
-      const right = lead + wander(time, h.drift, h.phase[2]) * clamp((g.along - 900) / 1000, 0, 1) // the drift is worked out by 900 m: the LSO writes up two metres from in close, five is gross
+      const right =
+        lead +
+        wander(time, h.drift, h.phase[2]) * clamp((g.along - 900) / 1000, 0, 1) // the drift is worked out by 900 m: the LSO writes up two metres from in close, five is gross
       // Three and a half times the angle to the line: at 1.8 a roll-out ten
       // metres right closed at half a metre a second and was still five
       // metres right in close.
-      const correction = clamp(-(Math.atan2(right, Math.max(150, g.along + 150)) / DEGREE) * 3.5, -15, 15)
-      heading = g.heading + correction - crab // the heading that puts the TRACK there
+      const correction = clamp(
+        -(Math.atan2(right, Math.max(150, g.along + 150)) / DEGREE) * 3.5,
+        -15,
+        15
+      )
+      heading =
+        g.heading +
+        correction +
+        Math.atan2(g.drift, Math.max(pic.speed, 1)) / DEGREE -
+        crab // the heading that puts the TRACK there, moving across with the line
       const riding = -Math.max(0, Math.min(80, d.closing)) * SLOPE
-      // The aim: a metre and a half above the slope through the groove - the
+      // The aim: a metre above the slope through the groove - the
       // lens allows the hook 1.8° high but only 0.7° low, the LSO writes up
       // 0.4° either way, and the loop's own wander is a metre or two - coming
       // down onto it over the last 180 m. Never under it: a jet asked for
       // extra sink over the round-down, with the lever's answer four seconds
       // behind, struck the ramp; a float over the wires is only a bolter.
-      const above = Math.min(1.5, 2.5 * clamp(g.along / 300, 0, 1))
+      const above = Math.min(1.0, 2.5 * clamp(g.along / 300, 0, 1)) // a metre and a half, against the ship under way and the trades down her deck, finished high in close and took the 4 wire
       const aim = Math.min(DOWNWIND_ALTITUDE, g.slope + above)
       const high = pic.altitude - aim
       // The lens is asymmetric - the hook may ride 1.8° high but only 0.7° low
@@ -470,7 +506,8 @@ export function demonstration_step(
       // gently, at no more than 1.2 m/s past the slope's own rate, and a low
       // one is climbed back to promptly. A correction that dived a 30 ft high
       // ball at a kilometre sailed through the slope to the low call.
-      const gain = (g.along > 1500 ? 0.04 : g.along > 900 ? 0.1 : 0.12) * h.ball
+      const gain =
+        (g.along > 1500 ? 0.06 : g.along > 900 ? 0.14 : 0.18) * h.ball // at 0.04, 0.10 and 0.12 a groove entered high was still a metre over the aim at the ramp
       // A high ball is worked off at no more than 1.5 m/s past the slope's
       // own rate through the middle of the groove: the lever's answer runs
       // four seconds behind, and a steeper catch-up carried the jet from 50
@@ -478,14 +515,24 @@ export function demonstration_step(
       // low limit is the lens's (0.7° beyond 250 m); over the round-down
       // there is no call, only the wires, and the ground effect to fly through.
       const spare = g.along > 1500 ? 2.5 : g.along > 300 ? 1.5 : 1
-      vertical = clamp(riding - high * gain, riding - spare, riding + (g.along > 900 ? 3.5 : 1.5))
+      vertical = clamp(
+        riding - high * gain,
+        riding - spare,
+        riding + (g.along > 900 ? 3.5 : 1.5)
+      )
       // Settling low over the round-down, past where the lens calls it: the
       // pilot's own wave-off, full power and the nose up, before the ramp.
       // On height, not the hook's angle, which at 130 m reads a landable
       // metre and a half low as 0.6°; and only while still sinking faster
       // than the slope - a jet three metres low and already coming back
       // up to it clears the ramp by four, and waved off it was a pass lost.
-      if (g.along < 300 && g.along > 40 && pic.altitude < g.slope - 3 && pic.vertical < riding) enter(d, 'around', time)
+      if (
+        g.along < 300 &&
+        g.along > 40 &&
+        pic.altitude < g.slope - 3 &&
+        pic.vertical < riding
+      )
+        enter(d, 'around', time)
       if (g.along < -40) enter(d, 'around', time) // past the wires still flying, and no wave-off called: a fly-through is a go-around
       break
     }
@@ -494,7 +541,10 @@ export function demonstration_step(
       // then the left turn back to the downwind at 600 ft with everything
       // still down, the lever coming back from the wall once the nose is up
       // (left there, the dirty jet runs away to 550 knots and never turns).
-      const climbing = !pic.grounded && pic.altitude > 45 && (pic.vertical > 0.5 || time - d.since > 8)
+      const climbing =
+        !pic.grounded &&
+        pic.altitude > 45 &&
+        (pic.vertical > 0.5 || time - d.since > 8)
       if (!climbing) power = 1
       else {
         cas = ONSPEED_CAS
@@ -504,7 +554,8 @@ export function demonstration_step(
       if (pic.grounded) vertical = 3 // rolling through the wires: the nose comes up and the jet flies off the angled deck
       limit = 30
       altitude = DOWNWIND_ALTITUDE
-      if (climbing && Math.abs(wrap(pic.heading - downwind)) < 20) enter(d, 'downwind', time)
+      if (climbing && Math.abs(wrap(pic.heading - downwind)) < 20)
+        enter(d, 'downwind', time)
       break
     }
     case 'released':
@@ -554,15 +605,20 @@ export function demonstration_step(
   if (bank === null && heading !== null) {
     bankWant = clamp(wrap(heading - pic.heading) * 2.5, -limit, limit)
   }
-  const roll = clamp((bankWant - pic.bank) * (pa ? 0.045 : 0.022) - pic.roll * 0.18, -0.7, 0.7)
+  const roll = clamp(
+    (bankWant - pic.bank) * (pa ? 0.045 : 0.022) - pic.roll * 0.18,
+    -0.7,
+    0.7
+  )
 
   // Pitch and power.
   let pitch: number
   let throttle = d.throttle
   const speeding = cas === null ? 0 : (cas - pic.cas) * 0.035 - d.trend * 0.15 // the lever's rate toward a speed
   // The lever for a sink rate on-speed is known to a pilot before the error
-  // is: on the model the dirty jet holds level flight at about 0.34 of the
-  // lever, the 3.5° slope at 0.25, and idle sinks it 8.5 m/s. Banked, the
+  // is: on the model the dirty jet holds level flight at about 0.326 of the
+  // lever, the 3.5° slope at 0.23, and idle sinks it 8.5 m/s (the lever
+  // commands 6% of military to 100%, through ground idle). Banked, the
   // same path takes more (lift by 1/cos of the bank, the induced drag with
   // its square), so the book grows by (1/cos)^1.5 and comes back down as
   // the wings level onto the groove. A slow trim learns what this weight
@@ -582,8 +638,11 @@ export function demonstration_step(
   // comes off with the roll-out, ahead of the sink or the float it would
   // otherwise chase four seconds late.
   const leading = d.phase === 'turn' ? bankWant : pic.bank
-  const banked = Math.pow(Math.cos(clamp(Math.abs(leading), 0, 60) * DEGREE), -1.5)
-  const book = clamp((0.34 + 0.023 * want) * banked, 0.02, 0.6)
+  const banked = Math.pow(
+    Math.cos(clamp(Math.abs(leading), 0, 60) * DEGREE),
+    -1.5
+  )
+  const book = clamp((0.326 + 0.0235 * want) * banked, 0.02, 0.6)
   // A sink still building past the wanted rate is met on the acceleration,
   // before the rate itself has run away: the lever's answer arrives four
   // seconds on, and waiting for the error alone put the jet 20 ft under the
@@ -591,12 +650,20 @@ export function demonstration_step(
   // On the groove only: in the final turn the roll-in itself is a building
   // sink, and met on the acceleration the lever went to 0.75 and the turn
   // was flown at 165 knots.
-  const arresting = d.phase === 'groove' && d.acceleration < 0 && error > -0.5 ? 0.25 : 0.06
-  const correcting = clamp(error * 0.08 - d.acceleration * arresting, -0.25, 0.35) // a high ball met at 0.02 let the roll-out's excess speed ride the whole start of the groove as height, and at 0.05 a metre and a half above the aim was carried from the middle to the ramp
+  const arresting =
+    d.phase === 'groove' && d.acceleration < 0 && error > -0.5 ? 0.25 : 0.06
+  const correcting = clamp(
+    error * 0.08 - d.acceleration * arresting,
+    -0.25,
+    0.35
+  ) // a high ball met at 0.02 let the roll-out's excess speed ride the whole start of the groove as height, and at 0.05 a metre and a half above the aim was carried from the middle to the ramp
   // The burble: astern of the island the air sinks, more the lower the jet,
   // and the lever's answer to the sink it makes arrives too late for the
   // ramp. A little power in close, before the sink shows, as the LSO teaches.
-  const burble = d.phase === 'groove' ? 0.035 * clamp((300 - pic.groove.along) / 150, 0, 1) : 0
+  const burble =
+    d.phase === 'groove'
+      ? 0.035 * clamp((300 - pic.groove.along) / 150, 0, 1)
+      : 0
   if (!pa) {
     // Up and away the stick is a load: the one that holds the path in this
     // bank, plus the vertical-speed error, less the acceleration already
@@ -604,8 +671,16 @@ export function demonstration_step(
     // A small stick is mostly the law's own damping (its g share fades in
     // with deflection), so a slow trim learns what the path really takes.
     const upright = Math.cos(clamp(Math.abs(pic.bank), 0, 75) * DEGREE)
-    d.pull = clamp(d.pull * (1 - dt / 4) + (want - pic.vertical) * 0.03 * dt, -0.1, 0.12) // leaks over ~4 s, so it can only ever hold what the error keeps asking for
-    const load = clamp(1 / upright + (want - pic.vertical) * 0.2 - d.acceleration * 0.05, 0.6, 4)
+    d.pull = clamp(
+      d.pull * (1 - dt / 4) + (want - pic.vertical) * 0.03 * dt,
+      -0.1,
+      0.12
+    ) // leaks over ~4 s, so it can only ever hold what the error keeps asking for
+    const load = clamp(
+      1 / upright + (want - pic.vertical) * 0.2 - d.acceleration * 0.05,
+      0.6,
+      4
+    )
     pitch = clamp((load - 1) / G_SPAN + d.pull, -0.3, 0.5)
     if (power !== null) throttle = power
     else if (cas !== null) throttle += speeding * dt
@@ -636,7 +711,10 @@ export function demonstration_step(
     // over. Fast is read on the indexer, not the airspeed alone: banked, the
     // jet is on-speed at 150 knots, and a lever idled for those ten knots
     // sank the whole final turn at idle and rolled out 100 ft under the slope.
-    const idling = decelerating && pic.cas > (cas ?? ONSPEED_CAS) + margin && pic.alpha < ONSPEED_ALPHA - 1.5
+    const idling =
+      decelerating &&
+      pic.cas > (cas ?? ONSPEED_CAS) + margin &&
+      pic.alpha < ONSPEED_ALPHA - 1.5
     const pathing = (want - pic.vertical) * 0.08
     // The law's datum is the level-flight alpha until the jet is nearly
     // on-speed, so a proportional pull alone leaves the nose a degree short
@@ -647,15 +725,28 @@ export function demonstration_step(
     const turning = d.phase === 'turn'
     if (turning) {
       // held: the turn's stick is the path's, and what it trims is the groove's
-    } else if (onspeed > 0.5) d.nose = clamp(d.nose + (ONSPEED_ALPHA - pic.alpha) * 0.03 * dt, -0.15, 0.15)
+    } else if (onspeed > 0.5)
+      d.nose = clamp(
+        d.nose + (ONSPEED_ALPHA - pic.alpha) * 0.03 * dt,
+        -0.15,
+        0.15
+      )
     else d.nose *= Math.max(0, 1 - dt / 2)
     // On-speed the stick still lends the path a little: the lever alone
     // works the path through the speed and swings the jet through the
     // phugoid every ten seconds, and a touch of nose with the power - as
     // the pilot gives it - damps that. A sink error of two metres a second
     // costs half a degree of alpha, inside what the LSO writes up.
-    const holding = (ONSPEED_ALPHA - pic.alpha) * 0.06 - pic.rate * 0.3 + (want - pic.vertical) * 0.015 + d.nose
-    const approaching = clamp(pathing * (1 - onspeed) + holding * onspeed, -0.5, 0.5) // a push of 0.35 held a fast dirty jet level against the law's rising datum and never started it down
+    const holding =
+      (ONSPEED_ALPHA - pic.alpha) * 0.06 -
+      pic.rate * 0.3 +
+      (want - pic.vertical) * 0.015 +
+      d.nose
+    const approaching = clamp(
+      pathing * (1 - onspeed) + holding * onspeed,
+      -0.5,
+      0.5
+    ) // a push of 0.35 held a fast dirty jet level against the law's rising datum and never started it down
     // The final turn is flown the other way round: the stick for the path,
     // the lever for the indexer. Rolling in tilts a seventh of the lift away
     // at once, and only the nose answers that in time - the lever, flying
@@ -673,14 +764,31 @@ export function demonstration_step(
     // while it is still slow - a slow trim learns, leaking over six seconds
     // so it only ever holds what the path keeps asking for: on the share
     // alone a turn 15 knots fast climbed 200 fpm against a wanted descent.
-    if (turning) d.carry = clamp(d.carry * (1 - dt / 6) + (want - pic.vertical) * 0.03 * dt, -0.12, 0.12)
-    const banking = (1 / Math.cos(clamp(Math.abs(pic.bank), 0, 60) * DEGREE) - 1) * TILT
-    const steering = clamp(pathing - d.acceleration * 0.03 + banking + d.carry - Math.max(0, pic.alpha - 9.8) * 0.12, -0.5, 0.5)
+    if (turning)
+      d.carry = clamp(
+        d.carry * (1 - dt / 6) + (want - pic.vertical) * 0.03 * dt,
+        -0.12,
+        0.12
+      )
+    const banking =
+      (1 / Math.cos(clamp(Math.abs(pic.bank), 0, 60) * DEGREE) - 1) * TILT
+    const steering = clamp(
+      pathing -
+        d.acceleration * 0.03 +
+        banking +
+        d.carry -
+        Math.max(0, pic.alpha - 9.8) * 0.12,
+      -0.5,
+      0.5
+    )
     // Into the groove the ball is flown with power and the nose on the
     // doughnut; the change of hands is made over three seconds, not in one
     // frame, or the nose steps as the pass begins.
-    const handover = d.phase === 'groove' ? clamp((time - d.since) / 3, 0, 1) : 1
-    pitch = turning ? steering : steering * (1 - handover) + approaching * handover
+    const handover =
+      d.phase === 'groove' ? clamp((time - d.since) / 3, 0, 1) : 1
+    pitch = turning
+      ? steering
+      : steering * (1 - handover) + approaching * handover
     if (power !== null) throttle = power
     else if (idling) {
       d.idling = true
@@ -699,13 +807,21 @@ export function demonstration_step(
       // already building is what carries it past on-speed, so the handful
       // comes off as the speed comes up, before the indexer reads fast.
       d.idling = false
-      d.trim = clamp(d.trim + (pic.alpha - ONSPEED_ALPHA) * 0.01 * dt, -0.1, 0.1)
-      throttle = Math.max(0.05, book + d.trim + (pic.alpha - ONSPEED_ALPHA) * INDEXER - d.trend * 0.06)
+      d.trim = clamp(
+        d.trim + (pic.alpha - ONSPEED_ALPHA) * 0.01 * dt,
+        -0.1,
+        0.1
+      )
+      throttle = Math.max(
+        0.05,
+        book + d.trim + (pic.alpha - ONSPEED_ALPHA) * INDEXER - d.trend * 0.06
+      )
       d.throttle = clamp(book + d.trim, 0.05, 1)
     } else {
       if (d.idling) d.trim = 0 // the idle regime hands over: the book value alone, until the path says otherwise
       d.idling = false
-      if (d.phase === 'groove' && pic.groove.along < 1500) d.trim = clamp(d.trim + error * 0.006 * dt, -0.08, 0.08) // learnt on the groove alone, and only once the entry has settled: the turn's errors are its bank's, and a trim that learned the entry's swing flew the rest of the groove a tenth of a lever short. Quick enough inside the mile to take out the book's own error, which at half this rate carried the jet four metres high from the middle to the wires and over them
+      if (d.phase === 'groove' && pic.groove.along < 1500)
+        d.trim = clamp(d.trim + error * 0.006 * dt, -0.08, 0.08) // learnt on the groove alone, and only once the entry has settled: the turn's errors are its bank's, and a trim that learned the entry's swing flew the rest of the groove a tenth of a lever short. Quick enough inside the mile to take out the book's own error, which at half this rate carried the jet four metres high from the middle to the wires and over them
       // Slow is the one thing a pass must not be: above 10° the lever comes
       // up whatever the height loop says.
       if (pic.alpha > 10) d.trim = Math.min(0.25, d.trim + 0.4 * dt)
@@ -717,7 +833,8 @@ export function demonstration_step(
     }
   }
   throttle = clamp(throttle, 0, cas === BREAK_SPEED ? 0.8 : 1)
-  if (pa && power === null) throttle = d.lever + clamp(throttle - d.lever, -HAND * dt, HAND * dt) // the hand's pace: leaving the idle regime stepped the lever from 0 to 0.51 in one frame
+  if (pa && power === null)
+    throttle = d.lever + clamp(throttle - d.lever, -HAND * dt, HAND * dt) // the hand's pace: leaving the idle regime stepped the lever from 0 to 0.51 in one frame
   d.lever = throttle
   if (!pa || power !== null) d.throttle = throttle
   d.targets = {
@@ -727,5 +844,15 @@ export function demonstration_step(
     heading: heading ?? pic.heading,
     bank: bankWant,
   }
-  return { pitch, roll, yaw: 0, throttle, speedbrake, gear, flap, hook, released }
+  return {
+    pitch,
+    roll,
+    yaw: 0,
+    throttle,
+    speedbrake,
+    gear,
+    flap,
+    hook,
+    released,
+  }
 }

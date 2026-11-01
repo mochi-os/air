@@ -606,7 +606,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0}, u_slope:{value:0.069}, u_displacement0:{value:null}, u_displacement1:{value:null}, u_derivative0:{value:null}, u_derivative1:{value:null}, u_derivative2:{value:null}, u_lengths:{value:new THREE.Vector3(CASCADES[0],CASCADES[1],CASCADES[2])}, u_spectrum:{value:new THREE.Vector3()}, u_beam:{value:new THREE.Color(1,1,1)},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
 		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms,
 		u_wake:{value:new Float32Array(WAKE_POINTS*4)}, u_trail:{value:new THREE.DataTexture(new Float32Array(WAKE_TRAIL*2),WAKE_TRAIL,1,THREE.RGFormat,THREE.FloatType)}, u_trail_step:{value:0}, u_wake_group:{value:new Float32Array(WAKE_GROUPS*4)}, u_wake_count:{value:0}, u_wake_origin:{value:new THREE.Vector2()}, u_wake_bounds:{value:new THREE.Vector4()}, u_ship:{value:new THREE.Vector4()}, u_hull_span:{value:new THREE.Vector4(0,1,1,2)}, u_hull:{value:new Float32Array(WAKE_HULL*4)}, u_hull_beam:{value:0}, u_screws:{value:new THREE.Vector4(-1,-1,-1,-1)}, u_screw:{value:0}, u_wake_sea:{value:0}, u_wake_travelled:{value:0}, u_wake_turn:{value:new THREE.Vector2(1,0)},   // the ship's bow wave and wake (wake.ts), set each frame by wake_frame
-		u_chart:{value:new THREE.Vector2()}, u_curve:{value:new THREE.Vector2()}, u_home:{value:new THREE.Vector4(1,0,0,1)}, u_home_shift:{value:new THREE.Vector2()} },   // the chart the sea's patterns are laid on; how the sea falls away from the frame's anchor; the world frame's plan, where the atoll's imagery is laid (chart_settle)   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
+		u_chart:{value:new THREE.Vector2()}, u_curve:{value:new THREE.Vector2()}, u_home:{value:new THREE.Vector4(1,0,0,1)}, u_home_shift:{value:new THREE.Vector2()} },   // the chart the sea's patterns are laid on; how the sea falls away from the frame's anchor; the chart's plan, where the atoll's imagery is laid (chart_settle)   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh,u_chart,u_curve,u_home_shift; uniform vec4 u_home; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm; varying vec2 v_plan;
 		`+SEA_TURN+`
 		#ifdef WAVES
@@ -617,7 +617,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		float wave(vec2 p,vec4 w,float amp,out vec2 grad){ vec2 dir=turn(normalize(w.xy)); float k=6.2831853/w.z; float ph=dot(dir,p)*k-u_time*sea_rate(w.w/w.z); grad=dir*(k*amp*cos(ph)); return amp*sin(ph); }   // sin(kx - wt) propagates ALONG dir (downwind): the old +wt sign sent every swell racing UPWIND — a 420 m wave sweeping against the wind at 14 m/s, under whitecap tails built to trail downwind-moving crests
 		float fit(float gap,float span){ return 1.0-smoothstep(span*0.25,span*0.5,gap); }   // sampling honesty (#71): a wave the LOCAL vertex spacing cannot carry (fewer than ~2-4 vertices per wavelength) folds into a gear-amplified beat lattice that races over the sea with camera motion — the moire. Fade each train out where the camera-centred grid gets coarser than its wavelength supports; the texture octaves own those scales beyond
 		void main(){ vec4 wp=modelMatrix*vec4(position,1.0); vec2 xz=wp.xz+u_chart; vec2 g,gt=vec2(0.0); float h=0.0;
-		vec2 home=u_home_shift+vec2(u_home.x*wp.x+u_home.z*wp.z, u_home.y*wp.x+u_home.w*wp.z);   // the world frame's plan position, where the atoll's imagery lies
+		vec2 home=u_home_shift+vec2(u_home.x*wp.x+u_home.z*wp.z, u_home.y*wp.x+u_home.w*wp.z);   // the chart's plan position, where the atoll's imagery lies
 		vec2 sag=2.0*wp.xz*u_curve; float fall=wp.x*wp.x*u_curve.x+wp.z*wp.z*u_curve.y;   // the curved sea's fall below the frame's level, and its slope
 		float ring=length(position.xz); float gap=max(u_mesh.x*sqrt(ring),u_mesh.y*ring);   // local grid spacing of the quadratic polar disc: radial 2*sqrt(r*R)/rings, azimuthal 2*pi*r/sectors
 		float calm=0.0; if(u_water_on>0.5){ vec2 wuv=clamp((home+u_water_half)/(2.0*u_water_half),0.0,1.0); calm=texture2D(u_lagoon,wuv).r; }   // atoll interior (reef flat + lagoon incl. the deep basin) = calm
@@ -670,7 +670,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		void main(){ vec3 V=normalize(cameraPosition-v_world); vec3 L=normalize(u_sun);
 			vec2 xz=unturn(v_world.xz+u_chart); float dist=length(cameraPosition-v_world);   // the sea's own frame (SEA_TURN): its textures, foam and shading swells are laid out about that axis
 			vec2 wx=dFdx(v_world.xz), wy=dFdy(v_world.xz); float wake_foam,wake_air,wake_slick; vec2 wake_lean;
-			vec2 wake_off=v_world.xz-u_wake_origin; wake_off=vec2(u_wake_turn.x*wake_off.x-u_wake_turn.y*wake_off.y,u_wake_turn.y*wake_off.x+u_wake_turn.x*wake_off.y);   // into the axes of the world frame, where her track is laid
+			vec2 wake_off=v_world.xz-u_wake_origin; wake_off=vec2(u_wake_turn.x*wake_off.x-u_wake_turn.y*wake_off.y,u_wake_turn.y*wake_off.x+u_wake_turn.x*wake_off.y);   // into the axes of the chart, where her track is laid
 			wake_at(wake_off,max(length(wx),length(wy)),wake_foam,wake_air,wake_slick,wake_lean);   // the ship's bow wave and wake: foam, the churned water's green, the ripples it smooths and its Kelvin waves
 			if(u_foam_debug>3.5){ gl_FragColor=vec4(clamp(wake_foam,0.0,1.0),clamp(wake_slick,0.0,1.0),clamp(length(wake_lean)*8.0,0.0,1.0),clamp(wake_air,0.0,1.0)); return; }   // dev_wake_map: the wake's own channels
 			// --- multi-octave scrolling detail normals, distance-faded (the fine texture MSFS has at every altitude)
@@ -957,7 +957,7 @@ const fs_scene=new THREE.Scene(); const fs_cam=new THREE.OrthographicCamera(-1,1
 // the sea and the island is cast by the cloud the pilot can actually see. The two
 // materials also share these uniform OBJECTS by reference, so apply_clouds writes
 // each preset exactly once and no copy can drift.
-const CLEAR={ x:-1125+Math.sin(68*Math.PI/180)*15000, y:0, z:2898-Math.cos(68*Math.PI/180)*15000 }, MERGE={ x:0, y:0, z:0 };   // the clearings, in the world frame
+const CLEAR={ x:-1125+Math.sin(68*Math.PI/180)*15000, y:0, z:2898-Math.cos(68*Math.PI/180)*15000 }, MERGE={ x:0, y:0, z:0 };   // the clearings, in the chart
 const cloud_field_uniforms={ tNoise:{value:null}, tDetail:{value:null}, uTime:{value:0}, uDownwind:downwind,
 	uBase:{value:600.0}, uTop:{value:2400.0}, uHigh:{value:5000.0}, uCoverage:{value:0.42},
 	uDensity:{value:1.0}, uFlat:{value:0.0}, uDark:{value:0.45}, uGate:{value:new THREE.Vector2(0.22,0.50)},
@@ -3470,7 +3470,7 @@ function nav_sense(dt){ const gz=ownship.gauges||{}, station=tacan(), t=radios.t
 // and the first airfield as waypoint 2, the ship's TACAN station, and the ship and every airfield as
 // GPS points.
 function mission(){ const ship={ name:SHIP.ident, x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.height };
-	const fields=airports.filter(ap=>ap.code).map(ap=>{ const p=theatre_point(HOME.sea(ap.x,ap.z).point); return { name:ap.code, x:p.x, y:p.y, z:p.z, elevation:ap.sy-2.2 }; });   // the field's sea-level point, laid in the world frame
+	const fields=airports.filter(ap=>ap.code).map(ap=>{ const p=chart_point(HOME.sea(ap.x,ap.z).point); return { name:ap.code, x:p.x, y:p.y, z:p.z, elevation:ap.sy-2.2 }; });   // the field's sea-level point, laid in the chart
 	return { identifier:map_name.split(" ")[0].slice(0,8), waypoints:[{ index:1, point:ship },...fields.slice(0,1).map(point=>({ index:2, point }))],
 		stations:[{ channel:SHIP.tacan.channel, band:SHIP.tacan.band, x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.height, name:SHIP.ident, variation:magnetic_variation(CARRIER) }], points:[ship,...fields] }; }   // the station's variation is the model's where it lies (24.4.3)
 // INS_KNOB: the INS mode select knob's node, the axis it turns about in its parent's frame, and the turn
@@ -3935,7 +3935,7 @@ function time_to_go(seconds){ const s=Math.min(Math.round(seconds),8*3600+59*60+
 function hsi_chart(x,cy,radius,ppm,rot,ox,oz){ x.save();
 	x.beginPath(); x.arc(256,cy,radius,0,Math.PI*2); x.clip();
 	x.translate(256,cy); x.rotate(-rot);
-	const ship={ x:ox, z:oz }, home=homeward({ x:ox, y:0, z:oz }); ox=home.x; oz=home.z;   // the coast and the field are laid in the world frame; the ship floats in the engine's
+	const ship={ x:ox, z:oz }, home=homeward({ x:ox, y:0, z:oz }); ox=home.x; oz=home.z;   // the coast and the field are laid in the chart; the ship floats in the engine's
 	x.fillStyle="#33402f"; x.strokeStyle="#55684e"; x.lineWidth=1.5;
 	for(const polygon of island_polygons||[]){ x.beginPath();
 		for(let k=0;k<polygon.length;k++){ const sx=(polygon[k][0]-ox)*ppm, sy=(polygon[k][1]-oz)*ppm;
@@ -6836,7 +6836,7 @@ function build_buildings(af){   // OSM footprints → textured walls + gable/fla
 // Once the jet is THEATRE from the anchor the frame moves under it (reframe):
 // the flight core carries what it holds, theatre_carry what the engine holds,
 // and nothing drawn or flown is ever far from the origin or off the level. The
-// map stays where the world frame (HOME, the tangent frame at Midway) lays it:
+// map stays where the chart (HOME, the tangent frame at Midway) lays it:
 // its meshes hang on home_root, its records are read through homeward.
 const THEATRE=4000;   // m: here the frame's up leans 0.04 degrees off the jet's, and the sea lies 1.3 m below its level
 const home_root=new THREE.Group(); scene.add(home_root);
@@ -6886,23 +6886,28 @@ function theatre_carry(was,r){
 	navigate.carry(nav,was,r);
 	hist_valid=false; shadow_frame=0; }   // the clouds' history and shadow were laid in the old frame
 // theatre_settled lays out what follows the frame rather than what is carried
-// in it: the map hung where the world frame has it, the ship where she
+// in it: the map hung where the chart has it, the ship where she
 // floats, the patterns of the sea and the clouds, and the stars over the
 // latitude flown.
-function theatre_settled(){ const r=theatre.inward;
+function theatre_settled(){ const r=theatre.charted;   // the map is hung where the chart has it
 	home_root.position.set(r.move.x,r.move.y,r.move.z); home_root.quaternion.set(r.turn.x,r.turn.y,r.turn.z,r.turn.w); home_root.updateMatrixWorld(true);
 	if(flight_active) carrier_pose(carrier_time);
 	chart_settle();
 	const latitude=theatre.frame.latitude/DEGREE; if(Math.abs(latitude-sky_latitude)>0.05) sky_place(latitude,MIDWAY.longitude); }   // the stars stand over where the jet is at Midway's hour: the mission's time of day is the place's own, as the sun's is
-// theatre_reset puts the engine's frame back on the world frame: every spawn
-// is laid there.
+// theatre_reset puts the engine's frame back on the chart, Midway's: every
+// spawn is laid there.
 function theatre_reset(){ if(!theatre.frame.same(HOME)) reframe(HOME); }
-// homeward is a point of the engine's frame in the world frame; theatre_point
-// the other way.
-function homeward(p){ return earth_point(theatre.outward,{ x:p.x, y:p.y??0, z:p.z }); }
+// homeward is a point of the engine's frame in the chart (HOME), where the map,
+// the ship's track and the clouds' clearings are laid; chart_point carries one
+// of the chart back. worldward is a point of the engine's frame in the world
+// frame, Earth-centred (EARTH), which the server, the wire and the recordings
+// keep; theatre_point carries one of the world back.
+function homeward(p){ return earth_point(theatre.charting,{ x:p.x, y:p.y??0, z:p.z }); }
+function chart_point(p){ return earth_point(theatre.charted,{ x:p.x, y:p.y??0, z:p.z }); }
+function worldward(p){ return earth_point(theatre.outward,{ x:p.x, y:p.y??0, z:p.z }); }
 function theatre_point(p){ return earth_point(theatre.inward,{ x:p.x, y:p.y??0, z:p.z }); }
 // home_adopt hangs what a build adds to the scene on home_root: the map is laid
-// in the world frame.
+// in the chart.
 function home_adopt(build){ const before=new Set(scene.children); const made=build(); for(const o of [...scene.children]) if(!before.has(o)) home_root.add(o); return made; }
 // The sea and the clouds draw their patterns about a chart: the engine's frame
 // shifted by where its anchor has wandered, kept within a span on the GPU, so
@@ -6918,9 +6923,9 @@ function chart_settle(){ const was=chart_anchor; const at=theatre.frame;
 	const fold=(v,span)=>v-span*Math.round(v/span);
 	ocean_mat.uniforms.u_chart.value.set(fold(chart.x,SEA_SPAN),fold(chart.z,SEA_SPAN));
 	cloud_field_uniforms.uChart.value.set(fold(chart.x,CLOUD_SPAN),fold(chart.z,CLOUD_SPAN));
-	const r=theatre.outward, e=earth_vector(r,{ x:1, y:0, z:0 }), s2=earth_vector(r,{ x:0, y:0, z:1 }), o=r.move;   // the map's imagery: the world frame's plan position of a point of this frame's sea, near Midway
+	const r=theatre.charting, e=earth_vector(r,{ x:1, y:0, z:0 }), s2=earth_vector(r,{ x:0, y:0, z:1 }), o=r.move;   // the map's imagery: the chart's plan position of a point of this frame's sea, near Midway
 	ocean_mat.uniforms.u_home.value.set(e.x,e.z,s2.x,s2.z); ocean_mat.uniforms.u_home_shift.value.set(o.x,o.z);
-	const u=cloud_field_uniforms, clear=theatre_point(CLEAR), merge=theatre_point(MERGE);   // the clearings, where the world frame lays them, on the clouds' chart
+	const u=cloud_field_uniforms, clear=chart_point(CLEAR), merge=chart_point(MERGE);   // the clearings, where the chart lays them, on the clouds' chart
 	u.uClear.value.x=fold(clear.x+chart.x,CLOUD_SPAN); u.uClear.value.y=fold(clear.z+chart.z,CLOUD_SPAN);
 	u.uMerge.value.x=fold(merge.x+chart.x,CLOUD_SPAN); u.uMerge.value.y=fold(merge.z+chart.z,CLOUD_SPAN);
 	const sin=Math.sin(at.latitude), meridian=6378137*(1-0.00669437999014)/Math.pow(1-0.00669437999014*sin*sin,1.5), prime=6378137/Math.sqrt(1-0.00669437999014*sin*sin);
@@ -7030,7 +7035,7 @@ function update_papi(p){ const flash=(sim_time*1000%520)<90;   // REIL: ~2 Hz sy
 	const bph=(sim_time*1000%3000)<1500;                        // aerodrome beacon: white / green alternating ~1.5 s each
 	for(const m of beacon_lights) m.visible=dark && ((m.userData.phase===0)===bph);
 	for(const m of window_mats) m.emissiveIntensity=dark?1.15:0;    // building windows light up after dark
-	p=homeward(p);   // the field's lights are laid in the world frame
+	p=homeward(p);   // the field's lights are laid in the chart
 	for(const d of dir_lights){ const facing=((p.x-d.x)*d.fx+(p.z-d.z)*d.fz)>0; d.mesh.visible=dark&&facing&&(!d.flash||flash); }
 	for(const ap of airports){
 	for(const set of ap.papis){
@@ -7972,7 +7977,7 @@ function runway_reciprocal(){ const ap=airports[0]; return ap?compass(-ap.dir.x,
 // of the field below 3,000', which is how a free flight practises circuits.
 function hints_runway(st){ hinting="runway";
 	const ap=airports[0]; if(!ap) return;
-	const own=homeward(ownship.pos);   // the field is laid in the world frame
+	const own=homeward(ownship.pos);   // the field is laid in the chart
 	const rx=(own.x-ap.start.x), rz=(own.z-ap.start.z);
 	const hx=ap.dir.x, hz=ap.dir.z;
 	const along=rx*hx+rz*hz, lateral=Math.abs(rz*hx-rx*hz), range=Math.hypot(rx,rz);
@@ -8071,7 +8076,7 @@ function hints_watch(){ if(cfg.hints===false||!running) return;
 	if(hint_key!=null&&!WAITING.has(hint_key)&&glance-hint_since>=HINT_DWELL) hint_rows=hint_key=null;
 	const st=mission_start(), ap=airports[0], own=homeward(ownship.pos);
 	const ship=Math.hypot((ownship.pos.x-CARRIER.x),(ownship.pos.z-CARRIER.z));
-	const field=ap?Math.hypot((own.x-ap.start.x),(own.z-ap.start.z)):Infinity;   // the field in the world frame
+	const field=ap?Math.hypot((own.x-ap.start.x),(own.z-ap.start.z)):Infinity;   // the field in the chart
 	// The launch bar (#127): a jet on a catapult spot with the bar up is told how to get hooked up, and the line
 	// holds until the bar goes down or the jet leaves the spot, which re-arms it for the next catapult.
 	if(cold_start&&hints_start()) return;   // a cold and dark jet is coached through its start (#133) before anything else
@@ -9430,7 +9435,7 @@ function recording_sample(){
 				...(grace?{fate:m.fate||"lost",killed:!!m.killed,...(m.burst!==undefined?{burst:m.burst,closure:m.closure,when:m.fated,judged:m.judged,...(m.off?{off:m.off}:{})}:{})}:{}) } }); }
 	if(carrier_model) list.push({ id:3, x:CARRIER.x, y:theatre.frame.sea(CARRIER.x,CARRIER.z).point.y, z:CARRIER.z, roll:0, pitch:0, yaw:(degrees(Math.atan2(CARRIER_C,CARRIER_S))+360)%360,   // the ship under way, by its compass heading: a replay poses the carrier from it, and Tacview draws it
 		name:"Nimitz", label:SHIP.ident, colour:"Blue", kind:"Sea+Watercraft+AircraftCarrier" });
-	for(const o of list){ const p=homeward(o); o.x=p.x; o.y=p.y; o.z=p.z; }   // a recording keeps the world frame: the engine's moves under it
+	for(const o of list){ const p=worldward(o); o.x=p.x; o.y=p.y; o.z=p.z; }   // a recording keeps the world frame, Earth-centred: the engine's moves under it
 	recorder.add(sim_time,list); }
 // recording_file renders what is buffered; null when nothing was captured.
 function recording_file(){
@@ -10057,7 +10062,7 @@ if(DEV_MODE) (globalThis as any).dev_place=function(x,y,z,dx,dz,speed,hold=false
 	if(hold){ const trimmed=flight_get(); ownship.throttle=Math.max(0,Math.min(1,(trimmed[STATE.engine]-IDLE)/(1-IDLE))); } };   // hold: the lever at the power the trim solved, so the jet holds the level flight it was given
 if(DEV_MODE) (globalThis as any).dev_field=function(){ const ap=airports[0]; return ap?{x:ap.start.x,y:ap.sy,z:ap.start.z,dx:ap.dir.x,dz:ap.dir.z}:null; };   // #91 probe: the airfield frame the runway hints fly against
 if(DEV_MODE){ const frame=(x,z)=>({ fa:carrier_fore_aft(x,z), lat:carrier_lateral(x,z) });   // probes: the ship under way, and what rides it in its own frame
-	(globalThis as any).dev_carrier=()=>{ const up=new THREE.Vector3(0,1,0).applyQuaternion(carrier_turn), at=homeward({ x:CARRIER.x-up.x*CARRIER.height, y:CARRIER.deckY-up.y*CARRIER.height, z:CARRIER.z-up.z*CARRIER.height }), bow=earth_vector(theatre.outward,{ x:Math.cos(CARRIER_YD), y:0, z:-Math.sin(CARRIER_YD) });   // the ship in the world frame, where her chart and her track are laid: the sea under her deck, which stands her height up her leaning mast; the parts on her deck relative to her
+	(globalThis as any).dev_carrier=()=>{ const up=new THREE.Vector3(0,1,0).applyQuaternion(carrier_turn), at=homeward({ x:CARRIER.x-up.x*CARRIER.height, y:CARRIER.deckY-up.y*CARRIER.height, z:CARRIER.z-up.z*CARRIER.height }), bow=earth_vector(theatre.charting,{ x:Math.cos(CARRIER_YD), y:0, z:-Math.sin(CARRIER_YD) });   // the ship in her chart, where her track is laid: the sea under her deck, which stands her height up her leaning mast; the parts on her deck relative to her
 		return { x:at.x, z:at.z, heading:Math.atan2(-bow.z,bow.x), closed:deck_closed, time:carrier_time, chart:{ ...CHART }, own:{ ...frame(ownship.pos.x,ownship.pos.z), y:ownship.pos.y },
 		cat:frame(cat_spot(0).x,cat_spot(0).z), shuttle:carrier_shuttles?(v=>frame(v.x,v.z))(carrier_shuttles[Math.max(0,on_cat_spot())].mesh.getWorldPosition(new THREE.Vector3())):null,
 		touchdown:carrier_ols?frame(carrier_ols.tdx,carrier_ols.tdz):null, model:carrier_model?(v=>frame(v.x,v.z))(carrier_model.getWorldPosition(new THREE.Vector3())):null,
@@ -10101,7 +10106,7 @@ function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0; own_writt
 	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
 	if(!MULTIPLAYER) feed(ownship.fate, own_killer, cfg.callsign||"701");   // multiplayer reports from the kill event instead, which names every death in the match rather than only this one
 	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z,"own"); ownship.group.visible=false; ownship.speed=0; }
-function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;   // p in the world frame, where the field is laid
+function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;   // p in the chart, where the field is laid
 	return Math.abs(dx*r.fx+dz*r.fz)<r.hl && Math.abs(dx*r.fz-dz*r.fx)<r.hw; }
 function stance_of(kind){ const spec=AIRCRAFT_MODELS[kind||own_aircraft()]; return (spec&&spec.stance)||GEAR; }   // #203: the resting height the DRAWN model of THIS aircraft needs. GEAR is a single global 11 cm shallower than the hornet's own stance, so wherever it governed a resting height it pulled the origin below what the model needs - four times the rest-pose margin. It survives only as the fallback for an aircraft that declares no stance
 const GEAR=2.46;   // fallback resting height for an aircraft with no stance of its own - prefer stance_of(). The model's wheel bottoms measure 2.457 m below the (bbox-centred) origin in the gear-down pose; per-aircraft stance lives in AIRCRAFT_MODELS. Lower buries the wheels — the model's wheel bottoms measure 2.457 m below the (bbox-centred) origin in the gear-down pose; per-aircraft stance lives in AIRCRAFT_MODELS. Lower buries the wheels
@@ -10155,7 +10160,7 @@ function wake_frame(){ const u=ocean_mat.uniforms;
 	wake.follow(time,source);
 	const drawn=wake.path(time,now,SHIP.waterline,u.u_wake.value,u.u_trail.value.image.data,u.u_wake_group.value);
 	u.u_wake_count.value=drawn.count; u.u_trail.value.needsUpdate=true; u.u_trail_step.value=drawn.step;
-	{ const at=theatre_point(HOME.sea(now.x,now.z).point), bow=earth_vector(theatre.inward,{ x:Math.cos(now.heading), y:0, z:-Math.sin(now.heading) }), turn=Math.atan2(-bow.z,bow.x)-now.heading;   // her track is the world frame's: her reference point in the engine's frame, and how far its axes turn from the world frame's there
+	{ const at=chart_point(HOME.sea(now.x,now.z).point), bow=earth_vector(theatre.charted,{ x:Math.cos(now.heading), y:0, z:-Math.sin(now.heading) }), turn=Math.atan2(-bow.z,bow.x)-now.heading;   // her track is the chart's: her reference point in the engine's frame, and how far its axes turn from the chart's there
 		u.u_wake_origin.value.set(at.x,at.z); u.u_wake_turn.value.set(Math.cos(turn),Math.sin(turn)); }
 	u.u_wake_bounds.value.set(drawn.centre[0],drawn.centre[1],drawn.radius,drawn.reach);
 	u.u_ship.value.set(0,0,now.heading,drawn.speed); u.u_wake_travelled.value=drawn.travelled;
@@ -10224,10 +10229,10 @@ function ground_height(x,z){   // top of the solid surface under (x,z): carrier 
 		const h=deck_y_at(carrier_model,x,z,-1e9);
 		if(h>-1e8 && h<CARRIER.deckY+4){ _ground_kind="deck"; return h>CARRIER.deckY-2.5?CARRIER.deckY:h; }   // the flight deck is one horizontal plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to the measured plane; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
 	}
-	const home=homeward({ x, y:0, z }), h=land_height(home.x,home.z);   // the map is laid in the world frame
-	return h>-1e8?theatre_point({ x:home.x, y:h, z:home.z }).y:h;
+	const home=homeward({ x, y:0, z }), h=land_height(home.x,home.z);   // the map is laid in the chart
+	return h>-1e8?chart_point({ x:home.x, y:h, z:home.z }).y:h;
 }
-function land_height(x,z){   // the map's own surface at a world frame (x, z)
+function land_height(x,z){   // the map's own surface at a chart (x, z)
 	if(obstacles.runway && over_runway({x,z})){ _ground_kind="runway"; return ISLAND_H+RUNWAY_FLOAT; }
 	for(const a of obstacles.aprons){ if(pip(x,z,a)){ _ground_kind="apron"; return ISLAND_H+AIRFIELD_FLOAT; } }
 	for(const is of obstacles.islands){ if(x>is.minx-SKIRT&&x<is.maxx+SKIRT&&z>is.minz-SKIRT&&z<is.maxz+SKIRT){
@@ -10442,7 +10447,7 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 	darts:net?net.darts.map(d=>({p:d.position.map(n=>+n.toFixed(0)),v:d.velocity.map(n=>+n.toFixed(0)),s:d.shooter})):[], drawn:darts_pool.filter(p=>p.mesh.visible).length, firing:[...remotes.values()].filter(st=>st.firing).length, fired:dev_fired, remotes:remotes.size,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	burn:+Math.max(own_burn[0],own_burn[1]).toFixed(2), burning:own_burning, leak:+own_leak.toFixed(2) });   // dev: CDP-reachable state sampler for headless scenario verification (#72); darts/drawn/firing/remotes verify the multiplayer weapon visuals over a live wire; burn/leak mirror the damage-visual drivers (#78) (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
-	theatre_reset();   // the scenarios are laid in the world frame
+	theatre_reset();   // the scenarios are laid in the chart
 	let T,d;
 	if(sc.carrier){ if(!carrier_ols) return; const o=carrier_ols;
 		d=new THREE.Vector3(-o.apx,0,-o.apz).normalize(); T=new THREE.Vector3(o.tdx,0,o.tdz);   // fly the approach axis toward the aim wire
@@ -10501,7 +10506,7 @@ function demonstration_picture(){
 	const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
 	const rx=(ownship.pos.x-O.x), rz=(ownship.pos.z-O.z);
 	const o=carrier_ols, s=o?ols_dev(ownship.pos,o):{ along:1e5, lat:0, dist:1e5, dev:0 };
-	const rates=last_out||[];
+	const rates=last_out||[], known=ship_known(carrier_time), way=known&&Number.isFinite(known.speed)?known.speed:0;   // her way through the water along her hull
 	return {
 		time:sim_time, altitude:ownship.pos.y, vertical:ownship.vely??0, speed:ownship.speed??0, cas:ownship.cas??ownship.speed??0, alpha:ownship.aoa??0,
 		heading:(Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360, track:(Math.atan2(ownship.velx||ownship.fwd.x,-(ownship.velz||ownship.fwd.z))*180/Math.PI+360)%360, bank:-Math.atan2(ownship.right.y,ownship.up.y)*180/Math.PI, pitch:Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1))*180/Math.PI,
@@ -10510,7 +10515,7 @@ function demonstration_picture(){
 		grounded:!!ownship.grounded, trapped:!!ownship.trapped, waving:!!ownship.waving, crashed:crash_t>0,   // no bolter flag: the grade is sticky until the next trap, and the pilot reads the touch itself
 		coached:!!hinted[HINT.form],
 		ship:{ along:rx*hx+rz*hz, starboard:-rx*hz+rz*hx, bow:SHIP.length/2, course:(Math.atan2(hx,-hz)*180/Math.PI+360)%360 },
-		groove:{ along:s.along, right:-s.lat, deviation:s.dev, slope:o?o.dy+HOOK_DROP+Math.tan(3.5*D2R)*Math.max(0,s.along+HOOK_AFT):ownship.pos.y, heading:o?(Math.atan2(-o.apx,o.apz)*180/Math.PI+360)%360:0 } };   // the approach axis (apx, apz) points aft from the touchdown; the jet flies its reverse
+		groove:{ along:s.along, right:-s.lat, deviation:s.dev, slope:o?o.dy+HOOK_DROP+Math.tan(3.5*D2R)*Math.max(0,s.along+HOOK_AFT):ownship.pos.y, heading:o?(Math.atan2(-o.apx,o.apz)*180/Math.PI+360)%360:0, drift:o?way*(hx*o.apz-hz*o.apx):0 } };   // drift: the landing line's own motion to the pilot's right, her way across the angled deck   // the approach axis (apx, apz) points aft from the touchdown; the jet flies its reverse
 }
 function demonstration_drive(dt){
 	const c=demonstration_step(demonstration,demonstration_picture(),dt);
@@ -10542,7 +10547,7 @@ function playback_local(poses){ const r=theatre.inward; if(r.plain) return poses
 	return poses.map(p=>{ const at=earth_point(r,p), v=earth_vector(r,{ x:p.vx, y:p.vy, z:p.vz }); return { ...p, x:at.x, y:at.y, z:at.z, vx:v.x, vy:v.y, vz:v.z }; }); }
 // playback_arm sets the mission up as the recording's header describes it.
 function playback_arm(text){
-	carrier_place(theatre_point(HOME.sea(CHART.x,CHART.z).point),Math.PI/2-CHART.yaw);   // a recording made before the ship sailed has none in it: it lay where the map charts it
+	carrier_place(chart_point(HOME.sea(CHART.x,CHART.z).point),Math.PI/2-CHART.yaw);   // a recording made before the ship sailed has none in it: it lay where the map charts it
 	playback=playback_parse(text); playback_rate=1; playback_follow=false; playback_compressed=/,Compression=(?!1(?![\d.]))/.test(text); playback_expect=null; playback_clock=0; playback_spool=0; playback_heard=-1; playback_stores=""; playback_coach=null; playback_rails=[-1,-1,null];
 	const info=playback.information;
 	if(info.Match_start) cfg.start=info.Match_start;
@@ -10820,7 +10825,7 @@ function weather(){
 	// This key activates the whole of flight/wind.go (shear, veer, gusts, carrier
 	// burble). The vector points where the air moves, verified empirically: the
 	// HUD wind arrow on the 070° bow must read a headwind.
-	let wind={ x:-12.9*Math.sin(70*D2R), z:12.9*Math.cos(70*D2R) };   // blowing FROM 070 toward 250 in the world frame (x east, z south)
+	let wind={ x:-12.9*Math.sin(70*D2R), z:12.9*Math.cos(70*D2R) };   // blowing FROM 070 toward 250, east and south wherever it blows (x east, z south)
 	if(DEV_MODE){ const w=new URLSearchParams(location.search).get("wind"); if(w!==null){ const knots=parseFloat(w)||0; const scale=knots*0.5144/12.9; wind={ x:wind.x*scale, z:wind.z*scale }; } }   // &wind=<knots> (0 = calm) — headless A/B isolation of wind effects (#44)
 	if(MULTIPLAYER){ const blown=match_wind(); if(blown) wind=blown; }   // a server that predates the match's wind flies still air, and the sea keeps the trades it always drew
 	return { seed:1, cloud, wind, cheat:{ fuel:cheat("fuel") } };
@@ -10904,7 +10909,7 @@ function approach_over(angle){ const p=ownship.pos, d={ x:ownship.fwd.x, z:ownsh
 		throttle=flight_approach(p.x,p.y,p.z, hx,hz, path/D2R, FUEL());
 		const b=flight_get(); speed=Math.hypot(b[STATE.velocity]-w.x,b[STATE.velocity+1]-w.y,b[STATE.velocity+2]-w.z)||speed; }
 	return throttle; }
-const IDLE=0.04;   // the core's idle spool (flight/propulsion.go idle): the lever commands through this floor, so a running engine is never below it
+const IDLE=0.06;   // the core's idle spool (flight/propulsion.go idle): the lever commands through this floor, so a running engine is never below it
 function flight_push(){   // deliver the ownship pose to the core: trimmed level flight when airborne, a composed state on the ground / in a test
 	if(!flight_active) return;
 	prev_wire=-1;
@@ -11185,7 +11190,7 @@ function fly_player(dt){
 // impact.ts, where it is tested.
 function bandit_wrecked(){
 	return impact_surface(bandit.pos, ground_height(bandit.pos.x,bandit.pos.z), obstacles.buildings, obstacles.posts,
-		carrier_model?{ x:CARRIER.x, z:CARRIER.z, deck:CARRIER.deckY, height:(x,z)=>deck_y_at(carrier_model,x,z,-1e9) }:undefined, homeward(bandit.pos));   // the buildings and masts are laid in the world frame
+		carrier_model?{ x:CARRIER.x, z:CARRIER.z, deck:CARRIER.deckY, height:(x,z)=>deck_y_at(carrier_model,x,z,-1e9) }:undefined, homeward(bandit.pos));   // the buildings and masts are laid in the corld frame
 }
 function fly_bandit(dt){
 	// The sea finishes a bandit whichever brain flies it - the flight core has no
@@ -11593,7 +11598,7 @@ function step_world(dt){ sim_time+=dt;
 }
 
 function reset_ownship(){
-	theatre_reset();   // every spawn is laid in the world frame
+	theatre_reset();   // every spawn is laid in the chart
 	test_idle=0; _test_power=0;   // a respawn ends any scenario rollout grace — the lever and brakes are the pilot's again
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
 	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
@@ -11948,7 +11953,7 @@ function draw_map(){ const W=innerWidth,H=innerHeight; mctx.clearRect(0,0,W,H);
 	const own=theatre.frame.place(ownship.pos), centre=globe_offset(own,map_px,map_pz), view=earth_tangent(centre.latitude,centre.longitude);
 	if(globe) globe.draw(view,cxp,cyp,1/s,W,H,Math.min(devicePixelRatio||1,2));
 	const at=e=>{ const q=globe_project(view,e); return { x:cxp+q.x*s, y:cyp+q.z*s, seen:q.seen }; };
-	const engine=p=>at(theatre.frame.centred({ x:p.x, y:p.y??0, z:p.z })), homed=p=>at(HOME.centred({ x:p.x, y:p.y??0, z:p.z }));   // a point of the engine's frame; of the world frame, where the coast and the field are laid
+	const engine=p=>at(theatre.frame.centred({ x:p.x, y:p.y??0, z:p.z })), homed=p=>at(HOME.centred({ x:p.x, y:p.y??0, z:p.z }));   // a point of the engine's frame; of the chart, where the coast and the field are laid
 	const aimed=(frame,x,y,z)=>globe_heading(view,{ x:frame.east.x*x+frame.up.x*y+frame.south.x*z, y:frame.east.y*x+frame.up.y*y+frame.south.y*z, z:frame.east.z*x+frame.up.z*y+frame.south.z*z });   // a direction of a frame, on the map
 	// frame + title
 	mctx.fillStyle=GR; mctx.font="14px monospace"; mctx.textAlign="left"; mctx.fillText(translate("TACTICAL MAP"),24,30);
@@ -13890,7 +13895,7 @@ function net_connect(){
 		notice(translate("CONNECTION FAILED")); setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }); }
 
 function start_mission(){
-	settle(HOME); chart_anchor=null; chart.x=0; chart.z=0; theatre_settled();   // the frame a previous flight left is not this one's: every mission starts on the world frame
+	settle(HOME); chart_anchor=null; chart.x=0; chart.z=0; theatre_settled();   // the frame a previous flight left is not this one's: every mission starts on the chart
 	set_view("hud","start");   // every mission starts in HUD view — a cockpit/chase choice is per-flight, not sticky across missions
 	const devq=new URLSearchParams(DEV_MODE?window.location.search:"");   // dev/screenshot hooks (#105), parsed ONLY in developer mode: force a cloud preset / time of day / inject damage
 	const cloudq=devq.get("clouds"); if(cloudq!==null) cfg.clouds=cloudq;
