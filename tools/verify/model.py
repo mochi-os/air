@@ -81,9 +81,19 @@ def pose(joints, drives):
 	# rest at 0): {node: (motion, axis, value)}, the axis in the model frame
 	out = {}
 	for name, joint in joints.items():
-		value = lookup(joint["keys"], float(drives.get(joint["drive"], 0.0)))
-		out[name] = (joint["motion"], np.array(joint["axis"], float), value)
+		out[name] = (joint["motion"], np.array(joint["axis"], float), setting(joint, name, drives))
 	return out
+
+
+def setting(joint, name, drives):
+	# A joint's value under the drives: its drive's through its schedule, or
+	# the value drives["joints"] gives it by name (radians, or metres for a
+	# slide), which poses what no drive can: rudders toed in, one surface of a
+	# pair that share a drive deflected apart from the other
+	own = drives.get("joints", {})
+	if name in own:
+		return float(own[name])
+	return lookup(joint["keys"], float(drives.get(joint["drive"], 0.0)))
 
 
 class Model:

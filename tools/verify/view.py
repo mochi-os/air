@@ -66,7 +66,9 @@ def main():
 			obj = bpy.data.objects.get(name)
 			if obj is None:
 				continue
-			value = lookup(j["keys"], float(drives.get(j["drive"], 0.0)))
+			# a joint named in the pose's "joints" takes that value, past its drive (model.py setting)
+			own = drives.get("joints", {})
+			value = float(own[name]) if name in own else lookup(j["keys"], float(drives.get(j["drive"], 0.0)))
 			if j["motion"] == "show":
 				obj.hide_render = value <= 0.5
 				continue

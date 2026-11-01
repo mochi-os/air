@@ -106,6 +106,19 @@ class ModelTest(unittest.TestCase):
 		self.assertAlmostEqual(parts["tab"][..., 0].min(), -1.01, places=6)
 		self.assertAlmostEqual(parts["body"][..., 1].min(), -0.1)
 
+	def test_joint_named_in_the_pose(self):
+		# a joint named in the pose's "joints" takes that value past its drive;
+		# another joint on the same drive follows the drive, so a pair that
+		# shares one can be posed apart
+		joints = {"flap": {"motion": "rotate", "axis": [0, 0, 1], "drive": "flap", "keys": [[0, 0], [1, math.pi / 2]]},
+			"tab": {"motion": "rotate", "axis": [0, 0, 1], "drive": "flap", "keys": [[0, 0], [1, math.pi / 2]]}}
+		posed = mod.pose(joints, {"flap": 0, "joints": {"flap": math.pi / 2}})
+		self.assertAlmostEqual(posed["flap"][2], math.pi / 2)
+		self.assertAlmostEqual(posed["tab"][2], 0.0)
+		self.assertAlmostEqual(self.model.parts(posed)["flap"][..., 1].min(), -0.5, places=6)
+		# the value is the joint's own (radians), not a drive input read through the schedule
+		self.assertAlmostEqual(mod.pose(joints, {"joints": {"tab": 0.25}})["tab"][2], 0.25)
+
 	def test_slide_and_show(self):
 		joints = {"flap": {"motion": "slide", "axis": [0, 1, 0], "drive": "d", "keys": [[0, 0], [1, 0.3]]},
 			"tab": {"motion": "show", "axis": [1, 0, 0], "drive": "s", "keys": [[0, 0], [1, 1]]}}

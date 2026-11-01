@@ -27,7 +27,8 @@
 #   frame    model.Frame's spec
 #   points   {name: {"at": [3 numbers or null], "sigma": number or [3], "why": text}}: cited coordinates
 #   mirror   [left suffix, right suffix]: pairs solved as one point and its mirror image
-#   photos   {id: {"file": path under the catalogue's references folder, "pose": {drive: value}, "solve": false to leave it out,
+#   photos   {id: {"file": path under the catalogue's references folder, "pose": {drive: value, "joints": {joint: value}}
+#                  (a joint named there takes that value past its drive), "solve": false to leave it out,
 #                  "marks": {point: [x, y]}, "edges": {name: {"against": "outline" | curve name,
 #                  "points": [[x, y], ...], "snap": pixels}}, "locate": {name: [x, y, "plane=value"]}}}
 #   gate     {"edge": inches, "sigmas": n, "floor": inches, "field": degrees, "rms": pixels,

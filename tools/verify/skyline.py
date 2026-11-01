@@ -289,6 +289,50 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 	return out
 
 
+class Scene:
+	# One solved photo (an entry of photos.py's cameras file) at the working
+	# scale, ready to measure the model in any pose against: its brightness
+	# and greenness, what its stores hide, and in a photo taken on the
+	# ground (the entry's pose has the gear down) what lies under its horizon
+	def __init__(self, catalogue, root, frame, hardpoints, entry):
+		self.frame = frame
+		self.camera = np.array(entry["camera"], float)
+		size = entry["size"]
+		self.centre = (size[0] / 2, size[1] / 2)
+		self.scale = min(1.0, WIDTH / max(size))
+		self.work = (int(size[0] * self.scale), int(size[1] * self.scale))
+		with Image.open(Path(root) / "references" / entry["file"]) as image:
+			colour = np.asarray(image.convert("RGB").resize(self.work), float)
+		self.gray = colour @ np.array([0.299, 0.587, 0.114])
+		self.green = colour[..., 1] - np.maximum(colour[..., 0], colour[..., 2])
+		stores = catalogue.get("stores")
+		self.hidden = None
+		if stores:
+			load = dict(stores["load"])
+			load.update(catalogue["photos"][entry["photo"]].get("stores", {}))
+			self.hidden = blocked(stores, load, hardpoints, frame, self.camera, self.centre, self.work, self.scale)
+		self.ground = horizon(self.camera, self.centre, self.work, self.scale, frame.model([0, 1, 0]) - frame.model([0, 0, 0])) if entry.get("pose", {}).get("gear", 0) >= 1 else None
+
+	def places(self, model, joints, pose, parts=None):
+		# The places found along the model's outline in the pose (the points
+		# file's drives, or a joint's own name for that joint's angle), and the
+		# silhouette's mask. With parts, only places on those parts are sought;
+		# every part still hides what lies behind it
+		posed = mod.pose(joints, pose)
+		# glass shows the sky through it, so its outline is no brightness step:
+		# it still hides what lies behind, but no place on it is judged
+		solid = model.parts(posed, materials=SOLID)
+		clear = model.parts(posed, materials=["glass"])
+		names = [n if parts is None or n in parts else None for n, t in solid.items() for _ in range(len(t))] + [None] * sum(len(t) for t in clear.values())
+		tris = np.concatenate(list(solid.values()) + list(clear.values()))
+		flat, depth = cam.project(self.camera, tris.reshape(-1, 3), self.centre)
+		flat, depth = flat.reshape(-1, 3, 2), depth.reshape(-1, 3)
+		ids = frontmost(flat * self.scale, depth, self.work)
+		points = self.frame.source(tris.mean(axis=1))
+		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.hidden, self.green, self.ground)
+		return places, ids >= 0
+
+
 def overlay(gray, mask, places, scale, path):
 	base = np.stack([gray] * 3, -1).astype(np.uint8)
 	rim = mod.boundary(mask)
@@ -459,40 +503,12 @@ def main():
 		photo = entry["photo"]
 		if only and photo not in only:
 			continue
-		camera = np.array(entry["camera"], float)
-		size = entry["size"]
 		if spec and "rms" in entry and weak(entry["field"], entry["rms"], spec):
 			weaks.add(photo)
-		centre = (size[0] / 2, size[1] / 2)
-		scale = min(1.0, WIDTH / max(size))
-		# glass shows the sky through it, so its outline is no brightness step:
-		# it still hides what lies behind, but no place on it is judged
-		posed = mod.pose(joints, entry.get("pose", {}))
-		solid = model.parts(posed, materials=SOLID)
-		clear = model.parts(posed, materials=["glass"])
-		names = [n for n, t in solid.items() for _ in range(len(t))] + [None] * sum(len(t) for t in clear.values())
-		tris = np.concatenate(list(solid.values()) + list(clear.values()))
-		flat, depth = cam.project(camera, tris.reshape(-1, 3), centre)
-		flat, depth = flat.reshape(-1, 3, 2), depth.reshape(-1, 3)
-		work = (int(size[0] * scale), int(size[1] * scale))
-		ids = frontmost(flat * scale, depth, work)
-		with Image.open(root / "references" / entry["file"]) as image:
-			colour = np.asarray(image.convert("RGB").resize(work), float)
-		gray = colour @ np.array([0.299, 0.587, 0.114])
-		green = colour[..., 1] - np.maximum(colour[..., 0], colour[..., 2])
-		points = frame.source(tris.mean(axis=1))
-		stores = catalogue.get("stores")
-		hidden = None
-		if stores:
-			load = dict(stores["load"])
-			load.update(catalogue["photos"][photo].get("stores", {}))
-			hidden = blocked(stores, load, hardpoints, frame, camera, centre, work, scale)
-		# a photo with the gear down was taken on the ground: under its horizon lies ground
-		ground = horizon(camera, centre, work, scale, frame.model([0, 1, 0]) - frame.model([0, 0, 0])) if entry.get("pose", {}).get("gear", 0) >= 1 else None
-		places = measure(gray, ids, names, points, depth.mean(axis=1), camera[0], frame.unit, scale, hidden, green, ground)
-		mask = ids >= 0
-		results[photo] = {"tried": len(rim(mask)), "places": places, "scale": scale}
-		overlay(gray, mask, places, scale, out / f"{photo}.png")
+		scene = Scene(catalogue, root, frame, hardpoints, entry)
+		places, mask = scene.places(model, joints, entry.get("pose", {}))
+		results[photo] = {"tried": len(rim(mask)), "places": places, "scale": scene.scale}
+		overlay(scene.gray, mask, places, scene.scale, out / f"{photo}.png")
 		print(f"photo {photo}: {len(places)} places", file=sys.stderr)
 	(out / "skyline.json").write_text(json.dumps(results) + "\n")
 	print(summary(results, universe, weaks))

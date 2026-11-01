@@ -293,7 +293,9 @@ def wing(side):
 	tef = surface.fraction(areas["tef"] / 2, spans["tef"])
 	aileron = surface.fraction(areas["aileron"] / 2, spans["aileron"])
 	inside = 40.0   # the root buried in the fuselage
-	node(f"wing_inner_{name}", mesh=surface.panel((inside, fold), [(spans["lef"]["inner"], inner_lef, "front"), (spans["tef"], tef, "back")]))
+	# the aileron starts inboard of the fold line: the inner panel stops at its
+	# hinge there, and that part of it folds with the outer panel
+	node(f"wing_inner_{name}", mesh=surface.panel((inside, fold), [(spans["lef"]["inner"], inner_lef, "front"), (spans["tef"], tef, "back"), (spans["aileron"], aileron, "back")]))
 
 	def hinged(joint_name, reach, x, part, arm, want, drive, parent=None, paint="paint"):
 		a, b = surface.point(reach[0], x), surface.point(reach[1], x)

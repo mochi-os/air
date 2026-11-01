@@ -1,5 +1,5 @@
 {
-	"about": "Where points fall in the reference photos (references.json, dvids*), in pixels of the full-size image, read off by eye at full resolution, and which points' coordinates the sources cite. verify/photos.py solves every photo's camera and every marked point together from these: points are [station, waterline, buttline] in inches, null where no source gives the coordinate, with the uncertainty in inches. Points a photo marks that are not listed here are measured, never cited. Pairs ending _left and _right are solved as one point and its mirror image. Each photo's pose drives the model as the jet stood (gear down, surfaces as the photo shows them) for its outline and curves.",
+	"about": "Where points fall in the reference photos (references.json, dvids*), in pixels of the full-size image, read off by eye at full resolution, and which points' coordinates the sources cite. verify/photos.py solves every photo's camera and every marked point together from these: points are [station, waterline, buttline] in inches, null where no source gives the coordinate, with the uncertainty in inches. Points a photo marks that are not listed here are measured, never cited. Pairs ending _left and _right are solved as one point and its mirror image. Each photo's pose drives the model as the jet stood (gear down, surfaces as the photo shows them) for its outline and curves. A pose's \"joints\" sets single surfaces in radians past their drives: each is verify/poses.py's fit of that surface to the photo's own outline against the sky (2026-11-01, on the build with the flap ending at BL 153), kept where it halves a miss of 0.7 in or more, lies within tp209033's travel limits (facts surfaces.limits) and agrees with its pair: the rudders toed in on the take-off series, the stabilators about 10 deg trailing edge up on the ground, the flaps and ailerons a few degrees off in flight. navy090707N7665E003 takes none: its camera, through a window, cannot be trusted aft of the nose.",
 	"frame": {
 		"names": [
 			"station",
@@ -224,7 +224,10 @@
 		"dvids9820808": {
 			"file": "photos/164718_right-profile_dvids9820808.jpg",
 			"pose": {
-				"gear": 1
+				"gear": 1,
+				"joints": {
+					"rudder_right": 0.05
+				}
 			},
 			"marks": {
 				"apex": [
@@ -541,7 +544,12 @@
 				"flaperon.left": 0.524,
 				"flaperon.right": 0.524,
 				"stabilator.left": -0.14,
-				"stabilator.right": -0.14
+				"stabilator.right": -0.14,
+				"joints": {
+					"rudder_left": -0.25,
+					"rudder_right": 0.175,
+					"stabilator_right": -0.165
+				}
 			},
 			"marks": {
 				"fin_tip_leading_left": [
@@ -898,7 +906,12 @@
 				"flaperon.left": 0.524,
 				"flaperon.right": 0.524,
 				"stabilator.left": -0.14,
-				"stabilator.right": -0.14
+				"stabilator.right": -0.14,
+				"joints": {
+					"rudder_left": -0.3,
+					"rudder_right": 0.175,
+					"stabilator_right": -0.225
+				}
 			},
 			"marks": {
 				"nozzle_exit_bottom_left": [
@@ -1574,7 +1587,11 @@
 				"flaperon.left": 0.524,
 				"flaperon.right": 0.524,
 				"stabilator.left": -0.14,
-				"stabilator.right": -0.14
+				"stabilator.right": -0.14,
+				"joints": {
+					"rudder_left": -0.25,
+					"rudder_right": 0.175
+				}
 			},
 			"marks": {
 				"fin_tip_leading_left": [
@@ -1857,7 +1874,10 @@
 			"file": "photos/unknown_left-profile-2022_dvids7418477.jpg",
 			"pose": {
 				"gear": 1,
-				"canopy": 1
+				"canopy": 1,
+				"joints": {
+					"rudder_left": 0.025
+				}
 			},
 			"marks": {
 				"windscreen_base": [
@@ -2025,7 +2045,10 @@
 				"gear": 1,
 				"slat": 0.209,
 				"flaperon.left": 0.698,
-				"flaperon.right": 0.698
+				"flaperon.right": 0.698,
+				"joints": {
+					"rudder_left": -0.3
+				}
 			},
 			"marks": {
 				"apex": [
@@ -2397,7 +2420,11 @@
 		"dvids9820749": {
 			"file": "photos/164718_left-front-quarter_dvids9820749.jpg",
 			"pose": {
-				"gear": 1
+				"gear": 1,
+				"joints": {
+					"rudder_right": 0.425,
+					"stabilator_right": -0.175
+				}
 			},
 			"marks": {
 				"apex": [
@@ -2574,7 +2601,10 @@
 			"pose": {
 				"gear": 1,
 				"canopy": 1,
-				"slat": 0.209
+				"slat": 0.209,
+				"joints": {
+					"rudder_left": 0.025
+				}
 			},
 			"marks": {
 				"apex": [
@@ -3011,7 +3041,12 @@
 		"dvids9820799": {
 			"file": "photos/164718_right-front-quarter_dvids9820799.jpg",
 			"pose": {
-				"gear": 1
+				"gear": 1,
+				"joints": {
+					"flap_leading_outer_right": 0.1,
+					"rudder_left": 0.05,
+					"stabilator_right": -0.175
+				}
 			},
 			"marks": {
 				"fin_tip_trailing_right": [
@@ -4121,7 +4156,10 @@
 		"dvids9820748": {
 			"file": "photos/164718_left-front-quarter-hook_dvids9820748.jpg",
 			"pose": {
-				"gear": 1
+				"gear": 1,
+				"joints": {
+					"rudder_left": -0.325
+				}
 			},
 			"marks": {
 				"apex": [
@@ -4662,7 +4700,10 @@
 			"file": "photos/165221_front-shelter_dvids8678631.jpg",
 			"pose": {
 				"gear": 1,
-				"canopy": 1
+				"canopy": 1,
+				"joints": {
+					"rudder_left": -0.025
+				}
 			},
 			"marks": {
 				"gun_port": [
@@ -5098,7 +5139,11 @@
 		"dvids9820788": {
 			"file": "photos/164718_left-front-quarter-trucks_dvids9820788.jpg",
 			"pose": {
-				"gear": 1
+				"gear": 1,
+				"joints": {
+					"rudder_left": -0.3,
+					"rudder_right": 0.175
+				}
 			},
 			"marks": {
 				"apex": [
@@ -5696,7 +5741,13 @@
 		"dvids8901347": {
 			"file": "photos/fa18d-vmfa232-26_port-front-above_dvids8901347.jpg",
 			"pose": {
-				"gear": 0
+				"gear": 0,
+				"joints": {
+					"aileron_left": -0.075,
+					"aileron_right": -0.125,
+					"flap_trailing_left": 0.125,
+					"stabilator_right": -0.05
+				}
 			},
 			"marks": {
 				"apex": [
@@ -5768,7 +5819,10 @@
 		"dvids7487368": {
 			"file": "photos/fa18c-vmfa312-312_port-high-above_dvids7487368.jpg",
 			"pose": {
-				"gear": 0
+				"gear": 0,
+				"joints": {
+					"aileron_right": -0.1
+				}
 			},
 			"marks": {
 				"apex": [
@@ -5821,7 +5875,10 @@
 			"file": "photos/fa18d-vmfa115-24_front-starboard-above_dvids6690145.jpg",
 			"pose": {
 				"gear": 0,
-				"probe": 1
+				"probe": 1,
+				"joints": {
+					"aileron_right": -0.05
+				}
 			},
 			"marks": {
 				"wingtip_trailing_right": [
@@ -5869,7 +5926,10 @@
 		"dvids6696790": {
 			"file": "photos/fa18d-vmfa224-07_port-shallow-above_dvids6696790.jpg",
 			"pose": {
-				"gear": 0
+				"gear": 0,
+				"joints": {
+					"rudder_right": -0.075
+				}
 			},
 			"marks": {
 				"apex": [
@@ -6182,10 +6242,8 @@
 			"edge dvids9820744:wing_left_leading": "a long-lens underside view (field 4.8 deg) whose nozzle exits also miss: judge it with the nozzle finding",
 			"edge dvids9820758:aft_fuselage_top": "the top between the fins (FS 570-640) stands 3-7 in inside this outline; nothing else measures it yet",
 			"edge dvids9820758:canopy_spine": "this camera's six marks all lie at the tail; the canopy, 20 ft forward, is beyond what it can judge",
-			"point stabilator_tip_leading_left": "the stabilator tips' leading corners miss by 9.5-9.8 in along the stations: the mark's definition, the pose or the planform, not yet settled",
-			"point stabilator_tip_leading_right": "the stabilator tips' leading corners miss by 9.5-9.8 in along the stations: the mark's definition, the pose or the planform, not yet settled",
-			"point fold_trailing_left": "the wing fold's trailing corner misses by 7 in across: the fold's buttline at the trailing edge or the mark's definition, not yet settled",
-			"point fold_trailing_right": "the wing fold's trailing corner misses by 7 in across: the fold's buttline at the trailing edge or the mark's definition, not yet settled"
+			"point stabilator_tip_leading_left": "the stabilator tips' leading corners miss by 9.5-9.8 in along the stations: every broadside in-flight photo puts them 5-9 in aft along the tip and no deflection explains it, but cr201687's planform, NATOPS's length and the HATP top view all hold the model's; not changed",
+			"point stabilator_tip_leading_right": "the stabilator tips' leading corners miss by 9.5-9.8 in along the stations: every broadside in-flight photo puts them 5-9 in aft along the tip and no deflection explains it, but cr201687's planform, NATOPS's length and the HATP top view all hold the model's; not changed"
 		}
 	},
 	"stores": {
@@ -6279,7 +6337,9 @@
 			"body FS 192-216 top": "Just outside the windscreen's front. The glass now reaches its frame along the sides (2026-10-31; it was a narrow V with the skin humping beside it, 12 of 12 photos), leaving 6 photos: the side views read 0.2-1.3 in, the views from above and below 2-3 in. How fast the glass widens behind its front base is not settled.",
 			"body FS 168-192 upper side": "Two photos, just ahead of the windscreen's foot finding: probably the same.",
 			"body FS 672-696 lower side": "The tail end's underside, lowered to dvids9820808's outline on 2026-10-31 (it read 2 in high); the three photos now read 0.1-1.6 in.",
-			"body FS 624-648 lower side": "Two photos only, neither a side view at the underside's height: dvids8901347 looks down from above and navy090707N7665E003 reads where the fuselage meets the far stabilator, whose deflection is not posed."
+			"body FS 624-648 lower side": "Two photos only, neither a side view at the underside's height: dvids8901347 looks down from above and navy090707N7665E003 reads where the fuselage meets the far stabilator, whose deflection is not posed.",
+			"stabilator FS 696-720": "With the stabilators posed from the photos (2026-11-01; they read -3.9 and -2.4 in at FS 672-720 before), the trailing part still stands about 1.2 in inside the photos' outline, as if the stabilator lay a little further aft; the in-flight photos put its leading corners aft too, by more (task: stabilator leading edge). The cited planform and the length hold the model's.",
+			"stabilator FS 720-744": "With the stabilators posed from the photos (2026-11-01; they read -3.9 and -2.4 in at FS 672-720 before), the trailing part still stands about 1.2 in inside the photos' outline, as if the stabilator lay a little further aft; the in-flight photos put its leading corners aft too, by more (task: stabilator leading edge). The cited planform and the length hold the model's."
 		}
 	}
 }

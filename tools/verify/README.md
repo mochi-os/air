@@ -141,6 +141,23 @@ each kind as boxes from a station's mount and the load every photo is taken to c
 overrides it (`null` for an empty station). Default to a full load: a store left out reads as a false miss,
 an empty station masked only costs coverage.
 
+### 5b. Moving surfaces: fit each photo's pose
+
+    python3 -I poses.py CATALOGUE MODEL.glb POINTS.json CAMERAS.json OUT.json [--only ID,ID]
+
+Most photos' poses are guesses, and a surface posed wrong reads as a miss of its shape. For each photo and
+each hinged surface (rudders, stabilators, flaps, ailerons, leading-edge flaps) that the photo judges against
+the sky in at least 8 places, it turns that joint alone from -46 to +46 deg and keeps the angle at which its
+places miss least (the mean miss with the worst fifth left out), where it keeps at least half of them. It
+prints each fit beside the catalogue's angle and writes the `"joints"` entry each photo's pose takes for the
+fits that halve the miss. A pose's `"joints": {joint: radians}` sets that joint past its drive (`model.py`
+`setting`, honoured by `view.py` too): the only way to pose the rudders toed in, which share one drive, or a
+flap and an aileron apart. It changes nothing: look at the photo, then copy the fits that are real into the
+catalogue and run the sky check again. A fit can absorb a shape error into the angle: trust it where the
+fitted angles are what the photo shows (flaps drooped on the ground, rudders toed in on the take-off roll),
+and treat a surface whose fits scatter from photo to photo, or leave a miss on the same side in every photo,
+as a shape question.
+
 ### 6. Comparison sheets: look
 
     blender -b --factory-startup -P view.py -- MODEL.glb POINTS.json CAMERAS.json RENDERS
@@ -182,7 +199,7 @@ sketch to several inches. Say which in the facts table.
 | facts | anything no source gives a number for; shape between the measured stations |
 | outline | the inside of the silhouette; the drawing's own errors |
 | photos | points no photo shows from two directions; parts that move between photos unless posed |
-| skyline | outline with no sky beyond it (flanks seen only from above or below); glass; moving surfaces until posed |
+| skyline | outline with no sky beyond it (flanks seen only from above or below); glass; moving surfaces until posed (`poses.py`) |
 | sheets | small offsets (use the numbers); colour and texture are not shape |
 
 ## Pitfalls
@@ -363,7 +380,9 @@ What went wrong on the F/A-18C, each a rule now:
 - `crop.py`: crops with a labelled pixel grid, for marking.
 - `skyline.py`: the outline against the sky in every solved photo, by region, with findings, coverage and
   sheets.
+- `poses.py`: fits each photo's hinged surfaces to its outline against the sky, for the catalogue's poses.
 - `page.py`: the review page for one build, from its gate, sky check and sheets.
 - `cast.py`: casts a solved photo's pixels onto the posed model's surface or a plane of the project's frame,
   and projects coordinates into a photo to find where to look.
-- `test_verify.py`, `test_photos.py`, `test_skyline.py`, `test_page.py`: `python3 -I test_verify.py`, and likewise.
+- `test_verify.py`, `test_photos.py`, `test_skyline.py`, `test_poses.py`, `test_page.py`: `python3 -I test_verify.py`, and
+  likewise.

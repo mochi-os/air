@@ -55,13 +55,15 @@ class PageTest(unittest.TestCase):
 			sheets.mkdir()
 			summary = {"photos": {"p1": {"tried": 10, "judged": 4, "median": 0.8, "weak": False}},
 				"regions": [{"family": "fin", "stretch": 600, "sector": "", "region": "fin FS 600-624", "photos": {"p1": -1.2, "p2": -1.4}, "median": -1.3, "places": 8,
-					"finding": True, "moving": False}], "universe": [["fin", 600, ""]]}
+					"finding": True, "moving": False},
+				{"family": "stabilator", "stretch": 696, "sector": "", "region": "stabilator FS 696-720", "photos": {"p1": -1.2, "p2": -1.3}, "median": -1.2, "places": 9,
+					"finding": True, "moving": True}], "universe": [["fin", 600, ""], ["stabilator", 696, ""]]}
 			(sky / "summary.json").write_text(json.dumps(summary))
 			Image.new("RGB", (3000, 2000)).save(sky / "p1.png")
 			Image.new("RGB", (800, 400)).save(sky / "finding fin FS 600-624.png")
 			for kind in ("photo", "model", "over"):
 				Image.new("RGB", (1600, 1000)).save(sheets / f"p1-{kind}.jpg")
-			catalogue = {"photos": {"p1": {"shows": "left side <taxiing>"}}, "skyline": {"notes": {"fin FS 600-624": "the fins stand 1 in aft & more"}}}
+			catalogue = {"photos": {"p1": {"shows": "left side <taxiing>"}}, "skyline": {"notes": {"fin FS 600-624": "the fins stand 1 in aft & more", "stabilator FS 696-720": "posed <from the photos>"}}}
 			page.build(catalogue, [{"photo": "p1", "rms": 4.0, "field": 30.0}], sky, sheets, GATE, out, "F/A-18C", "Hornet shape review")
 			text = (out / "index.html").read_text()
 			self.assertIn("<title>Hornet shape review</title>", text)
@@ -70,6 +72,8 @@ class PageTest(unittest.TestCase):
 			self.assertIn('src="img/finding-fin-fs-600-624.jpg"', text)
 			self.assertIn("-1.3 in", text)
 			self.assertIn('<p class="note col">the fins stand 1 in aft &amp; more</p>', text)
+			# a finding on a moving surface is listed apart, with its note
+			self.assertIn('<span class="pid">stabilator FS 696-720</span> -1.2 in, 2 photos<br><span class="note">posed &lt;from the photos&gt;</span>', text)
 			for name in ("p1-photo.jpg", "p1-model.jpg", "p1-over.jpg", "p1-sky.jpg", "finding-fin-fs-600-624.jpg"):
 				self.assertTrue((out / "img" / name).exists(), name)
 			with Image.open(out / "img" / "p1-sky.jpg") as image:

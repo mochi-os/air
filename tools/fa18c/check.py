@@ -1169,6 +1169,15 @@ def checks(jet):
 		yield result("layout.surfaces", "inboard leading-edge flap's outer end", L["surfaces"]["lef"]["inner"][1],
 			jet.points(["flap_leading_inner_right"])[:, 2].max(), 0.5, "BL in")
 		yield result("layout.surfaces", "aileron's outer end", L["surfaces"]["aileron"][1], jet.points(["aileron_right"])[:, 2].max(), 0.5, "BL in")
+		yield result("layout.surfaces", "aileron's inner end", L["surfaces"]["aileron"][0], jet.points(["aileron_right"])[:, 2].min(), 0.5, "BL in")
+		yield result("layout.surfaces", "trailing-edge flap's outer end", L["surfaces"]["tef"][1], jet.points(["flap_trailing_right"])[:, 2].max(), 0.5, "BL in")
+		# where the aileron runs inboard of the fold line, the inner panel stops
+		# at its hinge: nothing of it lies behind the aileron's leading edge there
+		between = (L["surfaces"]["aileron"][0] + value(F["wing"]["fold"])) / 2
+		inner = jet.cut(["wing_inner_right"], [0, 0, between], [0, 0, 1])
+		hinge = jet.cut(["aileron_right"], [0, 0, between], [0, 0, 1])
+		yield result("layout.surfaces", f"inner panel's aft edge at BL {between:.1f}, at the aileron's leading edge", float(hinge[:, 0].min()) if len(hinge) else 999.0,
+			float(inner[:, 0].max()) if len(inner) else -999.0, 0.3, "FS in")
 
 	yield from guard("layout", "placements", placements)
 

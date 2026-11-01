@@ -135,8 +135,8 @@ def build(catalogue, cameras, sky, sheets, gate_text, out, kicker, name):
 	else:
 		parts.append("<p>No region of the fixed structure misses.</p>")
 	if moving:
-		parts.append('<h3>On moving surfaces</h3><p class="legend col">These follow each photo\'s pose, which is not yet fitted: check the pose before the shape.</p><ul class="moving">')
-		parts += [f'<li><span class="pid">{e(r["region"])}</span> {signed(r["median"])} in, {len(r["photos"])} photos</li>' for r in moving]
+		parts.append('<h3>On moving surfaces</h3><p class="legend col">These follow each photo\'s pose. The rudders, stabilators, flaps and ailerons are posed from the photos where a fit was kept (poses.py); the gear, canopy and nozzles stand as the catalogue guesses.</p><ul class="moving">')
+		parts += [f'<li><span class="pid">{e(r["region"])}</span> {signed(r["median"])} in, {len(r["photos"])} photos' + (f'<br><span class="note">{e(notes[r["region"]])}</span>' if r["region"] in notes else "") + "</li>" for r in moving]
 		parts.append("</ul>")
 	parts.append("</section>")
 
