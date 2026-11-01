@@ -34,10 +34,11 @@ const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
 // out: the core's words the harness lays out - both engines' spool and harm,
 // the altitude, the spin display's direction and the recovery latch, the
 // calibrated airspeed and the alpha.
-const STATE = { engine: 0, engine_harm: 4, position: 6, spin: 9, recovery: 10, cas: 11, alpha: 12 }
-function words(o: { spoolL?: number; spoolR?: number; metres?: number; spin?: number; recovery?: number; cas?: number; alpha?: number } = {}): number[] {
+const STATE = { engine: 0, engine_harm: 4, position: 6, spin: 9, recovery: 10, cas: 11, alpha: 12, rundown: 13 }
+function words(o: { spoolL?: number; spoolR?: number; metres?: number; spin?: number; recovery?: number; cas?: number; alpha?: number; rundownL?: number; rundownR?: number } = {}): number[] {
   const out = new Array(16).fill(0)
   out[0] = o.spoolL ?? 0.8; out[2] = o.spoolR ?? 0.8; out[STATE.position + 1] = o.metres ?? 0
+  out[STATE.rundown] = o.rundownL ?? 0; out[STATE.rundown + 1] = o.rundownR ?? 0
   out[STATE.spin] = o.spin ?? 0; out[STATE.recovery] = o.recovery ?? 0; out[STATE.cas] = o.cas ?? 0; out[STATE.alpha] = o.alpha ?? 0
   return out
 }
@@ -48,10 +49,13 @@ type System = any
 function system(o: { tod?: string; grounded?: boolean; parking?: boolean; multiplayer?: boolean } = {}): System {
   for (const [name, text] of [['panel systems block', block], ['tables', tables], ['pit_press', press]]) if (!text) throw new Error(name + ' not found in engine.ts')
   return new Function('THREE', 'STATE', 'o', 'communication', `let sim_time=0, glance=0, reset_flag=false, reset_owed=false, MULTIPLAYER=!!o.multiplayer, brake_accumulator=3000, unpowered=false, lamps_testing=false, sari_clicked=-Infinity, radalt_on=true, radalt_test=-Infinity;
-    const cfg={ tod:o.tod||"day" }, ownship={ grounded:o.grounded??false, gearTarget:1 }, RADAR={ unpowered:false }, ACCUMULATOR={ full:3000, empty:1750, gas:80000 };
+    const cfg={ tod:o.tod||"day" }, ownship={ grounded:o.grounded??false, gearTarget:1, pos:{ x:0, y:0, z:0 }, gauges:{} }, RADAR={ unpowered:false }, ACCUMULATOR={ full:3000, empty:1750, gas:80000 };
+    let apu_accumulator=1, flight_active=true; const accumulator_low=()=>apu_accumulator<0.5, secured=[false,false], carrier_fore_aft=(x,z)=>x+1000, carrier_lateral=(x,z)=>z-500;   // the deck's frame a plain offset
+    const SHIP={ parking:{ x:1005.3, z:-500, heading:0 } }, AIRCRAFT_MODELS={ fa18c:{ nose:5.3 } }, own_aircraft=()=>"fa18c", D2R=Math.PI/180;   // the deck's spot: its nose wheel 5.3 m ahead of the frame's origin, where the jet stands
     const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
     ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${press}
-    return { press:pit_press, step(t,out){ sim_time=t; glance=t; power_step(out); }, at(t){ sim_time=t; glance=t; }, generators, knob_level, knob_turn, display_level, display_contrast, display_press, symbology,
+    return { press:pit_press, step(t,out){ sim_time=t; glance=t; power_step(out); }, start(t,out,dt){ sim_time=t; glance=t; power_step(out); start_step(out,dt); }, at(t){ sim_time=t; glance=t; }, generators,
+      starter, start_fresh, apu_ready, ground_power, cranking, sub_idle, secured, get apu(){ return apu_accumulator; }, set apu(v){ apu_accumulator=v; }, knob_level, knob_turn, display_level, display_contrast, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, wing_kept, clock_elapsed, travel_at, lighting_set,
       ownship, knobs, displays, hud_panel, electrics, ecs, transfer, thrown, fire_test, lighting, RADAR, TRAVEL, get finder(){ return finder; },
       get buses(){ return buses; }, set buses(v){ buses=v; }, get reset(){ return reset_flag; }, get owed(){ return reset_owed; }, get accumulator(){ return brake_accumulator; }, get rudder(){ return rudder_trim; },
@@ -119,22 +123,25 @@ describe('the electrical power panel (#21, #116)', () => {
   // A jet handed over on the ground has its engines running (flight_push): at the lever's power, which at IDLE is
   // the core's idle spool and not zero. Handed the lever itself, a runway start began with both generators off the
   // line for the 1.3 seconds its engines took to spool up.
-  const pushed = (throttle: number) => new Function(`const STATE={ position:0, velocity:3, attitude:6, omega:10, fuel:13, engine:14, stabilator:22, demand:33, normal:34, extension:35, catapult:36, stroke:37, wire:38, wow:39, contact:40, touch:41, engine_harm:45, stress:54, time:55, element:57, gear_harm:106 };
-    let flight_active=true, prev_wire=0, test_active=false, sent=null; const b=new Float64Array(117);
+  const pushed = (throttle: number, cold = false, rundown = 0) => new Function(`const STATE={ position:0, velocity:3, attitude:6, omega:10, fuel:13, engine:14, stabilator:22, demand:33, normal:34, extension:35, catapult:36, stroke:37, wire:38, wow:39, contact:40, touch:41, engine_harm:45, stress:54, time:55, element:57, gear_harm:106, rundown:110 };
+    let flight_active=true, prev_wire=0, test_active=false, sent=null, cold_start=${cold}; const b=new Float64Array(117); b.fill(${rundown},110,114);
     const ownship={ flown:true, grounded:true, speed:0, throttle:${throttle}, pos:{ x:0, y:10, z:0 }, vel_dir:{ x:1, y:0, z:0 }, q:{ w:1, x:0, y:0, z:0 }, gearTarget:0 };
     const mission_start=()=>"runway", flight_get=()=>b, flight_set=(state)=>{ sent=Array.from(state); }, sync_core=()=>{}, ground_height=()=>0, stance_of=()=>2, FUEL=()=>4000, stores_book=null, flight_footing=()=>({ x:0, y:0, z:0 });
     ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flight_push')}
-} flight_push(); return sent.slice(14,18);`)() as number[] // the lift stops at the function's own closing brace, which stands alone
+} flight_push(); return [...sent.slice(14,18),...sent.slice(110,114)];`)() as number[] // the lift stops at the function's own closing brace, which stands alone
   it('hands a ground start its engines turning: both generators on the line from the first frame', () => {
-    const idle = pushed(0)
-    expect(idle).toEqual([0.04, 0, 0.04, 0])
+    const idle = pushed(0, false, 1)
+    expect(idle).toEqual([0.04, 0, 0.04, 0, 0, 0, 0, 0]) // and lit: a jet stopped before it is handed over turning
     expect(system().generators(words({ spoolL: idle[0], spoolR: idle[2] }))).toEqual([true, true])
   })
   it('trims an air start with its loadout on, as a Case II start (#138)', () => {
     expect(source).toMatch(/if\(!test_active && ownship\.speed>50 && !ownship\.grounded\)\{\n\t\tflight_stores\(own_mask\(\)\);[^\n]*\n\t\tflight_level\(/)
   })
   it('trims a Case II start with its loadout on (#132)', () => {
-    expect(source).toMatch(/mission_start\(\)==="case2"\)\{\n(?:\t\t\/\/[^\n]*\n)*\t\tflight_stores\(own_mask\(\)\);\n\t\township\.throttle=flight_approach\(/)
+    expect(source).toMatch(/\(mission_start\(\)==="case2"\|\|mission_start\(\)==="groove"\|\|mission_start\(\)==="final"\)\)\{\n(?:\t\t\/\/[^\n]*\n)*\t\tflight_stores\(own_mask\(\)\);\n\t\tconst slope=\{ groove:GROOVE\.slope, final:FINAL\.slope \}\[mission_start\(\)\];[^\n]*\n\t\township\.throttle=slope===undefined\?flight_approach\(ownship\.pos\.x,ownship\.pos\.y,ownship\.pos\.z, ownship\.fwd\.x,ownship\.fwd\.z, 0, FUEL\(\)\):approach_over\(slope\);/) // Case II level; the groove and final on their paths over the surface, through the wind (#133)
+  })
+  it('hands a cold and dark start both engines stopped (#133)', () => {
+    expect(pushed(0.5, true)).toEqual([0, 0, 0, 0, 1, 1, 1, 1])
   })
   it('hands it the lever\'s power above idle', () => {
     expect(pushed(0.5)[0]).toBeCloseTo(0.52, 9); expect(pushed(1)[0]).toBeCloseTo(1, 9)
@@ -235,9 +242,185 @@ describe('the electrical power panel (#21, #116)', () => {
     expect(source).toMatch(/if\(e\) e\.intensity=\(unpowered&&buses\.essential&&cfg\.view==="cockpit"\)\?EMERGENCY_LIGHT:0;/)
     expect(source).toMatch(/const sym=symbology\(\);[^\n]*\n\tconst flight_symbols=sym>0&&\(/)
     expect(source).toMatch(/adi_face\(faces\.adi,[^\n]*sari_testing\(\),!buses\.essential\|\|caged,sari_trim\);/)
-    expect(source).toMatch(/power_step\(out\); displays_light\(\); bezel_turn\(\); centre_turn\(\); plates_turn\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
+    expect(source).toMatch(/power_step\(out\); start_step\(out,step\); displays_light\(\); bezel_turn\(\); centre_turn\(\); plates_turn\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
     const radar = readFileSync(fileURLToPath(new URL('./radar.ts', import.meta.url)), 'utf8')
     expect(radar).toMatch(/return this\.sil \|\| this\.emcon \|\| this\.unpowered/)
+  })
+})
+
+// The start systems (#133, NATOPS 2.4.2, 2.1.1.6, 2.5.4, 7.2): the APU on its
+// accumulator's hydraulic starter, ENG CRANK on its air, the ground power cart
+// on EXT PWR, and the IFEI below ground idle.
+describe('the start systems (#133)', () => {
+  const quiet = words({ spoolL: 0, spoolR: 0, rundownL: 1, rundownR: 1 }) // both engines stopped
+  const cold = () => {
+    const s = system({ grounded: true })
+    s.electrics.battery = 'on'
+    return s
+  }
+  it('spins the APU up on a charged accumulator with the essential bus up, READY 15 s on, spending the charge', () => {
+    const s = cold()
+    s.thrown.apu = 1
+    s.start(0, quiet, 0)
+    expect(s.starter.running).toBe(true)
+    expect(s.apu).toBe(0) // the start spends the accumulator
+    s.start(14, quiet, 14)
+    expect(s.apu_ready()).toBe(false)
+    s.start(15.1, quiet, 1.1)
+    expect(s.apu_ready()).toBe(true)
+  })
+  it('will not start with the essential bus dead or the accumulator spent: the switch drops back to OFF', () => {
+    const dead = cold()
+    dead.electrics.battery = 'off'
+    dead.step(0, quiet)
+    expect(dead.buses.essential).toBe(false)
+    dead.thrown.apu = 1
+    dead.start(0.1, quiet, 0.1)
+    expect(dead.starter.running).toBe(false)
+    expect(dead.travel_at('apu')).toBe(0)
+    const spent = cold()
+    spent.apu = 0.2
+    spent.thrown.apu = 1
+    spent.start(0, quiet, 0)
+    expect(spent.starter.running).toBe(false)
+    expect(spent.travel_at('apu')).toBe(0)
+  })
+  it('stops the APU, its switch back to OFF, a minute after the second generator comes on the line', () => {
+    const s = cold()
+    s.thrown.apu = 1
+    s.start(0, quiet, 0)
+    s.start(20, words({ spoolL: 0, rundownL: 1 }), 20) // the right engine alone: the APU runs on
+    s.start(100, words({ spoolL: 0, rundownL: 1 }), 80)
+    expect(s.starter.running).toBe(true)
+    s.start(101, running, 1)
+    s.start(160, running, 59)
+    expect(s.starter.running).toBe(true)
+    s.start(161.1, running, 1.1)
+    expect(s.starter.running).toBe(false)
+    expect(s.travel_at('apu')).toBe(0)
+    s.start(175, running, 13.9)
+    expect(s.starter.speed).toBe(0) // run down
+  })
+  it('holds ENG CRANK at L or R only while there is air to turn that engine, and lets it go at 50% N2', () => {
+    const s = cold()
+    s.thrown.crank = 2 // R, with no APU
+    s.start(0, quiet, 0)
+    expect(s.travel_at('crank')).toBe(1)
+    expect(s.cranking()).toBeUndefined()
+    s.thrown.apu = 1
+    s.start(1, quiet, 0)
+    s.start(17, quiet, 16)
+    s.thrown.crank = 2
+    s.ownship.gauges = { rpmL: 0, rpmR: 20 }
+    s.start(18, quiet, 1)
+    expect(s.cranking()).toBe('starboard')
+    s.ownship.gauges = { rpmL: 0, rpmR: 50.5 }
+    s.start(19, quiet, 1)
+    expect(s.travel_at('crank')).toBe(1) // the engine past 50%: released
+    s.thrown.crank = 0
+    s.ownship.gauges = { rpmL: 10, rpmR: 65 }
+    s.start(20, quiet, 1)
+    expect(s.cranking()).toBe('port')
+  })
+  it("crossbleeds: the other engine's air above 80% N2 holds ENG CRANK with the APU off", () => {
+    const s = cold()
+    s.thrown.crank = 0
+    s.ownship.gauges = { rpmL: 0, rpmR: 79 }
+    s.start(0, quiet, 0)
+    expect(s.travel_at('crank')).toBe(1)
+    s.thrown.crank = 0
+    s.ownship.gauges = { rpmL: 0, rpmR: 81 }
+    s.start(1, quiet, 1)
+    expect(s.cranking()).toBe('port')
+  })
+  it('puts the cart on the ac buses at EXT PWR NORM while no generator is on the line, takes it off at OFF, and springs RESET back to NORM', () => {
+    const s = cold()
+    s.step(0, quiet)
+    expect(s.buses.ac).toBe(false)
+    s.start_fresh('field')
+    s.step(1, quiet)
+    expect(s.buses).toEqual({ ac: true, essential: true, left: true, right: true })
+    expect(s.battery_volts('u')).toBe(28) // and charges the batteries
+    s.thrown.extpwr = 0
+    s.step(2, quiet)
+    expect(s.buses.ac).toBe(false)
+    s.thrown.extpwr = 2
+    s.start(3, quiet, 0)
+    s.start(3.3, quiet, 0.3)
+    expect(s.travel_at('extpwr')).toBe(2)
+    s.start(3.5, quiet, 0.2)
+    expect(s.travel_at('extpwr')).toBe(1)
+    expect(s.ground_power()).toBe(true)
+  })
+  it('plugs the deck\'s cart in at the parking spot itself, wherever the jet stood when it was plugged in', () => {
+    const s = cold()
+    s.ownship.pos.x = 40 // a re-spot moves the jet after the cart is plugged in; the cart stands by the spot
+    s.start_fresh('ship')
+    expect(s.starter.cart).toEqual({ ship: true, a: 1000, b: -500 })
+  })
+  it('pulls the cable once the jet rolls more than 3 m on its wheels, on the field or the moving deck, and not before the core flies it', () => {
+    const early = system({ grounded: false })
+    early.start_fresh('field')
+    early.ownship.pos.x = 10
+    early.start(0, quiet, 0)
+    expect(early.starter.cart).not.toBeNull() // a spawn still to be handed to the core
+    for (const where of ['field', 'ship'] as const) {
+      const s = cold()
+      s.start_fresh(where)
+      s.ownship.pos.x = 2.9
+      s.start(0, quiet, 0)
+      expect(s.starter.cart).not.toBeNull()
+      s.ownship.pos.x = 3.1
+      s.start(1, quiet, 1)
+      expect(s.starter.cart).toBeNull()
+      expect(s.ground_power()).toBe(false)
+    }
+  })
+  it('opens the bus tie on a ground start with the parking brake off after the cart has powered the jet, and not with it set', () => {
+    for (const parking of [false, true]) {
+      const s = system({ grounded: true, parking })
+      s.electrics.powered = false
+      s.start_fresh('field')
+      s.step(0, quiet)
+      s.step(1, words({ spoolL: 0, rundownL: 1 }))
+      expect(s.electrics.tie).toBe(parking)
+    }
+  })
+  it('never reverts a cold jet, whose controls were never powered, to MECH ON', () => {
+    const s = cold()
+    s.electrics.battery = 'off'
+    s.electrics.energised = false
+    s.step(0, quiet)
+    s.step(30, quiet)
+    expect(s.electrics.mech).toBe(false)
+    s.electrics.battery = 'on'
+    s.step(31, quiet)
+    s.electrics.battery = 'off'
+    s.step(32, quiet)
+    s.step(41, quiet)
+    expect(s.electrics.mech).toBe(true) // once powered, a loss of the bus reverts it as ever
+  })
+  it('reads N2, oil, EGT and fuel flow below ground idle from the rundown', () => {
+    const s = cold()
+    expect(s.sub_idle(running, 0, 5000)).toBeNull()
+    s.secured[0] = true
+    const stopped = s.sub_idle(quiet, 0, 5000)
+    expect(stopped).toMatchObject({ n2: 0, oil: 0, flow: 0 })
+    expect(stopped.egt).toBeCloseTo(15, 6) // the air's
+    const cranked = s.sub_idle(words({ rundownL: 0.6 }), 0, 5000)
+    expect(cranked.n2).toBeCloseTo(26, 6)
+    expect(cranked.flow).toBe(0)
+    expect(cranked.egt).toBeLessThan(30) // a cranked engine's air, a few degrees over the day's
+    s.secured[0] = false
+    const lighting = s.sub_idle(words({ rundownL: 0.4 }), 0, 5000)
+    expect(lighting.flow).toBe(400)
+    expect(lighting.egt).toBeGreaterThan(450) // the light-off's rise, over idle half way
+    expect(lighting.egt).toBeLessThan(560)
+    const idle = s.sub_idle(words({ rundownL: 1e-6 }), 0, 5000)
+    expect(idle.n2).toBeCloseTo(65, 3)
+    expect(idle.egt).toBeCloseTo(450, 0)
+    expect(idle.oil).toBeCloseTo(55, 3)
+    expect(s.sub_idle(words({ rundownL: 0.4 }), 0, 0).flow).toBe(0) // dry tanks: no light
   })
 })
 

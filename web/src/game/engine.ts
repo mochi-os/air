@@ -2710,9 +2710,10 @@ function lamps_update(out){
 	// (2.4.2.2) and GEN TIE with the bus tie open (2.5.1.1); FCS HOT stays dark, NATOPS giving its meaning (2.8.2.7.1) and no condition for it
 	lamp_set(l.fuello,fuel_low()); lamp_set(l.battsw,battery_switch()); lamp_set(l.ckseat,check_seat()); lamp_set(l.apuacc,accumulator_low()); lamp_set(l.gentie,!electrics.tie&&buses.ac);   // GEN TIE: the bus tie open, a caution light with no DDI display; not in a dual generator failure (2.5.1.1)
 	{ const [genL,genR]=generators(out); lamp_set(l.genL,!genL&&genR); lamp_set(l.genR,!genR&&genL);
-		unpowered=!genL&&!genR;   // both generators off the line (#17): the integral lighting goes with them and the emergency instrument light comes on
+		unpowered=!genL&&!genR&&!ground_power();   // both generators off the line and no cart (#17, #133): the integral lighting goes with them and the emergency instrument light comes on
 		const e=ownship.group.userData.emergency; if(e) e.intensity=(unpowered&&buses.essential&&cfg.view==="cockpit")?EMERGENCY_LIGHT:0; }   // the emergency light is on the essential bus   // only spends when the pit is on screen, like the flood
 	lamp_set(l.fces,fcs_jammed(out));
+	lamp_set(l.ready,apu_ready());   // the APU panel's green READY (2.4.2, #133)
 	// the canopy bow lights (#14): LOCK while the radar holds a single target track; SHOOT whenever the HUD draws its SHOOT cue, flash phase included
 	lamp_set(l.lock,RADAR.stt!=null); lamp_set(l.shoot,hud_shoot&&!(lighting.mode==="nite"&&lighting.instrument>0));   // the strobe SHOOT light does not light with the instrument lights on (2.6.2.4): INST PNL is up at night, and the dim wash the game keeps by day is not the lights on
 	if(l.transit){ const locked=[0,1,2].map(leg=>ext>0.98&&(out[STATE.gear_harm+leg]||0)<GEAR_COLLAPSE), unsafe=(ownship.gearTarget??0)<0.5?!locked.every(Boolean):ext>0.02;
@@ -3497,7 +3498,7 @@ function set_press(which,d){ navigate.set(nav,which,d>0?5:-5); ddi_dirty=true; }
 // a suite still off reads as a new INS ATT. nav_frame calls it for a frame the core does not step.
 function nav_ready(){ if(!nav_cold) return; const truth=nav_sense(0);
 	navigate.load(nav,mission()); nav_fields=airports.length;
-	nav_cold=false; navigate.ready(nav,truth); magnetic_frame(true); nav.variation=magnetism.variation; nav.heading=truth.heading; nav.steer="tcn";
+	nav_cold=false; if(!cold_start) navigate.ready(nav,truth); magnetic_frame(true); nav.variation=magnetism.variation; nav.heading=truth.heading; nav.steer="tcn";   // a cold and dark jet's INS stays OFF for its pilot to align (#133)
 	magnetism.card=magnetic.settled(truth.heading,truth.heading-magnetism.variation); magnetism.speed=magnetism.time=null; magnetism.along=0;   // the card at rest on the jet's magnetic heading
 	if(truth.airborne) nav.waypoints[0]=cfg.task==="joust"?null:{ x:CARRIER.x, z:CARRIER.z, elevation:CARRIER.deckY, name:"", offset:null }; }   // a jet that starts in the air aligned aboard the ship; a joust's has no home waypoint, so the FPAS cannot judge HOME FUEL and shows its advisory instead (2.3.1.2, 2.3.1.3): the ship was far off and every fight in burner called it within seconds
 // nav_frame steps the suite: the mission data when it is first there to load, the INS and GPS, AUTO
@@ -5409,6 +5410,14 @@ function place_on_cat(i=cat_idx){
 	ownship.pos.set(wx, dy+stance_of(), wz); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
 	const r=new THREE.Vector3().crossVectors(fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,fwd).normalize();
 	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(fwd,u,r)); }
+// place_parked: the deck's parking spot (#133, SHIP.parking: where the nose wheel stands, in the deck frame and with
+// the heading the catapults' spots use, positive to port), on the starboard side aft of the island
+function place_parked(){ const p=SHIP.parking, h=p.heading*D2R, O=carrier_world(0,0), F=carrier_world(Math.cos(h),-Math.sin(h)), wheel=carrier_world(p.x,p.z);
+	const fwd=new THREE.Vector3(F.x-O.x,0,F.z-O.z).normalize(), nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
+	const wx=wheel.x-fwd.x*nose, wz=wheel.z-fwd.z*nose, dy=carrier_model?deck_y_at(carrier_model,wx,wz,CARRIER.deckY):CARRIER.deckY;
+	ownship.pos.set(wx,dy+stance_of(),wz); ownship.fwd.copy(fwd); ownship.vel_dir.copy(fwd);
+	const r=new THREE.Vector3().crossVectors(fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,fwd).normalize();
+	ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(fwd,u,r)); }
 async function init_carrier_model(){
 	const tag=SHIP.url.startsWith("data:")?"embedded carrier":SHIP.url;
 	try{ 
@@ -5447,6 +5456,7 @@ async function init_carrier_model(){
 				build_carrier_deck_aids(); }));   // wires + OLS, now that the deck height is known: built where the map charts the ship, hung on the rig
 			ols_follow();
 			if(mission_start()==="carrier" && !ownship.launching && ownship.speed<5){ place_on_cat(); flight_push(); }   // re-spot on the cat at the now-known deck height, unless already taxiing / launched
+			else if(mission_start()==="deck" && ownship.speed<5){ place_parked(); flight_push(); }   // and on the parking spot (#133)
 		}catch(e){ throw new Error("carrier model: failed to process "+tag+": "+(e&&e.message||e)); } },
 		err=>{ throw new Error("carrier model: parse failed for "+tag+" ("+((err&&err.message)||"bad glTF")+")"); });
 	}catch(e){ throw new Error("carrier model: not loaded "+tag+" ("+((e&&e.message)||e)+")"); }
@@ -6621,7 +6631,7 @@ async function generate_world(){
 			for(let k=had;k<airports.length;k++) airports[k].code=code.toUpperCase(); }   // its code names it among the GPS's points (#105)
 		// The runway loads async, after the initial reset_ownship — a runway start would otherwise fall
 		// through to an air start; re-place on the runway now that it exists.
-		if(mission_start()==="runway" && running && airports.length) reset_ownship();
+		if(["runway","apron","final"].includes(mission_start()) && running && airports.length) reset_ownship();
 	}catch(error){ console.error("midway map load failed",error); }
 }
 // earth_load reads the earth beyond the map (#162): the global map the sea and the map draw, and land.bin, the outline
@@ -6744,7 +6754,7 @@ function build_airfield(af){
 	const parts=rw.ref.split("/").map(s=>parseInt(s,10));   // painted magnetic numbers (06/24) from the OSM ref
 	obstacles.runway={x:cx,z:cz,fx:Math.sin(H),fz:-Math.cos(H),hl:L/2+45,hw:rw.width/2+12};   // landing floor applies only inside this rectangle
 	{ const r=obstacles.runway; runway_strips.push({a:[r.x-r.fx*r.hl,r.z-r.fz*r.hl],b:[r.x+r.fx*r.hl,r.z+r.fz*r.hl],w:r.hw*2}); }   // the runway is PROUD of the aprons, so it needs its own field at its own height (#220)
-	build_airport({x:cx,z:cz,h:ISLAND_H,hd:H}, parts[0], parts[1], false, L, rw.width);
+	build_airport({x:cx,z:cz,h:ISLAND_H,hd:H}, parts[0], parts[1], false, L, rw.width, af.parking);
 }
 const WALL_TILE=3.6, ROOF_TILE=2.2;
 function wall_texture(){ const c=document.createElement("canvas"); c.width=c.height=64; const x=c.getContext("2d");
@@ -6961,7 +6971,7 @@ const ops_lights=[]; const flood_lights=[]; const deck_floods=[];   // carrier n
 const beacon_lights=[];  // aerodrome beacon on the tower: alternating white/green flash at night (userData.phase 0/1)
 const dir_lights=[];     // directional + night-only lights (green threshold / red end / REIL) — shown only from their facing side
 function dir_glow(pts,color,size,x,z,fx,fz,flash){ const p=glow_points(pts,color,size); dir_lights.push({mesh:p,x,z,fx,fz,flash}); return p; }
-function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
+function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60, parking=null){
 	const y=o.h+1.5, H=o.hd;                                                 // H = compass heading (rad) you fly taking off / landing in +fwd
 	const up=new THREE.Vector3(0,1,0);
 	const fwd=new THREE.Vector3(Math.sin(H),0,-Math.cos(H));                 // world dir whose compass heading is H
@@ -6988,7 +6998,7 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 		for(let i=0;i<4;i++){ const p=tdz.clone().addScaledVector(leftVec,(W/2+15)+i*9);   // 4 units, 9 m apart, inner unit 15 m from the runway edge
 			const post=new THREE.Mesh(new THREE.BoxGeometry(0.4,0.7,0.4),new THREE.MeshStandardMaterial({color:0x2a2d31})); post.position.set(p.x,y+0.35,p.z); scene.add(post);
 			const m=new THREE.Mesh(new THREE.BoxGeometry(1.2,0.55,0.7),new THREE.MeshBasicMaterial({color:0x23262b})); m.position.set(p.x,y+0.75,p.z); scene.add(m);   // ~0.6 m light box, low on frangible legs
-			gpos.push(p.x,y+0.75,p.z); gcol.push(1,1,1); papi.push({mesh:m,x:p.x,y:y+0.75,z:p.z,set:setAng[i]});
+			gpos.push(p.x,y+PAPI_LIFT,p.z); gcol.push(1,1,1); papi.push({mesh:m,x:p.x,y:y+PAPI_LIFT,z:p.z,set:setAng[i]});
 			obstacles.posts.push({x:p.x,z:p.z,r:2.2,y1:y+1.6}); }
 		const pg=new THREE.BufferGeometry(); pg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(gpos),3)); pg.setAttribute("color",new THREE.BufferAttribute(new Float32Array(gcol),3));
 		const papiPts=new THREE.Points(pg,screen_point(new THREE.PointsMaterial({map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false}),7)); papiPts.frustumCulled=false; papiPts.visible=false; scene.add(papiPts);   // base: normal-blended so the red reads red in daylight (additive washed it pale-orange). SCREEN-SPACE like the OLS meatball: world-sized (13 m) discs read as giant red balls from the runway in daylight
@@ -6997,8 +7007,8 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 		return {papi,papiPts,papiWhite,cx:tdz.x,cz:tdz.z,bx:beam.x,bz:beam.z}; }
 	const thrP=new THREE.Vector3(o.x,y,o.z).addScaledVector(fwd,-L/2);        // -y end: approach for heading H, fly +fwd, left=-right, beam back along -fwd
 	const thrM=new THREE.Vector3(o.x,y,o.z).addScaledVector(fwd, L/2);        // +y end: approach for heading H+180, fly -fwd, left=+right, beam along +fwd
-	const papis=[ build_papi(thrP.clone().addScaledVector(fwd,320), right.clone().multiplyScalar(-1), fwd.clone().multiplyScalar(-1)),
-	              build_papi(thrM.clone().addScaledVector(fwd,-320), right.clone(),                    fwd.clone()) ];
+	const papis=[ build_papi(thrP.clone().addScaledVector(fwd,PAPI_AT), right.clone().multiplyScalar(-1), fwd.clone().multiplyScalar(-1)),
+	              build_papi(thrM.clone().addScaledVector(fwd,-PAPI_AT), right.clone(),                    fwd.clone()) ];
 	// --- runway lighting (small, night-only except the always-on PAPI): MIRL edge, directional green/red thresholds, REIL ---
 	const edge=[]; const m0=35, span=L-2*m0, segs=Math.max(2,Math.round(span/60));   // inset 35 m from the thresholds so the last edge light doesn't sit on the threshold/end lights
 	for(let i=0;i<=segs;i++){ const c=new THREE.Vector3(o.x,y+0.3,o.z).addScaledVector(fwd,-L/2+m0+i*(span/segs));
@@ -7018,9 +7028,18 @@ function build_airport(o, number_plus, number_minus, tower=true, L=2400, W=60){
 		const h=3.4, sock=new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.5,h,12,1,true),new THREE.MeshStandardMaterial({map:windsock_texture(),side:THREE.DoubleSide,roughness:0.9,metalness:0.0}));   // banded orange/white, mouth (wide) at the pole, narrow tail downwind
 		sock.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),axis); sock.position.set(ws.x,y+6,ws.z).addScaledVector(axis,h/2); sock.castShadow=true; scene.add(sock);
 		obstacles.posts.push({x:ws.x,z:ws.z,r:2.0,y1:y+9}); }
-	const takeoff=thrP.clone().addScaledVector(fwd,55);                       // at the start of the runway, before the numbers, rolling toward +fwd
-	airports.push({x:o.x,z:o.z,papis,dir:fwd,sy:o.h+2.2,start:{x:takeoff.x,y:o.h+2.2,z:takeoff.z}});
+	const takeoff=thrP.clone().addScaledVector(fwd,TAKEOFF_AT), reverse=thrM.clone().addScaledVector(fwd,-TAKEOFF_AT);   // at the start of the runway, before the numbers, rolling toward +fwd (06) or -fwd (24)
+	const ends={ "06":{ x:takeoff.x, z:takeoff.z, dir:fwd.clone() }, "24":{ x:reverse.x, z:reverse.z, dir:fwd.clone().negate() } };   // each end's takeoff spot and the way it rolls (#133)
+	const parked=parking?{ x:parking.x, z:parking.z, dir:new THREE.Vector3(Math.sin(parking.heading*D2R),0,-Math.cos(parking.heading*D2R)) }:null;   // the apron spot by the hangars (#133)
+	const ap={x:o.x,z:o.z,papis,dir:fwd.clone(),sy:o.h+2.2,start:{x:takeoff.x,y:o.h+2.2,z:takeoff.z},ends,parked};
+	runway_use(ap); airports.push(ap);
 }
+const PAPI_AT=320, PAPI_LIFT=0.75, TAKEOFF_AT=55;   // m: the PAPI's touchdown past the threshold and its lights' height, and the takeoff spot past the threshold
+const FINAL={ range:3, slope:3 }, GROOVE={ range:0.75, slope:3.5 };   // the approach starts (#133): NM from the touchdown, and the path's degrees - the PAPI's 3° and the lens's 3.5°
+let cold_start=false;   // this spawn is parked cold and dark (#133)
+// runway_use: the end in use (#133, cfg.end, 06 into the trades by default) as the airfield's start and roll-out
+// direction, the frame the takeoff and arrival hints, the approach coupler and the field marks work in.
+function runway_use(ap){ const e=ap.ends[cfg.end==="24"?"24":"06"]; ap.start.x=e.x; ap.start.z=e.z; ap.dir.copy(e.dir); }
 function update_papi(p){ const flash=(sim_time*1000%520)<90;   // REIL: ~2 Hz synchronized white flash, on the world's clock as fast as it runs
 	const dark=cfg.tod!=="day";                                     // edge/threshold/REIL lit only when dark; PAPI is always on
 	for(const m of night_lights) m.visible=dark;
@@ -7136,7 +7155,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const ballPts=new THREE.Points(bg,screen_point(new THREE.PointsMaterial({map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false}),11)); ballPts.frustumCulled=false; ballPts.visible=false; scene.add(ballPts);   // the amber "ball" — screen-space, normal-blended so it reads amber/red
 	const td=carrier_world(twfa,strip_lat(twfa));   // touchdown reference (the 2-wire) — the glideslope references the wires, NOT the OLS housing on the bracket
 	const sdx=STRIP_UFA*CARRIER_C+STRIP_ULAT*CARRIER_S, sdz=-STRIP_UFA*CARRIER_S+STRIP_ULAT*CARRIER_C, sl=Math.hypot(sdx,sdz);
-	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, cutPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl }; carrier_ols.chart={ x:o.x, z:o.z, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl };   // approach comes from the −fa (aft) side, opposite the rollout
+	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, cutPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl }; carrier_ols.chart={ x:o.x, z:o.z, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, dy, deck:CARRIER.deckY };   // approach comes from the −fa (aft) side, opposite the rollout
 	// --- night lighting (darken-ship, night-only); heights + edges sampled off the REAL deck (which isn't flat), not a rectangle at deckY ---
 	const dh=(f,l)=>{ const w=carrier_world(f,l); return { x:w.x, z:w.z, y:deck_y_at(carrier_model,w.x,w.z,-1e9) }; };   // world pos + deck height at a carrier-local point (−1e9 = off the deck)
 	const edge_lat=(f,dir)=>{ let e=null; for(let l=0;Math.abs(l)<42;l+=dir*4){ const d=dh(f,l); if(d.y>dy-0.6 && d.y<dy+4) e=l; else if(e!==null) break; } return e; };   // scan out from the centre to the outermost still-DECK-LEVEL lat: the catwalks outboard sit ~1-2 m BELOW the lip and used to qualify, hanging edge lights off the ship (measured: dots at -0.84 and -2.2 m)
@@ -7356,17 +7375,26 @@ function symbology(){ return buses.ac?knob_level("symbology")*(hud_panel.range==
 // switch is cycled; open, each generator powers its own side alone, and a generator off the line leaves its side dead.
 // Of each side's loads (FO-8) the game splits the mission computers and the DDIs: MC1 and the left DDI on the left ac
 // bus, MC2 and the right DDI on the right.
-const electrics={ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false };
+const electrics={ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true };
 const BATTERY_LIFE=600;   // s, each battery's charge on the essential bus alone
 let buses={ ac:true, essential:true, left:true, right:true };
+// sub_idle: an engine's IFEI readings below ground idle (#133, NATOPS 2.1.1.6, 7.2), from the core's rundown (STATE.rundown,
+// 0 at idle, 1 stopped), or null at idle and above. N2 is the rotor's share of the 65% idle; oil pressure follows it; a
+// lit engine accelerating to idle shows its light-off's EGT rise, peaking about 100 °C over idle half way, and the
+// start's fuel; an unlit one cools toward the air, and burns nothing.
+const IDLE_N2=65, CATCHES=0.75;   // % N2 at ground idle; the rundown at and below which fuel lights (the core's catches, 16% N2)
+function sub_idle(out,e,lbs){ const r=THREE.MathUtils.clamp(out[STATE.rundown+e]||0,0,1); if(r<=0) return null;
+	const lit=!secured[e]&&lbs>0&&r<=CATCHES, air=15-0.0065*ownship.pos.y, rise=THREE.MathUtils.clamp((CATCHES-r)/0.15,0,1);
+	return { n2:IDLE_N2*(1-r), oil:55*Math.pow(1-r,1.5), egt:lit?air+(450-air)*rise*(1+0.25*Math.sin(Math.PI*(CATCHES-r)/CATCHES)):air+(450-air)*Math.pow(1-r,4), flow:lit?400*rise:0 }; }
 function turning(out,e){ return THREE.MathUtils.clamp(out[STATE.engine+2*e]||0,0,1)*(1-THREE.MathUtils.clamp(out[STATE.engine_harm+e]||0,0,1))>0.03; }   // an engine turning its generator and pumps, the core's spool less the harm to it
 function battery_source(){ const c=electrics.charge;   // the battery carrying the essential bus with no ac power: null, "u" or "e"
 	if(electrics.battery==="oride") return c.e>0?"e":null;
 	if(electrics.battery!=="on"||electrics.cutoff) return null;
 	return c.u>0?"u":c.e>0?"e":null; }
 function power_step(out){ const dt=electrics.at===null?0:THREE.MathUtils.clamp(sim_time-electrics.at,0,4); electrics.at=sim_time;   // once a frame, over the frame's sim time: 3.2 s at 64× and the 50 ms frame clamp
-	const [l,r]=generators(out), ac=l||r;
-	if(ac&&!buses.ac&&electrics.powered&&ownship.grounded&&!parking) electrics.tie=false;   // an engine start on the ground with the parking brake released opens the bus tie (2.5.1.3): a generator back on the line of a jet that has had ac power - a spawn's engines take a moment to read as turning, and that is no start
+	const [l,r]=generators(out), generating=l||r, cart=ground_power()&&!generating, ac=generating||cart;   // the cart's power reaches the buses only while neither generator is on the line (2.5.4)
+	if(generating&&!electrics.generating&&electrics.powered&&ownship.grounded&&!parking) electrics.tie=false;   // an engine start on the ground with the parking brake released opens the bus tie (2.5.1.3): a generator coming on the line of a jet that has had ac power, from a generator or the cart - a spawn's engines take a moment to read as turning, and that is no start
+	electrics.generating=generating;
 	if(ac) electrics.powered=true;
 	if(ac){ electrics.lost=-Infinity; electrics.cutoff=false; for(const k of ["u","e"]) electrics.charge[k]=Math.min(1,electrics.charge[k]+dt/BATTERY_LIFE); }
 	else if(electrics.lost===-Infinity){ electrics.lost=sim_time; electrics.ground=!!ownship.grounded; }
@@ -7374,9 +7402,9 @@ function power_step(out){ const dt=electrics.at===null?0:THREE.MathUtils.clamp(s
 	const source=ac?null:battery_source();
 	if(source) electrics.charge[source]=Math.max(0,electrics.charge[source]-dt/BATTERY_LIFE);
 	const essential=ac||!!source;
-	if(essential) electrics.dead=-Infinity; else if(electrics.dead===-Infinity) electrics.dead=sim_time;
-	if(!essential&&sim_time-electrics.dead>=8) electrics.mech=true;
-	buses={ ac, essential, left:l||(electrics.tie&&r), right:r||(electrics.tie&&l) };
+	if(essential){ electrics.dead=-Infinity; electrics.energised=true; } else if(electrics.dead===-Infinity&&electrics.energised) electrics.dead=sim_time;   // the reversion follows a loss of the bus: a cold jet's controls were never powered to lose it (#133)
+	if(!essential&&electrics.dead>-Infinity&&sim_time-electrics.dead>=8) electrics.mech=true;
+	buses={ ac, essential, left:l||(electrics.tie&&r)||cart, right:r||(electrics.tie&&l)||cart };
 	RADAR.unpowered=!ac; }
 function battery_set(position){ if(position==="on"&&electrics.battery!=="on"&&electrics.lost>-Infinity){ electrics.lost=sim_time; electrics.cutoff=false; }   // back to ON from OFF or ORIDE: five more minutes (15.17.1)
 	electrics.battery=position; }
@@ -7391,6 +7419,45 @@ function battery_switch(){   // the BATT SW caution (2.5.3.3): on the ground the
 function volt_angle(volts){ const step=volts<20?volts-16:4+(volts-20)/2; return 1.55+(step-6)*0.155; }
 function battery_volts(k){ if(electrics.battery==="off"||(electrics.battery==="oride"&&k==="u")) return 16;
 	return buses.ac?28:20.5+3.5*electrics.charge[k]; }
+// The start systems (#133, NATOPS 2.4.2, 2.1.1.6, 2.5.4, 7.2): the APU, the ENG CRANK switch and the ground power
+// cart. The APU switch at ON, with the essential bus up and the APU accumulator charged, spins the APU up on the
+// accumulator's hydraulic starter, spending the charge hydraulic system 2 puts back once the right engine turns
+// (accumulator_step), and its READY light comes on 15 s later. The switch is held at ON while the APU runs and drops
+// to OFF, stopping it, a minute after the second generator comes on the line, as the essential bus goes, or at once
+// when the APU cannot start. ENG CRANK at L or R is held there while there is air to turn that engine, the APU's or the
+// other engine's above 80% N2 (the crossbleed start), and its air motors the engine to about 25% N2 (the core's
+// crank); the engine lights once its throttle comes off OFF above 15%, and the switch drops to OFF as it passes 50%
+// or the air goes. A parked start stands beside a ground power cart: EXT PWR at NORM puts it on the ac buses while
+// neither generator is on the line, OFF takes it off them, and RESET, sprung back to NORM, resets its monitor. The
+// cable comes out once the jet rolls a few metres from it.
+const APU={ spin:15, stop:10, linger:60 };   // s: the APU to READY, its run down, and its run after both generators come on the line
+const CRANK=["port","","starboard"];   // ENG CRANK's positions as its clip runs (measured on the model): L, OFF, R
+const EXTERNAL={ off:0, norm:1, reset:2 };   // EXT PWR's positions as its clip runs (measured): OFF aft, NORM, RESET forward
+const START={ held:50, crossbleed:80, cable:3, reset:0.4 };   // % N2 that releases ENG CRANK, and the other engine's that crossbleeds; m the cart's cable reaches; s a click holds EXT PWR at RESET
+const starter={ speed:0, running:false, lined:-Infinity, cart:null, reset:-Infinity };   // the APU's speed 0 to 1 and whether it runs; when both generators came on the line; where the cart is plugged in ({ ship, a, b }: deck fore-aft and lateral, or world x and z), null with none; when EXT PWR went to RESET
+function apu_ready(){ return starter.speed>=1; }
+function ground_power(){ return !!starter.cart&&travel_at("extpwr")!==EXTERNAL.off; }
+function cranking(){ return CRANK[travel_at("crank")]||undefined; }   // the engine ENG CRANK motors, as the core's control
+function start_step(out,dt){ const g=ownship.gauges||{}, n2=[g.rpmL??0,g.rpmR??0];
+	if(travel_at("apu")===1&&!starter.running){ if(buses.essential&&!accumulator_low()){ starter.running=true; apu_accumulator=0; } else thrown.apu=0; }   // the start spends the accumulator; an empty one, or no essential bus, and the switch will not stay
+	const [l,r]=generators(out);
+	if(!(l&&r)) starter.lined=-Infinity; else if(starter.lined===-Infinity) starter.lined=sim_time;
+	if(starter.running&&(travel_at("apu")===0||!buses.essential||(starter.lined>-Infinity&&sim_time-starter.lined>=APU.linger))){ starter.running=false; thrown.apu=0; }
+	starter.speed=THREE.MathUtils.clamp(starter.speed+(starter.running?dt/APU.spin:-dt/APU.stop),0,1);
+	const side=cranking();
+	if(side){ const e=side==="port"?0:1, air=apu_ready()||n2[1-e]>=START.crossbleed;
+		if(!air||!buses.essential||n2[e]>=START.held) thrown.crank=1; }   // the holding coil lets go
+	if(travel_at("extpwr")===EXTERNAL.reset){ if(starter.reset===-Infinity) starter.reset=glance; else if(glance-starter.reset>=START.reset){ thrown.extpwr=EXTERNAL.norm; starter.reset=-Infinity; } }
+	else starter.reset=-Infinity;
+	const c=starter.cart;
+	if(c&&flight_active&&ownship.grounded&&(c.ship?Math.hypot(carrier_fore_aft(ownship.pos.x,ownship.pos.z)-c.a,carrier_lateral(ownship.pos.x,ownship.pos.z)-c.b):Math.hypot(ownship.pos.x-c.a,ownship.pos.z-c.b))>START.cable) starter.cart=null; }   // judged once the core flies the jet on its wheels: before it does, a spawn stands where the ship's charted pose put it
+// start_fresh: the start systems as a spawn leaves them - the APU stopped, and the cart plugged in beside a parked jet
+function start_fresh(cart){ Object.assign(starter,{ speed:0, running:false, lined:-Infinity, reset:-Infinity,
+	cart:cart?(cart==="ship"?parked_deck():{ ship:false, a:ownship.pos.x, b:ownship.pos.z }):null }); }
+// parked_deck: where the parked jet's origin stands in the deck frame - the spot itself, not the jet's place when the
+// cart was plugged in, which a re-spot on the deck's measured height or the ship's first pose moves (#133)
+function parked_deck(){ const p=SHIP.parking, h=p.heading*D2R, nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
+	return { ship:true, a:p.x-Math.cos(h)*nose, b:p.z+Math.sin(h)*nose }; }
 // The ECS (#22, NATOPS 2.16): the BLEED AIR knob, L OFF, NORM, R OFF or OFF clockwise from nine o'clock
 // (FO-5), closes the primary bleed valves; loss of ac power closes both, and so does a fire and bleed
 // air test, after which they reopen only once the knob has been turned through OFF back to NORM with
@@ -7493,7 +7560,9 @@ function update_jbds(dt){   // the hooked cat's deflector rises through run-up a
 // 8.3.9): the pilot lands on the lens and the deck lights. With it lit the beam flooded the
 // whole ship from 0.2 NM, so the landing picture was the jet's own light, not the ship's.
 // A recovery therefore spawns with the LDG/TAXI switch OFF.
-function recovery_start(){ const st=mission_start(); return st==="case1"||st==="case2"||st==="case3"; }
+function recovery_start(){ const st=mission_start(); return st==="case1"||st==="case2"||st==="case3"||st==="groove"; }
+// on_wheels: a start that hands the jet over standing on the deck or the field (#133)
+function on_wheels(st){ return st==="carrier"||st==="deck"||st==="runway"||st==="apron"; }
 function update_aircraft_lights(){
 	if(!aircraft_lights) return; const position=ownship.lights?exterior.position:0, strobe=!!ownship.lights&&exterior.strobe!=="off"&&(sim_time*1000%1100)<70;   // under the master switch (2.6.1.1); the strobes flash about once a second
 	instrument_backlight();
@@ -7549,6 +7618,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 	// core windmills near 35% N2 with a cooling can (NATOPS 15.1).
 	const hL=1-THREE.MathUtils.clamp(out[STATE.engine_harm]||0,0,1), hR=1-THREE.MathUtils.clamp(out[STATE.engine_harm+1]||0,0,1);
 	const gL=sL*hL, gR=sR*hR, bL=rL*hL, bR=rR*hR;   // health-weighted spool/reheat: the gauges' and the effects' drive
+	const below=[0,1].map(e=>sub_idle(out,e,lbs));   // each engine below ground idle (#133), or null at idle and above
 	const vx=out[STATE.velocity]||0, vz=out[STATE.velocity+2]||0, vh=Math.hypot(vx,vz);   // horizontal velocity: HSI ground track and groundspeed
 	const now=mission_clock();   // the cockpit clock and ZTOD run with the sim, so they keep pace under time compression
 	const heading=Math.atan2(ownship.fwd.x,-ownship.fwd.z);
@@ -7564,12 +7634,12 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		asi:dial(ASI_DIAL,cas), altitude,
 		vsi:dial(VSI_DIAL,fpm),
 		fuelLbs:Math.min(lbs,21000),
-		rpmL:35+(30+34*gL)*hL, rpmR:35+(30+34*gR)*hR,            // F404 N2: ground idle ~65 %, military 99; a dead core windmills near 35
-		egtL:300+(150+360*gL)*hL+90*bL, egtR:300+(150+360*gR)*hR+90*bR,   // °C, F404-shaped: idle ~450, military ~810, max reheat ~900 — inside the -402's 920 steady-state ceiling (NATOPS 4.1.1.2); it read 950, above even the 942 transient, so hard flying showed a permanent over-temperature. A dead can cools toward 300
-		flowL:THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),   // pph: the honest measured total, split by each engine's own health-weighted demand, main engine only - the IFEI and engine page leave the afterburner out (NATOPS 2.1.1.7.5); a dead engine's counter winds to zero, matching the core's burn (#41)
-		flowR:THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),
+		rpmL:below[0]?.n2??35+(30+34*gL)*hL, rpmR:below[1]?.n2??35+(30+34*gR)*hR,            // F404 N2: ground idle ~65 %, military 99; a dead core windmills near 35; below idle the rotor's own speed (sub_idle)
+		egtL:below[0]?.egt??300+(150+360*gL)*hL+90*bL, egtR:below[1]?.egt??300+(150+360*gR)*hR+90*bR,   // °C, F404-shaped: idle ~450, military ~810, max reheat ~900 — inside the -402's 920 steady-state ceiling (NATOPS 4.1.1.2); it read 950, above even the 942 transient, so hard flying showed a permanent over-temperature. A dead can cools toward 300
+		flowL:below[0]?.flow??THREE.MathUtils.clamp(flow_state.pph*((0.12*hL+gL)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),   // pph: the honest measured total, split by each engine's own health-weighted demand, main engine only - the IFEI and engine page leave the afterburner out (NATOPS 2.1.1.7.5); a dead engine's counter winds to zero, matching the core's burn (#41)
+		flowR:below[1]?.flow??THREE.MathUtils.clamp(flow_state.pph*((0.12*hR+gR)/((0.12*hL+gL+3.4*bL)+(0.12*hR+gR+3.4*bR)||1)),0,99990),
 		nozL:100*Math.max(THREE.MathUtils.clamp((0.7-gL)/0.55,0,1),bL), nozR:100*Math.max(THREE.MathUtils.clamp((0.7-gR)/0.55,0,1),bR),   // % open: the F404 exit-area schedule the petals follow — open at idle, closed by military, open again in reheat
-		oilL:55+45*gL, oilR:55+45*gR,                            // psi, 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4)
+		oilL:below[0]?.oil??55+45*gL, oilR:below[1]?.oil??55+45*gR,                            // psi, 55 idle to 100 at MIL: the -402 inflight bands are 55-110 idle and 95-180 MIL (NATOPS 4.1.1.4)
 		hyd1:gL>0.03?2.83:0, hyd2:gR>0.03?2.83:0,              // ~3000 psi on the 0-5k arc while its own engine's pump turns: HYD 1 on the left AMAD, HYD 2 on the right (2.7.1); an engine failure takes its side's system (NATOPS 15.4)
 		foldpull:fold_handle==="lock"?0:1,                       // the wing fold handle out of LOCK (2.11.1), for its travel along the shaft
 		baro:baro_set,                                           // the standby altimeter's barometric setting, hundredths of inHg (2.12.4, #16)
@@ -7578,7 +7648,7 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		casKt:cas, fpm, spoolL:gL, spoolR:gR, reheatL:bL, reheatR:bR, fuelRaw:lbs, externalRaw:extlbs, wingRaw:wingLbs, centreRaw:centreLbs, mach:out[STATE.mach]||0,
 		track:vh>2?Math.atan2(vx,-vz):null, ground:vh*1.944 };   // track null at taxi speeds — the diamond parks off the rose rather than swinging with tyre scrub
 	{ const step=Math.max(0,t-(systems_at??t)); systems_at=t;   // the panel systems on the core's clock: the buses (#21, #116), what they light (#115), INTR WING (#18), the cockpit's pressure (#14) and the spin recovery display (#12)
-		power_step(out); displays_light(); bezel_turn(); centre_turn(); plates_turn(); wing_step(lbs,step); cabin_step(out,step); spin_step(out); }
+		power_step(out); start_step(out,step); displays_light(); bezel_turn(); centre_turn(); plates_turn(); wing_step(lbs,step); cabin_step(out,step); spin_step(out); }
 	lamps_update(out);
 	const ind=ownship.group.userData.indexer;
 	const glow=buses.ac?knob_level("indexer"):0;   // the HUD panel's AOA indexer knob (2.13.4.8.7, #115); the indexer is dark without ac power
@@ -7830,6 +7900,12 @@ const HINT={
 	bar:"On catapult: extend launch bar to hook up",   // a jet on a catapult with its bar up (#127): the crew hook up only a bar that is down
 	clearing:"Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles",
 	climb:"7 miles: climb on course",
+	// The cold start (#133), in NATOPS 7.2's order: power and the APU, the right engine first on the APU's air, its
+	// HYD 2 recharging the APU accumulator, then the left, then the INS.
+	battery:"Cold start: BATT switch ON, then APU switch ON",
+	crank:"APU READY: ENG CRANK R, right throttle to IDLE at 15% N2",
+	left:"Right engine at idle: ENG CRANK L, left throttle to IDLE at 15% N2",
+	align:"Engines at idle: INS knob to {mode} to align",
 };
 const CIRCUIT=[HINT.brk,HINT.roll,HINT.form,HINT.wing,HINT.abeam,HINT.ninety,HINT.forty,HINT.slope,HINT.check,HINT.ball,HINT.wave,HINT.bolt,HINT.abort,HINT.miss];   // the per-circuit set: re-armed by a bolter or wave-off
 const LAUNCH=[HINT.tension,HINT.salute,HINT.flyaway,HINT.positive];   // the deck set up to the clean-up, retired on leaving the ship (#189); the departure's own lines end by the departure's rules, which run to 7 NM
@@ -7839,7 +7915,7 @@ const RUNWAY=[HINT.brk,HINT.initial,HINT.downwind,HINT.dirty,HINT.numbers,HINT.n
 // clean-up, the takeoff roll, the break, the gear - which the sets track, and
 // which ends it or brings the next line.
 const HINT_DWELL=5;
-const WAITING=new Set([HINT.bar,HINT.tension,HINT.salute,HINT.flyaway,HINT.positive,HINT.lineup,HINT.rotate,HINT.cleanup,HINT.depart,HINT.rollout,HINT.brk,HINT.dirty,HINT.form]);
+const WAITING=new Set([HINT.battery,HINT.crank,HINT.left,HINT.align,HINT.bar,HINT.tension,HINT.salute,HINT.flyaway,HINT.positive,HINT.lineup,HINT.rotate,HINT.cleanup,HINT.depart,HINT.rollout,HINT.brk,HINT.dirty,HINT.form]);
 let hinted={};
 // The pattern's roll-out headings (#90), from the live ship: the wake is the
 // hull course, the downwind its reciprocal, and the groove the angled deck's
@@ -8020,6 +8096,7 @@ function hints_watch(){ if(cfg.hints===false||!running) return;
 	const field=ap?Math.hypot((own.x-ap.start.x),(own.z-ap.start.z)):Infinity;   // the field in the world frame
 	// The launch bar (#127): a jet on a catapult spot with the bar up is told how to get hooked up, and the line
 	// holds until the bar goes down or the jet leaves the spot, which re-arms it for the next catapult.
+	if(cold_start&&hints_start()) return;   // a cold and dark jet is coached through its start (#133) before anything else
 	if((ownship.squish??0)>0.5&&!ownship.launching&&bar_switch==="retract"&&on_cat_spot()>=0) hint(HINT.bar);
 	else { hint_retire(HINT.bar); delete hinted[HINT.bar]; }
 	// Retiring a set's last line belongs HERE, not inside the set, because a
@@ -8081,12 +8158,18 @@ function hints_launch(ship){ hinting="launch";
 	// Never cleaned up: the departure's own bounds still end the set.
 	if(!hinted[HINT.clearing]&&(ship>7*1852||feet>3000)){ hint_retire(...LAUNCH); ship_left=true; }
 }
+// hints_start (#133): a cold and dark start step by step, each line standing until the next; true while it is coached.
+function hints_start(){ const lit=e=>!!last_out&&!((last_out[STATE.rundown+e]||0)>0)&&!secured[e], lines=[HINT.battery,HINT.crank,HINT.left,HINT.align];
+	if(!ownship.grounded){ hint_retire(...lines); return false; }   // flying: the start is over, done or not
+	if(lit(0)&&lit(1)){ if(nav.ins.knob==="off"){ hint(HINT.align,{ mode:aboard()?"CV":"GND" }); return true; } hint_retire(...lines); return false; }
+	if(lit(1)) hint(HINT.left); else if(apu_ready()) hint(HINT.crank); else if(!starter.running) hint(HINT.battery);
+	return true; }
 function hints_carrier(st){ hinting="carrier";
 	if(on_ground()) return;
 	// The case start says which recovery was BRIEFED. A mission that briefed
 	// none - a deck launch, a runway departure, a free flight - still flies the
 	// visual pattern home, so it is coached as Case I rather than not at all.
-	const kase=(st==="case2"||st==="case3")?st:"case1";
+	const kase=(st==="case2"||st==="case3"||st==="groove")?st:"case1";   // the groove start begins past the pattern the Case I lines coach
 	const rx=(ownship.pos.x-CARRIER.x), rz=(ownship.pos.z-CARRIER.z);
 	const range=Math.hypot(rx,rz);
 	const feet=ownship.pos.y*3.28084, kt=(ownship.cas||0)*1.9438, down=(ownship.gearTarget??0)<0.5;   // gearTarget 0=down 1=up (the 3796 polarity trap): down is the SWITCH thrown, which is what a checklist hint coaches
@@ -8129,7 +8212,7 @@ function hints_carrier(st){ hinting="carrier";
 	}
 }
 function mission_start(){ const start=cfg.task==="joust"?"joust":cfg.start; return start==="landing"?"case2":start; }   // joust always starts at the merge; the Start selector applies to free flight only. "landing" is the legacy saved value for what is now Case II (#205)
-function takeoff_surface(){ const st=mission_start(); if(st==="carrier") return CARRIER.deckY; if(st==="runway"&&airports.length) return airports[0].start.y; return 8; }
+function takeoff_surface(){ const st=mission_start(); if(st==="carrier"||st==="deck") return CARRIER.deckY; if((st==="runway"||st==="apron")&&airports.length) return airports[0].start.y; return 8; }
 function on_ground(){ return ownship.launching||!!ownship.grounded; }   // the real resting flag, not an altitude guess — off the cat you fly level at deck height, where a +12 m heuristic left G dead
 // watching: the keys a replay answers - the views, the zoom, the corner
 // repeater, the map and the menu. Nothing that works the jet. The pause key
@@ -8550,8 +8633,9 @@ function build_plates(g){
 			hinge.add(part(new THREE.Mesh(new THREE.BoxGeometry(gw,gh,0.0012).translate(0,-gh/2,d.height-0.0006),striped),"plate.guard"));
 			for(const side of [-1,1]) hinge.add(part(new THREE.Mesh(new THREE.BoxGeometry(0.0012,gh,d.height).translate(side*(gw-0.0012)/2,-gh/2,d.height/2),striped),"plate.guard"));
 			group.add(hinge); guards[action]=hinge; }
-		for(const [lamp,l] of Object.entries(p.lamps||{})){   // a light: a lens like every other, turned as its legend reads
-			const turned=Math.abs(l.turn%180)===90, m=legend(l.text,l.colour,turned?l.size[1]:l.size[0],turned?l.size[0]:l.size[1]);
+		for(const [lamp,l] of Object.entries(p.lamps||{})){   // a light: a lens like every other, turned as its legend reads; one with no legend a round lens that glows whole, its ring painted dark beneath it
+			const turned=Math.abs(l.turn%180)===90, m=l.text?legend(l.text,l.colour,turned?l.size[1]:l.size[0],turned?l.size[0]:l.size[1])
+				:new THREE.Mesh(new THREE.CircleGeometry(l.size[0]/2,32),new THREE.MeshBasicMaterial({ color:l.colour, transparent:true, opacity:0, toneMapped:false, depthWrite:false }));
 			m.position.set(l.at[0],l.at[1],BEZEL.lift+0.0003); m.rotation.z=l.turn*D2R; m.renderOrder=1; part(m,"plate.lamp"); group.add(m); lamps[lamp]=m;
 			if(g.userData.tested) g.userData.tested.push(m); }
 		root.add(group); }
@@ -10007,6 +10091,18 @@ let paint_force=-1;   // #102: -1 = the brain's own radar; 0/1/2 force the SP ba
 if(DEV_MODE) (globalThis as any).dev_paint=function(mode){ paint_force=[0,1,2].includes(+mode)?+mode:-1; return paint_force; };
 const spawn_report={burst:0,soot:0};   // cumulative explosion spawn counts — the pool total also carries debris micro-trail wisps (~60/s after a burst), so sequencing is only measurable from exact counters (#92)
 if(DEV_MODE) (globalThis as any).dev_spawns=function(){ return {...spawn_report}; };
+// dev_start (#133): the start systems and what they drive - the APU, the three switches, the cart, the buses, each
+// engine's rundown, N2 and EGT, the INS knob and mode, and the jet's place in the deck frame - plus the island's box
+if(DEV_MODE) (globalThis as any).dev_start=()=>{ const g=ownship.gauges||{};
+	return structuredClone({ cold:cold_start, start:mission_start(), apu:{ speed:starter.speed, running:starter.running, ready:apu_ready(), switch:travel_at("apu") }, crank:travel_at("crank"), extpwr:travel_at("extpwr"), cart:starter.cart, power:ground_power(),
+		buses, battery:electrics.battery, mech:electrics.mech, accumulator:apu_accumulator, secured:[...secured], parking, fold:ownship.foldTarget??0, gear:ownship.gearTarget??0, hook:ownship.hookTarget??0, flap:flap_select,
+		rundown:last_out?[last_out[STATE.rundown],last_out[STATE.rundown+1]]:null, spool:last_out?[last_out[STATE.engine],last_out[STATE.engine+2]]:null, n2:[g.rpmL,g.rpmR], egt:[g.egtL,g.egtR], oil:[g.oilL,g.oilR], flow:[g.flowL,g.flowR],
+		ins:{ knob:nav.ins.knob, mode:nav.ins.mode }, grounded:!!ownship.grounded, speed:ownship.speed, pos:[ownship.pos.x,ownship.pos.y,ownship.pos.z], fwd:[ownship.fwd.x,ownship.fwd.z],
+		deck:{ fa:carrier_fore_aft(ownship.pos.x,ownship.pos.z), lat:carrier_lateral(ownship.pos.x,ownship.pos.z), y:CARRIER.deckY, island:deck_grid?deck_grid.island:null,
+			forward:[carrier_fore_aft(ownship.pos.x+ownship.fwd.x,ownship.pos.z+ownship.fwd.z)-carrier_fore_aft(ownship.pos.x,ownship.pos.z), carrier_lateral(ownship.pos.x+ownship.fwd.x,ownship.pos.z+ownship.fwd.z)-carrier_lateral(ownship.pos.x,ownship.pos.z)] },
+		home:(()=>{ const h=homeward(ownship.pos); return [h.x,h.y,h.z]; })(), hint:hint_key, shown:hint_rows?hint_rows.join(' '):null, ols:carrier_ols?ols_dev(ownship.pos,carrier_ols):null, end:airports[0]?{ x:airports[0].start.x, z:airports[0].start.z, dx:airports[0].dir.x, dz:airports[0].dir.z, y:airports[0].sy }:null }); };
+// dev_switch (#133): throws a travel-only control to a position, as clicks would
+if(DEV_MODE) (globalThis as any).dev_switch=(name,at)=>{ thrown[name]=at; return travel_at(name); };
 const soot_queue=[];   // air bursts soot AFTER the fireball: the dark cloud is the fire's product, not its curtain (#92)
 function soot_burst(x,y,z){
 	for(let i=0;i<9;i++){ const k=pool_spawn(smoke); if(k<0) break;
@@ -10090,7 +10186,8 @@ function rig_local(v){ return carrier_rig.worldToLocal(v); }   // a world point 
 function charted(x,z){ const dx=x-CHART.x, dz=z-CHART.z, c=Math.cos(CHART.yaw), s=Math.sin(CHART.yaw); return { x:dx*c-dz*s, z:dx*s+dz*c }; }   // a point built where the map charts the ship, in the ship's own frame (fore-aft, lateral)
 function ols_follow(){ if(!carrier_ols||!carrier_ols.chart) return; const o=carrier_ols, k=o.chart, turn=CARRIER_YD-CHART.yaw, c=Math.cos(turn), s=Math.sin(turn);   // the lens's world figures, from where they were built to where the ship is
 	const at=(x,z)=>{ const q=charted(x,z); return carrier_world(q.x,q.z); }, a=at(k.x,k.z), b=at(k.tdx,k.tdz);
-	o.x=a.x; o.z=a.z; o.tdx=b.x; o.tdz=b.z; o.apx=k.apx*c+k.apz*s; o.apz=-k.apx*s+k.apz*c; }
+	o.x=a.x; o.z=a.z; o.tdx=b.x; o.tdz=b.z; o.apx=k.apx*c+k.apz*s; o.apz=-k.apx*s+k.apz*c;
+	o.dy=k.dy+CARRIER.deckY-k.deck; }   // and the deck's height in the frame flown (#133): held at the chart's, the ball read the curvature between the frame's anchor and the ship, 1.7° high in the groove with the frame at home
 // deck_carry draws a remote jet on the deck where the ship is now: remotes are drawn
 // some 100 ms behind the ownship's clock, and on a deck steaming at 28 kt that left a
 // parked jet a metre and a half off its spot. The carry fades out with height over the
@@ -10606,7 +10703,7 @@ function playback_own(pose,dt){
 	fire_gun(ownship,null,"own",dt,firing);
 	playback_effects(ownship,pose,true,dt);
 	audio_frame({ spool:ownship.spool||0, stage:ownship.stage||0, speed:ownship.speed||0, alpha:ownship.aoa||0,
-		wow:!!ownship.grounded, burn:own_burning?1:0, harm:[o[STATE.engine_harm],o[STATE.engine_harm+1]], drag:1-(ownship.gear??1) });
+		wow:!!ownship.grounded, burn:own_burning?1:0, harm:[o[STATE.engine_harm],o[STATE.engine_harm+1]], drag:1-(ownship.gear??1), turn:[1-(o[STATE.rundown]||0),1-(o[STATE.rundown+1]||0)] });
 	audio_gun(firing);
 	audio_view(cfg.view==="chase"||cfg.view==="flypast", ownship.pos.x, ownship.pos.y, ownship.pos.z);
 	playback_death(pose,true); }
@@ -10818,12 +10915,27 @@ function on_strip(p){   // point inside any paved capsule (the airfield strips; 
 		if((p.x-qx)*(p.x-qx)+(p.z-qz)*(p.z-qz)<=w*w) return true; }
 	return false;
 }
+// approach_over (#133): the groove or the final trimmed to track its line over the surface at the lens's or the PAPI's
+// angle. The core trims along a heading through the air (flight_approach), its state riding the wind, so a heading
+// straight down the line drifts across it with the wind, and the air's path is not the path over a deck steaming into
+// that wind: the heading is crabbed into the air's drift across the line, and the air path is the one whose sink over
+// the closure makes the angle. Each pass takes the speed the last trim gave; returns the trim's throttle.
+function approach_over(angle){ const p=ownship.pos, d={ x:ownship.fwd.x, z:ownship.fwd.z }, l=Math.hypot(d.x,d.z)||1; d.x/=l; d.z/=l;
+	const w=flight_wind(p.x,p.y,p.z), s=mission_start()==="groove"?flight_footing(CARRIER.x,CARRIER.deckY,CARRIER.z):{ x:0, z:0 };   // the deck's own velocity under the ship's wind; the field stands still
+	const rx=w.x-s.x, rz=w.z-s.z, across=-rx*d.z+rz*d.x, along=rx*d.x+rz*d.z;   // the air over the surface, across the line and along it
+	let speed=70, throttle=0;
+	for(let pass=0;pass<3;pass++){ const level=speed*Math.cos(Math.min(0.2,angle*D2R)), crab=Math.asin(THREE.MathUtils.clamp(-across/level,-0.5,0.5));   // into the drift
+		const closure=level*Math.cos(crab)+along, path=Math.asin(THREE.MathUtils.clamp(closure*Math.tan(angle*D2R)/speed,0,0.2));
+		const hx=d.x*Math.cos(crab)-d.z*Math.sin(crab), hz=d.z*Math.cos(crab)+d.x*Math.sin(crab);
+		throttle=flight_approach(p.x,p.y,p.z, hx,hz, path/D2R, FUEL());
+		const b=flight_get(); speed=Math.hypot(b[STATE.velocity]-w.x,b[STATE.velocity+1]-w.y,b[STATE.velocity+2]-w.z)||speed; }
+	return throttle; }
 const IDLE=0.04;   // the core's idle spool (flight/propulsion.go idle): the lever commands through this floor, so a running engine is never below it
 function flight_push(){   // deliver the ownship pose to the core: trimmed level flight when airborne, a composed state on the ground / in a test
 	if(!flight_active) return;
 	prev_wire=-1;
 	ownship.flown=false;   // a fresh spawn has not flown: no phantom airfield service (a respawn already carries a full load)
-	if(!test_active && !ownship.grounded && mission_start()==="case2"){
+	if(!test_active && !ownship.grounded && (mission_start()==="case2"||mission_start()==="groove"||mission_start()==="final")){
 		// The core owns approach trim (#158): on-speed follows from weight and the
 		// droop schedule, so the client supplies only where and which way - constants
 		// carried here went stale and ballooned off the glideslope. Case II trims
@@ -10831,7 +10943,8 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 		// is the pilot's (CV-1). The trim is of the jet as loaded: the loadout goes on first, or its weight and
 		// drag arrive on the first frame and sink the hands-off start 70 m in 25 s.
 		flight_stores(own_mask());
-		ownship.throttle=flight_approach(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, 0, FUEL());
+		const slope={ groove:GROOVE.slope, final:FINAL.slope }[mission_start()];   // the groove and final descend on their paths over the deck or the field (#133)
+		ownship.throttle=slope===undefined?flight_approach(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, 0, FUEL()):approach_over(slope);
 		sync_core(flight_get()); return;
 	}
 	if(!test_active && ownship.speed>50 && !ownship.grounded){
@@ -10858,7 +10971,8 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	b[STATE.extension]=(ownship.gearTarget??0)<0.5?1:0;   // the core's gear matches the spawn configuration immediately — a landing start otherwise spends its first seconds extending (flaps absent, trim shifting)
 	b[STATE.omega]=0; b[STATE.omega+1]=0; b[STATE.omega+2]=0;
 	if(b[STATE.time]===0 || b[STATE.fuel]<500){ b[STATE.fuel]=FUEL(); if(stores_book) external_fill(b); }   // a NEVER-STEPPED core boots with the airframe's full 4,900 kg tank — without the time gate the menu's fuel load never reached ground starts (carrier/runway read 10,800 lb whatever the slider said); mid-mission resets still keep their burned-down tank. Externals mount full (#17): the same push seeds the tanks, but ONLY once the catalog is readable — an early push wrote a not-yet-derivable 0 OVER the fill the mask transition had already made, and no transition remained to refill it (the EXT 0 carrier boots)
-	{ const spool=IDLE+(1-IDLE)*(ownship.throttle??0); b[STATE.engine]=spool; b[STATE.engine+1]=0; b[STATE.engine+2]=spool; b[STATE.engine+3]=0; }   // the engines running at the lever's power: handed the lever itself, a jet at IDLE began with its engines stopped, and its generators off the line for the second they took to spool up
+	{ const spool=cold_start?0:IDLE+(1-IDLE)*(ownship.throttle??0); b[STATE.engine]=spool; b[STATE.engine+1]=0; b[STATE.engine+2]=spool; b[STATE.engine+3]=0;
+		for(let e=0;e<4;e++) b[STATE.rundown+e]=cold_start?1:0; }   // a cold and dark jet's engines stopped (#133)   // the engines running at the lever's power: handed the lever itself, a jet at IDLE began with its engines stopped, and its generators off the line for the second they took to spool up
 	for(let i=STATE.stabilator;i<=STATE.normal;i++) b[i]=0;   // surfaces + controller memories
 	b[STATE.demand]=1; b[STATE.normal]=1;
 	b[STATE.extension]=(ownship.gearTarget??0)<0.5?1:0;
@@ -10926,7 +11040,7 @@ function fly_player(dt){
 		bypass:!guarded(), emergency:gear_emergency, mechanical:mechanical(), spin:spin_switch==="rcvy", transfer:[transfer.wing,transfer.centre], gear:(ownship.gearTarget??0)<0.5, hook:(ownship.hookTarget??0)>0.5, probe:(ownship.probeTarget??0)>0.5,
 		trim:input.trim||0, lean:input.lean||0, reset:reset_flag, onspeed:onspeed_flag, reverted:!mc().one, held:wing_kept(), flap:flap_select,
 		launch:launch_flag, retract:bar_switch==="retract", override:keys.has(key_of("override"))&&!(DEV_MODE&&on_ground()),
-		dump:fuel_dump, port:secured[0], starboard:secured[1], fire:trigger_own(), steering, sequence:++control_sequence };   // the core kicks back while rounds leave
+		dump:fuel_dump, port:secured[0], starboard:secured[1], crank:cranking(), fire:trigger_own(), steering, sequence:++control_sequence };   // the core kicks back while rounds leave
 	flight_stores(own_mask());   // the flown loadout follows the magazine every frame (idempotent): firing sheds each round's mass and carriage drag in the core in the SMS order; respawns re-arm through the same line, and a tank bit's off-to-on transition fills it (#17)
 	const out=flight_frame(controls,dt);
 	if(flight_steps.value>0){ launch_flag=false; reset_flag=false; onspeed_flag=false; }   // the edges were consumed by the core
@@ -10990,7 +11104,7 @@ function fly_player(dt){
 		// their edges compare frame to frame.
 		if(presenting){ const harmL=last_out?last_out[STATE.engine_harm]:0, harmR=last_out?last_out[STATE.engine_harm+1]:0;
 		audio_frame({ spool:ownship.spool||0, stage:ownship.stage||0, speed:ownship.speed||0, alpha:ownship.aoa||0,
-			wow:!!ownship.grounded, burn:Math.max(own_burn[0],own_burn[1],own_burning?1:0), harm:[harmL,harmR], drag:1-(ownship.gear??1) });
+			wow:!!ownship.grounded, burn:Math.max(own_burn[0],own_burn[1],own_burning?1:0), harm:[harmL,harmR], drag:1-(ownship.gear??1), turn:[1-(last_out?.[STATE.rundown]||0),1-(last_out?.[STATE.rundown+1]||0)] });
 		audio_gun(!!(input.guns&&!ownship.launching&&(ownship.gear??0)>0.98&&ownship.rounds>0));
 		audio_view(cfg.view==="chase"||cfg.view==="flypast", ownship.pos.x, ownship.pos.y, ownship.pos.z);   // outside views hear the jet from out there (#88 audit)
 		if(ownship.launching&&!audio_prev.launching) audio_catapult();
@@ -11521,8 +11635,9 @@ function reset_ownship(){
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
 	ownship.grounded=false; ownship.touch=null; ownship.pass=pass_start(); ownship.grade=""; ownship.remarks=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
 	test_active=null; demonstration=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever); the demonstration pilot is re-seated below by the Case I spawn alone
-	const st=mission_start();
-	if(st==="case1"||st==="case2"||st==="case3") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
+	const st=mission_start(), wheels=on_wheels(st), parked=st==="deck"||st==="apron";
+	cold_start=parked&&!!cfg.cold;   // a parked start's choice of Ready or Cold and dark (#133); every other start runs
+	if(st==="case1"||st==="case2"||st==="case3"||st==="groove"||st==="final") ddi_sets.nav.right="adi";   // spawned on approach: the pilot set up for instrument work before we hand over (#15)
 	ddi_recall();   // a fresh pit shows the spawn master mode's display set
 	ddi_fresh=true; if(cfg.view==="ddi") ddi_open();   // and its first 3 opens the radar
 	marshal=null;   // a fresh spawn restarts any Case III procedure (the case3 branch re-arms it)
@@ -11534,37 +11649,60 @@ function reset_ownship(){
 	baro_armed=false; baro_shown=-1e9; baro_flash=false; baro_set=2992; baro_last=2992;   // a fresh spawn shows no baro-set readout until it has climbed through 10,000 ft (#16)
 	lights_clicked=-Infinity; sari_clicked=-Infinity; sari_pulled=-Infinity; sari_trim=0;   // a fresh jet's LT TEST switch at OFF, and the standby indicator's TEST switch out, its knob in and its miniature airplane centred
 	exterior.landing=cfg.tod!=="day"&&!recovery_start();   // LDG/TAXI as the pre-flight leaves it: on after dark, and off for a carrier recovery
+	ownship.foldTarget=ownship.fold=st==="deck"?1:0;   // parked on the deck with the wings folded (#133), spread everywhere else
 	fold_handle=(ownship.foldTarget??0)>0.5?"fold":"lock";   // the wing fold handle as its wings are
-	adi_source=(st==="runway"||st==="carrier")?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
+	adi_source=wheels?"stby":"ins";   // the EADI initialises to STBY on a weight-on-wheels power-up (2.13.4.3, #24)
 	law_primary=false; law_disabled=false; law_index=st==="carrier"?40:200; radalt_on=true; radalt_test=-Infinity; radalt_greet=false;   // the index as the pre-flight left it: 40 ft for a cat shot, 200 otherwise; the set already on from that pre-flight, so a spawn on the deck or the runway is no power-up and does not whoop
-	altitude_set.radar=0; altitude_set.baro=["carrier","runway","case1","case2","case3"].includes(st)?5000:0; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3), kept by the recoveries, where Case III's call comes at its 5,000 ft platform; off for the free flight air start, which begins at 5,000 ft and would call on every dip, and for the joust, where the sea is the only floor and the call would hold back the damage voices
+	altitude_set.radar=0; altitude_set.baro=["carrier","runway","deck","apron","case1","case2","case3","groove","final"].includes(st)?5000:0; altitude_armed.radar=altitude_armed.baro=false; altitude_called=-Infinity;   // power-up with weight on wheels (NATOPS 2.12.5.2, 2.12.5.3), kept by the recoveries, where Case III's call comes at its 5,000 ft platform; off for the free flight air start, which begins at 5,000 ft and would call on every dip, and for the joust, where the sea is the only floor and the call would hold back the damage voices
 	pattern=null;   // ...and any visual-pattern procedure (#50)
 	ufc.func=""; ufc.entry=""; ufc.error=false; ufc.blink=0; ufc_dirty=true; Object.assign(radios,radios_tuned()); emcon_set(false);   // the UFC powers up clear (#15), its radios on and tuned to the ship
 	timer_reset();   // ET at 00:00, CD at 06:00, none on the HUD (24.2.5.7.5, 24.2.5.7.6)
 	ifei_state=ifei_reset(ifei_state,new Date().getTimezoneOffset()/60);   // the clock on the host's time, out of any time set (2.12.8.1)
 	nav_reset();   // the navigation suite as the pre-flight leaves it, readied on the first frame (#93)
 	Object.assign(hold,autopilot.fresh()); Object.assign(link,datalink.fresh()); coupled="";   // the autopilot off and ACL unboxed (#100, #101)
-	systems_fresh(st!=="carrier"&&st!=="runway");   // the weapon and defensive panels armed in the air and safe on the wheels, the radios and the IFF on
+	systems_fresh(!wheels);   // the weapon and defensive panels armed in the air and safe on the wheels, the radios and the IFF on
 	mc_switch="norm"; Object.assign(bit,avionics.fresh()); Object.assign(bit_state,{ level:"", select:false, post:1, page:0 }); display_test.on=false; ufc_test.at=-Infinity; ownship.torn=false;   // both mission computers on, nothing in test (#95, #96)
-	fuel_dump=false; secured[0]=false; secured[1]=false;   // a fresh jet spawns with the dump off and both engines fuelled (#54)
+	fuel_dump=false; secured[0]=secured[1]=cold_start;   // a fresh jet spawns with the dump off and both engines fuelled (#54), or cold and dark with both throttles at OFF (#133)
+	parking=parked; pulled=false;   // the parking brake set at a parked spot (#133), off everywhere else
 	seat_armed=true; canopy_gone=false; cranked=false;   // ...the seat armed and its canopy on (#112, #113)
-	antiskid=st!=="carrier"&&!recovery_start();   // the ANTI SKID switch as the pre-flight leaves it: OFF for all carrier operations, a cat shot or a recovery (NATOPS 8.2.3), ON from the field and in the air
+	antiskid=st!=="carrier"&&st!=="deck"&&!recovery_start();   // the ANTI SKID switch as the pre-flight leaves it: OFF for all carrier operations, a cat shot or a recovery (NATOPS 8.2.3), ON from the field and in the air
 	brake_accumulator=ACCUMULATOR.full; drawn=false;   // a charged brake accumulator, over the 2,600 psi the exterior inspection asks (NATOPS 7.1.2)
-	for(const k of Object.keys(knobs)) knobs[k]=null; for(const k of Object.keys(thrown)) delete thrown[k];   // G1: the panel as the pre-flight leaves it - knobs at their levels, the travel-only controls where the model draws them,
-	{ const air=st!=="carrier"&&st!=="runway", wild=()=>(Math.random()*2-1)*3*D2R;   // the helmet (#103): a start in the air hands it over on, warmed and aligned; on the wheels it is OFF, and its line of sight reads off by up to 3° until aligned
+	for(const k of Object.keys(knobs)) knobs[k]=null; for(const k of Object.keys(thrown)) delete thrown[k]; if(cold_start) thrown.extpwr=EXTERNAL.off;   // EXT PWR at OFF in a cold and dark jet (#133);   // G1: the panel as the pre-flight leaves it - knobs at their levels, the travel-only controls where the model draws them,
+	{ const air=!wheels, wild=()=>(Math.random()*2-1)*3*D2R;   // the helmet (#103): a start in the air hands it over on, warmed and aligned; on the wheels it is OFF, and its line of sight reads off by up to 3° until aligned
 		Object.assign(hmd,helmet.fresh(air,{ azimuth:wild(), elevation:wild(), roll:wild() },Math.random()*Math.PI*2)); if(!air) knobs.hmd=0; }
 	displays.left.mode=displays.right.mode="auto"; displays.center.mode="day"; for(const d of Object.values(displays)){ d.brt=1; d.contrast=1; }
 	Object.assign(hud_panel,{ range:"day", video:"off" }); finder="off";   // the HUD control panel's selector at DAY and video OFF, and the ADF switch OFF (#139)
-	Object.assign(electrics,{ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false }); buses={ ac:true, essential:true, left:true, right:true };   // both generators and BATT ON, charged,
+	Object.assign(electrics,{ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true }); buses={ ac:true, essential:true, left:true, right:true };   // both generators and BATT ON, charged,
+	if(cold_start){ electrics.battery="off"; electrics.energised=false; buses={ ac:false, essential:false, left:false, right:false }; }   // cold and dark (#133): BATT OFF and nothing powered
 	buttons.trim=buttons.reset=-Infinity; buttons.standing=false; buttons.jams=0;
 	ecs.bleed=1; ecs.valves=[true,true]; ecs.through=false; fire_test.at=-Infinity; rudder_trim=0; reference="auto";   // BLEED AIR at NORM, the rudder trimmed neutral, ATT at AUTO,
 	gear_emergency=false; emergency_travel=0; transfer.wing=transfer.centre=0; wing_inhibit=false; wing_held=null; systems_at=null; cabin_feet=null; spin_up=false;   // the gear handle in, EXT TANKS at NORM and INTR WING at NORM
 	clock_et.running=false; clock_et.total=0;
 	if(st==="carrier"){ ownship.speed=0; ownship.throttle=0.95; place_on_cat(); }   // spotted on the cat at military power — the real-world standard shot at this weight (full throttle = burner, the heavy-day technique); Enter fires, throttle back + steer to taxi off
-	else if(st==="runway" && airports.length){ const ap=airports[0];          // start on the near airport runway
+	else if(st==="runway" && airports.length){ const ap=airports[0]; runway_use(ap);          // start on the near airport runway, at the end in use (#133)
 		ownship.pos.set(ap.start.x,ap.start.y,ap.start.z); ownship.fwd.copy(ap.dir).normalize(); ownship.speed=0; ownship.throttle=0;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+	else if(st==="deck"){ ownship.speed=0; ownship.throttle=0; place_parked(); }   // parked on the deck aft of the island (#133)
+	else if(st==="apron" && airports.length && airports[0].parked){ const ap=airports[0], p=ap.parked; runway_use(ap);   // parked on Sand Island's apron by the hangars (#133)
+		ownship.pos.set(p.x,ap.sy,p.z); ownship.fwd.copy(p.dir); ownship.speed=0; ownship.throttle=0;
+		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+	else if(st==="final" && airports.length){ const ap=airports[0]; runway_use(ap);   // on final (#133): 3 NM from the PAPI's touchdown on its 3° path, gear and full flaps down, on-speed
+		const d=new THREE.Vector3(ap.dir.x,0,ap.dir.z).normalize(), touch=new THREE.Vector3(ap.start.x,0,ap.start.z).addScaledVector(d,PAPI_AT-TAKEOFF_AT), dist=FINAL.range*1852;
+		ownship.pos.set(touch.x-d.x*dist,ap.sy-2.2+PAPI_LIFT+dist*Math.tan(FINAL.slope*D2R),touch.z-d.z*dist);
+		ownship.speed=72; ownship.throttle=0.35; ownship.fwd.copy(d);   // pre-core fallback: flight_push trims the descent on-speed
+		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
+	else if(st==="groove"){   // in the groove (#133): three quarters of a mile astern of the aim wire with the ball centred - the hook on the lens's 3.5° (ols_dev) - gear, flaps and hook down, on-speed
+		const A=carrier_world(...SHIP.landing.line[0]), B=carrier_world(...SHIP.landing.line[1]);
+		let ldx=B.x-A.x, ldz=B.z-A.z; const ll=Math.hypot(ldx,ldz)||1; ldx/=ll; ldz/=ll;
+		const tw=SHIP.landing.wires[SHIP.landing.wires.length>3?2:1], td=carrier_world(tw,strip_lat(tw)), dist=GROOVE.range*1852;
+		ownship.pos.set(td.x-ldx*dist,(carrier_ols?carrier_ols.dy:CARRIER.deckY)+HOOK_DROP+(dist+HOOK_AFT)*Math.tan(GROOVE.slope*D2R),td.z-ldz*dist);
+		ownship.speed=72; ownship.throttle=0.35; ownship.fwd.set(ldx,0,ldz).normalize();   // pre-core fallback: flight_push trims the descent on-speed
+		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(), u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
+		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd);
+		pattern={ broke:true, told:true, dirty:true, downwind:true, ball:false }; }   // configured and in the groove: only the ball remains
 	else if(st==="case1"){   // Case I (#205): initial — up the WAKE (hull axis, not the angled centreline) at 800 ft, 350 kt, clean. The break, the dirty-up, and the pattern are the mission
 		const O=carrier_world(0,0), F=carrier_world(100,0);
 		let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
@@ -11615,12 +11753,13 @@ function reset_ownship(){
 		ownship.fwd.set(CARRIER.x-ownship.pos.x,0,CARRIER.z-ownship.pos.z).normalize(); ownship.speed=220; ownship.throttle=0.85;
 		const r=new THREE.Vector3().crossVectors(ownship.fwd,world_up).normalize(); const u=new THREE.Vector3().crossVectors(r,ownship.fwd).normalize();
 		ownship.q.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ownship.fwd,u,r)); ownship.vel_dir.copy(ownship.fwd); }
-	placed=(st==="carrier"||st==="case1"||st==="case2"||st==="case3")?{ x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z, turn:carrier_turn.clone() }:(st==="joust"||(st==="runway"&&airports.length))?null:{ aim:true };   // what the start was laid against, for carry_start
+	placed=(st==="carrier"||st==="deck"||st==="groove"||st==="case1"||st==="case2"||st==="case3")?{ x:CARRIER.x, y:CARRIER.deckY, z:CARRIER.z, turn:carrier_turn.clone() }:(st==="joust"||((st==="runway"||st==="apron"||st==="final")&&airports.length))?null:{ aim:true };   // what the start was laid against, for carry_start
+	start_fresh(parked?(st==="deck"?"ship":"field"):null);   // the APU stopped, and a parked jet's cart plugged in where it stands (#133)
 	throttle_from_lever();   // a connected stick with a bound throttle wins over the spawn default — the physical lever position IS the commanded power (falls back silently: browsers hide pads until a button has been pressed)
-	{ const down=(st==="carrier"||st==="runway"||st==="case2"); ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
-	{ const hk=(st==="case2")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }
+	{ const down=wheels||st==="case2"||st==="groove"||st==="final"; ownship.gearTarget=down?0:1; ownship.gear=ownship.gearTarget; }   // gear down on deck/runway/Case II (established on the approach); Cases I and III spawn CLEAN — the dirty-up is part of the procedure
+	{ const hk=(st==="case2"||st==="groove")?1:0; ownship.hookTarget=hk; ownship.hook=hk; }
 	bar_switch=st==="carrier"?"extend":"retract";   // a catapult start has its launch bar down on the shuttle (2.10.4); every other start has it up   // hook down only where the aircraft is already ESTABLISHED on the approach (Case II, on the final bearing configured). NATOPS 8.2.10 has the pattern entered with the hook down, so a Case I spawn at the initial could defensibly start hooked — but the checklist is the player's to fly (2026-08-11): Case I hands over 3 NM astern clean and stowed, and lowering it before the break is part of the exercise. Case III lowers it at the dirty-up
-	flap_select=(st==="case2")?2:(st==="runway"||st==="carrier")?1:0;   // HALF on the runway and the cat: NATOPS takes off on HALF flap and charts the launch trim for HALF (8.2.5), and the jet is handed over configured for it exactly as Case II is handed over on FULL. The core already flies the takeoff droop and the PA gains from its own on-the-wheels latch (flight/fcs.go halfleg), so this changes no handling on the roll — it makes the switch say what the jet is doing, and it makes the lineup hint a checklist item rather than a gesture. The clean-up passing 250 knots returns it to AUTO, which is what releases the latch.
+	flap_select=(st==="case2"||st==="groove"||st==="final")?2:wheels?1:0;   // HALF on the runway and the cat: NATOPS takes off on HALF flap and charts the launch trim for HALF (8.2.5), and the jet is handed over configured for it exactly as Case II is handed over on FULL. The core already flies the takeoff droop and the PA gains from its own on-the-wheels latch (flight/fcs.go halfleg), so this changes no handling on the roll — it makes the switch say what the jet is doing, and it makes the lineup hint a checklist item rather than a gesture. The clean-up passing 250 knots returns it to AUTO, which is what releases the latch.
 	// The flap switch otherwise follows the same established/clean split, and resets between missions — it selects the pitch law now (#86), so a FULL left over from a previous flight would fly a clean spawn on the approach law. On deck AUTO is right: the core latches the HALF-flap takeoff configuration itself while on the wheels
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
 	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
@@ -13806,6 +13945,7 @@ function start_mission(){
 	dev_fps=parseFloat(devq.get("fps")||"0")||0; dev_jitter=devq.get("jitter")==="1";   // ?fps=N + ?jitter=1: forced frame dt with optional stutter spikes
 	const scq=devq.get("scenario"); if(scq!==null){ const n=parseInt(scq)||0; const arm=setInterval(()=>{ if(TESTS[n]&&TESTS[n].carrier?carrier_ols:airports.length){ clearInterval(arm); start_test(n); } }, 500); }   // &scenario=N: fire a landing test once ITS surface data exists (carrier scenarios need the OLS survey, not just the airfield list) — a fixed 3 s timer lost the race to the map load and the hook silently never ran
 	const startq=devq.get("start"); if(startq){ cfg.start=startq; cfg.task="free"; }
+	{ const coldq=devq.get("cold"), endq=devq.get("end"); if(coldq!==null) cfg.cold=coldq!=="0"; if(endq) cfg.end=endq; }   // ?cold=1 a parked start cold and dark, ?end=24 the runway end (#133)
 	const hintq=devq.get("hints"); if(hintq==="1") cfg.hints=true; else if(hintq==="0") cfg.hints=false;   // &hints=0|1 — force the flight hints for headless verification (#70)
 	const demonstrationq=devq.get("demonstration"); if(demonstrationq==="1") cfg.demonstration=true; else if(demonstrationq==="0") cfg.demonstration=false;   // &demonstration=0|1 — the scripted Case I pilot, for headless verification of the pattern it flies
 	demonstration_seed=parseInt(devq.get("seed")||"0",10)||0;   // &seed=N — replay one pilot's habits, the demonstration's and the bandit's (bandit_seed); 0 draws a fresh one per mission

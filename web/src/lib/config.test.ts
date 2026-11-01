@@ -21,13 +21,19 @@ describe('seedStart', () => {
       expect(seedStart(DEFAULT_CONFIG, start).fuel).toBe(4500)
     }
   })
+  it('seeds a recovery fuel state for the approach starts, and leaves their weather alone (#133)', () => {
+    const night = { ...DEFAULT_CONFIG, tod: 'night' as const }
+    for (const start of ['groove', 'final'] as const) {
+      expect(seedStart(night, start)).toMatchObject({ fuel: 4500, tod: 'night' })
+    }
+  })
   it("seeds the loaded preset's fuel back for the launch starts", () => {
     for (const [name, fuel] of Object.entries(FUEL)) {
       const light = seedStart(
         { ...DEFAULT_CONFIG, stores: structuredClone(PRESETS[name]) },
         'case1'
       )
-      for (const start of ['air', 'runway', 'carrier'] as const) {
+      for (const start of ['air', 'runway', 'apron', 'carrier', 'deck'] as const) {
         expect(seedStart(light, start).fuel).toBe(fuel)
       }
     }
@@ -73,6 +79,11 @@ describe('DEFAULT_CONFIG', () => {
   it('no longer carries the Distance LOD switch (#3): distance stages and spotting dots are the same for every player', () => {
     expect(DEFAULT_CONFIG).not.toHaveProperty('lod')
     expect(TAB_FIELDS.graphics).not.toContain('lod')
+  })
+
+  it('starts ready, on runway 06 into the trades (#133)', () => {
+    expect(DEFAULT_CONFIG.cold).toBe(false)
+    expect(DEFAULT_CONFIG.end).toBe('06')
   })
 
   it('declares hints, defaulted ON', () => {

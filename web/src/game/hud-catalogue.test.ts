@@ -86,7 +86,7 @@ describe('HUD_MESSAGES', () => {
     // rendered the way the game renders it, and must come back with the figure
     // in and nothing else changed.
     const i18n = setupI18n({ locale: 'en', messages: { en: {} } })
-    const values = { heading: '069°', power: 'military power', side: 'right' }
+    const values = { heading: '069°', power: 'military power', side: 'right', mode: 'CV' }
     for (const [key, line] of hints(read('./engine.ts'))) {
       const shown = i18n._({ id: line, message: line, values })
       const wanted = line.replace(/\{(\w+)\}/g, (_: string, name: string) => values[name as keyof typeof values])

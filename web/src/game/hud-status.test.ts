@@ -67,7 +67,7 @@ describe('wing fold and the parking brake follow their handles', () => {
     expect(replay).not.toBe('')
     const handle = (foldTarget: number, fold: number) => new Function('foldTarget', 'fold', `const ownship={ foldTarget, fold }; let fold_handle=""; ${replay} return fold_handle;`)(foldTarget, fold) as string
     expect([handle(1, 0.3), handle(0, 0.3), handle(0, 0)]).toEqual(['fold', 'spread', 'lock'])
-    expect(source).toMatch(/\n\texterior\.landing=[^\n]*\n\tfold_handle=\(ownship\.foldTarget\?\?0\)>0\.5\?"fold":"lock";[^\n]*\n\tadi_source=/)
+    expect(source).toMatch(/\n\texterior\.landing=[^\n]*\n\township\.foldTarget=ownship\.fold=st==="deck"\?1:0;[^\n]*\n\tfold_handle=\(ownship\.foldTarget\?\?0\)>0\.5\?"fold":"lock";[^\n]*\n\tadi_source=/) // folded on the deck spot, spread everywhere else (#133)
   })
 
   it('stands the handle out of the panel along its shaft while it is out of LOCK', () => {

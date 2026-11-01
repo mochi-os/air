@@ -273,8 +273,10 @@ export interface MissionConfig {
   joystick: string // menu-selected stick id ('' = first connected)
   sticks: Record<string, StickBindings> // per-device axis/button maps, keyed by pad id
   keys: Record<string, string> // keyboard remaps: action -> key code (defaults live in the engine's KEYS table)
-  start: 'air' | 'runway' | 'carrier' | 'case1' | 'case2' | 'case3' | 'landing' // landing = legacy saved value, read as case2 (#205)
+  start: 'air' | 'runway' | 'apron' | 'final' | 'carrier' | 'deck' | 'groove' | 'case1' | 'case2' | 'case3' | 'landing' // landing = legacy saved value, read as case2 (#205); apron and deck the parked starts, final and groove the approaches (#133)
   demonstration: boolean // a Case I start flown by the scripted pilot while the player watches (engine demonstration.ts); inert for every other start
+  cold: boolean // a parked start cold and dark rather than ready (#133); inert for every other start
+  end: '06' | '24' // the runway end a runway start or final uses (#133), 06 into the trades
   servers: string // recently joined world servers, newline-separated, most recent first (#77) — the config's index signature is scalar-or-record, and a bare array does not fit it
   pilot: string // this player's stable token: identifies the owner of a match offer across reconnects (#77)
   cat: number // carrier-start catapult 1-4
@@ -322,7 +324,9 @@ export function seedStart(
   start: MissionConfig['start']
 ): MissionConfig {
   const seeded = { ...config, start }
-  if (start === 'case1') {
+  if (start === 'groove' || start === 'final') {
+    seeded.fuel = 4500 // a recovery's fuel, as the cases seed it
+  } else if (start === 'case1') {
     seeded.tod = 'day'
     seeded.clouds = 'none'
     seeded.fuel = 4500
@@ -378,6 +382,8 @@ export const DEFAULT_CONFIG: MissionConfig = {
   keys: {},
   start: 'air',
   demonstration: false,
+  cold: false,
+  end: '06',
   servers: '',
   pilot: '',
   cat: 2,

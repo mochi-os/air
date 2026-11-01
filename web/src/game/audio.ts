@@ -920,6 +920,7 @@ export function audio_frame(state: {
   drag?: number // gear extension 0..1: the hung gear's rough wind roar (#88)
   burn: number // max fire intensity 0..1
   harm: [number, number] // per-engine thrust loss (dying engines fade and detune)
+  turn?: [number, number] // per-engine rotor speed as a share of ground idle (#133): 0 stopped, 1 at idle or above; a cold jet is silent and a start winds its voice up
 }): void {
   seaOn = state.wow && state.speed < 30
   const running = state.spool > 0.05
@@ -934,21 +935,22 @@ export function audio_frame(state: {
     const engine = engines[e]
     const health = 1 - (state.harm[e] || 0)
     const level = state.spool * (0.25 + 0.75 * health)
-    engine.rumble.frequency.setTargetAtTime(120 + 420 * level, t, smooth)
-    engine.hiss.frequency.setTargetAtTime(350 + 2500 * level, t, smooth)
-    engine.hissGain.gain.setTargetAtTime(0.08 + 0.5 * level * level, t, smooth)
-    engine.whine.frequency.setTargetAtTime(2200 + 5200 * level, t, smooth)
+    const turn = Math.min(1, Math.max(0, state.turn?.[e] ?? 1)) // below idle the voice falls with the rotor: pitch with its speed, loudness faster
+    engine.rumble.frequency.setTargetAtTime((120 + 420 * level) * turn, t, smooth)
+    engine.hiss.frequency.setTargetAtTime((350 + 2500 * level) * turn, t, smooth)
+    engine.hissGain.gain.setTargetAtTime((0.08 + 0.5 * level * level) * turn * turn, t, smooth)
+    engine.whine.frequency.setTargetAtTime((2200 + 5200 * level) * turn, t, smooth)
     engine.second.frequency.setTargetAtTime(
-      (2200 + 5200 * level) * 1.26,
+      (2200 + 5200 * level) * 1.26 * turn,
       t,
       smooth
     ) // the other spool, geared apart
     engine.whineGain.gain.setTargetAtTime(
-      (0.018 + 0.055 * level) * (e ? 0.92 : 1),
+      (0.018 + 0.055 * level) * (e ? 0.92 : 1) * turn,
       t,
       smooth
-    ) // the whine EMERGES with power — the audible spool-up pitch; per-side offset keeps the pair shimmering
-    engine.gain.gain.setTargetAtTime(0.06 + 0.3 * level * level, t, smooth)
+    ) // the whine EMERGES with power — the audible spool-up pitch; per-side offset keeps the pair shimmering; a cranked rotor whines before it roars
+    engine.gain.gain.setTargetAtTime((0.06 + 0.3 * level * level) * turn * turn, t, smooth)
   }
   burner?.gain.gain.setTargetAtTime(0.5 * state.stage, t, smooth)
   if (wind) {

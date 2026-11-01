@@ -183,7 +183,7 @@ describe('the bezels', () => {
     expect(meshes.map((m) => m.name).sort()).toEqual(['bezel.dark', 'bezel.light', 'bezel.plates', ...Array(7).fill('bezel.pointer')])
     for (const m of meshes) { expect(m.userData.overlay).toBe(true); expect(m.layers.mask).toBe(1 << 1) }
     expect(source).toMatch(/build_screens\(g\); build_bezels\(g\); build_centre\(g\); build_plates\(g\); build_ifei\(g\);/)
-    expect(source).toMatch(/power_step\(out\); displays_light\(\); bezel_turn\(\);/)
+    expect(source).toMatch(/power_step\(out\); start_step\(out,step\); displays_light\(\); bezel_turn\(\);/)
   })
 })
 

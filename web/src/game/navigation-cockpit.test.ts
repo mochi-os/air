@@ -42,7 +42,7 @@ const variation = (x: number, y: number, z: number) => magnetic.variation(earth.
 const V = variation(0, 3000, 0), STATION = variation(-18500, 0, 7500)
 // The jet: at 3,000 m over the map's origin heading north at 200 m/s, the ship 10.8 nm to the west-south-west.
 const world = `const D2R=Math.PI/180, NM=1852;
-  let sim_time=0, glance=0, beat=0.1, presenting=true, ddi_dirty=false, WORLD_WRAP=0, parking=false, master="nav", designator="center", last_out=null, ufc_dirty=false, law_primary=false, law_disabled=false, emcon=false, designated=-1, radar_calls=0;
+  let cold_start=false, sim_time=0, glance=0, beat=0.1, presenting=true, ddi_dirty=false, WORLD_WRAP=0, parking=false, master="nav", designator="center", last_out=null, ufc_dirty=false, law_primary=false, law_disabled=false, emcon=false, designated=-1, radar_calls=0;
   const theatre=earth.theatre, mission_clock=()=>new Date(${DATE});
   const HOME=earth.HOME, homeward=(p)=>earth.point(earth.theatre.outward,{ x:p.x, y:p.y??0, z:p.z }), theatre_point=(p)=>earth.point(earth.theatre.inward,{ x:p.x, y:p.y??0, z:p.z });   // the engine's frame on the world frame
   const cfg={ task:"free" }, CARRIER={ x:-18500, z:7500, deckY:20, height:20 }, SHIP={ ident:"NIM", tacan:{ channel:74, band:"X" } }, buses={ ac:true }, STATE={ mach:0 };

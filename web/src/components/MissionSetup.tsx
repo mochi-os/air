@@ -53,8 +53,10 @@ import {
   TooltipTrigger,
 } from '@mochi/web/components/ui/tooltip'
 import {
+  Anchor,
   Check,
   ChevronRight,
+  CircleDot,
   CloudRain,
   Compass,
   Crosshair,
@@ -64,6 +66,7 @@ import {
   MessageSquare,
   Moon,
   Plane,
+  PlaneLanding,
   PlaneTakeoff,
   Play,
   Send,
@@ -73,6 +76,7 @@ import {
   SignalHigh,
   SignalLow,
   SignalMedium,
+  SquareParking,
   Sun,
   TriangleAlert,
   type LucideIcon,
@@ -1535,9 +1539,29 @@ function MissionPanel({
                         icon: PlaneTakeoff,
                       },
                       {
+                        value: 'apron',
+                        label: <Trans>Parked at airfield</Trans>,
+                        icon: SquareParking,
+                      },
+                      {
+                        value: 'final',
+                        label: <Trans>On final</Trans>,
+                        icon: PlaneLanding,
+                      },
+                      {
                         value: 'carrier',
                         label: <Trans>On carrier</Trans>,
                         icon: Ship,
+                      },
+                      {
+                        value: 'deck',
+                        label: <Trans>Parked on carrier</Trans>,
+                        icon: Anchor,
+                      },
+                      {
+                        value: 'groove',
+                        label: <Trans>In the groove</Trans>,
+                        icon: CircleDot,
                       },
                       {
                         value: 'case1',
@@ -1566,6 +1590,36 @@ function MissionPanel({
                     checked={!!config.demonstration}
                     onChange={(v) => set('demonstration', v)}
                   />
+                )}
+
+                {(config.start === 'apron' || config.start === 'deck') && (
+                  <Segmented
+                    value={config.cold ? 'cold' : 'ready'}
+                    onChange={(v) => set('cold', v === 'cold')}
+                    options={[
+                      {
+                        value: 'ready',
+                        label: <Trans context='aircraft state'>Ready</Trans>,
+                      },
+                      { value: 'cold', label: <Trans>Cold and dark</Trans> },
+                    ]}
+                  />
+                )}
+
+                {(config.start === 'runway' || config.start === 'final') && (
+                  <div className='space-y-1'>
+                    <Label className='text-muted-foreground text-xs font-medium uppercase'>
+                      <Trans>Runway</Trans>
+                    </Label>
+                    <Segmented
+                      value={config.end === '24' ? '24' : '06'}
+                      onChange={(v) => set('end', v)}
+                      options={[
+                        { value: '06', label: '06' },
+                        { value: '24', label: '24' },
+                      ]}
+                    />
+                  </div>
                 )}
 
                 {config.start === 'carrier' && (

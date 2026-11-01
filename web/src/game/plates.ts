@@ -38,7 +38,7 @@ export interface Toggle { at: Point; positions: readonly string[]; turn?: number
 // the turn its figures read at.
 export interface Window { at: readonly [number, number, number, number]; turn: number; show: string }
 // A light: its centre and size (m) on the plate, its legend, colour, and turn.
-export interface Lamp { at: Point; size: Point; text: string; colour: string; turn: number }
+export interface Lamp { at: Point; size: Point; text: string; colour: string; turn: number } // text '' is a round lens size[0] across, glowing whole
 // A guard over a toggle: its outline's centre and size, how far it stands off the
 // plate closed, and the toggle position it holds closed over.
 export interface Guard { at: Point; size: Point; height: number; closed: string }
@@ -149,6 +149,7 @@ export const PLATES: Record<string, Plate> = {
     ],
     lines: [[-0.0185, -0.041, 0.022, -0.041]],
     rings: [[-0.0096, -0.0044, 0.0087], [0.0145, -0.0035, 0.008, '#22402a']],
+    lamps: { ready: { at: [0.0145, -0.0035], size: [0.0124, 0.0124], text: '', colour: '#2fd24a', turn: 0 } }, // the READY light, in its ring (#133)
   },
   // the flight control system panel with the rudder trim knob (item 6)
   trim: {

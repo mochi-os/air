@@ -76,7 +76,7 @@ describe('the launch bar switch', () => {
     expect(watch([['retract', 0, 1], ['retract', -1, 1], ['retract', 1, 1]])).toEqual(['BAR', null, 'BAR']) // re-armed for the next catapult
     expect(watch([['retract', 0, 0]])).toEqual([null]) // a jet in the air over a catapult is not on it
     expect(source).toMatch(/\tbar:"On catapult: extend launch bar to hook up",/)
-    expect(source).toMatch(/const WAITING=new Set\(\[HINT\.bar,/) // it waits on the pilot, not the read
+    expect(source).toMatch(/const WAITING=new Set\(\[[^\]]*\bHINT\.bar,/) // it waits on the pilot, not the read
     expect(canvas).toMatch(/'On catapult: extend launch bar to hook up': msg`On catapult: extend launch bar to hook up`,/)
   })
 

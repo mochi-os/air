@@ -72,7 +72,8 @@ describe('what a spawn finds', () => {
     expect(found({})).toMatchObject({ flag: false, failures: [], accumulator: 1, clicks: [-Infinity, -Infinity], taping: 'automatic' })
   })
   it('is how every flight starts: by where it starts, and armed on a respawn into a match', () => {
-    expect(source).toMatch(/\n\tsystems_fresh\(st!=="carrier"&&st!=="runway"\);/)
+    expect(source).toMatch(/\n\tsystems_fresh\(!wheels\);/)
+    expect(source).toMatch(/\nfunction on_wheels\(st\)\{ return st==="carrier"\|\|st==="deck"\|\|st==="runway"\|\|st==="apron"; \}/) // safe on the wheels at every ground start, the parked ones too (#133)
     expect(source).toMatch(/update_rails\(ownship, ownship\.msl\); systems_fresh\(true\); Object\.assign\(hmd,helmet\.fresh\(true,hmd\.error,hmd\.direction\)\); \}/) // a fresh jet's helmet too, aligned
   })
 })

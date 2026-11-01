@@ -86,7 +86,7 @@ describe('a mission that briefed no recovery still gets one (#204)', () => {
   })
 
   it('resolves a case for every start, defaulting to the visual pattern', () => {
-    expect(carrier).toMatch(/const kase=\(st==="case2"\|\|st==="case3"\)\?st:"case1"/)
+    expect(carrier).toMatch(/const kase=\(st==="case2"\|\|st==="case3"\|\|st==="groove"\)\?st:"case1"/) // the groove start begins past the pattern (#133)
   })
 
   it('reads the resolved case in every branch, never the raw start', () => {
@@ -208,7 +208,8 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     // deck (flight/fcs.go halfleg), and the clean-up says "flaps auto" - a
     // switch left in AUTO on the cat read wrong on the legend and made that
     // line an instruction to do nothing.
-    expect(source).toMatch(/flap_select=\(st==="case2"\)\?2:\(st==="runway"\|\|st==="carrier"\)\?1:0;/)
+    expect(source).toMatch(/flap_select=\(st==="case2"\|\|st==="groove"\|\|st==="final"\)\?2:wheels\?1:0;/)
+    expect(source).toMatch(/\nfunction on_wheels\(st\)\{ return st==="carrier"\|\|st==="deck"\|\|st==="runway"\|\|st==="apron"; \}/) // HALF at every start on the wheels (#133)
   })
 
   it('walks the sequence: tension, salute, the shot, the clean-up, the departure', () => {
@@ -289,7 +290,7 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     // The lines whose end the sets track from the pilot doing what they say.
     const waiting = source.match(/const WAITING=new Set\(\[([^\]]*)\]\)/)?.[1] ?? ''
     expect(waiting.split(',').map((key) => key.replace('HINT.', '')).sort()).toEqual(
-      ['bar', 'brk', 'cleanup', 'depart', 'dirty', 'flyaway', 'form', 'lineup', 'positive', 'rollout', 'rotate', 'salute', 'tension'],
+      ['align', 'bar', 'battery', 'brk', 'cleanup', 'crank', 'depart', 'dirty', 'flyaway', 'form', 'left', 'lineup', 'positive', 'rollout', 'rotate', 'salute', 'tension'], // the cold start's steps wait on the pilot too (#133)
     )
   })
 

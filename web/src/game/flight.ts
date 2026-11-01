@@ -19,7 +19,7 @@ import { reading as carrier_reading } from './wake'
 import type { Fitment } from './stores'
 
 // Encoded state layout (float64 words).
-export const SIZE = 117 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78) + pitch-damper washout + PA trim datum + buffet + roll-trim datum + wing and centreline external fuel + the spin recovery latch + the inflight IDLE stop's latch (each appended LAST so no earlier index moved)
+export const SIZE = 121 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78) + pitch-damper washout + PA trim datum + buffet + roll-trim datum + wing and centreline external fuel + the spin recovery latch + the inflight IDLE stop's latch + each engine's rundown below idle (each appended LAST so no earlier index moved)
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
@@ -58,18 +58,19 @@ export const STATE = {
   centre: 114, // external fuel in the centreline tank, kg, under the EXT TANKS CTR switch
   recovery: 115, // spin recovery mode engaged, 0 or 1 (NATOPS 2.8.2.6): the display reads SPIN MODE ENGAGED
   retracted: 116, // the inflight IDLE stop retracted at 5 g, 0 or 1 (NATOPS 2.1.1.7.2): the throttles reach ground idle airborne
+  rundown: 117, // how far each engine's rotor has run down below ground idle × 4 (#133): 0 lit and at idle or above, 1 stopped
   // Instrument tail appended by frame()/get() — starts at flight.Size (encode.go),
   // so it moves whenever the encoded state grows. #78's three gear words pushed
   // Size to 109 and this tail was left at 106, silently reading gear damage as
   // alpha/nz and nz as the throttle spool (#133 found it via a dead CAS box).
-  alpha: 117,
-  beta: 118,
-  nz: 119,
-  mach: 120,
-  cas: 121,
-  power: 122, // achieved spool fraction across the airframe's engines
-  stage: 123, // achieved reheat stage
-  spin: 124, // the spin recovery display's stick direction: -1 STICK LEFT, +1 STICK RIGHT, 0 no display (NATOPS 2.8.2.6.2)
+  alpha: 121,
+  beta: 122,
+  nz: 123,
+  mach: 124,
+  cas: 125,
+  power: 126, // achieved spool fraction across the airframe's engines
+  stage: 127, // achieved reheat stage
+  spin: 128, // the spin recovery display's stick direction: -1 STICK LEFT, +1 STICK RIGHT, 0 no display (NATOPS 2.8.2.6.2)
 } as const
 const EXTRA = 8
 
@@ -107,6 +108,7 @@ export interface Controls {
   dump: boolean // fuel dump switch: the core drains toward the bingo floor while on
   port: boolean // port engine fuel OFF (the fire drill / runaway shutdown)
   starboard: boolean // starboard engine fuel OFF
+  crank?: 'port' | 'starboard' // the ENG CRANK switch at L or R while the APU's air turns that engine (#133); a match's jets start running, so their samples leave it out
   fire: boolean // the trigger while rounds leave: the core kicks back with the gun's recoil
   transfer: [number, number] // the EXT TANKS switches, WING and CTR: -1 STOP, 0 NORM, +1 ORIDE (NATOPS 2.2.4.1)
   steering: number // nosewheel steering: -1 off (the nosewheel castors), 0 LOW (±16°), +1 HI (±75°) (NATOPS 2.10.2)
@@ -329,7 +331,9 @@ function fill(controls: Controls, count: number): void {
     (controls.dump ? 1 : 0) |
     (controls.port ? 256 : 0) |
     (controls.starboard ? 512 : 0) |
-    (controls.fire ? 1024 : 0)
+    (controls.fire ? 1024 : 0) |
+    (controls.crank === 'port' ? 262144 : 0) |
+    (controls.crank === 'starboard' ? 524288 : 0)
   input[6] = controls.sequence
   input[7] = count
   input[8] = controls.reheat // analog reheat (flag bit 1 retired)

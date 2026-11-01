@@ -268,7 +268,7 @@ describe('the trigger the core sees', () => {
   })
 
   it('reaches the flight core in the controls sample, as flag bit 1024', () => {
-    expect(source).toMatch(/starboard:secured\[1\], fire:trigger_own\(\), steering, sequence:\+\+control_sequence \}/)
+    expect(source).toMatch(/starboard:secured\[1\], crank:cranking\(\), fire:trigger_own\(\), steering, sequence:\+\+control_sequence \}/)
     // The trigger is read once into `pull` and used twice: the gun needs it,
     // and so does the burst boundary that resets the recorded near miss. It
     // must be the SAME read — `fired>0` is not a burst boundary, because at
@@ -276,7 +276,7 @@ describe('the trigger the core sees', () => {
     expect(source).toMatch(/const pull=trigger_own\(\)/)
     expect(source).toMatch(/fire_gun\(ownship,MULTIPLAYER\?null:bandit,"own",dt,pull\)/)
     expect(bridge).toMatch(/\n {2}fire: boolean/)
-    expect(bridge).toMatch(/\(controls\.starboard \? 512 : 0\) \|\n {4}\(controls\.fire \? 1024 : 0\)\n/)
+    expect(bridge).toMatch(/\(controls\.starboard \? 512 : 0\) \|\n {4}\(controls\.fire \? 1024 : 0\) \|\n/) // ENG CRANK's two bits follow it (#133)
   })
 
   it("mirrors the bandit's belt into its core each frame", () => {

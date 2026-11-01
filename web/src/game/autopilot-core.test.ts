@@ -23,7 +23,7 @@ const built = existsSync(assets + 'flight.wasm') && existsSync(assets + 'wasm_ex
 interface Core { init(world: string): string; level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string; frame(input: Uint8Array, output: Uint8Array): string; climb(altitude: number): [number, number, number] }
 let core: Core
 // The core's frame: sixteen input words and the state with its instrument tail (flight.ts).
-const SIZE = 117, TAIL = 8, ALPHA = 117, CAS = 121
+const SIZE = 121, TAIL = 8, ALPHA = 121, CAS = 125
 const input = new Float64Array(16), out = new Float64Array(SIZE + TAIL), sent = new Uint8Array(input.buffer), read = new Uint8Array(out.buffer)
 const D = Math.PI / 180, FOOT = 0.3048, DT = 1 / 60
 function turned(q: number[], v: number[]): number[] {

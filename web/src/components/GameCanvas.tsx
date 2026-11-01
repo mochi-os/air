@@ -276,6 +276,13 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
         "Clearing turn {side}, then parallel {heading} at 500', 300 knots to 7 miles",
     }),
   '7 miles: climb on course': msg`7 miles: climb on course`,
+  // The cold start (#133)
+  'Cold start: BATT switch ON, then APU switch ON': msg`Cold start: BATT switch ON, then APU switch ON`,
+  'APU READY: ENG CRANK R, right throttle to IDLE at 15% N2': msg`APU READY: ENG CRANK R, right throttle to IDLE at 15% N2`,
+  'Right engine at idle: ENG CRANK L, left throttle to IDLE at 15% N2': msg`Right engine at idle: ENG CRANK L, left throttle to IDLE at 15% N2`,
+  'Engines at idle: INS knob to {mode} to align': msg({
+    message: 'Engines at idle: INS knob to {mode} to align',
+  }),
   'military power': msg`military power`,
   'full afterburner': msg`full afterburner`,
   right: msg`right`,

@@ -312,7 +312,7 @@ describe('the displayed fuel flow', () => {
   const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
   const lines = /\n\t\tflowL:[^\n]*\n\t\tflowR:[^\n]*\n/.exec(engine)?.[0] ?? ''
   const flows = (pph: number, hL: number, gL: number, bL: number, hR: number, gR: number, bR: number) =>
-    new Function('pph', 'hL', 'gL', 'bL', 'hR', 'gR', 'bR', `const flow_state={ pph }, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+    new Function('pph', 'hL', 'gL', 'bL', 'hR', 'gR', 'bR', `const flow_state={ pph }, below=[null,null], THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
       return {${lines}};`)(pph, hL, gL, bL, hR, gR, bR) as { flowL: number; flowR: number }
 
   it('splits the measured burn by demand in dry power', () => {

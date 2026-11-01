@@ -79,13 +79,13 @@ describe('the ANTI SKID switch', () => {
   })
 
   it('spawns OFF for a cat shot and every recovery, ON from the field and in the air', () => {
-    const line = /\n\tantiskid=st!=="carrier"&&!recovery_start\(\);[^\n]*\n/.exec(source)?.[0] ?? ''
+    const line = /\n\tantiskid=st!=="carrier"&&st!=="deck"&&!recovery_start\(\);[^\n]*\n/.exec(source)?.[0] ?? ''
     const recovery = /\nfunction recovery_start\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(line).not.toBe('')
     expect(recovery).not.toBe('')
     const spawn = (st: string) => new Function('st', `let antiskid=null; const mission_start=()=>st; ${recovery} ${line} return antiskid;`)(st) as boolean
-    expect(['carrier', 'case1', 'case2', 'case3'].map(spawn)).toEqual([false, false, false, false])
-    expect(['runway', 'air', 'joust'].map(spawn)).toEqual([true, true, true])
+    expect(['carrier', 'deck', 'groove', 'case1', 'case2', 'case3'].map(spawn)).toEqual([false, false, false, false, false, false]) // the parked deck and the groove carrier operations too (#133)
+    expect(['runway', 'apron', 'final', 'air', 'joust'].map(spawn)).toEqual([true, true, true, true, true])
   })
 
   it('is rigged OFF level and ON up, and a click throws it', () => {
