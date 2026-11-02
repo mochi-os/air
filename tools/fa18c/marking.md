@@ -54,7 +54,8 @@ nose from the front, the aircraft's right is on the photo's left. Get this right
   end of a missile launch rail if one is fitted).
 - `wingtip_leading_left` / `_right`: the wingtip's forward outer corner (only if no rail hides it).
 - `stabilator_tip_leading_left` / `_right`, `stabilator_tip_trailing_left` / `_right`: the horizontal
-  tail's tip corners.
+  tail's tip corners. The trailing corner is rounded: mark where the tip edge's line and the trailing edge's
+  line meet, not a point on the round.
 - `axle_main_left` / `_right`: centre of that main wheel's hub, as seen.
 - `axle_nose_left` / `_right`: centre of that nose wheel's hub (the nose leg has two wheels side by side).
   Mark a hub only where its outboard face shows; a wheel seen from inboard or tread-on is not an axle mark.

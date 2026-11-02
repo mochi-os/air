@@ -72,7 +72,10 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   superellipse fitted to the photos' outlines. The nose carries the probes, fairings, light strips and blade
   the photos place (`layout.aoa`, `pitot`, `blisters`, `formation`, `blade`), the fins their tip pods
   (`layout.pod`), and a simple cockpit with its pilot sits under the canopy (`layout.cockpit`). Each nozzle
-  is twelve outer flaps, each its own joint (`layout.petals`). Flush panels (the speedbrake, the nose-gear
+  is twelve flaps, each its own joint (`layout.petals`): a curved outer flap with its stepped tab, and inside
+  it the divergent and convergent flaps of the gas path, closing together; the burner's dark duct lies beyond
+  the throat, and the paint gives the flaps bare metal outside, the divergent flaps' cooling holes and a dark
+  ring of brackets at the exit (`layout.paint.nozzle`). Flush panels (the speedbrake, the nose-gear
   doors) are cut from the fuselage's own built skin (`cut()`) and offset off every facet; parts that stow
   inside it (the gear, the ladder in the LEX) are placed by ray casts on the built parts (`built()`). The third
   output, the features file, names points and curves on the model with the node each rides on, for the photo
@@ -128,12 +131,16 @@ The build also unwraps every part into one atlas and bakes its ambient occlusion
 beside OUT.glb), the shading the paint is laid over, and each texel's surface normal, which picks the
 upper grey or, facing down, the lower (`layout.paint`, sampled in the reference photo).
 
-The distant stages come from the painted build (the old model's own pipeline is below):
+Our model's distant stages wait until the model is finished (the user, 2026-11-02): the first set was
+deleted. These scripts stay for then, building from the painted model (the old model's own pipeline is below):
 
 ```
 python3 -I stages.py OUT.glb OUT.json PARTS.glb POSE.json   # coloured parts and the posed jet, gear up and down
 blender -b --factory-startup -P decimate.py -- PARTS.glb FAR.glb
-python3 -I farcheck.py [-v] FAR.glb POSE.json
+python3 -I farcheck.py [-v] FAR.glb POSE.json                 # -v writes views.png here: move it out
+cp FAR.glb far-unpacked.glb                                  # gltfpack runs sandboxed, seeing only this repository
+~/bin/bwrap-build ../gltfpack-native -i far-unpacked.glb -o ../../web/src/assets/fa18c-far-new.glb -cc -kn
+rm far-unpacked.glb
 ```
 
 - **`stages.py`** - poses our model gear up and gear down through its points file, colours every corner
@@ -142,8 +149,25 @@ python3 -I farcheck.py [-v] FAR.glb POSE.json
   reads. `test_check.py` holds a provenance test: none of our model's scripts names the old model, its
   stages or the vendor downloads.
 
-The model viewer (`/air/models`) shows the latest painted build as `fa18c-new.glb`, beside the model it
-replaces. After a build, copy it in: `cp OUT.glb ../../web/src/assets/fa18c-new.glb`, then `/build air`.
+- **gltfpack** - compresses and quantises the stages (`-cc`) and keeps their node names (`-kn`), which the
+  engine finds them by: about 60 KB, against 250 KB unpacked. `farcheck.py` reads the unpacked file. The
+  engine can draw the stages only with the model they were built from: they hang inside its glTF scene.
+
+### Wing flex
+
+The wing bends up with the lift (facts `layout.flex`; plan, Wing flex). `build.py` (`Bend`) bends it as a
+cantilever from the LEX-wing junction to tm212871's level-flight rise, 2.1 in at the tip at 1 g. Each hinged
+surface and the fold rides a bend joint, `flex_<part>`, that turns and slides it with the wing at its hinge line's
+middle (the fold's at its leading end, on the fold line's axis). Each wing mesh carries the rest as the shape key
+`flex`. The drive `load` is the lift's load factor, 0 parked and 1 in level flight. A photo in flight poses
+`"load": 1`, and `render.py ... load=7.5` shows the limit. `check.py` holds:
+- the tip's rise, and the shape against tm210726's ground test;
+- the root still;
+- each joint's turn and rise against the mesh;
+- the seams at 1 and 7.5 g.
+
+The model viewer (`/air/models`) shows the latest painted build as `fa18c-new.glb`, beside the file it
+replaces. After a build, copy the model in (`cp OUT.glb ../../web/src/assets/fa18c-new.glb`), then `/build air`.
 
 ## Factory-fresh paint
 

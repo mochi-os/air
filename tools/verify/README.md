@@ -96,7 +96,11 @@ the overlays and in the bundle's misses.
 ### 5. The bundle: solve, measure, compare
 
 The build writes a features file beside the model: named points and curves, each with the node it rides on
-(`../fa18c/build.py`, third output). Then:
+(`../fa18c/build.py`, third output). A point on a node with shape keys also gives its move under each key at
+full weight, in the node's frame (`"morphs": {"flex": [x, y, z]}`, a list of them for a curve). `model.py`
+weights a mesh's glTF morph targets by its joint's `morphs`, sparse accessors included, and poses `bend`
+joints (a turn about the axis, then a slide along `direction`, keys `[input, turn, slide]`), so the outlines,
+the sky check, the bundle's carried marks and `view.py`'s renders all follow a bent wing. Then:
 
     python3 -I photos.py CATALOGUE MODEL.glb POINTS.json FEATURES.json --overlays DIR --cameras CAMERAS.json
 
@@ -440,6 +444,11 @@ What went wrong on the F/A-18C, each a rule now:
 - **Helpers mark well with a dictionary.** Three helpers marked twelve photos from `../fa18c/marking.md` in an
   hour or so each. Check their marks against the overlays and the flagged misses; they also found the wrong
   photo labels.
+- **Measure a part's shape in its own frame.** A camera's registration error at one end of the model moves a
+  part as a whole: the F/A-18C's stabilator tips sat 3-6 in apart from photo to photo. Trace the part's outline,
+  cast it onto the part's posed plane from the solved camera, and read each edge against the part's own other
+  edges: shape survives a registration error, position doesn't. That trace showed the stabilator's leading corner
+  sharp and its trailing corner rounded (8 in radius), which no single photo's outline misses had shown.
 
 ## Files
 

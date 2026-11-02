@@ -114,22 +114,50 @@ class Surface:
 		leading = self.root + self.span * (u * INCH) + AFT * (u * self.sweep * INCH)
 		return leading, chord, thickness
 
-	def point(self, u, x, side=0.0):
-		# x chord fraction; side -1 lower, 0 chord plane, 1 upper surface
+	def point(self, u, x, side=0.0, scale=1.0):
+		# x chord fraction; side -1 lower, 0 chord plane, 1 upper surface. A
+		# scale under 1 shortens the chord from its trailing end, the section
+		# still a whole airfoil (a rounded corner, Surface.piece)
 		leading, chord, thickness = self.station(u)
+		chord *= scale
 		y = half(airfoil(thickness), x) * side
 		return leading + self.aft * (x * chord * INCH) + self.up * (y * chord * INCH)
 
-	def piece(self, spans, chord, steps=6):
+	def piece(self, spans, chord, steps=6, end=None, extra=()):
 		# The part between span stations spans[0]..spans[1] and chord fractions
-		# chord[0]..chord[1], closed at every cut
-		start, end = chord
-		xs = sorted({start, end} | {x for x in STATIONS if start < x < end})
+		# chord[0]..chord[1], closed at every cut. end, a function of the span
+		# station, is the share of the chord a rounded corner leaves (1 where
+		# none), and extra adds span stations for its rings
+		start, stop = chord
+		xs = sorted({start, stop} | {x for x in STATIONS if start < x < stop})
+		us = sorted({spans[0] + (spans[1] - spans[0]) * i / steps for i in range(steps + 1)} | {u for u in extra if spans[0] < u < spans[1]})
 		rings = []
-		for i in range(steps + 1):
-			u = spans[0] + (spans[1] - spans[0]) * i / steps
-			rings.append([self.point(u, x, 1) for x in xs] + [self.point(u, x, -1) for x in reversed(xs)])
+		for u in us:
+			scale = end(u) if end else 1.0
+			rings.append([self.point(u, x, 1, scale) for x in xs] + [self.point(u, x, -1, scale) for x in reversed(xs)])
 		return loft(rings)
+
+	def rounded(self, radius):
+		# The trailing corner at the tip (span station self.length) rounded
+		# to radius inches, tangent to the tip and the trailing edge: the
+		# share of the chord each station keeps, and the round's span stations
+		length = self.length
+		tip = length * self.sweep + self.chords[1]
+		slope = (tip - self.chords[0]) / length          # the trailing edge's aft run per inch out
+		cos = 1 / math.sqrt(1 + slope * slope)
+		middle = length - radius                          # the round's centre, inches out
+		behind = self.chords[0] + middle * slope - radius / cos   # and inches aft of the root's leading edge
+		begins = middle - radius * slope * cos            # where it leaves the trailing edge
+
+		def end(u):
+			if u <= begins:
+				return 1.0
+			chord = self.station(u)[1]
+			return (behind + math.sqrt(max(0.0, radius * radius - (u - middle) ** 2)) - u * self.sweep) / chord
+
+		# rings evenly round the arc, so they crowd where it turns to meet the tip
+		start = math.atan(slope)
+		return end, [middle + radius * math.sin(-start + (math.pi / 2 + start) * k / 12) for k in range(13)]
 
 	def panel(self, spans, cuts):
 		# The fixed part between span stations spans[0]..spans[1], less the
@@ -175,12 +203,65 @@ def merge(pieces):
 	return vertices, faces
 
 
+class Bend:
+	# The wing bent up by 1 g of lift (layout.flex): a cantilever from the
+	# LEX-wing junction, its lift along the span as the chord and its
+	# stiffness as the chord times the section's depth squared (a box as wide
+	# as the chord and as deep as the airfoil), streamwise sections rigid, so
+	# the bend sets no twist. at(u) gives the rise, inches up the wing's
+	# normal, and the slope, radians, u the surface's planform distance out;
+	# the tip at the planform's end rises layout.flex.rise
+	def __init__(self, surface, root, rise, steps=800):
+		self.surface, self.root, self.end = surface, root, surface.length
+		h = (self.end - root) / steps
+		self.us = [root + h * i for i in range(steps + 1)]
+		chords = [surface.station(u)[1] for u in self.us]
+		depths = [surface.station(u)[2] / 100 * c for u, c in zip(self.us, chords)]
+		# shear and moment from the tip in, then the slope and the rise out
+		shear, moment = [0.0] * (steps + 1), [0.0] * (steps + 1)
+		for i in range(steps - 1, -1, -1):
+			shear[i] = shear[i + 1] + (chords[i] + chords[i + 1]) / 2 * h
+			moment[i] = moment[i + 1] + (shear[i] + shear[i + 1]) / 2 * h
+		curvature = [m / (c * d * d) for m, c, d in zip(moment, chords, depths)]
+		slopes, heights = [0.0], [0.0]
+		for i in range(steps):
+			slopes.append(slopes[-1] + (curvature[i] + curvature[i + 1]) / 2 * h)
+			heights.append(heights[-1] + (slopes[i] + slopes[i + 1]) / 2 * h)
+		scale = rise / heights[-1]
+		self.slopes, self.heights = [s * scale for s in slopes], [z * scale for z in heights]
+		self.lateral = Vector((0, surface.span.y, 0)).normalized()
+		self.side, self.up = surface.span.normalized(), surface.up.copy()
+		self.axis = self.side.cross(self.up).normalized()   # a positive turn about it lifts the outboard side
+
+	def out(self, p):
+		# A point's planform distance out, inches
+		return (p - self.surface.root).dot(self.lateral) / INCH
+
+	def at(self, u):
+		if u <= self.root:
+			return 0.0, 0.0
+		if u >= self.end:
+			return self.heights[-1] + self.slopes[-1] * (u - self.end), self.slopes[-1]
+		f = (u - self.root) / (self.end - self.root) * (len(self.us) - 1)
+		i = min(int(f), len(self.us) - 2)
+		k = f - i
+		return self.heights[i] + (self.heights[i + 1] - self.heights[i]) * k, self.slopes[i] + (self.slopes[i + 1] - self.slopes[i]) * k
+
+	def moved(self, p):
+		# Where 1 g of lift takes a point of the wing: its section raised and
+		# turned about the section's line in the chord plane
+		rise, slope = self.at(self.out(p))
+		h = (p - self.surface.root).dot(self.up)
+		return p + self.up * (rise * INCH) + (self.up * (math.cos(slope) - 1) - self.side * math.sin(slope)) * h
+
+
 MATERIALS = {}
 # Linear base colours. The paint bake replaces paint's and team's with the atlas
 # (layout.paint); lights is the unlit formation strips' pale grey, sRGB 154-163
-# in dvids9820808 (the engine lights them at night)
+# in dvids9820808 (the engine lights them at night); burner the afterburner
+# duct's soot, sRGB about 28 (the engine sets its glow)
 COLOURS = {"paint": (0.42, 0.45, 0.48, 1), "team": (0.42, 0.45, 0.48, 1), "glass": (0.1, 0.12, 0.14, 0.4),
-	"lights": (0.34, 0.35, 0.32, 1), "burner": (1, 0.6, 0.2, 1), "display": (0.05, 0.08, 0.05, 1)}
+	"lights": (0.34, 0.35, 0.32, 1), "burner": (0.012, 0.011, 0.010, 1), "display": (0.05, 0.08, 0.05, 1)}
 
 
 def material(name):
@@ -257,6 +338,70 @@ def joint(name, axis, arm, want, drive, keys, motion="rotate"):
 	JOINTS[name] = {"motion": motion, "axis": exported(axis), "drive": drive, "keys": keys}
 
 
+# The bend's reach: node to (rotation, translation, slope) of the bend joints
+# above it at 1 g, for each node the wing's bend moves (wing() and bent())
+FLEX = {}
+LOAD = [[-3.0, -3.0], [7.5, 7.5]]   # the lift's load factor, NATOPS's limits, to the bend's share of 1 g
+STILL = (Matrix.Identity(3), Vector(), 0.0)
+
+
+def carried(name):
+	# The bend joints' move at 1 g above a node, the nearest that has one
+	obj = NODES.get(name) if name else None
+	while obj is not None:
+		if obj.name in FLEX:
+			return FLEX[obj.name]
+		obj = obj.parent
+	return STILL
+
+
+def flex_joint(name, bend, point, parent=None):
+	# A bend joint at `point` in the wing's chord plane: it turns about the
+	# streamwise axis and slides up the wing's normal so that, with any bend
+	# joint above it, it carries its children as 1 g of lift carries that
+	# point; the keys scale it with the load
+	R0, t0, slope0 = carried(parent)
+	rise, slope = bend.at(bend.out(point))
+	turn = slope - slope0
+	R = Matrix.Rotation(turn, 3, bend.axis)
+	slide = (point + bend.up * (rise * INCH) - t0 - R0 @ point).dot(R0 @ bend.up)
+	node(name, parent=parent, hinge=point)
+	JOINTS[name] = {"motion": "bend", "axis": exported(bend.axis), "direction": exported(bend.up), "drive": "load",
+		"keys": [[load, round(turn * load, 7), round(slide * load, 7)] for load, _ in LOAD]}
+	FLEX[name] = (R0 @ R, R0 @ (point - R @ point + bend.up * slide) + t0, slope)
+
+
+def bent(name, bend):
+	# Gives a node's mesh the bend as the shape key "flex": what 1 g of lift
+	# does to it beyond what the bend joints above it carry, in the node's own
+	# frame; the "load" drive sets its weight
+	obj = NODES[name]
+	R, t, _ = carried(name)
+	hinge = HINGES[name]
+	obj.shape_key_add(name="Basis", from_mix=False)
+	key = obj.shape_key_add(name="flex", from_mix=False)
+	for i, v in enumerate(obj.data.vertices):
+		p = v.co + hinge
+		key.data[i].co = v.co + R.transposed() @ (bend.moved(p) - (R @ p + t))
+	morphs = {"flex": {"drive": "load", "keys": LOAD}}
+	if name in JOINTS:
+		JOINTS[name]["morphs"] = morphs
+	else:
+		JOINTS[name] = {"motion": "morph", "morphs": morphs}
+	BENDS[name] = bend
+
+
+BENDS = {}   # node to the bend its shape key follows (the features file's morphs)
+
+
+def flexed(name, p):
+	# A point's shape-key move on its node, as bent() gives the mesh
+	if name not in BENDS:
+		return None
+	R, t, _ = carried(name)
+	return R.transposed() @ (BENDS[name].moved(p) - (R @ p + t))
+
+
 def leading_sweep(quarter, aspect, taper):
 	# Leading-edge sweep of a straight-tapered planform from its quarter-chord sweep
 	return math.degrees(math.atan(math.tan(math.radians(quarter)) + (4 / aspect) * 0.25 * (1 - taper) / (1 + taper)))
@@ -284,6 +429,9 @@ def wing(side):
 	airfoils = w["airfoil"]
 	thickness = [(56.876, value(airfoils["root"])), (145.39, value(airfoils["middle"])), (semispan, value(airfoils["tip"]))]
 	surface = Surface(root, span, sweep, (root_chord, tip_chord), thickness, semispan)
+	# the bend under load (layout.flex), from the LEX-wing junction
+	flex = LAYOUT["flex"]
+	bend = Bend(surface, flex["root"], flex["rise"])
 	spans = LAYOUT["surfaces"]
 	fold = value(w["fold"])
 	areas = value(w["areas"])
@@ -296,11 +444,17 @@ def wing(side):
 	# the aileron starts inboard of the fold line: the inner panel stops at its
 	# hinge there, and that part of it folds with the outer panel
 	node(f"wing_inner_{name}", mesh=surface.panel((inside, fold), [(spans["lef"]["inner"], inner_lef, "front"), (spans["tef"], tef, "back"), (spans["aileron"], aileron, "back")]))
+	bent(f"wing_inner_{name}", bend)
 
 	def hinged(joint_name, reach, x, part, arm, want, drive, parent=None, paint="paint"):
+		# a hinged surface, under a bend joint at its hinge line's middle
+		# that carries it with the bend (flex_<surface>), the rest of the bend
+		# in its shape key
 		a, b = surface.point(reach[0], x), surface.point(reach[1], x)
-		node(joint_name, parent=parent, hinge=a, mesh=surface.piece(reach, part, steps=max(1, round((reach[1] - reach[0]) / 20))), paint=paint)
+		flex_joint(f"flex_{joint_name}", bend, surface.point((reach[0] + reach[1]) / 2, x), parent)
+		node(joint_name, parent=f"flex_{joint_name}", hinge=a, mesh=surface.piece(reach, part, steps=max(1, round((reach[1] - reach[0]) / 20))), paint=paint)
 		joint(joint_name, b - a, arm, want, drive, IDENTITY)
+		bent(joint_name, bend)
 
 	hinged(f"flap_leading_inner_{name}", spans["lef"]["inner"], inner_lef, (0, inner_lef), FORWARD, DOWN, "slat")
 	hinged(f"flap_trailing_{name}", spans["tef"], 1 - tef, (1 - tef, 1), AFT, DOWN, f"flaperon.{name}")
@@ -323,9 +477,13 @@ def wing(side):
 	for _ in range(40):
 		middle = (low + high) / 2
 		low, high = (middle, high) if reach(middle) > folded else (low, middle)
-	node(f"wing_{name}", hinge=a)
+	# under a bend joint at the fold line's leading end, which lies on its
+	# streamwise axis: the fold line rides the bend unbroken
+	flex_joint(f"flex_wing_{name}", bend, a)
+	node(f"wing_{name}", parent=f"flex_wing_{name}", hinge=a)
 	joint(f"wing_{name}", b - a, Vector((0, -side, 0)), UP, "fold", [[0, 0], [1, round(high, 4)]])
 	node(f"wing_outer_{name}", parent=f"wing_{name}", hinge=a, paint="team", mesh=outer)
+	bent(f"wing_outer_{name}", bend)
 	hinged(f"flap_leading_outer_{name}", spans["lef"]["outer"], outer_lef, (0, outer_lef), FORWARD, DOWN, "slat", parent=f"wing_{name}")
 	hinged(f"aileron_{name}", spans["aileron"], 1 - aileron, (1 - aileron, 1), AFT, DOWN, f"flaperon.{name}", parent=f"wing_{name}")
 	SURFACES[f"wing_{name}"] = surface
@@ -362,13 +520,18 @@ def stabilator(side):
 	chord = root_chord * (2 / 3) * (1 + taper + taper * taper) / (1 + taper)
 	quarter = surface.station(mean)[0] + AFT * (0.25 * chord * INCH)
 	pivot = Vector((quarter.x, root.y, root.z))
-	node(f"stabilator_{name}", hinge=pivot, mesh=surface.piece((0, exposed), (0, 1), steps=8))
+	# cr201687's planform is the theoretical one; the tip's trailing corner is
+	# rounded (layout.stabilator_corner). The corner landmarks stay where the
+	# edges' lines meet, as the photos are marked
+	end, round_ = surface.rounded(value(LAYOUT["stabilator_corner"]))
+	node(f"stabilator_{name}", hinge=pivot, mesh=surface.piece((0, exposed), (0, 1), steps=8, end=end, extra=round_))
 	LANDMARKS[f"stabilator_tip_leading_{name}"] = surface.point(exposed, 0)
 	LANDMARKS[f"stabilator_tip_trailing_{name}"] = surface.point(exposed, 1)
 	MARKS[f"stabilator_tip_leading_{name}"] = (surface.point(exposed, 0), f"stabilator_{name}")
 	MARKS[f"stabilator_tip_trailing_{name}"] = (surface.point(exposed, 1), f"stabilator_{name}")
 	CURVES[f"stabilator_leading_{name}"] = ([surface.point(exposed * i / 8, 0) for i in range(9)], f"stabilator_{name}")
-	CURVES[f"stabilator_trailing_{name}"] = ([surface.point(exposed * i / 8, 1) for i in range(9)], f"stabilator_{name}")
+	trailing = sorted({exposed * i / 8 for i in range(9)} | set(round_))
+	CURVES[f"stabilator_trailing_{name}"] = ([surface.point(u, 1, 0, end(u)) for u in trailing], f"stabilator_{name}")
 	joint(f"stabilator_{name}", span, AFT, DOWN, f"stabilator.{name}", IDENTITY)
 
 
@@ -1833,12 +1996,15 @@ def gear():
 	axle = at(g["nose"], g["axles"]["nose"], 0)
 	trunnion = at(g["nose"] + 12, 100, 0)
 	extended = (axle - trunnion).normalized()
-	swing = math.acos(max(-1.0, min(1.0, FORWARD.dot(extended))))
-	axis = FORWARD.cross(extended).normalized()
+	# stowed forward and 3 deg up, the twin wheels clear of the forebody's
+	# lower skin either side of the bay
+	stowed = (FORWARD * math.cos(math.radians(3)) + UP * math.sin(math.radians(3))).normalized()
+	swing = math.acos(max(-1.0, min(1.0, stowed.dot(extended))))
+	axis = stowed.cross(extended).normalized()
 	frames = chain([(trunnion, axis, swing)])
 	undo = frames[0][2]
 	node("gear_nose_strut", hinge=trunnion, mesh=rested(cylinder(trunnion, trunnion.lerp(axle, 0.6), 3.0), undo))
-	joint("gear_nose_strut", frames[0][1], FORWARD, extended, "gear", [[0, 0], [1, swing]])
+	joint("gear_nose_strut", frames[0][1], stowed, extended, "gear", [[0, 0], [1, swing]])
 	node("gear_nose_oleo", parent="gear_nose_strut", hinge=trunnion, mesh=rested(cylinder(trunnion.lerp(axle, 0.5), axle, 2.2), undo))
 	joint("gear_nose_oleo", undo.to_3x3() @ -extended, -extended, -extended, "oleo.nose", down, motion="slide")
 	node("gear_nose_steering", parent="gear_nose_oleo", hinge=undo @ trunnion)
@@ -2098,11 +2264,12 @@ def fittings():
 		node(f"aoa_{name}", mesh=merge([cylinder(base - out * (0.25 * INCH), base + out * (0.1 * INCH), aoa["plate"] / 2, sides=20),
 			cylinder(base, tip, aoa["base"] / 2, 0.06)]))
 		MARKS[f"aoa_{name}"] = (base, f"aoa_{name}")
-		# pitot-static tube: a strut swept forward and down from the skin, the
-		# tube pointing forward from its foot, on the root's buttline
+		# pitot-static tube: a strut swept forward and down from the skin and
+		# canted outboard to the tube's buttline, the tube pointing forward from
+		# its foot
 		fore, aft = pitot["root"]
 		roots = [on_skin(st, surface_angle(st, pitot["waterline"], side), -0.4) for st in (fore, aft)]
-		bl = skin((fore + aft) / 2, surface_angle((fore + aft) / 2, pitot["waterline"], side))[0]
+		bl = math.copysign(pitot["buttline"], skin((fore + aft) / 2, surface_angle((fore + aft) / 2, pitot["waterline"], side))[0])
 		(bend, low), (point, end) = pitot["bend"], pitot["tip"]
 		radius = pitot["tube"] / 2
 		strut = slab([roots[0], roots[1], at(bend + 1.7, low, bl), at(bend - 0.6, low, bl)], 0.5)
@@ -2266,19 +2433,44 @@ def cockpit():
 
 
 def nozzles():
-	# Each nozzle's outer flaps (layout.petals): twelve flat facets round the
-	# engine axis from their hinges at the start to the photo-matched exit,
-	# their middles on the round nozzle (so the twelve-sided exit's lowest
-	# lip is the photos'), 1.5 in deep to the divergent flaps' faces inside.
-	# Each is its own joint, `nozzle_<side>_petal_<k>` from the top round
-	# outboard. They rest open, as parked; the `nozzle` drive closes them
-	# (0 open, 1 closed at military power), the exit lip moving in by the
-	# throat's travel. The aft ends' stepped tabs are not built
+	# Each nozzle's twelve flaps (layout.petals), round the engine axis from
+	# their hinges at the start to the exit, each its own joint,
+	# `nozzle_<side>_petal_<k>` from the top round outboard. A flap carries,
+	# rigidly:
+	# - its outer flap, a curved shell from the hinge to the exit, its aft part
+	#   stepped round by a share of its width (the stepped tabs), so the seams
+	#   between flaps make a staircase; alternate flaps stand a little proud,
+	#   so closed flaps overlap as shingles;
+	# - inside, 1.5 in in from the outer flap at the exit, its divergent flap,
+	#   the gas path's wall from the exit forward to the throat, and its
+	#   convergent flap from the throat forward to the tailpipe (tp3531's);
+	# - the lip that closes the gap between the two at the exit.
+	# They rest open, as parked; the `nozzle` drive closes them (0 open, 1
+	# closed at military power, the gas path's exit at tm100159's radius),
+	# which takes the throat in with them to about tm101741's closed throat
 	petals = LAYOUT["petals"]
 	count, half = petals["count"], math.pi / petals["count"]
 	length = NOZZLE["exit"] - NOZZLE["start"]
-	travel = math.asin(petals["travel"] / length)
 	deep = 1.5
+	skin, seam, proud = 0.25, 0.15, 0.3   # in: the shells' thickness, the gap between flaps, the alternate flaps' stand
+	(r0, r1), (s0, s1) = NOZZLE["radius"], (NOZZLE["start"], NOZZLE["exit"])
+	# closing turns each flap about its hinge (the outer face's middle at the
+	# start) until its inner face's middle at the exit stands at the closed
+	# exit's radius (layout.petals.closed)
+	inward = (r1 - deep) - r0
+	travel = math.atan2(inward, length) - math.asin((petals["closed"] - r0) / math.hypot(length, inward))
+	# the gas path at rest (open): the divergent flaps from the exit's inner
+	# radius in to the open throat, the convergent flaps from it forward to the
+	# tailpipe at their open angle (tp3531 figure 7, its throats tm101741's)
+	throat = petals["throat"][1]
+	pipe, convergent = petals["tailpipe"], petals["convergent"]
+	diverge = math.asin((r1 - deep - throat) / petals["divergent"])
+	waist = s1 - petals["divergent"] * math.cos(diverge)            # the throat's station
+	opening = math.asin((pipe - throat) / convergent)
+	tail = waist - convergent * math.cos(opening)                   # where the convergent flaps start
+	step_at = s1 - petals["step"][0] * length                        # the stepped tabs' station
+	NOZZLE_WAIST.append(waist)
+	jog = petals["step"][1] * 2 * half
 	for side in (-1, 1):
 		name = side_name(side)
 		centre = lambda station: (NOZZLE["waterline"], side * engine_buttline(station))
@@ -2288,35 +2480,68 @@ def nozzles():
 			w, b = centre(station)
 			return at(station, w + radius * math.cos(angle), b + side * radius * math.sin(angle))
 
-		corners = lambda station, radius, angle: [round_at(station, radius / math.cos(half), angle + s * half) for s in (-1, 1)]
+		def shell(stations, radii, angles, thick, steps=4, across=6):
+			# A curved shell between two stations and two angles, its face at
+			# radii (linear along it), `thick` further out (or in, negative),
+			# closed at every edge
+			rings = []
+			for i in range(steps + 1):
+				f = i / steps
+				s = stations[0] + (stations[1] - stations[0]) * f
+				r = radii[0] + (radii[1] - radii[0]) * f
+				arc = [angles[0] + (angles[1] - angles[0]) * j / across for j in range(across + 1)]
+				rings.append([round_at(s, r, a) for a in arc] + [round_at(s, r + thick, a) for a in reversed(arc)])
+			return loft(rings)
+
+		def lip(station, radii, angles, across=6):
+			# the end wall between two radii at a station, a quarter inch deep
+			arc = [angles[0] + (angles[1] - angles[0]) * j / across for j in range(across + 1)]
+			return loft([[round_at(station - 0.25, radii[0], a), round_at(station - 0.25, radii[1], a), round_at(station, radii[1], a), round_at(station, radii[0], a)] for a in arc])
+
+		radius_at = lambda station: r0 + (r1 - r0) * (station - s0) / length
+		turn = jog * side   # the same turn, seen from behind, on both engines
 		for k in range(count):
 			angle = 2 * half * k
-			(r0, r1), (s0, s1) = NOZZLE["radius"], (NOZZLE["start"], NOZZLE["exit"])
-			outer = corners(s0, r0, angle) + list(reversed(corners(s1, r1, angle)))
-			inner = corners(s0, r0 - deep, angle) + list(reversed(corners(s1, r1 - deep, angle)))
-			faces = [(0, 1, 2, 3), (7, 6, 5, 4)] + [(i, (i + 1) % 4 + 4, i + 4) for i in range(4)] + [(i, (i + 1) % 4, (i + 1) % 4 + 4) for i in range(4)]
+			lift = proud if k % 2 else 0.0
+			gap = seam / 2 / r1
+			forward = (angle - half + gap, angle + half - gap)
+			aft = (forward[0] + turn, forward[1] + turn)
+			pieces = [
+				shell((s0, step_at), (r0 + lift, radius_at(step_at) + lift), forward, -skin),
+				shell((step_at, s1), (radius_at(step_at) + lift, r1 + lift), aft, -skin, steps=3),
+				lip(s1, (r1 - deep + skin - 0.15 * (k % 2), r1 + lift - skin), aft),
+				shell((waist, s1), (throat - 0.15 * (k % 2), r1 - deep - 0.15 * (k % 2)), forward, skin),
+				shell((tail, waist), (pipe - 0.15 * (k % 2), throat - 0.15 * (k % 2)), forward, skin, steps=2),
+			]
 			petal = f"nozzle_{name}_petal_{k + 1}"
 			hinge = round_at(s0, r0, angle)
-			node(petal, hinge=hinge, mesh=(outer + inner, faces))
+			node(petal, hinge=hinge, mesh=merge(pieces))
 			radial = (hinge - at(s0, *centre(s0))).normalized()
 			tangent = (round_at(s0, r0, angle + 0.01) - round_at(s0, r0, angle - 0.01)).normalized()
 			joint(petal, tangent, round_at(s1, r1, angle) - hinge, radial, "nozzle", [[0, 0], [1, -travel]])
+			NOZZLE_PARTS.append(petal)
 		# the photo match's rings and lowest points, on the bottom flap
 		bottom = f"nozzle_{name}_petal_{count // 2 + 1}"
-		for key, station, radius in (("root", NOZZLE["start"], NOZZLE["radius"][0]), ("exit", NOZZLE["exit"], NOZZLE["radius"][1])):
-			ring = [p for k in range(count) for p in corners(station, radius, 2 * half * k)[:1]]
+		for key, station, radius in (("root", s0, r0), ("exit", s1, r1)):
+			ring = [round_at(station, radius, 2 * half * k) for k in range(count)]
 			CURVES[f"nozzle_{key}_{name}"] = (ring + ring[:1], bottom)
 			MARKS[f"nozzle_{key}_bottom_{name}"] = (round_at(station, radius, math.pi), bottom)
 		# the burner (the Contract's burner_left/right): the faces that glow in
-		# the nozzle, a liner from deep in it to near the exit, closed at its deep
-		# end, as wide as the throat at full reheat (layout.petals); the engine
-		# sets their glow and draws the flames. Ten sides keep the distant
-		# stage's burner within its 80 triangles
+		# the nozzle, the afterburner's duct seen through the throat, from the
+		# throat forward, as wide as the throat at full reheat (layout.petals),
+		# open aft and closed just aft of the fuselage's closed end, which it
+		# hides. Dark until the engine sets their glow and draws the flames. Ten
+		# sides keep the distant stage's burner within its 80 triangles
 		axis = lambda station: at(station, *centre(station))
-		deep_end, near = NOZZLE["exit"] - 10, NOZZLE["exit"] - 2.5
-		glow = petals["throat"][1]
-		node(f"burner_{name}", paint="burner", mesh=cylinder(axis(deep_end), axis(near), glow, glow, sides=10))
+		near, far = waist - 0.5, CORE["top"][-1][0] + 0.5
+		ring = lambda station: [axis(station) + (round_at(station, throat, 2 * math.pi * i / 10) - axis(station)) for i in range(10)]
+		vertices = ring(far) + ring(near)
+		faces = [(i, (i + 1) % 10, 10 + (i + 1) % 10, 10 + i) for i in range(10)] + [tuple(range(10))]
+		node(f"burner_{name}", paint="burner", mesh=(vertices, faces))
 
+
+NOZZLE_PARTS = []   # the flaps the paint gives the nozzles' colours (layout.paint.nozzle)
+NOZZLE_WAIST = []   # the throat's station at rest
 
 ATLAS = 2048
 
@@ -2373,6 +2598,18 @@ def paint(directory):
 		temporary.append((m, geometry, emission))
 	bpy.ops.object.bake(type="EMIT", use_clear=True)
 	where = np.array(positions.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., :3]
+	# and which texels are the nozzles' flaps: their objects' index emitted
+	for o in parts:
+		o.pass_index = 1 if o.name in NOZZLE_PARTS else 0
+	indices = []
+	for m, geometry, emission in temporary:
+		index = m.node_tree.nodes.new("ShaderNodeObjectInfo")
+		m.node_tree.links.new(index.outputs["Object Index"], emission.inputs["Color"])
+		indices.append((m, index))
+	bpy.ops.object.bake(type="EMIT", use_clear=True)
+	nozzle = np.array(positions.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., 0] > 0.5
+	for m, index in indices:
+		m.node_tree.nodes.remove(index)
 	for m, geometry, emission in temporary:
 		nodes = m.node_tree.nodes
 		nodes.remove(geometry)
@@ -2386,6 +2623,36 @@ def paint(directory):
 	f = (f * f * (3 - 2 * f))[..., None]
 	grey = upper[None, None, :] * (1 - f) + lower[None, None, :] * f
 	colour = grey * (0.4 + 0.6 * shade[..., None]) * (panels(where, covered) * stencils(where, covered))[..., None]
+	# The nozzles' flaps: bare metal outside; inside, the divergent flaps'
+	# faces from the exit to the throat and the dark beyond it, each texel
+	# by which way it faces from its engine's axis (layout.paint.nozzle)
+	n = p["nozzle"]
+	station = ORIGIN["station"] - where[..., 0] / INCH
+	buttline = -where[..., 1] / INCH
+	waterline = ORIGIN["waterline"] + where[..., 2] / INCH
+	axis = np.vectorize(engine_buttline)(np.where(nozzle, station, NOZZLE["start"])) * np.sign(buttline)
+	out = np.stack([-(buttline - axis), waterline - NOZZLE["waterline"]], -1)   # the radial direction in Blender's y and z
+	out /= np.maximum(np.linalg.norm(out, axis=-1, keepdims=True), 1e-9)
+	facing = normal[..., 1] * out[..., 0] + normal[..., 2] * out[..., 1]
+	metal = np.array(n["outer"]) / 255
+	dark = np.array(n["deep"]) / 255
+	divergent = (station >= NOZZLE_WAIST[0]) & (facing < -0.3)
+	inside = np.where(divergent[..., None], np.array(n["inner"]) / 255, dark)
+	tint = np.where((facing < -0.3)[..., None], inside, metal)
+	# the exit's ring of brackets, the faces that look aft, dark
+	tint = np.where((normal[..., 0] < -0.7)[..., None], dark, tint)
+	# the divergent flaps' cooling holes: columns across each flap, rows
+	# along it from the throat to the exit
+	columns, rows, hole = n["holes"]
+	turn = np.degrees(np.arctan2((buttline - axis) * np.sign(buttline), waterline - NOZZLE["waterline"]))   # nozzles(): from the top, + outboard
+	width = 360 / LAYOUT["petals"]["count"]
+	across = (turn / width + 0.5) % 1                                  # 0..1 across a flap, its seams at 0 and 1
+	along = (station - NOZZLE_WAIST[0]) / (NOZZLE["exit"] - NOZZLE_WAIST[0])
+	radius = (NOZZLE["radius"][1] - 1.5) * np.pi * 2 / LAYOUT["petals"]["count"]   # a flap's width at the exit, in
+	du = (across * columns % 1 - 0.5) * radius / columns
+	dv = (along * rows % 1 - 0.5) * (NOZZLE["exit"] - NOZZLE_WAIST[0]) / rows
+	tint = np.where((divergent & (np.hypot(du, dv) < hole))[..., None], dark, tint)
+	colour = np.where(nozzle[..., None], tint * (0.4 + 0.6 * shade[..., None]), colour)
 	pixels = np.concatenate([colour, np.ones((ATLAS, ATLAS, 1))], -1)
 	image.pixels[:] = pixels.ravel()
 	image.filepath_raw = str(Path(directory) / "paint.png")
@@ -2617,9 +2884,9 @@ def main():
 		"points": {**located, "landmarks": {name: exported(point) for name, point in sorted(LANDMARKS.items())}}}
 	Path(out[1]).write_text(json.dumps(document, indent="\t") + "\n")
 	if len(out) > 2:
-		features = {"about": "The model's named points and curves, each on the node it rides on, at rest in the model frame (build.py).",
-			"landmarks": {name: {"at": exported(p), "node": n} for name, (p, n) in sorted(MARKS.items())},
-			"curves": {name: {"points": [exported(p) for p in points], "node": n} for name, (points, n) in sorted(CURVES.items())}}
+		features = {"about": "The model's named points and curves, each on the node it rides on, at rest in the model frame (build.py). A point on a node with shape keys gives its move under each at full weight, in the node's frame (morphs).",
+			"landmarks": {name: {"at": exported(p), "node": n, **({"morphs": {"flex": exported(flexed(n, p))}} if n in BENDS else {})} for name, (p, n) in sorted(MARKS.items())},
+			"curves": {name: {"points": [exported(p) for p in points], "node": n, **({"morphs": {"flex": [exported(flexed(n, p)) for p in points]}} if n in BENDS else {})} for name, (points, n) in sorted(CURVES.items())}}
 		Path(out[2]).write_text(json.dumps(features, indent="\t") + "\n")
 
 

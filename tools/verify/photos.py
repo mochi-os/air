@@ -115,29 +115,43 @@ class Features:
 		posed = self.model.worlds(mod.pose(self.joints, drives))[i]
 		return posed @ np.linalg.inv(self.model.rest[i])
 
-	def moved(self, drives, node, points):
+	def moved(self, drives, node, points, morphs=None):
+		# Points on a node, posed; morphs ({key: moves at full weight, in the
+		# node's frame}) carry them with the node's shape keys first
 		points = np.asarray(points, float).reshape(-1, 3)
+		if morphs and node in self.model.index:
+			weights = mod.pose(self.joints, drives).weights.get(node, {})
+			rest = self.model.rest[self.model.index[node]][:3, :3]
+			for key, moves in morphs.items():
+				points = points + weights.get(key, 0.0) * np.asarray(moves, float).reshape(-1, 3) @ rest.T
 		M = self.transform(drives, node)
 		return points @ M[:3, :3].T + M[:3, 3]
 
 	def between(self, start, end, name):
 		# A landmark's move from the start pose to the end pose as (R, t), or
-		# None where its part stands the same in both
-		node = self.landmarks.get(name, {}).get("node")
+		# None where its part stands the same in both; one a shape key moves
+		# carries that in t
+		spec = self.landmarks.get(name, {})
+		node = spec.get("node")
 		if node is None:
 			return None
 		M = self.transform(end, node) @ np.linalg.inv(self.transform(start, node))
+		if spec.get("morphs"):
+			t = self.landmark(name, end) - M[:3, :3] @ self.landmark(name, start)
+			if np.allclose(M[:3, :3], np.eye(3), atol=1e-9) and np.allclose(t, 0, atol=1e-9):
+				return None
+			return M[:3, :3], t
 		if np.allclose(M, np.eye(4), atol=1e-9):
 			return None
 		return M[:3, :3], M[:3, 3]
 
 	def landmark(self, name, drives=None):
 		spec = self.landmarks[name]
-		return self.moved(drives or {}, spec.get("node"), spec["at"])[0]
+		return self.moved(drives or {}, spec.get("node"), spec["at"], spec.get("morphs"))[0]
 
 	def curve(self, name, drives=None):
 		spec = self.curves[name]
-		return self.moved(drives or {}, spec.get("node"), spec["points"])
+		return self.moved(drives or {}, spec.get("node"), spec["points"], spec.get("morphs"))
 
 
 def exif_focal(image):

@@ -17,6 +17,9 @@ from mathutils import Matrix, Quaternion, Vector
 
 
 def lookup(keys, x):
+	# as model.py's: a bend's keys ([input, turn, slide]) give a tuple
+	if len(keys[0]) > 2:
+		return tuple(lookup([[k[0], k[i]] for k in keys], x) for i in range(1, len(keys[0])))
 	if x <= keys[0][0]:
 		return keys[0][1]
 	for (x0, y0), (x1, y1) in zip(keys, keys[1:]):
@@ -66,15 +69,27 @@ def main():
 			obj = bpy.data.objects.get(name)
 			if obj is None:
 				continue
+			# a joint's morphs weight its mesh's shape keys (model.py pose)
+			keys = obj.data.shape_keys.key_blocks if getattr(obj.data, "shape_keys", None) else {}
+			for key, morph in j.get("morphs", {}).items():
+				if key in keys:
+					keys[key].slider_min, keys[key].slider_max = -10.0, 10.0
+					keys[key].value = lookup(morph["keys"], float(drives.get(morph["drive"], 0.0)))
+			if j["motion"] == "morph":
+				continue
 			# a joint named in the pose's "joints" takes that value, past its drive (model.py setting)
 			own = drives.get("joints", {})
-			value = float(own[name]) if name in own else lookup(j["keys"], float(drives.get(j["drive"], 0.0)))
+			value = (tuple(own[name]) if isinstance(own[name], list) else float(own[name])) if name in own else lookup(j["keys"], float(drives.get(j["drive"], 0.0)))
 			if j["motion"] == "show":
 				obj.hide_render = value <= 0.5
 				continue
 			axis = GLTF @ Vector(j["axis"])
 			if j["motion"] == "rotate":
 				obj.rotation_quaternion = obj.rotation_quaternion @ Quaternion(axis, value)
+			elif j["motion"] == "bend":
+				# turned about its axis, then slid along its direction in its parent's frame
+				obj.rotation_quaternion = obj.rotation_quaternion @ Quaternion(axis, value[0])
+				obj.location += (GLTF @ Vector(j["direction"])).normalized() * value[1]
 			else:
 				obj.location += axis * value
 		f, r, t = entry["camera"][0], entry["camera"][1:4], Vector(entry["camera"][4:7])

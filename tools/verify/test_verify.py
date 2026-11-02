@@ -25,9 +25,18 @@ def box(lo, hi):
 
 
 def glb(path, nodes):
-	# A minimal glTF binary: nodes [{"name", "translation", "mesh": (vertices, faces) or None, "children": [indices]}]
+	# A minimal glTF binary: nodes [{"name", "translation", "mesh": (vertices, faces) or None, "children": [indices],
+	# "targets": {shape key: each vertex's move (n, 3)}, "sparse": the targets written as sparse accessors, as Blender does}]
 	blob = bytearray()
 	views, accessors, meshes, out = [], [], [], []
+
+	def view(data):
+		while len(blob) % 4:
+			blob.append(0)
+		views.append({"buffer": 0, "byteOffset": len(blob), "byteLength": data.nbytes})
+		blob.extend(data.tobytes())
+		return len(views) - 1
+
 	for n in nodes:
 		entry = {"name": n["name"], "translation": list(map(float, n.get("translation", (0, 0, 0))))}
 		if n.get("children"):
@@ -35,12 +44,22 @@ def glb(path, nodes):
 		if n.get("mesh") is not None:
 			v, f = n["mesh"]
 			for data, kind, count, width in ((np.asarray(v, np.float32), 5126, len(v), "VEC3"), (np.asarray(f, np.uint32).ravel(), 5125, f.size, "SCALAR")):
-				while len(blob) % 4:
-					blob.append(0)
-				views.append({"buffer": 0, "byteOffset": len(blob), "byteLength": data.nbytes})
-				blob += data.tobytes()
-				accessors.append({"bufferView": len(views) - 1, "componentType": kind, "count": int(count), "type": width})
-			meshes.append({"primitives": [{"attributes": {"POSITION": len(accessors) - 2}, "indices": len(accessors) - 1, "material": 0}]})
+				accessors.append({"bufferView": view(data), "componentType": kind, "count": int(count), "type": width})
+			primitive = {"attributes": {"POSITION": len(accessors) - 2}, "indices": len(accessors) - 1, "material": 0}
+			mesh = {"primitives": [primitive]}
+			if n.get("targets"):
+				primitive["targets"] = []
+				for name, moves in n["targets"].items():
+					moves = np.asarray(moves, np.float32)
+					if n.get("sparse"):
+						rows = np.nonzero(np.abs(moves).sum(1))[0].astype(np.uint32)
+						accessors.append({"componentType": 5126, "count": len(v), "type": "VEC3", "sparse": {"count": int(len(rows)),
+							"indices": {"bufferView": view(rows), "componentType": 5125}, "values": {"bufferView": view(moves[rows])}}})
+					else:
+						accessors.append({"bufferView": view(moves), "componentType": 5126, "count": len(v), "type": "VEC3"})
+					primitive["targets"].append({"POSITION": len(accessors) - 1})
+				mesh["extras"] = {"targetNames": list(n["targets"])}
+			meshes.append(mesh)
 			entry["mesh"] = len(meshes) - 1
 		out.append(entry)
 	children = {c for n in nodes for c in n.get("children", [])}
@@ -151,6 +170,55 @@ class ModelTest(unittest.TestCase):
 		self.assertEqual(mod.lookup(keys, -1), 0)
 		self.assertAlmostEqual(mod.lookup(keys, 0.125), 0.5)
 		self.assertEqual(mod.lookup(keys, 5), 1)
+
+	def test_lookup_of_several_outputs(self):
+		# a bend's keys, [input, turn, slide], give both, each held past the ends
+		keys = [[-1, -2, -4], [1, 2, 4]]
+		self.assertEqual(mod.lookup(keys, 0.5), (1.0, 2.0))
+		self.assertEqual(mod.lookup(keys, 3), (2, 4))
+
+	def test_bend_turns_then_slides(self):
+		# the flap turns about its hinge (z) and slides along y in its parent's
+		# frame, carrying the tab: at load 1 a right angle and 0.3, at 0.5 half of each
+		joints = {"flap": {"motion": "bend", "axis": [0, 0, 1], "direction": [0, 1, 0], "drive": "load", "keys": [[0, 0, 0], [1, math.pi / 2, 0.3]]}}
+		parts = self.model.parts(mod.pose(joints, {"load": 1}))
+		self.assertAlmostEqual(parts["flap"][..., 1].min(), -0.5 + 0.3, places=6)
+		self.assertAlmostEqual(parts["flap"][..., 0].min(), -1.02, places=6)
+		self.assertAlmostEqual(parts["tab"][..., 1].min(), -0.6 + 0.3, places=6)
+		half = self.model.parts(mod.pose(joints, {"load": 0.5}))
+		tip = np.array([-1.5, 0.0, 0.0]) - [-1, 0, 0]
+		turned = np.array([math.cos(math.pi / 4) * tip[0], math.sin(math.pi / 4) * tip[0], 0]) + [-1, 0.15, 0]
+		self.assertAlmostEqual(half["flap"][..., 1].min(), turned[1] - 0.02 * math.cos(math.pi / 4), places=5)
+		self.assertAlmostEqual(parts["body"][..., 1].min(), -0.1)
+
+	def test_shape_keys_follow_their_weights(self):
+		# the body's right end rises 0.1 per unit of its key; a "morph" joint
+		# weights it through its keys, and a rotate joint's morphs move its
+		# mesh before it turns
+		v, f = box((-1, -0.1, -0.5), (1, 0.1, 0.5))
+		lift = np.where(v[:, :1] > 0, [0, 0.1, 0], 0)
+		w, g = box((-0.5, -0.02, -0.5), (0, 0.02, 0.5))
+		droop = np.where(w[:, :1] < -0.25, [0, -0.05, 0], 0)
+		for sparse in (False, True):
+			path = Path(self.dir.name) / f"k{int(sparse)}.glb"
+			glb(path, [{"name": "body", "mesh": (v, f), "targets": {"flex": lift}, "sparse": sparse},
+				{"name": "flap", "translation": (-1, 0, 0), "mesh": (w, g), "targets": {"flex": droop}, "sparse": sparse}])
+			model = mod.Model(path)
+			joints = {"body": {"motion": "morph", "morphs": {"flex": {"drive": "load", "keys": [[0, 0], [2, 2]]}}},
+				"flap": {"motion": "rotate", "axis": [0, 0, 1], "drive": "flap", "keys": [[0, 0], [1, math.pi / 2]],
+					"morphs": {"flex": {"drive": "load", "keys": [[0, 0], [2, 2]]}}}}
+			rest = model.parts(mod.pose(joints, {}))
+			self.assertAlmostEqual(rest["body"][..., 1].max(), 0.1, places=6, msg=sparse)
+			for load in (1, 2):
+				posed = model.parts(mod.pose(joints, {"load": load}))
+				self.assertAlmostEqual(posed["body"][..., 1].max(), 0.1 + 0.1 * load, places=6, msg=sparse)
+				self.assertAlmostEqual(posed["body"][..., 1].min(), -0.1, places=6, msg=sparse)
+				self.assertAlmostEqual(posed["flap"][..., 1].min(), -0.02 - 0.05 * load, places=6, msg=sparse)
+			# drooped, then turned a right angle about z, which takes (x, y) to
+			# (-y, x): the droop now points forward of the hinge
+			turned = model.parts(mod.pose(joints, {"load": 1, "flap": 1}))["flap"]
+			self.assertAlmostEqual(turned[..., 0].max(), -1 + 0.02 + 0.05, places=6, msg=sparse)
+			self.assertEqual(mod.pose(joints, {"load": 1}).weights, {"body": {"flex": 1.0}, "flap": {"flex": 1.0}})
 
 
 class OutlineTest(unittest.TestCase):

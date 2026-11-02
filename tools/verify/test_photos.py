@@ -333,6 +333,54 @@ class MatchTest(unittest.TestCase):
 		# the flap swings a right angle about its hinge at x = -4: its tip, 1 m aft of the hinge, ends 1 m down
 		np.testing.assert_allclose(tip, [-4, -1, 2], atol=1e-6)
 
+	def bent(self):
+		# The flap given a shape key, "flex", that drops its aft half 0.05 m per
+		# unit of the "load" drive, and the features file the move at its tips
+		r = self.root
+		v, f = box((-1, -0.05, -2), (0, 0.05, 2))
+		glb(r / "m.glb", [{"name": "fuselage", "mesh": box((-4, -0.5, -0.6), (4, 0.5, 0.6))},
+			{"name": "flap", "translation": (-4, 0, 0), "mesh": (v, f), "targets": {"flex": np.where(v[:, :1] < -0.5, [0, -0.05, 0], 0)}, "sparse": True}])
+		joints = {"flap": {"motion": "rotate", "axis": [0, 0, 1], "drive": "flap", "keys": [[0, 0], [1, math.pi / 2]],
+			"morphs": {"flex": {"drive": "load", "keys": [[0, 0], [1, 1]]}}}}
+		(r / "m.json").write_text(json.dumps({"joints": joints}))
+		features = json.loads((r / "features.json").read_text())
+		for name in ("flap_tip_right", "flap_tip_left"):
+			features["landmarks"][name]["morphs"] = {"flex": [0, -0.05, 0]}
+		(r / "features.json").write_text(json.dumps(features))
+		return photos.Features(mod.Model(r / "m.glb"), joints, r / "features.json")
+
+	def test_features_carry_shape_keys(self):
+		f = self.bent()
+		np.testing.assert_allclose(f.landmark("flap_tip_right", {"load": 1}), [-5, -0.05, 2], atol=1e-6)
+		# the key moves the tip before the flap turns: (-1, -0.05) from the hinge goes to (0.05, -1)
+		np.testing.assert_allclose(f.landmark("flap_tip_right", {"load": 1, "flap": 1}), [-3.95, -1, 2], atol=1e-6)
+		R, t = f.between({}, {"load": 1}, "flap_tip_right")
+		np.testing.assert_allclose(R, np.eye(3), atol=1e-9)
+		np.testing.assert_allclose(t, [0, -0.05, 0], atol=1e-6)
+		self.assertIsNone(f.between({"load": 1}, {"load": 1}, "flap_tip_right"))
+		self.assertIsNone(f.between({}, {"load": 1}, "front_right"))
+
+	def test_a_shape_key_carried_into_a_photo(self):
+		# One photo shows the flap bent by its shape key: its tips, carried into
+		# that photo's pose, still measure where they stand at rest, and that
+		# photo's camera fits as well as the others'
+		r = self.root
+		f = self.bent()
+		catalogue = json.loads((r / "photos.json").read_text())
+		camera = cam.looking(np.array((-12.0, 4.0, 9.0)), np.zeros(3), 3200.0)   # p1's, as setUp made it
+		loaded = {"load": 1}
+		for name in ("flap_tip_right", "flap_tip_left"):
+			at = f.landmark(name, loaded)
+			catalogue["photos"]["p1"]["marks"][name] = list(map(float, cam.project(camera, [at], (1500, 1000))[0][0]))
+		catalogue["photos"]["p1"]["pose"] = loaded
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		match = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None)
+		report = match.report()
+		frame = mod.Frame(JET)
+		for name in ("flap_tip_right", "flap_tip_left"):
+			np.testing.assert_allclose(report["points"][name]["measured"], frame.source(self.truth[name]), atol=0.15, err_msg=name)
+		self.assertLess(report["photos"]["p1"]["rms"], 1.0)
+
 
 if __name__ == "__main__":
 	unittest.main()

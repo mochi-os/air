@@ -74,7 +74,11 @@ def quaternion(q):
 
 
 def lookup(keys, x):
-	# A schedule's output at input x: linear between [input, output] keys, held past the ends
+	# A schedule's output at input x: linear between [input, output] keys, held
+	# past the ends; keys of more than one output ([input, turn, slide], a
+	# bend) give a tuple
+	if len(keys[0]) > 2:
+		return tuple(lookup([[k[0], k[i]] for k in keys], x) for i in range(1, len(keys[0])))
 	if x <= keys[0][0]:
 		return keys[0][1]
 	for (x0, y0), (x1, y1) in zip(keys, keys[1:]):
@@ -83,12 +87,29 @@ def lookup(keys, x):
 	return keys[-1][1]
 
 
+class Posed(dict):
+	# pose()'s joints, {node: (motion, axis, value)}, and its shape keys'
+	# weights, {node: {key: weight}}
+	def __init__(self):
+		super().__init__()
+		self.weights = {}
+
+
 def pose(joints, drives):
 	# The points file's joints driven to the given values (drives not given
-	# rest at 0): {node: (motion, axis, value)}, the axis in the model frame
-	out = {}
+	# rest at 0): {node: (motion, axis, value)}, the axis in the model frame. A
+	# bend turns about its axis and slides along its direction, both through
+	# its keys ([input, turn, slide]), its axis the pair; a joint's morphs
+	# ({key: {drive, keys}}) weight its mesh's shape keys, and a "morph" joint
+	# does nothing else
+	out = Posed()
 	for name, joint in joints.items():
-		out[name] = (joint["motion"], np.array(joint["axis"], float), setting(joint, name, drives))
+		if joint["motion"] == "bend":
+			out[name] = ("bend", np.array([joint["axis"], joint["direction"]], float), tuple(setting(joint, name, drives)))
+		elif joint["motion"] != "morph":
+			out[name] = (joint["motion"], np.array(joint["axis"], float), setting(joint, name, drives))
+		for key, morph in joint.get("morphs", {}).items():
+			out.weights.setdefault(name, {})[key] = lookup(morph["keys"], float(drives.get(morph["drive"], 0.0)))
 	return out
 
 
@@ -99,7 +120,7 @@ def setting(joint, name, drives):
 	# pair that share a drive deflected apart from the other
 	own = drives.get("joints", {})
 	if name in own:
-		return float(own[name])
+		return tuple(float(v) for v in own[name]) if isinstance(own[name], list) else float(own[name])
 	return lookup(joint["keys"], float(drives.get(joint["drive"], 0.0)))
 
 
@@ -118,22 +139,41 @@ class Model:
 
 		def accessor(index):
 			a = gltf["accessors"][index]
-			view = gltf["bufferViews"][a["bufferView"]]
 			kind, width = kinds[a["componentType"]], sizes[a["type"]]
-			offset = view.get("byteOffset", 0) + a.get("byteOffset", 0)
-			stride = view.get("byteStride", 0)
-			item = np.dtype(kind).itemsize * width
-			if stride and stride != item:
-				raw = np.frombuffer(binary, np.uint8, stride * (a["count"] - 1) + item, offset)
-				rows = np.lib.stride_tricks.as_strided(raw, (a["count"], item), (stride, 1))
-				return np.frombuffer(rows.copy().tobytes(), kind).reshape(a["count"], width)
-			return np.frombuffer(binary, kind, a["count"] * width, offset).reshape(a["count"], width)
+			if "bufferView" in a:
+				view = gltf["bufferViews"][a["bufferView"]]
+				offset = view.get("byteOffset", 0) + a.get("byteOffset", 0)
+				stride = view.get("byteStride", 0)
+				item = np.dtype(kind).itemsize * width
+				if stride and stride != item:
+					raw = np.frombuffer(binary, np.uint8, stride * (a["count"] - 1) + item, offset)
+					rows = np.lib.stride_tricks.as_strided(raw, (a["count"], item), (stride, 1))
+					values = np.frombuffer(rows.copy().tobytes(), kind).reshape(a["count"], width)
+				else:
+					values = np.frombuffer(binary, kind, a["count"] * width, offset).reshape(a["count"], width)
+			else:
+				values = np.zeros((a["count"], width), kind)
+			if "sparse" not in a:
+				return values
+			# a sparse accessor: the listed elements replace the base's (zeros
+			# where it has no buffer view), as exporters write shape keys
+			sparse = a["sparse"]
+
+			def packed(spec, kind, width):
+				start = gltf["bufferViews"][spec["bufferView"]].get("byteOffset", 0) + spec.get("byteOffset", 0)
+				return np.frombuffer(binary, kind, sparse["count"] * width, start).reshape(sparse["count"], width)
+
+			values = values.copy()
+			values[packed(sparse["indices"], kinds[sparse["indices"]["componentType"]], 1).reshape(-1).astype(np.int64)] = packed(sparse["values"], kind, width)
+			return values
 
 		materials = [m.get("name", f"material{i}") for i, m in enumerate(gltf.get("materials", []))]
 		self.meshes = []
 		self.uvs = []   # per mesh, per primitive: each triangle's corners' UVs (n, 3, 2), or None
+		self.shapes = []   # per mesh, per primitive: {shape key: each triangle's corners' moves at full weight (n, 3, 3)}
 		for mesh in gltf.get("meshes", []):
-			parts, uvs = [], []
+			parts, uvs, shapes = [], [], []
+			names = mesh.get("extras", {}).get("targetNames", [])
 			for p in mesh["primitives"]:
 				if p.get("mode", 4) != 4:
 					continue
@@ -143,8 +183,11 @@ class Model:
 				parts.append((positions[indices.reshape(-1, 3)], material))
 				uv = p["attributes"].get("TEXCOORD_0")
 				uvs.append(accessor(uv).astype(float)[indices.reshape(-1, 3)] if uv is not None else None)
+				shapes.append({names[k] if k < len(names) else f"target{k}": accessor(target["POSITION"]).astype(float)[indices.reshape(-1, 3)]
+					for k, target in enumerate(p.get("targets", [])) if "POSITION" in target})
 			self.meshes.append(parts)
 			self.uvs.append(uvs)
+			self.shapes.append(shapes)
 		self.nodes = []
 		for i, n in enumerate(gltf.get("nodes", [])):
 			local = np.eye(4)
@@ -188,12 +231,15 @@ class Model:
 			if n["name"] in posed:
 				motion, axis, value = posed[n["name"]]
 				# the joint's axis is given in the model frame at rest
-				inward = np.linalg.inv(self.rest[i][:3, :3]) @ axis
+				inward = np.linalg.inv(self.rest[i][:3, :3]) @ axis.T
 				move = np.eye(4)
 				if motion == "rotate":
 					move[:3, :3] = rotation(inward, value)
 				elif motion == "slide":
 					move[:3, 3] = inward / np.linalg.norm(inward) * value
+				elif motion == "bend":
+					move[:3, :3] = rotation(inward[:, 0], value[0])
+					move[:3, 3] = inward[:, 1] / np.linalg.norm(inward[:, 1]) * value[1]
 				local = local @ move
 			world = parent @ local
 			out[i] = world
@@ -215,7 +261,9 @@ class Model:
 				continue
 			if n["name"] in posed and posed[n["name"]][0] == "show" and posed[n["name"]][2] <= 0.5:
 				continue
-			pieces = [t for t, m in self.meshes[n["mesh"]] if materials is None or m in materials]
+			weights = {k: w for k, w in getattr(posed, "weights", {}).get(n["name"], {}).items() if w}
+			pieces = [t + sum(w * shapes[k] for k, w in weights.items() if k in shapes) if weights else t
+				for (t, m), shapes in zip(self.meshes[n["mesh"]], self.shapes[n["mesh"]]) if materials is None or m in materials]
 			if not pieces:
 				continue
 			tris = np.concatenate(pieces)

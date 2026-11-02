@@ -54,7 +54,6 @@ EXEMPT = {
 	"wing.dihedral": "cr201687's -3 deg: the photos put the tips about 5 in higher, so the build takes layout.wing's anhedral, checked there",
 	"wing.chord": "checked through reference.chord",
 	"engine.thrust": "where the flight model applies thrust, not a shape",
-	"overall.exhaust": "the HARV's exhaust plane (tm101724) and the wind-tunnel model's (tp3478); the production nozzle's exit lip stands 7 in further aft in the photos (layout.nozzle, checked there)",
 	"canopy": "the two-seat canopy's differences; this is the single-seat jet",
 	"gravity@HARV phase 1, 60% fuel, clean, gear up": "a centre of gravity, not a shape",
 	"gravity@HARV phases 2-3, 60% fuel, clean, gear up": "a centre of gravity, not a shape",
@@ -423,6 +422,23 @@ def surface_distance(points, tris, chunk=256):
 	return out
 
 
+def first_hit(tris, origin, direction):
+	# The distance along a ray to the nearest triangle it meets (model units), or None
+	v0, v1, v2 = tris[:, 0], tris[:, 1], tris[:, 2]
+	e1, e2 = v1 - v0, v2 - v0
+	p = np.cross(direction, e2)
+	det = (e1 * p).sum(1)
+	ok = np.abs(det) > 1e-12
+	inv = np.where(ok, 1 / np.where(ok, det, 1), 0)
+	s = origin - v0
+	u = (s * p).sum(1) * inv
+	q = np.cross(s, e1)
+	v = (direction * q).sum(1) * inv
+	d = (e2 * q).sum(1) * inv
+	met = ok & (u >= 0) & (v >= 0) & (u + v <= 1) & (d > 1e-9)
+	return float(d[met].min()) if met.any() else None
+
+
 def mirrored(left, right):
 	# How far a left part's bounds (points, source coordinates) miss its right
 	# twin's, reflected across the centreline
@@ -473,23 +489,88 @@ def checks(jet):
 		flaps = sorted(n for n in jet.parts() if "_petal_" in n)
 		nozzles = jet.points(flaps)
 		yield result("layout.nozzle", "nozzles' exit", F["layout"]["nozzle"]["exit"], nozzles[:, 0].max(), 0.5, "FS in")
+		yield result("overall.exhaust", "nose apex to the nozzles' exit", value(F["overall"]["exhaust"]) * 12, nozzles[:, 0].max() - jet.points(["fuselage"])[:, 0].min(), 0.5)
 		lip = nozzles[nozzles[:, 0] > nozzles[:, 0].max() - 0.5]
 		yield result("layout.nozzle", "nozzle exit's lower lip", F["layout"]["nozzle"]["waterline"] - F["layout"]["nozzle"]["radius"][1], lip[:, 1].min(), 0.5, "WL in")
 		# the burner's glowing faces sit inside the nozzles, short of the exit
 		burner = jet.points(["burner_left", "burner_right"])
 		yield result("layout.nozzle", "burner's faces short of the nozzles' exit", 0.0, max(0.0, burner[:, 0].max() - F["layout"]["nozzle"]["exit"] + 1.0), 0.01, "FS in")
 		yield result("layout.nozzle", "burner inside the nozzle's exit", 0.0, max(0.0, F["layout"]["nozzle"]["waterline"] - F["layout"]["nozzle"]["radius"][1] - burner[:, 1].min()), 0.01, "WL in")
-		# the outer flaps: twelve a side, each closing on the drive by the throat's travel, the burner as wide as the open throat
+		# the outer flaps: twelve a side, closing on the drive to tm100159's exit, the burner as wide as the open throat
 		petals = F["layout"]["petals"]
 		for side in ("left", "right"):
 			yield result("layout.petals", f"{side} nozzle's outer flaps", petals["count"], sum(n.startswith(f"nozzle_{side}_petal_") for n in flaps), 0, "flaps")
 		bottom = f"nozzle_right_petal_{petals['count'] // 2 + 1}"
-		def lip(drives):
-			# the flap's aft end, its lowest point
-			p = jet.points([bottom], drives)
-			return p[p[:, 0] > p[:, 0].max() - 0.5][:, 1].min()
-
-		yield result("layout.petals", "bottom flap's exit lip rising as the nozzle closes", petals["travel"], lip({"nozzle": 1}) - lip({}), 0.05)
+		# closed, the bottom flap's aft end on the vertical through the engine's
+		# axis: its divergent flap's face (the gas path's exit) the closed
+		# radius from the axis
+		p = jet.points([bottom], {"nozzle": 1})
+		e = F["engine"]
+		axis = value(e["buttline"]) * 12 - (p[:, 0] - value(F["reference"]["station"])) * math.tan(math.radians(value(e["angle"])))
+		below = p[(p[:, 0] > p[:, 0].max() - 0.5) & (np.abs(p[:, 2] - axis) <= 0.6)]
+		yield result("layout.petals", "closed nozzle's exit radius", petals["closed"], F["layout"]["nozzle"]["waterline"] - below[:, 1].max(), 0.1)
+		# open (at rest), on the same vertical: the gas path from the exit in to
+		# the throat (the divergent flap) and on to the tailpipe (the convergent
+		# flap), their faces' points and the lengths between them
+		n = F["layout"]["nozzle"]
+		p = jet.points([bottom])
+		axis = value(e["buttline"]) * 12 - (p[:, 0] - value(F["reference"]["station"])) * math.tan(math.radians(value(e["angle"])))
+		line = p[np.abs(p[:, 2] - axis) <= 0.6]
+		radius = n["waterline"] - line[:, 1]
+		inside = line[radius < n["radius"][1] - 1.0]
+		gas = n["waterline"] - inside[:, 1]
+		throat = inside[np.argmin(gas)]
+		exit_ = inside[inside[:, 0] > inside[:, 0].max() - 0.1]
+		exit_ = exit_[np.argmax(exit_[:, 1])]
+		front = inside[inside[:, 0] < inside[:, 0].min() + 0.1]
+		front = front[np.argmax(front[:, 1])]
+		yield result("layout.petals", "open throat's radius, where the divergent flaps end", petals["throat"][1], n["waterline"] - throat[1], 0.1)
+		yield result("layout.petals", "tailpipe's radius, where the convergent flaps start", petals["tailpipe"], n["waterline"] - front[1], 0.1)
+		yield result("layout.petals", "divergent flaps' length", petals["divergent"], np.linalg.norm((exit_ - throat)[:2]), 0.1)
+		yield result("layout.petals", "convergent flaps' length", petals["convergent"], np.linalg.norm((throat - front)[:2]), 0.1)
+		# the gas path's wall unbroken: straight down from the axis every half
+		# inch from the tailpipe to the exit, the first face met on the bottom
+		# flap lies on the convergent and divergent flaps' cones
+		inner = n["radius"][1] - 1.5
+		waist = n["exit"] - petals["divergent"] * math.cos(math.asin((inner - petals["throat"][1]) / petals["divergent"]))
+		tail = waist - petals["convergent"] * math.cos(math.asin((petals["tailpipe"] - petals["throat"][1]) / petals["convergent"]))
+		tris = jet.tris([bottom])
+		downward = FRAME.axes @ np.array([0.0, -1.0, 0.0])
+		worst = 0.0
+		for station in np.arange(tail + 0.25, n["exit"] - 0.25, 0.5):
+			bl = value(e["buttline"]) * 12 - (station - value(F["reference"]["station"])) * math.tan(math.radians(value(e["angle"])))
+			origin = FRAME.model(np.array([station, n["waterline"], bl]))
+			met = first_hit(tris, origin, downward)
+			wall = met / 0.0254 if met is not None else 99.0
+			if station < waist:
+				cone = petals["tailpipe"] + (petals["throat"][1] - petals["tailpipe"]) * (station - tail) / (waist - tail)
+			else:
+				cone = petals["throat"][1] + (inner - petals["throat"][1]) * (station - waist) / (n["exit"] - waist)
+			worst = max(worst, abs(wall - cone))
+		yield result("layout.petals", "gas path's wall off the flaps' cones, worst, from the tailpipe to the exit", 0.0, worst, 0.15)
+		# the stepped tabs: the bottom flap's outer face round its engine's
+		# axis, as angles from the bottom (positive outboard): what only its
+		# forward part covers ends at the step, and its aft part reaches round
+		# past the forward part's edge by the step
+		for side in ("left", "right"):
+			flap = jet.points([f"nozzle_{side}_petal_{petals['count'] // 2 + 1}"])
+			sign = 1 if side == "right" else -1
+			axis = value(e["buttline"]) * 12 - (flap[:, 0] - value(F["reference"]["station"])) * math.tan(math.radians(value(e["angle"])))
+			radius = np.hypot(flap[:, 1] - n["waterline"], flap[:, 2] - sign * axis)
+			outer = flap[radius > n["radius"][1] - 0.3]
+			angle = np.degrees(np.arctan2(sign * (outer[:, 2] - sign * axis[radius > n["radius"][1] - 0.3]), n["waterline"] - outer[:, 1]))
+			# the build's angles run from the top round outboard, so past the
+			# bottom they run inboard; its turn, the same seen from behind on
+			# both engines, is towards larger angles on the right and smaller on
+			# the left: here, inboard on the right, outboard on the left
+			turned = -angle * sign
+			step = 360 / petals["count"] * petals["step"][1]
+			lone = turned < turned.min() + step / 2
+			yield result("layout.petals", f"{side} nozzle's stepped tabs' station, from the exit as a share of the flaps' length", petals["step"][0], (n["exit"] - outer[lone, 0].max()) / (n["exit"] - n["start"]), 0.02, "of the length")
+			aft, forward = outer[:, 0] > outer[lone, 0].max() + 0.5, outer[:, 0] < outer[lone, 0].max() - 0.5
+			# (nothing aft of a step that is not there: no step round)
+			reach = (turned[aft].max() - turned[forward].max()) / (360 / petals["count"]) if aft.any() and forward.any() else 0.0
+			yield result("layout.petals", f"{side} nozzle's stepped tabs' step round, as a share of a flap's width", petals["step"][1], reach, 0.02, "of the width")
 		glow = jet.points(["burner_right"])
 		ring = glow[glow[:, 0] > glow[:, 0].max() - 1.0][:, 1:]   # the near end, square to the converging axis
 		yield result("layout.petals", "burner's radius, the open throat's", petals["throat"][1], np.linalg.norm(ring - ring.mean(0), axis=1).max(), 0.1)
@@ -699,6 +780,70 @@ def checks(jet):
 
 	yield from guard("wing", "wing", wing)
 
+	# The bend under load (layout.flex): the tips rise as the facts say at 1 g,
+	# along the span as the ground test bent, nothing inboard of the junction
+	# moves, and the outer panel and the hinged surfaces stay on the bent wing:
+	# closely at 1 g, and within the limit load's slip at 7.5 g (a shape key
+	# moves in a straight line and cannot follow a bend joint's turn to second
+	# order, so the long flaps' ends slide along their seams by about the
+	# square of the turn: 0.2 in at 7.5 g with a 2.1 in rise, 1.1 in with 5 in)
+	def flex():
+		f = F["layout"]["flex"]
+		for side in ("left", "right"):
+			outer, inner = f"wing_outer_{side}", f"wing_inner_{side}"
+			rest, one = jet.points([outer]), jet.points([outer], {"load": 1})
+			tip = np.abs(rest[:, 2]) >= np.abs(rest[:, 2]).max() - 0.5
+			yield result("layout.flex", f"{side} wingtip's rise at 1 g", f["rise"], (one - rest)[tip, 1].mean(), 0.1)
+			# the bend's shape along the span, against the ground test's
+			both = jet.points([inner, outer]); lifted = jet.points([inner, outer], {"load": 1})
+			rise = (one - rest)[tip, 1].mean()
+			# (each streamwise section moves whole, so the rise is a function of the buttline)
+			buttlines, rises = np.abs(both[:, 2]), (lifted - both)[:, 1]
+			order = np.argsort(buttlines)
+			for station, share in f["shape"]:
+				if not buttlines.min() <= station <= buttlines.max():
+					raise KeyError(f"not built: the {side} wing at BL {station}")
+				yield result("layout.flex", f"{side} wing's rise at BL {station}, as a share of the tip's", share, np.interp(station, buttlines[order], rises[order]) / rise, 0.07, "of the tip's")
+			# each bend joint turns its part, with the bend joints above it, by the
+			# wing's own slope at its buttline: the hinge lines follow the bend.
+			# The mesh's slope is its ring segment's (rings about 20 in apart),
+			# within 1 mrad of the bend's; a turn left out misses by all of it
+			# (7.5 mrad and up, 2.6 for one riding the fold's)
+			def slope(bl):
+				return (np.interp(bl + 2, buttlines[order], rises[order]) - np.interp(bl - 2, buttlines[order], rises[order])) / 4
+
+			posed = verify.pose(jet.joints, {"load": 1})
+			carriers = sorted(n for n in jet.joints if n.startswith("flex_") and n.endswith(f"_{side}"))
+			if not carriers:
+				raise KeyError(f"not built: the {side} wing's bend joints")
+			for name in carriers:
+				turn, i = 0.0, jet.model.index[name]
+				while i is not None:
+					node = jet.model.nodes[i]["name"]
+					if jet.joints.get(node, {}).get("motion") == "bend":
+						turn += posed[node][2][0]
+					i = jet.model.nodes[i]["parent"]
+				yield result("layout.flex", f"{name}'s turn at 1 g, the wing's slope at its buttline", slope(abs(jet.hinge(name)[2])) * 1000, turn * 1000, 1.5, "mrad")
+				# and its hinge point rises with the wing there
+				origin = FRAME.source(jet.model.worlds(posed)[jet.model.index[name]][:3, 3][None])[0]
+				bl = abs(jet.hinge(name)[2])
+				yield result("layout.flex", f"{name}'s point's rise at 1 g, the wing's at its buttline", np.interp(bl, buttlines[order], rises[order]), origin[1] - jet.hinge(name)[1], 0.05)
+			still = np.abs(jet.points([inner])[:, 2]) <= f["root"]
+			if not still.any():
+				raise KeyError(f"not built: {inner} inboard of the junction")
+			yield result("layout.flex", f"{side} wing inboard of the junction moving at 7.5 g", 0.0, np.abs(jet.points([inner], {"load": 7.5}) - jet.points([inner]))[still].max(), 0.01)
+			for a, b in ((inner, outer), (inner, f"flap_trailing_{side}"), (inner, f"flap_leading_inner_{side}"), (outer, f"aileron_{side}"), (outer, f"flap_leading_outer_{side}")):
+				A, B = jet.points([a]), jet.points([b])
+				near = np.linalg.norm(A[:, None] - B[None], axis=2) < 0.01
+				i, j = np.nonzero(near)
+				if not len(i):
+					raise KeyError(f"not built: a seam between {a} and {b}")
+				for load, tolerance in ((1, 0.01), (7.5, 0.3)):
+					gap = np.linalg.norm(jet.points([a], {"load": load})[i] - jet.points([b], {"load": load})[j], axis=1).max()
+					yield result("layout.flex", f"{b} on {a}'s seam at {load} g", 0.0, gap, tolerance)
+
+	yield from guard("layout.flex", "wing flex", flex)
+
 	# Stabilator
 	s_ = F["stabilator"]
 
@@ -711,12 +856,14 @@ def checks(jet):
 		rc, tc = value(s_["root"]), value(s_["tip"])
 		exposed = outer - inner
 		samples = {}
-		for f in (0.03, 0.5, 0.97):
+		for f in (0.03, 0.5, 0.85, 0.97):
 			b = inner + exposed * f
 			q = jet.cut(["stabilator_right"], [600, 100, b], [0, 0, 1])
 			samples[f] = q
 			chord = q[:, 0].max() - q[:, 0].min()
-			yield result("stabilator.root" if f < 0.5 else "stabilator.tip", f"chord {f:.0%} out", rc + (tc - rc) * f, chord, 0.6)
+			if f < 0.9:
+				# the outermost sample's chord is the trailing corner's round, checked below
+				yield result("stabilator.root" if f < 0.5 else "stabilator.tip", f"chord {f:.0%} out", rc + (tc - rc) * f, chord, 0.6)
 		aspect = (value(s_["exposed"]) * 12) ** 2 / (value(s_["area"]) * 144)
 		lsweep = leading_sweep(value(s_["sweep"]), aspect, tc / rc)
 		a, b = samples[0.03], samples[0.97]
@@ -735,6 +882,23 @@ def checks(jet):
 		yield result("layout.stabilator", "exposed root's leading edge", place["value"], front, 1.5, "FS in")
 		yield result("layout.stabilator", "exposed root", place["buttline"], inner, 0.5, "BL in")
 		yield result("layout.stabilator", "exposed root's leading edge height", place["waterline"], fa[1] - 0.03 * (fb[1] - fa[1]) / 0.94, 0.3, "WL in")
+		# The tip's trailing corner rounded to layout.stabilator_corner, tangent to
+		# the tip and the trailing edge: the trailing edge's line measured clear of
+		# the round (3% and 70% out), and the outline at the tip and half-way
+		# round the corner where a circle of that radius puts it
+		radius = value(F["layout"]["stabilator_corner"])
+		clear = {}
+		for f in (0.03, 0.7):
+			b = inner + exposed * f
+			clear[b] = jet.cut(["stabilator_right"], [600, 100, b], [0, 0, 1])[:, 0].max()
+		(b0, t0), (b1, t1) = clear.items()
+		slope = (t1 - t0) / (b1 - b0)
+		cos = 1 / math.sqrt(1 + slope * slope)
+		middle = outer - radius
+		behind = t0 + slope * (middle - b0) - radius / cos
+		for b, where in ((outer - 0.3, "at the tip"), (outer - radius * 0.5, "half-way round")):
+			edge = jet.cut(["stabilator_right"], [600, 100, b], [0, 0, 1])[:, 0].max()
+			yield result("layout.stabilator_corner", f"trailing corner's round, {where}", behind + math.sqrt(radius * radius - (b - middle) ** 2), edge, 0.4, "FS in")
 
 	yield from guard("stabilator", "stabilator", stabilator)
 
@@ -960,6 +1124,7 @@ def checks(jet):
 			yield result("layout.pitot", f"{name} tip", pt["tip"][0], p[:, 0].min(), 0.5, "FS in")
 			front = p[p[:, 0] < pt["tip"][0] + 0.5]
 			yield result("layout.pitot", f"{name} tip's waterline", pt["tip"][1], (front[:, 1].min() + front[:, 1].max()) / 2, 0.5, "WL in")
+			yield result("layout.pitot", f"{name} tube's buttline", pt["buttline"], np.abs((front[:, 2].min() + front[:, 2].max()) / 2), 0.3, "BL in")
 			yield result("layout.pitot", f"{name} strut's aft root", pt["root"][1], p[:, 0].max(), 0.5, "FS in")
 			yield result("fittings.pitot", f"{name} forward end", cited["from"], p[:, 0].min(), 1.0, "FS in")
 			yield result("fittings.pitot", f"{name} aft end", cited["to"], p[:, 0].max(), 1.0, "FS in")
@@ -1113,6 +1278,9 @@ def checks(jet):
 			yield result("layout.gear", f"{name} diameter", gear["tyres"][tyre]["diameter"], p[:, 1].max() - p[:, 1].min(), 0.3)
 		p = jet.points(["gear_right_wheel"], down)
 		yield result("layout.gear", "main wheels' track", gear["track"], p[:, 2].max() + p[:, 2].min(), 0.5)
+		# the nose pair's outer sidewalls, less one tyre's width: the centres' spacing
+		p = jet.points(["gear_nose_wheel"], down)
+		yield result("layout.gear", "nose wheels' spacing", gear["spacing"], p[:, 2].max() - p[:, 2].min() - gear["tyres"]["nose"]["width"], 0.3)
 		c = L["canopy"]
 		for k, (st, wl, bl) in enumerate(c["sill"]):
 			sill = jet.cut(["canopy"], [st, 100, 0], [1, 0, 0])
@@ -1283,10 +1451,18 @@ def checks(jet):
 		for drives, pose in (({}, "at rest"), (down, "gear down")):
 			parts = jet.parts(drives)
 			# the side is a segment of the name, last (aileron_left) or not (gear_left_wheel)
-			for left in sorted(n for n in parts if "left" in n.split("_")):
+			for left in sorted(n for n in parts if "left" in n.split("_") and not n.startswith("nozzle_")):
 				right = "_".join("right" if s == "left" else s for s in left.split("_"))
 				if right in parts:
 					yield result("shape.mirror", f"{left} against {right}, {pose}", 0, mirrored(jet.points([left], drives), jet.points([right], drives)), 0.1)
+			# the nozzles whole: their flaps' stepped tabs turn the same way on
+			# both engines (one engine, fitted either side: usaf120811FON144293
+			# from below shows both staircases running the same way), so a
+			# flap is no mirror of its twin, but the ring of them is, but for
+			# the tabs' turn
+			flaps = {side: sorted(n for n in parts if n.startswith(f"nozzle_{side}_petal_")) for side in ("left", "right")}
+			if flaps["left"] and flaps["right"]:
+				yield result("shape.mirror", f"left nozzle's flaps against the right's, {pose}", 0, mirrored(jet.points(flaps["left"], drives), jet.points(flaps["right"], drives)), 0.3)
 			for name in sorted(n for n in parts if not {"left", "right"} & set(n.split("_")) and n not in ONE_SIDED):
 				p = jet.points([name], drives)
 				yield result("shape.mirror", f"{name} about the centreline, {pose}", 0, mirrored(p, p), 0.1)

@@ -54,7 +54,7 @@ class Tips:
 
 	def drive(self, name):
 		node = self.features.landmarks[name]["node"]
-		return self.joints[node]["drive"] if node in self.joints else None
+		return self.joints[node].get("drive") if node in self.joints else None   # none for a node only its shape keys move
 
 	def fit(self, kind, photos=None, drop=(), neutral=False, rotate=False, leave=None):
 		# The offset in inches, the fitted deflections {(photo, drive): radians},

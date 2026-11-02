@@ -13,7 +13,7 @@
 			"unit": "ft",
 			"source": "tm101724",
 			"where": "PDF page 9, nomenclature (l)",
-			"note": "nose apex to the engine exhaust plane",
+			"note": "nose apex to the engine exhaust plane: the nozzles' exit (layout.nozzle)",
 			"also": "tp3478 PDF page 6 (54.4 ft, nose to exhaust nozzle exit plane, full scale)"
 		},
 		"span": {
@@ -976,14 +976,30 @@
 			"where": "figure 5, PDF page 31 (traced by views.py), with hatp figure 2's side view for the keel. The anhedral: photos.py's cameras and tips.py (rotating the wing about the junction; deflections fitted, or held at rest in flight) over the ground photo dvids9820799 and the in-flight photos dvids8901347, dvids7487368 and dvids6690145, their cameras solved with the rest (fin tips within 0.3 in)",
 			"note": "the wing's chord plane at the LEX-wing junction (BL 54.5, FS 404.05): the FS 357 section's LEX tip stands 31 in above its keel, and the keel is at WL 82.5. The anhedral is the photos', the jet parked (the user's choice, 2026-10-30): cr201687's -3 deg (wing.dihedral) leaves the tips' trailing corners about 5 in low in the ground photo (+-2 in or more: its flaps and ailerons droop) and 10 in low in three in-flight photos (8.7-10.3 leaving each out), the difference the wing bending up at 1 g (task: wing flex). Rotating the wing about the junction fits the flight photos a little better than raising it, and the junction itself measures no higher (4 in lower, +-2.3, two photos). The HATP front view draws the outer wing about 10 in higher"
 		},
+		"flex": {
+			"root": 54.5,
+			"rise": 2.1,
+			"shape": [[77.3, 0.081], [98.2, 0.132], [124.1, 0.228], [154.5, 0.375], [165.8, 0.456], [193.8, 0.735]],
+			"unit": "BL in, where the bend starts; in, the wingtip's rise at 1 g of lift; [BL in, share of the tip's rise]",
+			"source": "tm212871, tm210726",
+			"where": "the rise: tm212871 printed page 17 and figure 12(a), FDMS target 12 (span station 193.8, figure 5) about 1.4 in, and 1.7 in after a roll, in steady level flight against ground rest, taken to the tip by the ground test's shape; the shape: tm210726 figure 16, load case D3, the forward box's measured deflection (1.1, 1.8, 3.1, 5.1, 6.2 and 10.0 in at the stations, 13.6 in at span station 222.1), read off the figure",
+			"note": "the wing bent up by lift (task: wing flex), as the shape key flex and the bend joints flex_* driven by the load factor of the lift (the drive load: 0 parked, 1 in level flight). Both reports fly the Active Aeroelastic Wing jet, whose wing has the preproduction torsional stiffness, a little softer than a production C's; its targets outboard of the fold carry the fold's free play. The bend starts at the LEX-wing junction (layout.wing's buttline) and takes a cantilever's shape, lift along the span as the chord and stiffness as the chord times the section's depth squared, streamwise sections rigid: outboard of BL 150 it follows the ground test's shape within 0.015 of the tip's rise, inboard it bends 0.05-0.06 less (the test's load and the fuselage's restraint are not flight's). The photo match agrees within its uncertainty: posed at 1 g with the in-flight photos, the wingtips' trailing corners fit best near a 3.5 in rise and the parked photos' wing and fin edges best with none"
+		},
 		"stabilator": {
-			"value": 592.4,
+			"value": 597.0,
 			"unit": "FS in",
 			"buttline": 41.6,
 			"waterline": 106.8,
 			"source": "hatp; photo match",
 			"where": "figure 2, top view; natops 1.1.2 for the length; the waterline from the in-flight photos dvids8901347, dvids7487368 and dvids6690145 (tips.py, deflections held at rest, the cameras photos.py solved)",
-			"note": "the root leading edge of the exposed panel (BL 41.6: the 21.6 ft span less the 14.67 ft exposed span), placed so the tips' trailing edges fall at FS 732.5, the 56 ft overall length from the apex (overall.length, the aftmost point); the top view's leading edge at BL 80-120 then lies within about 2 in. WL 106.8: the in-flight photos put the tips' leading corners 6.8 in above where cr3608 figure 3's and tp209033 figure 2's WL 100 had them (6.3-7.7 leaving each photo out; 4-7.5 with trim free), the root then at the engine axes' height (WL 106), where the real stabilators sit; the HATP side view draws them about 10 in higher. The spindle is not published"
+			"note": "the root leading edge of the exposed panel (BL 41.6: the 21.6 ft span less the 14.67 ft exposed span), placed so the tips' aftmost point, on the trailing corner's round (layout.stabilator_corner), falls at FS 732.5, the 56 ft overall length from the apex (overall.length, the aftmost point). That puts the root 4.6 in further aft than the sharp corner did (FS 592.4), with the photos: their trailing edges read about 3 in aft of the model's before (median over 10 photos) and the leading corners 8.3 in aft (photos.py), while their leading edges scatter either side of it; the top view's leading edge at BL 80-120 lay within about 2 in of the earlier placement. WL 106.8: the in-flight photos put the tips' leading corners 6.8 in above where cr3608 figure 3's and tp209033 figure 2's WL 100 had them (6.3-7.7 leaving each photo out; 4-7.5 with trim free), the root then at the engine axes' height (WL 106), where the real stabilators sit; the HATP side view draws them about 10 in higher. The spindle is not published"
+		},
+		"stabilator_corner": {
+			"value": 8.0,
+			"unit": "in",
+			"source": "photo match; hatp",
+			"where": "dvids7487365 (both tips, from below against clear sky) and dvids7487366 (the right tip, from above against open sea): each tip's outline traced and cast onto the stabilator's posed plane from its solved camera keeps the tip's full span to 30-35 in behind the leading edge, then leaves the tip line about 12-15 in ahead of the trailing corner and meets the trailing edge about 12 in inboard of the tip. HATP figure 2's top view cuts the same corner back about 11 in along the tip",
+			"note": "the radius of the round on each stabilator tip's trailing corner, tangent to the tip and to the trailing edge, 12.7 in from the corner along each; it takes about 0.5 ft2 off the 88.0. cr201687's planform, which the build keeps everywhere else, is the theoretical one with sharp corners. The same traces show the leading corner sharp and the leading edge straight within a few degrees of the cited sweep. The corner landmarks stay where the edges' lines meet, as the photos are marked"
 		},
 		"fin": {
 			"root": {
@@ -1035,7 +1051,7 @@
 			"unit": "FS in for the axle centres; WL in for the axles; in for the track (between the main wheels' centres) and the nose wheels' spacing",
 			"source": "photo match",
 			"where": "NATOPS 1.1.2's heights for the axles; verify/photos.py over photos.json for the track and the nose wheels' spacing (the wheels' hub faces in 6-9 photos, +-0.4 in across); tp209033 figure 2 for the stations, which the photos confirm (FS 495.1 and 280.9, +-1.2)",
-			"note": "the wheel centres' stations from the nose apex on tp209033 figure 2 (FS 59.82 marked) at its 56 ft scale, wheelbase 17.77 ft. The axles' heights are set so NATOPS's static heights hold over the ground beneath the tyres (fins 15 ft 3 in, canopy 10 ft 6 in): the jet then sits 0.9 deg nose down. The photos' taxiing jets put the main axle 2.9 in higher (WL 44.3 +-1.5) and the nose axle 0.8 in higher (45.6 +-0.9), more nose down, as a lighter or moving jet may sit. The track and the nose wheels' spacing are the photos': the main hub faces stand 66.2 in either side and the nose hub faces 8.9 in, less a third of each tyre's width to its centre (tp209033's rear view drew the track 116 in). Tyre diameters from dvids9820808's matched camera; widths read off the gear close-ups dvids8678626 and dvids8678628 against those diameters",
+			"note": "the wheel centres' stations from the nose apex on tp209033 figure 2 (FS 59.82 marked) at its 56 ft scale, wheelbase 17.77 ft. The axles' heights are set so NATOPS's static heights hold over the ground beneath the tyres (fins 15 ft 3 in, canopy 10 ft 6 in): the jet then sits 0.9 deg nose down. The photos' taxiing jets put the main axle 2.9 in higher (WL 44.3 +-1.5) and the nose axle 0.8 in higher (45.6 +-0.9), more nose down, as a lighter or moving jet may sit. The track is the photos': the main hub faces stand 66.2 in either side, less a third of each tyre's width to its centre (tp209033's rear view drew the track 116 in). The nose wheels' spacing is dvids8559777's, head-on: both tyres cast onto the axle's station plane from its solved camera stand at BL +8.6 and -8.2, each 6.4-6.5 in wide against the 6.6 in read off the close-ups, so the cast's scale holds; a steered pair would read narrower, not wider. The photo match agrees within its spread (the hub faces at BL 10.3-11.3, about 2 in further out than the 8.9 an earlier solve gave, when one photo's mark on a far wheel's inboard face pulled its camera to 16 px). Tyre diameters from dvids9820808's matched camera; widths read off the gear close-ups dvids8678626 and dvids8678628 against those diameters",
 			"track": 124.7,
 			"tyres": {
 				"main": {
@@ -1051,7 +1067,7 @@
 				"main": 47.2,
 				"nose": 46.4
 			},
-			"spacing": 13.3
+			"spacing": 16.9
 		},
 		"canopy": {
 			"windscreen": {
@@ -1406,11 +1422,12 @@
 				163.7,
 				88.8
 			],
+			"buttline": 15.1,
 			"tube": 0.8,
-			"unit": "FS, WL in; the tube's diameter in",
+			"unit": "FS, WL in; the tube's buttline in; the tube's diameter in",
 			"source": "photo match",
-			"where": "dvids9820808: the strut's root cast onto the skin (BL 13.1), its bend and the tube's tip onto the root's buttline; the left tube in dvids9820782 and both in dvids9820799 lie where these project",
-			"note": "the two pitot-static tubes under the nose (natops 2.12.1): a strut swept forward and down from the skin, the tube pointing forward from its foot. tm101724's FS 164 to 177 (fittings.pitot) agrees within 0.3 in"
+			"where": "dvids9820808: the strut's root cast onto the skin (BL 13.1), its bend and the tube's tip onto the root's buttline; the left tube in dvids9820782 and both in dvids9820799 lie where these project; the tubes' buttline from the two views from below: both tips cast onto their WL from the solved cameras stand 15.1 in (dvids7487365, nearly straight below) and 15.3 in (navy090707N7665E003) either side of the centreline, and the photo match measures 14.95 (+-0.38, 7 marks)",
+			"note": "the two pitot-static tubes under the nose (natops 2.12.1): a strut swept forward and down from the skin, canted outboard from its root on the skin (BL 13.1) to the tube, the tube pointing forward from its foot. tm101724's FS 164 to 177 (fittings.pitot) agrees within 0.3 in"
 		},
 		"blisters": {
 			"upper": [
@@ -1457,10 +1474,16 @@
 				-0.35,
 				-0.6
 			],
-			"unit": "sRGB, 0-255; turn: the range of the surface normal's upward component over which the upper grey gives way to the lower",
+			"nozzle": {
+				"outer": [64, 61, 56],
+				"inner": [152, 133, 108],
+				"deep": [30, 28, 26],
+				"holes": [2, 4, 0.35]
+			},
+			"unit": "sRGB, 0-255; turn: the range of the surface normal's upward component over which the upper grey gives way to the lower; nozzle: the bare metal of the outer flaps, the divergent flaps' faces inside, and the convergent flaps, the duct beyond the throat and the dark ring of brackets at the exit; holes: the divergent flaps' cooling holes, columns and rows a flap and their radius in inches",
 			"source": "photo match",
 			"where": "dvids9820808, overcast: the mean of a clean patch of the fin's side (upper; 80 x 60 px at 1400-1480, 2350-2400, spread 3) and of the nose gear door's downward face (lower; 100 x 40 px at 5300-5400, 3080-3120, spread 5)",
-			"note": "the tactical greys, expected FS 36320 over 36375 (plan #8). The photo's light is in them: the lower grey faces away from the overcast sky and still reads 1.24 times as bright. The fins, whose outer faces tilt 20 deg down with their cant, keep the upper grey; the turn starts just below that"
+			"note": "the nozzles' colours are chosen by eye against the reference jet's parked nozzles (dvids9820749, dvids9820808) and the open nozzles of usaf120811FON144293 and navy020214N3896H001, not measured: the reference jet's nozzles stand in shadow in every photo (sRGB 9-80), and the open-nozzle photos are sunlit or lit by flash. The tactical greys, expected FS 36320 over 36375 (plan #8). The photo's light is in them: the lower grey faces away from the overcast sky and still reads 1.24 times as bright. The fins, whose outer faces tilt 20 deg down with their cant, keep the upper grey; the turn starts just below that"
 		},
 		"panels": {
 			"rings": [
@@ -5751,28 +5774,32 @@
 		},
 		"nozzle": {
 			"start": 690.0,
-			"exit": 720.0,
+			"exit": 713.3,
 			"radius": [
 				17.5,
 				15.5
 			],
 			"waterline": 106.0,
 			"unit": "FS in; radius in at start and exit; WL in of the axis",
-			"source": "photo match",
-			"where": "verify/photos.py over photos.json (12 photos solved together): nozzle_exit_bottom in 4 photos (FS 720.0 +-2, WL 90.45 +-2.1)",
-			"note": "the nozzles' outer flaps on the engine axes: the exit's lower lip where the photos put it; the HARV's exhaust plane (overall.exhaust) stands 7 in further forward. The start and the start's radius are provisional (fitted to the HATP views)"
+			"source": "tm101724, tp3478; photo match",
+			"where": "the exit's station: overall.exhaust, 54.4 ft aft of the nose apex (nose.apex, FS 60.5); its lower lip's waterline: verify/photos.py over photos.json (12 photos solved together), nozzle_exit_bottom in 4 photos (WL 90.45 +-2.1); the closed exit: dvids8842845's right exit fitted as a circle (FS 713.4 +-1.6, outer radius 10.1 +-0.35 in, 2026-11-01)",
+			"note": "the nozzles' outer flaps on the engine axes. The exit stood at FS 720 from those four photos, rear views that hold the station loosely; every in-flight photo, nozzles closed, then read the nozzles 4-8 in long (the sky check), and at the cited exhaust plane they read 0-4 in, the parked photos unchanged. The start and the start's radius are provisional (fitted to the HATP views)"
 		},
 		"petals": {
 			"count": 12,
-			"travel": 2.15,
+			"closed": 9.3,
 			"throat": [
 				8.37,
 				10.52
 			],
-			"unit": "outer flaps per nozzle; in, the exit lip's move from open to closed; in, the throat's radius closed (military) and open (full reheat)",
-			"source": "usaf120811FON144293, navy100119N3327M031, navy020214N3896H001; tm101741; tm88273",
-			"where": "the count from the three photos (both nozzles of one jet end-on, 12 brackets each; a second jet's 12 trailing-edge gaps; a third's flap tabs 30 deg apart); tm101741 printed page 3 for the nozzle areas, 220 in2 at military power and 348 in2 at full reheat; tm88273 printed page 4 for the 12 primary flaps and 12 seals inside",
-			"note": "the throat's radii are the areas' circles; the outer flaps' exit lip is taken to move in as far as the throat does (provisional: no source gives the outer flaps' own travel). The parked photos show the nozzles open; the HARV (tm101724's jet) had its outer flaps removed"
+			"tailpipe": 13.2,
+			"convergent": 8.34,
+			"divergent": 12.0,
+			"step": [0.3, 0.25],
+			"unit": "outer flaps per nozzle; in, the exit's radius closed (military power); in, the throat's radius closed (military) and open (full reheat); in, the tailpipe's radius where the convergent flaps start; in, the convergent flaps' length; in, the divergent flaps' length; the stepped tabs: their station as a share of the outer flaps' length from the exit, and their step round as a share of a flap's width",
+			"source": "usaf120811FON144293, navy100119N3327M031, navy020214N3896H001; tm101741; tm88273; tm100159; tp3531",
+			"where": "the count from the three photos (both nozzles of one jet end-on, 12 brackets each; a second jet's 12 trailing-edge gaps; a third's flap tabs 30 deg apart); tm101741 printed page 3 for the nozzle areas, 220 in2 at military power and 348 in2 at full reheat; tm88273 printed page 4 for the 12 primary flaps and 12 seals inside; tm100159 figures 12 and 14 for the exit, calculated R9 24.20 cm and 23.04 cm at military power (test conditions 5 and 6: M 0.9 at 24,000 ft and M 0.4 at 30,000 ft), their mean; tp3531 figure 7 (printed page 120) for the convergent section, the 0.10-scale inner nozzle's 2.640 in bore and 0.834 in flap (its throats, 1.674 and 2.105 in at 35.390 and 18.708 deg, are tm101741's areas); the stepped tabs and the divergent flaps' length read by eye off navy020214N3896H001 (an F404 out of its jet, the nozzle open) and usaf120811FON144293",
+			"note": "the throat's radii are the areas' circles. The closed exit's radius is the gas path's, at the divergent flaps' faces, which the build stands 1.5 in inside the outer flaps (no source gives their thickness): closing turns each flap about its hinge until that face reaches it, the outer lip then about 10.8 in from the axis, as dvids7070877 (from behind, both nozzles closed) shows it, about 10-11 in. tm100159's R9 is GE's spec deck's, the measured jet 5-10% wider (its page 8), and a running jet on the ground at intermediate holds a wider throat (264 in2, tm4538), so a closed nozzle seen low down stands a little more open. The parked photos show the nozzles open; the HARV (tm101724's jet) had its outer flaps removed. The divergent flaps' length is the eye's (no source gives it), and so are the stepped tabs: each outer flap's aft part steps round by a quarter of its width about a third of its length from the exit, so the seams between flaps make a staircase"
 		},
 		"inlet": {
 			"lip": {
