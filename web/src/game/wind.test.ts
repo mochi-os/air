@@ -425,6 +425,69 @@ describe("the heater's step through the air", () => {
       expect(blown.loose).toBe(calm.loose)
     })
   }
+  it('takes the jet back on its second look and flies at him as a round that had tracked him all along', () => {
+    const step = (blind: number) => {
+      const world = flies(
+        THREE,
+        seeker_sight,
+        seeker_break,
+        seeker_steer,
+        SEEKERS,
+        Object.assign(Object.create(Math), { random: () => 0.1 })
+      ) // the second look comes up good
+      const target = {
+        pos: { x: 800, y: 3000, z: 150 },
+        velx: 200,
+        vely: 0,
+        velz: 0,
+        fwd: { x: 1, y: 0, z: 0 },
+        speed: 200,
+        group: { visible: true },
+      }
+      const m = {
+        active: true,
+        kind: '9m',
+        mesh: {
+          visible: true,
+          position: new THREE.Vector3(),
+          quaternion: new THREE.Quaternion(),
+        },
+        px: 0,
+        py: 3000,
+        pz: 0,
+        vx: 500,
+        vy: 0,
+        vz: 0,
+        life: 10,
+        flew: 2,
+        target,
+        burn: 0,
+        loose: false,
+        blind,
+        lx: -200,
+        ly: 2950,
+        lz: 0,
+        window: true,
+        rejected: 0,
+        least: 1e9,
+        smoke_acc: 0,
+        enemy: false,
+      } // the flare burns out behind the round, which has flown past it
+      world.missiles.push(m)
+      world.step_missiles(1 / 60)
+      return m
+    }
+    const decoyed = step(0.5 / 60),
+      tracked = step(0)
+    expect(decoyed.rejected).toBe(1)
+    expect(decoyed.loose).toBe(false)
+    expect(decoyed.active).toBe(true)
+    expect([decoyed.vx, decoyed.vy, decoyed.vz]).toEqual([
+      tracked.vx,
+      tracked.vy,
+      tracked.vz,
+    ])
+  })
 })
 
 describe("the director gunsight's solution", () => {

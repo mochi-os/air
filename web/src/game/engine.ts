@@ -6407,7 +6407,8 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			m.loose=true;
 			if(t&&t.pos){ const rx=t.pos.x-m.px, ry=t.pos.y-m.py, rz=t.pos.z-m.pz, rd=Math.hypot(rx,ry,rz)||1;
 				if((rx*(m.vx-w.x)+ry*(m.vy-w.y)+rz*(m.vz-w.z))/(rd*spd)>0.766 && Math.random()<0.55){
-					m.loose=false; m.blind=0; m.window=false; m.rejected=(m.rejected||0)+1; } }
+					m.loose=false; m.blind=0; m.window=false; m.rejected=(m.rejected||0)+1;
+					tracking=true; ax=t.pos.x; ay=t.pos.y; az=t.pos.z; } }   // the rest of this step looks at him, not the burnt-out flare, as the server's does: steered at the flare it may find the flare outside its gimbal and break the lock it has just taken
 			if(m.loose){ m.why="flare"; } } }   // ballistic from here, fuse still live; mirrors the server
 	if(guided && m.flew>0.6){
 		// The sight line, from seeker.ts: its rate is taken ANALYTICALLY from the relative
