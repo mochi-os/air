@@ -6266,27 +6266,37 @@ function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },true);
 	bandit.amraam=Math.max(0,(bandit.amraam??0)-1); update_rails(bandit,bandit.msl??bandit_remaining());   // its cheek round leaves the drawn jet and the hulk's rack, port first as the player's do
 	}   // no launch sound (#66): enemy launches are seen, never heard
-// drifted: where a jet's last chaff cloud hangs now. The cloud is carried by the air, so the wind has
-// taken it on since it bloomed (air.go fly_radar).
-function drifted(st){ const b=st.bloom, w=flight_wind(b.x,b.y,b.z), age=Math.max(0,sim_time-st.chaffed); return { x:b.x+w.x*age, y:b.y+w.y*age, z:b.z+w.z*age }; }
+// drifted: where a jet's last chaff cloud hangs at a round's time, behind seconds behind the frame's
+// clock (stood). The cloud is carried by the air, so the wind has taken it on since it bloomed (air.go
+// fly_radar).
+function drifted(st,behind=0){ const b=st.bloom, w=flight_wind(b.x,b.y,b.z), age=Math.max(0,sim_time-behind-st.chaffed); return { x:b.x+w.x*age, y:b.y+w.y*age, z:b.z+w.z*age }; }
+// stood is where jet t stood at a round's time, behind seconds behind the
+// frame's clock. The rounds step after the jets have flown the whole frame,
+// each on its own accumulator, so a jet stands ahead of a round's step by the
+// debt the round carries less his own: a tick at 60 fps, two on a 30 fps
+// frame's first step, 4 m of a 250 m/s jet against a heater's 12 m fuse. The
+// fuse, the seeker and the radar round's core all read him at the round's
+// time, as the server's rounds do (air.go pursue and fly_radar).
+function stood(t,behind){ const lead=behind-(t===ownship?flight_debt():t===bandit?bandit_acc:behind);
+	return { x:t.pos.x-(t.velx??t.fwd.x*t.speed)*lead, y:t.pos.y-(t.vely??t.fwd.y*t.speed)*lead, z:t.pos.z-(t.velz??t.fwd.z*t.speed)*lead }; }
 // step_amraam (#27): the AIM-120 flies the Go `round` core - the same
 // integrator the server and the DLZ ladder use. While our track on the target
 // lives the round gets fresh estimates; lose it and it coasts on the last
 // prediction until its seeker wakes at 18 km. Fuse and warhead are the battle
 // package's.
-function step_amraam(m,dt){
+function step_amraam(m,dt,behind=0){
 	const t=m.target;
 	let truth,supported;
 	if(m.enemy){   // the bandit's round (#33): it chases US — truth is the ownship, support is the bandit's real STT, and our dispense is the defence
-		truth=crash_t<=0?{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z},
+		truth=crash_t<=0?{ position:stood(ownship,behind),   // the jet at the round's time: the core flies him on from there across the step (round.go Advance)
 			velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} }:null;
 		supported=truth&&bandit_locked&&has_enemy;
-		if(truth&&ownship.chaffed!==undefined&&sim_time-ownship.chaffed<2.0){ if(round_distract(m.slot,drifted(ownship),truth)) m.took=(m.took||0)+1; } }
+		if(truth&&ownship.chaffed!==undefined&&sim_time-ownship.chaffed<2.0){ if(round_distract(m.slot,drifted(ownship,behind),truth)) m.took=(m.took||0)+1; } }
 	else{
-	truth=(t&&t.group&&t.group.visible)?{ position:{x:t.pos.x,y:t.pos.y,z:t.pos.z},
+	truth=(t&&t.group&&t.group.visible)?{ position:stood(t,behind),
 		velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} }:null;
 	supported=truth&&!RADAR.silent()&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
-	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,drifted(t),truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
+	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,drifted(t,behind),truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
 	m.supported=!!supported;   // (#33 debrief): whether THIS step still had midcourse support, so a shot that goes long can be told apart from one whose shooter lost the track first - recorded every step, so the ACMI's own delta-suppression on the missile's combined data catches the transition
 	const state=round_step(m.slot,dt,supported?truth:null,truth,m.enemy&&!!truth&&jammer_loud());   // our jammer radiating draws the bandit's round to home on it, as the server's rounds do
 	if(!state){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,"lost"); return; }
@@ -6296,18 +6306,20 @@ function step_amraam(m,dt){
 	{ const w=flight_wind(m.px,m.py,m.pz); m.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(1,0,0),new THREE.Vector3(m.vx-w.x,m.vy-w.y,m.vz-w.z).normalize()); }   // it points into the air it flies through
 	if(state.fused&&truth){   // the warhead speaks through battle, exactly like the 9M's
 		m.active=false; m.mesh.visible=false; round_drop(m.slot);
-		{ const prey=m.enemy?ownship:t;   // the burst record (#58): the core's own continuous least, the closing speed, and the miss vector in the target's body frame
-			const wx=(m.px-truth.position.x), wy=m.py-truth.position.y, wz=(m.pz-truth.position.z);
+		const prey=m.enemy?ownship:t;
+		const burst={ x:m.px-state.struck.x+prey.pos.x, y:m.py-state.struck.y+prey.pos.y, z:m.pz-state.struck.z+prey.pos.z };   // the warhead reads the burst against the jet where he is now (battle_aim), so it keeps its place from him as he stood as it burst, as the server's does (air.go fly_radar)
+		{ // the burst record (#58): the core's own continuous least, the closing speed, and the miss vector in the target's body frame, from where he stood as it burst
+			const wx=m.px-state.struck.x, wy=m.py-state.struck.y, wz=m.pz-state.struck.z;
 			m.burst=m.least; m.closure=Math.hypot(truth.velocity.x-m.vx,truth.velocity.y-m.vy,truth.velocity.z-m.vz);
 			m.off=(prey&&prey.fwd&&prey.up&&prey.right)?{ ahead:wx*prey.fwd.x+wy*prey.fwd.y+wz*prey.fwd.z, above:wx*prey.up.x+wy*prey.up.y+wz*prey.up.z, right:wx*prey.right.x+wy*prey.right.y+wz*prey.right.z }:undefined; }
-		if(m.enemy){ if(!cheat("invulnerable")){ const own=battle_blast(-1,{x:m.px,y:m.py,z:m.pz},battle_aim(ownship),0,battle_tick,WARHEAD.radar,m.closure??0); m.judged=own.judged; m.spot=own.spot;
+		if(m.enemy){ if(!cheat("invulnerable")){ const own=battle_blast(-1,burst,battle_aim(ownship),0,battle_tick,WARHEAD.radar,m.closure??0); m.judged=own.judged; m.spot=own.spot;
 				m.mask=own.mask; m.killed=own.kill;   // the verdict is the recorded fact (Killed), in every build
 				if(own.kill) crash_ownship("missile",BANDIT); }   // #85: the radar round carried the same asymmetry as the heater — the bandit branch below destroys on the verdict, the ownship branch dropped it   // target -1 is the OWNSHIP (non-negative selects a fleet hulk — passing 1 resolved a hulk that does not exist and silently did nothing, #53): the wound flows through the same battle pipeline the bandit's guns use
-			explosion_at(m.px,m.py,m.pz); }
-		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,{x:m.px,y:m.py,z:m.pz},battle_aim(bandit),0,battle_tick,WARHEAD.radar,m.closure??0); m.judged=verdict.judged;   // the 22 kg charge reaches ~1.33x the 9M's radii
+			explosion_at(burst.x,burst.y,burst.z); }
+		else if(!MULTIPLAYER&&has_enemy&&t===bandit){ const verdict=battle_blast(0,burst,battle_aim(bandit),0,battle_tick,WARHEAD.radar,m.closure??0); m.judged=verdict.judged;   // the 22 kg charge reaches ~1.33x the 9M's radii
 			m.mask=verdict.mask; m.killed=verdict.kill;
-			explosion_at(m.px,m.py,m.pz); if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } }
-		else explosion_at(m.px,m.py,m.pz);
+			explosion_at(burst.x,burst.y,burst.z); if(verdict.kill){ own_kills++; bandit_destroy("verdict"); } }
+		else explosion_at(burst.x,burst.y,burst.z);
 		post_round(m,"fuse"); return; }
 	if(!state.alive||m.py<=0){ m.active=false; m.mesh.visible=false; round_drop(m.slot); post_round(m,m.py<=0?"ocean":"battery"); return; }
 	if(state.time<8){ m.smoke_acc+=dt; while(m.smoke_acc>0.02){ m.smoke_acc-=0.02; if(!trail_puff(m.px-m.vx*0.01,m.py-m.vy*0.01,m.pz-m.vz*0.01)) break; } }
@@ -6323,13 +6335,14 @@ let missile_acc=0;
 function update_missiles(dt){
 	missile_acc+=Math.max(0,dt); let count=Math.floor(missile_acc*60);
 	if(count>8){ count=8; missile_acc=0; } else missile_acc-=count/60;   // a long stall: drop the debt rather than fast-forward (the flight core's rule)
-	for(let s=0;s<count;s++) step_missiles(1/60);
+	for(let s=0;s<count;s++) step_missiles(1/60,missile_acc+(count-s)/60);   // each step starts that far behind the frame's clock, where the jets stand (stood)
 }
-function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
-	if(m.kind==="120c"){ step_amraam(m,dt); continue; }
+function step_missiles(dt,behind=0){ for(const m of missiles){ if(!m.active){ continue; }
+	if(m.kind==="120c"){ step_amraam(m,dt,behind); continue; }
 	m.life-=dt; m.flew+=dt;
 	const w=flight_wind(m.px,m.py,m.pz);   // the air the round flies through, which carries it as it carries the target: its speed, its axis and its drag are the air's (air.go pursue)
-	if(m.target){ const md=Math.hypot(m.target.pos.x-m.px,m.target.pos.y-m.py,m.target.pos.z-m.pz); if(md<(m.least??1e9)) m.least=md; }   // closest approach: dev_missiles telemetry and the recording's Least channel (#33 debrief) — one distance per live heater per frame
+	const t=m.target, at=t?stood(t,behind):null;   // the target where he stood at this step's start, which every reading of him below takes
+	if(at){ const md=Math.hypot(at.x-m.px,at.y-m.py,at.z-m.pz); if(md<(m.least??1e9)) m.least=md; }   // closest approach: dev_missiles telemetry and the recording's Least channel (#33 debrief) — one distance per live heater per frame
 	const post=(why)=>{ m.fate=why; m.fated=sim_time;   // recorded on the round's last sample (#33 debrief)
 		if(DEV_MODE){ const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[]; log.push({why, enemy:!!m.enemy, least:+(m.least??-1).toFixed(1), flew:+m.flew.toFixed(1), loose:!!m.loose, broke:m.why||"", at:m.at??-1, mask:m.mask??-1, killed:!!m.killed, burst:m.burst!==undefined?+m.burst.toFixed(1):undefined, judged:m.judged!==undefined?+m.judged.toFixed(1):undefined}); } };   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	if(m.life<=0){ m.active=false; m.mesh.visible=false; post("life"); continue; }
@@ -6337,7 +6350,6 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 	// gimballed, rate-limited seeker; boost-coast propulsion paying for every
 	// turn in drag; a fuse that arms after separation; flares that SEDUCE.
 	let spd=Math.hypot(m.vx-w.x,m.vy-w.y,m.vz-w.z)||1;
-	const t=m.target;
 	let tracking=!m.loose && m.blind<=0 && !!t && (t!==bandit || bandit.group.visible);
 	// Flares: one seduction roll per flare window (SP only — MP damage is the server's).
 	if(tracking && t && sim_time-(t.flared_at??-9)<0.8){   // the TARGET's dispense, whoever the target is: the bandit's flares seduce our heaters, ours seduce its
@@ -6346,25 +6358,25 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			// heaters chase the pilot, whose flare is judged on his own tail
 			// and flame (decoy.ts). His achieved reheat per engine, as the
 			// bandit's is, a dead engine showing no flame.
-			const tail=decoy_aspect({ x:(m.px-t.pos.x), y:m.py-t.pos.y, z:(m.pz-t.pos.z) },t.fwd);
+			const tail=decoy_aspect({ x:(m.px-at.x), y:m.py-at.y, z:(m.pz-at.z) },t.fwd);
 			let decoy=decoy_chance(tail,t===ownship?Math.max(...(ownship.reheats||[0])):(t.reheat??0));
 			decoy*=Math.pow(0.5,m.rejected||0);   // diminishing returns, not independent coin flips: a jet dispensing continuously used to stack ten full rolls in front of one round (measured 2026-08-17: twelve 9Ms, seven seduced, none arriving) — a seeker that has resolved this target through four flares has demonstrated the discrimination the M's counter-countermeasures exist for
 			if(Math.random()>=decoy){ m.rejected=(m.rejected||0)+1; }
-			else { m.blind=1.5; const lure=decoy_lure(t.pos); m.lx=lure.x; m.ly=lure.y; m.lz=lure.z; tracking=false; } }   // the seeker is ON the flare now, below the jet that dropped it. No re-reference is needed at the swap: the sight-line rate has no memory (seeker.ts), so an aim-point jump cannot read as rotation
+			else { m.blind=1.5; const lure=decoy_lure(at); m.lx=lure.x; m.ly=lure.y; m.lz=lure.z; tracking=false; } }   // the seeker is ON the flare now, below the jet that dropped it. No re-reference is needed at the swap: the sight-line rate has no memory (seeker.ts), so an aim-point jump cannot read as rotation
 	} else if(!(t&&sim_time-(t.flared_at??-9)<0.8)) m.window=false;   // whoever the target is: their own dispense owns the window
 	// Proximity fuse: independent of the seeker (a broken lock leaves the warhead
 	// live), judged at the closest approach within the step rather than the first
 	// sampled range, which burst outside the 5 m lethal radius. Mirrors the
 	// server.
 	if(m.flew>0.6 && t && (t===ownship ? crash_t<=0 : (t.group && t.group.visible))){   // the ownship is a target while it FLIES, not while its mesh renders: in the hud view the airframe group is hidden, and gating the fuse on it let four of the bandit's heaters pass at 2-32 m of a straight-and-level pilot without one detonating (recording 01a0175c, 2026-08-18)
-		const rx=(t.pos.x-m.px), ry=t.pos.y-m.py, rz=(t.pos.z-m.pz);
+		const rx=(at.x-m.px), ry=at.y-m.py, rz=(at.z-m.pz);
 		const cvx=(t.velx??t.fwd.x*t.speed)-m.vx, cvy=(t.vely??t.fwd.y*t.speed)-m.vy, cvz=(t.velz??t.fwd.z*t.speed)-m.vz;
 		const squared=cvx*cvx+cvy*cvy+cvz*cvz;
 		const ts=squared>1e-9?THREE.MathUtils.clamp(-(rx*cvx+ry*cvy+rz*cvz)/squared,0,dt):0;
 		const nx=rx+cvx*ts, ny=ry+cvy*ts, nz=rz+cvz*ts;
 		const near=Math.hypot(nx,ny,nz);
 		if(near<12){ m.active=false; m.mesh.visible=false;
-			const bx=t.pos.x-nx, by=t.pos.y-ny, bz=t.pos.z-nz;   // the missile at its nearest point, anchored to the target
+			const bx=t.pos.x-nx, by=t.pos.y-ny, bz=t.pos.z-nz;   // the missile at its nearest point, anchored to the target where he is now, which battle_aim hands the warhead: the burst keeps its place from him as he stood at the round's time
 			m.burst=near; m.closure=Math.sqrt(squared);   // the CONTINUOUS miss and closing speed, recorded (#58): the sampled Least could not tell a 4 m near-kill from an 11.9 m fringe graze, which is what forced #53 to be answered synthetically
 			m.off=(t.fwd&&t.up&&t.right)?{ ahead:-(nx*t.fwd.x+ny*t.fwd.y+nz*t.fwd.z), above:-(nx*t.up.x+ny*t.up.y+nz*t.up.z), right:-(nx*t.right.x+ny*t.right.y+nz*t.right.z) }:undefined;   // target -> burst in the TARGET's body frame: distance and bearing in one field
 			if(m.enemy){   // the bandit's own heater: target -1 is the ownship (#53 — passing 1 selected a nonexistent fleet hulk and every enemy fusing silently did nothing), and the cheat spares us as it does everywhere else
@@ -6397,7 +6409,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			post("fuse");
 			continue; } }
 	let ax=0, ay=0, az=0, guided=false, lured={ x:0, y:0, z:0 };
-	if(tracking){ ax=t.pos.x; ay=t.pos.y; az=t.pos.z; guided=true; }
+	if(tracking){ ax=at.x; ay=at.y; az=at.z; guided=true; }
 	else if(m.blind>0){ m.blind-=dt; lured=flight_wind(m.lx,m.ly,m.lz); m.lx+=lured.x*dt; m.ly+=(lured.y-45)*dt; m.lz+=lured.z*dt; ax=m.lx; ay=m.ly; az=m.lz; guided=true;   // the flare falls, and drifts with the wind
 		if(m.blind<=0){
 			// The flare has burnt out. ONE chance to find the aircraft again, and
@@ -6405,10 +6417,10 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			// countermeasures are the M's defining feature over the L, and one
 			// flare being permanently terminal under-modelled the weapon.
 			m.loose=true;
-			if(t&&t.pos){ const rx=t.pos.x-m.px, ry=t.pos.y-m.py, rz=t.pos.z-m.pz, rd=Math.hypot(rx,ry,rz)||1;
+			if(at){ const rx=at.x-m.px, ry=at.y-m.py, rz=at.z-m.pz, rd=Math.hypot(rx,ry,rz)||1;
 				if((rx*(m.vx-w.x)+ry*(m.vy-w.y)+rz*(m.vz-w.z))/(rd*spd)>0.766 && Math.random()<0.55){
 					m.loose=false; m.blind=0; m.window=false; m.rejected=(m.rejected||0)+1;
-					tracking=true; ax=t.pos.x; ay=t.pos.y; az=t.pos.z; } }   // the rest of this step looks at him, not the burnt-out flare, as the server's does: steered at the flare it may find the flare outside its gimbal and break the lock it has just taken
+					tracking=true; ax=at.x; ay=at.y; az=at.z; } }   // the rest of this step looks at him, not the burnt-out flare, as the server's does: steered at the flare it may find the flare outside its gimbal and break the lock it has just taken
 			if(m.loose){ m.why="flare"; } } }   // ballistic from here, fuse still live; mirrors the server
 	if(guided && m.flew>0.6){
 		// The sight line, from seeker.ts: its rate is taken ANALYTICALLY from the relative
@@ -6430,7 +6442,7 @@ function step_missiles(dt){ for(const m of missiles){ if(!m.active){ continue; }
 			const frac=Math.min(1,Math.hypot(pull.x,pull.y,pull.z)/(35*9.81));
 			const bleed=5e-5*spd*spd*(1+3*frac*frac);
 			const next=Math.max(spd-bleed*dt,60)/spd; m.vx=w.x+(m.vx-w.x)*next; m.vy=w.y+(m.vy-w.y)*next; m.vz=w.z+(m.vz-w.z)*next;   // the drag slows it through the air
-			if(m.burn<=0 && tracking){ const tw=flight_wind(t.pos.x,t.pos.y,t.pos.z), ts=Math.hypot(drift.x-tw.x,drift.y-tw.y,drift.z-tw.z);   // his speed through the air, as the round's
+			if(m.burn<=0 && tracking){ const tw=flight_wind(at.x,at.y,at.z), ts=Math.hypot(drift.x-tw.x,drift.y-tw.y,drift.z-tw.z);   // his speed through the air, as the round's
 				if(spd<ts+60 && sight.closing<40){ m.active=false; m.mesh.visible=false; post("energy"); continue; } }   // energy death: it trails off, no dice
 		}
 	}

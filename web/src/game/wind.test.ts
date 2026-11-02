@@ -377,6 +377,10 @@ describe('the weapons fly through the air', () => {
   it('offer a seeker the chaff cloud where the wind has carried it since it bloomed', () => {
     const drifted = new Function('flight_wind', 'sim_time', `${lift('drifted')}\nreturn drifted;`)(() => gale, 11.5)
     expect(drifted({ bloom: { x: 100, y: 2000, z: 50 }, chaffed: 10 })).toEqual({ x: 100 + 1.5 * gale.x, y: 2000, z: 50 + 1.5 * gale.z })
+    // to a round's time: the rounds step after the frame, behind its clock
+    expect(
+      drifted({ bloom: { x: 100, y: 2000, z: 50 }, chaffed: 10 }, 0.5)
+    ).toEqual({ x: 100 + gale.x, y: 2000, z: 50 + gale.z })
   })
 
   it('are drawn pointing into the air they fly through', () => {
@@ -389,10 +393,11 @@ describe('the weapons fly through the air', () => {
 // the round's velocity through the air exactly what it does in still air.
 describe("the heater's step through the air", () => {
   const flies = new Function('THREE', 'seeker_sight', 'seeker_break', 'seeker_steer', 'SEEKERS', 'Math',
-    `let blowing={ x:0, y:0, z:0 }, sim_time=10, crash_t=0;
-     const flight_wind=()=>blowing, missiles=[], ownship={ pos:{ x:0, y:0, z:0 } }, bandit={ group:{ visible:true } };
+    `let blowing={ x:0, y:0, z:0 }, sim_time=10, crash_t=0, bandit_acc=0;
+     const flight_wind=()=>blowing, flight_debt=()=>0, missiles=[], ownship={ pos:{ x:0, y:0, z:0 } }, bandit={ group:{ visible:true } };
      const MULTIPLAYER=false, DEV_MODE=false, has_enemy=false, wrap_axis=(v)=>v, wrap_distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
      const step_amraam=()=>{}, trail_puff=()=>true, decoy_lure=(p)=>({ x:p.x, y:p.y-30, z:p.z });
+     ${lift('stood')}
      ${lift('step_missiles').replace(/ as any/g, '')}
      return { missiles, step_missiles, blow:(w)=>{ blowing=w; } };`)
   type Round = { vx: number; vy: number; vz: number; active: boolean; loose: boolean }
@@ -487,6 +492,143 @@ describe("the heater's step through the air", () => {
       tracked.vy,
       tracked.vz,
     ])
+  })
+})
+
+// The rounds step after both jets have flown the whole frame, each on its own
+// accumulator, so a jet stands ahead of a round's step by the debt the round
+// carries less his own. Read where he stands, the 9M's fuse and seeker and the
+// AMRAAM's core saw him a tick ahead at 60 fps and two on a 30 fps frame's
+// first step: 4 m of a 250 m/s jet against a 12 m fuse.
+describe('the rounds read the jets at their own time', () => {
+  it('steps each round from as far behind the frame as its accumulator leaves it', () => {
+    const behind: number[] = []
+    const run = new Function(
+      'step_missiles',
+      `let missile_acc=0;\n${lift('update_missiles')}\nreturn update_missiles;`
+    )((_dt: number, b: number) => behind.push(b))
+    run(2.5 / 60)
+    expect(behind).toHaveLength(2)
+    expect(behind[0]).toBeCloseTo(2.5 / 60, 12) // the frame's first step starts two and a half ticks back
+    expect(behind[1]).toBeCloseTo(1.5 / 60, 12)
+  })
+
+  // One 9M step against the bandit: in lockstep, the jet where the round is in
+  // time; as the frame runs it, the jet a tick on and the round a tick behind.
+  const heater = new Function(
+    'THREE',
+    'seeker_sight',
+    'seeker_break',
+    'seeker_steer',
+    'SEEKERS',
+    `let sim_time=10, crash_t=0, bandit_acc=0;
+     const flight_wind=()=>({ x:0, y:0, z:0 }), flight_debt=()=>0, missiles=[], ownship={ pos:{ x:0, y:0, z:0 } };
+     const bandit={ group:{ visible:true }, fwd:{ x:0, y:0, z:-1 }, speed:250, velx:0, vely:0, velz:-250, pos:{ x:0, y:0, z:0 } };
+     const MULTIPLAYER=false, DEV_MODE=false, has_enemy=false;
+     const step_amraam=()=>{}, trail_puff=()=>true, decoy_lure=(p)=>({ x:p.x, y:p.y-30, z:p.z });
+     ${lift('stood')}
+     ${lift('step_missiles').replace(/ as any/g, '')}
+     return (at, round, behind)=>{ bandit.pos={ ...at };
+       const m={ active:true, kind:'9m', mesh:{ visible:true, position:new THREE.Vector3(), quaternion:new THREE.Quaternion() }, px:0, py:3000, pz:0,
+         vx:round.x, vy:round.y, vz:round.z, life:10, flew:2, target:bandit, burn:1, loose:false, blind:0, window:false, rejected:0, least:1e9, smoke_acc:0, enemy:false };
+       missiles.length=0; missiles.push(m); step_missiles(1/60, behind); return m; };`
+  )(THREE, seeker_sight, seeker_break, seeker_steer, SEEKERS)
+  const ticked = (p: W) => ({ x: p.x, y: p.y, z: p.z - 250 / 60 }) // the jet a tick on, crossing at 250 m/s
+  it("steers a 9M at the jet as he stood at the round's time", () => {
+    const at = { x: 1500, y: 3000, z: 300 },
+      round = { x: 600, y: 0, z: 0 }
+    const lockstep = heater(at, round, 0),
+      framed = heater(ticked(at), round, 1 / 60)
+    expect(lockstep.active).toBe(true)
+    expect(
+      Math.abs(framed.vx - lockstep.vx) +
+        Math.abs(framed.vy - lockstep.vy) +
+        Math.abs(framed.vz - lockstep.vz)
+    ).toBeLessThan(1e-9)
+  })
+  it("fuses a 9M on the jet as he stood at the round's time", () => {
+    const at = { x: 6, y: 3000, z: 8 },
+      round = { x: 600, y: 0, z: 0 } // the true miss 5.1 m; a tick ahead it read 1.2 m
+    const lockstep = heater(at, round, 0),
+      framed = heater(ticked(at), round, 1 / 60)
+    expect(lockstep.active).toBe(false)
+    expect(lockstep.burst).toBeCloseTo(5.08, 2)
+    expect(framed.active).toBe(false)
+    expect(framed.burst).toBeCloseTo(lockstep.burst, 9)
+  })
+
+  // The AMRAAM's core is handed the jet at the round's own time and flies him
+  // on across the step itself (round.go Advance): handed where he stands, he
+  // was flown a tick too far.
+  const radar = new Function(
+    'THREE',
+    `let sim_time=10, crash_t=0, bandit_acc=0, debt=0, bandit_locked=true, has_enemy=true, own_kills=0, battle_tick=0, next=null;
+     const MULTIPLAYER=false, WARHEAD={ radar:2 }, RADAR={ silent:()=>false, stt:7, tracks:[] };
+     const ownship={ pos:{ x:0, y:3000, z:0 }, velx:250, vely:0, velz:0, fwd:{ x:1, y:0, z:0 }, up:{ x:0, y:1, z:0 }, right:{ x:0, y:0, z:1 } };
+     const bandit={ pos:{ x:5000, y:3000, z:0 }, velx:-250, vely:0, velz:0, fwd:{ x:-1, y:0, z:0 }, up:{ x:0, y:1, z:0 }, right:{ x:0, y:0, z:-1 }, speed:250, group:{ visible:true } };
+     const flight_debt=()=>debt, flight_wind=()=>({ x:0, y:0, z:0 }), cheat=()=>false, jammer_loud=()=>false, trail_puff=()=>true;
+     const handed=[], blasts=[], booms=[];
+     const round_step=(_slot,_dt,support,truth)=>{ handed.push({ support, truth }); return next; };
+     const round_drop=()=>{}, round_distract=()=>false, post_round=()=>{}, crash_ownship=()=>{}, bandit_destroy=()=>{};
+     const explosion_at=(x,y,z)=>booms.push({ x, y, z }), battle_aim=(st)=>({ position:{ ...st.pos } });
+     const battle_blast=(target,burst)=>{ blasts.push({ target, burst }); return { judged:0, spot:null, mask:0, kill:false, impacts:[] }; };
+     ${lift('drifted')}
+     ${lift('stood')}
+     ${lift('step_amraam')}
+     return { ownship, bandit, handed, blasts, booms, fly:(enemy, behind, own, state)=>{ debt=own; next=state;
+       const m={ active:true, kind:'120c', enemy, target:enemy?null:bandit, track:7, slot:0, smoke_acc:0, mesh:{ visible:true, position:new THREE.Vector3(), quaternion:new THREE.Quaternion() } };
+       step_amraam(m, 1/60, behind); return m; } };`
+  )
+  const flying = {
+    alive: true,
+    phase: 0,
+    x: 1000,
+    y: 3000,
+    z: 0,
+    vx: 800,
+    vy: 0,
+    vz: 0,
+    range: 4000,
+    stale: 0,
+    time: 2,
+    life: 40,
+    fused: false,
+    mach: 2.4,
+    least: 4000,
+    struck: { x: 0, y: 0, z: 0 },
+  }
+  it("hands an AMRAAM's core the bandit as he stood at the round's time", () => {
+    const world = radar(THREE)
+    world.fly(false, 1 / 60, 0, flying) // the bandit flew the tick before the round stepped; his own debt is none
+    expect(world.handed[0].truth.position.x).toBeCloseTo(5000 + 250 / 60, 9)
+    expect(world.handed[0].support.position.x).toBeCloseTo(5000 + 250 / 60, 9) // the datalink's estimate is of him at the same time
+  })
+  it("hands the bandit's AMRAAM the pilot as he stood at the round's time, his own debt counted", () => {
+    const world = radar(THREE)
+    world.fly(true, 1 / 60, 0.002, flying) // the pilot's core stepped to within 2 ms of the frame's clock
+    expect(world.handed[0].truth.position.x).toBeCloseTo(
+      -250 * (1 / 60 - 0.002),
+      9
+    )
+  })
+  it("judges an AMRAAM's burst against the jet as he stood as it burst", () => {
+    const world = radar(THREE)
+    world.fly(false, 1 / 60, 0, {
+      ...flying,
+      fused: true,
+      x: 4990,
+      y: 3005,
+      z: 0,
+      struck: { x: 4995.8, y: 3000, z: 0 },
+    })
+    expect(world.blasts).toHaveLength(1)
+    // the burst 5.8 m short of him and 5 m above, kept from where he stands now
+    expect(world.blasts[0].burst).toEqual({
+      x: 4990 - 4995.8 + 5000,
+      y: 3005,
+      z: 0,
+    })
+    expect(world.booms[0]).toEqual(world.blasts[0].burst)
   })
 })
 

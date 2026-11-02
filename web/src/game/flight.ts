@@ -859,7 +859,7 @@ export function battle_progress(
 
 const round_input = new Float64Array(17)
 const round_input_bytes = new Uint8Array(round_input.buffer)
-const round_output = new Float64Array(15)
+const round_output = new Float64Array(18)
 const round_output_bytes = new Uint8Array(round_output.buffer)
 
 export interface Aimed {
@@ -883,6 +883,7 @@ export interface RoundState {
   fused: boolean
   mach: number
   least: number // closest approach to the target so far, m
+  struck: { x: number; y: number; z: number } // where the target stood as the warhead fired: the burst is read against him there
 }
 
 export function round_launch(
@@ -963,6 +964,7 @@ export function round_step(
     fused: o[12] > 0.5,
     mach: o[13],
     least: o[14],
+    struck: { x: o[15], y: o[16], z: o[17] },
   }
 }
 

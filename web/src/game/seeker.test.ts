@@ -240,7 +240,7 @@ describe('the heater path in the engine', () => {
 
   it('hands every radar round to step_amraam first, and flies only heaters after', () => {
     expect(start).toBeGreaterThan(0)
-    expect(body).toMatch(/^function step_missiles\(dt\)\{ for\(const m of missiles\)\{ if\(!m\.active\)\{ continue; \}\n\tif\(m\.kind==="120c"\)\{ step_amraam\(m,dt\); continue; \}\n/)
+    expect(body).toMatch(/^function step_missiles\(dt,behind=0\)\{ for\(const m of missiles\)\{ if\(!m\.active\)\{ continue; \}\n\tif\(m\.kind==="120c"\)\{ step_amraam\(m,dt,behind\); continue; \}\n/) // the radar round takes the step's time behind the frame with it
     expect(body.match(/120c/g)).toHaveLength(1) // nothing after the hand-off asks what kind of round it is
     expect(body).not.toMatch(/fox3/)
     expect(body).toContain('seeker_break(sight,SEEKERS.heater)')
