@@ -2,13 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, it, expect, vi } from 'vitest'
 
 // net.ts reaches @mochi/web for the lobby REST client, which drags in the
 // Lingui macro chain. The pose decode under test never touches it.
 vi.mock('@mochi/web', () => ({ createAppClient: () => ({}) }))
 
-const { Net } = await import('./net')
+const { Net, local } = await import('./net')
 type Net = InstanceType<typeof Net>
 
 // The server's 39-byte pose record (world/games/air/air.go, func pose): slot,
@@ -31,10 +33,17 @@ function pose(options: {
   aoa?: number
   load?: number
   beta?: number
+  direction?: [number, number, number]
+  speed?: number
 }): Uint8Array {
   const b = new Uint8Array(RECORD)
   const v = new DataView(b.buffer)
   v.setUint8(0, options.slot)
+  const [dx, dy, dz] = options.direction ?? [127, 0, 0] // the flight path, an int8 a component
+  v.setInt8(21, dx)
+  v.setInt8(22, dy)
+  v.setInt8(23, dz)
+  v.setUint16(24, Math.round((options.speed ?? 0) * 10), true)
   let flags = 0
   if (options.alive ?? true) flags |= 1
   flags |= 16 // pilot alive
@@ -271,5 +280,111 @@ describe('gun expenditure (#163)', () => {
     const s = session(0)
     feed(s, concat([pose({ slot: 3, spent: 578 }), pose({ slot: 5 })]))
     expect(s.remote(5)!.spent).toBe(0)
+  })
+})
+
+// His velocity is his flight path times his speed: the pose's direction, which
+// sits off his nose by his alpha and his crab. The gunsight's lead, the
+// closure and his wake in the pilot's core all read it.
+describe('his velocity', () => {
+  const engine = readFileSync(
+    fileURLToPath(new URL('./engine.ts', import.meta.url)),
+    'utf8'
+  )
+  function lift(name: string): string {
+    const start = engine.indexOf(`function ${name}(`)
+    expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
+    const rest = engine.slice(start)
+    const end = /\n(?=\S)/.exec(rest.slice(1))
+    return end ? rest.slice(0, end.index + 1) : rest
+  }
+  // remote() turns a pose into the engine's frame, so a world direction is
+  // compared with his through the same turn.
+  const dot = (a: number[], b: number[]) =>
+    a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+  function turned(s: Net, v: [number, number, number]): number[] {
+    return local({ ...s.remote(3)!, direction: v }).direction
+  }
+
+  it('decodes his direction at unit length, so dead reckoning flies his speed', () => {
+    let now = 10000
+    const clock = vi.spyOn(performance, 'now').mockImplementation(() => now)
+    try {
+      const s = session(0)
+      // 90/127 a component is 1.4% long.
+      feed(
+        s,
+        concat([pose({ slot: 3, direction: [90, 90, 10], speed: 250 })]),
+        60
+      )
+      const was = s.remote(3)!.position
+      // Half a second past the only snapshot, drawn 100 ms behind the 9 s clock.
+      now = 10600
+      const ahead = s.remote(3)!
+      const d = ahead.direction
+      expect(Math.hypot(d[0], d[1], d[2])).toBeCloseTo(1, 12)
+      expect(dot(d, turned(s, [1, 0, 0]))).toBeCloseTo(
+        dot(d, turned(s, [0, 1, 0])),
+        12
+      )
+      const moved = Math.hypot(
+        ahead.position[0] - was[0],
+        ahead.position[1] - was[1],
+        ahead.position[2] - was[2]
+      )
+      expect(moved).toBeCloseTo(125, 6)
+    } finally {
+      clock.mockRestore()
+    }
+  })
+
+  it('carries his direction between snapshots as his position is', () => {
+    let now = 10000
+    const clock = vi.spyOn(performance, 'now').mockImplementation(() => now)
+    try {
+      const s = session(0)
+      feed(s, concat([pose({ slot: 3, direction: [127, 0, 0] })]), 60)
+      feed(s, concat([pose({ slot: 3, direction: [0, 127, 0] })]), 66)
+      // The clock is 9 s after the first datagram and moves 8% toward the
+      // second's 8.9: drawn 100 ms behind it, the instant halfway between
+      // the two ticks (1.05 s) comes at 10.142 s.
+      now = 10142
+      const d = s.remote(3)!.direction
+      expect(dot(d, turned(s, [1, 0, 0]))).toBeCloseTo(Math.SQRT1_2, 3) // halfway, 45 degrees from each
+      expect(dot(d, turned(s, [0, 1, 0]))).toBeCloseTo(Math.SQRT1_2, 3)
+      expect(Math.hypot(d[0], d[1], d[2])).toBeCloseTo(1, 12)
+    } finally {
+      clock.mockRestore()
+    }
+  })
+
+  it('is his flight path times his speed, not his nose', () => {
+    const remote_velocity = new Function(
+      `${lift('remote_velocity')}; return remote_velocity`
+    )() as (
+      st: Record<string, unknown>,
+      pose: { direction: number[]; speed: number }
+    ) => void
+    // Fifteen degrees of alpha: his nose is up, his flight path level.
+    const alpha = (15 * Math.PI) / 180
+    const st: Record<string, unknown> = {
+      fwd: { x: Math.cos(alpha), y: Math.sin(alpha), z: 0 },
+    }
+    remote_velocity(st, { direction: [1, 0, 0], speed: 250 })
+    expect(st.velx).toBeCloseTo(250, 9)
+    expect(st.vely).toBeCloseTo(0, 9)
+    expect(st.velz).toBeCloseTo(0, 9)
+  })
+
+  it('is what the remote loop gives every jet off the wire', () => {
+    const loop = engine.slice(
+      engine.indexOf(
+        'for(const slot of net.slots()){ const pose=net.remote(slot);'
+      )
+    )
+    const block = loop.slice(0, loop.indexOf('st.group.visible=pose.alive;'))
+    expect(block.length).toBeGreaterThan(0)
+    expect(block).toContain('remote_velocity(st,pose);')
+    expect(block).not.toMatch(/st\.velx=st\.fwd\.x\*pose\.speed/)
   })
 })

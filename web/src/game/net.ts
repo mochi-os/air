@@ -595,7 +595,7 @@ export class Net {
           lerp(pa.position[1], pb.position[1]),
           lerp(pa.position[2], pb.position[2]),
         ],
-        direction: pb.direction,
+        direction: blend(pa.direction, pb.direction, t),
         attitude: slerp(pa.attitude, pb.attitude, t),
         speed: lerp(pa.speed, pb.speed),
       })
@@ -764,11 +764,11 @@ export class Net {
               view.getInt16(base + 17, true) / 32767,
               view.getInt16(base + 19, true) / 32767,
             ],
-            direction: [
+            direction: unit([
               view.getInt8(base + 21) / 127,
               view.getInt8(base + 22) / 127,
               view.getInt8(base + 23) / 127,
-            ],
+            ]),
             speed: view.getUint16(base + 24, true) / 10,
             name: this.names.get(slot) ?? '',
             alive: !!(flags & 1),
@@ -994,6 +994,28 @@ function slerp(
   ]
   const length = Math.hypot(out[0], out[1], out[2], out[3]) || 1
   return [out[0] / length, out[1] / length, out[2] / length, out[3] / length]
+}
+
+// unit scales a direction to length one. The wire carries each component in
+// an int8, so a decoded direction is up to half a percent long or short, and
+// the engine multiplies it by his speed for his velocity.
+function unit(v: [number, number, number]): [number, number, number] {
+  const length = Math.hypot(v[0], v[1], v[2]) || 1
+  return [v[0] / length, v[1] / length, v[2] / length]
+}
+
+// blend carries a direction between two snapshots as slerp carries the
+// attitude, so his velocity belongs to the instant his position is drawn at.
+function blend(
+  a: [number, number, number],
+  b: [number, number, number],
+  t: number
+): [number, number, number] {
+  return unit([
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t,
+    a[2] + (b[2] - a[2]) * t,
+  ])
 }
 
 export function supported(): boolean {

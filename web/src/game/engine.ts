@@ -13598,6 +13598,11 @@ function remote_for(slot){ let st=remotes.get(slot); if(st) return st;
 	remotes.set(slot,st); st.group.visible=true;
 	remote_racks(st,slot);   // the roster's granted loadout, when it has already arrived (#17)
 	st.msl=st.msl??(st.loadout?stores_rounds(st.loadout).length:magazine()); update_rails(st,st.msl); return st; }
+// A remote jet's velocity is his flight path times his speed, as the server
+// flies him: the pose's direction, which sits off his nose by his alpha and
+// his crab. The gunsight's lead, the closure and his wake in the pilot's core
+// all read it.
+function remote_velocity(st,pose){ const d=pose.direction; st.velx=d[0]*pose.speed; st.vely=d[1]*pose.speed; st.velz=d[2]*pose.speed; }
 // remote_racks applies a remote jet's roster loadout: the roster event can
 // land before or after the first pose, so both paths call this. A LATER
 // roster with different stores is a jettison (#18) — the vanished pieces
@@ -13801,7 +13806,7 @@ function net_frame(dt){
 		// wire. It wrote roll 0 for entire matches (#227).
 		(st.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(st.group.quaternion);
 		(st.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(st.group.quaternion);
-		st.velx=st.fwd.x*pose.speed; st.vely=st.fwd.y*pose.speed; st.velz=st.fwd.z*pose.speed;
+		remote_velocity(st,pose);
 		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
 		st.jamming=!!pose.jamming;   // #31: the flag the RDR page strobes and the STT MEM logic feed on
 		// The battle channels the pose already carries (#163): the recorder
