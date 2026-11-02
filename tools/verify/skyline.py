@@ -12,7 +12,7 @@
 # photo measures every outline it shows against the sky.
 #
 # It reports each photo's share of its outline judged and its misses, then
-# each region of the skin (part, 24 in of stations, and for the body the
+# each region of the skin (part, a stretch of stations, and for the body the
 # sector round the section) with the photos that judge it: a region two or
 # more photos agree misses is a finding, and a region no photo judges is
 # unmeasured (README.md, Pitfalls). It writes each photo's overlay (the
@@ -24,7 +24,11 @@
 # The model carries no stores, so the catalogue's "stores" gives each kind's
 # boxes and the load every photo is assumed to carry ("load", station:
 # kind), which a photo's own "stores" overrides (null for an empty
-# station): no place whose search crosses a store is judged.
+# station): no place whose search crosses a store is judged. Nor is one whose
+# search crosses a photo's own "masks" (polygons in its pixels: whatever the
+# model does not carry that differs from photo to photo, parked jets, cranes,
+# people). The catalogue's "skyline" section sets the regions and what makes a
+# finding (Settings), each key it leaves out keeping the F/A-18C's value.
 #
 # usage: python3 -I skyline.py CATALOGUE.json MODEL.glb POINTS.json CAMERAS.json OUT_DIR [--only ID,ID]
 import json, sys
@@ -61,6 +65,43 @@ TOLERANCE = 1.0  # inches the median over a region's photos may miss by
 AGREE = 2 / 3    # share of a region's photos that must miss on the side of that median
 SOLID = ["paint", "team", "lights", "burner", "display"]   # materials whose outline is the jet's own edge
 SECTORS = [(30, "top"), (75, "upper side"), (105, "side"), (150, "lower side"), (181, "bottom")]   # round the body's section, degrees from the top
+STRETCH = 24     # inches of stations a region spans
+AXIS = 110.0     # the waterline the body's sectors are measured round, on the centreline
+LABEL = "FS"     # the stations as a region's label names them
+
+
+class Settings:
+	# The regions of the skin and what makes a finding, from the catalogue's
+	# "skyline" section; a key left out keeps the F/A-18C's constant above.
+	# Coordinates are the frame's, in its order: along, up, across.
+	#   stretch    the first coordinate's span of a region (STRETCH)
+	#   axis       the second coordinate the body's sectors are measured round, on the third's zero (AXIS)
+	#   sectors    [[limit, name], ...]: round the section, degrees from straight up, each up to its limit;
+	#              the last past 180 (SECTORS)
+	#   families   [[family, [node name prefix, ...]], ...]: a part matching none is "body" (FAMILIES)
+	#   moving     the families each photo's pose moves, whose findings are listed apart (MOVING)
+	#   tolerance  the median miss a finding passes; the overlays and sheets colour misses within it,
+	#              within 2.5 times it, and beyond (TOLERANCE)
+	#   solid      the materials whose outline is the model's own edge (SOLID)
+	#   label      the first coordinate as a region's label names it (LABEL)
+	# and the frame's symbol and plural, as the misses print
+	def __init__(self, catalogue=None):
+		catalogue = catalogue or {}
+		spec = catalogue.get("skyline", {})
+		self.stretch = spec.get("stretch", STRETCH)
+		self.axis = float(spec.get("axis", AXIS))
+		self.sectors = [(limit, name) for limit, name in spec.get("sectors", SECTORS)]
+		self.families = [(name, tuple(prefixes)) for name, prefixes in spec.get("families", FAMILIES)]
+		self.moving = set(spec.get("moving", MOVING))
+		self.tolerance = float(spec.get("tolerance", TOLERANCE))
+		self.solid = list(spec.get("solid", SOLID))
+		self.label = spec.get("label", LABEL)
+		frame = mod.Frame(catalogue["frame"]) if "frame" in catalogue else None
+		self.symbol = frame.symbol if frame else mod.SYMBOL
+		self.plural = frame.plural if frame else mod.PLURAL
+
+
+DEFAULT = Settings()
 
 
 def edge_along(profile, bright=SKY["bright"]):
@@ -137,23 +178,25 @@ def outward(mask):
 	return -gx / size, -gy / size
 
 
-def family(name):
-	for label, prefixes in FAMILIES:
+def family(name, settings=None):
+	for label, prefixes in (settings or DEFAULT).families:
 		if name.startswith(prefixes):
 			return label
 	return "body"
 
 
-def region(name, point):
+def region(name, point, settings=None):
 	# The stretch of skin a place on the outline belongs to: (part family,
-	# 24 in of stations, and for the body the sector round the section)
+	# the settings' stretch of stations, and for the body the sector round
+	# the section)
+	settings = settings or DEFAULT
 	station, waterline, buttline = point
-	f = family(name)
-	stretch = int(station // 24 * 24)
+	f = family(name, settings)
+	stretch = int(station // settings.stretch * settings.stretch)
 	if f != "body":
 		return f, stretch, ""
-	angle = np.degrees(np.arctan2(abs(buttline), waterline - 110.0))
-	return f, stretch, next(label for limit, label in SECTORS if angle < limit)
+	angle = np.degrees(np.arctan2(abs(buttline), waterline - settings.axis))
+	return f, stretch, next(label for limit, label in settings.sectors if angle < limit)
 
 
 def frontmost(flat, depth, size):
@@ -218,9 +261,19 @@ def blocked(stores, load, hardpoints, frame, camera, centre, work, scale):
 	return np.asarray(image.filter(ImageFilter.MaxFilter(7))) > 0
 
 
+def covered(polygons, work, scale):
+	# What a photo's masks hide (polygons in its own pixels), as a mask at the
+	# working scale
+	image = Image.new("L", work, 0)
+	pen = ImageDraw.Draw(image)
+	for polygon in polygons:
+		pen.polygon([(x * scale, y * scale) for x, y in polygon], fill=255, outline=255)
+	return np.asarray(image) > 0
+
+
 def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None):
 	# Every place along the model's edge where the photo shows sky beyond it:
-	# [{pixel, edge, miss (inches), part, point}]. gray and ids (each pixel's
+	# [{pixel, edge, miss (the frame's unit), part, point}]. gray and ids (each pixel's
 	# frontmost triangle, frontmost()) are at the working scale; names,
 	# points (source coordinates) and depths are each triangle's, a name of
 	# None for glass, which shows the sky through it and is not judged. No
@@ -306,14 +359,17 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 class Scene:
 	# One solved photo (an entry of photos.py's cameras file) at the working
 	# scale, ready to measure the model in any pose against: its brightness,
-	# greenness and blueness, what its stores hide, and in a photo taken on the
-	# ground (the entry's pose has the gear down) what lies under its horizon.
-	# Its blue is read only where the catalogue's photo entry says "clear":
-	# true, the background beyond the jet clear blue sky or open sea: a white
-	# cloud against the blue is no bluer than the jet, and the walk would take
-	# the cloud's edge for the jet's
+	# greenness and blueness, what its stores and masks hide, and in a photo
+	# taken on the ground what lies under its horizon: where the catalogue's
+	# photo entry says "ground": true, never where it says false, and without
+	# it where the entry's pose has the gear down. Its blue is read only where
+	# the photo entry says "clear": true, the background beyond the jet clear
+	# blue sky or open sea: a white cloud against the blue is no bluer than the
+	# jet, and the walk would take the cloud's edge for the jet's
 	def __init__(self, catalogue, root, frame, hardpoints, entry):
 		self.frame = frame
+		self.settings = Settings(catalogue)
+		photo = catalogue["photos"][entry["photo"]]
 		self.camera = np.array(entry["camera"], float)
 		size = entry["size"]
 		self.centre = (size[0] / 2, size[1] / 2)
@@ -323,15 +379,21 @@ class Scene:
 			colour = np.asarray(image.convert("RGB").resize(self.work), float)
 		self.gray = colour @ np.array([0.299, 0.587, 0.114])
 		self.green = colour[..., 1] - np.maximum(colour[..., 0], colour[..., 2])
-		clear = catalogue["photos"][entry["photo"]].get("clear", False)
+		clear = photo.get("clear", False)
 		self.blue = colour[..., 2] - np.maximum(colour[..., 0], colour[..., 1]) if clear else None
 		stores = catalogue.get("stores")
 		self.hidden = None
 		if stores:
 			load = dict(stores["load"])
-			load.update(catalogue["photos"][entry["photo"]].get("stores", {}))
+			load.update(photo.get("stores", {}))
 			self.hidden = blocked(stores, load, hardpoints, frame, self.camera, self.centre, self.work, self.scale)
-		self.ground = horizon(self.camera, self.centre, self.work, self.scale, frame.model([0, 1, 0]) - frame.model([0, 0, 0])) if entry.get("pose", {}).get("gear", 0) >= 1 else None
+		if photo.get("masks"):
+			masks = covered(photo["masks"], self.work, self.scale)
+			self.hidden = masks if self.hidden is None else self.hidden | masks
+		ground = photo.get("ground")
+		if ground is None:
+			ground = entry.get("pose", {}).get("gear", 0) >= 1
+		self.ground = horizon(self.camera, self.centre, self.work, self.scale, frame.model([0, 1, 0]) - frame.model([0, 0, 0])) if ground else None
 
 	def places(self, model, joints, pose, parts=None):
 		# The places found along the model's outline in the pose (the points
@@ -341,8 +403,12 @@ class Scene:
 		posed = mod.pose(joints, pose)
 		# glass shows the sky through it, so its outline is no brightness step:
 		# it still hides what lies behind, but no place on it is judged
-		solid = model.parts(posed, materials=SOLID)
+		solid = model.parts(posed, materials=self.settings.solid)
 		clear = model.parts(posed, materials=["glass"])
+		if not solid and not clear:
+			# no part in the materials asked for (a catalogue's solid naming none of
+			# the model's): nothing to measure, not a crash
+			return [], np.zeros((self.work[1], self.work[0]), bool)
 		names = [n if parts is None or n in parts else None for n, t in solid.items() for _ in range(len(t))] + [None] * sum(len(t) for t in clear.values())
 		tris = np.concatenate(list(solid.values()) + list(clear.values()))
 		flat, depth = cam.project(self.camera, tris.reshape(-1, 3), self.centre)
@@ -353,19 +419,21 @@ class Scene:
 		return places, ids >= 0
 
 
-def overlay(gray, mask, places, scale, path):
+def overlay(gray, mask, places, scale, path, settings=None):
+	tolerance = (settings or DEFAULT).tolerance
 	base = np.stack([gray] * 3, -1).astype(np.uint8)
 	rim = mod.boundary(mask)
 	base[rim[:, 0], rim[:, 1]] = (255, 40, 40)
 	image = Image.fromarray(base)
 	pen = ImageDraw.Draw(image)
 	# each place: a line from the model's edge to the photo's, and a dot on
-	# the photo's, green within 1 in, yellow within 2.5, magenta beyond
+	# the photo's, green within the tolerance, yellow within 2.5 times it,
+	# magenta beyond
 	for p in places:
 		x, y = p["pixel"][0] * scale, p["pixel"][1] * scale
 		ex, ey = p["edge"][0] * scale, p["edge"][1] * scale
 		m = abs(p["miss"])
-		colour = (40, 220, 40) if m <= 1.0 else (240, 200, 0) if m <= 2.5 else (255, 0, 255)
+		colour = (40, 220, 40) if m <= tolerance else (240, 200, 0) if m <= 2.5 * tolerance else (255, 0, 255)
 		pen.line([x, y, ex, ey], fill=colour)
 		pen.ellipse([ex - 1.5, ey - 1.5, ex + 1.5, ey + 1.5], fill=colour)
 	image.save(path)
@@ -387,12 +455,13 @@ def horizon(camera, centre, work, scale, up):
 	return np.repeat(np.repeat(coarse, 8, axis=0), 8, axis=1)[:work[1], :work[0]]
 
 
-def label(key):
+def label(key, settings=None):
+	settings = settings or DEFAULT
 	f, stretch, sector = key
-	return f"{f} FS {stretch}-{stretch + 24}" + (f" {sector}" if sector else "")
+	return f"{f} {settings.label} {stretch}-{stretch + settings.stretch}" + (f" {sector}" if sector else "")
 
 
-def judge(results, weaks=()):
+def judge(results, weaks=(), settings=None):
 	# Each region the photos judge: (key, {photo: median miss}, median over
 	# the photos, places), worst first. A photo judging fewer than MINIMUM
 	# places in a region does not count for it; a weak camera counts nowhere
@@ -401,7 +470,7 @@ def judge(results, weaks=()):
 		if photo in weaks:
 			continue
 		for p in places["places"]:
-			regions.setdefault(region(p["part"], p["point"]), {}).setdefault(photo, []).append(p["miss"])
+			regions.setdefault(region(p["part"], p["point"], settings), {}).setdefault(photo, []).append(p["miss"])
 	rows = []
 	for key, photos in regions.items():
 		photos = {ph: v for ph, v in photos.items() if len(v) >= MINIMUM}
@@ -411,39 +480,41 @@ def judge(results, weaks=()):
 	return sorted(rows, key=lambda r: -abs(r[2]))
 
 
-def finding(medians):
+def finding(medians, settings=None):
 	# A region misses when two or more photos judge it, the median over them
-	# passes TOLERANCE, and AGREE of them miss on that side: each photo is one
-	# measurement, its camera's own error included
+	# passes the settings' tolerance, and AGREE of them miss on that side: each
+	# photo is one measurement, its camera's own error included
 	if len(medians) < 2:
 		return False
 	overall = float(np.median(list(medians.values())))
 	agree = sum(1 for m in medians.values() if np.sign(m) == np.sign(overall))
-	return abs(overall) > TOLERANCE and agree >= AGREE * len(medians)
+	return abs(overall) > (settings or DEFAULT).tolerance and agree >= AGREE * len(medians)
 
 
-def summary(results, universe=(), weaks=()):
+def summary(results, universe=(), weaks=(), settings=None):
 	# The report's text: each photo, then each region judged, worst first,
 	# then the findings (fixed structure apart from moving surfaces), then the
 	# regions of the skin (universe) judged by one photo or none. A weak
 	# camera's places are drawn but judge nothing
+	settings = settings or DEFAULT
+	symbol, past = settings.symbol, 1.5 * settings.tolerance
 	lines = []
 	for photo, places in results.items():
 		misses = np.array([p["miss"] for p in places["places"]]) if places["places"] else np.zeros(0)
 		share = len(misses) / max(places["tried"], 1)
 		line = f"photo {photo}: {len(misses)} of {places['tried']} places judged ({share:.0%})"
 		if len(misses):
-			line += f", median miss {np.median(np.abs(misses)):.2f} in, {np.mean(np.abs(misses) > 1.5):.0%} past 1.5 in"
+			line += f", median miss {np.median(np.abs(misses)):.2f} {symbol}, {np.mean(np.abs(misses) > past):.0%} past {past:g} {symbol}"
 		lines.append(line + ("; a weak camera: judges nothing" if photo in weaks else ""))
 	lines.append("")
-	rows = judge(results, weaks)
+	rows = judge(results, weaks, settings)
 	fixed, moving = [], []
 	for key, medians, overall, count in rows:
-		lines.append(f"region {label(key):34s} {len(medians)} photos, {count:4d} places, median {overall:+6.2f} in  ({', '.join(f'{ph} {m:+.1f}' for ph, m in sorted(medians.items()))})")
-		if finding(medians):
+		lines.append(f"region {label(key, settings):34s} {len(medians)} photos, {count:4d} places, median {overall:+6.2f} {symbol}  ({', '.join(f'{ph} {m:+.1f}' for ph, m in sorted(medians.items()))})")
+		if finding(medians, settings):
 			agree = sum(1 for m in medians.values() if np.sign(m) == np.sign(overall))
-			text = f"finding: {label(key)} misses by {overall:+.1f} in (median of {len(medians)} photos, {agree} on that side)"
-			(moving if key[0] in MOVING else fixed).append(text)
+			text = f"finding: {label(key, settings)} misses by {overall:+.1f} {symbol} (median of {len(medians)} photos, {agree} on that side)"
+			(moving if key[0] in settings.moving else fixed).append(text)
 	lines.append("")
 	lines += fixed or ["no fixed region misses"]
 	if moving:
@@ -451,53 +522,56 @@ def summary(results, universe=(), weaks=()):
 		lines.append("on moving surfaces (check each photo's pose before the shape):")
 		lines += moving
 	judged = {key: len(medians) for key, medians, _, _ in rows}
-	one = sorted(label(k) for k, n in judged.items() if n == 1)
-	none = sorted(label(k) for k in set(universe) - set(judged))
+	one = sorted(label(k, settings) for k, n in judged.items() if n == 1)
+	none = sorted(label(k, settings) for k in set(universe) - set(judged))
 	lines.append("")
 	lines.append(f"judged by one photo only ({len(one)}): " + ", ".join(one))
 	lines.append(f"judged by no photo ({len(none)}): " + ", ".join(none))
 	return "\n".join(lines)
 
 
-def digest(results, universe=(), weaks=()):
+def digest(results, universe=(), weaks=(), settings=None):
 	# What the report says, as data (summary.json, for page.py): each photo's
 	# figures, each region judged, and the regions of the skin
+	settings = settings or DEFAULT
 	photos = {}
 	for photo, places in results.items():
 		misses = [abs(p["miss"]) for p in places["places"]]
 		photos[photo] = {"tried": places["tried"], "judged": len(misses), "median": round(float(np.median(misses)), 2) if misses else None,
 			"weak": photo in weaks}
-	regions = [{"region": label(key), "family": key[0], "stretch": key[1], "sector": key[2], "photos": {ph: round(m, 2) for ph, m in medians.items()},
-		"median": round(overall, 2), "places": count, "finding": finding(medians), "moving": key[0] in MOVING} for key, medians, overall, count in judge(results, weaks)]
+	regions = [{"region": label(key, settings), "family": key[0], "stretch": key[1], "sector": key[2], "photos": {ph: round(m, 2) for ph, m in medians.items()},
+		"median": round(overall, 2), "places": count, "finding": finding(medians, settings), "moving": key[0] in settings.moving}
+		for key, medians, overall, count in judge(results, weaks, settings)]
 	return {"photos": photos, "regions": regions, "universe": sorted([list(k) for k in universe], key=lambda k: (k[0], k[2], k[1]))}
 
 
-def sheets(results, weaks, directory, side=480):
+def sheets(results, weaks, directory, side=480, settings=None):
 	# For each finding, the overlay round its places in every photo judging
 	# it, side by side, to check by eye before it becomes a task
+	settings = settings or DEFAULT
 	directory = Path(directory)
-	for key, medians, overall, _ in judge(results, weaks):
-		if not finding(medians):
+	for key, medians, overall, _ in judge(results, weaks, settings):
+		if not finding(medians, settings):
 			continue
 		tiles = []
 		for photo in sorted(medians):
 			r = results[photo]
-			xy = np.array([q["pixel"] for q in r["places"] if region(q["part"], q["point"]) == key]) * r["scale"]
+			xy = np.array([q["pixel"] for q in r["places"] if region(q["part"], q["point"], settings) == key]) * r["scale"]
 			centre = xy.mean(axis=0)
 			reach = max(side / 2, float(np.abs(xy - centre).max()) + 30)
 			with Image.open(directory / f"{photo}.png") as image:
 				tile = image.crop(tuple(int(v) for v in (centre[0] - reach, centre[1] - reach, centre[0] + reach, centre[1] + reach))).resize((side, side))
 			pen = ImageDraw.Draw(tile)
 			pen.rectangle([0, 0, side, 16], fill=(0, 0, 0))
-			pen.text((4, 2), f"{photo} {medians[photo]:+.1f} in", fill=(255, 255, 255))
+			pen.text((4, 2), f"{photo} {medians[photo]:+.1f} {settings.symbol}", fill=(255, 255, 255))
 			tiles.append(tile)
 		columns = min(4, len(tiles))
 		rows = (len(tiles) + columns - 1) // columns
 		sheet = Image.new("RGB", (side * columns, side * rows + 20), (0, 0, 0))
 		for i, tile in enumerate(tiles):
 			sheet.paste(tile, (i % columns * side, 20 + i // columns * side))
-		ImageDraw.Draw(sheet).text((4, 4), f"{label(key)}: {overall:+.1f} in", fill=(255, 255, 255))
-		sheet.save(directory / f"finding {label(key)}.png")
+		ImageDraw.Draw(sheet).text((4, 4), f"{label(key, settings)}: {overall:+.1f} {settings.symbol}", fill=(255, 255, 255))
+		sheet.save(directory / f"finding {label(key, settings)}.png")
 
 
 def main():
@@ -509,6 +583,7 @@ def main():
 	root = Path(catalogue_path).resolve().parent
 	catalogue = json.loads(Path(catalogue_path).read_text())
 	frame = mod.Frame(catalogue["frame"])
+	settings = Settings(catalogue)
 	model = mod.Model(glb)
 	points_file = json.loads(Path(points_path).read_text())
 	joints, hardpoints = points_file["joints"], points_file.get("points", {}).get("hardpoints", {})
@@ -516,8 +591,8 @@ def main():
 	out.mkdir(parents=True, exist_ok=True)
 	spec = catalogue.get("gate")
 	# every region of the skin, at rest, for the coverage
-	rest = model.parts(mod.pose(joints, {}), materials=SOLID)
-	universe = {region(n, q) for n, t in rest.items() for q in frame.source(t.reshape(-1, 3))[::3]}
+	rest = model.parts(mod.pose(joints, {}), materials=settings.solid)
+	universe = {region(n, q, settings) for n, t in rest.items() for q in frame.source(t.reshape(-1, 3))[::3]}
 	results, weaks = {}, set()
 	for entry in json.loads(Path(cameras_path).read_text()):
 		photo = entry["photo"]
@@ -528,12 +603,12 @@ def main():
 		scene = Scene(catalogue, root, frame, hardpoints, entry)
 		places, mask = scene.places(model, joints, entry.get("pose", {}))
 		results[photo] = {"tried": len(rim(mask)), "places": places, "scale": scene.scale}
-		overlay(scene.gray, mask, places, scene.scale, out / f"{photo}.png")
+		overlay(scene.gray, mask, places, scene.scale, out / f"{photo}.png", settings)
 		print(f"photo {photo}: {len(places)} places", file=sys.stderr)
 	(out / "skyline.json").write_text(json.dumps(results) + "\n")
-	print(summary(results, universe, weaks))
-	(out / "summary.json").write_text(json.dumps(digest(results, universe, weaks), indent="\t") + "\n")
-	sheets(results, weaks, out)
+	print(summary(results, universe, weaks, settings))
+	(out / "summary.json").write_text(json.dumps(digest(results, universe, weaks, settings), indent="\t") + "\n")
+	sheets(results, weaks, out, settings=settings)
 
 
 if __name__ == "__main__":

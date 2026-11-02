@@ -1,0 +1,1261 @@
+{
+	"about": "Every source the Ford build draws on (claude/plans/air-ford.md). use: trace = may be traced and matched; facts = its facts may be cited, its figures are never traced into the repository; look = looked at only. Photos are of CVN-78 herself unless their entry says otherwise. fetch.py downloads each entry with a url into references/ and checks its hash; a volatile entry is a web page, whose hash records the copy its facts were read from.",
+	"references": [
+		{
+			"id": "noaa2022",
+			"title": "2022 NOAA NGS Ortho-rectified 4-band Mosaic of Newport News & Norfolk/ Hampton Roads, Virginia (tile 381000e4092000n)",
+			"authors": "NOAA National Geodetic Survey, Remote Sensing Division",
+			"date": "2022-09-16 to 2022-09-17",
+			"url": "https://coastalimagery.blob.core.windows.net/digitalcoast/NorfolkVA_RGBN_2022_9793/381000e4092000n.tif",
+			"page": "https://www.fisheries.noaa.gov/inport/item/69591",
+			"licence": "CC0-1.0: \"These data were produced by NOAA and are not subject to copyright protection in the United States. NOAA waives any potential copyright and related rights in these data worldwide through the Creative Commons Zero 1.0 Universal Public Domain Dedication (CC0-1.0).\"",
+			"use": "trace",
+			"file": "imagery/noaa2022-381000e4092000n.tif",
+			"note": "0.25 m, 4 bands, EPSG:6347 (NAD83(2011) UTM zone 18N); mosaic NorfolkVA_RGBN_2022_EPSG-6347.vrt. The Ford alongside at Naval Station Norfolk, north side of the second carrier pier, stern west, in about E 381420-381860, N 4090700-4090900: deck nearly empty, markings sharp, 78 readable on the bow. Rectified to the water, so the deck (about 18-20 m up) scales by H/(H-h) and the island leans; mosaic seams cross the deck at about 40% and 70% of its length from the stern.",
+			"sha256": "5b8d186347b21e617f28dfab1c60d77cbd2cfdfa202b26ba14008a93d475f6b3",
+			"bytes": 446572917
+		},
+		{
+			"id": "noaa2018",
+			"title": "2018 NOAA Ortho-rectified Color Mosaic of Newport News, Norfolk and Hampton Roads, Virginia (tile 380000e4092500n)",
+			"authors": "NOAA National Geodetic Survey",
+			"date": "2018-05-01",
+			"url": "https://coastalimagery.blob.core.windows.net/digitalcoast/NewportNewsVA_RGB_2018_8716/380000e4092500n.tif",
+			"page": "https://www.fisheries.noaa.gov/inport/item/55864",
+			"licence": "US government work (17 U.S.C. 105), NOAA",
+			"use": "trace",
+			"file": "imagery/noaa2018-380000e4092500n.tif",
+			"note": "0.5 m, EPSG:6347; mosaic NewportNewsVA_RGB_2018_EPSG-6347.vrt. The Ford at the same berth as noaa2022, identified by her island far aft (no hull number legible), beside a Nimitz-class at the next pier.",
+			"sha256": "16ff1689a5f1b3fa311b6195cabd1cdd0e43bdf2b96982e21f4295073a7e8726",
+			"bytes": 22782805
+		},
+		{
+			"id": "allhands",
+			"title": "Gerald R. Ford (CVN 78): Technical Specifications",
+			"authors": "All Hands Magazine (Defense Media Activity for the Navy Office of Information)",
+			"date": "undated (commissioning recorded as July 22, 2017)",
+			"url": "https://allhands.navy.mil/Features/Ford/",
+			"licence": "US government work",
+			"use": "facts",
+			"file": "documents/allhands.html",
+			"volatile": true,
+			"note": "Ford: \"Length: 1,092 feet\", \"Beam: 134 feet, Flight Deck Width: 256 feet\", \"Approximately 100,000 long tons full load\". Nimitz on the same page: 1,092.2 ft, flight deck width 252 ft. The surviving copy of the old navy.mil fact-file table.",
+			"sha256": "550ab8d2de97abd3b36425e8d017b860740c6e31d16df84cd4ed8ecabc7cbc88",
+			"bytes": 210979
+		},
+		{
+			"id": "airlant",
+			"title": "USS Gerald R. Ford (CVN 78) Command History & Facts",
+			"authors": "Commander, Naval Air Force Atlantic",
+			"date": "undated",
+			"url": "https://www.airlant.usff.navy.mil/Organization/Aircraft-Carriers/USS-Gerald-R-Ford-CVN-78/Command-History/",
+			"licence": "US government work",
+			"use": "facts",
+			"file": "documents/airlant.html",
+			"volatile": true,
+			"note": "\"Length: 1,106 feet\", \"Flight Deck Width : 256 feet\", \"Height: 134 feet\" (the waterline beam, mislabelled), \"100,000 long tons full load\". The only Navy source for 1,106 ft.",
+			"sha256": "6b59ba9f1f05574eefc2352eeb6fcd7abfe97b3931c1ff63709081b5a391204d",
+			"bytes": 100362
+		},
+		{
+			"id": "airpac2025",
+			"title": "Aircraft Carrier Embark Brief (as of Jan 17, 2025)",
+			"authors": "Commander, Naval Air Forces (AIRPAC)",
+			"date": "2025-01-24",
+			"url": "https://www.airpac.navy.mil/Portals/53/Documents/DVBrief2025.pdf?ver=ahvNuxhqczopfTYSE-6gUQ%3D%3D",
+			"licence": "US government work, publicly posted (no distribution marking)",
+			"use": "facts",
+			"file": "documents/airpac2025.pdf",
+			"note": "Slide 24: Ford \"Flight Deck Area: 4.6 acres\", \"Catapults: 4, Electromagnetic\". Slide 25: \"Smaller Island Re-Positioned Aft & Outboard\", \"Aircraft Elevators (3)\", \"Stbd Sponson Redesign\", \"2 Hangar Bays\", \"Advanced Arresting Gear\", \"Dual Band Radar\".",
+			"sha256": "9840ade9962e1e0f8a056771b2b628dca038a4f5b887004e583ec69600a9af90",
+			"bytes": 5663247
+		},
+		{
+			"id": "pms378",
+			"title": "GERALD R. FORD Class - CVN 78 Class Program Office - Sea-Air-Space 2022",
+			"authors": "CAPT Brian Metcalf, PMS 378, PEO Aircraft Carriers",
+			"date": "2022-04-05",
+			"url": "https://www.navsea.navy.mil/Portals/103/Documents/Exhibits/SAS2022/1400_PMS%20378%20Sea%20Air%20Space%20Brief%20April%202022_PEOApproved.pdf",
+			"licence": "Slides 2-3: \"DISTRIBUTION STATEMENT A. Approved for public release: distribution unlimited.\" (the cover carries a CUI banner; slides 4-8 unmarked)",
+			"use": "facts",
+			"file": "documents/pms378.pdf",
+			"note": "Slide 3, Carrier Class Comparison: arresting gear and barricade 3 (Nimitz 4/3), aircraft elevators 3x 200,000 lbs, flight deck 5 acres, hangar 2 bays; a 541x153 px top view of the deck.",
+			"sha256": "f8cab752e750e4fa69216927168c1af2b0ddfdb2deba74ba6a58e46c2d4f65d1",
+			"bytes": 2878544
+		},
+		{
+			"id": "dote2025",
+			"title": "CVN 78 Gerald R. Ford-Class Nuclear Aircraft Carrier (FY2025 Annual Report)",
+			"authors": "Director, Operational Test and Evaluation",
+			"date": "2026-03-09",
+			"url": "https://www.dote.osd.mil/Portals/97/pub/reports/FY2025/navy/2025cvn78.pdf?ver=0eJ608EMZGeBtqrgvKOxoA%3D%3D",
+			"licence": "US government work (annual report to Congress)",
+			"use": "facts",
+			"file": "documents/dote2025.pdf",
+			"note": "\"The originally planned arresting gear engine and wire positioning (consisting of four engines and three wires) was similar to the USS Ronald Reagan (CVN 76) and USS George H. W. Bush (CVN 77) flight decks. However, the fourth AAG engine has not been installed on the Ford-class to date\"; \"based on the Nimitz-class hull\".",
+			"sha256": "ee33573feae1db31c03fde4813362af2f4aea1df5dc026029ffba9bd83d515c8",
+			"bytes": 1683980
+		},
+		{
+			"id": "dote2019",
+			"title": "CVN 78 Gerald R. Ford-Class Nuclear Aircraft Carrier (FY2019 Annual Report)",
+			"authors": "Director, Operational Test and Evaluation",
+			"date": "2020-01-13 (the PDF's modification date)",
+			"url": "https://www.dote.osd.mil/Portals/97/pub/reports/FY2019/navy/2019cvn78.pdf?ver=2020-01-30-115502-643",
+			"licence": "US government work (annual report to Congress)",
+			"use": "facts",
+			"file": "documents/dote2019.pdf",
+			"note": "\"It uses the same hull form as the CVN 68 Nimitz-class\".",
+			"sha256": "31e4ed7fe2c0d38f505ff5f70cebf49e362bb5a01896254922a1fe3350f270a5",
+			"bytes": 504412
+		},
+		{
+			"id": "dote2017",
+			"title": "CVN 78 Gerald R. Ford-Class Nuclear Aircraft Carrier (FY2017 Annual Report)",
+			"authors": "Director, Operational Test and Evaluation",
+			"date": "2018-01-22 (the PDF's modification date)",
+			"url": "https://www.dote.osd.mil/Portals/97/pub/reports/FY2017/navy/2017cvn78.pdf",
+			"licence": "US government work (annual report to Congress)",
+			"use": "facts",
+			"file": "documents/dote2017.pdf",
+			"note": "\"It has the same hull form as the CVN 68 Nimitz class, but many ship systems, including the nuclear plant and the flight deck, are new.\"",
+			"sha256": "71c8a59df5c9c01a4fd6ca5ffbd151d510374b70aa46fea4c07f1d078b530930",
+			"bytes": 739327
+		},
+		{
+			"id": "crs",
+			"number": "CRS RS20643",
+			"title": "Navy Ford (CVN-78) Class Aircraft Carrier Program: Background and Issues for Congress",
+			"authors": "Ronald O'Rourke, Congressional Research Service",
+			"date": "2025-12-04",
+			"url": "https://www.everycrsreport.com/reports/RS20643.html",
+			"page": "https://www.congress.gov/crs-product/RS20643",
+			"licence": "US government work (CRS)",
+			"use": "facts",
+			"file": "documents/crs-RS20643.html",
+			"volatile": true,
+			"note": "\"The Ford-class design uses the basic Nimitz-class hull form\". Read through the everycrsreport.com mirror: congress.gov refuses non-browser clients.",
+			"sha256": "a9a60d4126951f32f70ec5fb27333a73c22dc26c5a1bf1a6810eace17f1368eb",
+			"bytes": 580958
+		},
+		{
+			"id": "nhhc",
+			"title": "Evolution of the U.S. Navy Aircraft Carrier (infographic)",
+			"authors": "Naval History and Heritage Command (Annalisa Underwood, James Caiella)",
+			"date": "2015-04-20",
+			"url": "https://www.history.navy.mil/content/dam/nhhc/news-and-events/multimedia%20gallery/New%20Infographics/FINAL_PDF_Infograph_EvolutionOftheAircraftCarrier.pdf",
+			"licence": "US government work",
+			"use": "facts",
+			"file": "documents/nhhc.pdf",
+			"insecure": true,
+			"note": "Gerald R. Ford (CVN 78) 2016: \"1,092 Ft\", \"3 elevators\", \"4 catapults\". The host's certificate is signed by the DoD's own authority.",
+			"sha256": "b8fe8a15c2d433d84b15fabb41408411fd9c6a8fa7291effaecc8849835adabd",
+			"bytes": 3963274
+		},
+		{
+			"id": "nvr",
+			"title": "Naval Vessel Register: Gerald R. Ford (CVN 78)",
+			"authors": "Naval Sea Systems Command for the Chief of Naval Operations",
+			"date": "record updated 2026-05-22",
+			"url": "https://www.nvr.navy.mil/nvr/getHull.htm?shipId=4524",
+			"licence": "US government work",
+			"use": "facts",
+			"file": "documents/nvr.html",
+			"volatile": true,
+			"insecure": true,
+			"note": "\"Ship physical characteristics are currently unavailable as we update our public information policies.\" Keel 11/14/2009, launch 11/17/2013, delivery 05/31/2017, commissioned 07/22/2017.",
+			"sha256": "b29765433cf5accfd2db5053807cab0bc8df59eb33da770912932bb5c44d3c0a",
+			"bytes": 30939
+		},
+		{
+			"id": "hiiplace",
+			"title": "Newport News Shipbuilding to Place Island on Aircraft Carrier Gerald R. Ford (CVN 78)",
+			"authors": "Huntington Ingalls Industries",
+			"date": "2013-01-18",
+			"url": "https://hii.com/news/newport-news-shipbuilding-to-place-island-on-aircraft-carrier-gerald-r-ford-cvn-78",
+			"licence": "Copyright Huntington Ingalls Industries (press release)",
+			"use": "facts",
+			"file": "documents/hii-place.html",
+			"volatile": true,
+			"note": "\"The 60-foot long, 30-foot wide island\"; 555 metric tons.",
+			"sha256": "8561580e619f2099c911f1f21d4aafe5ee597ed801ba8c2cd2decf2898c6351a",
+			"bytes": 108949
+		},
+		{
+			"id": "hiiisland",
+			"title": "Aircraft Carrier Gerald R. Ford (CVN 78) Topped Off With 555-Metric Ton Island",
+			"authors": "Huntington Ingalls Industries",
+			"date": "2013-01-26",
+			"url": "https://hii.com/news/aircraft-carrier-gerald-r-ford-cvn-78-topped-off-with-555-metric-ton-island",
+			"licence": "Copyright Huntington Ingalls Industries (press release)",
+			"use": "facts",
+			"file": "documents/hii-island.html",
+			"volatile": true,
+			"note": "\"It is shorter in length but stands 20 feet taller than islands on previous aircraft carriers. Its placement is 140 feet further aft and 3 feet further outboard than previous carriers\".",
+			"sha256": "f595ad59d05bd0e4149ee6d8e3f7629517555009f1c0edd860cb6beab3a43ad7",
+			"bytes": 101252
+		},
+		{
+			"id": "hiielevator",
+			"title": "Final Aircraft Elevator Installed on Gerald R. Ford (CVN 78)",
+			"authors": "Huntington Ingalls Industries",
+			"date": "2013-08-15",
+			"url": "https://www.hii.com/news/photo-release-final-aircraft-elevator-installed-on-gerald-r-ford-cvn-78",
+			"licence": "Copyright Huntington Ingalls Industries (press release)",
+			"use": "facts",
+			"file": "documents/hii-elevator.html",
+			"volatile": true,
+			"note": "The third elevator, \"located on the starboard side of the ship. It measures 85 feet long and 52 feet wide and weighs 120 tons\".",
+			"sha256": "21624143a35f335a6f3efbb80febddb41ab500e3f557031a78bee6b4b21bb549",
+			"bytes": 94615
+		},
+		{
+			"id": "hiistructure",
+			"title": "Gerald R. Ford (CVN 78) Hits the 90 Percent Mark for Structural Completion",
+			"authors": "Huntington Ingalls Industries",
+			"date": "2012-12-19",
+			"url": "https://newsroom.hii.com/releases/photo-release-gerald-r-ford-cvn-78-hits-the-90-percent-mark-for-structural-completion",
+			"licence": "Copyright Huntington Ingalls Industries (press release)",
+			"use": "facts",
+			"file": "documents/hii-structure.html",
+			"volatile": true,
+			"note": "\"One of the sponsons was 140 feet long and weighed 391 metric tons\".",
+			"sha256": "9b9a0137063bd2974c90acbeff78d2002e2af03af7aefab76977afe92c70ffaa",
+			"bytes": 98245
+		},
+		{
+			"id": "wtkr",
+			"title": "Live stream: Island lifted aboard the Gerald R. Ford aircraft carrier",
+			"authors": "WTKR News 3, quoting Newport News Shipbuilding",
+			"date": "2013-01-26",
+			"url": "https://www.wtkr.com/2013/01/26/live-stream-island-lifted-aboard-the-gerald-r-ford-aircraft-carrier",
+			"licence": "Copyright WTKR",
+			"use": "facts",
+			"file": "documents/wtkr.html",
+			"volatile": true,
+			"note": "\"The Ford island is 30 feet wide and 60 feet long at the flight deck base; the island rises 72 feet above flight deck and incorporates nine individual deck levels.\"",
+			"sha256": "0d2227da63c839c47e44291330fe1d97d580e6321de5e3ea4f3205692e7b64d3",
+			"bytes": 88481
+		},
+		{
+			"id": "globalsecurity",
+			"title": "CVN-78 Gerald R. Ford - Specifications",
+			"authors": "GlobalSecurity.org",
+			"date": "last modified 2026-07-10",
+			"url": "https://www.globalsecurity.org/military/systems/ship/cvn-78-specs.htm",
+			"licence": "Copyright GlobalSecurity.org",
+			"use": "facts",
+			"file": "documents/globalsecurity.html",
+			"volatile": true,
+			"note": "Relays the withdrawn register: \"Overall Length 1092 ft\", \"Waterline Length 1040 ft\", \"Extreme Beam 256 ft\", \"Waterline Beam 134 ft\", \"Maximum Navigational Draft 39 ft\" (its \"7.8m\" is wrong: 11.9 m), \"Draft Limit 41 ft\", \"Advanced Arresting Gear (3 Wires plus Barricade)\".",
+			"sha256": "f8434a124170dd0d5202ffc5666a75108098a63f72e81861130d8beb5bd97667",
+			"bytes": 37927
+		},
+		{
+			"id": "globalcompare",
+			"title": "CVN-77 Bush vs CVN-78 Ford Specs",
+			"authors": "GlobalSecurity.org",
+			"date": "last modified 2016-08-02",
+			"url": "https://www.globalsecurity.org/military/systems/ship/cvn-77-78-specs.htm",
+			"licence": "Copyright GlobalSecurity.org",
+			"use": "facts",
+			"file": "documents/globalcompare.html",
+			"volatile": true,
+			"note": "\"Flight Deck 205,000 ft2 / 214,000 ft2\"; \"Aircraft Elevators 4 x 200,000 lbs Hyd / 3 x 200,000 lbs Hyd\"; \"Arresting Gear & Barricade 4 x MK7-4 / 3 x Adv Arresting Gear\".",
+			"sha256": "cacd5288e2a1a0a9019770b4f6a565903e3273c6120031e2c27e6da6d22ad5ab",
+			"bytes": 30951
+		},
+		{
+			"id": "navair5150",
+			"number": "NAVAIR 51-50AAA-2",
+			"title": "General Requirements for Shorebased Airfield Marking and Lighting",
+			"authors": "NAWCAD Lakehurst for NAVAIR",
+			"date": "2022-06-28",
+			"url": "https://www.wbdg.org/FFC/DOD/STC/tsewg_navair_51_50aaa_2_2022.pdf",
+			"licence": "\"DISTRIBUTION STATEMENT A. Approved for public release; distribution is unlimited.\"",
+			"use": "facts",
+			"file": "documents/navair5150.pdf",
+			"note": "WP 006 04, simulated carrier deck lights and markings, and WP 003 11, the optical landing aid (lens face 430 ft forward of the ramp lights): the shore-training form of a carrier's landing area, not the Ford's own. Checked against noaa2022.",
+			"sha256": "6b5fba8f0124d782dd9ae70b49c532535fa987344d29e69af4bb99b2a7cbbd47",
+			"bytes": 8145719
+		},
+		{
+			"id": "twz",
+			"title": "Why The Ford Class Carrier's Island Superstructure Is Located So Far Back",
+			"authors": "Joseph Trevithick, The War Zone",
+			"date": "2026-08-18",
+			"url": "https://www.twz.com/sea/why-the-ford-class-carriers-island-superstructure-is-located-so-far-back",
+			"licence": "Copyright The War Zone",
+			"use": "look",
+			"file": "documents/twz.html",
+			"volatile": true,
+			"note": "Reproduces Capt. Tal Manvel's 2015 island slides and a 2022 Navy top view of the Ford against a Nimitz: schematic, no scale.",
+			"sha256": "3b63b611969c8fa74642002c4410abb7b08d16a4f05895bb58a25a81342fdfab",
+			"bytes": 212822
+		},
+		{
+			"id": "kennedyjbd",
+			"title": "An F-35C from the Salty Dogs of Air Test and ... (r/WarshipPorn post 1xiintr; full title not readable from here)",
+			"authors": "unknown (a Reddit copy of what is believed to be a US Navy photo)",
+			"date": "believed 2026-10-14 (Kennedy's first F-35C launches)",
+			"url": "https://i.redd.it/ulizqmr4heyh1.jpeg",
+			"page": "https://www.reddit.com/r/WarshipPorn/comments/1xiintr/an_f35c_from_the_salty_dogs_of_air_test_and/",
+			"licence": "unknown until the Navy original is found",
+			"use": "look",
+			"file": "photos/kennedy_jbd_reddit.jpg",
+			"ship": {
+				"hull": "CVN-79",
+				"name": "John F. Kennedy (pre-commissioning)",
+				"identified": "by the user; no hull number in frame"
+			},
+			"shows": "a raised blast deflector from behind (cooling panel modules, strut row, striped top edge, deck slot) and a raised catapult control cab beside it; an F-35C launching in afterburner beyond",
+			"note": "Decision 27: Kennedy photos may be used for the fittings the two ships share. 5607x3738. Replace with the Navy original (DVIDS or navy.mil) when found.",
+			"sha256": "efaf496794e4d5d11707be3fb1ab6db93d15ad379a79ca44a0f08b5d69c11a8c",
+			"bytes": 8411
+		},
+		{
+			"id": "souda2023",
+			"number": "VIRIN 231226-N-EM691-1118",
+			"title": "NSA Souda Bay welcomes back USS Gerald R Ford (CVN 78)",
+			"authors": "U.S. Navy photo by Petty Officer 1st Class Delaney Jensen",
+			"date": "2023-12-26",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/f/f3/NSA_Souda_Bay_welcomes_back_USS_Gerald_R_Ford_%28CVN_78%29_%288181539%29.jpg",
+			"page": "https://commons.wikimedia.org/wiki/File:NSA_Souda_Bay_welcomes_back_USS_Gerald_R_Ford_(CVN_78)_(8181539).jpg",
+			"licence": "Commons {{PD-USGov-Military-Navy}}; source DVIDS 8181539 (the DVIDS page now answers 404)",
+			"use": "trace",
+			"file": "photos/78_bow_souda2023.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "the bow from the pier, mid-deployment: the stem draught marks 41, 40, 39 and 38 (units-only numerals, 6 in high), the bulbous-bow star, the black boot-topping and the grey above",
+			"note": "4984x7476, Nikon D850. The stem draught is read from the marks (facts.json hull.draught.deployed).",
+			"sha256": "812516712d26b8ea609f4015e9de4b04d438d5636cd6c895abb87d4633bda62f",
+			"bytes": 1188304
+		},
+		{
+			"id": "acp113",
+			"number": "ACP 113(AJ) Change 4",
+			"title": "Call Sign Book for Ships",
+			"authors": "Combined Communications-Electronics Board",
+			"date": "2019-02 (the cover; the PDF's creation date 2019-02-19)",
+			"url": "https://www.udxf.nl/ACP113(aj)-2019.pdf",
+			"licence": "UNCLASSIFIED; the foreword: \"It is permitted to copy or make extracts from this publication.\"",
+			"use": "facts",
+			"file": "documents/acp113-aj-2019.pdf",
+			"note": "Chapter 3 assigns ships' two-letter TACAN identifiers (para 301); Annex A decodes GF as the Ford. A copy on a utility-DX hobby site; the Navy does not publish it. Earlier editions (AD 1996 to AH 2008) give every older carrier the same identifier, the Nimitz NZ. No later edition was found.",
+			"sha256": "ae1a2edafff4b11263aa5348f2448cf99fb414c3a07516d569a7b65774319fab",
+			"bytes": 7089093
+		},
+		{
+			"id": "navair22296",
+			"title": "First sea trials completed for MAGIC CARPET",
+			"authors": "Naval Air Systems Command",
+			"date": "2015-05-07",
+			"url": "https://www.navair.navy.mil/node/22296",
+			"licence": "US government work, no copyright",
+			"use": "facts",
+			"volatile": true,
+			"file": "documents/navair-22296.html",
+			"note": "Precision Landing Mode's first sea trials on CVN 77, 20 April 2015: on a 3-wire deck the 2 wire is the target.",
+			"sha256": "ff38c3b6ab7658f660747a41ed5173fbc2c49cc028599ed2e065c30cc757c6df",
+			"bytes": 139308
+		},
+		{
+			"id": "dvids7694421",
+			"number": "VIRIN 230319-N-TL968-1357; DVIDS 7694421; Commons File:Overhead view of USS Gerald R. Ford (CVN 78) transiting the Atlantic Ocean, March 19, 2023.jpg",
+			"title": "Transit [Image 4 of 6]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Jackson Adkins",
+			"date": "2023-03-19",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/8/83/Overhead_view_of_USS_Gerald_R._Ford_%28CVN_78%29_transiting_the_Atlantic_Ocean%2C_March_19%2C_2023.jpg",
+			"page": "https://www.dvidshub.net/image/7694421/transit ; https://commons.wikimedia.org/wiki/File:Overhead_view_of_USS_Gerald_R._Ford_(CVN_78)_transiting_the_Atlantic_Ocean,_March_19,_2023.jpg",
+			"licence": "PUBLIC DOMAIN - This work, Transit [Image 6 of 6], by PO2 Jackson Adkins, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 6 of 6; this image is Image 4 of 6] Commons copy: {{PD-USN}}; source {{ID-USMil|230319-N-TL968-1357|Navy|url=https://www.dvidshub.net/image/7694421/transit}}",
+			"use": "trace",
+			"file": "photos/dvids7694421.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "overhead: near-nadir from high above, ship broadside across the frame, bow to the right (starboard toward the bottom of the frame), the whole ship and its wake in frame",
+			"pixels": [
+				4888,
+				3259
+			],
+			"note": "Planform, deck edge outline, island footprint (far aft at the starboard edge), elevator cut-outs and sponsons seen from above, '78' on the bow deck. Spoilers: the air wing is parked round the deck edges and over parts of the landing area and bow; a slight oblique (not true nadir), so the island top leans. Deployed fit (COMPTUEX, 2023). The Commons copy was downloaded (4888x3259, as DVIDS); it is not byte-identical to the DVIDS original (10,232,323 bytes at https://d34w7g4gy10iej.cloudfront.net/photos/2303/7694421.jpg), probably re-saved metadata.",
+			"sha256": "547c7c62d925b073368aff7fd0e2d72a1a281578f38351b646d4a43a41973b8d",
+			"bytes": 9861650
+		},
+		{
+			"id": "dvids6230833",
+			"number": "VIRIN 200604-N-OH637-1376; DVIDS 6230833",
+			"title": "Dual Carrier Operations [Image 10 of 22]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist Seaman Riley McDowell",
+			"date": "2020-06-04",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2006/6230833.jpg",
+			"page": "https://www.dvidshub.net/image/6230833/dual-carrier-operations",
+			"licence": "PUBLIC DOMAIN - This work, Dual Carrier Operations [Image 22 of 22], by PO2 Riley McDowell, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 22 of 22; this image is Image 10 of 22]",
+			"use": "trace",
+			"file": "photos/dvids6230833.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "overhead: near-nadir, Ford in the upper half of the frame, bow to the right (starboard toward the bottom), USS Harry S. Truman (CVN 75) in the lower half",
+			"pixels": [
+				3607,
+				2576
+			],
+			"note": "The clearest planform of the set: landing area, catapult tracks, foul lines and the painted '78' on the bow all sharp, few aircraft on the angled deck; island footprint far aft on the starboard edge. A second, independent planform beside 7694421, and a Nimitz-class deck in the same frame for comparison. Fit: June 2020, before the 2021 weapons trials (check weapon sponsons against later photos). Ship about 1,700 px long at full size.",
+			"sha256": "a3a6cf2050864204a23bab08224ebca00a4ebb7a3a71e878766808e868b8baab",
+			"bytes": 2400377
+		},
+		{
+			"id": "dvids7107230",
+			"number": "VIRIN 220323-N-TL968-1392; DVIDS 7107230",
+			"title": "PHOTOEX [Image 30 of 31]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Jackson Adkins",
+			"date": "2022-03-23",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2203/7107230.jpg",
+			"page": "https://www.dvidshub.net/image/7107230/photoex",
+			"licence": "PUBLIC DOMAIN - This work, PHOTOEX [Image 31 of 31], by PO2 Jackson Adkins, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 31 of 31; this image is Image 30 of 31]",
+			"use": "trace",
+			"file": "photos/dvids7107230.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "overhead oblique: from ahead and above, about 45 deg down, bow toward the camera, whole deck in frame (portrait)",
+			"pixels": [
+				2091,
+				2706
+			],
+			"note": "Nearly clear deck (flight deck certification, March 2022): all four catapult tracks, the landing area lines and the island's forward face from above. Spoilers: a few aircraft parked by the island; 2091x2706 is the full DVIDS original (already a crop).",
+			"sha256": "3b44b05566ca9bb26eb8c37ecb31e77990f220713142f52fa8008237547c7761",
+			"bytes": 1453134
+		},
+		{
+			"id": "dvids3299641",
+			"number": "VIRIN 170408-N-KU586-0043; DVIDS 3299641; Commons File:170408-N-KU586-0043.jpg",
+			"title": "PCU Gerald R. Ford (CVN 78) Begins Builder's Sea Trials [Image 4 of 6]",
+			"authors": "U.S. Navy photo by Chief Mass Communication Specialist  Christopher Delano",
+			"date": "2017-04-08",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/5/5d/170408-N-KU586-0043.jpg",
+			"page": "https://www.dvidshub.net/image/3299641/pcu-gerald-r-ford-cvn-78-begins-builders-sea-trials ; https://commons.wikimedia.org/wiki/File:170408-N-KU586-0043.jpg",
+			"licence": "PUBLIC DOMAIN - This work, PCU Gerald R. Ford (CVN 78) Begins Builder's Sea Trials [Image 6 of 6], by Christopher Delano, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 6 of 6; this image is Image 4 of 6] Commons copy: {{PD-USGov}}; source U.S. Navy",
+			"use": "trace",
+			"file": "photos/dvids3299641.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "bow: dead ahead, low (camera near the water, about 1-2 deg up), island at the left (starboard) beyond the deck",
+			"pixels": [
+				4033,
+				2684
+			],
+			"note": "The best low head-on view: stem, flare, the bow sponsons and their undersides, the forward deck edge and sheer against the sky, island and mast in silhouette, the hawse pipes and the stem at the waterline between the tugs. Spoilers: two tugs hide the waterline either side of the stem; strong backlight. Fit: builder's trials, April 2017 (no air wing, sailors manning the rails). Commons file title is the VIRIN; DVIDS 3299641 is the same image.",
+			"sha256": "01ae0d81fb709fe152e919d34cd7c63aa3a17d47a3f07ab00f019e341e8cf557",
+			"bytes": 1247452
+		},
+		{
+			"id": "dvids7473568",
+			"number": "VIRIN 221020-N-TL968-1336; DVIDS 7473568",
+			"title": "PhotoEX [Image 8 of 15]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Jackson Adkins",
+			"date": "2022-10-20",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2210/7473568.jpg",
+			"page": "https://www.dvidshub.net/image/7473568/photoex",
+			"licence": "PUBLIC DOMAIN - This work, PhotoEX [Image 15 of 15], by PO2 Jackson Adkins, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 15 of 15; this image is Image 8 of 15]",
+			"use": "trace",
+			"file": "photos/dvids7473568.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "bow: dead ahead, low (about 5 deg up), island at the left (starboard), at sea at speed",
+			"pixels": [
+				5184,
+				3456
+			],
+			"note": "Deployed fit (first deployment, October 2022): stem and flare with the bow wave, both bow sponsons, the forward deck edge, the island's forward face and mast against the sky; aircraft on deck. Spoilers: bow wave hides the waterline at the stem; low sun, some haze.",
+			"sha256": "b22f9e16c5dfb6ddf3854ef914fb177dc67f2b8fc8d851fe62ebd7715f492d5e",
+			"bytes": 2540390
+		},
+		{
+			"id": "dvids9628680",
+			"number": "VIRIN 260223-N-XJ090-1099; DVIDS 9628680; Commons File:USS Gerald R Ford Arrives at NSA Souda Bay (9628680).jpg",
+			"title": "USS Gerald R. Ford Arrives at NSA Souda Bay [Image 2 of 6]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Hannah Donahue",
+			"date": "2026-02-23",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/2/29/USS_Gerald_R_Ford_Arrives_at_NSA_Souda_Bay_%289628680%29.jpg",
+			"page": "https://www.dvidshub.net/image/9628680/uss-gerald-r-ford-arrives-nsa-souda-bay ; https://commons.wikimedia.org/wiki/File:USS_Gerald_R_Ford_Arrives_at_NSA_Souda_Bay_(9628680).jpg",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford Arrives at NSA Souda Bay [Image 6 of 6], by PO3 Hannah Donahue, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 6 of 6; this image is Image 2 of 6] Commons copy: {{PD-USGov-Military-Navy}}; source {{ID-USMil |1=260223-N-XJ090-1099 |2= Navy|url= https://www.dvidshub.net/image/9628680}}",
+			"use": "trace",
+			"file": "photos/dvids9628680.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "bow: nearly head-on, slightly off the starboard bow, low (camera near the water), at anchor/manoeuvring with tugs, mountains behind",
+			"pixels": [
+				6384,
+				4933
+			],
+			"note": "Deployed fit (February 2026). Stem, flare, both bow sponsons, the island's forward face and mast. Spoilers: two tugs at the stem hide the waterline; the ship is about a third of the frame width; shore backdrop makes edges harder to pick than against sky. DVIDS 'Date Taken' reads 02.22.2026; the caption and VIRIN (260223) say 23 February 2026.",
+			"sha256": "7c8982ea43eb9679c9e55c10da180a552088f6df548fb61b6eb51114441677c9",
+			"bytes": 4711550
+		},
+		{
+			"id": "dvids7107228",
+			"number": "VIRIN 220323-N-TL968-1311; DVIDS 7107228",
+			"title": "PHOTOEX [Image 28 of 31]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Jackson Adkins",
+			"date": "2022-03-23",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2203/7107228.jpg",
+			"page": "https://www.dvidshub.net/image/7107228/photoex",
+			"licence": "PUBLIC DOMAIN - This work, PHOTOEX [Image 31 of 31], by PO2 Jackson Adkins, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 31 of 31; this image is Image 28 of 31]",
+			"use": "trace",
+			"file": "photos/dvids7107228.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "stern: dead astern, high (about 40 deg down), island at the right (starboard), wake below",
+			"pixels": [
+				1825,
+				2738
+			],
+			"note": "The only dead-astern view in deployed fit: transom with its openings, the stern round-down, both aft sponsons, the landing area and the island's aft face (foreshortened, from above). Nearly clear deck. Spoilers: high, not low, so the transom is foreshortened; 1825x2738 is the full DVIDS original (already a crop).",
+			"sha256": "c322fba956debaf8e740a373386d325634986634037a3d3e56a4adaa31fe487d",
+			"bytes": 1430868
+		},
+		{
+			"id": "dvids7694418",
+			"number": "VIRIN 230319-N-TL968-1058; DVIDS 7694418",
+			"title": "Transit [Image 2 of 6]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Jackson Adkins",
+			"date": "2023-03-19",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2303/7694418.jpg",
+			"page": "https://www.dvidshub.net/image/7694418/transit",
+			"licence": "PUBLIC DOMAIN - This work, Transit [Image 6 of 6], by PO2 Jackson Adkins, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 6 of 6; this image is Image 2 of 6]",
+			"use": "trace",
+			"file": "photos/dvids7694418.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "port quarter: from astern and to port, high (about 35 deg down), about 20-25 deg off the stern, island at the right",
+			"pixels": [
+				4512,
+				3610
+			],
+			"note": "Transom and stern openings close and sharp, the aft port sponson with its weapon mount, the round-down, the port deck edge and catwalks; island port and aft faces with '78'. Spoilers: aircraft parked on the after deck; high camera. Deployed fit (COMPTUEX 2023).",
+			"sha256": "a810e14870441f2747be8ff93f831711062085d71132e7f03b1f96f00a8393e5",
+			"bytes": 6449703
+		},
+		{
+			"id": "dvids9134807",
+			"number": "VIRIN 250624-N-II168-1129; DVIDS 9134807",
+			"title": "USS Gerald R. Ford (CVN 78) Departs Naval Station Norfolk [Image 4 of 8]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Maxwell Orlosky",
+			"date": "2025-06-24",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2506/9134807.jpg",
+			"page": "https://www.dvidshub.net/image/9134807/uss-gerald-r-ford-cvn-78-departs-naval-station-norfolk",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Departs Naval Station Norfolk [Image 8 of 8], by PO2 Maxwell Orlosky, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 8 of 8; this image is Image 4 of 8]",
+			"use": "trace",
+			"file": "photos/dvids9134807.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "port quarter: from astern and to port, elevated (about 15-20 deg down), about 30 deg off the stern, island at the right (starboard)",
+			"pixels": [
+				5751,
+				3834
+			],
+			"note": "Lowest near-astern view in deployed fit: transom, stern openings and boat bays, the port side aft with its sponsons and the waterline along the port quarter, island aft face and mast, port deck-edge antenna mast raised. Deck nearly empty (leaving Norfolk, June 2025). Spoilers: haze; wake hides the waterline at the transom; ship small-ish (about 45% of the frame width). No stern draught marks are visible (underway).",
+			"sha256": "9279f11ec7106bcd71a94f5d561aeb77cca705849e08a5edb6000de90ad470ad",
+			"bytes": 1655257
+		},
+		{
+			"id": "commons131117-DO831-018",
+			"number": "VIRIN 131117-N-DO831-018; Commons File:PCU) Gerald R. Ford moves to pier 3. (10968493954).jpg",
+			"title": "PCU) Gerald R. Ford moves to pier 3. (10968493954).jpg",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Aidan P. Campbell/Released",
+			"date": "2013-11-17",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/PCU%29_Gerald_R._Ford_moves_to_pier_3._%2810968493954%29.jpg",
+			"page": "https://commons.wikimedia.org/wiki/File:PCU)_Gerald_R._Ford_moves_to_pier_3._(10968493954).jpg",
+			"licence": "Commons {{PD-USGov-Military-Navy}}; source [https://www.flickr.com/photos/usnavy/10968493954/ PCU) Gerald R. Ford moves to pier 3.]",
+			"use": "trace",
+			"file": "photos/commons131117-DO831-018.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "stern: dead astern, low (camera near the water, about 2-3 deg up), at the shipyard during the move to Pier 3",
+			"pixels": [
+				5036,
+				3597
+			],
+			"note": "The only low dead-astern photo: full transom, the flight deck's aft overhang and round-down, the aft sponsons and the hull's lines into the water at a light-ship waterline (well above the deployed one). Hull below the deployed waterline. Fit: November 2013, under construction (no mast top, deck structures incomplete): use for hull form only, not fittings. Spoilers: tugs across the waterline, bunting on the transom ('CVN' banner), yard crane. Pre-2017: outside decision 9's window for structure except the hull form.",
+			"sha256": "f5b274ab47aa74b9a6c89a5d0fdf68f82b9dc966cbc437f33b878a9841354b1d",
+			"bytes": 741983
+		},
+		{
+			"id": "dvids9167788",
+			"number": "VIRIN 250704-N-GC805-1023; DVIDS 9167788; Commons File:USS Gerald R Ford (CVN 78) Sails in the Atlantic Ocean (9167788).jpg",
+			"title": "USS Gerald R. Ford (CVN 78) Sails in the Atlantic Ocean [Image 4 of 9]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Tajh Payne",
+			"date": "2025-07-04",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/4/48/USS_Gerald_R_Ford_%28CVN_78%29_Sails_in_the_Atlantic_Ocean_%289167788%29.jpg",
+			"page": "https://www.dvidshub.net/image/9167788/uss-gerald-r-ford-cvn-78-sails-atlantic-ocean ; https://commons.wikimedia.org/wiki/File:USS_Gerald_R_Ford_(CVN_78)_Sails_in_the_Atlantic_Ocean_(9167788).jpg",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Sails in the Atlantic Ocean [Image 9 of 9], by PO2 Tajh Payne, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 9 of 9; this image is Image 4 of 9] Commons copy: {{PD-USGov-Military-Navy}}; source {{ID-USMil |1=250704-N-GC805-1023 |2= Navy|url= https://www.dvidshub.net/image/9167788}}",
+			"use": "trace",
+			"file": "photos/dvids9167788.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "starboard beam: level, low (camera near the water, at about deck-edge sightline from a small boat), bow to the right, island at the left with '78'",
+			"pixels": [
+				5338,
+				3003
+			],
+			"note": "Best level starboard profile in deployed fit: sheer line, deck edge height, starboard sponsons, the two open hangar doors below the starboard elevators (elevators at deck level), island profile with '78', the waterline and boot-top along the whole length. Spoilers: aircraft along the deck edge; slight barrel distortion possible (check straight lines); swell in the foreground.",
+			"sha256": "409db110d651d4ae24e51c05a3331e88ab959fbbf6546df4718ac115bae5864e",
+			"bytes": 3771345
+		},
+		{
+			"id": "dvids9142613",
+			"number": "VIRIN 250627-N-II168-2266; DVIDS 9142613; Commons File:USS Gerald R Ford (CVN 78) Conducts Vertical Replenishment with USS George H W Bush (CVN 77) (9142613).jpg",
+			"title": "USS Gerald R. Ford (CVN 78) Conducts Vertical Replenishment with USS George H. W. Bush (CVN 77) [Image 6 of 17]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Maxwell Orlosky",
+			"date": "2025-06-27",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/e/e4/USS_Gerald_R_Ford_%28CVN_78%29_Conducts_Vertical_Replenishment_with_USS_George_H_W_Bush_%28CVN_77%29_%289142613%29.jpg",
+			"page": "https://www.dvidshub.net/image/9142613/uss-gerald-r-ford-cvn-78-conducts-vertical-replenishment-with-uss-george-h-w-bush-cvn-77 ; https://commons.wikimedia.org/wiki/File:USS_Gerald_R_Ford_(CVN_78)_Conducts_Vertical_Replenishment_with_USS_George_H_W_Bush_(CVN_77)_(9142613).jpg",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Conducts Vertical Replenishment with USS George H. W. Bush (CVN 77) [Image 17 of 17], by PO2 Maxwell Orlosky, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 17 of 17; this image is Image 6 of 17] Commons copy: {{PD-USGov-Military-Navy}}; source {{ID-USMil |1=250627-N-II168-2266 |2= Navy|url= https://www.dvidshub.net/image/9142613}}",
+			"use": "trace",
+			"file": "photos/dvids9142613.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "starboard beam: low (about 8-10 deg up, from a helicopter), bow to the right, island at the left with '78'",
+			"pixels": [
+				5071,
+				3381
+			],
+			"note": "Whole ship broadside, sharp: starboard elevators (raised, from outside), sponsons, hangar openings, island starboard face and mast, waterline. Few aircraft on deck. Deployed fit (June 2025). Spoilers: small wide-angle distortion at the frame edges; ship about 85% of the frame width.",
+			"sha256": "003136608d56877796b2cb17b98bf7563b2652b7ac2d2a0d0cabe8e040a827a3",
+			"bytes": 1779908
+		},
+		{
+			"id": "dvids7473567",
+			"number": "VIRIN 221020-N-TL968-1121; DVIDS 7473567",
+			"title": "PhotoEX [Image 7 of 15]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Jackson Adkins",
+			"date": "2022-10-20",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2210/7473567.jpg",
+			"page": "https://www.dvidshub.net/image/7473567/photoex",
+			"licence": "PUBLIC DOMAIN - This work, PhotoEX [Image 15 of 15], by PO2 Jackson Adkins, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 15 of 15; this image is Image 7 of 15]",
+			"use": "trace",
+			"file": "photos/dvids7473567.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "starboard beam: low (about 5 deg up), bow to the right, island at the left",
+			"pixels": [
+				5184,
+				3456
+			],
+			"note": "Second independent starboard profile, deployed fit (October 2022): deck edge, sponsons, elevator openings, island starboard face, waterline. Spoilers: aircraft on deck; low sun casts the hangar openings into shadow.",
+			"sha256": "c85e44c89aee19fcc25f80b91532ef4b20dd2a8a8c2a72d4d2b1d8912c0889d1",
+			"bytes": 2576580
+		},
+		{
+			"id": "commons221126-QI061-2036R",
+			"number": "VIRIN 221126-N-QI061-2036R; Commons File:USS Gerald R. Ford returns after completing its inaugural deployment to the Atlantic Ocean, 26 November 2022 (221126-N-QI061-2036R).jpg",
+			"title": "USS Gerald R. Ford returns after completing its inaugural deployment to the Atlantic Ocean, 26 November 2022 (221126-N-QI061-2036R).jpg",
+			"authors": "U.S. Navy Photo/Video by Mass Communication Specialist First Class Nathan T. Beard",
+			"date": "2022-11-26",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/3/31/USS_Gerald_R._Ford_returns_after_completing_its_inaugural_deployment_to_the_Atlantic_Ocean%2C_26_November_2022_%28221126-N-QI061-2036R%29.jpg",
+			"page": "https://commons.wikimedia.org/wiki/File:USS_Gerald_R._Ford_returns_after_completing_its_inaugural_deployment_to_the_Atlantic_Ocean,_26_November_2022_(221126-N-QI061-2036R).jpg",
+			"licence": "Commons {{ID-USMil |1= 221126-N-QI061-2036 |2= N|url= }} {{PD-USGov-DoD}}; source https://www.defense.gov/News/News-Stories/Article/Article/3235400/strong-deterrence-enables-us-to-ensure-global-rules-rights/#pop6579795",
+			"use": "trace",
+			"file": "photos/commons221126-QI061-2036R.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "port beam: level, low (camera near the water, about 1-2 deg up), bow to the left, island at the right beyond the deck",
+			"pixels": [
+				6000,
+				4000
+			],
+			"note": "Best level port profile: port sheer, deck edge, port sponsons and catwalks, the port elevator aft, the boot-top along the whole length, island seen across the deck. Homecoming after the first deployment, crew manning the rails. Spoilers: tugs at bow and stern and a floating barrier in the foreground hide parts of the waterline; slight heat haze. Credit: the caption names MC1 Nathan T. Beard; Commons author field says 'U.S. Department of Defense'; Commons dates it 25 November, the caption 26 November 2022. '-2036R' is the release suffix of VIRIN 221126-N-QI061-2036.",
+			"sha256": "27ca65dde1178c0d32de6603aa5b9c9676b6999d1881d09d31e25b430ad907d8",
+			"bytes": 1686280
+		},
+		{
+			"id": "dvids7481395",
+			"number": "VIRIN 221025-N-TL968-1537; DVIDS 7481395",
+			"title": "PHOTOEX [Image 20 of 26]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Jackson Adkins",
+			"date": "2022-10-25",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2210/7481395.jpg",
+			"page": "https://www.dvidshub.net/image/7481395/photoex",
+			"licence": "PUBLIC DOMAIN - This work, PHOTOEX [Image 26 of 26], by PO2 Jackson Adkins, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 26 of 26; this image is Image 20 of 26]",
+			"use": "trace",
+			"file": "photos/dvids7481395.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "port beam: nearly level (about 3-5 deg up), at sea, bow to the left, island at the right with '78'",
+			"pixels": [
+				4041,
+				2694
+			],
+			"note": "Second independent port profile, deployed fit: deck edge, sponsons, port elevator aft, waterline. Spoilers: overcast flat light; aircraft along the deck.",
+			"sha256": "aa797d83f4e77d3346493cd4a82e31a38603023f480d4daa01ad2e1e2676e8ea",
+			"bytes": 2138478
+		},
+		{
+			"id": "dvids7107216",
+			"number": "VIRIN 220323-N-TL968-1061; DVIDS 7107216",
+			"title": "PHOTOEX [Image 21 of 31]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Jackson Adkins",
+			"date": "2022-03-23",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2203/7107216.jpg",
+			"page": "https://www.dvidshub.net/image/7107216/photoex",
+			"licence": "PUBLIC DOMAIN - This work, PHOTOEX [Image 31 of 31], by PO2 Jackson Adkins, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 31 of 31; this image is Image 21 of 31]",
+			"use": "trace",
+			"file": "photos/dvids7107216.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "port beam: elevated (about 12-15 deg down), slightly toward the port quarter, bow to the left, island at the right with '78'",
+			"pixels": [
+				4403,
+				2935
+			],
+			"note": "Port side and deck together with few aircraft: deck edge outline against the hull, port sponsons and the port elevator, island port face. Spoilers: sun glitter on the water; elevated, so the deck edge height is foreshortened.",
+			"sha256": "17f8eb8e86f7d72c40c2a438a2d32ace9e3d3a990d49aedec0d1ba33cb37461c",
+			"bytes": 1588015
+		},
+		{
+			"id": "dvids9628694",
+			"number": "VIRIN 260223-N-XJ090-1118; DVIDS 9628694; Commons File:USS Gerald R Ford Arrives at NSA Souda Bay (9628694).jpg",
+			"title": "USS Gerald R. Ford Arrives at NSA Souda Bay [Image 5 of 6]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Hannah Donahue",
+			"date": "2026-02-23",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/0/05/USS_Gerald_R_Ford_Arrives_at_NSA_Souda_Bay_%289628694%29.jpg",
+			"page": "https://www.dvidshub.net/image/9628694/uss-gerald-r-ford-arrives-nsa-souda-bay ; https://commons.wikimedia.org/wiki/File:USS_Gerald_R_Ford_Arrives_at_NSA_Souda_Bay_(9628694).jpg",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford Arrives at NSA Souda Bay [Image 6 of 6], by PO3 Hannah Donahue, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 6 of 6; this image is Image 5 of 6] Commons copy: {{PD-USGov-Military-Navy}}; source {{ID-USMil |1=260223-N-XJ090-1118 |2= Navy|url= https://www.dvidshub.net/image/9628694}}",
+			"use": "trace",
+			"file": "photos/dvids9628694.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "starboard bow: low (camera near the water), about 30-40 deg off the bow, bow toward the right of centre, island at the left",
+			"pixels": [
+				8256,
+				5504
+			],
+			"note": "Stem draught marks 41, 40, 39, 38 readable at full size (about 21 px per foot; the second sweep read about 37 ft 7 in at the stem). Bow flare, starboard bow sponsons, the boot-top along the forward starboard side, island. Deployed fit (mid-deployment, Souda Bay). Spoilers: tugs alongside; overcast. DVIDS 'Date Taken' reads 02.22.2026; the caption and VIRIN say 23 February 2026.",
+			"sha256": "41cea926725ecc861ff072d8ea70fe0cf06886bbc31f42071503697b86362c42",
+			"bytes": 6431244
+		},
+		{
+			"id": "dvids9688116",
+			"number": "VIRIN 260516-N-PC065-1060; DVIDS 9688116",
+			"title": "SECWAR, CNO, MCPON welcome home Ford carrier strike group [Image 4 of 25]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 1st Class John Bellino",
+			"date": "2026-05-16",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2605/9688116.jpg",
+			"page": "https://www.dvidshub.net/image/9688116/secwar-cno-mcpon-welcome-home-ford-carrier-strike-group",
+			"licence": "PUBLIC DOMAIN - This work, SECWAR, CNO, MCPON welcome home Ford carrier strike group [Image 25 of 25], by PO1 John Bellino, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 25 of 25; this image is Image 4 of 25]",
+			"use": "trace",
+			"file": "photos/dvids9688116.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "starboard bow: low (from the pier, about 3-5 deg up), about 40 deg off the bow, bow to the right, island at the left",
+			"pixels": [
+				6000,
+				4000
+			],
+			"note": "Latest fit (homecoming, May 2026). Bow flare, anchors and hawse, starboard sponsons and catwalks, island starboard face; stem marks 41 to 38 visible with the waterline well below them (the second sweep extrapolated about 34 ft at the stem, low confidence: fouled boot-top below the 38). Spoilers: a tug at the stem, bunting and sailors manning the rails, pier in the foreground.",
+			"sha256": "ab502d8e70194a95a79086506ebd1f3adc565cf95e3a9e2dc2e3437a6dcfd76a",
+			"bytes": 3696018
+		},
+		{
+			"id": "commons230502-TL968-1334",
+			"number": "Commons File:230502-N-TL968-1334.jpg",
+			"title": "230502-N-TL968-1334.jpg",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Jackson Adkins",
+			"date": "2023-05-02",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/3/32/230502-N-TL968-1334.jpg",
+			"page": "https://commons.wikimedia.org/wiki/File:230502-N-TL968-1334.jpg",
+			"licence": "Commons {{PD-USGov}}; source https://www.navy.mil/Resources/Photo-Gallery/igphoto/2003215399/",
+			"use": "trace",
+			"file": "photos/commons230502-TL968-1334.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "port bow: elevated (about 20-25 deg down), about 40 deg off the bow, bow toward the lower left, island at the right",
+			"pixels": [
+				4537,
+				3025
+			],
+			"note": "Port bow flare and sponsons, port deck edge and catwalks along the whole side, deck nearly clear (departure for deployment, crew at the rails), island seen across the deck. Spoilers: tugs; harbour backdrop behind the island.",
+			"sha256": "9818da9f88ba7d6f63ec6316c83a0488fe9a60de447dd120091e06084c806e21",
+			"bytes": 1448513
+		},
+		{
+			"id": "dvids5862252",
+			"number": "VIRIN 191025-N-XO654-1192; DVIDS 5862252",
+			"title": "Ford Underway [Image 14 of 21]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Tatyana Freeman",
+			"date": "2019-10-25",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/1910/5862252.jpg",
+			"page": "https://www.dvidshub.net/image/5862252/ford-underway",
+			"licence": "PUBLIC DOMAIN - This work, Ford Underway [Image 21 of 21], by PO2 Tatyana Freeman, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 21 of 21; this image is Image 14 of 21]",
+			"use": "trace",
+			"file": "photos/dvids5862252.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "port bow: low (from the shipyard, about 5 deg up), about 30 deg off the bow, bow to the left, island at the right",
+			"pixels": [
+				7322,
+				4887
+			],
+			"note": "Second port bow, close and large: flare, port bow sponsons, deck edge and the boot-top. Fit: October 2019, leaving the post-shakedown availability (before the 2021 weapons fit): structure only. Spoilers: tugs; yard clutter and another carrier's bow at the left edge.",
+			"sha256": "df6585053fd8a130a6c7788875528029e202571a7e01d7ac62f6e35ce0ecfc26",
+			"bytes": 2628136
+		},
+		{
+			"id": "dvids9142598",
+			"number": "VIRIN 250627-N-II168-2306; DVIDS 9142598",
+			"title": "USS Gerald R. Ford (CVN 78) Conducts Vertical Replenishment with USS George H. W. Bush (CVN 77) [Image 7 of 17]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Maxwell Orlosky",
+			"date": "2025-06-27",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2507/9142598.jpg",
+			"page": "https://www.dvidshub.net/image/9142598/uss-gerald-r-ford-cvn-78-conducts-vertical-replenishment-with-uss-george-h-w-bush-cvn-77",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Conducts Vertical Replenishment with USS George H. W. Bush (CVN 77) [Image 17 of 17], by PO2 Maxwell Orlosky, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 17 of 17; this image is Image 7 of 17]",
+			"use": "trace",
+			"file": "photos/dvids9142598.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "starboard quarter: low (about 8 deg up, from a helicopter), about 35 deg off the stern, stern toward the left, island at the centre",
+			"pixels": [
+				5519,
+				3679
+			],
+			"note": "Sunlit transom and stern openings, starboard quarter sponsons, the island's starboard and aft faces, the stern waterline. Deployed fit (June 2025). Spoilers: wide angle (USS George H.W. Bush far right); ship in the left half of the frame; the wake hides the waterline at the transom.",
+			"sha256": "b8a98a16d001156e8587c602b3f116215215483e282f643e0d6e6223eaf88265",
+			"bytes": 1924974
+		},
+		{
+			"id": "dvids9142511",
+			"number": "VIRIN 250627-N-II168-1553; DVIDS 9142511",
+			"title": "USS Gerald R. Ford (CVN 78) Conducts Vertical Replenishment with USS George H. W. Bush (CVN 77) [Image 4 of 17]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Maxwell Orlosky",
+			"date": "2025-06-27",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2507/9142511.jpg",
+			"page": "https://www.dvidshub.net/image/9142511/uss-gerald-r-ford-cvn-78-conducts-vertical-replenishment-with-uss-george-h-w-bush-cvn-77",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Conducts Vertical Replenishment with USS George H. W. Bush (CVN 77) [Image 17 of 17], by PO2 Maxwell Orlosky, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 17 of 17; this image is Image 4 of 17]",
+			"use": "trace",
+			"file": "photos/dvids9142511.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "port quarter: elevated (about 20 deg down), about 30 deg aft of the port beam, bow to the left, island at the right",
+			"pixels": [
+				5576,
+				3717
+			],
+			"note": "Port side aft: the hangar opening of the port elevator from outside, aft port sponson, transom corner, the whole deck with few aircraft. Deployed fit (June 2025). Spoilers: wide angle; wake at the stern.",
+			"sha256": "8f1079513a18e383ecd1ef2e874cfa3239986970a601c8b7149aa87eca6d92e2",
+			"bytes": 1553758
+		},
+		{
+			"id": "dvids7107229",
+			"number": "VIRIN 220323-N-TL968-1361; DVIDS 7107229",
+			"title": "PHOTOEX [Image 29 of 31]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Jackson Adkins",
+			"date": "2022-03-23",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2203/7107229.jpg",
+			"page": "https://www.dvidshub.net/image/7107229/photoex",
+			"licence": "PUBLIC DOMAIN - This work, PHOTOEX [Image 31 of 31], by PO2 Jackson Adkins, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 31 of 31; this image is Image 29 of 31]",
+			"use": "trace",
+			"file": "photos/dvids7107229.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "port quarter: close, high (about 30 deg down), stern at the right, island at the top with '78' on its port face",
+			"pixels": [
+				5142,
+				3428
+			],
+			"note": "Aft port sponson with its weapon mount, the port elevator area, round-down, transom corner, island port face. Spoilers: bow out of frame (only the after half of the ship); rough sea. Deployed-era fit (March 2022).",
+			"sha256": "13e84b386ab30f676e77cf9347ea54ddbffac94485142fa92bf2095de37edc48",
+			"bytes": 1459454
+		},
+		{
+			"id": "commons170728-ES536-0113",
+			"number": "VIRIN 170728-N-ES536-0113; Commons File:An F-A-18F Super Hornet performs an arrested landing aboard USS Gerald R. Ford. (35935347050).jpg",
+			"title": "An F-A-18F Super Hornet performs an arrested landing aboard USS Gerald R. Ford. (35935347050).jpg",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Elizabeth Thompson/Released",
+			"date": "2017-07-28",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/4/42/An_F-A-18F_Super_Hornet_performs_an_arrested_landing_aboard_USS_Gerald_R._Ford._%2835935347050%29.jpg",
+			"page": "https://commons.wikimedia.org/wiki/File:An_F-A-18F_Super_Hornet_performs_an_arrested_landing_aboard_USS_Gerald_R._Ford._(35935347050).jpg",
+			"licence": "Commons {{PD-USGov-Military-Navy}} {{ID-USMil|170728-N-ES536-0113|Navy}}; source [https://www.flickr.com/photos/usnavy/35935347050/ An F/A-18F Super Hornet performs an arrested landing aboard USS Gerald R. Ford.]",
+			"use": "trace",
+			"file": "photos/commons170728-ES536-0113.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "island port face: from the flight deck, level (deck height, camera about 1.5 m up), abeam the island across the landing area, full height including the mast",
+			"pixels": [
+				4454,
+				2606
+			],
+			"note": "Whole island port face with '78', the mast and its yards, the DBR faces at an angle; an F/A-18F trapping in front. Fit: July 2017 test and evaluation (antennas and markings may differ from 2022-2026). Spoilers: the jet hides the base of the island's forward part.",
+			"sha256": "086621603353341e980565e8fa9d922f810ffb1793afa3ab2032768caeaa7c99",
+			"bytes": 1684129
+		},
+		{
+			"id": "dvids9405715",
+			"number": "VIRIN 251113-N-CO502-1329; DVIDS 9405715",
+			"title": "USS Gerald R. Ford (CVN 78) Flight Operations [Image 2 of 30]",
+			"authors": "U.S. Navy photo (DVIDS credits Seaman Paige Brown)",
+			"date": "2025-11-13",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2511/9405715.jpg",
+			"page": "https://www.dvidshub.net/image/9405715/uss-gerald-r-ford-cvn-78-flight-operations",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Flight Operations [Image 30 of 30], by SN Paige Brown, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 30 of 30; this image is Image 2 of 30]",
+			"use": "trace",
+			"file": "photos/dvids9405715.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "island port face: from the flight deck, level (deck height), about 30 deg forward of abeam, full height with mast",
+			"pixels": [
+				5674,
+				3783
+			],
+			"note": "Island port face in deployed fit with '78' and the 'BEWARE OF JET BLAST' lettering, mast and yards, a pendant support in the foreground. Spoilers: backlit (sun behind the mast); a jet overhead; wide angle.",
+			"sha256": "619e02091d71f468fd6789b59e89c2d1c781c47ffda496a5e46305cb81f8a1ae",
+			"bytes": 3191494
+		},
+		{
+			"id": "dvids7489972",
+			"number": "VIRIN 221028-N-NQ285-1450; DVIDS 7489972",
+			"title": "USS Ramage Conducts Sea and Anchor in Halifax [Image 9 of 17]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Sawyer Connally",
+			"date": "2022-10-28",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2211/7489972.jpg",
+			"page": "https://www.dvidshub.net/image/7489972/uss-ramage-conducts-sea-and-anchor-halifax",
+			"licence": "PUBLIC DOMAIN - This work, USS Ramage Conducts Sea and Anchor in Halifax [Image 17 of 17], by PO2 Sawyer Connally, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 17 of 17; this image is Image 9 of 17]",
+			"use": "trace",
+			"file": "photos/dvids7489972.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "island port face: from the water across the deck (from USS Ramage), level, about abeam, island at the centre; port side of the hull below",
+			"pixels": [
+				6666,
+				3750
+			],
+			"note": "Sharp island port face and mast from outside the ship, with '78' and the deck lettering, plus the port deck edge, life-raft racks and the port elevator's hangar opening from outside. Deployed fit (first deployment, at anchor off Halifax). Spoilers: aircraft on deck hide the island base; telephoto crop of part of the ship (bow out of frame). The first sweep's 'port beam' was right: the island stands across the deck with aircraft between, and the face carries the deck-side lettering.",
+			"sha256": "0e34c46114e498c95143e2282a66fc171f2e8fcd66a5f91298ee710b3023f56e",
+			"bytes": 1981355
+		},
+		{
+			"id": "commons170722-WS581-072",
+			"number": "VIRIN 170722-N-WS581-072; Commons File:Sailors man the rails of the aircraft carrier USS Gerald R. Ford (CVN 78) during its commissioning ceremony (35702679750).jpg",
+			"title": "Sailors man the rails of the aircraft carrier USS Gerald R. Ford (CVN 78) during its commissioning ceremony (35702679750).jpg",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Andrew J. Sneeringer/Released",
+			"date": "2017-07-22",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Sailors_man_the_rails_of_the_aircraft_carrier_USS_Gerald_R._Ford_%28CVN_78%29_during_its_commissioning_ceremony_%2835702679750%29.jpg",
+			"page": "https://commons.wikimedia.org/wiki/File:Sailors_man_the_rails_of_the_aircraft_carrier_USS_Gerald_R._Ford_(CVN_78)_during_its_commissioning_ceremony_(35702679750).jpg",
+			"licence": "Commons {{PD-USGov-Military-Navy}} {{ID-USMil|170722-N-WS581-0|Navy}}; source [https://www.flickr.com/photos/usnavy/35702679750/ 170722-N-WS581-0]",
+			"use": "trace",
+			"file": "photos/commons170722-WS581-072.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "island starboard face: from above the pier, level (about flight deck height, seeing just onto the deck), abeam the island and slightly forward of it, bow to the right",
+			"pixels": [
+				7360,
+				4912
+			],
+			"note": "Island starboard (outboard) face with '78', the array faces, mast and yards (top cut off), the starboard hull, catwalks and life-raft racks below, and the starboard elevator just forward of the island lowered to the hangar deck (the gap it leaves in the flight deck edge is visible above it), with a brow from the pier onto it: the only elevator found lowered and seen from outside. USS George Washington (CVN 73) is moored beyond. Fit: commissioning, July 2017 (antennas and markings may differ from the deployed fit). Spoilers: wide angle (converging verticals at the edges); bunting and crowds; the mast top is out of frame. Commons holds the only copy: the Navy Flickr page now answers 404.",
+			"sha256": "56d9454f5f6fdda78b374dcf518930119113f4245f3e2440350b8c29085a6e31",
+			"bytes": 1214483
+		},
+		{
+			"id": "dvids9688120",
+			"number": "VIRIN 260516-N-PC065-1093; DVIDS 9688120",
+			"title": "SECWAR, CNO, MCPON welcome home Ford carrier strike group [Image 8 of 25]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 1st Class John Bellino",
+			"date": "2026-05-16",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2605/9688120.jpg",
+			"page": "https://www.dvidshub.net/image/9688120/secwar-cno-mcpon-welcome-home-ford-carrier-strike-group",
+			"licence": "PUBLIC DOMAIN - This work, SECWAR, CNO, MCPON welcome home Ford carrier strike group [Image 25 of 25], by PO1 John Bellino, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 25 of 25; this image is Image 8 of 25]",
+			"use": "trace",
+			"file": "photos/dvids9688120.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "island starboard face: from the pier, low (looking up about 20 deg), about abeam the island, upper island and mast",
+			"pixels": [
+				6000,
+				4000
+			],
+			"note": "Latest fit (May 2026): the island's starboard face, flat array faces, mast, yards and domes, with the starboard deck edge and catwalks running forward. Spoilers: the island base is hidden by the deck edge; flags; strong perspective.",
+			"sha256": "624e8866d4b9ef8f347455c3dac155ef5faede3efe21bfe54d19cf0b4d204194",
+			"bytes": 3685720
+		},
+		{
+			"id": "dvids7949614",
+			"number": "VIRIN 230727-N-II168-1003; DVIDS 7949614",
+			"title": "Gerald R. Ford Arrives in Piraeus [Image 1 of 4]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist Seaman Maxwell Orlosky",
+			"date": "2023-07-27",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2308/7949614.jpg",
+			"page": "https://www.dvidshub.net/image/7949614/gerald-r-ford-arrives-piraeus",
+			"licence": "PUBLIC DOMAIN - This work, Gerald R. Ford Arrives in Piraeus [Image 4 of 4], by PO2 Maxwell Orlosky, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 4 of 4; this image is Image 1 of 4]",
+			"use": "trace",
+			"file": "photos/dvids7949614.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "island forward face: from the flight deck forward of the island, level (deck height), nearly head-on to the island",
+			"pixels": [
+				5472,
+				3648
+			],
+			"note": "Island forward face with its array face, bridge windows, mast and yards, deployed fit (2023). Spoilers: an F/A-18 and an E/A-18 in front hide the island base; port visit, flags dressed.",
+			"sha256": "7f275bea3ddecf9cb2fabebfdc9f2c01b1d7bea4fe3f937fbc858e6c786d48e1",
+			"bytes": 1611330
+		},
+		{
+			"id": "dvids9604043",
+			"number": "VIRIN 260402-N-MI259-1039; DVIDS 9604043",
+			"title": "USS Gerald R. Ford (CVN 78) Departs Split, Croatia [Image 4 of 69]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Brianna Barnett",
+			"date": "2026-04-02",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2604/9604043.jpg",
+			"page": "https://www.dvidshub.net/image/9604043/uss-gerald-r-ford-cvn-78-departs-split-croatia",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Departs Split, Croatia [Image 69 of 69], by SN Brianna Barnett, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 69 of 69; this image is Image 4 of 69]",
+			"use": "trace",
+			"file": "photos/dvids9604043.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "island aft and port faces: from the flight deck aft of the island and to port, level (deck height), looking forward and to starboard",
+			"pixels": [
+				5633,
+				3755
+			],
+			"note": "The island's aft face (missing from the earlier sweeps) at deck level: the aft face and the aft end of the port face, a large flat array face, the stacked balcony levels and the mast from behind, with the deck stretching forward at the left. Deployed fit (April 2026). Spoilers: an E-2D and an F/A-18 parked against the island hide its lower levels; overcast.",
+			"sha256": "90c761faa67df92e0b6df1de74e1fa79ae336aefd6b17cfb7d46a43806419a73",
+			"bytes": 2914269
+		},
+		{
+			"id": "dvids9478858",
+			"number": "VIRIN 260104-N-GC805-1072; DVIDS 9478858",
+			"title": "USS Gerald R. Ford (CVN 78) Flight Deck Operations [Image 36 of 104]",
+			"authors": "U.S. Navy photo (DVIDS credits Petty Officer 2nd Class Tajh Payne)",
+			"date": "2026-01-04",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2601/9478858.jpg",
+			"page": "https://www.dvidshub.net/image/9478858/uss-gerald-r-ford-cvn-78-flight-deck-operations",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Flight Deck Operations [Image 104 of 104], by PO2 Tajh Payne, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 104 of 104; this image is Image 36 of 104]",
+			"use": "trace",
+			"file": "photos/dvids9478858.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "deck catapult track: at deck level, looking along the track, the shuttle in the slot a few metres ahead",
+			"pixels": [
+				4688,
+				3125
+			],
+			"note": "Catapult track slot, the track cover plates and their fasteners, the shuttle (red) in the slot, the yellow line beside the track. Deployed fit. Spoilers: very low wide-angle view (strong perspective), crew round the shuttle.",
+			"sha256": "2562c40918586688de512f93a9e71105d1ae5d7c7a282c827f39312626ee3967",
+			"bytes": 4184889
+		},
+		{
+			"id": "dvids9455182",
+			"number": "VIRIN 251216-N-IQ220-1238; DVIDS 9455182",
+			"title": "USS Gerald R. Ford (CVN 78) Flight Operations [Image 1 of 23]",
+			"authors": "U.S. Navy photo (DVIDS credits Petty Officer 3rd Class Gladjimi Balisage)",
+			"date": "2025-12-16",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2512/9455182.jpg",
+			"page": "https://www.dvidshub.net/image/9455182/uss-gerald-r-ford-cvn-78-flight-operations",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Flight Operations [Image 23 of 23], by PO2 Gladjimi Balisage, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 23 of 23; this image is Image 1 of 23]",
+			"use": "trace",
+			"file": "photos/dvids9455182.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "deck arresting gear: low across the landing area (deck height), three pendant supports in the foreground with a pendant raised, a jet trapping, a raised blast deflector beyond",
+			"pixels": [
+				5512,
+				3100
+			],
+			"note": "Pendant supports (deck sheave fittings) and how a pendant is held off the deck, plus the back of a raised blast deflector with its frames. Deployed fit. Spoilers: telephoto compression; motion; dusk light.",
+			"sha256": "cead88cf99088c508bb2af26fdf53ab5e4bd3372d910a0535e67153d71493277",
+			"bytes": 2657699
+		},
+		{
+			"id": "dvids9478807",
+			"number": "VIRIN 260103-N-BX517-3177; DVIDS 9478807",
+			"title": "USS Gerald R. Ford (CVN 78) Flight Operations [Image 21 of 104]",
+			"authors": "U.S. Navy photo (DVIDS credits Petty Officer 2nd Class Mariano Lopez)",
+			"date": "2026-01-03",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2601/9478807.jpg",
+			"page": "https://www.dvidshub.net/image/9478807/uss-gerald-r-ford-cvn-78-flight-operations",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Flight Operations [Image 104 of 104], by PO2 Mariano Lopez, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 104 of 104; this image is Image 21 of 104]",
+			"use": "trace",
+			"file": "photos/dvids9478807.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "deck arresting gear and Fresnel lens: deck height across the landing area toward the port deck edge, a pendant support in the foreground, the lens beyond at the left",
+			"pixels": [
+				5323,
+				2994
+			],
+			"note": "A pendant support close (round housing, red marking), the pendant on the deck, and the lens (landing aid) sharp on its platform at the port deck edge with its green datum bars and red wave-off lights. Two independent lens views with 9570909. Spoilers: a chain in the foreground; telephoto compression.",
+			"sha256": "eade4e2f9f63c7599659ee057ce6601d8bcbbfd5876a88b5ed53c271271cb494",
+			"bytes": 3390133
+		},
+		{
+			"id": "commons220325-CO784-2240",
+			"number": "VIRIN 220325-N-CO784-2240; Commons File:Boeing FA-18E Super Hornet of VFA-87 lands aboard USS Gerald R. Ford (CVN-78) on 25 March 2022 (220325-N-CO784-2240).JPG",
+			"title": "Boeing FA-18E Super Hornet of VFA-87 lands aboard USS Gerald R. Ford (CVN-78) on 25 March 2022 (220325-N-CO784-2240).JPG",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 2nd Class Nolan Pennington",
+			"date": "2022-03-25",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/e/e7/Boeing_FA-18E_Super_Hornet_of_VFA-87_lands_aboard_USS_Gerald_R._Ford_%28CVN-78%29_on_25_March_2022_%28220325-N-CO784-2240%29.JPG",
+			"page": "https://commons.wikimedia.org/wiki/File:Boeing_FA-18E_Super_Hornet_of_VFA-87_lands_aboard_USS_Gerald_R._Ford_(CVN-78)_on_25_March_2022_(220325-N-CO784-2240).JPG",
+			"licence": "Commons {{PD-USGov-Military-Navy}}; source {{ID-USMil|220325-N-CO784-2240|Navy|url=http://www.navy.mil/view_image.asp?id=2002973405/}}",
+			"use": "trace",
+			"file": "photos/commons220325-CO784-2240.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "deck arresting gear: from the island, high, steeply down onto part of the landing area, jet in the wires",
+			"pixels": [
+				3593,
+				2566
+			],
+			"note": "Round deck fittings where the pendants enter the deck (four in a row) and the engaged pendant, with the landing-area lines for a pose. Deployed-era fit (flight deck certification, March 2022). Spoilers: only part of the landing area; no deck edge on the near side.",
+			"sha256": "2940ac10dbd929557dd29c0523ddb61fd3ea65d15943185ef67397ca83ef726c",
+			"bytes": 1762235
+		},
+		{
+			"id": "dvids9570909",
+			"number": "VIRIN 260315-D-D0477-1382; DVIDS 9570909",
+			"title": "USS Gerald R. Ford (CVN 78) Flight Ops During Operation Epic Fury [Image 7 of 10]",
+			"authors": "U.S. Navy photo (no photographer named; DoD VIRIN; Commons: 'Courtesy')",
+			"date": "2026-03-15",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2603/9570909.jpg",
+			"page": "https://www.dvidshub.net/image/9570909/uss-gerald-r-ford-cvn-78-flight-ops-during-operation-epic-fury",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Flight Ops During Operation Epic Fury [Image 10 of 10], must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 10 of 10; this image is Image 7 of 10]",
+			"use": "trace",
+			"file": "photos/dvids9570909.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "deck Fresnel lens: from the island across the landing area toward the port deck edge, high (about 30 deg down)",
+			"pixels": [
+				5903,
+				3935
+			],
+			"note": "The lens on its platform outboard of the landing area, with its datum and wave-off lights, plus the landing-area lines and foul line for the pose. Spoilers: the lens is motion-blurred; an E-2D landing. Credit: no photographer named (DoD VIRIN, 'Courtesy' on Commons).",
+			"sha256": "0b00c403c933d3e63c5c4eb8dda887583d92322489625d5758cfaff8d81f0f9d",
+			"bytes": 3712128
+		},
+		{
+			"id": "dvids7456172",
+			"number": "VIRIN 221008-N-HJ055-1007; DVIDS 7456172",
+			"title": "Flight Ops [Image 19 of 25]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 3rd Class Jacob Mattingly",
+			"date": "2022-10-08",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2210/7456172.jpg",
+			"page": "https://www.dvidshub.net/image/7456172/flight-ops",
+			"licence": "PUBLIC DOMAIN - This work, Flight Ops [Image 25 of 25], by PO2 Jacob Mattingly, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 25 of 25; this image is Image 19 of 25]",
+			"use": "trace",
+			"file": "photos/dvids7456172.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "deck catapult control: at deck level, an in-deck catapult control console raised open; a deck-edge antenna mast raised behind (portrait)",
+			"pixels": [
+				3456,
+				5184
+			],
+			"note": "The in-deck catapult console (a hatch that opens out of the deck) and its painted surround; a folding deck-edge antenna mast in its raised position. Deployed fit (first deployment). No Ford photo of a raised catapult control cab (the bubble) was found; the consoles shown here and in 9467123 and 6456859 may be the Ford's equivalent. Spoilers: crew round the console.",
+			"sha256": "f916cf891cdd9266b900a7f873e00cb0ee4cf263e685717bb7f4b4f52ff6a54f",
+			"bytes": 1830112
+		},
+		{
+			"id": "kennedy10011976",
+			"number": "VIRIN 261014-N-AW439-1246; DVIDS 10011976",
+			"title": "PCU John F. Kennedy First F-35C Launch [Image 4 of 7]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist Seaman Kaitlyn Bailey",
+			"date": "2026-10-14",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2610/10011976.jpg",
+			"page": "https://www.dvidshub.net/image/10011976/pcu-john-f-kennedy-first-f-35c-launch",
+			"licence": "PUBLIC DOMAIN - This work, PCU John F. Kennedy First F-35C Launch [Image 7 of 7], by SN Kaitlyn Bailey, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 7 of 7; this image is Image 4 of 7]",
+			"use": "trace",
+			"file": "photos/kennedy10011976.jpg",
+			"ship": {
+				"hull": "CVN-79"
+			},
+			"shows": "deck blast deflector raised: side-on, deck height, an F-35C on the catapult in front of it",
+			"pixels": [
+				5836,
+				3891
+			],
+			"note": "Kennedy (CVN-79), decision 27: the raised blast deflector's panel modules, height and rake seen side-on, the catapult track and holdback area. For the shared deck fittings only. Spoilers: the jet hides the deflector's middle; no catapult control cab in frame.",
+			"sha256": "e714e24bdde8736de959ca01eaeb582a2d879654d5d8728e83b62b81ec7a62f9",
+			"bytes": 5454049
+		},
+		{
+			"id": "dvids9411247",
+			"number": "VIRIN 251117-N-KB999-3187; DVIDS 9411247",
+			"title": "USS Gerald R. Ford (CVN 78) Daily Operations [Image 27 of 27]",
+			"authors": "U.S. Navy photo (DVIDS credits Seaman Mark Rundio)",
+			"date": "2025-11-17",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2511/9411247.jpg",
+			"page": "https://www.dvidshub.net/image/9411247/uss-gerald-r-ford-cvn-78-daily-operations",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Daily Operations [Image 27 of 27], by SN Mark Rundio, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright.",
+			"use": "trace",
+			"file": "photos/dvids9411247.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "deck arresting gear and port deck edge: from the island, high, looking across the landing area toward the port deck edge",
+			"pixels": [
+				4870,
+				3247
+			],
+			"note": "A pendant's port-end deck fitting, the port deck edge with life-raft racks and a lowered (folded) deck-edge antenna, the landing-area lines. Deployed fit. Spoilers: an EA-18G trapping; shadow of the island across the right of the frame.",
+			"sha256": "59253d66126530246aee7d910ece5dde9552b127525e5b867e19740cdd4a72d1",
+			"bytes": 3217837
+		},
+		{
+			"id": "dvids1034896",
+			"number": "VIRIN 131011-N-KK576-015; DVIDS 1034896; Commons File:USS Gerald R. Ford (CVN-78) in dry dock front view 2013.JPG",
+			"title": "Dry dock flooding [Image 3 of 3]",
+			"authors": "U.S. Navy photo by Mass Communication Specialist 1st Class Joshua J. Wahl/Released",
+			"date": "2013-10-11",
+			"url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/USS_Gerald_R._Ford_%28CVN-78%29_in_dry_dock_front_view_2013.JPG",
+			"page": "https://www.dvidshub.net/image/1034896/dry-dock-flooding ; https://commons.wikimedia.org/wiki/File:USS_Gerald_R._Ford_(CVN-78)_in_dry_dock_front_view_2013.JPG",
+			"licence": "PUBLIC DOMAIN - This work, Dry dock flooding [Image 3 of 3], by CPO Joshua Wahl, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. Commons copy: {{PD-USGov-Military-Navy}}; source Exif}}",
+			"use": "trace",
+			"file": "photos/dvids1034896.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "bow: dead ahead in Dry Dock 12 as it floods, level (from the dock floor end), the whole underwater bow to the keel",
+			"pixels": [
+				3000,
+				2002
+			],
+			"note": "Bulbous bow, stem to the keel blocks, the red underwater hull and the boot-top, forward flare above; the dock walls give straight references. Fit: October 2013 float-out (island fitted, mast incomplete): hull form only. The Commons original was downloaded (3000x2002, 1,557,688 bytes); the public DVIDS original (https://d34w7g4gy10iej.cloudfront.net/photos/1310/1034896.jpg, 3000x2002, 1,946,458 bytes) is the same frame in a different file.",
+			"sha256": "b1ac1263ccb17311464e9a9a5e72baa5422391e4c98e33f7af1860455646df0f",
+			"bytes": 1557688
+		}
+	]
+}

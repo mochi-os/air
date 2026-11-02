@@ -1,0 +1,4707 @@
+{
+	"about": "Every dimension the Ford build uses, with its source (an id in references.json), where in it, and the text it stands on (quote), which sources.py finds in the fetched copy. Values are in the source's own units; the build converts (1 ft = 0.3048 m). Where sources disagree, every value is recorded, with the one the model uses and why. Positions no source states are measured from the imagery and photos and go in layout, each saying what it was fitted to.",
+	"overall": {
+		"length": {
+			"values": [
+				{
+					"value": 1092,
+					"unit": "ft",
+					"source": "allhands",
+					"where": "Technical Specifications",
+					"quote": "Length: 1,092 feet",
+					"also": "globalsecurity (\"Overall Length 1092 ft\"); nhhc (\"1,092 Ft\")"
+				},
+				{
+					"value": 1106,
+					"unit": "ft",
+					"source": "airlant",
+					"where": "Command History & Facts",
+					"quote": "Length: 1,106 feet"
+				}
+			],
+			"use": "neither: the deck plan is measured off noaa2022, and the length follows",
+			"note": "1,092 ft is also the Nimitz's figure in the same tables. The orthos measure the flight deck at about 331-334 m, which fits 1,092 ft (332.8 m); what the 1,106 ft figure measures is not stated."
+		},
+		"waterline": {
+			"value": 1040,
+			"unit": "ft",
+			"source": "globalsecurity",
+			"where": "Specifications table",
+			"quote": "Waterline Length 1040 ft",
+			"note": "relays the Naval Vessel Register's withdrawn field; the same as the Nimitz's"
+		},
+		"beam": {
+			"waterline": {
+				"value": 134,
+				"unit": "ft",
+				"source": "allhands",
+				"where": "Technical Specifications",
+				"quote": "Beam: 134 feet",
+				"also": "globalsecurity (\"Waterline Beam 134 ft\")"
+			},
+			"deck": {
+				"value": 256,
+				"unit": "ft",
+				"source": "allhands",
+				"where": "Technical Specifications",
+				"quote": "Flight Deck Width: 256 feet",
+				"also": "airlant (\"Flight Deck Width : 256 feet\"); globalsecurity (\"Extreme Beam 256 ft\")",
+				"note": "the Nimitz's is 252 ft"
+			}
+		},
+		"draught": {
+			"navigational": {
+				"value": 39,
+				"unit": "ft",
+				"source": "globalsecurity",
+				"where": "Specifications table",
+				"quote": "Maximum Navigational Draft 39 ft",
+				"note": "its metric 7.8 m is wrong: 39 ft is 11.9 m. Decision 23: the model floats at her deployed load, read from the draught marks in deployed photos and checked against this."
+			},
+			"limit": {
+				"value": 41,
+				"unit": "ft",
+				"source": "globalsecurity",
+				"where": "Specifications table",
+				"quote": "Draft Limit 41 ft"
+			}
+		},
+		"displacement": {
+			"value": 100000,
+			"unit": "long tons",
+			"source": "allhands",
+			"where": "Technical Specifications",
+			"quote": "Approximately 100,000 long tons full load",
+			"also": "airlant"
+		},
+		"area": {
+			"values": [
+				{
+					"value": 4.6,
+					"unit": "acres",
+					"source": "airpac2025",
+					"where": "slide 24",
+					"quote": "4.6 acres"
+				},
+				{
+					"value": 5,
+					"unit": "acres",
+					"source": "pms378",
+					"where": "slide 3",
+					"quote": "5 acres"
+				},
+				{
+					"value": 214000,
+					"unit": "ft2",
+					"source": "globalcompare",
+					"where": "Flight Deck row",
+					"quote": "214,000"
+				}
+			],
+			"use": "a check only: the planform measured off noaa2022 gives its own area",
+			"note": "the totals disagree; each puts the Ford about 2-10% above the Nimitz."
+		}
+	},
+	"hull": {
+		"form": {
+			"value": "Nimitz",
+			"unit": "",
+			"source": "dote2017",
+			"where": "System",
+			"quote": "same hull form as the CVN 68 Nimitz class",
+			"also": "dote2019 (\"same hull form as the CVN 68 Nimitz-class\"); crs (\"uses the basic Nimitz-class hull form\")",
+			"note": "no public lines, offsets or tank reports for CVN-68/77/78: the underwater hull is shaped from the 2013 dry-dock photos, at 1 m (decision 10)"
+		},
+		"draught": {
+			"deployed": {
+				"value": 37.7,
+				"unit": "ft",
+				"source": "souda2023",
+				"where": "stem draught marks, at the waterline",
+				"method": "the waterline lies 0.25-0.35 ft below the foot of the 38 (95 px per foot in a 2x crop of x 900-1400, y 4650-5200); the 8's reflection fixes the water",
+				"note": "forward draught only: no stern marks have been read, so the trim is unknown. A second deployed reading, DVIDS 9628694 (Souda Bay, 22-23 Feb 2026), gives about 37 ft 7 in; the homecoming of 16 May 2026 (DVIDS 9688116) about 34 ft, extrapolated past fouled numerals, at the end of a deployment. Decision 23 floats the model at the deployed draught; the navigational maximum is 39 ft (overall.draught.navigational)."
+			}
+		},
+		"boot": {
+			"value": 41.8,
+			"unit": "ft draught mark",
+			"source": "souda2023",
+			"where": "stem, top edge of the black boot-topping",
+			"method": "0.8 ft above the foot of the 41 numeral in the same crop",
+			"note": "where the black waterline band meets the grey at the stem (decision 17)"
+		}
+	},
+	"island": {
+		"length": {
+			"value": 60,
+			"unit": "ft",
+			"source": "wtkr",
+			"where": "quoting Newport News Shipbuilding",
+			"quote": "60 feet long at the flight deck base",
+			"also": "hiiplace (\"The 60-foot long, 30-foot wide island\")"
+		},
+		"width": {
+			"value": 30,
+			"unit": "ft",
+			"source": "wtkr",
+			"where": "quoting Newport News Shipbuilding",
+			"quote": "30 feet wide",
+			"also": "hiiplace"
+		},
+		"height": {
+			"value": 72,
+			"unit": "ft",
+			"source": "wtkr",
+			"where": "quoting Newport News Shipbuilding",
+			"quote": "rises 72 feet above flight deck",
+			"note": "above the flight deck; whether this includes the mast is not stated"
+		},
+		"levels": {
+			"value": 9,
+			"unit": "",
+			"source": "wtkr",
+			"where": "quoting Newport News Shipbuilding",
+			"quote": "nine individual deck levels"
+		},
+		"placement": {
+			"value": "140 ft aft, 3 ft outboard",
+			"unit": "",
+			"source": "hiiisland",
+			"where": "body",
+			"quote": "140 feet further aft and 3 feet further outboard than previous carriers",
+			"note": "relative to an unnamed earlier carrier, so the island is placed from the imagery; this is a check"
+		},
+		"taller": {
+			"value": 20,
+			"unit": "ft",
+			"source": "hiiisland",
+			"where": "body",
+			"quote": "stands 20 feet taller than islands on previous aircraft carriers"
+		}
+	},
+	"elevators": {
+		"count": {
+			"value": 3,
+			"unit": "",
+			"source": "pms378",
+			"where": "slide 3",
+			"quote": "3x 200,000 lbs",
+			"also": "airpac2025 (\"Aircraft Elevators (3)\"); nhhc (\"3 elevators\")"
+		},
+		"length": {
+			"value": 85,
+			"unit": "ft",
+			"source": "hiielevator",
+			"where": "body",
+			"quote": "It measures 85 feet long and 52 feet wide"
+		},
+		"width": {
+			"value": 52,
+			"unit": "ft",
+			"source": "hiielevator",
+			"where": "body",
+			"quote": "It measures 85 feet long and 52 feet wide"
+		},
+		"note": "where each sits is measured off the imagery: two to starboard forward of the island and one to port (pms378 slide 3's top view; noaa2022)."
+	},
+	"arresting": {
+		"wires": {
+			"value": 3,
+			"unit": "",
+			"source": "globalsecurity",
+			"where": "Specifications table",
+			"quote": "3 Wires plus Barricade",
+			"also": "pms378 slide 3 (\"Arresting Gear & Barricade\" 3)"
+		},
+		"engines": {
+			"value": "four engines and three wires, as CVN 76 and CVN 77",
+			"unit": "",
+			"source": "dote2025",
+			"where": "System",
+			"quote": "consisting of four engines and three wires",
+			"note": "the planned positions were similar to CVN 76's and 77's; the fourth engine was never fitted. The wires' positions are measured from the photos (decision 10: 0.1 m)"
+		},
+		"target": {
+			"value": 2,
+			"unit": "wire",
+			"source": "navair22296",
+			"where": "paragraph on the two wire",
+			"quote": "aiming for the number 2 wire is standard operating procedure",
+			"note": "said of CVN 77, whose layout the Ford's follows (dote2025: three wires, as CVN 76 and 77). Where the lens puts the hook on a 3-wire deck is not public; the 2001 LSO NATOPS gives only the 4-wire rule (halfway between the 2 and 3)."
+		}
+	},
+	"catapults": {
+		"count": {
+			"value": 4,
+			"unit": "",
+			"source": "airpac2025",
+			"where": "slide 24",
+			"quote": "4, Electromagnetic"
+		},
+		"note": "two on the bow and two in the waist; their tracks are measured off noaa2022."
+	},
+	"markings": {
+		"lens": {
+			"value": 430,
+			"unit": "ft",
+			"source": "navair5150",
+			"where": "WP 003 11",
+			"quote": "430 feet forward of the ramp",
+			"note": "the shore-training layout's lens face from the ramp lights: a check on the Ford's lens position, not her own value"
+		},
+		"centreline": {
+			"value": 3,
+			"unit": "ft",
+			"source": "navair5150",
+			"where": "WP 006 04, 3-16",
+			"quote": "The deck centerline markings shall consist of a 3-foot-wide stripe symmetrical about the deck centerline with alternating yellow and white sections",
+			"note": "the shore-training form; the Ford's own is measured off noaa2022, which shows the same pattern"
+		},
+		"sections": {
+			"value": 45,
+			"unit": "ft",
+			"source": "navair5150",
+			"where": "WP 006 04, 3-16",
+			"quote": "The sections shall be 45 feet long beginning with a yellow section",
+			"note": "the shore-training form; the Ford's own is measured off noaa2022, which shows the same pattern"
+		},
+		"edges": {
+			"outer": {
+				"value": 1,
+				"unit": "ft",
+				"source": "navair5150",
+				"where": "WP 006 04, 3-17",
+				"quote": "The outer edge stripes shall be one-foot wide with the outer edge 40 feet from the deck centerline",
+				"note": "the shore-training form; the Ford's own is measured off noaa2022, which shows the same pattern"
+			},
+			"inner": {
+				"value": 3,
+				"unit": "ft",
+				"source": "navair5150",
+				"where": "WP 006 04, 3-17",
+				"quote": "The inner edge stripes shall be 3 feet wide with the inner edges 28 feet from the deck centerline",
+				"note": "the shore-training form; the Ford's own is measured off noaa2022, which shows the same pattern"
+			},
+			"bars": {
+				"value": [
+					10,
+					75
+				],
+				"unit": "ft (width, interval)",
+				"source": "navair5150",
+				"where": "WP 006 04, 3-17",
+				"quote": "The two edge stripes shall be connected at 75-foot intervals by 10-foot-wide white bars",
+				"note": "the shore-training form; the Ford's own is measured off noaa2022, which shows the same pattern"
+			}
+		},
+		"ramp": {
+			"value": 10,
+			"unit": "ft",
+			"source": "navair5150",
+			"where": "WP 006 04, 3-14",
+			"quote": "The ramp athwartship marking is a 10-foot-wide white stripe across the ramp end of the deck",
+			"note": "the shore-training form; the Ford's own is measured off noaa2022, which shows the same pattern"
+		},
+		"colours": {
+			"value": "white, the centreline's sections alternately yellow",
+			"unit": "",
+			"source": "navair5150",
+			"where": "WP 006 04, 3-13",
+			"quote": "The markings shall be non-retroreflective white except for the sections of the centerline markings which are non-retroreflective yellow",
+			"note": "the paint's colours on the Ford are measured from her photos"
+		},
+		"note": "the Ford's own landing-area markings are measured off noaa2022; navair5150 WP 006 04 gives the shore-training form to compare."
+	},
+	"radio": {
+		"tacan": {
+			"value": "GF",
+			"unit": "",
+			"source": "acp113",
+			"where": "Annex A, TACAN identifiers decoded",
+			"quote": "GF GERALD R FORD(CVN)(78)(USA-N)",
+			"note": "chapter 3: ships' identifiers are two letters. The channel is set per operation and is not public."
+		}
+	},
+	"layout": {
+		"about": "Placements no source states, in the contract frame (x forward, y up, z starboard, metres; origin on the centreline at the deployed waterline, midway between the flight deck's aft and forward extremes). The deck plan is measured on the orthophotos noaa2022 (primary), noaa2018 and VBMP 2025, each corrected for relief and the grid's scale; their frame F (origin where the centreline meets the stern edge) gives x = F - 165.8585. Each entry says what it was measured on; provisional ones wait for the photo match (stage 5).",
+		"deck": {
+			"height": 18.27,
+			"thickness": 1.0,
+			"outline": [
+				[
+					-166.29,
+					-15.862
+				],
+				[
+					-138.745,
+					-17.877
+				],
+				[
+					-138.874,
+					-35.168
+				],
+				[
+					-136.736,
+					-36.545
+				],
+				[
+					-120.056,
+					-37.474
+				],
+				[
+					-117.824,
+					-21.443
+				],
+				[
+					-96.447,
+					-21.268
+				],
+				[
+					-94.165,
+					-37.5
+				],
+				[
+					-89.869,
+					-37.504
+				],
+				[
+					-83.246,
+					-39.976
+				],
+				[
+					-66.019,
+					-40.05
+				],
+				[
+					-58.577,
+					-36.899
+				],
+				[
+					10.408,
+					-36.882
+				],
+				[
+					30.623,
+					-42.154
+				],
+				[
+					55.761,
+					-42.694
+				],
+				[
+					59.499,
+					-41.177
+				],
+				[
+					85.165,
+					-22.195
+				],
+				[
+					95.581,
+					-19.064
+				],
+				[
+					166.29,
+					-12.604
+				],
+				[
+					166.101,
+					12.666
+				],
+				[
+					106.689,
+					18.01
+				],
+				[
+					88.703,
+					19.397
+				],
+				[
+					68.924,
+					36.641
+				],
+				[
+					24.705,
+					36.792
+				],
+				[
+					22.027,
+					20.508
+				],
+				[
+					-0.152,
+					20.453
+				],
+				[
+					-2.785,
+					36.803
+				],
+				[
+					-51.161,
+					36.873
+				],
+				[
+					-53.548,
+					20.506
+				],
+				[
+					-75.263,
+					20.507
+				],
+				[
+					-77.524,
+					36.809
+				],
+				[
+					-109.109,
+					36.777
+				],
+				[
+					-109.113,
+					36.399
+				],
+				[
+					-151.65,
+					36.988
+				],
+				[
+					-150.8,
+					22.25
+				],
+				[
+					-163.872,
+					21.721
+				]
+			],
+			"texture": {
+				"x": [
+					-167,
+					167
+				],
+				"z": [
+					-44.5,
+					39.0
+				],
+				"pixels": [
+					8192,
+					2048
+				]
+			},
+			"marks": {
+				"stern_port": [
+					-166.29,
+					-15.862
+				],
+				"quarter_port": [
+					-138.745,
+					-17.877
+				],
+				"angled_port": [
+					55.761,
+					-42.694
+				],
+				"bow_port": [
+					166.29,
+					-12.604
+				],
+				"bow_starboard": [
+					166.101,
+					12.666
+				],
+				"stern_starboard": [
+					-163.872,
+					21.721
+				]
+			}
+		},
+		"notes": {
+			"deck": "height: 18.27 m above the deployed waterline (spread 0.23 m), the raised elevators' top edges against the boot top in three starboard beams (dvids9167788, dvids9142613, dvids7473567) through cameras solved on the deck plan; 18.66 at the starboard bow corner (research/hull). thickness: the edge plate's depth, not measured. outline: 29 corners and joins of robust line fits to the deck edges (noaa2022; 0.1-0.6 m, 1.5-1.9 m at the port bow's transition), the elevators' platforms left out. The starboard quarter's notch: both stern photos (dvids7107228, dvids7107229) show the deck stepping down to a lower platform aft of x -151; its inboard forward corner is the photo match's (-150.8, 22.25), 0.24 m from two photos (research/match), not the orthophoto's (-151.8, 17.0). texture: about 4.1 cm a texel, square texels.",
+			"fittings": "provisional until the photos measure them: the shuttle on dvids9478858, the deflector raised side-on on kennedy10011976",
+			"elevators": "outline: robust line fits to each platform's four sides (noaa2022; elevator 3's inboard side noaa2018), about 0.1-0.6 m; trapezoids, wider at the deck edge. thickness and travel are not measured, and nothing drives the elevators yet (decision 14).",
+			"catapults": "track: the track's centre traced every metre (noaa2018 band, noaa2022 rails), its ends where the track's signature falls to half (noaa2018, 0.5 m; catapult 3's forward end 1.5 m). battery: 1 m forward of the track's aft end, and stroke: the track less battery and 6 m of braking, inside the 94-103 m the sources give (decision 24): both provisional. deflector: its four sides fitted lowered (noaa2018, outside the 2022-2026 era; VBMP 2025 differs by up to 0.8 m); hinge is its forward edge, square to the ship, not to the track.",
+			"landing": "line: the painted centreline's centre (noaa2022, rms 0.07 m over 415 profiles); angle positive to port. ramp: the ramp stripe's forward edge on the centreline. wires: x along the line from the ramp; no pendant is rigged in any image: wire 3 is the row of its supports (noaa2022, 0.15 m), wires 1 and 2 placed by wire 3's offsets from the painted dash pairs and sheave covers marking all three (0.25 m). ends: the sheave covers at the landing area's edges, at the deck's height.",
+			"paint": "provisional: the orthophotos' colour balance is not the deck's; the photo match measures them",
+			"markings": "Measured on noaa2022 in the landing frame: the centreline, the edge stripes' centres and the cross bars' places; widths from the shore standard (markings), which the stripes' measured spacing matches to 3 cm. The centreline's sections: 13.69 m measured (45 ft), yellow from u -6.5 every 27.38 m. The ramp stripe runs from the port deck edge to the starboard outer stripe. Each wire's pair of dashes, 1.8 x 0.5 m, 6.1 m either side of the centreline (noaa2022 and VBMP 2025). The bow's 78 traced on the 4 cm noaa2022 view. Not yet: the foul lines (none seen), the taxi lines, the elevators' edges.",
+			"hull": "Measured from the photos through cameras solved on the deck plan (research/hull: report.md, hull.json's evidence, the overlays). stem: the level starboard beam's silhouette, 13.1 m aft of the deck's bow tip on the waterline (x 153.0); transom: x -163.0, its bottom y -1.1, its outline cast from dvids7107228; waterline 316.0 m. stations: the waterplane's half-breadth from the boot top seen from above (two photos, the middle body calibrated to the cited beam), below it superellipse sections to a flat keel at the deployed draught (assumed: no photo shows them); forward of x 105 the flare to the deck is assumed. knuckle: the top of the sunlit hull side in the level starboard beam (0.2 m), carried forward of the sponsons at the gallery's foot; the port side mirrors starboard, unmeasured. gallery: the deck-edge band's depth, starboard (0.1-0.2 m); port copies it, unmeasured. bulb: its heights and width from the 2013 dry-dock photo; its length and nose (x 157) assumed.",
+			"island": "Measured from the photos (research/island: report.md, island.json's evidence, the overlays): a bundle of six photos' cameras on the deck plan's anchors (astern, ahead and near-nadir strong, 3.5-5.9 px), 15 triangulated points (domes, yardarm tips, the pole; 0.13-0.45 m) and 75 silhouette pixels cast onto planes another view fixes (cross-checks 0.2-0.5 m). Base 18.60 x 9.35 m at x -101.45 to -82.85, z 24.05 to 33.40; roof 21.5-22.5 m above the deck; pole top 45.3 m. About 1 m: the aft platforms' z extents, the mast house's width, the mast's x (0.5-1.3 m), the upper block's inboard step. Not modelled: the trunk's small platforms, whips, railings."
+		},
+		"elevators": [
+			{
+				"number": 1,
+				"side": "starboard",
+				"outline": [
+					[
+						-75.263,
+						20.507
+					],
+					[
+						-53.548,
+						20.506
+					],
+					[
+						-51.161,
+						36.873
+					],
+					[
+						-77.524,
+						36.809
+					]
+				],
+				"thickness": 1.0,
+				"travel": 8.0
+			},
+			{
+				"number": 2,
+				"side": "starboard",
+				"outline": [
+					[
+						-0.152,
+						20.453
+					],
+					[
+						22.027,
+						20.508
+					],
+					[
+						24.705,
+						36.792
+					],
+					[
+						-2.785,
+						36.803
+					]
+				],
+				"thickness": 1.0,
+				"travel": 8.0
+			},
+			{
+				"number": 3,
+				"side": "port",
+				"outline": [
+					[
+						-117.824,
+						-21.443
+					],
+					[
+						-96.447,
+						-21.268
+					],
+					[
+						-94.165,
+						-37.5
+					],
+					[
+						-120.056,
+						-37.474
+					]
+				],
+				"thickness": 1.0,
+				"travel": 8.0
+			}
+		],
+		"catapults": [
+			{
+				"number": 1,
+				"track": [
+					[
+						57.437,
+						17.315
+					],
+					[
+						163.63,
+						7.547
+					]
+				],
+				"battery": [
+					58.433,
+					17.223
+				],
+				"stroke": 99.5,
+				"deflector": {
+					"hinge": [
+						[
+							36.661,
+							13.463
+						],
+						[
+							36.657,
+							25.003
+						]
+					],
+					"depth": 4.65
+				}
+			},
+			{
+				"number": 2,
+				"track": [
+					[
+						57.157,
+						-4.129
+					],
+					[
+						163.695,
+						-7.722
+					]
+				],
+				"battery": [
+					58.157,
+					-4.163
+				],
+				"stroke": 99.5,
+				"deflector": {
+					"hinge": [
+						[
+							36.565,
+							-10.276
+						],
+						[
+							36.558,
+							2.214
+						]
+					],
+					"depth": 5.01
+				}
+			},
+			{
+				"number": 3,
+				"track": [
+					[
+						-36.739,
+						-20.509
+					],
+					[
+						72.141,
+						-29.513
+					]
+				],
+				"battery": [
+					-35.742,
+					-20.591
+				],
+				"stroke": 99.5,
+				"deflector": {
+					"hinge": [
+						[
+							-54.2,
+							-25.173
+						],
+						[
+							-54.321,
+							-13.574
+						]
+					],
+					"depth": 4.71
+				}
+			},
+			{
+				"number": 4,
+				"track": [
+					[
+						-55.306,
+						-32.563
+					],
+					[
+						51.601,
+						-32.653
+					]
+				],
+				"battery": [
+					-54.306,
+					-32.564
+				],
+				"stroke": 99.5,
+				"deflector": {
+					"hinge": [
+						[
+							-72.701,
+							-38.837
+						],
+						[
+							-72.629,
+							-27.045
+						]
+					],
+					"depth": 4.92
+				}
+			}
+		],
+		"fittings": {
+			"shuttle": {
+				"length": 1.5,
+				"width": 0.6,
+				"height": 0.3
+			},
+			"deflector": {
+				"thickness": 0.4,
+				"angle": 50
+			}
+		},
+		"landing": {
+			"line": [
+				[
+					-157.803,
+					6.199
+				],
+				[
+					49.509,
+					-27.295
+				]
+			],
+			"angle": 9.178,
+			"ramp": -160.709,
+			"wires": [
+				{
+					"number": 1,
+					"x": 57.04,
+					"ends": [
+						[
+							-106.325,
+							18.27,
+							-14.324
+						],
+						[
+							-102.481,
+							18.27,
+							9.467
+						]
+					]
+				},
+				{
+					"number": 2,
+					"x": 69.17,
+					"ends": [
+						[
+							-94.35,
+							18.27,
+							-16.259
+						],
+						[
+							-90.506,
+							18.27,
+							7.532
+						]
+					]
+				},
+				{
+					"number": 3,
+					"x": 81.9,
+					"ends": [
+						[
+							-81.775,
+							18.27,
+							-18.291
+						],
+						[
+							-77.931,
+							18.27,
+							5.501
+						]
+					]
+				}
+			],
+			"target": 2
+		},
+		"paint": {
+			"deck": [
+				86,
+				88,
+				92
+			],
+			"white": [
+				222,
+				222,
+				216
+			],
+			"yellow": [
+				214,
+				168,
+				46
+			],
+			"slot": [
+				38,
+				39,
+				41
+			]
+		},
+		"markings": [
+			{
+				"name": "centreline",
+				"kind": "line",
+				"points": [
+					[
+						-160.252,
+						6.595
+					],
+					[
+						56.438,
+						-28.415
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "centreline_yellow_1",
+				"kind": "line",
+				"points": [
+					[
+						-160.252,
+						6.595
+					],
+					[
+						-151.101,
+						5.116
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					214,
+					168,
+					46
+				]
+			},
+			{
+				"name": "centreline_yellow_2",
+				"kind": "line",
+				"points": [
+					[
+						-137.586,
+						2.933
+					],
+					[
+						-124.071,
+						0.749
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					214,
+					168,
+					46
+				]
+			},
+			{
+				"name": "centreline_yellow_3",
+				"kind": "line",
+				"points": [
+					[
+						-110.556,
+						-1.434
+					],
+					[
+						-97.042,
+						-3.618
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					214,
+					168,
+					46
+				]
+			},
+			{
+				"name": "centreline_yellow_4",
+				"kind": "line",
+				"points": [
+					[
+						-83.527,
+						-5.801
+					],
+					[
+						-70.012,
+						-7.985
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					214,
+					168,
+					46
+				]
+			},
+			{
+				"name": "centreline_yellow_5",
+				"kind": "line",
+				"points": [
+					[
+						-56.497,
+						-10.168
+					],
+					[
+						-42.983,
+						-12.352
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					214,
+					168,
+					46
+				]
+			},
+			{
+				"name": "centreline_yellow_6",
+				"kind": "line",
+				"points": [
+					[
+						-29.468,
+						-14.535
+					],
+					[
+						-15.953,
+						-16.719
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					214,
+					168,
+					46
+				]
+			},
+			{
+				"name": "centreline_yellow_7",
+				"kind": "line",
+				"points": [
+					[
+						-2.438,
+						-18.902
+					],
+					[
+						11.076,
+						-21.086
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					214,
+					168,
+					46
+				]
+			},
+			{
+				"name": "centreline_yellow_8",
+				"kind": "line",
+				"points": [
+					[
+						24.591,
+						-23.269
+					],
+					[
+						38.106,
+						-25.453
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					214,
+					168,
+					46
+				]
+			},
+			{
+				"name": "centreline_yellow_9",
+				"kind": "line",
+				"points": [
+					[
+						51.621,
+						-27.636
+					],
+					[
+						56.438,
+						-28.415
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					214,
+					168,
+					46
+				]
+			},
+			{
+				"name": "edge_port_inner",
+				"kind": "line",
+				"points": [
+					[
+						-159.806,
+						-2.611
+					],
+					[
+						32.703,
+						-33.683
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "edge_port_outer",
+				"kind": "line",
+				"points": [
+					[
+						-159.801,
+						-5.681
+					],
+					[
+						32.211,
+						-36.695
+					]
+				],
+				"width": 0.305,
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "edge_starboard_inner",
+				"kind": "line",
+				"points": [
+					[
+						-159.799,
+						15.652
+					],
+					[
+						69.72,
+						-21.462
+					]
+				],
+				"width": 0.914,
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "edge_starboard_outer",
+				"kind": "line",
+				"points": [
+					[
+						-159.798,
+						18.76
+					],
+					[
+						69.718,
+						-18.375
+					]
+				],
+				"width": 0.305,
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_port_1",
+				"kind": "area",
+				"outline": [
+					[
+						-125.357,
+						-7.688
+					],
+					[
+						-122.348,
+						-8.174
+					],
+					[
+						-122.932,
+						-11.785
+					],
+					[
+						-125.941,
+						-11.299
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_starboard_1",
+				"kind": "area",
+				"outline": [
+					[
+						-122.635,
+						9.162
+					],
+					[
+						-119.626,
+						8.676
+					],
+					[
+						-119.042,
+						12.287
+					],
+					[
+						-122.051,
+						12.773
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_port_2",
+				"kind": "area",
+				"outline": [
+					[
+						-102.908,
+						-11.315
+					],
+					[
+						-99.899,
+						-11.801
+					],
+					[
+						-100.483,
+						-15.412
+					],
+					[
+						-103.492,
+						-14.926
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_starboard_2",
+				"kind": "area",
+				"outline": [
+					[
+						-100.186,
+						5.535
+					],
+					[
+						-97.177,
+						5.049
+					],
+					[
+						-96.594,
+						8.66
+					],
+					[
+						-99.603,
+						9.146
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_port_3",
+				"kind": "area",
+				"outline": [
+					[
+						-57.813,
+						-18.601
+					],
+					[
+						-54.804,
+						-19.087
+					],
+					[
+						-55.387,
+						-22.698
+					],
+					[
+						-58.396,
+						-22.212
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_starboard_3",
+				"kind": "area",
+				"outline": [
+					[
+						-55.091,
+						-1.75
+					],
+					[
+						-52.082,
+						-2.237
+					],
+					[
+						-51.498,
+						1.374
+					],
+					[
+						-54.507,
+						1.86
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_port_4",
+				"kind": "area",
+				"outline": [
+					[
+						-35.236,
+						-22.248
+					],
+					[
+						-32.227,
+						-22.735
+					],
+					[
+						-32.81,
+						-26.345
+					],
+					[
+						-35.819,
+						-25.859
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_starboard_4",
+				"kind": "area",
+				"outline": [
+					[
+						-32.513,
+						-5.398
+					],
+					[
+						-29.504,
+						-5.884
+					],
+					[
+						-28.921,
+						-2.273
+					],
+					[
+						-31.93,
+						-1.787
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_port_5",
+				"kind": "area",
+				"outline": [
+					[
+						-12.659,
+						-25.896
+					],
+					[
+						-9.65,
+						-26.382
+					],
+					[
+						-10.233,
+						-29.993
+					],
+					[
+						-13.242,
+						-29.507
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_starboard_5",
+				"kind": "area",
+				"outline": [
+					[
+						-9.936,
+						-9.046
+					],
+					[
+						-6.927,
+						-9.532
+					],
+					[
+						-6.344,
+						-5.921
+					],
+					[
+						-9.353,
+						-5.435
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_port_6",
+				"kind": "area",
+				"outline": [
+					[
+						9.889,
+						-29.539
+					],
+					[
+						12.898,
+						-30.025
+					],
+					[
+						12.315,
+						-33.636
+					],
+					[
+						9.306,
+						-33.15
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_starboard_6",
+				"kind": "area",
+				"outline": [
+					[
+						12.611,
+						-12.689
+					],
+					[
+						15.62,
+						-13.175
+					],
+					[
+						16.204,
+						-9.564
+					],
+					[
+						13.195,
+						-9.078
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_port_7",
+				"kind": "area",
+				"outline": [
+					[
+						32.496,
+						-33.191
+					],
+					[
+						35.505,
+						-33.678
+					],
+					[
+						34.921,
+						-37.288
+					],
+					[
+						31.912,
+						-36.802
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_starboard_7",
+				"kind": "area",
+				"outline": [
+					[
+						35.218,
+						-16.341
+					],
+					[
+						38.227,
+						-16.827
+					],
+					[
+						38.811,
+						-13.216
+					],
+					[
+						35.802,
+						-12.73
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_port_8",
+				"kind": "area",
+				"outline": [
+					[
+						55.053,
+						-36.836
+					],
+					[
+						58.062,
+						-37.322
+					],
+					[
+						57.479,
+						-40.933
+					],
+					[
+						54.47,
+						-40.447
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "bar_starboard_8",
+				"kind": "area",
+				"outline": [
+					[
+						57.776,
+						-19.986
+					],
+					[
+						60.785,
+						-20.472
+					],
+					[
+						61.368,
+						-16.861
+					],
+					[
+						58.359,
+						-16.375
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "ramp",
+				"kind": "line",
+				"points": [
+					[
+						-166.2,
+						-17.769
+					],
+					[
+						-160.268,
+						18.947
+					]
+				],
+				"width": 3.048,
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "wire_1_dash_port",
+				"kind": "area",
+				"outline": [
+					[
+						-109.479,
+						-8.041
+					],
+					[
+						-107.702,
+						-8.328
+					],
+					[
+						-107.622,
+						-7.834
+					],
+					[
+						-109.399,
+						-7.547
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "wire_1_dash_starboard",
+				"kind": "area",
+				"outline": [
+					[
+						-107.533,
+						4.003
+					],
+					[
+						-105.756,
+						3.716
+					],
+					[
+						-105.676,
+						4.21
+					],
+					[
+						-107.453,
+						4.497
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "wire_2_dash_port",
+				"kind": "area",
+				"outline": [
+					[
+						-97.466,
+						-9.982
+					],
+					[
+						-95.689,
+						-10.269
+					],
+					[
+						-95.609,
+						-9.775
+					],
+					[
+						-97.386,
+						-9.488
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "wire_2_dash_starboard",
+				"kind": "area",
+				"outline": [
+					[
+						-95.52,
+						2.062
+					],
+					[
+						-93.743,
+						1.775
+					],
+					[
+						-93.663,
+						2.269
+					],
+					[
+						-95.44,
+						2.556
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "wire_3_dash_port",
+				"kind": "area",
+				"outline": [
+					[
+						-84.787,
+						-12.03
+					],
+					[
+						-83.01,
+						-12.317
+					],
+					[
+						-82.93,
+						-11.824
+					],
+					[
+						-84.707,
+						-11.536
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "wire_3_dash_starboard",
+				"kind": "area",
+				"outline": [
+					[
+						-82.841,
+						0.014
+					],
+					[
+						-81.064,
+						-0.273
+					],
+					[
+						-80.985,
+						0.22
+					],
+					[
+						-82.761,
+						0.507
+					]
+				],
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "catapult_1_slot",
+				"kind": "line",
+				"points": [
+					[
+						57.437,
+						17.315
+					],
+					[
+						163.63,
+						7.547
+					]
+				],
+				"width": 0.3,
+				"colour": [
+					38,
+					39,
+					41
+				]
+			},
+			{
+				"name": "catapult_2_slot",
+				"kind": "line",
+				"points": [
+					[
+						57.157,
+						-4.129
+					],
+					[
+						163.695,
+						-7.722
+					]
+				],
+				"width": 0.3,
+				"colour": [
+					38,
+					39,
+					41
+				]
+			},
+			{
+				"name": "catapult_3_slot",
+				"kind": "line",
+				"points": [
+					[
+						-36.739,
+						-20.509
+					],
+					[
+						72.141,
+						-29.513
+					]
+				],
+				"width": 0.3,
+				"colour": [
+					38,
+					39,
+					41
+				]
+			},
+			{
+				"name": "catapult_4_slot",
+				"kind": "line",
+				"points": [
+					[
+						-55.306,
+						-32.563
+					],
+					[
+						51.601,
+						-32.653
+					]
+				],
+				"width": 0.3,
+				"colour": [
+					38,
+					39,
+					41
+				]
+			},
+			{
+				"name": "numeral_7",
+				"kind": "line",
+				"width": 0.3,
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"points": [
+					[
+						151.941,
+						-5.28
+					],
+					[
+						161.941,
+						-2.0
+					],
+					[
+						161.941,
+						-5.28
+					],
+					[
+						163.541,
+						-5.28
+					],
+					[
+						163.541,
+						-0.6
+					],
+					[
+						162.141,
+						-0.6
+					],
+					[
+						152.141,
+						-4.0
+					],
+					[
+						151.941,
+						-5.28
+					]
+				]
+			},
+			{
+				"name": "numeral_8_outer",
+				"kind": "line",
+				"width": 0.3,
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"points": [
+					[
+						152.341,
+						0.6
+					],
+					[
+						158.141,
+						0.6
+					],
+					[
+						158.742,
+						1.0
+					],
+					[
+						159.341,
+						0.6
+					],
+					[
+						162.941,
+						0.6
+					],
+					[
+						163.541,
+						1.2
+					],
+					[
+						163.541,
+						4.6
+					],
+					[
+						162.941,
+						5.2
+					],
+					[
+						159.341,
+						5.2
+					],
+					[
+						158.742,
+						4.8
+					],
+					[
+						158.141,
+						5.2
+					],
+					[
+						152.341,
+						5.2
+					],
+					[
+						151.742,
+						4.6
+					],
+					[
+						151.742,
+						1.2
+					],
+					[
+						152.341,
+						0.6
+					]
+				]
+			},
+			{
+				"name": "numeral_8_aft",
+				"kind": "line",
+				"width": 0.3,
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"points": [
+					[
+						153.421,
+						1.6
+					],
+					[
+						157.661,
+						1.6
+					],
+					[
+						158.141,
+						2.08
+					],
+					[
+						158.141,
+						3.72
+					],
+					[
+						157.661,
+						4.2
+					],
+					[
+						153.421,
+						4.2
+					],
+					[
+						152.941,
+						3.72
+					],
+					[
+						152.941,
+						2.08
+					],
+					[
+						153.421,
+						1.6
+					]
+				]
+			},
+			{
+				"name": "numeral_8_forward",
+				"kind": "line",
+				"width": 0.3,
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"points": [
+					[
+						160.021,
+						1.6
+					],
+					[
+						161.661,
+						1.6
+					],
+					[
+						162.141,
+						2.08
+					],
+					[
+						162.141,
+						3.72
+					],
+					[
+						161.661,
+						4.2
+					],
+					[
+						160.021,
+						4.2
+					],
+					[
+						159.541,
+						3.72
+					],
+					[
+						159.541,
+						2.08
+					],
+					[
+						160.021,
+						1.6
+					]
+				]
+			}
+		],
+		"hull": {
+			"boot": 1.2497,
+			"transom": {
+				"x": -163.0,
+				"points": [
+					[
+						-1.1,
+						0.0
+					],
+					[
+						-0.96,
+						10.42
+					],
+					[
+						-0.82,
+						12.55
+					],
+					[
+						-0.69,
+						13.65
+					],
+					[
+						-0.55,
+						14.35
+					],
+					[
+						-0.41,
+						14.74
+					],
+					[
+						-0.27,
+						14.93
+					],
+					[
+						-0.14,
+						14.99
+					],
+					[
+						0.0,
+						15.0
+					],
+					[
+						1.25,
+						15.0
+					],
+					[
+						5.25,
+						15.0
+					]
+				]
+			},
+			"stations": [
+				{
+					"x": -155,
+					"points": [
+						[
+							-3.58,
+							2.73
+						],
+						[
+							-3.13,
+							11.65
+						],
+						[
+							-2.69,
+							13.48
+						],
+						[
+							-2.24,
+							14.43
+						],
+						[
+							-1.79,
+							14.93
+						],
+						[
+							-1.34,
+							15.17
+						],
+						[
+							-0.9,
+							15.28
+						],
+						[
+							-0.45,
+							15.3
+						],
+						[
+							0.0,
+							15.31
+						],
+						[
+							1.25,
+							15.31
+						],
+						[
+							5.25,
+							15.31
+						]
+					]
+				},
+				{
+					"x": -145,
+					"points": [
+						[
+							-6.31,
+							3.45
+						],
+						[
+							-5.52,
+							12.93
+						],
+						[
+							-4.73,
+							14.51
+						],
+						[
+							-3.95,
+							15.22
+						],
+						[
+							-3.16,
+							15.56
+						],
+						[
+							-2.37,
+							15.71
+						],
+						[
+							-1.58,
+							15.76
+						],
+						[
+							-0.79,
+							15.77
+						],
+						[
+							0.0,
+							15.77
+						],
+						[
+							1.25,
+							15.77
+						],
+						[
+							5.25,
+							15.77
+						]
+					]
+				},
+				{
+					"x": -135,
+					"points": [
+						[
+							-8.58,
+							4.76
+						],
+						[
+							-7.51,
+							14.04
+						],
+						[
+							-6.44,
+							15.39
+						],
+						[
+							-5.37,
+							15.95
+						],
+						[
+							-4.29,
+							16.19
+						],
+						[
+							-3.22,
+							16.27
+						],
+						[
+							-2.15,
+							16.3
+						],
+						[
+							-1.07,
+							16.3
+						],
+						[
+							0.0,
+							16.3
+						],
+						[
+							1.25,
+							16.3
+						],
+						[
+							5.25,
+							16.3
+						]
+					]
+				},
+				{
+					"x": -120,
+					"points": [
+						[
+							-10.95,
+							6.08
+						],
+						[
+							-9.58,
+							15.72
+						],
+						[
+							-8.22,
+							16.82
+						],
+						[
+							-6.85,
+							17.21
+						],
+						[
+							-5.48,
+							17.35
+						],
+						[
+							-4.11,
+							17.39
+						],
+						[
+							-2.74,
+							17.4
+						],
+						[
+							-1.37,
+							17.4
+						],
+						[
+							0.0,
+							17.4
+						],
+						[
+							1.25,
+							17.4
+						],
+						[
+							4.94,
+							17.4
+						]
+					]
+				},
+				{
+					"x": -100,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							17.79
+						],
+						[
+							-8.62,
+							18.64
+						],
+						[
+							-7.18,
+							18.89
+						],
+						[
+							-5.74,
+							18.96
+						],
+						[
+							-4.31,
+							18.98
+						],
+						[
+							-2.87,
+							18.98
+						],
+						[
+							-1.44,
+							18.98
+						],
+						[
+							0.0,
+							18.98
+						],
+						[
+							1.25,
+							18.98
+						],
+						[
+							4.95,
+							18.98
+						]
+					]
+				},
+				{
+					"x": -80,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							18.92
+						],
+						[
+							-8.62,
+							19.56
+						],
+						[
+							-7.18,
+							19.72
+						],
+						[
+							-5.74,
+							19.75
+						],
+						[
+							-4.31,
+							19.76
+						],
+						[
+							-2.87,
+							19.76
+						],
+						[
+							-1.44,
+							19.76
+						],
+						[
+							0.0,
+							19.76
+						],
+						[
+							1.25,
+							19.76
+						],
+						[
+							5.39,
+							19.76
+						]
+					]
+				},
+				{
+					"x": -60,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							19.59
+						],
+						[
+							-8.62,
+							20.07
+						],
+						[
+							-7.18,
+							20.17
+						],
+						[
+							-5.74,
+							20.19
+						],
+						[
+							-4.31,
+							20.19
+						],
+						[
+							-2.87,
+							20.19
+						],
+						[
+							-1.44,
+							20.19
+						],
+						[
+							0.0,
+							20.19
+						],
+						[
+							1.25,
+							20.19
+						],
+						[
+							5.88,
+							20.19
+						]
+					]
+				},
+				{
+					"x": -30,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							19.84
+						],
+						[
+							-8.62,
+							20.33
+						],
+						[
+							-7.18,
+							20.43
+						],
+						[
+							-5.74,
+							20.45
+						],
+						[
+							-4.31,
+							20.45
+						],
+						[
+							-2.87,
+							20.45
+						],
+						[
+							-1.44,
+							20.45
+						],
+						[
+							0.0,
+							20.45
+						],
+						[
+							1.25,
+							20.45
+						],
+						[
+							5.1,
+							20.45
+						]
+					]
+				},
+				{
+					"x": 0,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							19.93
+						],
+						[
+							-8.62,
+							20.42
+						],
+						[
+							-7.18,
+							20.52
+						],
+						[
+							-5.74,
+							20.54
+						],
+						[
+							-4.31,
+							20.54
+						],
+						[
+							-2.87,
+							20.54
+						],
+						[
+							-1.44,
+							20.54
+						],
+						[
+							0.0,
+							20.54
+						],
+						[
+							1.25,
+							20.54
+						],
+						[
+							5.83,
+							20.54
+						]
+					]
+				},
+				{
+					"x": 30,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							19.09
+						],
+						[
+							-8.62,
+							19.57
+						],
+						[
+							-7.18,
+							19.66
+						],
+						[
+							-5.74,
+							19.68
+						],
+						[
+							-4.31,
+							19.68
+						],
+						[
+							-2.87,
+							19.68
+						],
+						[
+							-1.44,
+							19.68
+						],
+						[
+							0.0,
+							19.68
+						],
+						[
+							1.25,
+							19.68
+						],
+						[
+							4.98,
+							19.68
+						]
+					]
+				},
+				{
+					"x": 50,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							17.44
+						],
+						[
+							-8.62,
+							17.96
+						],
+						[
+							-7.18,
+							18.07
+						],
+						[
+							-5.74,
+							18.1
+						],
+						[
+							-4.31,
+							18.1
+						],
+						[
+							-2.87,
+							18.1
+						],
+						[
+							-1.44,
+							18.1
+						],
+						[
+							0.0,
+							18.1
+						],
+						[
+							1.25,
+							18.1
+						],
+						[
+							4.53,
+							18.1
+						]
+					]
+				},
+				{
+					"x": 70,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							14.95
+						],
+						[
+							-8.62,
+							15.58
+						],
+						[
+							-7.18,
+							15.76
+						],
+						[
+							-5.74,
+							15.8
+						],
+						[
+							-4.31,
+							15.81
+						],
+						[
+							-2.87,
+							15.81
+						],
+						[
+							-1.44,
+							15.81
+						],
+						[
+							0.0,
+							15.81
+						],
+						[
+							1.25,
+							15.81
+						],
+						[
+							5.37,
+							15.81
+						]
+					]
+				},
+				{
+					"x": 90,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							11.63
+						],
+						[
+							-8.62,
+							12.36
+						],
+						[
+							-7.18,
+							12.61
+						],
+						[
+							-5.74,
+							12.69
+						],
+						[
+							-4.31,
+							12.72
+						],
+						[
+							-2.87,
+							12.72
+						],
+						[
+							-1.44,
+							12.72
+						],
+						[
+							0.0,
+							12.72
+						],
+						[
+							1.25,
+							12.72
+						],
+						[
+							6.39,
+							12.72
+						]
+					]
+				},
+				{
+					"x": 105,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							8.34
+						],
+						[
+							-8.62,
+							9.07
+						],
+						[
+							-7.18,
+							9.37
+						],
+						[
+							-5.74,
+							9.48
+						],
+						[
+							-4.31,
+							9.52
+						],
+						[
+							-2.87,
+							9.53
+						],
+						[
+							-1.44,
+							9.53
+						],
+						[
+							0.0,
+							9.53
+						],
+						[
+							1.25,
+							9.53
+						],
+						[
+							4.78,
+							10.12
+						],
+						[
+							7.55,
+							11.19
+						],
+						[
+							10.33,
+							12.58
+						],
+						[
+							13.11,
+							14.22
+						],
+						[
+							15.89,
+							16.08
+						],
+						[
+							18.66,
+							18.14
+						]
+					]
+				},
+				{
+					"x": 120,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							5.86
+						],
+						[
+							-8.62,
+							6.62
+						],
+						[
+							-7.18,
+							6.98
+						],
+						[
+							-5.74,
+							7.15
+						],
+						[
+							-4.31,
+							7.23
+						],
+						[
+							-2.87,
+							7.25
+						],
+						[
+							-1.44,
+							7.26
+						],
+						[
+							0.0,
+							7.26
+						],
+						[
+							1.25,
+							7.26
+						],
+						[
+							4.78,
+							7.91
+						],
+						[
+							7.55,
+							9.1
+						],
+						[
+							10.33,
+							10.64
+						],
+						[
+							13.11,
+							12.46
+						],
+						[
+							15.89,
+							14.53
+						],
+						[
+							18.66,
+							16.81
+						]
+					]
+				},
+				{
+					"x": 135,
+					"points": [
+						[
+							-11.49,
+							0.0
+						],
+						[
+							-10.05,
+							2.79
+						],
+						[
+							-8.62,
+							3.37
+						],
+						[
+							-7.18,
+							3.7
+						],
+						[
+							-5.74,
+							3.89
+						],
+						[
+							-4.31,
+							4.0
+						],
+						[
+							-2.87,
+							4.06
+						],
+						[
+							-1.44,
+							4.08
+						],
+						[
+							0.0,
+							4.08
+						],
+						[
+							1.25,
+							4.08
+						],
+						[
+							4.78,
+							4.85
+						],
+						[
+							7.55,
+							6.27
+						],
+						[
+							10.33,
+							8.1
+						],
+						[
+							13.11,
+							10.28
+						],
+						[
+							15.89,
+							12.74
+						],
+						[
+							18.66,
+							15.46
+						]
+					]
+				},
+				{
+					"x": 145,
+					"points": [
+						[
+							-11.12,
+							0.0
+						],
+						[
+							-9.73,
+							1.07
+						],
+						[
+							-8.34,
+							1.42
+						],
+						[
+							-6.95,
+							1.64
+						],
+						[
+							-5.56,
+							1.79
+						],
+						[
+							-4.17,
+							1.89
+						],
+						[
+							-2.78,
+							1.96
+						],
+						[
+							-1.39,
+							1.99
+						],
+						[
+							0.0,
+							2.0
+						],
+						[
+							1.25,
+							2.0
+						],
+						[
+							4.78,
+							2.85
+						],
+						[
+							7.55,
+							4.42
+						],
+						[
+							10.33,
+							6.44
+						],
+						[
+							13.11,
+							8.84
+						],
+						[
+							15.89,
+							11.56
+						],
+						[
+							18.66,
+							14.56
+						]
+					]
+				},
+				{
+					"x": 150,
+					"points": [
+						[
+							-10.74,
+							0.0
+						],
+						[
+							-9.4,
+							0.41
+						],
+						[
+							-8.06,
+							0.54
+						],
+						[
+							-6.71,
+							0.62
+						],
+						[
+							-5.37,
+							0.68
+						],
+						[
+							-4.03,
+							0.72
+						],
+						[
+							-2.69,
+							0.74
+						],
+						[
+							-1.34,
+							0.75
+						],
+						[
+							0.0,
+							0.76
+						],
+						[
+							1.25,
+							0.76
+						],
+						[
+							4.78,
+							1.67
+						],
+						[
+							7.55,
+							3.33
+						],
+						[
+							10.33,
+							5.48
+						],
+						[
+							13.11,
+							8.03
+						],
+						[
+							15.89,
+							10.92
+						],
+						[
+							18.66,
+							14.11
+						]
+					]
+				}
+			],
+			"stem": [
+				[
+					135.0,
+					-11.49
+				],
+				[
+					148.0,
+					-11.2
+				],
+				[
+					153.0,
+					-10.4
+				],
+				[
+					156.0,
+					-8.5
+				],
+				[
+					157.0,
+					-6.2
+				],
+				[
+					156.5,
+					-4.0
+				],
+				[
+					155.0,
+					-1.7
+				],
+				[
+					153.0374370973958,
+					0.0
+				],
+				[
+					153.32,
+					1.12
+				],
+				[
+					153.46,
+					2.24
+				],
+				[
+					153.62,
+					2.79
+				],
+				[
+					153.69,
+					3.35
+				],
+				[
+					153.84,
+					3.91
+				],
+				[
+					154.03,
+					4.47
+				],
+				[
+					154.27,
+					5.03
+				],
+				[
+					154.56,
+					5.59
+				],
+				[
+					154.9,
+					6.14
+				],
+				[
+					155.26,
+					6.7
+				],
+				[
+					155.7,
+					7.26
+				],
+				[
+					156.19,
+					7.82
+				],
+				[
+					156.29,
+					8.38
+				],
+				[
+					157.07,
+					8.93
+				],
+				[
+					157.76,
+					9.49
+				],
+				[
+					158.55,
+					10.05
+				],
+				[
+					159.19,
+					10.61
+				],
+				[
+					160.17,
+					11.17
+				],
+				[
+					160.94,
+					11.73
+				],
+				[
+					161.8,
+					12.29
+				],
+				[
+					162.57,
+					12.85
+				],
+				[
+					163.09,
+					13.41
+				],
+				[
+					163.96,
+					13.98
+				],
+				[
+					164.53,
+					14.54
+				],
+				[
+					165.36,
+					15.1
+				],
+				[
+					166.04,
+					15.67
+				],
+				[
+					166.2,
+					16.24
+				],
+				[
+					166.2,
+					16.8
+				],
+				[
+					166.2,
+					17.37
+				],
+				[
+					166.2,
+					17.94
+				],
+				[
+					166.2,
+					18.66
+				]
+			],
+			"knuckle": {
+				"port": [
+					[
+						-133.61,
+						5.25,
+						-16.4
+					],
+					[
+						-126.43,
+						4.78,
+						-16.93
+					],
+					[
+						-122.81,
+						4.89,
+						-17.19
+					],
+					[
+						-119.18,
+						4.96,
+						-17.47
+					],
+					[
+						-115.53,
+						5.0,
+						-17.8
+					],
+					[
+						-111.87,
+						4.98,
+						-18.13
+					],
+					[
+						-108.18,
+						4.99,
+						-18.42
+					],
+					[
+						-104.48,
+						4.99,
+						-18.68
+					],
+					[
+						-100.76,
+						4.95,
+						-18.93
+					],
+					[
+						-97.03,
+						4.97,
+						-19.13
+					],
+					[
+						-93.28,
+						4.97,
+						-19.32
+					],
+					[
+						-89.51,
+						4.93,
+						-19.5
+					],
+					[
+						-85.72,
+						4.93,
+						-19.65
+					],
+					[
+						-81.91,
+						5.05,
+						-19.73
+					],
+					[
+						-78.08,
+						5.74,
+						-19.84
+					],
+					[
+						-74.24,
+						5.89,
+						-19.97
+					],
+					[
+						-70.38,
+						5.89,
+						-19.92
+					],
+					[
+						-66.49,
+						5.89,
+						-20.06
+					],
+					[
+						-62.59,
+						5.87,
+						-20.15
+					],
+					[
+						-58.68,
+						5.88,
+						-20.23
+					],
+					[
+						-54.74,
+						5.88,
+						-20.36
+					],
+					[
+						-50.78,
+						5.62,
+						-20.39
+					],
+					[
+						-46.81,
+						5.18,
+						-20.36
+					],
+					[
+						-42.82,
+						4.44,
+						-20.37
+					],
+					[
+						-38.8,
+						4.43,
+						-20.43
+					],
+					[
+						-34.76,
+						4.37,
+						-20.54
+					],
+					[
+						-30.7,
+						5.1,
+						-20.46
+					],
+					[
+						-26.62,
+						5.08,
+						-20.4
+					],
+					[
+						-22.51,
+						5.1,
+						-20.44
+					],
+					[
+						-18.4,
+						4.06,
+						-20.51
+					],
+					[
+						-1.68,
+						5.8,
+						-20.54
+					],
+					[
+						2.55,
+						5.88,
+						-20.53
+					],
+					[
+						6.81,
+						5.84,
+						-20.51
+					],
+					[
+						11.08,
+						5.8,
+						-20.44
+					],
+					[
+						32.82,
+						4.86,
+						-19.44
+					],
+					[
+						37.23,
+						3.87,
+						-19.14
+					],
+					[
+						41.67,
+						3.75,
+						-18.88
+					],
+					[
+						46.15,
+						4.73,
+						-18.5
+					],
+					[
+						50.64,
+						4.5,
+						-18.05
+					],
+					[
+						55.16,
+						4.52,
+						-17.66
+					],
+					[
+						59.71,
+						4.36,
+						-16.94
+					],
+					[
+						64.28,
+						4.54,
+						-16.44
+					],
+					[
+						73.51,
+						5.88,
+						-15.37
+					],
+					[
+						92.29,
+						6.46,
+						-12.01
+					],
+					[
+						97.04,
+						5.9,
+						-10.83
+					],
+					[
+						101.83,
+						5.38,
+						-10.05
+					],
+					[
+						105,
+						16.7,
+						-0.0
+					],
+					[
+						120,
+						16.7,
+						-0.0
+					],
+					[
+						135,
+						16.7,
+						-0.0
+					],
+					[
+						150,
+						16.7,
+						-0.0
+					],
+					[
+						166.29,
+						16.7,
+						-0.0
+					]
+				],
+				"starboard": [
+					[
+						-133.61,
+						5.25,
+						16.4
+					],
+					[
+						-126.43,
+						4.78,
+						16.93
+					],
+					[
+						-122.81,
+						4.89,
+						17.19
+					],
+					[
+						-119.18,
+						4.96,
+						17.47
+					],
+					[
+						-115.53,
+						5.0,
+						17.8
+					],
+					[
+						-111.87,
+						4.98,
+						18.13
+					],
+					[
+						-108.18,
+						4.99,
+						18.42
+					],
+					[
+						-104.48,
+						4.99,
+						18.68
+					],
+					[
+						-100.76,
+						4.95,
+						18.93
+					],
+					[
+						-97.03,
+						4.97,
+						19.13
+					],
+					[
+						-93.28,
+						4.97,
+						19.32
+					],
+					[
+						-89.51,
+						4.93,
+						19.5
+					],
+					[
+						-85.72,
+						4.93,
+						19.65
+					],
+					[
+						-81.91,
+						5.05,
+						19.73
+					],
+					[
+						-78.08,
+						5.74,
+						19.84
+					],
+					[
+						-74.24,
+						5.89,
+						19.97
+					],
+					[
+						-70.38,
+						5.89,
+						19.92
+					],
+					[
+						-66.49,
+						5.89,
+						20.06
+					],
+					[
+						-62.59,
+						5.87,
+						20.15
+					],
+					[
+						-58.68,
+						5.88,
+						20.23
+					],
+					[
+						-54.74,
+						5.88,
+						20.36
+					],
+					[
+						-50.78,
+						5.62,
+						20.39
+					],
+					[
+						-46.81,
+						5.18,
+						20.36
+					],
+					[
+						-42.82,
+						4.44,
+						20.37
+					],
+					[
+						-38.8,
+						4.43,
+						20.43
+					],
+					[
+						-34.76,
+						4.37,
+						20.54
+					],
+					[
+						-30.7,
+						5.1,
+						20.46
+					],
+					[
+						-26.62,
+						5.08,
+						20.4
+					],
+					[
+						-22.51,
+						5.1,
+						20.44
+					],
+					[
+						-18.4,
+						4.06,
+						20.51
+					],
+					[
+						-1.68,
+						5.8,
+						20.54
+					],
+					[
+						2.55,
+						5.88,
+						20.53
+					],
+					[
+						6.81,
+						5.84,
+						20.51
+					],
+					[
+						11.08,
+						5.8,
+						20.44
+					],
+					[
+						32.82,
+						4.86,
+						19.44
+					],
+					[
+						37.23,
+						3.87,
+						19.14
+					],
+					[
+						41.67,
+						3.75,
+						18.88
+					],
+					[
+						46.15,
+						4.73,
+						18.5
+					],
+					[
+						50.64,
+						4.5,
+						18.05
+					],
+					[
+						55.16,
+						4.52,
+						17.66
+					],
+					[
+						59.71,
+						4.36,
+						16.94
+					],
+					[
+						64.28,
+						4.54,
+						16.44
+					],
+					[
+						73.51,
+						5.88,
+						15.37
+					],
+					[
+						92.29,
+						6.46,
+						12.01
+					],
+					[
+						97.04,
+						5.9,
+						10.83
+					],
+					[
+						101.83,
+						5.38,
+						10.05
+					],
+					[
+						105,
+						16.7,
+						0.0
+					],
+					[
+						120,
+						16.7,
+						0.0
+					],
+					[
+						135,
+						16.7,
+						0.0
+					],
+					[
+						150,
+						16.7,
+						0.0
+					],
+					[
+						166.29,
+						16.7,
+						0.0
+					]
+				]
+			},
+			"gallery": {
+				"starboard": [
+					[
+						-142.71,
+						2.23
+					],
+					[
+						-139.34,
+						2.28
+					],
+					[
+						-135.95,
+						2.23
+					],
+					[
+						-132.54,
+						2.23
+					],
+					[
+						-129.12,
+						2.27
+					],
+					[
+						-125.68,
+						2.25
+					],
+					[
+						-122.22,
+						2.23
+					],
+					[
+						-115.27,
+						2.47
+					],
+					[
+						-111.76,
+						2.47
+					],
+					[
+						-108.24,
+						2.47
+					],
+					[
+						-104.7,
+						2.47
+					],
+					[
+						-101.15,
+						2.43
+					],
+					[
+						-97.58,
+						2.43
+					],
+					[
+						-94.0,
+						2.19
+					],
+					[
+						-90.39,
+						2.18
+					],
+					[
+						-86.77,
+						2.19
+					],
+					[
+						-49.61,
+						2.15
+					],
+					[
+						-45.79,
+						2.56
+					],
+					[
+						-30.31,
+						2.16
+					],
+					[
+						-26.39,
+						2.16
+					],
+					[
+						-22.45,
+						2.18
+					],
+					[
+						-14.51,
+						2.2
+					],
+					[
+						-10.51,
+						2.17
+					],
+					[
+						-6.49,
+						2.14
+					],
+					[
+						26.49,
+						2.15
+					],
+					[
+						34.97,
+						2.2
+					],
+					[
+						56.6,
+						2.19
+					],
+					[
+						65.43,
+						2.22
+					],
+					[
+						93.11,
+						2.14
+					],
+					[
+						98.11,
+						2.13
+					],
+					[
+						103.16,
+						0.66
+					],
+					[
+						108.25,
+						0.77
+					],
+					[
+						113.41,
+						0.63
+					],
+					[
+						118.62,
+						0.62
+					],
+					[
+						123.87,
+						0.6
+					],
+					[
+						134.51,
+						0.62
+					],
+					[
+						139.9,
+						0.57
+					]
+				],
+				"port": [
+					[
+						-142.71,
+						2.23
+					],
+					[
+						-139.34,
+						2.28
+					],
+					[
+						-135.95,
+						2.23
+					],
+					[
+						-132.54,
+						2.23
+					],
+					[
+						-129.12,
+						2.27
+					],
+					[
+						-125.68,
+						2.25
+					],
+					[
+						-122.22,
+						2.23
+					],
+					[
+						-115.27,
+						2.47
+					],
+					[
+						-111.76,
+						2.47
+					],
+					[
+						-108.24,
+						2.47
+					],
+					[
+						-104.7,
+						2.47
+					],
+					[
+						-101.15,
+						2.43
+					],
+					[
+						-97.58,
+						2.43
+					],
+					[
+						-94.0,
+						2.19
+					],
+					[
+						-90.39,
+						2.18
+					],
+					[
+						-86.77,
+						2.19
+					],
+					[
+						-49.61,
+						2.15
+					],
+					[
+						-45.79,
+						2.56
+					],
+					[
+						-30.31,
+						2.16
+					],
+					[
+						-26.39,
+						2.16
+					],
+					[
+						-22.45,
+						2.18
+					],
+					[
+						-14.51,
+						2.2
+					],
+					[
+						-10.51,
+						2.17
+					],
+					[
+						-6.49,
+						2.14
+					],
+					[
+						26.49,
+						2.15
+					],
+					[
+						34.97,
+						2.2
+					],
+					[
+						56.6,
+						2.19
+					],
+					[
+						65.43,
+						2.22
+					],
+					[
+						93.11,
+						2.14
+					],
+					[
+						98.11,
+						2.13
+					],
+					[
+						103.16,
+						0.66
+					],
+					[
+						108.25,
+						0.77
+					],
+					[
+						113.41,
+						0.63
+					],
+					[
+						118.62,
+						0.62
+					],
+					[
+						123.87,
+						0.6
+					],
+					[
+						134.51,
+						0.62
+					],
+					[
+						139.9,
+						0.57
+					]
+				]
+			},
+			"bulb": {
+				"centre": [
+					151.0,
+					-6.2,
+					0.0
+				],
+				"length": 12.0,
+				"width": 5.46,
+				"height": 9.0
+			}
+		},
+		"island": {
+			"prisms": [
+				{
+					"name": "base",
+					"bottom": 18.27,
+					"top": 25.47,
+					"outline": [
+						[
+							-101.45,
+							24.05
+						],
+						[
+							-101.45,
+							33.4
+						],
+						[
+							-82.85,
+							33.4
+						],
+						[
+							-82.85,
+							24.05
+						]
+					]
+				},
+				{
+					"name": "level_two",
+					"bottom": 25.47,
+					"top": 27.77,
+					"outline": [
+						[
+							-101.45,
+							33.4
+						],
+						[
+							-80.8,
+							33.4
+						],
+						[
+							-80.8,
+							20.0
+						],
+						[
+							-92,
+							20.0
+						],
+						[
+							-92,
+							24.0
+						],
+						[
+							-101.45,
+							24.0
+						]
+					],
+					"upper": [
+						[
+							-101.45,
+							33.4
+						],
+						[
+							-79.2,
+							33.4
+						],
+						[
+							-79.2,
+							20.0
+						],
+						[
+							-92,
+							20.0
+						],
+						[
+							-92,
+							24.0
+						],
+						[
+							-101.45,
+							24.0
+						]
+					]
+				},
+				{
+					"name": "level_three",
+					"bottom": 27.77,
+					"top": 30.97,
+					"outline": [
+						[
+							-101.45,
+							33.4
+						],
+						[
+							-79.2,
+							33.4
+						],
+						[
+							-79.2,
+							20.0
+						],
+						[
+							-92,
+							20.0
+						],
+						[
+							-92,
+							24.0
+						],
+						[
+							-101.45,
+							24.0
+						]
+					],
+					"upper": [
+						[
+							-101.45,
+							33.4
+						],
+						[
+							-80.0,
+							33.4
+						],
+						[
+							-80.0,
+							20.0
+						],
+						[
+							-92,
+							20.0
+						],
+						[
+							-92,
+							24.0
+						],
+						[
+							-101.45,
+							24.0
+						]
+					]
+				},
+				{
+					"name": "aft_tower",
+					"bottom": 30.97,
+					"top": 34.67,
+					"outline": [
+						[
+							-101.45,
+							24.0
+						],
+						[
+							-101.45,
+							33.5
+						],
+						[
+							-96.6,
+							33.5
+						],
+						[
+							-96.6,
+							24.0
+						]
+					]
+				},
+				{
+					"name": "bridge",
+					"bottom": 30.97,
+					"top": 33.87,
+					"outline": [
+						[
+							-96.6,
+							19.8
+						],
+						[
+							-96.6,
+							39.0
+						],
+						[
+							-80.85,
+							39.0
+						],
+						[
+							-80.85,
+							19.8
+						]
+					]
+				},
+				{
+					"name": "flight_control",
+					"bottom": 33.87,
+					"top": 37.27,
+					"outline": [
+						[
+							-92,
+							26.8
+						],
+						[
+							-81.5,
+							26.8
+						],
+						[
+							-81.5,
+							19.8
+						],
+						[
+							-92,
+							19.8
+						]
+					],
+					"upper": [
+						[
+							-92,
+							26.8
+						],
+						[
+							-82.4,
+							26.8
+						],
+						[
+							-82.4,
+							19.8
+						],
+						[
+							-92,
+							19.8
+						]
+					]
+				},
+				{
+					"name": "upper_block",
+					"bottom": 33.87,
+					"top": 37.22,
+					"outline": [
+						[
+							-97.0,
+							33.5
+						],
+						[
+							-81.9,
+							33.5
+						],
+						[
+							-81.9,
+							26.8
+						],
+						[
+							-92,
+							26.8
+						],
+						[
+							-92,
+							24.0
+						],
+						[
+							-96.5,
+							24.0
+						],
+						[
+							-99.05,
+							29.0
+						]
+					]
+				},
+				{
+					"name": "upper_block_top",
+					"bottom": 37.22,
+					"top": 39.77,
+					"outline": [
+						[
+							-97.0,
+							33.5
+						],
+						[
+							-81.9,
+							33.5
+						],
+						[
+							-81.9,
+							26.8
+						],
+						[
+							-92,
+							26.8
+						],
+						[
+							-92,
+							24.0
+						],
+						[
+							-96.5,
+							24.0
+						],
+						[
+							-99.05,
+							29.0
+						]
+					],
+					"upper": [
+						[
+							-97.0,
+							33.5
+						],
+						[
+							-84.5,
+							33.5
+						],
+						[
+							-84.5,
+							26.8
+						],
+						[
+							-92,
+							26.8
+						],
+						[
+							-92,
+							24.0
+						],
+						[
+							-96.5,
+							24.0
+						],
+						[
+							-99.05,
+							29.0
+						]
+					]
+				},
+				{
+					"name": "upper_block_aft",
+					"bottom": 39.77,
+					"top": 40.77,
+					"outline": [
+						[
+							-97.0,
+							33.5
+						],
+						[
+							-92.3,
+							33.5
+						],
+						[
+							-92.3,
+							24.0
+						],
+						[
+							-96.5,
+							24.0
+						],
+						[
+							-99.05,
+							29.0
+						]
+					]
+				},
+				{
+					"name": "aft_platform_upper",
+					"bottom": 30.72,
+					"top": 31.17,
+					"outline": [
+						[
+							-106.0,
+							25.5
+						],
+						[
+							-106.0,
+							31.5
+						],
+						[
+							-101.45,
+							31.5
+						],
+						[
+							-101.45,
+							25.5
+						]
+					]
+				},
+				{
+					"name": "aft_platform_lower",
+					"bottom": 26.27,
+					"top": 26.77,
+					"outline": [
+						[
+							-105.9,
+							29.5
+						],
+						[
+							-105.9,
+							36.0
+						],
+						[
+							-101.45,
+							36.0
+						],
+						[
+							-101.45,
+							29.5
+						]
+					]
+				},
+				{
+					"name": "mast_platform_lower",
+					"bottom": 45.87,
+					"top": 46.37,
+					"outline": [
+						[
+							-93.0,
+							26.0
+						],
+						[
+							-93.0,
+							35.0
+						],
+						[
+							-87.2,
+							35.0
+						],
+						[
+							-87.2,
+							26.0
+						]
+					]
+				},
+				{
+					"name": "mast_yardarm_lower",
+					"bottom": 45.87,
+					"top": 46.37,
+					"outline": [
+						[
+							-90.8,
+							17.6
+						],
+						[
+							-90.8,
+							41.2
+						],
+						[
+							-88.6,
+							41.2
+						],
+						[
+							-88.6,
+							17.6
+						]
+					]
+				},
+				{
+					"name": "mast_house",
+					"bottom": 53.87,
+					"top": 56.57,
+					"outline": [
+						[
+							-94.2,
+							28.0
+						],
+						[
+							-94.2,
+							33.6
+						],
+						[
+							-86.0,
+							33.6
+						],
+						[
+							-86.0,
+							28.0
+						]
+					]
+				},
+				{
+					"name": "mast_yardarm_upper",
+					"bottom": 54.47,
+					"top": 54.97,
+					"outline": [
+						[
+							-91.2,
+							20.4
+						],
+						[
+							-91.2,
+							40.3
+						],
+						[
+							-89.0,
+							40.3
+						],
+						[
+							-89.0,
+							20.4
+						]
+					]
+				},
+				{
+					"name": "gaff",
+					"bottom": 56.07,
+					"top": 56.47,
+					"outline": [
+						[
+							-100.9,
+							30.2
+						],
+						[
+							-100.9,
+							30.8
+						],
+						[
+							-94.2,
+							30.8
+						],
+						[
+							-94.2,
+							30.2
+						]
+					]
+				}
+			],
+			"domes": [
+				{
+					"name": "roof_aft",
+					"centre": [
+						-95.1,
+						42.46,
+						28.67
+					],
+					"radius": 1.85,
+					"plinth": 1.69
+				},
+				{
+					"name": "roof_forward",
+					"centre": [
+						-85.56,
+						43.66,
+						29.97
+					],
+					"radius": 1.9,
+					"plinth": 3.89
+				},
+				{
+					"name": "port_large",
+					"centre": [
+						-83.37,
+						39.07,
+						22.88
+					],
+					"radius": 1.07,
+					"plinth": 1.8
+				},
+				{
+					"name": "port_small",
+					"centre": [
+						-84.19,
+						38.19,
+						20.57
+					],
+					"radius": 0.74,
+					"plinth": 0.92
+				},
+				{
+					"name": "starboard_large",
+					"centre": [
+						-82.09,
+						36.2,
+						35.33
+					],
+					"radius": 1.06,
+					"plinth": 2.33
+				},
+				{
+					"name": "starboard_small",
+					"centre": [
+						-83.78,
+						35.56,
+						37.29
+					],
+					"radius": 0.77,
+					"plinth": 1.69
+				},
+				{
+					"name": "aft_large",
+					"centre": [
+						-103.36,
+						28.32,
+						32.84
+					],
+					"radius": 1.14,
+					"plinth": 1.55
+				},
+				{
+					"name": "aft_small",
+					"centre": [
+						-103.51,
+						32.3,
+						28.55
+					],
+					"radius": 0.82,
+					"plinth": 1.13
+				},
+				{
+					"name": "mast_upper",
+					"centre": [
+						-90.16,
+						58.37,
+						30.46
+					],
+					"radius": 2.03,
+					"plinth": 1.8
+				},
+				{
+					"name": "mast_upper_port",
+					"centre": [
+						-90.15,
+						56.1,
+						24.45
+					],
+					"radius": 0.75,
+					"plinth": 1.13
+				},
+				{
+					"name": "mast_upper_starboard",
+					"centre": [
+						-90.02,
+						56.14,
+						36.43
+					],
+					"radius": 0.75,
+					"plinth": 1.17
+				}
+			],
+			"poles": [
+				{
+					"name": "mast_trunk",
+					"base": [
+						-91.0,
+						30.4
+					],
+					"bottom": 40.77,
+					"top": 53.87,
+					"radius": 2.0
+				},
+				{
+					"name": "pole",
+					"base": [
+						-94.56,
+						30.64
+					],
+					"bottom": 56.57,
+					"top": 63.57,
+					"radius": 0.5
+				},
+				{
+					"name": "pole_disc_lower",
+					"base": [
+						-94.56,
+						30.64
+					],
+					"bottom": 61.27,
+					"top": 61.67,
+					"radius": 1.55
+				},
+				{
+					"name": "pole_disc_upper",
+					"base": [
+						-94.56,
+						30.64
+					],
+					"bottom": 63.07,
+					"top": 63.37,
+					"radius": 0.95
+				}
+			]
+		}
+	}
+}

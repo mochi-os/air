@@ -24,7 +24,8 @@
 # not already know of.
 #
 # The catalogue (JSON):
-#   frame    model.Frame's spec
+#   frame    model.Frame's spec; its "symbol" is printed after every miss and its "plural" names the unit in
+#            page.py's prose ("in", "inches")
 #   points   {name: {"at": [3 numbers or null], "sigma": number or [3], "why": text}}: cited coordinates
 #   mirror   [left suffix, right suffix]: pairs solved as one point and its mirror image
 #   pose     {drive: value}: the pose every point is measured, cited and reported in (default:
@@ -34,11 +35,19 @@
 #            pairs need, and the one the cited points describe (the F/A-18C's: gear down)
 #   photos   {id: {"file": path under the catalogue's references folder, "pose": {drive: value, "joints": {joint: value}}
 #                  (a joint named there takes that value past its drive), "solve": false to leave it out,
-#                  "stores" and "clear" for skyline.py (its load; true where the background is clear blue sky or open sea),
+#                  "stores", "clear", "ground" and "masks" for skyline.py (its load; true where the background is clear blue sky
+#                  or open sea; true to leave out what lies under the horizon, false never to, absent to leave it out where
+#                  the pose has the gear down; polygons [[[x, y], ...], ...] in the photo's own pixels hiding what the model
+#                  does not carry),
 #                  "marks": {point: [x, y]}, "edges": {name: {"against": "outline" | curve name,
 #                  "points": [[x, y], ...], "snap": pixels}}, "locate": {name: [x, y, "plane=value"]}}}
 #   gate     {"edge": inches, "sigmas": n, "floor": inches, "field": degrees, "rms": pixels,
-#             "known": {"edge PHOTO:NAME" or "point NAME": why}}: what --check fails on (gate())
+#             "known": {"edge PHOTO:NAME" or "point NAME": why}}: what --check fails on (gate()); the
+#             inches are the frame's unit
+#   stores   for skyline.py: boxes round the stores the model does not carry (its header)
+#   skyline  for skyline.py (Settings: the regions, what makes a finding) and page.py ("notes", "posing")
+#   poses    for poses.py: {"joints": {name prefix: [low, high, step]}}, the joints it scans (scans())
+#   subject  for page.py: what the photos show ("aircraft")
 #
 # usage: python3 -I photos.py CATALOGUE.json MODEL.glb POINTS.json FEATURES.json [--json] [--check]
 #        [--overlays DIR] [--cameras FILE] [--sheets RENDERS DIR] [--only ID,ID]
@@ -414,13 +423,13 @@ def straighten(image, camera, centre, width):
 	return Image.fromarray(source[v.round().astype(int), u.round().astype(int)])
 
 
-def text(report):
+def text(report, symbol=mod.SYMBOL):
 	lines = []
 	for pid, p in report["photos"].items():
 		if not p["solved"]:
 			lines.append(f"photo {pid}: not solved")
 			continue
-		worst = f"{p['worst'][0]} {p['worst'][1]:.1f} in" if p["worst"] else "-"
+		worst = f"{p['worst'][0]} {p['worst'][1]:.1f} {symbol}" if p["worst"] else "-"
 		lines.append(f"photo {pid}: {p['marks']} marks, rms {p['rms']} px, field {p['field']} deg, k1 {p['k1']}, camera at {p['camera']}, worst {worst}")
 		if p["outliers"]:
 			lines.append(f"  marks missing by more than 5 sigma (check them): {', '.join(p['outliers'])}")
@@ -440,8 +449,8 @@ def text(report):
 		if e.get("missing"):
 			lines.append(f"edge {name:40s} against {e['against']:24s} {e['points']:3d} points: the model has no such curve")
 			continue
-		worst = f"{e['worst']:+6.2f} in" if e.get("signed", True) else f"{abs(e['worst']):6.2f} in, no side (a curve)"
-		lines.append(f"edge {name:40s} against {e['against']:24s} {e['points']:3d} points, median {e['median']:5.2f} in, worst {worst}")
+		worst = f"{e['worst']:+6.2f} {symbol}" if e.get("signed", True) else f"{abs(e['worst']):6.2f} {symbol}, no side (a curve)"
+		lines.append(f"edge {name:40s} against {e['against']:24s} {e['points']:3d} points, median {e['median']:5.2f} {symbol}, worst {worst}")
 	for name, l in report["locate"].items():
 		lines.append(f"locate {name}: {l}")
 	return "\n".join(lines)
@@ -454,7 +463,7 @@ def weak(field, rms, spec):
 	return field <= spec["field"] or rms > spec["rms"]
 
 
-def gate(report, spec):
+def gate(report, spec, symbol=mod.SYMBOL):
 	# What the match fails on, against the catalogue's gate: each traced edge
 	# whose median miss passes spec["edge"] inches, and each point the photos
 	# measure whose miss on any coordinate passes both spec["sigmas"] of its
@@ -463,7 +472,8 @@ def gate(report, spec):
 	# (spec["field"] degrees or less) or fitting its marks worse than
 	# spec["rms"] pixels judges no edge: its outlines away from its marks
 	# cannot judge a shape. Returns (failures, known, unjudged), each a list of
-	# (name, text); a miss spec["known"] names goes to known, with its why
+	# (name, text), its misses printed with symbol, the frame's unit; a miss
+	# spec["known"] names goes to known, with its why
 	failures, known, unjudged = [], [], []
 	accepted = spec.get("known", {})
 
@@ -479,13 +489,13 @@ def gate(report, spec):
 			add(f"edge {name}", "the model has no such curve")
 		elif e["median"] > spec["edge"]:
 			worst = f"{e['worst']:+.2f}" if e.get("signed", True) else f"{abs(e['worst']):.2f} (a distance from the build's curve, without a side)"
-			add(f"edge {name}", f"median miss {e['median']:.2f} in, worst {worst}")
+			add(f"edge {name}", f"median miss {e['median']:.2f} {symbol}, worst {worst}")
 	for name, p in sorted(report["points"].items()):
 		if "miss" not in p:
 			continue
 		over = [abs(m) > max(spec["sigmas"] * s, spec["floor"]) for m, s in zip(p["miss"], p["sigma"])]
 		if any(over):
-			add(f"point {name}", f"miss {p['miss']} in, uncertainty {p['sigma']} ({p['photos']} photos)")
+			add(f"point {name}", f"miss {p['miss']} {symbol}, uncertainty {p['sigma']} ({p['photos']} photos)")
 	return failures, known, unjudged
 
 
@@ -494,13 +504,13 @@ def main():
 	only = flags["only"].split(",") if "only" in flags else None
 	match = Match(*args[:4], only=only).solve(log=lambda m: print(m, file=sys.stderr))
 	report = match.report()
-	print(json.dumps(report, indent="\t") if flags.get("json") else text(report))
+	print(json.dumps(report, indent="\t") if flags.get("json") else text(report, match.frame.symbol))
 	failures = []
 	if flags.get("check"):
 		spec = json.loads(Path(args[0]).read_text()).get("gate")
 		if spec is None:
 			sys.exit("the catalogue has no gate")
-		failures, known, unjudged = gate(report, spec)
+		failures, known, unjudged = gate(report, spec, match.frame.symbol)
 		print("")
 		for heading, rows in (("unjudged (a weak camera)", unjudged), ("known", known), ("FAILED", failures)):
 			for name, why in rows:

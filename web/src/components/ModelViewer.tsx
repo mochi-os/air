@@ -22,6 +22,7 @@ import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_new_model_url from '../assets/fa18c-new.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
+import ford_new_model_url from '../assets/ford-new.glb?url'
 import nimitz_model_url from '../assets/nimitz.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import { model } from '../game/library'
@@ -51,6 +52,14 @@ const MODELS: Entry[] = [
   {
     name: 'stores.glb',
     url: stores_model_url,
+    prepare: (gltf: GLTF) => gltf.scene.clone(true),
+  },
+  // Our own Gerald R. Ford as tools/ford/build.py last built it, at rest:
+  // elevators up, deflectors flush. It replaces nimitz.glb when the engine
+  // moves to it.
+  {
+    name: 'ford-new.glb',
+    url: ford_new_model_url,
     prepare: (gltf: GLTF) => gltf.scene.clone(true),
   },
   {

@@ -12,18 +12,25 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
 
+SYMBOL = "in"       # the source unit as printed after a number
+PLURAL = "inches"   # and as a word, in prose
+
 
 class Frame:
 	# A project's coordinates (the sources' stations, waterlines and
 	# buttlines, say) and the model frame (metres, glTF axes). spec:
 	#   names   the three coordinates' names, as planes are written ("buttline=28")
 	#   unit    metres per source unit
+	#   symbol  the source unit as printed after a number (optional, "in")
+	#   plural  the source unit as a word, in prose (optional, "inches")
 	#   origin  the model frame's origin in source coordinates
 	#   axes    rows: each model axis (x, y, z) as a combination of the source coordinates
 	#   mirror  the source coordinate a mirrored pair differs in (optional)
 	def __init__(self, spec):
 		self.names = list(spec["names"])
 		self.unit = float(spec["unit"])
+		self.symbol = spec.get("symbol", SYMBOL)
+		self.plural = spec.get("plural", PLURAL)
 		self.origin = np.array(spec["origin"], float)
 		self.axes = np.array(spec["axes"], float)
 		if not np.allclose(self.axes @ self.axes.T, np.eye(3), atol=1e-9):

@@ -11,6 +11,8 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import page  # noqa: E402
+import skyline  # noqa: E402
+from test_verify import JET  # noqa: E402
 
 GATE = """photo dvids1: 9 marks
 unjudged (a weak camera): edge far:spine: camera far at field 1.0 deg, rms 4.0 px
@@ -46,6 +48,15 @@ class PageTest(unittest.TestCase):
 		self.assertLess(text.index("body, top"), text.index("body, side"))
 		self.assertLess(text.index("body, side"), text.index(">fin<"))
 
+	def test_coverage_settings(self):
+		# the catalogue's sectors give the body's rows, in their order; its label and stretch the cells' titles
+		summary = {"universe": [["body", 440, "hull"], ["body", 440, "deck"], ["body", 480, "deck"]], "regions": []}
+		settings = skyline.Settings({"skyline": {"stretch": 40, "label": "frame", "sectors": [[90, "deck"], [181, "hull"]]}})
+		text = page.coverage(summary, settings)
+		self.assertLess(text.index("body, deck"), text.index("body, hull"))
+		self.assertIn('<td class="none" title="body frame 480-520: no photo">', text)
+		self.assertNotIn("body, deck", page.coverage(summary))
+
 	def test_build(self):
 		# a run's outputs to a page: escaped text, images copied as JPEGs, the finding's sheet shown
 		with tempfile.TemporaryDirectory() as root:
@@ -78,6 +89,38 @@ class PageTest(unittest.TestCase):
 				self.assertTrue((out / "img" / name).exists(), name)
 			with Image.open(out / "img" / "p1-sky.jpg") as image:
 				self.assertEqual(image.width, page.WIDTH)
+			# the F/A-18C's wording at the defaults
+			for words in ("of the real aircraft,", "finds the aircraft's own outline", "Misses are in inches:", "misses by more than an inch (",
+				"green within 1 in, yellow within 2.5, magenta beyond", "across 24 in of stations", "posed as the aircraft stood", page.POSING,
+				"median miss 0.80 in"):
+				self.assertIn(words, text)
+
+	def test_build_settings(self):
+		# a ship's catalogue: its subject, the frame's unit, the tolerance, the stretch and how its parts are
+		# posed, all in the page's text; the notes still show beside the findings
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			sky, sheets, out = root / "sky", root / "sheets", root / "out"
+			sky.mkdir()
+			sheets.mkdir()
+			summary = {"photos": {"p1": {"tried": 10, "judged": 4, "median": 0.8, "weak": False}},
+				"regions": [{"family": "island", "stretch": 600, "sector": "", "region": "island frame 600-640", "photos": {"p1": -3.2, "p2": -3.4}, "median": -3.3,
+					"places": 8, "finding": True, "moving": False},
+				{"family": "elevator", "stretch": 640, "sector": "", "region": "elevator frame 640-680", "photos": {"p1": 2.2, "p2": 2.6}, "median": 2.4, "places": 9,
+					"finding": True, "moving": True}], "universe": [["island", 600, ""], ["elevator", 640, ""]]}
+			(sky / "summary.json").write_text(json.dumps(summary))
+			catalogue = {"frame": dict(JET, symbol="ft", plural="feet"), "subject": "ship", "photos": {"p1": {"shows": "port side"}},
+				"skyline": {"tolerance": 2, "stretch": 40, "label": "frame", "posing": "The elevators are posed from the photos.",
+					"about": "the photos' sea", "notes": {"island frame 600-640": "the island's mast"}}}
+			page.build(catalogue, [{"photo": "p1", "rms": 4.0, "field": 30.0}], sky, sheets, GATE, out, "Ford · Air", "Ford shape review")
+			text = (out / "index.html").read_text()
+			for words in ("of the real ship,", "finds the ship's own outline", "Misses are in feet:", "misses by more than 2 ft (",
+				"green within 2 ft, yellow within 5, magenta beyond", "across 40 ft of stations", "posed as the ship stood",
+				"These follow each photo's pose. The elevators are posed from the photos.</p>", '<span class="miss">-3.3 ft</span>',
+				"</span> +2.4 ft, 2 photos", "median miss 0.80 ft", '<p class="note col">the island&#x27;s mast</p>'):
+				self.assertIn(words, text)
+			for words in ("aircraft", "inches", "an inch", " in</span>", page.POSING):
+				self.assertNotIn(words, text)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,12 @@
+# Build intermediates
+*.json
+*.glb
+*.png
+__pycache__
+
+# The Ford build's sources: the manifest, the cited facts and the photos' marks are tracked; the fetched
+# reference files are not (fetch.py downloads them, checked by hash)
+!references.json
+!facts.json
+!photos.json
+references/

@@ -280,6 +280,29 @@ class MatchTest(unittest.TestCase):
 		self.assertTrue(out.exists())
 		self.assertTrue(json.loads(out.read_text()))
 
+	def test_the_frame_symbol_prints(self):
+		# a frame naming its unit's symbol prints every miss with it, in the report and the gate
+		r = self.root
+		catalogue = json.loads((r / "photos.json").read_text())
+		catalogue["frame"] = dict(JET, symbol="ft")
+		catalogue["gate"] = {"edge": -1.0, "sigmas": 0, "floor": -1.0, "field": 0.0, "rms": 1e9, "known": {}}
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		argv, stdout = sys.argv, sys.stdout
+		sys.argv = ["photos.py", str(r / "photos.json"), str(r / "m.glb"), str(r / "m.json"), str(r / "features.json"), "--check"]
+		sys.stdout = io.StringIO()
+		try:
+			with self.assertRaises(SystemExit):
+				photos.main()
+			printed = sys.stdout.getvalue()
+		finally:
+			sys.argv, sys.stdout = argv, stdout
+		self.assertRegex(printed, r"photo p0: .* worst \S+ [0-9.]+ ft")
+		self.assertRegex(printed, r"edge p0:top +against top_right +4 points, median +[0-9.]+ ft, worst +[0-9.]+ ft, no side")
+		self.assertRegex(printed, r"FAILED: edge p0:top: median miss [0-9.]+ ft,")
+		self.assertRegex(printed, r"FAILED: point \S+: miss \[.*\] ft, uncertainty")
+		self.assertNotIn(" in,", printed)
+		self.assertNotIn(" in\n", printed)
+
 	def test_a_part_posed_differently_in_each_photo(self):
 		# The flap drooped in one photo and not the others: its tips, carried into
 		# that photo's pose, still measure where they stand in the catalogue's pose

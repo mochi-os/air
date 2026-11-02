@@ -71,6 +71,12 @@ class FrameTest(unittest.TestCase):
 		self.assertAlmostEqual(normal @ frame.model([356, 140, -30]), offset)
 		np.testing.assert_allclose(frame.source(frame.reflection() @ frame.model([300, 110, 40])), [300, 110, -40])
 
+	def test_symbol(self):
+		# the unit as printed and in prose: inches, unless the frame names its own
+		self.assertEqual((mod.Frame(JET).symbol, mod.Frame(JET).plural), ("in", "inches"))
+		feet = mod.Frame(dict(JET, unit=0.3048, symbol="ft", plural="feet"))
+		self.assertEqual((feet.symbol, feet.plural), ("ft", "feet"))
+
 	def test_rejects_skewed_axes(self):
 		with self.assertRaises(ValueError):
 			mod.Frame({**JET, "axes": [[1, 1, 0], [0, 1, 0], [0, 0, 1]]})

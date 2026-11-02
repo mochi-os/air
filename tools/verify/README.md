@@ -67,14 +67,23 @@ the reference where fittings vary. Record each in the references manifest with i
 The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
 
 - `frame`: the project's coordinates and how they map to the model frame (`model.Frame`). A ship gives frames
-  or feet aft of the bow, height above the keel or waterline, and offset from the centreline.
+  or feet aft of the bow, height above the keel or waterline, and offset from the centreline. Every report
+  prints a miss with the frame's `symbol` and the review page names the unit by its `plural` (`"in"` and
+  `"inches"` unless given).
 - `points`: coordinates the sources cite, any of the three, each with its uncertainty: the anchors. Add what
   symmetry gives for free: a point on the centreline has offset 0.
 - `mirror`: the suffixes of left and right pairs, solved as one point and its mirror image. Leave it out for
   anything asymmetric (a carrier's island).
 - `photos`: per photo, where each named point falls (`marks`), traced `edges`, the `pose` the model takes to
   match it (gear down, canopy open, surfaces deflected), pixels to cast onto a plane (`locate`), and
-  `"solve": false` for one kept on file but too thinly marked to solve.
+  `"solve": false` for one kept on file but too thinly marked to solve. The sky check (5a) reads `clear`,
+  `ground`, `stores` and `masks` beside them.
+- `skyline`: the sky check's regions and what makes a finding (5a), each key defaulting to the F/A-18C's:
+  `stretch` (24), `axis` (110), `sectors`, `families`, `moving`, `tolerance` (1), `solid` (the materials whose
+  outline is the model's own edge) and `label` (`"FS"`); with `notes` and `posing`, text for the review page
+  (6).
+- `poses`: the joints `poses.py` fits (5b), and `subject`: what the photos show, as the review page names it
+  (`"aircraft"`).
 
 Marking: read every pixel at full resolution with `crop.py` (a labelled grid), coarse to find, fine to read,
 then once more with the candidate drawn on before recording it. Mark corners and crisp seams; a wrong mark is
@@ -108,12 +117,12 @@ A miss on a fitted placement settles it: move the layout entry and cite the phot
 fact is a question: check the marks, then the citation.
 
 The match is a gate, not a report: `--check` holds it to the catalogue's `gate` and exits non-zero on a miss
-it does not already know of. A traced edge fails when its median miss passes `edge` inches; a point the
-photos measure fails when it misses on any coordinate by more than `sigmas` of its uncertainty and `floor`
-inches. A camera at the field-of-view floor (`field` degrees or less) or fitting its marks worse than `rms`
-pixels judges no edge, and its edges are listed as unjudged. `known` names the misses accepted for now, each
-with what is wrong; they print on every run, and each is a task. Run `--check` after every change to the
-model or the catalogue: while the match only reported, the F/A-18C's spine stood 3.7 in outside a traced
+it does not already know of. A traced edge fails when its median miss passes `edge`; a point the photos
+measure fails when it misses on any coordinate by more than `sigmas` of its uncertainty and `floor` (both in
+the frame's unit). A camera at the field-of-view floor (`field` degrees or less) or fitting its marks worse
+than `rms` pixels judges no edge, and its edges are listed as unjudged. `known` names the misses accepted for
+now, each with what is wrong; they print on every run, and each is a task. Run `--check` after every change to
+the model or the catalogue: while the match only reported, the F/A-18C's spine stood 3.7 in outside a traced
 outline for weeks, and the user found the shape wrong before any check did.
 
 ### 5a. The outline against the sky: every photo, no tracing
@@ -125,20 +134,29 @@ the photo shows sky beyond it, finds the jet's own edge: walking in from the sky
 often darkens toward the jet), the first sharp change of brightness that holds, darker or brighter, at the
 half-way crossing. Sky is even and either bright or blue (a deep blue sky or open sea reads darker in grey
 than shaded skin, which is grey); in a photo whose catalogue entry says `"clear": true` (clear blue sky or
-open sea beyond the jet, no cloud) the walk reads the blue, not the grey, and the edge is where the blue ends. Green is never sky, nor anything under a ground photo's horizon.
+open sea beyond the jet, no cloud) the walk reads the blue, not the grey, and the edge is where the blue ends.
+Green is never sky, nor anything under a ground photo's horizon. A ground photo is one whose entry says
+`"ground": true`, or, without the key, whose pose has the gear down; `"ground": false` never masks the
+horizon. Open sea seen from a low camera can pass for sky: say `true`.
 
-Each place is a miss in inches at the depth of the triangle making the outline there (+ where the model
-stands outside), on the region of skin it belongs to: part family, 24 in of stations, and for the body the
-sector round the section. Left out: places on glass, places whose search crosses a store
-(the catalogue's `stores`, below), and weak cameras by the gate's rule.
+Each place is a miss in the frame's unit at the depth of the triangle making the outline there (+ where the
+model stands outside), on the region of skin it belongs to: part family, a stretch of stations, and for the
+body the sector round the section. The catalogue's `skyline` sets them: `families` (`[[family, [node name
+prefix, ...]], ...]`, a part matching none is `body`), `stretch` (the first coordinate's span, 24 in on the
+F/A-18C), `sectors` (`[[limit, name], ...]` in degrees from straight up, each up to its limit, the last past
+180) round the line at `axis` on the second coordinate and 0 on the third (WL 110 on the centreline), and
+`label`, the first coordinate's name in a region's label (`"FS"`). Left out: places on glass (and any material
+not in `solid`), places whose search crosses a store (the catalogue's `stores`, below) or a mask, and weak
+cameras by the gate's rule.
 
 A region is a finding when two or more photos judge it (3 places each at least), the median over them passes
-1 in, and two thirds of them miss on that side: each photo is one measurement with its camera's own error.
-Findings on moving surfaces (rudders, flaps, ailerons, leading-edge flaps, stabilators, nozzles, gear) are
-listed apart: their misses follow each photo's pose. The report ends with the coverage: every region of the
-skin judged by one photo only or by none. It writes each photo's overlay (a line from the model's edge to the
-photo's, green within 1 in, yellow within 2.5, magenta beyond) and a sheet per finding with every photo's
-view of it. Check each finding's sheet by eye before it becomes a task.
+`tolerance` (1 in), and two thirds of them miss on that side: each photo is one measurement with its camera's
+own error. Findings on the families in `moving` (the F/A-18C's rudders, flaps, ailerons, leading-edge flaps,
+stabilators, nozzles, gear and canopy) are listed apart: their misses follow each photo's pose. The report
+ends with the coverage: every region of the skin judged by one photo only or by none. It writes each photo's
+overlay (a line from the model's edge to the photo's, green within the tolerance, yellow within 2.5 times it,
+magenta beyond) and a sheet per finding with every photo's view of it. Check each finding's sheet by eye
+before it becomes a task.
 
 The model carries no stores, and a tank's or missile's skin passes for sky. The catalogue's `stores` gives
 each kind as boxes from a station's mount and the load every photo is taken to carry; a photo's own `stores`
@@ -147,16 +165,23 @@ an empty station masked only costs coverage. Give each in-flight photo the load 
 boxes from the photos: cast a store's nose and tail from the solved camera onto its waterline and read the
 stations off.
 
+What the model does not carry and no station places (a carrier's parked jets, tractors, cranes and people,
+different in every photo) goes in the photo's own `masks`: polygons `[[[x, y], ...], ...]` in the photo's
+full-resolution pixels. No place whose search crosses one is judged, as for a store.
+
 ### 5b. Moving surfaces: fit each photo's pose
 
     python3 -I poses.py CATALOGUE MODEL.glb POINTS.json CAMERAS.json OUT.json [--only ID,ID]
 
-Most photos' poses are guesses, and a surface posed wrong reads as a miss of its shape. For each photo and
-each hinged surface (rudders, stabilators, flaps, ailerons, leading-edge flaps) that the photo judges against
-the sky in at least 8 places, it turns that joint alone from -46 to +46 deg and keeps the angle at which its
-places miss least (the mean miss with the worst fifth left out), where it keeps at least half of them. It
-prints each fit beside the catalogue's angle and writes the `"joints"` entry each photo's pose takes for the
-fits that halve the miss. A pose's `"joints": {joint: radians}` sets that joint past its drive (`model.py`
+Most photos' poses are guesses, and a part posed wrong reads as a miss of its shape. For each photo and each
+joint the catalogue's `poses` names (`"joints": {name prefix: [low, high, step]}`, in the joint's own units:
+radians to turn, metres to slide) whose part the photo judges against the sky in at least 8 places, it moves
+that joint alone across its range and keeps the value at which its places miss least (the mean miss with the
+worst fifth left out), where it keeps at least three quarters of them. A least at either end of the range is
+no fit, so a range runs past the travel. Without `poses` it turns the F/A-18C's hinged surfaces (rudders,
+stabilators, flaps, ailerons, leading-edge flaps) from -46 to +46 deg by 0.1 rad. It prints each fit beside
+the catalogue's value and writes the `"joints"` entry each photo's pose takes for the fits that halve the
+miss. A pose's `"joints": {joint: radians}` (metres for a slide) sets that joint past its drive (`model.py`
 `setting`, honoured by `view.py` too): the only way to pose the rudders toed in, which share one drive, or a
 flap and an aileron apart. It changes nothing: look at the photo, then copy the fits that are real into the
 catalogue and run the sky check again. A fit can absorb a shape error into the angle: trust it where the
@@ -175,11 +200,13 @@ region by region.
 
     python3 -I page.py CATALOGUE CAMERAS.json SKY SHEETS GATE.txt PAGE --kicker "F/A-18C · Air" --name "Hornet shape review"
 
-makes the review page for the build from the run: the gate's output (GATE.txt, `photos.py --check`
-captured), the sky check's findings with their sheets and its coverage map, and every photo beside the model
-through its camera, the two laid over each other and the sky check's overlay. Publish it with every build that
-changes the shape, to the same page, so the user reviews the model as it is, not as it was: the user found
-the F/A-18C's spine dip by eye while every number passed.
+makes the review page for the build from the run: the gate's output (GATE.txt, `photos.py --check` captured),
+the sky check's findings with their sheets and its coverage map, and every photo beside the model through its
+camera, the two laid over each other and the sky check's overlay. It names the photos' `subject` and the
+frame's unit, shows the `skyline` section's `notes` beside the findings they name, and says how the moving
+parts were posed in its `posing` (the F/A-18C's sentence unless given). Publish it with every build that
+changes the shape, to the same page, so the user reviews the model as it is, not as it was: the user found the
+F/A-18C's spine dip by eye while every number passed.
 
 ### 7. The checklist
 
@@ -423,7 +450,7 @@ What went wrong on the F/A-18C, each a rule now:
 - `crop.py`: crops with a labelled pixel grid, for marking.
 - `skyline.py`: the outline against the sky in every solved photo, by region, with findings, coverage and
   sheets.
-- `poses.py`: fits each photo's hinged surfaces to its outline against the sky, for the catalogue's poses.
+- `poses.py`: fits each photo's moving parts to its outline against the sky, for the catalogue's poses.
 - `page.py`: the review page for one build, from its gate, sky check and sheets.
 - `cast.py`: casts a solved photo's pixels onto the posed model's surface or a plane of the project's frame,
   and projects coordinates into a photo to find where to look.

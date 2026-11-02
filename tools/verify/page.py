@@ -8,7 +8,10 @@
 # photo beside the model rendered through its camera, the two laid over each
 # other (photos.py --sheets) and the sky check's overlay. Writes OUT/index.html
 # and OUT/img/, ready to publish as one page. The catalogue's
-# skyline.notes ({region: text}) says what a finding turned out to be.
+# skyline.notes ({region: text}) says what a finding turned out to be, its
+# skyline.posing how the moving surfaces were posed (POSING), and its subject
+# what the photos show (SUBJECT); the regions, the tolerance and the unit are
+# the sky check's (skyline.Settings).
 #
 # usage: python3 -I page.py CATALOGUE.json CAMERAS.json SKY_DIR SHEETS_DIR GATE.txt OUT_DIR [--kicker TEXT] [--name TEXT]
 import datetime, html, json, re, sys
@@ -16,9 +19,14 @@ from pathlib import Path
 
 from PIL import Image
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))   # run with -I, which leaves the script's own folder off the path
+import model as mod  # noqa: E402
+import skyline  # noqa: E402
+
 Image.MAX_IMAGE_PIXELS = None
 WIDTH = 1200     # pixels each photo's images are published at
-SECTORS = ["top", "upper side", "side", "lower side", "bottom"]
+SUBJECT = "aircraft"
+POSING = "The rudders, stabilators, flaps and ailerons are posed from the photos where a fit was kept (poses.py); the gear, canopy and nozzles stand as the catalogue guesses."
 LINE = re.compile(r"^(known|FAILED|unjudged \(a weak camera\)): ((?:edge|point) \S+): (.*)$")
 
 
@@ -51,15 +59,16 @@ def signed(value):
 	return f"{value:+.1f}"
 
 
-def coverage(summary):
+def coverage(summary, settings=None):
 	# The coverage map: a row per part (the body per sector round its
-	# section), a column per 24 in of stations; each cell the median over
+	# section), a column per stretch of stations; each cell the median over
 	# its photos, shaded by how many judge it, framed where it is a finding
+	settings = settings or skyline.DEFAULT
 	cells = {(r["family"], r["stretch"], r["sector"]): r for r in summary["regions"]}
 	skin = {tuple(k) for k in summary["universe"]} | set(cells)
 	stretches = sorted({k[1] for k in skin})
 	families = sorted({k[0] for k in skin if k[0] != "body"})
-	rows = [("body", sector) for sector in SECTORS if any(k[0] == "body" and k[2] == sector for k in skin)] + [(f, "") for f in families]
+	rows = [("body", sector) for _, sector in settings.sectors if any(k[0] == "body" and k[2] == sector for k in skin)] + [(f, "") for f in families]
 	out = ['<div class="scroll"><table class="map"><thead><tr><th scope="col">Part</th>']
 	out += [f'<th scope="col">{s}</th>' for s in stretches]
 	out.append("</tr></thead><tbody>")
@@ -73,7 +82,7 @@ def coverage(summary):
 				continue
 			r = cells.get(key)
 			if r is None:
-				out.append(f'<td class="none" title="{html.escape(key[0])} FS {s}-{s + 24}: no photo">&middot;</td>')
+				out.append(f'<td class="none" title="{html.escape(f"{key[0]} {settings.label} {s}-{s + settings.stretch}")}: no photo">&middot;</td>')
 				continue
 			n = len(r["photos"])
 			kind = "miss" if r["finding"] else "two" if n >= 2 else "one"
@@ -100,6 +109,10 @@ def build(catalogue, cameras, sky, sheets, gate_text, out, kicker, name):
 	weak = [p for p, v in summary["photos"].items() if v["weak"]]
 	places = sum(v["judged"] for p, v in summary["photos"].items() if not v["weak"])
 	e = html.escape
+	settings = skyline.Settings(catalogue)
+	subject, symbol, tolerance = e(catalogue.get("subject", SUBJECT)), e(settings.symbol), settings.tolerance
+	# the tolerance in prose, "an inch" at the defaults
+	within = "an inch" if (tolerance, settings.plural) == (skyline.TOLERANCE, mod.PLURAL) else f"{tolerance:g} {symbol}"
 
 	parts = [f'''<title>{e(name)}</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -110,7 +123,7 @@ def build(catalogue, cameras, sky, sheets, gate_text, out, kicker, name):
 <header class="col">
 <div class="kicker">{e(kicker)} &middot; {datetime.date.today().isoformat()}</div>
 <h1>{e(name)}</h1>
-<p class="lede">The model checked against every solved photo of the real aircraft, rebuilt with each build. The sky check finds the aircraft's own outline wherever sky lies beyond it in a photo and measures the model's against it; the gate holds the hand-traced edges and the measured points to their tolerances. Misses are in inches: + where the model stands outside the photo's outline, &minus; where it falls inside.</p>
+<p class="lede">The model checked against every solved photo of the real {subject}, rebuilt with each build. The sky check finds the {subject}'s own outline wherever sky lies beyond it in a photo and measures the model's against it; the gate holds the hand-traced edges and the measured points to their tolerances. Misses are in {e(settings.plural)}: + where the model stands outside the photo's outline, &minus; where it falls inside.</p>
 <div class="figures"><span><b>{len(summary["photos"]) - len(weak)}</b>photos judging</span><span><b>{len(weak)}</b>weak cameras</span><span><b>{places:,}</b>places measured</span><span><b>{len(fixed)}</b>findings</span><span><b>{len(moving)}</b>on moving surfaces</span><span><b>{two}</b>regions seen twice or more</span><span><b>{one}</b>seen once</span><span><b>{none}</b>never seen</span></div>
 </header>
 ''']
@@ -118,14 +131,14 @@ def build(catalogue, cameras, sky, sheets, gate_text, out, kicker, name):
 	notes = catalogue.get("skyline", {}).get("notes", {})
 	parts.append('<section><h2>Findings</h2>')
 	if fixed:
-		parts.append('<p class="legend col">Regions of the fixed structure where two or more photos agree the model misses by more than an inch (the median over the photos, two thirds of them on that side). Each sheet shows every photo that judges the region: the model\'s outline in red, a line from it to the photo\'s outline, green within 1 in, yellow within 2.5, magenta beyond.</p><div class="findings">')
+		parts.append(f'<p class="legend col">Regions of the fixed structure where two or more photos agree the model misses by more than {within} (the median over the photos, two thirds of them on that side). Each sheet shows every photo that judges the region: the model\'s outline in red, a line from it to the photo\'s outline, green within {tolerance:g} {symbol}, yellow within {2.5 * tolerance:g}, magenta beyond.</p><div class="findings">')
 		for r in fixed:
 			agree = sum(1 for m in r["photos"].values() if (m > 0) == (r["median"] > 0))
 			sheet = Path(sky) / f"finding {r['region']}.png"
 			target = f"img/finding-{re.sub(r'[^a-z0-9]+', '-', r['region'].lower()).strip('-')}.jpg"
 			if sheet.exists():
 				copy(sheet, out / target)
-			parts.append(f'<figure class="finding"><figcaption><span class="pid">{e(r["region"])}</span> <span class="miss">{signed(r["median"])} in</span><span class="stats">{len(r["photos"])} photos, {agree} on that side, {r["places"]} places</span></figcaption>')
+			parts.append(f'<figure class="finding"><figcaption><span class="pid">{e(r["region"])}</span> <span class="miss">{signed(r["median"])} {symbol}</span><span class="stats">{len(r["photos"])} photos, {agree} on that side, {r["places"]} places</span></figcaption>')
 			if r["region"] in notes:
 				parts.append(f'<p class="note col">{e(notes[r["region"]])}</p>')
 			if sheet.exists():
@@ -135,12 +148,12 @@ def build(catalogue, cameras, sky, sheets, gate_text, out, kicker, name):
 	else:
 		parts.append("<p>No region of the fixed structure misses.</p>")
 	if moving:
-		parts.append('<h3>On moving surfaces</h3><p class="legend col">These follow each photo\'s pose. The rudders, stabilators, flaps and ailerons are posed from the photos where a fit was kept (poses.py); the gear, canopy and nozzles stand as the catalogue guesses.</p><ul class="moving">')
-		parts += [f'<li><span class="pid">{e(r["region"])}</span> {signed(r["median"])} in, {len(r["photos"])} photos' + (f'<br><span class="note">{e(notes[r["region"]])}</span>' if r["region"] in notes else "") + "</li>" for r in moving]
+		parts.append(f'<h3>On moving surfaces</h3><p class="legend col">These follow each photo\'s pose. {e(catalogue.get("skyline", {}).get("posing", POSING))}</p><ul class="moving">')
+		parts += [f'<li><span class="pid">{e(r["region"])}</span> {signed(r["median"])} {symbol}, {len(r["photos"])} photos' + (f'<br><span class="note">{e(notes[r["region"]])}</span>' if r["region"] in notes else "") + "</li>" for r in moving]
 		parts.append("</ul>")
 	parts.append("</section>")
 
-	parts.append(f'<section><h2>Coverage</h2><p class="legend col">Each cell is a region of skin: a part, or for the body a sector round its section, across 24 in of stations (the column gives the first). Its number is the median miss over the photos that judge it. Green: two or more photos; amber: one; dot: none, so nothing has checked that region against a photo. Framed red: a finding. Hover a cell for each photo\'s miss.</p>{coverage(summary)}</section>')
+	parts.append(f'<section><h2>Coverage</h2><p class="legend col">Each cell is a region of skin: a part, or for the body a sector round its section, across {settings.stretch} {symbol} of stations (the column gives the first). Its number is the median miss over the photos that judge it. Green: two or more photos; amber: one; dot: none, so nothing has checked that region against a photo. Framed red: a finding. Hover a cell for each photo\'s miss.</p>{coverage(summary, settings)}</section>')
 
 	parts.append(f'<section class="col"><h2>Gate</h2><p class="lede">{e(total or "not run")}.</p>')
 	for kind, heading in (("failed", "Failed"), ("known", "Known misses")):
@@ -150,7 +163,7 @@ def build(catalogue, cameras, sky, sheets, gate_text, out, kicker, name):
 			parts.append("</tbody></table></div>")
 	parts.append("</section>")
 
-	parts.append('<section><h2>Photos against the model</h2><p class="legend col">Each photo (lens distortion removed), the model rendered through the camera solved for it and posed as the aircraft stood, the two laid over each other with the model\'s outline in red, and the sky check. Select an image to open it full size.</p><div class="gallery">')
+	parts.append(f'<section><h2>Photos against the model</h2><p class="legend col">Each photo (lens distortion removed), the model rendered through the camera solved for it and posed as the {subject} stood, the two laid over each other with the model\'s outline in red, and the sky check. Select an image to open it full size.</p><div class="gallery">')
 	for camera in cameras:
 		pid = camera["photo"]
 		entry = catalogue["photos"].get(pid, {})
@@ -170,7 +183,7 @@ def build(catalogue, cameras, sky, sheets, gate_text, out, kicker, name):
 		if stats:
 			figures += f", {stats['judged']} of {stats['tried']} places judged"
 			if stats.get("median") is not None:
-				figures += f", median miss {stats['median']:.2f} in"
+				figures += f", median miss {stats['median']:.2f} {settings.symbol}"
 		flag = '<span class="chip weak">weak camera</span>' if stats.get("weak") else ""
 		parts.append(f'<figure class="sheet" id="{e(pid)}"><figcaption><span class="pid">{e(pid)}</span> {flag}<span class="what">{e(what)}</span><span class="stats">{e(figures)}</span></figcaption><div class="quad">')
 		parts += [f'<a href="{src}"><img loading="lazy" src="{src}" alt="{e(label)}, {e(pid)}"></a>' for src, label in images]

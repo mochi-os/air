@@ -12,6 +12,31 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import skyline  # noqa: E402
 
 
+def look(eye, photo=None, pose=None, section=None):
+	# The places a scene finds on a plate (the body, 2 x 0.2 x 1 m) photographed from eye against a bright
+	# sky: photo is the catalogue's photo entry, pose the cameras file's, section the catalogue's "skyline"
+	import tempfile
+	import camera as cam
+	import model as mod
+	from test_verify import JET, box, glb
+	with tempfile.TemporaryDirectory() as root:
+		root = Path(root)
+		glb(root / "m.glb", [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))}])
+		model = mod.Model(root / "m.glb")
+		size = [1200, 600]
+		camera = cam.looking(np.array(eye, float), np.array([0.0, 0.0, 0.0]), 2400.0)
+		flat, depth = cam.project(camera, model.triangles(mod.pose({}, {})).reshape(-1, 3), (size[0] / 2, size[1] / 2))
+		mask = skyline.frontmost(flat.reshape(-1, 3, 2), depth.reshape(-1, 3), tuple(size)) >= 0
+		(root / "references").mkdir()
+		Image.fromarray(np.where(mask[..., None], 60, 200).astype(np.uint8).repeat(3, -1)).save(root / "references" / "p.png")
+		catalogue = {"frame": JET, "photos": {"p": photo or {}}}
+		if section:
+			catalogue["skyline"] = section
+		entry = {"photo": "p", "file": "p.png", "size": size, "camera": list(camera), "pose": pose or {}}
+		places, _ = skyline.Scene(catalogue, root, mod.Frame(catalogue["frame"]), {}, entry).places(model, {}, {})
+		return places
+
+
 def profile(edge, jet=60.0, sky=200.0, noise=0.0, seed=0):
 	# a brightness profile across an edge at `edge` samples outward of the model's
 	t = np.arange(-skyline.REACH, skyline.REACH + 1, dtype=float)
@@ -248,6 +273,87 @@ class SkylineTest(unittest.TestCase):
 			self.assertEqual(found["grey"], [])
 			# the blue is read only in a photo the catalogue calls clear: elsewhere a cloud would pass for the jet
 			self.assertEqual(found["unread"], [])
+
+	def test_ground(self):
+		# seen from above and to the side, everything beyond the plate lies under the horizon: a photo with
+		# the gear down is taken on the ground and judges nothing there, unless its entry says "ground": false;
+		# "ground": true masks a photo whatever its pose
+		above = (0.0, 3.0, 12.0)
+		self.assertGreater(len(look(above)), 40)
+		self.assertEqual(look(above, pose={"gear": 1}), [])
+		self.assertGreater(len(look(above, pose={"gear": 1}, photo={"ground": False})), 40)
+		self.assertEqual(look(above, photo={"ground": True}), [])
+
+	def test_masks(self):
+		# a polygon in the photo's own pixels over the plate's right end (beyond x 700; the plate spans 400-800):
+		# no place whose search crosses it is judged, the rest are
+		side = (0.0, 0.0, 12.0)
+		every = look(side)
+		self.assertTrue([p for p in every if p["pixel"][0] > 700])
+		kept = look(side, photo={"masks": [[[700, 0], [1200, 0], [1200, 600], [700, 600]]]})
+		self.assertFalse([p for p in kept if p["pixel"][0] > 700])
+		self.assertTrue([p for p in kept if p["pixel"][0] < 600])
+
+	def test_solid(self):
+		# the catalogue's solid materials: a model whose paint is not among them has no outline to judge
+		side = (0.0, 0.0, 12.0)
+		self.assertGreater(len(look(side, section={"solid": ["paint"]})), 40)
+		self.assertEqual(look(side, section={"solid": ["hull"]}), [])
+
+	def test_settings(self):
+		# every setting defaults to the F/A-18C's constant, beside the catalogue's own text keys
+		from test_verify import JET
+		kept = skyline.Settings({"frame": JET, "skyline": {"about": "the photos' blue", "notes": {"fin FS 600-624": "a note"}}})
+		self.assertEqual((kept.stretch, kept.axis, kept.sectors, kept.families, kept.moving, kept.tolerance, kept.solid, kept.label, kept.symbol, kept.plural),
+			(24, 110.0, skyline.SECTORS, skyline.FAMILIES, skyline.MOVING, 1.0, skyline.SOLID, "FS", "in", "inches"))
+		for name in ("stretch", "axis", "sectors", "families", "moving", "tolerance", "solid", "label", "symbol", "plural"):
+			self.assertEqual(getattr(kept, name), getattr(skyline.DEFAULT, name), name)
+
+	def test_region_settings(self):
+		# each of the catalogue's settings moves a place to another region: a stretch of 40, sectors round
+		# WL 600 (the point lies under it), the catalogue's own sectors and families, and its own label
+		point = (450.0, 148.0, 0.0)
+		self.assertEqual(skyline.region("hull", point), ("body", 432, "top"))
+		self.assertEqual(skyline.region("hull", point, skyline.Settings({"skyline": {"stretch": 40}})), ("body", 440, "top"))
+		self.assertEqual(skyline.region("hull", point, skyline.Settings({"skyline": {"axis": 600}})), ("body", 432, "bottom"))
+		self.assertEqual(skyline.region("hull", point, skyline.Settings({"skyline": {"sectors": [[90, "deck"], [181, "hull"]]}})), ("body", 432, "deck"))
+		ship = skyline.Settings({"skyline": {"families": [["elevator", ["elevator_"]]]}})
+		self.assertEqual(skyline.region("elevator_aft", point, ship), ("elevator", 432, ""))
+		self.assertEqual(skyline.region("elevator_aft", point), ("body", 432, "top"))
+		self.assertEqual(skyline.region("fin_left", point, ship), ("body", 432, "top"))
+		self.assertEqual(skyline.label(("body", 432, "top"), skyline.Settings({"skyline": {"label": "frame"}})), "body frame 432-456 top")
+		self.assertEqual(skyline.label(("body", 440, "top"), skyline.Settings({"skyline": {"stretch": 40}})), "body FS 440-480 top")
+
+	def test_summary_settings(self):
+		# the catalogue's moving families, tolerance and the frame's symbol, in the report
+		from test_verify import JET
+		place = lambda miss: {"miss": miss, "part": "fin_left", "point": [600.0, 160.0, -40.0]}
+		results = {"a": {"tried": 10, "places": [place(2.0), place(2.4), place(2.2)]}, "b": {"tried": 10, "places": [place(1.9)] * 3}}
+		universe = {("fin", 600, "")}
+		self.assertIn("no fixed region misses", skyline.summary(results, universe, settings=skyline.Settings({"skyline": {"moving": ["fin"]}})))
+		self.assertNotIn("no fixed region misses", skyline.summary(results, universe))
+		self.assertTrue(skyline.digest(results, universe, settings=skyline.Settings({"skyline": {"moving": ["fin"]}}))["regions"][0]["moving"])
+		self.assertFalse(skyline.digest(results, universe)["regions"][0]["moving"])
+		self.assertNotIn("finding:", skyline.summary(results, universe, settings=skyline.Settings({"skyline": {"tolerance": 2.5}})))
+		self.assertFalse(skyline.digest(results, universe, settings=skyline.Settings({"skyline": {"tolerance": 2.5}}))["regions"][0]["finding"])
+		self.assertIn("100% past 3.75 in", skyline.summary({"a": {"tried": 3, "places": [place(4.0)] * 3}}, universe, settings=skyline.Settings({"skyline": {"tolerance": 2.5}})))
+		self.assertIn("0% past 3.75 in", skyline.summary(results, universe, settings=skyline.Settings({"skyline": {"tolerance": 2.5}})))
+		text = skyline.summary(results, universe, settings=skyline.Settings({"frame": dict(JET, symbol="ft")}))
+		self.assertIn("photo a: 3 of 10 places judged (30%), median miss 2.20 ft, 100% past 1.5 ft", text)
+		self.assertIn("finding: fin FS 600-624 misses by +2.0 ft (median of 2 photos, 2 on that side)", text)
+		self.assertNotIn(" in", text)
+
+	def test_overlay_colours(self):
+		# a place 1.5 off: yellow at the 1 in tolerance, green at 2
+		import tempfile
+		with tempfile.TemporaryDirectory() as root:
+			colours = []
+			for settings in (None, skyline.Settings({"skyline": {"tolerance": 2.0}})):
+				path = Path(root) / "o.png"
+				skyline.overlay(np.full((100, 100), 120.0), np.zeros((100, 100), bool), [{"pixel": [10, 10], "edge": [50, 50], "miss": 1.5}], 1.0, path, settings)
+				with Image.open(path) as image:
+					colours.append(image.getpixel((50, 50)))
+			self.assertEqual(colours, [(240, 200, 0), (40, 220, 40)])
 
 	def test_hull(self):
 		square = [(0, 0), (4, 0), (4, 4), (0, 4)]
