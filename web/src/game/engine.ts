@@ -5009,7 +5009,9 @@ const ROUND_ANCHORS=stores_anchors;   // model-space anchors for AIM-9 rounds cl
 const BOT_ARMED=stores_normalize({ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"twin",stores:["9m","9m"]}, 8:{fixture:"twin",stores:["9m","9m"]}, 9:{fixture:"rail",stores:["9m"]} });   // the bot's armed standard (decided 2026-08-06): six AIM-9Ms on tips and outboard twins, PINNED to match the server's bots_loadout — the calibrated doctrine flies this fit regardless of how the player presets are shaped; the brain's two-round discipline fires from it in SMS order (opening it is #25's re-sweep)
 const BOT_CLEAN=stores_normalize({});
 const BOT_OPEN=stores_normalize(stores_presets.fox3);   // the BVR fit, the Fox 3 preset with its centreline tank, PINNED to the server's bots_loadout("open") (decided 2026-10-12)
-function bandit_fit(){ return cfg.duel==="bvr"?BOT_OPEN:missiles_on()?BOT_ARMED:BOT_CLEAN; }   // the fit the brain carries: bots_loadout of the class bandit_init names. The BVR bandit was drawn with the six heaters while it flew AMRAAMs
+let bandit_fox2=false;   // &fit=fox2 (developer mode): the BVR start's bandit carries the Fox 2 fit, so a probe meets its heaters head-on with the missiles free from spawn (burstcheck.py), where the open class's AMRAAM would kill first
+function bandit_class(){ return cfg.duel==="bvr"&&!bandit_fox2?"open":missiles_on()?"fox2":"guns"; }   // the weapons class the bandit arms to (bandit_init) and is drawn with (bandit_fit): the BVR joust's open class, else the class the player's loadout makes the fight
+function bandit_fit(){ const c=bandit_class(); return c==="open"?BOT_OPEN:c==="fox2"?BOT_ARMED:BOT_CLEAN; }   // the fit the brain carries: bots_loadout of the class bandit_init names. The BVR bandit was drawn with the six heaters while it flew AMRAAMs
 let loadout_rev=0;   // bumped whenever a jet's loadout is (re)assigned — keys the per-frame mask memo
 let stores_book=null;   // the resolved fitment catalog, read from the core once it boots
 function stores_catalog(){ if(!stores_book){ const raw=flight_catalog(own_aircraft()); if(raw) stores_book=stores_resolve(raw); } return stores_book; }
@@ -6326,7 +6328,7 @@ function step_amraam(m,dt,behind=0){
 	else m.smoke_acc=0; }   // reduced-smoke HTPB: the boost column marks the launch arc; the coast is clean
 function post_round(m,why){ m.fate=why; m.fated=sim_time;   // the recorder's last sample of this round carries the fate (#33 debrief) — shipped, unlike the dev log below
 	if(!DEV_MODE) return; const log=(globalThis as any).dev_missiles=(globalThis as any).dev_missiles||[];
-	log.push({why, kind:"120c", flew:+(m.flew??0).toFixed(1), phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), least:+(m.least??-1).toFixed(1), took:m.took||0, killed:!!m.killed, mask:m.mask??-1, burst:m.burst!==undefined?+m.burst.toFixed(1):undefined, judged:m.judged!==undefined?+m.judged.toFixed(1):undefined}); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	log.push({why, kind:"120c", enemy:!!m.enemy, flew:+(m.flew??0).toFixed(1), phase:m.phase??-1, mach:+(m.mach??0).toFixed(2), least:+(m.least??-1).toFixed(1), took:m.took||0, killed:!!m.killed, mask:m.mask??-1, burst:m.burst!==undefined?+m.burst.toFixed(1):undefined, judged:m.judged!==undefined?+m.judged.toFixed(1):undefined}); }   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 // Rounds step in the same fixed 1/60 s quanta as the flight core and the
 // bandit, whatever the display rate. Stepped per render frame against targets
 // that advance in 1/60 s jumps, the seeker's LOS-rate check read the jumps as
@@ -11246,7 +11248,7 @@ function fly_bandit(dt){
 	if(!bandit_brain&&cfg.task==="joust"&&flight_ready()&&sim_time>=(fly_bandit.retry??0)){   // lazy: the core loads async and start_mission races it — arm the brain when the core is ready. RETRIABLE (#67 harness finding): the old one-shot flag turned any single failed attempt into a silent pacifist bandit for the whole mission — the kill-chain harness caught one cruising in formation with its target for 240 s
 		fly_bandit.retry=sim_time+1;
 		bandit_brain=bandit_init({ level: cfg.bandit||"expert", seed: bandit_seed(), sky: cfg.clouds||"", night: cfg.tod==="night", missiles: missiles_on(),
-			weapons: cfg.duel==="bvr"?"open":(missiles_on()?"fox2":"guns"), hold: weapons_hold, air: weather() });   // air: the bandit flew in still air while the player drifted 62 kt downwind of it at 15,000 ft   // hold: the brain keeps the joust's rule itself - its arena had none, so it fired heaters head-on through a merge nobody had reached   // no fuel: the bandit carries the load its own fit fights best on (bots_fuel), not the player's slider, which may be the wrong choice (2026-10-12)   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
+			weapons: bandit_class(), hold: weapons_hold, air: weather() });   // air: the bandit flew in still air while the player drifted 62 kt downwind of it at 15,000 ft   // hold: the brain keeps the joust's rule itself - its arena had none, so it fired heaters head-on through a merge nobody had reached   // no fuel: the bandit carries the load its own fit fights best on (bots_fuel), not the player's slider, which may be the wrong choice (2026-10-12)   // the bandit arms to the match's rules, exactly as server bots do (#33): the BVR joust is an open-class fight and the bandit shoots back   // missiles: what the PLAYER can fire (the joust rule: loading any missile arms the fight) — the bandit's defensive doctrine reacts to it (#211 flare gate)
 		if(bandit_brain) bandit_spawn(bandit.pos, {x:bandit.fwd.x*bandit.speed, y:0, z:bandit.fwd.z*bandit.speed});
 		else console.error("bandit brain arming failed; retrying");   // never silent: a pacifist bandit reads exactly like a fight the doctrine chose not to have
 	}
@@ -13928,6 +13930,7 @@ function start_mission(){
 	const taskq=devq.get("task"); if(taskq==="joust"||taskq==="free") cfg.task=taskq;   // &task=joust — headless SP joust boot (#32)
 	const cheatq=devq.get("cheat"); if(cheatq){ const on={...(cfg.cheats as Record<string,boolean>)}; for(const c of cheatq.split(",")) if(c==="invulnerable"||c==="ammunition"||c==="fuel") on[c]=true; cfg.cheats=on; }   // &cheat=invulnerable,... — harness survival without teaching the rig to fly BFM
 	const duelq=devq.get("duel"); if(duelq==="bvr"||duelq==="merge") cfg.duel=duelq;   // &duel=bvr — the BVR start
+	bandit_fox2=devq.get("fit")==="fox2";   // &fit=fox2 — the BVR start's bandit on the Fox 2 fit
 	const banditq=devq.get("bandit"); if(banditq==="novice"||banditq==="intermediate"||banditq==="expert"||banditq==="superhuman") cfg.bandit=banditq;   // &bandit=novice — the joust's tier, over the account's saved one
 	const todq=devq.get("tod"); if(todq!==null) cfg.tod=todq;
 	const shadowq=devq.get("shadows"); if(shadowq==="1"||shadowq==="0") cfg.shadows=shadowq==="1";   // &shadows=1|0: the sun's shadow map on or off, over the graphics preset, for headless checks of what it draws

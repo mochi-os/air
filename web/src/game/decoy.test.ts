@@ -62,13 +62,15 @@ describe("the engine's roll is the target's", () => {
   })
 
   it("reads the target's position, nose and burner, never the bandit's", () => {
+    // at is the target as he stood at the round's time (stood), not where the frame left him
+    expect(source).toMatch(/const t=m\.target, at=t\?stood\(t,behind\):null;/)
     expect(roll).toMatch(
-      /decoy_aspect\(\{ x:\(m\.px-t\.pos\.x\), y:m\.py-t\.pos\.y, z:\(m\.pz-t\.pos\.z\) \},t\.fwd\)/
+      /decoy_aspect\(\{ x:\(m\.px-at\.x\), y:m\.py-at\.y, z:\(m\.pz-at\.z\) \},t\.fwd\)/
     )
     expect(roll).toMatch(
       /decoy_chance\(tail,t===ownship\?Math\.max\(\.\.\.\(ownship\.reheats\|\|\[0\]\)\):\(t\.reheat\?\?0\)\)/
     )
-    expect(roll).toMatch(/decoy_lure\(t\.pos\)/)
+    expect(roll).toMatch(/decoy_lure\(at\)/)
     expect(roll).not.toMatch(/bandit\./)
   })
 })

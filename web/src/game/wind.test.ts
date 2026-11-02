@@ -632,6 +632,38 @@ describe('the rounds read the jets at their own time', () => {
   })
 })
 
+// burstcheck.py reads the bandit's fused rounds out of the dev log by whose
+// they were; the radar round's entries never said, so the probe could not see
+// the AMRAAM that killed the pilot.
+describe("the radar round's dev log", () => {
+  it('says whose round it was, as the heater log does', () => {
+    const shelf = { dev_missiles: [] as Record<string, unknown>[] }
+    const post = new Function(
+      'sim_time',
+      'DEV_MODE',
+      'globalThis',
+      `${lift('post_round').replace(/ as any/g, '')}\nreturn post_round;`
+    )(10, true, shelf)
+    const round = {
+      flew: 2,
+      phase: 2,
+      mach: 2,
+      least: 4.2,
+      took: 0,
+      killed: true,
+      mask: 1,
+      burst: 4.2,
+      judged: 4.2,
+    }
+    post({ ...round, enemy: true }, 'fuse')
+    post({ ...round, enemy: false }, 'fuse')
+    expect(shelf.dev_missiles.map((m) => [m.kind, m.enemy])).toEqual([
+      ['120c', true],
+      ['120c', false],
+    ])
+  })
+})
+
 describe("the director gunsight's solution", () => {
   it('lands the burst on the target in a wind, worked through the air at the muzzle', () => {
     // The rounds fly the air at the muzzle (battle.Fly), so the director is handed the jet's and the

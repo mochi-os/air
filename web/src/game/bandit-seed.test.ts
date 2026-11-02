@@ -51,15 +51,23 @@ describe('the single-player bandit carries the fit its brain flies', () => {
     'stores_presets',
     `${source.slice(source.indexOf('const BOT_ARMED='), source.indexOf('let loadout_rev'))}\nreturn { BOT_ARMED, BOT_CLEAN, BOT_OPEN }`
   )(normalize, PRESETS)
-  function fit(duel: string, missiles: boolean) {
+  function fit(duel: string, missiles: boolean, fox2 = false) {
     return new Function(
       'cfg',
       'missiles_on',
       'BOT_ARMED',
       'BOT_CLEAN',
       'BOT_OPEN',
-      `${lift('bandit_fit')}\nreturn bandit_fit()`
-    )({ duel }, () => missiles, fits.BOT_ARMED, fits.BOT_CLEAN, fits.BOT_OPEN)
+      'bandit_fox2',
+      `${lift('bandit_class')}\n${lift('bandit_fit')}\nreturn bandit_fit()`
+    )(
+      { duel },
+      () => missiles,
+      fits.BOT_ARMED,
+      fits.BOT_CLEAN,
+      fits.BOT_OPEN,
+      fox2
+    )
   }
 
   it('flies the Fox 3 preset beyond visual range, tank included', () => {
@@ -74,8 +82,20 @@ describe('the single-player bandit carries the fit its brain flies', () => {
     expect(rounds(fit('wvr', false))).toHaveLength(0)
   })
 
+  // burstcheck.py meets the bandit's heaters head-on at full closure, which only
+  // the BVR start allows with the missiles free from spawn, and there the open
+  // class's AMRAAM killed the pilot before any heater merge.
+  it('flies the Fox 2 fit beyond visual range when a probe asks for it (&fit=fox2)', () => {
+    expect(rounds(fit('bvr', true, true))).toHaveLength(6)
+    expect(amraams(fit('bvr', true, true))).toHaveLength(0)
+    expect(source).toMatch(/\n\tbandit_fox2=devq\.get\("fit"\)==="fox2";/) // read with the other developer options, afresh each mission
+  })
+
   it('names the class the same way bandit_init does', () => {
-    expect(source).toMatch(/weapons: cfg\.duel==="bvr"\?"open":\(missiles_on\(\)\?"fox2":"guns"\)/)
+    expect(source).toMatch(/weapons: bandit_class\(\), hold: weapons_hold/)
+    expect(source).toMatch(
+      /function bandit_fit\(\)\{ const c=bandit_class\(\);/
+    )
     expect(source).toMatch(/assign_loadout\(bandit, bandit_fit\(\)\)/)
   })
 })
