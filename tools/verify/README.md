@@ -123,9 +123,13 @@ outline for weeks, and the user found the shape wrong before any check did.
 Through each camera `photos.py --cameras` solved, it walks the posed model's whole silhouette and, wherever
 the photo shows sky beyond it, finds the jet's own edge: walking in from the sky (fitted as a line, since it
 often darkens toward the jet), the first sharp change of brightness that holds, darker or brighter, at the
-half-way crossing. Each place is a miss in inches at the depth of the triangle making the outline there (+
-where the model stands outside), on the region of skin it belongs to: part family, 24 in of stations, and
-for the body the sector round the section. Left out: places on glass, places whose search crosses a store
+half-way crossing. Sky is even and either bright or blue (a deep blue sky or open sea reads darker in grey
+than shaded skin, which is grey); in a photo whose catalogue entry says `"clear": true` (clear blue sky or
+open sea beyond the jet, no cloud) the walk reads the blue, not the grey, and the edge is where the blue ends. Green is never sky, nor anything under a ground photo's horizon.
+
+Each place is a miss in inches at the depth of the triangle making the outline there (+ where the model
+stands outside), on the region of skin it belongs to: part family, 24 in of stations, and for the body the
+sector round the section. Left out: places on glass, places whose search crosses a store
 (the catalogue's `stores`, below), and weak cameras by the gate's rule.
 
 A region is a finding when two or more photos judge it (3 places each at least), the median over them passes
@@ -139,7 +143,9 @@ view of it. Check each finding's sheet by eye before it becomes a task.
 The model carries no stores, and a tank's or missile's skin passes for sky. The catalogue's `stores` gives
 each kind as boxes from a station's mount and the load every photo is taken to carry; a photo's own `stores`
 overrides it (`null` for an empty station). Default to a full load: a store left out reads as a false miss,
-an empty station masked only costs coverage.
+an empty station masked only costs coverage. Give each in-flight photo the load it shows, and size each kind's
+boxes from the photos: cast a store's nose and tail from the solved camera onto its waterline and read the
+stations off.
 
 ### 5b. Moving surfaces: fit each photo's pose
 
@@ -367,6 +373,43 @@ What went wrong on the F/A-18C, each a rule now:
     search crossed the hook and took the photo's hook for the body's edge, 7 in off.
   - Give every photo its own stores where its load is known: a default box for a tank under the outer
     pylon, seen from ahead of the jet, hid the whole tail's underside, the one place the model was wrong.
+- **A point on a moving part is measured in one pose.** The bundle once triangulated each marked point as one fixed
+  position across every photo, so a flap corner drooped 30 deg in one photo and neutral in the rest made that photo's
+  camera fail (85 px rms), and stabilator tips at -10 deg on the ground and 0 in flight disagreed by about 5 in. The
+  catalogue's `pose` now names the pose every point is measured, cited and reported in; each photo's marks on parts it
+  poses otherwise are carried into its pose (`Bundle` `moves`, `Features.between`). Choose a pose the same on both
+  sides (the mirrored pairs need it) and the one the cited points describe (the F/A-18C's: gear down).
+- **A fixed feature that meets a moving one needs its own name.** With the canopy shut, the windscreen's aft arch and the
+  canopy's bow are one point; with it raised, the bow rises 70 in. Two photos had marked the arch as `bow_top`, which
+  rides on the canopy, and broke once marks were carried by their pose: the arch is `windscreen_top` now.
+- **Fixing a down-weighting can wake photos the solve was ignoring.** Three long-lens rear views (fields 1-3 deg, marks
+  bunched at the tail) had fitted at 25 px and so counted for almost nothing. Once their stabilator marks were carried,
+  they fitted, began to steer the solve and failed 27 edges elsewhere; out of the solve, the gate was clean again.
+  Compare every photo's fit before and after a change to the solve, not only the totals.
+- **A sky-check reading near its tolerance moves with the cameras.** Adding five photos and taking four out moved the
+  F/A-18C's fin points by 0.3-0.9 in but its fin regions from +0.1 to +1.0 in across 17 photos: small camera changes, summed
+  over many photos, shift a median by about the size of the 1 in tolerance. Act on a finding near the tolerance only once
+  it holds across camera sets (leave photos out).
+- **Size the store boxes from the photos.** The tank box reached 90 in ahead of its mount; the photos put the
+  330-gallon tank's nose 128 in ahead, and two views from below read the nose as body skin 21-27 in outside the body
+  at FS 336-360. A single missile reached 152 in ahead, twin AIM-120s 131 in and 26 in across, and the Litening pod
+  hung ahead of its station altogether.
+- **A pose fitted from the outline can fight the photo's own marks.** navy090707's right stabilator and flap fitted
+  at +4.3 deg from its outline, but its marks on those surfaces (a stabilator tip corner, the fold corner) fitted at
+  3.0 px rms with them at rest and 4.3 posed, and posed they moved the whole solve: another photo's camera slid 17%
+  along its depth and two fin edges elsewhere failed. Re-run the gate after writing fits, compare each photo's rms,
+  and leave out a fit whose surface carries marks that fit worse for it.
+- **A photo that judges almost nothing is the tool's problem first.** The F/A-18C's straight-below view, the best of
+  the underside, judged 13 of its 1508 places: its deep blue sky reads grey 65-99, under the 110 the brightness rule
+  asks, so nothing beyond the jet counted as sky. A band whose blue stands 40 over its red and green now counts
+  however dark (shaded grey paint reaches about 20), and its edge is read in the blue: walked in grey, the LEX's
+  shaded underside matched the deep sky and the walk passed it for the sunlit fuselage, reading the LEX 13-19 in
+  outside. Read each photo's judged share in the report.
+- **A cloud is no bluer than the jet.** Read in blue, a white cloud against the sea under dvids8901347's forebody
+  passed for the jet's edge 9.6 in out: one profile cannot tell a cloud from sunlit skin. The blue is read only in
+  photos the catalogue marks `"clear": true`, after a look at what lies beyond the jet. Clouds fool the grey walk too:
+  a band on a white cloud with dark sea between it and the jet reads the cloud's edge, so a finding carried by one
+  photo seen against cloud needs a look at its sheet before it counts.
 - **Helpers mark well with a dictionary.** Three helpers marked twelve photos from `../fa18c/marking.md` in an
   hour or so each. Check their marks against the overlays and the flagged misses; they also found the wrong
   photo labels.

@@ -280,6 +280,28 @@ class MatchTest(unittest.TestCase):
 		self.assertTrue(out.exists())
 		self.assertTrue(json.loads(out.read_text()))
 
+	def test_a_part_posed_differently_in_each_photo(self):
+		# The flap drooped in one photo and not the others: its tips, carried into
+		# that photo's pose, still measure where they stand in the catalogue's pose
+		# (rest), and that photo's camera fits as well as the others'
+		r = self.root
+		catalogue = json.loads((r / "photos.json").read_text())
+		f = photos.Features(mod.Model(r / "m.glb"), json.loads((r / "m.json").read_text())["joints"], r / "features.json")
+		camera = cam.looking(np.array((-12.0, 4.0, 9.0)), np.zeros(3), 3200.0)   # p1's, as setUp made it
+		drooped = {"flap": 0.3}
+		for name in ("flap_tip_right", "flap_tip_left"):
+			at = f.landmark(name, drooped)
+			catalogue["photos"]["p1"]["marks"][name] = list(map(float, cam.project(camera, [at], (1500, 1000))[0][0]))
+		catalogue["photos"]["p1"]["pose"] = drooped
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		match = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None)
+		report = match.report()
+		frame = mod.Frame(JET)
+		for name in ("flap_tip_right", "flap_tip_left"):
+			np.testing.assert_allclose(report["points"][name]["measured"], frame.source(self.truth[name]), atol=0.15, err_msg=name)
+			self.assertLess(max(abs(v) for v in report["points"][name]["miss"]), 0.15)
+		self.assertLess(report["photos"]["p1"]["rms"], 1.0)
+
 	def test_features_follow_the_pose(self):
 		r = self.root
 		m = mod.Model(r / "m.glb")

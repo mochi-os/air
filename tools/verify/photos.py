@@ -27,8 +27,14 @@
 #   frame    model.Frame's spec
 #   points   {name: {"at": [3 numbers or null], "sigma": number or [3], "why": text}}: cited coordinates
 #   mirror   [left suffix, right suffix]: pairs solved as one point and its mirror image
+#   pose     {drive: value}: the pose every point is measured, cited and reported in (default:
+#            every drive at rest). A mark on a part a photo poses otherwise (a flap drooped, a
+#            stabilator turned) is carried into that photo's pose, so photos of the part at
+#            different angles agree. Choose one that is the same on both sides, as the mirrored
+#            pairs need, and the one the cited points describe (the F/A-18C's: gear down)
 #   photos   {id: {"file": path under the catalogue's references folder, "pose": {drive: value, "joints": {joint: value}}
 #                  (a joint named there takes that value past its drive), "solve": false to leave it out,
+#                  "stores" and "clear" for skyline.py (its load; true where the background is clear blue sky or open sea),
 #                  "marks": {point: [x, y]}, "edges": {name: {"against": "outline" | curve name,
 #                  "points": [[x, y], ...], "snap": pixels}}, "locate": {name: [x, y, "plane=value"]}}}
 #   gate     {"edge": inches, "sigmas": n, "floor": inches, "field": degrees, "rms": pixels,
@@ -91,14 +97,30 @@ class Features:
 		self.landmarks = data.get("landmarks", {})
 		self.curves = data.get("curves", {})
 
-	def moved(self, drives, node, points):
-		points = np.asarray(points, float).reshape(-1, 3)
+	def transform(self, drives, node):
+		# The node's move from rest to the pose (4 x 4, model frame); identity
+		# for a node the model doesn't have
 		if node not in self.model.index:
-			return points
+			return np.eye(4)
 		i = self.model.index[node]
 		posed = self.model.worlds(mod.pose(self.joints, drives))[i]
-		M = posed @ np.linalg.inv(self.model.rest[i])
+		return posed @ np.linalg.inv(self.model.rest[i])
+
+	def moved(self, drives, node, points):
+		points = np.asarray(points, float).reshape(-1, 3)
+		M = self.transform(drives, node)
 		return points @ M[:3, :3].T + M[:3, 3]
+
+	def between(self, start, end, name):
+		# A landmark's move from the start pose to the end pose as (R, t), or
+		# None where its part stands the same in both
+		node = self.landmarks.get(name, {}).get("node")
+		if node is None:
+			return None
+		M = self.transform(end, node) @ np.linalg.inv(self.transform(start, node))
+		if np.allclose(M, np.eye(4), atol=1e-9):
+			return None
+		return M[:3, :3], M[:3, 3]
 
 	def landmark(self, name, drives=None):
 		spec = self.landmarks[name]
@@ -164,6 +186,7 @@ class Match:
 		self.model = mod.Model(glb)
 		self.joints = json.loads(Path(points_file).read_text())["joints"]
 		self.features = Features(self.model, self.joints, features_file)
+		self.pose = self.catalogue.get("pose", {})
 		# a photo marked "solve": false stays catalogued but out of the solve (too
 		# few marks to fix its camera: it needs six or more, spread in depth)
 		self.ids = [i for i, e in self.catalogue["photos"].items() if (not only or i in only) and e.get("solve", True)]
@@ -177,6 +200,9 @@ class Match:
 				"sigma": entry.get("sigma", max(1.5, size[0] / 2500)), "marks": {n: tuple(p) for n, p in entry.get("marks", {}).items()},
 				"distortion": entry.get("distortion", len(entry.get("marks", {})) >= 20), "camera": None,
 				"focal": (lens, 0.1) if lens else None})
+			# each mark on a part this photo poses otherwise than the measuring pose, carried there
+			moves = {n: self.features.between(self.pose, entry.get("pose", {}), n) for n in entry.get("marks", {})}
+			self.photos[-1]["moves"] = {n: m for n, m in moves.items() if m is not None}
 
 	def solve(self, log=print):
 		points = {}
@@ -190,7 +216,7 @@ class Match:
 		# priors alone, and each point's spread shows what they leave loose
 		for name in points:
 			if name in self.features.landmarks:
-				points[name]["value"] = self.features.landmark(name, self.pose_for(name))
+				points[name]["value"] = self.features.landmark(name, self.pose)
 		pairs = []
 		suffixes = self.catalogue.get("mirror")
 		if suffixes:
@@ -242,7 +268,7 @@ class Match:
 				out["anchors"][name] = {"cited": cited, "pull": [None if c is None or s > 0.1 else round(float(m - c), 2) for c, m, s in zip(cited, at, share)],
 					"why": spec.get("why")}
 			if name in self.features.landmarks:
-				ours = f.source(self.features.landmark(name, self.pose_for(name)))
+				ours = f.source(self.features.landmark(name, self.pose))
 				if len(loose):
 					# the photos fix a line (or plane): measure at its point nearest the model's
 					basis = np.linalg.qr(loose.T)[0]
@@ -261,13 +287,6 @@ class Match:
 				hit = cam.cast(self.cameras[k], (u, v), photo["centre"], normal, offset)
 				out["locate"][f"{photo['id']}:{name}"] = {n: round(float(x), 1) for n, x in zip(f.names, f.source(hit))}
 		return out
-
-	def pose_for(self, name):
-		# the drives of the first photo that marks the point
-		for ph in self.photos:
-			if name in ph["marks"]:
-				return ph["entry"].get("pose", {})
-		return {}
 
 	def silhouette(self, k, scale):
 		photo = self.photos[k]

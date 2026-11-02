@@ -28,6 +28,9 @@ class SkylineTest(unittest.TestCase):
 		self.assertIsNone(skyline.edge_along(profile(3.0, sky=90.0)))
 		self.assertIsNone(skyline.edge_along(profile(3.0, noise=15.0)))
 		self.assertIsNone(skyline.edge_along(profile(3.0, jet=185.0)))
+		# a dark sky passes where the caller lowers the brightness it asks for (a blue sky, measure())
+		self.assertAlmostEqual(skyline.edge_along(profile(3.0, jet=200.0, sky=70.0), 0.0), 2.5, delta=0.6)
+		self.assertIsNone(skyline.edge_along(profile(3.0, jet=200.0, sky=70.0)))
 		# a jet brighter than the sky: a sunlit top under overcast
 		self.assertAlmostEqual(skyline.edge_along(profile(2.0, jet=240.0, sky=180.0)), 1.5, delta=0.6)
 		# a blurred edge: half-way between sky and jet, wherever the change first shows
@@ -143,6 +146,26 @@ class SkylineTest(unittest.TestCase):
 		kept = skyline.measure(gray, ids, names, points, depths, focal, unit, 1.0, green=grass)
 		self.assertTrue([p for p in kept if p["pixel"][1] < 70])
 		self.assertFalse([p for p in kept if p["pixel"][1] >= 138 and 70 < p["pixel"][0] < 130])
+		# a deep blue sky reads darker in grey than the ground the brightness rule turns away, and is judged
+		# where it is blue; the same darkness in grey (shaded paint, about 20 bluer than red at most) is not
+		deep = np.where(gray > 100, 70.0, 200.0)
+		self.assertEqual(skyline.measure(deep, ids, names, points, depths, focal, unit, 1.0), [])
+		sky = np.where(gray > 100, 60.0, 0.0)
+		clear = skyline.measure(deep, ids, names, points, depths, focal, unit, 1.0, blue=sky)
+		self.assertGreater(len(clear), 40)
+		self.assertAlmostEqual(float(np.median([p["miss"] for p in clear])), -3.0, delta=0.3)
+		# shaded paint (about 20 bluer than red at most) beside warm sunlit paint is not sky, though the two differ
+		self.assertEqual(skyline.measure(deep, ids, names, points, depths, focal, unit, 1.0, blue=np.where(gray > 100, 20.0, -15.0)), [])
+		# shaded skin at the edge as dark in grey as the deep sky: its edge is read where the blue ends, where
+		# a walk in grey would pass the shaded rim for the sunlit skin 6 px further in
+		rim = np.full((size, size), 70.0)
+		rim[57:143, 57:143] = 60.0
+		rim[63:137, 63:137] = 200.0
+		tint = np.full((size, size), 60.0)
+		tint[57:143, 57:143] = 10.0
+		shaded = skyline.measure(rim, ids, names, points, depths, focal, unit, 1.0, blue=tint)
+		self.assertGreater(len(shaded), 40)
+		self.assertAlmostEqual(float(np.median([p["miss"] for p in shaded])), -3.0, delta=0.3)
 		# nor under the horizon in a photo taken on the ground, however much the ground there looks like sky
 		ground = np.zeros(gray.shape, bool)
 		ground[150:, :] = True
@@ -194,6 +217,37 @@ class SkylineTest(unittest.TestCase):
 		row = 200 - 500 * np.tan(np.radians(10 - skyline.HORIZON))
 		self.assertFalse(mask[int(row) - 12, 200])
 		self.assertTrue(mask[int(row) + 12, 200])
+
+	def test_scene_blue_sky(self):
+		# a plate seen from below against a deep blue sky, darker in grey than the brightness rule asks:
+		# in a photo the catalogue calls clear the scene reads the photo's colour and judges the plate's
+		# outline; the same grey without the blue is not sky
+		import tempfile
+		import camera as cam
+		import model as mod
+		from test_verify import JET, box, glb
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			glb(root / "m.glb", [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))}])
+			model = mod.Model(root / "m.glb")
+			size = [1200, 600]
+			camera = cam.looking(np.array([0.0, 0.0, 12.0]), np.array([0.0, 0.0, 0.0]), 2400.0)
+			flat, depth = cam.project(camera, model.triangles(mod.pose({}, {})).reshape(-1, 3), (size[0] / 2, size[1] / 2))
+			mask = skyline.frontmost(flat.reshape(-1, 3, 2), depth.reshape(-1, 3), tuple(size)) >= 0
+			(root / "references").mkdir()
+			entry = {"photo": "p", "size": size, "camera": list(camera), "pose": {}}
+			found = {}
+			for name, sky, clear in (("blue", (30, 70, 140), True), ("grey", (70, 70, 70), True), ("unread", (30, 70, 140), False)):
+				photo = np.where(mask[..., None], np.array([200, 200, 200]), np.array(sky)).astype(np.uint8)
+				Image.fromarray(photo).save(root / "references" / f"{name}.png")
+				catalogue = {"frame": JET, "photos": {"p": {"clear": True} if clear else {}}}
+				places, _ = skyline.Scene(catalogue, root, mod.Frame(JET), {}, dict(entry, file=f"{name}.png")).places(model, {}, {})
+				found[name] = places
+			self.assertGreater(len(found["blue"]), 40)
+			self.assertLess(float(np.median(np.abs([p["miss"] for p in found["blue"]]))), 0.5)
+			self.assertEqual(found["grey"], [])
+			# the blue is read only in a photo the catalogue calls clear: elsewhere a cloud would pass for the jet
+			self.assertEqual(found["unread"], [])
 
 	def test_hull(self):
 		square = [(0, 0), (4, 0), (4, 4), (0, 4)]

@@ -43,6 +43,7 @@ WIDTH = 3000     # pixels the longer side is worked at
 REACH = 24       # pixels either side of the model's edge searched, at that width
 BAND = REACH // 2   # the outermost samples, the sky the walk starts from
 GREEN = 8.0      # the band's green over its red and blue, past which it is grass or trees, not sky
+BLUE = 40.0      # the band's blue over its red and green, past which it is clear sky or open sea however dark: shaded paint reaches about 20
 HORIZON = 1.5    # degrees under the model frame's horizontal before a ground photo's ray meets ground: the jet sits about 1 deg off level on its gear
 REACHES = (REACH, 2 * REACH, 3 * REACH)   # tried in turn where the shorter finds no edge: a miss past the reach is no sky there
 STEP = 4         # pixels between places tried along the model's edge
@@ -62,11 +63,11 @@ SOLID = ["paint", "team", "lights", "burner", "display"]   # materials whose out
 SECTORS = [(30, "top"), (75, "upper side"), (105, "side"), (150, "lower side"), (181, "bottom")]   # round the body's section, degrees from the top
 
 
-def edge_along(profile):
+def edge_along(profile, bright=SKY["bright"]):
 	# The jet's edge along a brightness profile sampled outward across the
 	# model's edge (index REACH at the model's edge): the offset in samples
-	# (+ outward), or None where what lies beyond is not sky (too dark or too
-	# rough) or no sharp change from it is found.
+	# (+ outward), or None where what lies beyond is not sky (darker than
+	# bright, or too rough) or no sharp change from it is found.
 	#
 	# The sky is a line fitted to the outer samples and carried inward, since
 	# it often darkens or brightens toward the jet. Walking in from it, the
@@ -85,7 +86,7 @@ def edge_along(profile):
 	slope, base = np.polyfit(band, p[band], 1)
 	sky = base + slope * x
 	rough = (p[band] - sky[band]).std()
-	if sky[band].mean() < SKY["bright"] or rough > SKY["even"]:
+	if sky[band].mean() < bright or rough > SKY["even"]:
 		return None
 	depart = max(SKY["depart"], 4 * rough)
 	off = p - sky
@@ -217,7 +218,7 @@ def blocked(stores, load, hardpoints, frame, camera, centre, work, scale):
 	return np.asarray(image.filter(ImageFilter.MaxFilter(7))) > 0
 
 
-def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None):
+def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None):
 	# Every place along the model's edge where the photo shows sky beyond it:
 	# [{pixel, edge, miss (inches), part, point}]. gray and ids (each pixel's
 	# frontmost triangle, frontmost()) are at the working scale; names,
@@ -227,7 +228,11 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 	# one whose band of sky is green (green: each pixel's green over its red
 	# and blue): grass and trees, bright and even in grey, pass for sky. In a
 	# photo taken on the ground, below (a mask at the working scale) is what
-	# lies under the horizon: ground, never sky, however bright and even
+	# lies under the horizon: ground, never sky, however bright and even. A
+	# band that is blue (blue: each pixel's blue over its red and green) is
+	# sky however dark: a deep blue sky or sea reads darker in grey than the
+	# brightness that keeps shaded skin from passing for sky, which is grey.
+	# Against a blue sky the edge is read where the blue ends
 	mask = ids >= 0
 	nx, ny = outward(mask)
 	out = []
@@ -258,7 +263,16 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 		if below is not None and below[y0[-BAND:], x0[-BAND:]].any():
 			return None
 		fx, fy = xs - x0, ys - y0
-		return edge_along(gray[y0, x0] * (1 - fx) * (1 - fy) + gray[y0, x0 + 1] * fx * (1 - fy) + gray[y0 + 1, x0] * (1 - fx) * fy + gray[y0 + 1, x0 + 1] * fx * fy)
+
+		def along(image):
+			return image[y0, x0] * (1 - fx) * (1 - fy) + image[y0, x0 + 1] * fx * (1 - fy) + image[y0 + 1, x0] * (1 - fx) * fy + image[y0 + 1, x0 + 1] * fx * fy
+
+		# a blue sky is judged by its blue, however dark: in grey, shaded skin
+		# can match it and the walk would pass the skin's edge for the next
+		# bright step inward; the skin is never that blue
+		if blue is not None and blue[y0[-BAND:], x0[-BAND:]].mean() >= BLUE:
+			return edge_along(along(blue), 0.0)
+		return edge_along(along(gray))
 
 	for row, column in rim(mask):
 		j = ids[row, column]
@@ -291,9 +305,13 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 
 class Scene:
 	# One solved photo (an entry of photos.py's cameras file) at the working
-	# scale, ready to measure the model in any pose against: its brightness
-	# and greenness, what its stores hide, and in a photo taken on the
-	# ground (the entry's pose has the gear down) what lies under its horizon
+	# scale, ready to measure the model in any pose against: its brightness,
+	# greenness and blueness, what its stores hide, and in a photo taken on the
+	# ground (the entry's pose has the gear down) what lies under its horizon.
+	# Its blue is read only where the catalogue's photo entry says "clear":
+	# true, the background beyond the jet clear blue sky or open sea: a white
+	# cloud against the blue is no bluer than the jet, and the walk would take
+	# the cloud's edge for the jet's
 	def __init__(self, catalogue, root, frame, hardpoints, entry):
 		self.frame = frame
 		self.camera = np.array(entry["camera"], float)
@@ -305,6 +323,8 @@ class Scene:
 			colour = np.asarray(image.convert("RGB").resize(self.work), float)
 		self.gray = colour @ np.array([0.299, 0.587, 0.114])
 		self.green = colour[..., 1] - np.maximum(colour[..., 0], colour[..., 2])
+		clear = catalogue["photos"][entry["photo"]].get("clear", False)
+		self.blue = colour[..., 2] - np.maximum(colour[..., 0], colour[..., 1]) if clear else None
 		stores = catalogue.get("stores")
 		self.hidden = None
 		if stores:
@@ -329,7 +349,7 @@ class Scene:
 		flat, depth = flat.reshape(-1, 3, 2), depth.reshape(-1, 3)
 		ids = frontmost(flat * self.scale, depth, self.work)
 		points = self.frame.source(tris.mean(axis=1))
-		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.hidden, self.green, self.ground)
+		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.hidden, self.green, self.ground, self.blue)
 		return places, ids >= 0
 
 

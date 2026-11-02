@@ -25,6 +25,9 @@ nose from the front, the aircraft's right is on the photo's left. Get this right
   radome joint.
 - `windscreen_base`: the windscreen's front base on the centreline, where the glass frame meets the nose top.
 - `bow_top`: top of the canopy bow (the frame between the fixed windscreen and the opening canopy), on the centreline.
+- `windscreen_top`: top of the fixed windscreen's aft arch, on the centreline. With the canopy shut it is the
+  same point as `bow_top`; with the canopy raised, the bow lifts away with it and the arch stays: mark
+  `windscreen_top` there, never `bow_top`.
 - `canopy_crown`: the highest point of the canopy on the centreline.
 - `canopy_aft`: the canopy's aft end on the top centreline, where it meets the spine.
 - `bow_foot_left` / `bow_foot_right`: bottom end of the canopy bow on that side, on the canopy sill.

@@ -188,10 +188,28 @@ def triangulate(cameras, pixels, centres, constraints=()):
 	return np.linalg.lstsq(A, b, rcond=None)[0]
 
 
+def carried(camera, move):
+	# The camera that sees a point as this one sees it carried by move (R, t:
+	# x -> R x + t), so a point on a part posed differently in each photo
+	# triangulates where it stands in the pose it is measured in
+	if move is None:
+		return camera
+	R, t = move
+	Rc = rotation(camera[1:4])
+	out = np.array(camera, float).copy()
+	out[1:4] = vector(Rc @ R)
+	out[4:7] = Rc @ np.asarray(t, float) + np.asarray(camera[4:7], float)
+	return out
+
+
 class Bundle:
 	# Photos' cameras and points solved together.
 	#   photos  [{"centre": (cx, cy), "marks": {point: (u, v)}, "camera": 8 numbers or None,
-	#             "distortion": bool, "sigma": pixels, "focal": (pixels, sigma of its log) or None}]
+	#             "distortion": bool, "sigma": pixels, "focal": (pixels, sigma of its log) or None,
+	#             "moves": {point: (R, t)}}]
+	#           moves carry a point from the pose it is measured in to where this photo's
+	#           pose puts it (a point on a flap drooped in this photo and not in others);
+	#           a point not named stands as measured
 	#           a photo without a focal prior is held to a field of view between 1 and
 	#           100 degrees, so one with few marks cannot run off to an infinitely
 	#           distant, infinitely long lens; k1 is held near zero (sigma 0.1)
@@ -209,6 +227,12 @@ class Bundle:
 			for left, right in mirror[1]:
 				if left in points and right in points:
 					self.twin[left] = right
+
+	@staticmethod
+	def placed(photo, name, point):
+		# Where the photo sees a point: carried by the photo's move for it, if any
+		move = photo.get("moves", {}).get(name)
+		return point if move is None else move[0] @ point + move[1]
 
 	def fixed(self, name):
 		priors = self.points[name]["priors"]
@@ -241,7 +265,7 @@ class Bundle:
 					continue
 				seen = [n for n in photo["marks"] if n in known]
 				if len(seen) >= 4:
-					c, e = solve([known[n] for n in seen], [photo["marks"][n] for n in seen], photo["centre"], photo["width"])
+					c, e = solve([self.placed(photo, n, known[n]) for n in seen], [photo["marks"][n] for n in seen], photo["centre"], photo["width"])
 					photo["camera"] = c
 					changed = True
 					log(f"start: photo {k} from {len(seen)} points, rms {math.sqrt((e ** 2).sum(1).mean()):.1f} px")
@@ -252,7 +276,7 @@ class Bundle:
 				twin = self.twin.get(name) or next((l for l, r in self.twin.items() if r == name), None)
 				constraints = [(n, o, 1.0) for n, o, _ in p["priors"]]
 				if len(views) * 2 + len(constraints) >= 3 and (len(views) >= 2 or (views and constraints)):
-					known[name] = triangulate([v["camera"] for v in views], [v["marks"][name] for v in views], [v["centre"] for v in views], constraints)
+					known[name] = triangulate([carried(v["camera"], v.get("moves", {}).get(name)) for v in views], [v["marks"][name] for v in views], [v["centre"] for v in views], constraints)
 					changed = True
 				elif twin in known and twin is not None:
 					known[name] = self.reflect @ known[twin]
@@ -305,7 +329,7 @@ class Bundle:
 			names = [n for n in ph["marks"] if n in points]
 			if not names:
 				continue
-			p, _ = project(photo, np.array([points[n] for n in names]), ph["centre"])
+			p, _ = project(photo, np.array([self.placed(ph, n, points[n]) for n in names]), ph["centre"])
 			r = ((p - np.array([ph["marks"][n] for n in names])) / ph["sigma"]).ravel()
 			out.append(robust(r, k) if k else r)
 		for name, p in points.items():
@@ -341,7 +365,7 @@ class Bundle:
 				if c[0] <= 0:
 					return False
 				names = [n for n in self.photos[i]["marks"] if n in points]
-				if names and (project(c, np.array([points[n] for n in names]), self.photos[i]["centre"])[1] <= 0).any():
+				if names and (project(c, np.array([self.placed(self.photos[i], n, points[n]) for n in names]), self.photos[i]["centre"])[1] <= 0).any():
 					return False
 			return True
 
@@ -392,6 +416,6 @@ class Bundle:
 			names = [n for n in ph["marks"] if n in self.solved]
 			if not names:
 				continue
-			p, depth = project(c, np.array([self.solved[n] for n in names]), ph["centre"])
+			p, depth = project(c, np.array([self.placed(ph, n, self.solved[n]) for n in names]), ph["centre"])
 			out[i] = {n: (float(q[0] - ph["marks"][n][0]), float(q[1] - ph["marks"][n][1]), float(d)) for n, q, d in zip(names, p, depth)}
 		return out

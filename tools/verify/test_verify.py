@@ -203,6 +203,61 @@ class CameraTest(unittest.TestCase):
 		np.testing.assert_allclose(cam.triangulate([a, b], [pa, pb], [self.centre] * 2), target, atol=1e-6)
 		np.testing.assert_allclose(cam.cast(a, pa, self.centre, np.array([0, 0, 1.0]), -0.7), target, atol=1e-6)
 
+	def test_carried_camera_sees_the_moved_point(self):
+		# a camera carried by a move sees a point where the plain camera sees it moved
+		c = cam.looking(np.array([20.0, 1.0, 8.0]), np.zeros(3), 6000.0)
+		c[7] = 0.02
+		R, t = cam.rotation([0.1, -0.4, 0.25]), np.array([0.3, -1.2, 0.5])
+		points = np.array([[1.2, 0.4, -0.7], [-2.0, 0.9, 1.5], [0.0, -0.3, 0.2]])
+		np.testing.assert_allclose(cam.project(cam.carried(c, (R, t)), points, self.centre)[0], cam.project(c, points @ R.T + t, self.centre)[0], atol=1e-6)
+		self.assertIs(cam.carried(c, None), c)
+
+	def test_bundle_carries_moving_points(self):
+		# A flap's tip and edge, turned 0.5 rad about a hinge in one photo: carried
+		# by that photo's moves, they triangulate at rest from the start, and that
+		# photo's camera starts right from three cited points and the moved ones
+		anchors = {f"a{i}": p for i, p in enumerate(scene(2, 5))}
+		rest = {"tip": np.array([-5.0, 0.0, 2.0]), "edge": np.array([-5.0, 0.0, -1.0])}
+		hinge = np.array([-4.0, 0.0, 0.0])
+		R = cam.rotation([0.0, 0.0, 0.5])
+		move = (R, hinge - R @ hinge)
+		views = (((25, 3, 10), None), ((-8, 2, 22), None), ((18, -4, -14), move))
+		photos, truths = [], []
+		for position, m in views:
+			c = cam.looking(np.array(position, float), np.zeros(3), 8000)
+			truths.append(c)
+			marks = {}
+			for name, p in anchors.items():
+				if m is None or name in ("a0", "a1", "a2"):
+					marks[name] = tuple(cam.project(c, [p], self.centre)[0][0])
+			for name, p in rest.items():
+				marks[name] = tuple(cam.project(c, [p if m is None else m[0] @ p + m[1]], self.centre)[0][0])
+			photo = {"centre": self.centre, "width": 4000, "sigma": 1.0, "marks": marks}
+			if m is not None:
+				photo["moves"] = {name: m for name in rest}
+			photos.append(photo)
+		points = {name: {"priors": [(np.eye(3)[i], p[i], 0.0) for i in range(3)]} for name, p in anchors.items()}
+		# the moved photo's camera can start only from its three anchors and the
+		# moved tip and edge, so give the tip and edge their rest positions to start
+		for name, p in rest.items():
+			points[name] = {"priors": [], "value": p}
+		bundle = cam.Bundle(photos, points)
+		self.assertEqual(bundle.initialise(log=lambda *_: None), [])
+		np.testing.assert_allclose(cam.eye(photos[2]["camera"]), cam.eye(truths[2]), atol=1e-3)
+		# with no starting position, the tip is triangulated at rest through the moved photo too
+		for p in photos:
+			p["camera"] = None
+		points = {name: {"priors": [(np.eye(3)[i], p[i], 0.0) for i in range(3)]} for name, p in anchors.items()}
+		points["tip"] = {"priors": []}
+		points["edge"] = {"priors": [], "value": rest["edge"]}
+		photos[0]["marks"].pop("edge")
+		photos[1]["marks"].pop("edge")
+		bundle = cam.Bundle(photos, points)
+		self.assertEqual(bundle.initialise(log=lambda *_: None), [])
+		np.testing.assert_allclose(bundle.known["tip"], rest["tip"], atol=1e-3)
+		cameras, solved = bundle.solve()
+		np.testing.assert_allclose(solved["tip"], rest["tip"], atol=1e-3)
+
 	def test_bundle_measures_unknown_points(self):
 		# Five fully cited points fix the frame; three cameras see them and
 		# six points nothing cites, one pair mirrored across z. The bundle

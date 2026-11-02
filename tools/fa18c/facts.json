@@ -1135,64 +1135,65 @@
 			"note": "the design eye, provisional: a little ahead of and below the helmet's centre in the reference photo, where the pilot sits reaching for the canopy bow"
 		},
 		"hardpoints": {
-			"source": "world/games/air/aircraft/fa18c/fa18c.go",
-			"where": "Stores: the store elements' buttlines, which it takes from NATOPS figure 4-4",
-			"note": "stations 1-9 (air-stores.md). Buttlines are the flight model's; the wing stations' mounts sit on the wing's lower surface at the chord fraction given, and the fuselage stations' on the skin straight below their station and buttline (the nacelle and the keel; the waterlines here are the flight model's), all provisional until the reference photos with stores are matched",
+			"source": "natops",
+			"where": "figure 4-4 (External Stores Limitations): each station's distance from the centreline, 19.5 ft (stations 1 and 9), 11.2 (2 and 8), 7.3 (3 and 7) and 3.7 (4 and 6), to a tenth of a foot",
+			"note": "stations 1-9 (air-stores.md). A station's buttline is the figure's distance, where its store hangs. The wing stations' mounts sit on the wing's lower surface at that buttline and the chord fraction given, the store straight below; the tip stations' on the wingtip (the build places them there, not at the buttline), whose launcher carries the round out to the figure's line; the fuselage stations' on the skin straight below their station and buttline, the cheek stations' inboard of their rounds (station 6). The stations along the length and the chord fraction are provisional until step 5 matches the stores themselves. The flight model's store positions (fa18c.go) are its own estimates, not this figure: its outboard pylons at 3.35 m (131.9 in) and its cheek stations at 0.55 m (21.7 in), 'a plausible figure, not a survey'. The photos' Litening pod hangs on the centreline at FS 350-445 (dvids7487365, dvids9820744 and dvids8901347 agree), forward of station 5: its adapter, not the station, places it",
 			"stations": [
 				{
 					"number": 1,
 					"kind": "tip",
-					"buttline": -224.5
+					"buttline": -234.0
 				},
 				{
 					"number": 2,
 					"kind": "wing",
-					"buttline": -131.9,
+					"buttline": -134.4,
 					"chord": 0.42
 				},
 				{
 					"number": 3,
 					"kind": "wing",
-					"buttline": -88.2,
+					"buttline": -87.6,
 					"chord": 0.42
 				},
 				{
 					"number": 4,
 					"kind": "fuselage",
-					"buttline": -21.7,
-					"station": 505,
-					"waterline": 86
+					"buttline": -41.5,
+					"station": 496,
+					"source": "photo match",
+					"where": "station 6's, mirrored"
 				},
 				{
 					"number": 5,
 					"kind": "fuselage",
 					"buttline": 0,
-					"station": 470,
-					"waterline": 84
+					"station": 470
 				},
 				{
 					"number": 6,
 					"kind": "fuselage",
-					"buttline": 21.7,
-					"station": 505,
-					"waterline": 86
+					"buttline": 41.5,
+					"station": 496,
+					"source": "photo match",
+					"where": "NATOPS figure 4-4 hangs the round 3.7 ft (44.4 in) out, and dvids7487365 (from below) agrees: its right-cheek AIM-120's nose and tail, cast from the solved camera, put the axis at FS 420-567 (the round's 144 in) and BL 46.8 at WL 70, less 0.24 in for each inch higher, so BL 44.4 at WL 80. The round's inboard side clears the nacelle (BL 38.2 at WL 80, 42.4 at WL 84, at FS 496) only below WL 82, so it hangs against the nacelle's lower outboard corner with its axis about WL 80. The mount is the skin straight above its inboard side, BL 41.5, which the build drapes to WL 85.8; the station is the round's middle"
 				},
 				{
 					"number": 7,
 					"kind": "wing",
-					"buttline": 88.2,
+					"buttline": 87.6,
 					"chord": 0.42
 				},
 				{
 					"number": 8,
 					"kind": "wing",
-					"buttline": 131.9,
+					"buttline": 134.4,
 					"chord": 0.42
 				},
 				{
 					"number": 9,
 					"kind": "tip",
-					"buttline": 224.5
+					"buttline": 234.0
 				}
 			]
 		},

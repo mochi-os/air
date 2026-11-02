@@ -906,6 +906,9 @@ def canopy(stations, rings):
 	column = lambda r, side: rings[r][SILL] if side > 0 else rings[r][n - SILL]
 	MARKS["windscreen_base"] = (rings[index[round(front, 1)]][0], "windscreen")
 	MARKS["bow_top"] = (rings[index[round(bow, 1)]][0], "canopy")
+	# the fixed windscreen's aft arch, where the bow meets it: the same point while the
+	# canopy is shut, and what a photo with the canopy raised shows there
+	MARKS["windscreen_top"] = (rings[index[round(bow, 1)]][0], "windscreen")
 	MARKS["canopy_aft"] = (rings[index[round(back, 1)]][0], "canopy")
 	MARKS["canopy_crown"] = (max((rings[r][0] for r in range(len(rings)) if bow <= stations[r] <= back), key=lambda v: v.z), "canopy")
 	glass = [r for r, st in enumerate(stations) if bow <= st <= back]
