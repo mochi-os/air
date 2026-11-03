@@ -970,6 +970,22 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
+              Haze from NASA’s <b>MERRA-2</b> aerosol reanalysis by the{' '}
+              <b>Global Modeling and Assimilation Office</b> (public domain):
+              each month’s mean over 2015-2024.
+            </Trans>{' '}
+            <a
+              className='text-primary hover:underline'
+              href='https://gmao.gsfc.nasa.gov/gmao-products/merra-2/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              {/* jsx-text-ok: brand name */}
+              NASA GMAO
+            </a>
+          </p>
+          <p className='leading-relaxed'>
+            <Trans>
               Cockpit display font <b>“Hornet Display”</b> by{' '}
               <b>Mørkvitnir</b>, © 2022, licensed under <b>MIT</b>.
             </Trans>{' '}

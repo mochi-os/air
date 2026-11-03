@@ -6,12 +6,34 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import * as THREE from 'three'
-import { GROUND, radiance, sunlight, tables, transmittance } from './atmosphere'
+import {
+  baking,
+  between,
+  climatology,
+  extinction,
+  medium,
+  sphere,
+  AIR,
+  FOG,
+  GROUND,
+  radiance,
+  SCATTERING,
+  sunlight,
+  tables,
+  transmittance,
+  TRANSMITTANCE,
+} from './atmosphere'
 import { DEGREE, tangent } from './earth'
 import { DAY as MOON_DAY, NIGHT as MOON_NIGHT, OBSERVER } from './moon'
 import { moon as sky_moon, seen as sky_seen } from './sky'
 
-const air = tables(2.5)
+// The air over Midway at the day's moment, as the engine bakes it at boot.
+const midway = climatology(
+  OBSERVER.latitude * DEGREE,
+  OBSERVER.longitude * DEGREE,
+  MOON_DAY.time
+)
+const air = tables(midway)
 const noon: [number, number, number] = [0, 0.866, 0.5]
 const luminance = (c: number[]) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
 // The standard normal's inverse distribution (Acklam), for fixed quasi-random draws.
@@ -28,10 +50,16 @@ const normal = (u: number) => {
 
 describe('the transmittance table', () => {
   it('passes what the vertical optical depths of the air say, from the sea straight up', () => {
-    // Rayleigh 8 km, Mie 1.2 km (times the haze), ozone a 15 km tent: blue loses most
+    // Rayleigh 8 km, the aerosol's own depth, ozone a 15 km tent: blue loses most
     const up = transmittance(air.transmittance, GROUND, 1)
-    expect(up[0]).toBeCloseTo(0.932, 2)
-    expect(up[2]).toBeCloseTo(0.753, 2)
+    expect(up[0]).toBeCloseTo(
+      Math.exp(-(5.802e-3 * 8 + 0.65e-3 * 15 + midway)),
+      2
+    )
+    expect(up[2]).toBeCloseTo(
+      Math.exp(-(33.1e-3 * 8 + 0.085e-3 * 15 + midway)),
+      2
+    )
     expect(up[0]).toBeGreaterThan(up[1])
     expect(up[1]).toBeGreaterThan(up[2])
   })
@@ -51,24 +79,237 @@ describe('the transmittance table', () => {
 })
 
 describe('the sky', () => {
-  it('is blue overhead and paler, brighter, toward the horizon', () => {
-    const zenith = radiance(air, [0, 1, 0], 10, noon, 2.5)
-    const horizon = radiance(air, [0, 0.02, -1], 10, noon, 2.5)
-    expect(zenith[2] / zenith[0]).toBeGreaterThan(3)
-    expect(horizon[2] / horizon[0]).toBeLessThan(zenith[2] / zenith[0])
-    expect(luminance(horizon)).toBeGreaterThan(luminance(zenith) * 3)
+  it('is blue away from the sun, paler and brighter toward the horizon, and whitens toward the sun, where the aerosol scatters forward', () => {
+    const away = radiance(air, [0, 0.5, -0.866], 10, noon, midway) // 30 degrees up, opposite the sun
+    const horizon = radiance(air, [0, 0.02, -1], 10, noon, midway)
+    const near = radiance(air, [0, 1, 0], 10, noon, midway) // overhead: 30 degrees from the noon sun
+    expect(away[2] / away[0]).toBeGreaterThan(2.5)
+    expect(horizon[2] / horizon[0]).toBeLessThan(away[2] / away[0])
+    expect(luminance(horizon)).toBeGreaterThan(luminance(away) * 1.5)
+    expect(near[2] / near[0]).toBeLessThan((away[2] / away[0]) * 0.7)
   })
 
   it('darkens overhead as the jet climbs out of the air', () => {
-    const low = radiance(air, [0, 1, 0], 100, noon, 2.5)
-    const high = radiance(air, [0, 1, 0], 12000, noon, 2.5)
+    const low = radiance(air, [0, 1, 0], 100, noon, midway)
+    const high = radiance(air, [0, 1, 0], 12000, noon, midway)
     expect(luminance(high)).toBeLessThan(luminance(low) * 0.5)
   })
 
   it('brightens toward the sun, where the aerosols scatter forward', () => {
-    const toward = radiance(air, [0, 0.5, 0.866], 10, noon, 2.5)
-    const away = radiance(air, [0, 0.5, -0.866], 10, noon, 2.5)
+    const toward = radiance(air, [0, 0.5, 0.866], 10, noon, midway)
+    const away = radiance(air, [0, 0.5, -0.866], 10, noon, midway)
     expect(luminance(toward)).toBeGreaterThan(luminance(away) * 1.5)
+  })
+})
+
+// The aerosol is measured, its optical depth at 550 nm over the place and month
+// (tools/aerosol.py bakes NASA's MERRA-2 into aerosol.ts), and the model holds
+// exactly that depth in its column.
+describe('the aerosol', () => {
+  const at = (latitude: number, longitude: number, time: Date) =>
+    climatology(latitude * DEGREE, longitude * DEGREE, time)
+  const middle = (year: number, month: number) => {
+    const days = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
+    return new Date(Date.UTC(year, month, 1) + (days / 2) * 86400000)
+  }
+
+  it('is the optical depth the column holds: its extinction integrates to it from the sea up', () => {
+    let column = 0
+    for (let h = 0.005; h < 60; h += 0.01)
+      column +=
+        (medium(h, 0.145).extinction[1] - medium(h, 0).extinction[1]) * 0.01
+    expect(column).toBeCloseTo(0.145, 3)
+    // in a 2 km scale height: part of it aloft over the marine layer, as in the spring's Asian outflow
+    expect(
+      medium(0, 0.145).extinction[1] - medium(0, 0).extinction[1]
+    ).toBeCloseTo(0.145 / 2, 6)
+    expect(
+      medium(2, 0.145).extinction[1] - medium(2, 0).extinction[1]
+    ).toBeCloseTo((0.145 / 2) * Math.exp(-1), 6)
+  })
+
+  it("is MERRA-2's over Midway: March's 0.145 at the day's moment, September's half April's", () => {
+    expect(midway).toBeGreaterThan(0.12)
+    expect(midway).toBeLessThan(0.17)
+    expect(
+      at(OBSERVER.latitude, OBSERVER.longitude, middle(2020, 8))
+    ).toBeLessThan(
+      at(OBSERVER.latitude, OBSERVER.longitude, middle(2020, 3)) * 0.6
+    )
+  })
+
+  it('lies the right way round on the earth: the Sahara dusty in July, the South Pacific clean', () => {
+    expect(at(20, 0, middle(2020, 6))).toBeGreaterThan(0.35)
+    expect(at(-30, -130, middle(2020, 6))).toBeLessThan(0.1)
+  })
+
+  it("is each month its mean at the month's middle, and halfway between two on the first", () => {
+    const april = middle(2021, 3),
+      march = middle(2021, 2)
+    const first = at(35, 140, new Date(Date.UTC(2021, 3, 1)))
+    expect(first).toBeCloseTo((at(35, 140, march) + at(35, 140, april)) / 2, 3)
+  })
+
+  it('joins across the antimeridian and the turn of the year', () => {
+    expect(at(28, 179.99, MOON_DAY.time)).toBeCloseTo(
+      at(28, -179.99, MOON_DAY.time),
+      3
+    )
+    expect(at(30, 150, new Date(Date.UTC(2020, 11, 31, 23)))).toBeCloseTo(
+      at(30, 150, new Date(Date.UTC(2021, 0, 1, 1))),
+      3
+    )
+  })
+
+  it('bakes the same tables a slice at a time, a row or a texel each', () => {
+    const steps = baking(0.1)
+    let count = 0
+    let step = steps.next()
+    while (!step.done) {
+      count++
+      step = steps.next()
+    }
+    expect(count).toBe(TRANSMITTANCE.height + SCATTERING * SCATTERING)
+    const whole = tables(0.1)
+    expect(step.value.transmittance).toEqual(whole.transmittance)
+    expect(step.value.scattering).toEqual(whole.scattering)
+  })
+})
+
+// What the air between the eye and a point takes, from the transmittance table
+// (between) or its integral (extinction, FOG), against the air itself.
+describe('the air between two points', () => {
+  // The light passed along a ray from r, at mu, for t km, by marching the air.
+  const marched = (r: number, mu: number, t: number) => {
+    const depth = [0, 0, 0],
+      steps = 20000,
+      dt = t / steps
+    for (let i = 0; i < steps; i++) {
+      const s = (i + 0.5) * dt
+      const e = medium(
+        Math.sqrt(r * r + s * s + 2 * r * mu * s) - GROUND,
+        midway
+      ).extinction
+      for (let c = 0; c < 3; c++) depth[c] += e[c] * dt
+    }
+    return depth.map((d) => Math.exp(-d))
+  }
+  const near = (a: number[], b: number[], tolerance: number) =>
+    a.forEach((v, c) =>
+      expect(
+        Math.abs(v - b[c]),
+        `channel ${c}: ${v} against ${b[c]}`
+      ).toBeLessThan(tolerance)
+    )
+
+  it('passes what the air along a rising ray takes', () => {
+    near(
+      between(air.transmittance, GROUND + 1.4, 0.1, 20),
+      marched(GROUND + 1.4, 0.1, 20),
+      0.01
+    )
+    near(
+      between(air.transmittance, GROUND + 9, 0.02, 80),
+      marched(GROUND + 9, 0.02, 80),
+      0.01
+    )
+  })
+
+  it('passes what the air along a ray down to the sea takes, read from the sea back', () => {
+    for (const [height, mu] of [
+      [1.4, -0.05],
+      [1.4, -0.3],
+      [12, -0.1],
+    ]) {
+      const r = GROUND + height,
+        t = sphere(r, mu, GROUND)[0]
+      expect(t).toBeGreaterThan(0)
+      near(between(air.transmittance, r, mu, t), marched(r, mu, t), 0.015)
+    }
+  })
+
+  it("has the shaders' at_between do what between() does, line for line", () => {
+    const body =
+      /vec3 at_between\(float r, float mu, float t\)\{([\s\S]*?)\}`?$/m.exec(
+        AIR
+      )
+    expect(body, 'at_between in AIR').not.toBeNull()
+    const js = body![1]
+      .replace(/\b(float|bool|vec3) /g, 'let ')
+      .replace(/vec3\(([^()]*)\)/g, '$1')
+      .replace(/\b(sqrt|max|min)\(/g, 'Math.$1(')
+      .replace(/AT_GROUND/g, String(GROUND))
+    const channel = (c: number) =>
+      new Function('at_transmittance', 'clamp', `return (r, mu, t) => {${js}}`)(
+        (r: number, mu: number) => transmittance(air.transmittance, r, mu)[c],
+        (v: number, a: number, b: number) => Math.min(Math.max(v, a), b)
+      ) as (r: number, mu: number, t: number) => number
+    for (const [r, mu, t] of [
+      [GROUND + 1.4, 0.1, 20],
+      [GROUND + 1.4, -0.05, sphere(GROUND + 1.4, -0.05, GROUND)[0]],
+      [GROUND + 12, -0.1, 50],
+    ])
+      for (let c = 0; c < 3; c++)
+        expect(channel(c)(r, mu, t)).toBeCloseTo(
+          between(air.transmittance, r, mu, t)[c],
+          9
+        )
+  })
+
+  it('passes what the air along a ray skimming over the horizon takes', () => {
+    near(
+      between(air.transmittance, GROUND + 1.4, -0.015, 60),
+      marched(GROUND + 1.4, -0.015, 60),
+      0.015
+    )
+  })
+
+  it("is extinction(): the mean of the air's extinction between two heights, whatever the slant", () => {
+    const luminance3 = (c: number[]) =>
+      0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+    for (const [low, high] of [
+      [0, 4],
+      [1, 2.5],
+      [3, 0.5],
+    ]) {
+      let sum = 0
+      const steps = 4000,
+        a = Math.min(low, high),
+        b = Math.max(low, high)
+      for (let i = 0; i < steps; i++)
+        sum += luminance3(
+          medium(a + ((i + 0.5) * (b - a)) / steps, midway).extinction
+        )
+      expect(extinction(low, high, midway)).toBeCloseTo(sum / steps, 5)
+    }
+    expect(extinction(1, 1, midway)).toBeCloseTo(
+      luminance3(medium(1, midway).extinction),
+      6
+    )
+  })
+
+  it("has the lit materials' fog (FOG's at_fog) take what extinction() says, number for number", () => {
+    const js = FOG.replace(
+      'float at_fog(float low, float high, float aerosol){',
+      'return (low, high, aerosol) => {'
+    )
+      .replace(/float /g, 'let ')
+      .replace(/\b(max|min|exp)\(/g, 'Math.$1(')
+    const fog = new Function(js)() as (
+      low: number,
+      high: number,
+      aerosol: number
+    ) => number
+    for (const [low, high] of [
+      [0, 4],
+      [1.4, 0],
+      [5, 5],
+      [0.2, 0.2005],
+    ])
+      expect(fog(low, high, midway)).toBeCloseTo(
+        extinction(low, high, midway),
+        6
+      )
   })
 })
 
@@ -99,10 +340,10 @@ describe('the wiring', () => {
 
   it('has the dome, the sea and the clouds read the one sky-view table', () => {
     expect(engine).toMatch(
-      /vec3 d=normalize\(v_dir\); vec3 col=sky_dome\(d,normalize\(u_sun\),u_dip,u_fog,u_ovc,u_ovct,u_ovcw,u_sun_col,u_exposure,max\(length\(fwidth\(d\)\),1\.0e-5\)\);/
+      /vec3 d=normalize\(v_dir\); vec3 col=sky_dome\(d,normalize\(u_sun\),u_dip,u_ovc,u_ovct,u_ovcw,u_sun_col,u_exposure,max\(length\(fwidth\(d\)\),1\.0e-5\)\);/
     )
     expect(engine).toMatch(
-      /vec3 skybg=sky_dome\(ray,uSun,uDip,uFog,uOvc,uOvcT,uOvcW,uSunCol,uExposure,blur\);/
+      /vec3 skybg=sky_dome\(ray,uSun,uDip,uOvc,uOvcT,uOvcW,uSunCol,uExposure,blur\);/
     )
     expect(engine).toMatch(
       /vec3 col=shown\(at_sky\(normalize\(d\),normalize\(u_sun\)\)\*u_illuminance,u_exposure\);/
@@ -117,8 +358,164 @@ describe('the wiring', () => {
 
   it("fogs the lit materials to the sky's own horizon, each frame", () => {
     expect(engine).toMatch(
-      /scene\.fog\.color\.setRGB\(r\[0\]\*e,r\[1\]\*e,r\[2\]\*e\);/
+      /scene\.fog\.color\.setRGB\(r\[0\]\*e,r\[1\]\*e,r\[2\]\*e\); scene\.fog\.density=air_aerosol; \}/
     )
+    expect(engine).toMatch(
+      /const r=sky_radiance\(air_tables,\[f\.x\*k,0\.03,f\.z\*k\],camera\.position\.y,\[sun_dir\.x,sun_dir\.y,sun_dir\.z\],air_aerosol\)/
+    )
+  })
+
+  it("hazes the lit materials by the air's own extinction between the eye's height and theirs, over the distance", () => {
+    const start = engine.indexOf('{ const chunk=THREE.ShaderChunk,')
+    const block = engine.slice(
+      start,
+      engine.indexOf('\n', engine.indexOf('swap("fog_fragment"', start))
+    )
+    const chunks: Record<string, string> = { ...THREE.ShaderChunk }
+    new Function('THREE', 'AIR_FOG', block)({ ShaderChunk: chunks }, FOG)
+    expect(chunks.fog_vertex).toContain(
+      'vFogDepth = length( mvPosition.xyz ); vFogHeight = cameraPosition.y + ( vec4( mvPosition.xyz, 0.0 ) * viewMatrix ).y;'
+    )
+    expect(chunks.fog_pars_vertex).toContain('varying float vFogHeight;')
+    expect(chunks.fog_pars_fragment).toContain('varying float vFogHeight;')
+    expect(chunks.fog_pars_fragment).toContain(
+      'float at_fog(float low, float high, float aerosol)'
+    )
+    expect(chunks.fog_fragment).toContain(
+      'float fogFactor = 1.0 - exp( - at_fog( cameraPosition.y / 1000.0, vFogHeight / 1000.0, fogDensity ) * vFogDepth / 1000.0 );'
+    )
+    expect(chunks.fog_fragment).toContain(
+      'mix( gl_FragColor.rgb, fogColor, fogFactor )'
+    ) // the night's patch still finds its line
+    expect(THREE.ShaderChunk.fog_fragment).toContain('fogDensity * fogDensity') // the test worked on a copy
+    expect(start).toBeLessThan(
+      engine.indexOf(
+        '.replace("#include <fog_fragment>",THREE.ShaderChunk.fog_fragment'
+      )
+    ) // swapped before the night's patch reads it
+  })
+
+  it('hazes the sea through the air between it and the eye, in linear light, becoming the far sea the dome draws past its rim', () => {
+    expect(engine).toMatch(
+      /vec3 sight=-V, own=unshown\(col,u_exposure\);\n\t*if\(dist>70000\.0\) own=mix\(own,sea_far\(sight,L\)\*dark,smoothstep\(70000\.0,112000\.0,dist\)\);[^\n]*\n\t*col=shown\(sea_air\(sight,dist\/1000\.0,own,L,u_cloud_flat,u_shadow_hour\),u_exposure\);\n\t*gl_FragColor=vec4\(col,1\.0\); \}`/
+    )
+    expect(engine).toMatch(
+      /return own\*at_between\(AT_GROUND\+u_altitude,d\.y,t\)\+air; \}/
+    )
+    expect(engine).toMatch(
+      /vec3 col=shown\(sea>0\.0\?sea_air\(d,sea,sea_far\(d,sun\),sun,0\.0,1\.0\):at_sky\(d,sun\)\*u_illuminance\+moon,exposure\);/
+    )
+    expect(engine).not.toMatch(/u_fog_density|seafog|fog\*0\.88/)
+  })
+
+  it('hazes the clouds by what the air between the eye and each sample takes, under a sky with sun in it', () => {
+    expect(engine).toMatch(
+      /float hz=mix\(1\.0-dot\(at_between\(AT_GROUND\+u_altitude,ray\.y,ts\/1000\.0\),vec3\(0\.2126,0\.7152,0\.0722\)\),clamp\(1\.0-exp\(-ts\*ts\*1\.5e-9\),0\.0,0\.985\),uFlat\);/
+    )
+  })
+
+  it("bakes the air over the place flown in the hour's month: at once for the hour, a slice a frame as the frame moves", () => {
+    expect(engine).toMatch(
+      /let air_aerosol=aerosol_climatology\(theatre\.frame\.latitude,theatre\.frame\.longitude,MOON_DAY\.time\);\nlet air_tables=atmosphere_tables\(air_aerosol\);/
+    )
+    expect(engine).toMatch(
+      /function air_wanted\(\)\{ return aerosol_climatology\(theatre\.frame\.latitude,theatre\.frame\.longitude,\(tod_preset===TOD\.night\?MOON_NIGHT:MOON_DAY\)\.time\); \}/
+    )
+    expect(engine).toMatch(
+      /function apply_time_of_day\(t\)\{ const p=TOD\[t\]\|\|TOD\.day; tod_preset=p; air_settle\(true\);/
+    )
+    expect(engine).toMatch(
+      /moment_light\(tod_preset\); moon_place\(tod_preset\); air_settle\(false\); \}/
+    )
+    expect(engine).toMatch(
+      /\tair_step\(\);[^\n]*\n\tsky_view_render\(camera\.position\.y\);/
+    )
+    expect(engine).toMatch(/u_aerosol:\{value:air_aerosol\}/)
+  })
+
+  it('holds the aerosol within its tolerance, bakes at once for the hour, and slices a bake over frames that the newest replaces', () => {
+    const lift = (name: string) => {
+      const start = engine.indexOf(`function ${name}(`)
+      expect(start, name).toBeGreaterThan(0)
+      const rest = engine.slice(start)
+      return rest.slice(0, /\n(?=\S)/.exec(rest.slice(1))!.index + 1)
+    }
+    const limits = /const AIR_CHANGE=([\d.]+), AIR_SLICE=([\d.]+);/.exec(engine)
+    expect(limits).not.toBeNull()
+    let want = 0.1,
+      clock = 0,
+      whole = 0
+    const texture = () => ({
+      image: { data: null as unknown },
+      needsUpdate: false,
+    })
+    const uniforms = {
+      u_aerosol: { value: 0.1 },
+      u_transmittance: { value: texture() },
+      u_scattering: { value: texture() },
+    }
+    const baked = (a: number) => ({ transmittance: [a], scattering: [a] })
+    const air = new Function(
+      'air_wanted',
+      'atmosphere_tables',
+      'atmosphere_baking',
+      'air_halves',
+      'atmosphere_uniforms',
+      'performance',
+      `let air_aerosol=0.1, air_tables=null, air_bake=null; const AIR_CHANGE=${limits![1]}, AIR_SLICE=${limits![2]};
+      ${lift('air_apply')}\n${lift('air_settle')}\n${lift('air_step')}
+      return { settle:air_settle, step:air_step, aerosol:()=>air_aerosol, baking:()=>air_bake&&air_bake.aerosol }`
+    )(
+      () => want,
+      (a: number) => {
+        whole++
+        return baked(a)
+      },
+      function* (a: number) {
+        yield
+        yield
+        yield
+        return baked(a)
+      },
+      (data: number[]) => data,
+      uniforms,
+      { now: () => (clock += 1) } // each look at the clock a millisecond on: two steps fit a frame's slice
+    )
+    want = 0.1015 // inside the tolerance: nothing baked
+    air.settle(true)
+    air.settle(false)
+    expect([whole, air.baking()]).toEqual([0, null])
+    want = 0.2 // the hour set: at once
+    air.settle(true)
+    expect([whole, air.aerosol(), uniforms.u_aerosol.value]).toEqual([
+      1, 0.2, 0.2,
+    ])
+    expect([
+      uniforms.u_transmittance.value.image.data,
+      uniforms.u_scattering.value.needsUpdate,
+    ]).toEqual([[0.2], true])
+    want = 0.3 // the frame moved on: a slice a frame, three steps over two frames
+    air.settle(false)
+    air.step()
+    expect([air.aerosol(), air.baking()]).toEqual([0.2, 0.3])
+    air.settle(false) // the same aerosol asked for again: the bake under way goes on
+    air.step()
+    expect([air.aerosol(), air.baking()]).toEqual([0.3, null])
+    want = 0.4
+    air.settle(false)
+    air.step()
+    want = 0.5 // moved on again before it finished: the newest replaces it, from its start
+    air.settle(false)
+    air.step()
+    expect([air.aerosol(), air.baking()]).toEqual([0.3, 0.5])
+    air.step()
+    expect([air.aerosol(), air.baking()]).toEqual([0.5, null])
+    expect(whole).toBe(1)
+    want = 0.5
+    air.settle(false)
+    want = 0.6
+    air.settle(true) // the hour set over a slice under way
+    expect([air.aerosol(), air.baking()]).toEqual([0.6, null])
   })
 
   it('lights the sky by the hour', () => {
@@ -483,9 +880,15 @@ describe('the moon', () => {
   }
 
   it("adds its light to the sky's before the tone, through the air in front of it", () => {
-    expect(shader).toContain('vec3 moon=moon_light(d,blur)*at_transmittance(AT_GROUND+u_altitude,max(d.y,0.0));')
-    expect(shader).toContain('vec3 col=shown(at_sky(normalize(vec3(d.x,max(d.y,0.0005-dip),d.z)),sun)*u_illuminance+moon,exposure);')
-    expect(shader).toContain('const SKY_SHOWN=`uniform float u_illuminance,u_sun_disc;\n\t`+TONE+`\n\t`+MOON+`')
+    expect(shader).toContain(
+      'vec3 moon=moon_light(d,blur)*at_transmittance(AT_GROUND+u_altitude,max(d.y,0.0));'
+    )
+    expect(shader).toContain(
+      'vec3 col=shown(sea>0.0?sea_air(d,sea,sea_far(d,sun),sun,0.0,1.0):at_sky(d,sun)*u_illuminance+moon,exposure);'
+    )
+    expect(shader).toContain(
+      'const SKY_SHOWN=`uniform float u_illuminance,u_sun_disc;\n\t`+TONE+`\n\t`+MOON+`'
+    )
   })
 
   it("lays the face on the sky by the image's right and up, a disc its own size, read at the mip a pixel resolves", () => {
