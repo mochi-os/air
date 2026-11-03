@@ -129,6 +129,9 @@ LAYOUT = {
 		"gallery": {"port": [[-100, 3]], "starboard": [[-100, 2]]},
 		# a wall standing in from the port deck edge (z -40) aft of amidships
 		"walls": {"port": [{"wall": [[-75, -36], [-55, -36]], "foot": 8.0}]},
+		# a blister rounded at each end to starboard, a square one to port
+		"blisters": [{"side": "starboard", "x": [-40, -20], "y": [1.5, 4.0], "depth": 1.0, "ends": "round"},
+			{"side": "port", "x": [-20, -10], "y": [2.0, 4.0], "depth": 0.5, "ends": "square"}],
 		# port creases from the gallery's foot to the knuckle: one from x 50
 		# down to 30, one from 40 by a corner at (25, 10, -26) down to 10
 		"flare": {"port": [[[50, 15.4, -40], [30, 6, -16]], [[40, 15.4, -40], [25, 10, -26], [10, 6, -16]]]}},
@@ -470,6 +473,22 @@ class BuildTest(unittest.TestCase):
 		self.assertIn("baseColorTexture", net["pbrMetallicRoughness"])
 		mesh = gltf["meshes"][next(n["mesh"] for n in gltf["nodes"] if n["name"] == "nets")]
 		self.assertIn("TEXCOORD_0", mesh["primitives"][0]["attributes"])
+
+	def test_blisters_stand_out_from_the_hull_side(self):
+		# the hull's side at y 2.75 midships: 15 at the waterline to 16 at y 6
+		side = 15 + 2.75 / 6
+		blisters = self.model.parts()["hull_blisters"].reshape(-1, 3)
+		starboard = blisters[blisters[:, 2] > 0]
+		np.testing.assert_allclose([starboard[:, 0].min(), starboard[:, 0].max(), starboard[:, 1].min(), starboard[:, 1].max()],
+			[-40, -20, 1.5, 4.0], atol=1e-4)
+		self.assertAlmostEqual(starboard[np.isclose(starboard[:, 1], 2.75, atol=1e-3)][:, 2].max(), side + 1.0, places=3)
+		self.assertAlmostEqual(starboard[:, 2].min(), 15 + 1.5 / 6 - 0.4, places=3)   # running on 0.4 into the side, at its foot
+		# rounded at each end: its end at mid-height, no corner at its foot
+		self.assertTrue((np.isclose(starboard[:, 0], -40, atol=1e-4) & np.isclose(starboard[:, 1], 2.75, atol=1e-3)).any())
+		self.assertFalse((np.isclose(starboard[:, 0], -40, atol=1e-3) & np.isclose(starboard[:, 1], 1.5, atol=1e-3)).any())
+		port = blisters[blisters[:, 2] < 0]
+		self.assertTrue((np.isclose(port[:, 0], -20, atol=1e-4) & np.isclose(port[:, 1], 2.0, atol=1e-4)).any())   # square
+		self.assertAlmostEqual(port[:, 2].min(), -(15 + 4.0 / 6 + 0.5), places=3)
 
 	def test_flare_creases_make_facets(self):
 		tris = self.model.parts()["hull"]

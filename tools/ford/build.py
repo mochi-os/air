@@ -1287,6 +1287,26 @@ def hull():
 	faces.append(tuple(range(last + n - 1, last - 1, -1)))   # the bow's end, facing forward
 	paints.append("grey")
 	node("hull", mesh=(vertices, faces, paints))
+	blisters = []
+	for b in h.get("blisters", []):
+		# a blister on the hull side (hull.blisters): its outline seen from
+		# the side, rounded at each end or square, standing `depth` out from
+		# the side and running on into it, so it follows the side's curve
+		side = 1 if b["side"] == "starboard" else -1
+		(x0, x1), (y0, y1) = b["x"], b["y"]
+		if b.get("ends") == "round":
+			r = (y1 - y0) / 2
+			arc = [math.pi / 2 + math.pi * k / 8 for k in range(9)]
+			outline = [(x0 + r + r * math.cos(a), (y0 + y1) / 2 + r * math.sin(a)) for a in arc]
+			outline += [(x1 - r - r * math.cos(a), (y0 + y1) / 2 - r * math.sin(a)) for a in arc]
+		else:
+			outline = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+		m = len(outline)
+		corners = [at(x, y, side * (half(x, y) + b["depth"])) for x, y in outline] + [at(x, y, side * (half(x, y) - 0.4)) for x, y in outline]
+		walls = [(i, (i + 1) % m, m + (i + 1) % m, m + i) for i in range(m)]
+		blisters.append((corners, [tuple(range(m)), tuple(range(2 * m - 1, m - 1, -1))] + walls, ["grey"] * (m + 2)))
+	if blisters:
+		node("hull_blisters", mesh=merge(blisters))
 	if h.get("bulb"):
 		b = h["bulb"]
 		centre = at(*b["centre"])

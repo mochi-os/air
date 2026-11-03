@@ -66,7 +66,7 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     midbody's) up the wall standing under it. A section stands at every corner of the deck's edge and every
     knot of the knuckle and the gallery, so the flare is flat between them and creases only there; where
     `hull.flare` gives creases that slant (the angled deck's), flat facets between them take the sections'
-    place. It is symmetric below the knuckles, wears `antifouling` below the band's top, `boot` up to the
+    place; the blisters on the hull side under the elevators (`hull.blisters`) stand out from it. It is symmetric below the knuckles, wears `antifouling` below the band's top, `boot` up to the
     boot top, and ahead of its last station runs each height straight to the bow's forward edge: the stem, or
     above it the bow's flat face (`hull.face`), whose sections take the face as their flat bottom.
   - The sponsons are prisms whose tops and bottoms may slope (a height per corner); `wedges` are sections
@@ -129,6 +129,7 @@ the deck; a new sighting in the game becomes a ray here first.
 - a sloped sponson's corners and a wedge's section, and the draught marks beside the stem reading from outside;
 - the island's details as parts (a railing, a dish facing aft, a brace to its end, a box), a weapon's mount
   trained and elevated with its pedestal, the square mast with its fitting and a whip's hinge housing;
+- a blister rounded at its ends and a square one, standing out from the hull side and running on into it;
 - the flare's sections at the deck's corners, its creases' facets in place of the sections' strips, and the
   hull whole and wound one way;
 - a catwalk's floor, railing and knees off the deck's edge, a platform off it, a dome's platform carried in
