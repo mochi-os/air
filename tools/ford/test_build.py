@@ -78,6 +78,9 @@ LAYOUT = {
 	"sponsons": [{"name": "quarter", "outline": [[-90, -12], [-90, -20], [-80, -20], [-80, -12]], "bottom": 8.0, "top": 12.0},
 		# one whose top rises forward and whose bottom falls outboard
 		{"name": "sloped", "outline": [[-70, -30], [-70, -36], [-60, -36], [-60, -30]], "bottom": [9.5, 9.0, 9.0, 9.5], "top": [14.0, 14.0, 15.0, 15.0]}],
+	# a gun tub on the starboard edge: its floor at 16, its outline from the
+	# inboard aft corner round to the inboard forward one, a knee down to 14
+	"tubs": [{"name": "tub", "outline": [[-70, 30], [-70, 33], [-66, 33], [-66, 30]], "floor": 16.0, "railing": 1.1, "knee": {"x": -69.9, "foot": 14.0}}],
 	# a flare below the quarter sponson, a metre deep
 	"wedges": [{"name": "flare", "x": [-89, -88], "section": [[-12, 6], [-16, 8], [-12, 8]]}],
 	# a Phalanx trained to starboard, its barrels along its line of fire
@@ -121,8 +124,11 @@ LAYOUT = {
 		"stations": [{"x": -60, "points": [[-8, 12], [0, 15], [6, 16]]}, {"x": 40, "points": [[-8, 12], [0, 15], [6, 16]]},
 			{"x": 60, "points": [[-8, 6], [0, 9], [6, 12]]}],
 		"stem": [[70, -8], [75, 0], [95, 19.5]],   # drawn past the deck's underside
-		# a flat face on the stem from y 10 up, 4 m wide there and 20 at y 18
+		# a flat face on the stem from y 10 up, 4 m wide there and 20 at y 18;
+		# below it the stem's front, a knife edge at the waterline, 2 m wide at
+		# y 5 and widening on into the face's bottom edge
 		"face": {"bottom": [10, 2], "top": [18, 10]},
+		"front": [[0, 0.0], [5, 1.0]],
 		# red anti-fouling below 3 m down, the boot-topping's black above it to the boot top
 		"antifouling": {"top": -3.0, "colour": [140, 60, 50]},
 		"knuckle": {"port": [[-90, 6, -16], [60, 6, -12]], "starboard": [[-90, 5, 16], [60, 5, 12]]},
@@ -284,6 +290,10 @@ class BuildTest(unittest.TestCase):
 		rail = details[np.abs(details[:, 2] - 20) < 0.03]
 		self.assertAlmostEqual(rail[:, 1].max(), 32.025, places=3)   # the top rail over the path
 		self.assertAlmostEqual(rail[:, 0].min(), -20.025, places=3)
+		# in the railings' material, which the photo checks leave out, and nothing else of the island in it
+		railed = self.model.parts(materials=["rail"])["island_details"].reshape(-1, 3)
+		self.assertAlmostEqual(railed[:, 1].max(), 32.025, places=3)
+		self.assertTrue((np.abs(railed[:, 2] - 20) < 0.03).all())
 		dish = details[np.abs(details[:, 0] + 20.5) < 0.07]
 		np.testing.assert_allclose([dish[:, 1].min(), dish[:, 1].max(), dish[:, 2].min(), dish[:, 2].max()], [24.5, 25.5, 23.5, 24.5], atol=0.02)
 		self.assertAlmostEqual(np.ptp(dish[:, 0]), 0.12, places=3)   # a disc facing aft
@@ -411,6 +421,25 @@ class BuildTest(unittest.TestCase):
 		self.assertGreater(muzzle[1], 11.9)
 		self.assertAlmostEqual(raised[:, 1].min(), 9.0, places=3)
 
+	def test_gun_tub_is_a_railed_floor(self):
+		# a floor 0.2 thick at 16, a railing 1.1 over it on its outboard sides
+		# only, a knee from the floor's outer edge down to 14 at the face
+		sponson = self.model.parts()["sponsons"].reshape(-1, 3)
+		tub = sponson[(sponson[:, 0] > -70.1) & (sponson[:, 0] < -65.9) & (sponson[:, 2] > 29.4)]
+		self.assertAlmostEqual(tub[:, 1].max(), 17.125, places=3)   # the top rail
+		self.assertAlmostEqual(tub[:, 1].min(), 14.0, places=3)     # the knee's foot
+		under = tub[np.isclose(tub[:, 1], 15.8, atol=1e-4) & np.isclose(tub[:, 2], 33, atol=1e-4)]
+		self.assertAlmostEqual(under[:, 0].max(), -66, places=3)   # the floor's underside, out to its edge and on to its forward end
+		along_face = (tub[:, 2] < 30.3) & (tub[:, 0] > -69.5) & (tub[:, 0] < -66.5)
+		self.assertFalse((along_face & (tub[:, 1] > 16.01)).any())   # no railing along the face
+		# the railing in the railings' material, the floor and knee not
+		railed = self.model.parts(materials=["rail"])["sponsons"].reshape(-1, 3)
+		railed = railed[(railed[:, 0] > -70.1) & (railed[:, 0] < -65.9) & (railed[:, 2] > 29.4)]
+		self.assertAlmostEqual(railed[:, 1].max(), 17.125, places=3)
+		self.assertGreaterEqual(railed[:, 1].min(), 16.0 - 1e-4)
+		knee = tub[np.isclose(tub[:, 1], 14.0, atol=1e-4)]
+		self.assertAlmostEqual(knee[:, 2].min(), 29.5, places=3)   # running on 0.5 into the face
+
 	def test_catwalk_hangs_off_the_deck_edge(self):
 		# its floor out to 1.5 m past the port edge, a railing on its outer
 		# edge, knees under it whose feet meet the edge 0.8 m below the floor's
@@ -473,6 +502,9 @@ class BuildTest(unittest.TestCase):
 		self.assertIn("baseColorTexture", net["pbrMetallicRoughness"])
 		mesh = gltf["meshes"][next(n["mesh"] for n in gltf["nodes"] if n["name"] == "nets")]
 		self.assertIn("TEXCOORD_0", mesh["primitives"][0]["attributes"])
+		# their frames in the railings' material, which the photo checks leave out with the nets
+		frames = self.model.parts()["net_frames"].reshape(-1, 3)
+		self.assertEqual(len(self.model.parts(materials=["rail"])["net_frames"].reshape(-1, 3)), len(frames))
 
 	def test_blisters_stand_out_from_the_hull_side(self):
 		# the hull's side at y 2.75 midships: 15 at the waterline to 16 at y 6
@@ -687,7 +719,8 @@ class BuildTest(unittest.TestCase):
 	def test_bow_face_is_the_sections_flat_bottom(self):
 		# ahead of the face's bottom edge each section's lowest points lie
 		# across the face at its centreline height, out to its crease; below
-		# the face the stem keeps no breadth
+		# it across the stem's front, out to its half-width there, a section at
+		# each of the front's knots; below the front the stem keeps no breadth
 		points = self.model.parts()["hull"].reshape(-1, 3)
 		for x in (88, 89.5):   # below the band's foot (y 15.4), where the loft stops a stem or face
 			nearest = points[np.argmin(np.abs(points[:, 0] - x))][0]
@@ -697,9 +730,21 @@ class BuildTest(unittest.TestCase):
 			self.assertGreater(len(bottom), 1, x)
 			self.assertAlmostEqual(np.abs(bottom[:, 2]).max(), 2 + (height - 10), places=3)
 			self.assertGreaterEqual(ring[:, 1].min(), height - 1e-3)
-		stem = points[(points[:, 1] > 0.5) & (points[:, 1] < 10) & (points[:, 0] >= 75 + points[:, 1] * 20 / 19.5 - 1e-3)]
+		for height, width in ((5, 1.0), (7.5, 1.5)):
+			x = 75 + height * 20 / 19.5
+			ring = points[np.abs(points[:, 0] - x) < 1e-3] if height == 5 else None
+			if ring is None:
+				# between the knots: the section nearest, its bottom at the stem there
+				nearest = points[np.argmin(np.abs(points[:, 0] - x))][0]
+				ring, height = points[np.abs(points[:, 0] - nearest) < 1e-4], (nearest - 75) * 19.5 / 20
+				width = 1.0 + (height - 5) / 5
+			bottom = ring[np.abs(ring[:, 1] - height) < 1e-3]
+			self.assertGreater(len(bottom), 1, height)
+			self.assertAlmostEqual(np.abs(bottom[:, 2]).max(), width, places=3)
+			self.assertGreaterEqual(ring[:, 1].min(), height - 1e-3)
+		stem = points[(points[:, 1] > -7.5) & (points[:, 1] < -0.5) & (points[:, 0] >= 75 + points[:, 1] * 5 / 8 - 1e-3)]
 		self.assertGreater(len(stem), 0)
-		self.assertTrue((np.abs(stem[:, 2]) < 1e-3).all())   # on the stem below the face: no breadth
+		self.assertTrue((np.abs(stem[:, 2]) < 1e-3).all())   # on the forefoot below the front: no breadth
 
 	def test_hull_faces_out_and_wears_boot_below(self):
 		tris, normals = self.faces("hull")

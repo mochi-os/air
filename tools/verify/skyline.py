@@ -49,6 +49,7 @@ BAND = REACH // 2   # the outermost samples, the sky the walk starts from
 GREEN = 8.0      # the band's green over its red and blue, past which it is grass or trees, not sky
 BLUE = 40.0      # the band's blue over its red and green, past which it is clear sky or open sea however dark: shaded paint reaches about 20
 HORIZON = 1.5    # degrees under the model frame's horizontal before a ground photo's ray meets ground: the jet sits about 1 deg off level on its gear
+BEHIND = 0.75   # a part nearer than this share of a place's depth just inside it makes the place one seen past it
 REACHES = (REACH, 2 * REACH, 3 * REACH)   # tried in turn where the shorter finds no edge: a miss past the reach is no sky there
 STEP = 4         # pixels between places tried along the model's edge
 SKY = {"bright": 110, "even": 7.0, "contrast": 25, "depart": 8.0}   # the sky beyond: at least this bright and no rougher; the jet this far from it
@@ -114,7 +115,7 @@ class Settings:
 DEFAULT = Settings()
 
 
-def edge_along(profile, bright=SKY["bright"]):
+def edge_along(profile, bright=SKY["bright"], attached=False):
 	# The jet's edge along a brightness profile sampled outward across the
 	# model's edge (index REACH at the model's edge): the offset in samples
 	# (+ outward), or None where what lies beyond is not sky (darker than
@@ -129,7 +130,10 @@ def edge_along(profile, bright=SKY["bright"]):
 	# cloud) is walked past. The edge is the crossing nearest the sky of
 	# half-way from the sky to the jet's own level, and it must be sharp: from
 	# a quarter to three quarters of that level within SHARP samples, or it is
-	# shading, not an edge, and nothing is judged
+	# shading, not an edge, and nothing is judged. Attached (a sea behind, whose
+	# foam and lit waves depart from it as the subject does), the walk starts
+	# where the run departing from the inner end, the model's side, first comes
+	# back to the background, so only the subject's own edge is found
 	p = np.asarray(profile, float)
 	n = len(p) // 2
 	x = np.arange(len(p))
@@ -151,7 +155,11 @@ def edge_along(profile, bright=SKY["bright"]):
 				return j + (a - f) / (a - b)
 		return None
 
-	for i in range(len(p) - BAND, SUSTAIN - 1, -1):
+	first = len(p) - BAND
+	if attached:
+		calm = [j for j in range(len(p) - SUSTAIN + 1) if np.all(np.abs(off[j:j + SUSTAIN]) <= depart)]
+		first = min(first, calm[0]) if calm else first
+	for i in range(first, SUSTAIN - 1, -1):
 		run = off[i - SUSTAIN + 1:i + 1]
 		if not (np.all(run > depart) or np.all(run < -depart)):
 			continue
@@ -235,6 +243,15 @@ def afloat(tris, sea):
 	return np.concatenate(kept), np.concatenate(source)
 
 
+def waterline(tris, sea, tolerance=1e-6):
+	# The model's waterline after afloat(): each edge of a kept triangle lying
+	# on the sea's surface, as (N, 2, 3) end points
+	normal, offset = sea
+	on = np.abs(tris @ normal - offset) < tolerance
+	edges = [tris[on[:, k] & on[:, (k + 1) % 3]][:, [k, (k + 1) % 3]] for k in range(3)]
+	return np.concatenate(edges) if edges else np.zeros((0, 2, 3))
+
+
 def frontmost(flat, depth, size):
 	# Each pixel's frontmost triangle (-1 where none): triangles already
 	# projected to pixels (N, 3, 2), drawn far to near so the nearest stays.
@@ -307,7 +324,7 @@ def covered(polygons, work, scale):
 	return np.asarray(image) > 0
 
 
-def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None):
+def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None, water=None, seaward=None):
 	# Every place along the model's edge where the photo shows sky beyond it:
 	# [{pixel, edge, miss (the frame's unit), part, point}]. gray and ids (each pixel's
 	# frontmost triangle, frontmost()) are at the working scale; names,
@@ -321,7 +338,12 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 	# band that is blue (blue: each pixel's blue over its red and green) is
 	# sky however dark: a deep blue sky or sea reads darker in grey than the
 	# brightness that keeps shaded skin from passing for sky, which is grey.
-	# Against a blue sky the edge is read where the blue ends
+	# Against a blue sky the edge is read where the blue ends. A place on a part
+	# seen past a nearer one just inside it is not judged, nor one on water (a
+	# mask at the working scale of the model's waterline): there the outline is
+	# the sea's, which each photo's draught, waves and wake move. Where the band
+	# lies seaward (a mask of what lies under the sea's horizon) the edge is the
+	# subject's own, found attached (edge_along)
 	mask = ids >= 0
 	nx, ny = outward(mask)
 	out = []
@@ -338,6 +360,18 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 		hit[inside] = mask[ys[inside], xs[inside]]
 		return int(t[np.argmax(hit)]) - 2 if hit.any() else reach
 
+	def behind(row, column, dx, dy, depth):
+		# whether the place is on a part seen past a nearer one just inside it
+		# (the stern beside a bow the model draws too narrow): the photo's edge
+		# beyond may be either part's, and read at the far part's depth a miss of
+		# the near one's would be scaled by their ratio and filed under the far
+		t = np.arange(1, REACH + 1)
+		xs, ys = np.round(column - t * dx).astype(int), np.round(row - t * dy).astype(int)
+		inside = (xs >= 0) & (ys >= 0) & (xs < ids.shape[1]) & (ys < ids.shape[0])
+		k = ids[ys[inside], xs[inside]]
+		k = k[k >= 0]
+		return bool(len(k)) and float(depths[k].min()) < BEHIND * depth
+
 	def search(row, column, dx, dy, reach):
 		# the photo's edge along the normal within reach, or None
 		t = np.arange(-reach, reach + 1)
@@ -352,6 +386,7 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 		if below is not None and below[y0[-BAND:], x0[-BAND:]].any():
 			return None
 		fx, fy = xs - x0, ys - y0
+		attached = seaward is not None and seaward[y0[-BAND:], x0[-BAND:]].mean() > 0.5
 
 		def along(image):
 			return image[y0, x0] * (1 - fx) * (1 - fy) + image[y0, x0 + 1] * fx * (1 - fy) + image[y0 + 1, x0] * (1 - fx) * fy + image[y0 + 1, x0 + 1] * fx * fy
@@ -360,14 +395,16 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 		# can match it and the walk would pass the skin's edge for the next
 		# bright step inward; the skin is never that blue
 		if blue is not None and blue[y0[-BAND:], x0[-BAND:]].mean() >= BLUE:
-			return edge_along(along(blue), 0.0)
-		return edge_along(along(gray))
+			return edge_along(along(blue), 0.0, attached)
+		return edge_along(along(gray), attached=attached)
 
 	for row, column in rim(mask):
 		j = ids[row, column]
-		if names[j] is None:
+		if names[j] is None or (water is not None and water[row, column]):
 			continue
 		dx, dy = nx[row, column], ny[row, column]
+		if behind(row, column, dx, dy, depths[j]):
+			continue
 		# where the model's edge lies more than the reach inside or outside
 		# the photo's, the shorter search sees no sky beyond it, or no edge
 		found = None
@@ -436,6 +473,9 @@ class Scene:
 			ground = entry.get("pose", {}).get("gear", 0) >= 1
 		self.ground = horizon(self.camera, self.centre, self.work, self.scale, frame.model([0, 1, 0]) - frame.model([0, 0, 0]),
 			self.settings.horizon, self.sea) if ground else None
+		# in a photo taken from the air, what lies under the sea's horizon is the
+		# sea, whose foam and waves are no sky
+		self.seaward = horizon(self.camera, self.centre, self.work, self.scale, None, 0.0, self.sea) if self.sea is not None and not ground else None
 
 	def places(self, model, joints, pose, parts=None):
 		# The places found along the model's outline in the pose (the points
@@ -453,16 +493,30 @@ class Scene:
 			return [], np.zeros((self.work[1], self.work[0]), bool)
 		names = [n if parts is None or n in parts else None for n, t in solid.items() for _ in range(len(t))] + [None] * sum(len(t) for t in clear.values())
 		tris = np.concatenate(list(solid.values()) + list(clear.values()))
+		water = None
 		if self.sea is not None:
 			tris, source = afloat(tris, self.sea)
 			names = [names[i] for i in source]
 			if not len(tris):
 				return [], np.zeros((self.work[1], self.work[0]), bool)
+			# the waterline drawn 3 px wide where it lies in front of the camera,
+			# so its rim pixels either side are covered
+			ends = waterline(tris, self.sea)
+			image = Image.new("L", self.work, 0)
+			draw = ImageDraw.Draw(image)
+			if len(ends):
+				pixels, depths = cam.project(self.camera, ends.reshape(-1, 3), self.centre)
+				pixels, depths = pixels.reshape(-1, 2, 2) * self.scale, depths.reshape(-1, 2)
+				for (a, b), d in zip(pixels, depths):
+					if (d > 0).all():
+						draw.line([tuple(a), tuple(b)], fill=255, width=3)
+			water = np.asarray(image) > 0
 		flat, depth = cam.project(self.camera, tris.reshape(-1, 3), self.centre)
 		flat, depth = flat.reshape(-1, 3, 2), depth.reshape(-1, 3)
 		ids = frontmost(flat * self.scale, depth, self.work)
 		points = self.frame.source(tris.mean(axis=1))
-		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.hidden, self.green, self.ground, self.blue)
+		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.hidden, self.green, self.ground, self.blue,
+			water, self.seaward)
 		return places, ids >= 0
 
 

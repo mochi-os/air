@@ -12,10 +12,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import skyline  # noqa: E402
 
 
-def look(eye, photo=None, pose=None, section=None, sea=None, silhouette=False):
+def look(eye, photo=None, pose=None, section=None, sea=None, silhouette=False, scene=False, paint=None):
 	# The places a scene finds on a plate (the body, 2 x 0.2 x 1 m) photographed from eye against a bright
 	# sky: photo is the catalogue's photo entry, pose the cameras file's, section the catalogue's "skyline",
-	# sea its "sea"; with silhouette, the model's silhouette mask too
+	# sea its "sea"; with silhouette, the model's silhouette mask too; with scene, the scene itself; paint
+	# draws on the photo (its grey, the model's mask) before it is saved
 	import tempfile
 	import camera as cam
 	import model as mod
@@ -29,14 +30,20 @@ def look(eye, photo=None, pose=None, section=None, sea=None, silhouette=False):
 		flat, depth = cam.project(camera, model.triangles(mod.pose({}, {})).reshape(-1, 3), (size[0] / 2, size[1] / 2))
 		mask = skyline.frontmost(flat.reshape(-1, 3, 2), depth.reshape(-1, 3), tuple(size)) >= 0
 		(root / "references").mkdir()
-		Image.fromarray(np.where(mask[..., None], 60, 200).astype(np.uint8).repeat(3, -1)).save(root / "references" / "p.png")
+		grey = np.where(mask, 60, 200).astype(np.uint8)
+		if paint:
+			paint(grey, mask)
+		Image.fromarray(grey[..., None].repeat(3, -1)).save(root / "references" / "p.png")
 		catalogue = {"frame": JET, "photos": {"p": photo or {}}}
 		if section:
 			catalogue["skyline"] = section
 		if sea:
 			catalogue["sea"] = sea
 		entry = {"photo": "p", "file": "p.png", "size": size, "camera": list(camera), "pose": pose or {}}
-		places, shown = skyline.Scene(catalogue, root, mod.Frame(catalogue["frame"]), {}, entry).places(model, {}, {})
+		made = skyline.Scene(catalogue, root, mod.Frame(catalogue["frame"]), {}, entry)
+		if scene:
+			return made
+		places, shown = made.places(model, {}, {})
 		return (places, shown) if silhouette else places
 
 
@@ -59,6 +66,17 @@ class SkylineTest(unittest.TestCase):
 		# a dark sky passes where the caller lowers the brightness it asks for (a blue sky, measure())
 		self.assertAlmostEqual(skyline.edge_along(profile(3.0, jet=200.0, sky=70.0), 0.0), 2.5, delta=0.6)
 		self.assertIsNone(skyline.edge_along(profile(3.0, jet=200.0, sky=70.0)))
+		# attached, over a sea: a patch of foam 4 samples past the subject's own edge, inside the band, departs
+		# from the sea as the subject does; walking in from the band takes it for the edge, attached walks out
+		# from the subject. In blue (a clear sea) foam is darker than the sea, as the subject is
+		for foam in (220.0, 30.0):
+			sea = np.array(profile(3.0, jet=60.0, sky=140.0))
+			n = len(sea) // 2
+			sea[n + 7:n + 11] = foam
+			self.assertAlmostEqual(skyline.edge_along(sea), 10.5, delta=0.6)
+			self.assertAlmostEqual(skyline.edge_along(sea, attached=True), 2.5, delta=0.6)
+		# with nothing past the edge it reads as the walk in from the band does
+		self.assertAlmostEqual(skyline.edge_along(profile(3.0, jet=60.0, sky=140.0), attached=True), 2.5, delta=0.6)
 		# a jet brighter than the sky: a sunlit top under overcast
 		self.assertAlmostEqual(skyline.edge_along(profile(2.0, jet=240.0, sky=180.0)), 1.5, delta=0.6)
 		# a blurred edge: half-way between sky and jet, wherever the change first shows
@@ -165,6 +183,25 @@ class SkylineTest(unittest.TestCase):
 		under = skyline.measure(np.asarray(scene, float), hung, names, points, depths, focal, unit, 1.0)
 		body = [p["miss"] for p in under if 138 <= p["pixel"][1] <= 140 and 70 < p["pixel"][0] < 130]
 		self.assertFalse([m for m in body if m < -5.0])
+		# a far part seen past a near one that the model draws too narrow, as the
+		# stern beside the bow: the photo's edge beyond is the near part's, and
+		# the far part's places along it are not judged, read at its depth and
+		# filed under it; its places elsewhere are, as are the near part's
+		past = np.full((size, size), -1)
+		past[60:140, 60:100] = 0
+		past[60:140, 100:108] = 1
+		photo = Image.new("L", (size, size), 200)
+		ImageDraw.Draw(photo).rectangle([57, 57, 114, 142], fill=60)
+		seen = skyline.measure(np.asarray(photo, float), past, ["bow", "stern"], np.concatenate([points, points]), np.array([1.0, 3.0]) * focal * unit,
+			focal, unit, 1.0)
+		self.assertFalse([p for p in seen if p["part"] == "stern" and p["pixel"][0] >= 106])
+		self.assertTrue([p for p in seen if p["part"] == "stern" and p["pixel"][1] <= 61])
+		self.assertTrue([p for p in seen if p["part"] == "bow" and p["pixel"][0] <= 61])
+		# alone, the far part's same edge is judged
+		alone = np.where(past == 1, 1, -1)
+		lone = skyline.measure(np.asarray(photo, float), alone, ["bow", "stern"], np.concatenate([points, points]), np.array([1.0, 3.0]) * focal * unit,
+			focal, unit, 1.0)
+		self.assertTrue([p for p in lone if p["part"] == "stern" and p["pixel"][0] >= 106])
 		# with the ground beyond instead of sky, nothing is judged
 		dark = np.where(gray > 100, 80.0, gray)
 		self.assertEqual(skyline.measure(dark, ids, names, points, depths, focal, unit, 1.0), [])
@@ -198,6 +235,22 @@ class SkylineTest(unittest.TestCase):
 		ground = np.zeros(gray.shape, bool)
 		ground[150:, :] = True
 		kept = skyline.measure(gray, ids, names, points, depths, focal, unit, 1.0, below=ground)
+		# seaward, foam 7 px past the photo's jet on its right reads as the edge walking in from the sky, and
+		# attached the jet's own edge is found, 3 px out
+		frothy = Image.new("L", (size, size), 200)
+		ImageDraw.Draw(frothy).rectangle([57, 57, 142, 142], fill=60)
+		ImageDraw.Draw(frothy).rectangle([150, 57, 153, 142], fill=255)
+		frothy = np.asarray(frothy, float)
+		right = lambda found: [p["miss"] for p in found if p["pixel"][0] > 138 and 70 < p["pixel"][1] < 130]
+		self.assertLess(float(np.median(right(skyline.measure(frothy, ids, names, points, depths, focal, unit, 1.0)))), -8.0)
+		offshore = skyline.measure(frothy, ids, names, points, depths, focal, unit, 1.0, seaward=np.ones_like(ids, bool))
+		self.assertAlmostEqual(float(np.median(right(offshore))), -3.0, delta=0.3)
+		# a place on the water (the model's waterline) is not judged, the rest are
+		water = np.zeros_like(ids, bool)
+		water[136:142, :] = True
+		wet = skyline.measure(gray, ids, names, points, depths, focal, unit, 1.0, water=water)
+		self.assertFalse([p for p in wet if p["pixel"][1] >= 136])
+		self.assertTrue([p for p in wet if p["pixel"][1] <= 61])
 		self.assertTrue([p for p in kept if p["pixel"][1] < 70])
 		self.assertFalse([p for p in kept if p["pixel"][1] >= 138 and 70 < p["pixel"][0] < 130])
 		# nor is glass, whose outline shows the sky through it
@@ -268,6 +321,30 @@ class SkylineTest(unittest.TestCase):
 		self.assertTrue(whole and afloat)
 		self.assertTrue(all(p["point"][1] >= 105 - 1e-6 for p in afloat))
 		self.assertTrue(any(p["point"][1] < 105 for p in whole))
+		# nor along the waterline itself, where the outline is the sea's: the plate's sides above it are judged
+		cut = np.nonzero(kept.any(axis=1))[0].max()
+		self.assertFalse([p for p in afloat if p["pixel"][1] >= cut - 1])
+		self.assertTrue([p for p in whole if p["pixel"][1] >= np.nonzero(shown.any(axis=1))[0].max() - 1])
+		# from the air what lies under the sea's horizon is seaward, where edges are found attached; a photo
+		# on the ground judges nothing there, and without a sea nothing is seaward
+		above = (0.0, 0.5, 12.0)   # looking 2.4 deg down, the horizon across the frame
+		aloft = look(above, photo={"ground": False}, sea="waterline=105", scene=True)
+		self.assertTrue(aloft.seaward is not None and aloft.seaward.any() and not aloft.seaward.all())
+		self.assertIsNone(look(above, photo={"ground": True}, sea="waterline=105", scene=True).seaward)
+		self.assertIsNone(look(above, photo={"ground": False}, scene=True).seaward)
+		# foam 8-11 px past the plate's right edge, under the horizon: from the air over a sea the plate's own
+		# edge is read; with no sea the foam's
+		def froth(grey, mask):
+			rows = np.nonzero(mask.any(axis=1))[0]
+			for r in rows[len(rows) // 4:3 * len(rows) // 4]:
+				c = np.nonzero(mask[r])[0].max()
+				grey[r, c + 8:c + 12] = 255
+		right = lambda found: [p["miss"] for p in found if p["pixel"][0] >= max(q["pixel"][0] for q in found) - 3 and p["pixel"][1] >= 288]
+		offshore = right(look(above, photo={"ground": False}, sea="waterline=105", paint=froth))
+		inland = right(look(above, photo={"ground": False}, paint=froth))
+		self.assertTrue(offshore and inland)
+		self.assertLess(abs(float(np.median(offshore))), 0.5)
+		self.assertLess(float(np.median(inland)), -1.0)
 
 	def test_afloat(self):
 		# a triangle across the surface keeps the part above it, as one triangle or two; one under it goes
@@ -279,6 +356,11 @@ class SkylineTest(unittest.TestCase):
 		area = lambda t: 0.5 * np.linalg.norm(np.cross(t[:, 1] - t[:, 0], t[:, 2] - t[:, 0]), axis=1)
 		self.assertAlmostEqual(area(kept[source == 0]).sum(), 0.5, places=6)
 		self.assertAlmostEqual(area(kept[source == 1]).sum(), 1.5, places=6)
+		# the waterline: each cut triangle's edge on the surface, 1 long, nothing of the whole one above
+		ends = skyline.waterline(kept, sea)
+		self.assertEqual(len(ends), 2)
+		self.assertTrue((np.abs(ends[..., 1]) < 1e-9).all())
+		self.assertTrue(np.allclose(np.linalg.norm(ends[:, 1] - ends[:, 0], axis=1), 1.0))
 
 	def test_scene_blue_sky(self):
 		# a plate seen from below against a deep blue sky, darker in grey than the brightness rule asks:

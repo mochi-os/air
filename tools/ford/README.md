@@ -56,7 +56,7 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   - The island is prisms level by level (sloped where a level's plan at its top differs), radomes and poles,
     and its details (`island.details`: the mast's trunk, rings, platforms, yardarm fittings and masthead, the
     walkways and railings, antennas and dishes) as parts: boxes, cylinders, prisms, railings, dishes and domes.
-  - The weapons are kinds of parts in their own frame (`weapons.kinds`: the Mk 29, RAM and Phalanx) and the
+  - The weapons are kinds of parts in their own frame (`weapons.kinds`: the Mk 29, RAM, Phalanx and gun) and the
     mounts that place them (`weapons.mounts`): each at its foot, trained and elevated as photographed, on a
     pedestal where it has one.
   - The bow's mast is square, with its fittings as parts on it; each port whip's hinge housing stays at the
@@ -67,16 +67,22 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     knot of the knuckle and the gallery, so the flare is flat between them and creases only there; where
     `hull.flare` gives creases that slant (the angled deck's), flat facets between them take the sections'
     place; the blisters on the hull side under the elevators (`hull.blisters`) stand out from it. It is symmetric below the knuckles, wears `antifouling` below the band's top, `boot` up to the
-    boot top, and ahead of its last station runs each height straight to the bow's forward edge: the stem, or
-    above it the bow's flat face (`hull.face`), whose sections take the face as their flat bottom.
+    boot top, and ahead of its last station runs each height straight to the bow's forward edge: the stem's
+    flat front (`hull.front`, its half-width by height, rising into the face's bottom edge, a section at each
+    knot of the stem it rises past), or above it the bow's flat face (`hull.face`); the sections ahead take
+    the front or the face as their flat bottom.
   - The sponsons are prisms whose tops and bottoms may slope (a height per corner); `wedges` are sections
-    carried along x, such as the transom's flare. Each corner is a landmark for the photo match.
+    carried along x, such as the transom's flare. Each corner is a landmark for the photo match. The gun
+    tubs (`tubs`) on the aft sponsons' faces are a floor, a railing round its outboard sides and a knee
+    under its aft end; their guns are weapons' mounts.
   - The catwalks follow the deck's edge between their ends: a floor from inside the band out, a toe board,
     rails and posts on the outer edge, plate knees under it down to the edge. The platforms off them, the
     edge domes' platforms (carried in to the catwalk or the band) and their knees likewise. The raft racks
     hang outboard of the railing: a canister lying fore and aft in each tier, on cradles. The safety nets
     (`nets`, the `net` material: a small image whose holes are cut out, both faces drawn) rise outward
-    from the railing's top on frames, except where a rack or platform stands.
+    from the railing's top on frames, except where a rack or platform stands. Every railing and the nets'
+    frames are in the `rail` material, grey as the rest: bars thinner than a photo resolves, which the photo
+    checks leave out.
   - The lettering's plates: the island's numbers on its faces, and the stem's draught marks on the hull's
     side just aft of the stem, tangent to it.
   - OUT.json is the ship file (`ford.json`): the deck layout the engine and the flight core read (the
@@ -125,14 +131,17 @@ the deck; a new sighting in the game becomes a ray here first.
 - the lettering's texture, and that each plate reads from outside its face;
 - the island's sloped levels;
 - the hull's depth, waterline, stem, transom and symmetry, and that every face points outward;
-- the bow's face as the flat bottom of the sections ahead of it, and a quarter's wall inside the deck's edge;
+- the bow's face and the stem's front below it as the flat bottom of the sections ahead of them, a section at
+  each of the front's knots, and a quarter's wall inside the deck's edge;
 - a sloped sponson's corners and a wedge's section, and the draught marks beside the stem reading from outside;
 - the island's details as parts (a railing, a dish facing aft, a brace to its end, a box), a weapon's mount
   trained and elevated with its pedestal, the square mast with its fitting and a whip's hinge housing;
 - a blister rounded at its ends and a square one, standing out from the hull side and running on into it;
+- a gun tub's floor, its railing on the outboard sides only, and its knee down to the face; railings in
+  their own material;
 - the flare's sections at the deck's corners, its creases' facets in place of the sections' strips, and the
   hull whole and wound one way;
 - a catwalk's floor, railing and knees off the deck's edge, a platform off it, a dome's platform carried in
   to the edge, the raft canisters in their tiers, and the nets: cut out, both faces, none outboard of a
-  platform;
+  platform, their frames in the railings' material;
 - the ship file.

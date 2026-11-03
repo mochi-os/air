@@ -67,7 +67,11 @@ COLOURS = {"deck": (0.16, 0.16, 0.16, 1), "grey": (0.30, 0.32, 0.33, 1), "boot":
 	# brightness in the same light); the drop-light bar the deck's yellow
 	"recess": (0.11, 0.12, 0.12, 1), "yellow": (0.67, 0.39, 0.03, 1),
 	# the Phalanx's radome, white
-	"radome": (0.7, 0.7, 0.68, 1)}
+	"radome": (0.7, 0.7, 0.68, 1),
+	# the railings and the nets' frames, grey as the ship's, their own so the
+	# photo checks can leave them out: bars thinner than any photo resolves,
+	# which the photos show the sky through
+	"rail": (0.30, 0.32, 0.33, 1)}
 
 
 def linear(value):
@@ -394,7 +398,7 @@ def shape(p, frame=None):
 	# length, or end; radius}; prism {outline, bottom, top}; railing {path,
 	# height, posts}: a top and a mid rail and posts; dish {centre, diameter,
 	# facing}: a disc; dome {centre, radius}: a sphere
-	paint = p.get("paint", "grey")
+	paint = p.get("paint", "rail" if p["kind"] == "railing" else "grey")
 	kind = p["kind"]
 	if kind == "box":
 		(cx, cy, cz), (sx, sy, sz) = p["centre"], p["size"]
@@ -681,7 +685,7 @@ def along_line(line, spacing):
 	return out
 
 
-def railing(line, floor, spec, paint="grey"):
+def railing(line, floor, spec, paint="rail"):
 	# A toe board, a mid rail and a top rail along a plan line, and posts
 	pieces = []
 	height = spec["railing"]
@@ -774,6 +778,25 @@ def domes_edge():
 			foot = d.get("foot", floor - 0.3 - max(0.8, 0.2 * (reach - edge_z)))
 			pieces.append(section([x, side * edge_z], [0, side], [1, 0], [(-1.5, floor - 0.3), (reach - edge_z, floor - 0.3), (0.0, foot),
 				(-1.5, foot)], 0.06))
+	return pieces
+
+
+def tubs():
+	# The gun tubs on the sponsons' outboard faces (layout.tubs): a floor, a
+	# railing round its outboard sides (the outline's open path, from the
+	# inboard aft corner round to the inboard forward corner), and a knee at
+	# its aft end from the floor's outer edge down to its foot on the face;
+	# the gun on the floor is a weapon's mount
+	pieces = []
+	for t in LAYOUT.get("tubs", []):
+		floor = t["floor"]
+		pieces.append(prism(t["outline"], floor - 0.2, floor))
+		pieces += railing(t["outline"], floor, {"railing": t["railing"], "posts": 1.5, "toe": 0.1})
+		face, edge = t["outline"][0][1], t["outline"][1][1]
+		side = 1 if edge > face else -1
+		k = t["knee"]
+		pieces.append(section([k["x"], face], [0, side], [1, 0], [(-0.5, floor - 0.2), (abs(edge - face), floor - 0.2), (0.0, k["foot"]),
+			(-0.5, k["foot"])], 0.06))
 	return pieces
 
 
@@ -883,10 +906,10 @@ def nets():
 		vertices = [at(x, y0, z) for x, z in line] + [at(x, y1, z) for x, z in far]
 		faces = [(i, i + 1, k + i + 1, k + i) for i in range(k - 1)]
 		strips.append((vertices, faces, ["net"] * len(faces)))
-		frames += [bar([a[0], y1, a[1]], [b[0], y1, b[1]], 0.05) for a, b in zip(far, far[1:])]
+		frames += [bar([a[0], y1, a[1]], [b[0], y1, b[1]], 0.05, "rail") for a, b in zip(far, far[1:])]
 		for p, d in along_line(line, n["frames"]):
 			q = [p[0] - d[1] * side * n["width"], p[1] + d[0] * side * n["width"]]
-			frames.append(bar([p[0], base, p[1]], [q[0], y1, q[1]], 0.05))
+			frames.append(bar([p[0], base, p[1]], [q[0], y1, q[1]], 0.05, "rail"))
 	if not strips:
 		return
 	net_material()
@@ -993,7 +1016,7 @@ def sides():
 		pieces.append((vertices, faces))
 		for k, (z, y) in enumerate(w["section"]):
 			MARKS[f"wedge_{w['name']}_{k + 1}"] = (at(x0, y, z), "sponsons")
-	pieces += domes_edge() + catwalks() + racks()
+	pieces += domes_edge() + catwalks() + racks() + tubs()
 	if pieces:
 		node("sponsons", mesh=merge(pieces))
 	nets()
@@ -1101,12 +1124,15 @@ def hull():
 	def crease(y):
 		# the bow's forward edge's half-breadth at a height: the face's crease
 		# from its bottom edge up (hull.face, a flat raked plate between two
-		# straight creases), nothing at the stem below it
+		# straight creases); below it the stem's front (hull.front, its
+		# half-width by height, rising into the face's bottom edge), nothing
+		# below the front's lowest knot or where there is neither
 		face = h.get("face")
-		if not face or y < face["bottom"][0]:
-			return 0.0
-		(y0, w0), (y1, w1) = face["bottom"], face["top"]
-		return w0 + (min(y, y1) - y0) / (y1 - y0) * (w1 - w0)
+		if face and y >= face["bottom"][0]:
+			(y0, w0), (y1, w1) = face["bottom"], face["top"]
+			return w0 + (min(y, y1) - y0) / (y1 - y0) * (w1 - w0)
+		front = h.get("front", []) + ([face["bottom"]] if face and h.get("front") else [])
+		return interpolate(y, [p[0] for p in front], [p[1] for p in front]) if front else 0.0
 
 	def half(x, y):
 		values = [interpolate(y, [p[0] for p in s["points"]], [p[1] for p in s["points"]]) for s in stations]
@@ -1150,6 +1176,11 @@ def hull():
 		turns |= {p[0] for p in h["knuckle"][name]} | {p[0] for p in h["gallery"][name]}
 		turns |= {w["wall"][e][0] for w in walls.get(name, []) for e in (0, -1)}
 		turns |= {c[e][0] for c in flare.get(name, []) for e in (0, -1)}
+	if h.get("front"):
+		# and at each knot of the stem the front runs up, so its edges follow
+		# the stem's profile
+		top = h["face"]["bottom"][0] if h.get("face") else h["front"][-1][0]
+		turns |= {ahead(p[0]) for p in h["front"]} | {x for x, y in stem if h["front"][0][0] <= y <= top}
 	turns = [x for x in turns if transom + 0.4 < x < bow - 0.4]
 	count = max(2, int((bow - transom) / STEP) + 1)
 	grid = [transom + (bow - transom) * k / (count - 1) for k in range(count)]

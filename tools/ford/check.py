@@ -54,6 +54,7 @@ EXEMPT = {
 	"layout.catwalks": "built as given",
 	"layout.racks": "built as given",
 	"layout.openings": "built as given, dark on the hull",
+	"layout.tubs": "built as given (references/research/stern); test_build checks a tub's floor, railing and knee",
 	"layout.transom": "built as given (references/research/transom); test_build checks the face, its recess and the walkway",
 	"layout.lettering": "plates built as given; test_build checks each reads from outside its face",
 	"layout.lens": "the lens the build writes as given, for the engine to draw",

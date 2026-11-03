@@ -423,6 +423,22 @@ What went wrong on the F/A-18C, each a rule now:
     so the search retries at two and three times the reach, with a band of sky of fixed size.
   - Stop each search where it meets another of the model's parts. Under the F/A-18C's tail the long
     search crossed the hook and took the photo's hook for the body's edge, 7 in off.
+  - Don't judge a place on a part seen past a nearer one just inside it. Beside the Ford's bow, drawn
+    too narrow, the model showed its stern 300 m behind. The photo's edge there was the bow's, but the
+    miss was read at the stern's depth, doubled, and filed under the stern.
+  - Don't judge the waterline. Where the model is cut at the sea, its outline is the sea's, which each
+    photo's draught, waves and wake move: the Ford's stern read 1-2 m into its wake's foam, and a 2017
+    photo at a light draught read the stem 0.8 m short.
+  - Leave out what a photo cannot resolve. The Ford's railings, 5 cm bars, stood 1.1 m proud of every
+    deck edge they ran along, while the photos showed the sky through them; the `rail` material is left
+    out of the catalogue's `solid` list. Mask a photo's clutter for the same reason: a cargo ship and a
+    shore's trees under an overhang read as the hull's edge.
+  - A rough sea behind the subject reads as its edge. The walk inward from the band of sky stops at the
+    first thing that is not sky, and over the sea that is foam or a wave's lit face: the Ford's stern
+    sponson and launcher read 2 m short in her two quarter views while the views against the sky and the
+    overhead agreed. Seaward (a photo from the air with the catalogue's `sea`, its band under the sea's
+    horizon) the walk starts where the subject's own run, from the model's side, first comes back to the
+    background.
   - Give every photo its own stores where its load is known: a default box for a tank under the outer
     pylon, seen from ahead of the jet, hid the whole tail's underside, the one place the model was wrong.
 - **A point on a moving part is measured in one pose.** The bundle once triangulated each marked point as one fixed
