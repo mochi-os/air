@@ -403,10 +403,6 @@ msgid "AI"
 msgstr "AI"
 
 #: src/components/MissionSetup.tsx
-msgid "Aircraft carrier <0>“USS Nimitz CVN-68 Aircraft Carrier”</0> by <1>Muhamad Mirza Arrafi</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: rescaled, reoriented, sunk to the waterline, and simplified for the web."
-msgstr "ගුවන් යානා වාහකය <0>“USS Nimitz CVN-68 Aircraft Carrier”</0>, <1>Muhamad Mirza Arrafi</1> (Sketchfab) විසින්, <2>CC BY 4.0</2> යටතේ බලපත්‍ර ලබා ඇත. වෙනස් කරන ලදී: නැවත පරිමාණය කරන ලදී, දිශානතිය වෙනස් කරන ලදී, ජල මට්ටම දක්වා ගිල්වන ලදී, සහ වෙබ් සඳහා සරල කරන ලදී."
-
-#: src/components/MissionSetup.tsx
 msgid "Aircraft model <0>“F/A-18C Hornet”</0> by <1>CreadorDeMu</1> (Sketchfab), licensed under <2>CC BY 4.0</2>. Modified: reoriented and rescaled, unused texture payload removed, external stores split into a separate file, one shroud mesh mirrored."
 msgstr "ගුවන් යානා ආකෘතිය <0>“F/A-18C Hornet”</0>, <1>CreadorDeMu</1> (Sketchfab) විසින්, <2>CC BY 4.0</2> යටතේ බලපත්‍රලාභී. වෙනස් කරන ලදී: දිශානතිය වෙනස් කර නැවත පරිමාණය කරන ලදී, භාවිත නොවන ටෙක්ස්චර් දත්ත ඉවත් කරන ලදී, බාහිරව රඳවන උපකරණ වෙනම ගොනුවකට වෙන් කරන ලදී, එක් ආවරණ දැලක් කැඩපත් ලෙස පෙරළන ලදී."
 
@@ -684,6 +680,11 @@ msgstr "නිල් බොට්ස්"
 #: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
 msgid "Board"
 msgstr "පුවරුව"
+
+#: src/components/MatchLog.tsx
+msgctxt "carrier landings"
+msgid "Boarding rate"
+msgstr "නැව මත ගොඩබෑමේ අනුපාතය"
 
 #: src/components/GameCanvas.tsx
 #: src/components/MatchLog.tsx
@@ -2198,6 +2199,11 @@ msgstr "ආපසු යන්න"
 #: src/components/Feedback.tsx
 msgid "Go to forum"
 msgstr "සංසදයට යන්න"
+
+#: src/components/MatchLog.tsx
+msgctxt "carrier landings"
+msgid "Grade average"
+msgstr "සාමාන්‍ය ගොඩබෑම් ශ්‍රේණිය"
 
 #: src/components/SettingsDialog.tsx
 msgid "Graphics"

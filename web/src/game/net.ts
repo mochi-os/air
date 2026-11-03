@@ -1165,6 +1165,10 @@ export async function record(match: {
   grade: string // the last pass's LSO grade, '' when none was flown
   remarks: string // its write-up, in the LSO's shorthand
   wire: number // 1-4, 0 when it did not end in a wire
+  passes: number // the sortie's passes that count (all but a foul deck's)
+  traps: number // the traps among them
+  points: number // the points of those that score, in tenths
+  scored: number // how many score
 }): Promise<void> {
   try {
     // fetch keepalive, not the app client: this row is written as the pilot
@@ -1296,6 +1300,10 @@ export interface MatchTotals {
   kills: number
   deaths: number
   cheated: number
+  passes: number // carrier passes that count toward the boarding rate
+  traps: number
+  points: number // in tenths, over the passes that score
+  scored: number
 }
 
 // log reads one page of this player's flights, newest first: the first page,

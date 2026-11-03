@@ -193,14 +193,25 @@
 			"unit": "ft",
 			"source": "hiielevator",
 			"where": "body",
-			"quote": "It measures 85 feet long and 52 feet wide"
+			"quote": "It measures 85 feet long and 52 feet wide",
+			"elevator": 1,
+			"note": "one starboard elevator, \"the third and final aircraft elevator\" installed (its image is named Ford_Elevator_1): elevator 1, which measures 26.0-26.4 m along its outboard side. Elevator 2 measures 27.05 m and elevator 3 25.89 m (references/research/deck)."
 		},
 		"width": {
 			"value": 52,
 			"unit": "ft",
 			"source": "hiielevator",
 			"where": "body",
-			"quote": "It measures 85 feet long and 52 feet wide"
+			"quote": "It measures 85 feet long and 52 feet wide",
+			"elevator": 1,
+			"note": "one starboard elevator, \"the third and final aircraft elevator\" installed (its image is named Ford_Elevator_1): elevator 1, which measures 26.0-26.4 m along its outboard side. Elevator 2 measures 27.05 m and elevator 3 25.89 m (references/research/deck).",
+			"measured": {
+				"value": 16.37,
+				"unit": "m",
+				"source": "photo match",
+				"where": "layout.elevators: elevator 1's outline off noaa2022, its inboard corner 0.03 m across in dvids7694421, its outboard edge the orthophoto's (references/research/deck, match)"
+			},
+			"use": "measured: the platform meets the deck opening the photos see. 52 ft (15.85 m) is 0.52 m less, more than its rounding (0.15 m) or the imagery's fit (0.1-0.6 m on one side) explains; what the published figure measures (the platform inside its edge fittings, say) is not stated."
 		},
 		"note": "where each sits is measured off the imagery: two to starboard forward of the island and one to port (pms378 slide 3's top view; noaa2022)."
 	},
@@ -228,6 +239,14 @@
 			"where": "paragraph on the two wire",
 			"quote": "aiming for the number 2 wire is standard operating procedure",
 			"note": "said of CVN 77, whose layout the Ford's follows (dote2025: three wires, as CVN 76 and 77). Where the lens puts the hook on a 3-wire deck is not public; the 2001 LSO NATOPS gives only the 4-wire rule (halfway between the 2 and 3)."
+		},
+		"runout": {
+			"value": 104.9,
+			"unit": "m",
+			"source": "navedtra14310",
+			"where": "Table 3-1, Mk 7 Mod 3",
+			"quote": "Length of deck pendant runout 344 ft (to tail hook)",
+			"note": "the Mk 7 Mod 3's: the Advanced Arresting Gear's run-out is not public. The flight core stops a trap in this run-out, closed loop to it whatever the weight, speed or thrust, as the gear's controller is (decision 24)."
 		}
 	},
 	"catapults": {
@@ -237,6 +256,30 @@
 			"source": "airpac2025",
 			"where": "slide 24",
 			"quote": "4, Electromagnetic"
+		},
+		"force": {
+			"value": 1300000.0,
+			"unit": "N",
+			"source": "meeker2009",
+			"where": "Introduction, the first requirement",
+			"quote": "Produce a sustained launch force of ~1.3 MN",
+			"note": "the flight core's catapult pulls no more than this"
+		},
+		"profile": {
+			"value": 1.05,
+			"unit": "peak to mean acceleration",
+			"source": "gsemals",
+			"where": "Doyle et al. 1995, reproduced",
+			"quote": "the EMALS is capable of operating within the 1.05 max peak-to-mean acceleration requirement",
+			"note": "the flight core's catapult is closed loop to the end speed set for the jet, at a constant acceleration once its force has risen (decision 24)"
+		},
+		"speed": {
+			"value": 100,
+			"unit": "m/s",
+			"source": "meeker2009",
+			"where": "Introduction, the second requirement",
+			"quote": "Achieve launch speeds of up to ~100 m/s",
+			"note": "the end speed the flight core caps a shot at (the ship file's catapults' speed)"
 		},
 		"note": "two on the bow and two in the waist; their tracks are measured off noaa2022."
 	},
@@ -516,14 +559,26 @@
 		},
 		"notes": {
 			"deck": "height: 18.27 m above the deployed waterline (spread 0.23 m), the raised elevators' top edges against the boot top in three starboard beams (dvids9167788, dvids9142613, dvids7473567) through cameras solved on the deck plan; 18.66 at the starboard bow corner (research/hull). thickness: the edge plate's depth, not measured. outline: 29 corners and joins of robust line fits to the deck edges (noaa2022; 0.1-0.6 m, 1.5-1.9 m at the port bow's transition), the elevators' platforms left out. The starboard quarter's notch: both stern photos (dvids7107228, dvids7107229) show the deck stepping down to a lower platform aft of x -151; its inboard forward corner is the photo match's (-150.8, 22.25), 0.24 m from two photos (research/match), not the orthophoto's (-151.8, 17.0). texture: about 4.1 cm a texel, square texels.",
-			"fittings": "provisional until the photos measure them: the shuttle on dvids9478858, the deflector raised side-on on kennedy10011976",
-			"elevators": "outline: robust line fits to each platform's four sides (noaa2022; elevator 3's inboard side noaa2018), about 0.1-0.6 m; trapezoids, wider at the deck edge. thickness and travel are not measured, and nothing drives the elevators yet (decision 14).",
+			"fittings": "shuttle: a 1.25 x 0.65 m footprint (±0.2) from catapult 3's at battery in dvids7694421, its top 0.47 of its base's width (dvids9478858, kennedy10011978); its height not measured. deflector: 6 modules across, raised 50 ± 3° (its top 3.4-3.7 m above the deck: the Ford's dvids9455182 and Kennedy's photos, against each deflector's flush depth); its thickness not measured. sheave, support, stanchion: see landing. console: the bow's, between catapults 1 and 2 8.6 m forward of their batteries, its hexagonal surround 3.0 x 2.4 m (dvids7694421, dvids7107230 open, noaa2022); the console unit's size and rise are not measured (provisional); no waist console was found. antenna: the whips' radius provisional.",
+			"elevators": "outline: robust line fits to each platform's four sides (noaa2022; elevator 3's inboard side noaa2018), about 0.1-0.6 m; trapezoids, wider at the deck edge. thickness and travel are not measured, and nothing drives the elevators yet (decision 14). Elevator 2's outboard side: 27.05 ± 0.15 m between its half-level ends on noaa2022 (and 27.0 in the photo match), not 85 ft; hiielevator's 85 x 52 ft is one starboard elevator, which elevator 1 (26.0-26.4 m) matches.",
 			"catapults": "track: the track's centre traced every metre (noaa2018 band, noaa2022 rails), its ends where the track's signature falls to half (noaa2018, 0.5 m; catapult 3's forward end 1.5 m). battery: 1 m forward of the track's aft end, and stroke: the track less battery and 6 m of braking, inside the 94-103 m the sources give (decision 24): both provisional. deflector: its four sides fitted lowered (noaa2018, outside the 2022-2026 era; VBMP 2025 differs by up to 0.8 m); hinge is its forward edge, square to the ship, not to the track.",
-			"landing": "line: the painted centreline's centre (noaa2022, rms 0.07 m over 415 profiles); angle positive to port. ramp: the ramp stripe's forward edge on the centreline. wires: x along the line from the ramp; no pendant is rigged in any image: wire 3 is the row of its supports (noaa2022, 0.15 m), wires 1 and 2 placed by wire 3's offsets from the painted dash pairs and sheave covers marking all three (0.25 m). ends: the sheave covers at the landing area's edges, at the deck's height.",
+			"landing": "line: the painted centreline's centre (noaa2022, rms 0.07 m over 415 profiles); angle positive to port. ramp: the ramp stripe's forward edge on the centreline. wires: where each pendant runs, between its pair of round deck sheaves (references/research/deck: noaa2022 housing centres to 0.12 m, the pendants rigged and cast through commons220325-CO784-2240's camera at 7 px, the painted dash pairs 0.32-0.39 m aft); x along the line from the ramp, ±0.15 m; 54.14, 66.38 and 79.22, 2.7-2.9 m aft of the first reading, which took the barricade's row of deck fittings for wire 3. ends: where each pendant leaves its sheave, on the sheave's inboard side at mid-height (dvids9455182), ±0.2 m. sheaves: the round housings, 1.0 m across and 0.16 m proud raised, a fourth pair at u 81.17 for the barricade. supports: four leaf-spring bows under each pendant at about ±4.2 and ±9.6 m across the line (±0.35 m), 1.45 m between their pads, their crown not measured (the Mk 7 manual's 2-5.5 in). barricade: flush stanchion trays outboard of the fourth sheave pair, each hinged at its head; port from commons220325 and noaa2022 (±0.5 m), starboard from noaa2022 alone (±0.7 m); raised heights not measured.",
 			"paint": "provisional: the orthophotos' colour balance is not the deck's; the photo match measures them",
 			"markings": "Measured on noaa2022 in the landing frame: the centreline, the edge stripes' centres and the cross bars' places; widths from the shore standard (markings), which the stripes' measured spacing matches to 3 cm. The centreline's sections: 13.69 m measured (45 ft), yellow from u -6.5 every 27.38 m. The ramp stripe runs from the port deck edge to the starboard outer stripe. Each wire's pair of dashes, 1.8 x 0.5 m, 6.1 m either side of the centreline (noaa2022 and VBMP 2025). The bow's 78 traced on the 4 cm noaa2022 view. Not yet: the foul lines (none seen), the taxi lines, the elevators' edges.",
-			"hull": "Measured from the photos through cameras solved on the deck plan (research/hull: report.md, hull.json's evidence, the overlays). stem: the level starboard beam's silhouette, 13.1 m aft of the deck's bow tip on the waterline (x 153.0); transom: x -163.0, its bottom y -1.1, its outline cast from dvids7107228; waterline 316.0 m. stations: the waterplane's half-breadth from the boot top seen from above (two photos, the middle body calibrated to the cited beam), below it superellipse sections to a flat keel at the deployed draught (assumed: no photo shows them); forward of x 105 the flare to the deck is assumed. knuckle: the top of the sunlit hull side in the level starboard beam (0.2 m), carried forward of the sponsons at the gallery's foot; the port side mirrors starboard, unmeasured. gallery: the deck-edge band's depth, starboard (0.1-0.2 m); port copies it, unmeasured. bulb: its heights and width from the 2013 dry-dock photo; its length and nose (x 157) assumed.",
-			"island": "Measured from the photos (research/island: report.md, island.json's evidence, the overlays): a bundle of six photos' cameras on the deck plan's anchors (astern, ahead and near-nadir strong, 3.5-5.9 px), 15 triangulated points (domes, yardarm tips, the pole; 0.13-0.45 m) and 75 silhouette pixels cast onto planes another view fixes (cross-checks 0.2-0.5 m). Base 18.60 x 9.35 m at x -101.45 to -82.85, z 24.05 to 33.40; roof 21.5-22.5 m above the deck; pole top 45.3 m. About 1 m: the aft platforms' z extents, the mast house's width, the mast's x (0.5-1.3 m), the upper block's inboard step. Not modelled: the trunk's small platforms, whips, railings."
+			"hull": "Measured from the photos through cameras solved on the deck plan (research/hull: report.md, hull.json's evidence, the overlays). stem: the level starboard beam's silhouette, 13.1 m aft of the deck's bow tip on the waterline (x 153.0); transom: x -163.0, its bottom y -1.1, its outline cast from dvids7107228; waterline 316.0 m. stations: the waterplane's half-breadth from the boot top seen from above (two photos, the middle body calibrated to the cited beam), below it superellipse sections to a flat keel at the deployed draught (assumed: no photo shows them); forward of x 105 the flare to the deck is assumed. knuckle: the top of the sunlit hull side in the level starboard beam (0.2 m), carried forward of the sponsons at the gallery's foot; the port side mirrors starboard, unmeasured. gallery: the deck-edge band's depth, starboard (0.1-0.2 m); port copies it, unmeasured. bulb: its heights and width from the 2013 dry-dock photo; its length and nose (x 157) assumed. screws: four of 21 ft (6.4 m; Huntington Ingalls, 3 October 2013, \"At 21 feet in diameter\", five blades in DVIDS 1034894); lateral, each pair's offset from the centreline, inboard then outboard, is an estimate: no public photo shows the stern gear where a camera can be solved (references/research/sides).",
+			"island": "Measured from the photos (research/island: report.md, island.json's evidence, the overlays): a bundle of six photos' cameras on the deck plan's anchors (astern, ahead and near-nadir strong, 3.5-5.9 px), 15 triangulated points (domes, yardarm tips, the pole; 0.13-0.45 m) and 75 silhouette pixels cast onto planes another view fixes (cross-checks 0.2-0.5 m). Base 18.60 x 9.35 m at x -101.45 to -82.85, z 24.05 to 33.40; roof 21.5-22.5 m above the deck; pole top 45.3 m. About 1 m: the aft platforms' z extents, the mast house's width, the mast's x (0.5-1.3 m), the upper block's inboard step. Not modelled: the trunk's small platforms, whips, railings.",
+			"lens": "measured (references/research/lights: report.md, results.json, the overlays): a bundle of dvids9478807's camera with the r15 cameras of dvids7107228 and dvids7694421 held fixed, the lamps cast onto the lens face. position: the cell column's centre at datum height, ±(0.4, 0.15, 0.15) m, 508 ft along the landing line from the ramp against the shore replica's 410-430 ft (navair5150); x rests on one overhead mark. facing: 10.8° from dead aft, square to the landing line within its 4°. lights: 10 green datum lights a side 0.189 m apart, 3 red wave-off a side 0.29 m above and below the datum, 2 cut a side 0.54 m above; spacings to 0.01-0.02 m, scale to 3%. cells: 12 at 0.165 m centred on the datum (8 seen), a ball travel of ±0.99 m.",
+			"lights": "measured: drop, flood, masthead, obstruction; placed by rule, not seen: centreline, edge, elevator, forward, outline, ramp (references/research/lights). centreline, edge, ramp, forward: navair5150 WP 006 04's shore replica of the landing area's lights (18 centreline at 45 ft, edge rows 35 ft either side, 12 ramp, 10 forward), laid on layout.landing and clipped to the deck and the painted stripes, which match that replica within 3 cm. drop: the yellow bar down the stern in dvids7107228, 8 even points for lamps not resolved, its colour never seen lit. flood, masthead, obstruction: dvids9344251 at dusk through a camera on the island's points, ±0.3 m in y and z and 1 m in x; the floods show green. outline: blue lights along the deck edge in dvids9478938, placed every 18 m along the outline. elevator: no Ford evidence, every 6 m along each platform's outboard edge. Side and stern lights: not seen lit in any 2022-2026 photo.",
+			"antennas": "port_aft and port_forward: whips lowered aft and outboard at 28-38° off the ship's axis in noaa2022 (and one at sea in dvids9411247); length: the 4.2-4.3 m seen beyond the deck-edge structures, the whole not measured; base ±0.6 m. starboard_forward: the tall mast raised beside the bow console during launches (dvids7456172), 12.8 ± 1.5 m (its noaa2022 shadow and that photo), base ±1 m; never seen lowered, so it is built fixed. starboard_forward's base moved 2.0 m forward of the orthophoto shadow's reading (69.8, ±1 m): the sky check puts it 1.9 m aft in dvids9167788 and about 3 m in dvids9142613 (references/research/sky).",
+			"parking": "where the parked start's nose wheel stands (#133), heading positive to port: aft of the island on the starboard side, placed rather than measured. With the wings folded (8.6 m) the jet's footprint (z 10.2-18.8) lies 1 m inboard of the island's bridge wing (z 19.8) so it taxis forward past the island, 18 m aft of its aft face (x -101.45), and just inside the landing area's starboard foul line (about z 11.4 there), as a jet waiting to taxi stands.",
+			"sides": "Measured from the photos through the photo match's cameras and the level beam's re-solved one (references/research/sides: results.json, the overlays). sponsons: plans ±0.3-0.5 m from the overhead and one oblique view, top and bottom ±0.2-1.0. weapons: positions and heights measured; their shapes simple boxes, pedestals and radomes, since no source here gives their dimensions (the Mk 15's 4.7 m from a secondary site). A third Phalanx on a port sponson amidships is seen only from overhead and left out. domes_edge: SATCOM-size domes on small deck-edge sponsons, overhead only. catwalks: plans from the overhead, floors inferred from the racks hung on them (±0.6-0.8). racks: two tiers of raft canisters, x ±0.5. openings: the hangar openings under the elevators (port ±1.5 m, one weak camera) and the transom's two bays. island: windows (glass) and the Dual Band Radar's faces (panel, 10-20% darker and bluer than the grey), each from one to three views. Not built: the boat bays and recesses (on structure the hull loft lacks), the anchors, the bow's chocks; the island's 78 and the stem's draught marks wait for the lettering texture. There is no 78 on the bow and no name on the transom in 2022-2026.",
+			"lettering": "the island's two 78s, white with a thin dark outline (references/research/sides, lettering): starboard on the face at z 33.4, its corners from three photos (±0.3 along, ±0.2 up); port on the base's face at z 24.05, 5.0 m wide (±0.5). The port pair measured y 21.0-26.0 from its 2017 photo and 20.1-25.4 from its 2022 one; the first would put its top 0.53 m inside the second level's overhang (its bottom at y 25.47), so it is set 4.85 m tall as the starboard pair is, its top at 25.4. Drawn by letters.py in DejaVu Sans Bold stretched to the measured boxes, on the haze grey (the build's grey in sRGB). The stem's draught marks (draught): numerals 6 in high (0.152 m, the facts entry) with their feet at whole feet of draught, 38 to 41 ft over the deployed waterline's 37.7, on both sides; measured at x 154.0 ±1.0, they stand 0.6 m aft of the measured stem at their height (153.8-153.9), white on the boot's black. The bulbous-bow star is left out: measured about 2 m forward of the numerals, it would fall ahead of the stem. There is no 78 on the bow and no name on the transom in 2022-2026.",
+			"stern": "references/research/stern: the photo match re-run with 40 stern marks and dvids7694418 added, every stern mark within 5 px (0.1-0.3 m), points solved ±0.2-0.37 m. sponsons port_aft, starboard_aft: plans and heights from the solved corners, their tops and bottoms sloping as measured (the starboard bottom falls 0.9 m outboard, two cameras within 1 px); the aft faces slant, the inboard ends from the overhead (±0.4). port_gun_tub, starboard_gun_tub: railed tubs on the outboard faces, built solid to their rails (±0.4); their brackets and guns not built. fantail: corrected to x -170..-164.1, z 11..18.3, y 6.2..6.9; its Phalanx stands on it. wedges.transom_port_flare: the transom's diagonal below the port sponson, a metre deep (how far forward it runs is not seen); the starboard one, an astern cast only, not built. hull.quarters: the walls forward of the sponsons, vertical from their feet to the deck's underside, the deck overhanging them: port at z -33.35..-33.2 to x -118.7 (fitted by eye in two views, its forward end in one, ±1.5); starboard provisional, at the sponson's 36.65 to x -135 (its foot seen at 9.3-9.4 in two views, its z in none). The Mk 29 and RAM bases are the sponsons' new tops under their measured tops.",
+			"bow": "references/research/bow: the photo match's cameras re-solved with the bow's own points free (dvids9688116 and dvids3299641 added, 3.2-7 px). stem: y 0-7 from three side views relative to the face's lower corner (±0.5-0.6), the face's centreline above, the deck-edge band's front at 166.2; below y 0 the build's (under water in every photo). face: one flat plate on x = 146.38 + 1.294 y, its creases straight from (156.21, 7.62, ±2.02) to (166.23, 15.48, ±12.81) (±0.3-0.5); the loft runs each height straight from the last station to the crease, so the sections ahead of x 156.2 take the face as their flat bottom. stations 150 and 145: the flare from the anchor crowns (y 8.6) and the oval chocks (y 13.25) up (±0.6-0.8), the build's below; 145 and 135 held at least as full as the station ahead above y 8.6, so the bow never widens going forward (fitted, not measured). The flare between the creases and the deck edge is not measured. The waterplane forward of x 105 is not measured; the built one lies inside both tangent bounds. The bullnose ring's height on the face (13.01, ±0.25) is measured; it is on the centreline.",
+			"sides2": "references/research/sides2: the photo match with the 2022 port view (commons221126-QI061-2036R) added at 5.6 px, the overhead rectified at the catwalks' height. hull.knuckle port: level at 4.6 (4.48-4.74, ±0.2) from x -81 to 59 in the 2022 view; the steps it had are the starboard elevators' fairings (the level beam shows them, rounded at each end), which the port copy carried. The starboard's dips at x 37-42, -18.4 and 97-102 lie under overhangs whose shadows the lit edge followed: levelled, and rising steadily to the bow. The bow's knuckle at 7.9 (±0.2) from x 110 to 156 (2022 and 2019 port views; starboard its mirror). hull.gallery port: the band's foot at 14.46 and 14.56 where the angled deck's creases meet it (±0.3), carried along the diagonal from deck corner 15. hull.flare port: the flat facet under the diagonal (T1, K1, V, T2, 49.5° from vertical) and the two triangles behind it (V, T2, K2; K1, V, K2), from one view checked by eye in a second; K1 and K2 re-cast onto the hull (±0.4-0.6), V onto the facet's plane. hull.walls: the quarters' walls as before, and the vertical wall under the port deck edge from x -15 to 20.7 down to 12.2 (±0.3; its z assumed at the deck edge). Not measured: the starboard facets, port aft of x -57, the bow's lower facet. hull.antifouling: the black-to-red edge at -2.8 (±0.3) in the 2013 dry dock (16 columns at x 54-135); its colour the red's ratio to the haze grey in shade there, less the flare the black shows against the sunlit black (souda2023), on the build's grey. racks: canisters 1.5 x 0.8 m lying fore and aft, two tiers (16.3-17.2, 17.3-18.3, ±0.3), one a rack in each, racks about 1.6 m apart, ±0.3 in x and z from the overhead; the starboard racks 1.1-1.5 m further out and three groups 3-4 m further forward than before, two entries that were a deck-edge fitting and a hose station dropped. rows: small canisters (blue in the overhead), their heights not measured. domes_edge: centres, sizes and platforms from the overhead (±0.4); the second's floor, top and the foot of its bracket from dvids9142613; the others' floors at the catwalks' and their knees as the catwalks'; a fourth dome at x 0.5 added. catwalks: plans from the overhead (±0.3), the floor 16.9 (±0.4) between the racks' bottom and the fascia; the bow's knees 2.05 m apart, their feet 0.8 m below the floor (dvids9688116). Platforms off the port catwalk from the overhead; the widths of those at x 96-164 assumed. Provisional, not measured: the railing (1.0 m, posts every 1.5 m), the toe board (0.1 m), the nets (1.5 m out from the railing's top, rising 0.4 m, frames every 2.3 m as the overhead's sawtooth on the diagonal; the slope as ABS's helideck rule's) and where they run (the 2022 port view, the bow's in dvids9688116). Not built: the folded net frames at elevator 3.",
+			"transom": "references/research/transom: points triangulated in 2-4 photos through the catalogue's cameras, vertical edges by their rays flattened onto the horizontal plane, outlines cast from the dead-astern dvids7107228 onto the triangulated planes (its 3° lean removed). transom.face: the upper face at x -164.35 (±0.2; the opening's four edges in two photos each), from the walkway (7.0 ±0.3) to the deck; its opening's outline ±0.15, the corners' radii ±0.3, its back wall at -161.2 (±0.5, one life ring in three photos). windows: six, ±0.15. catwalk: the dark band under the deck's edge, railed. walkway: the opening's floor carried aft to x -167.2 (±0.5), its fascia and lower member from astern; railing 1.0 m, posts 1.8 m apart (rough). frame: eight black posts under the walkway's aft edge, its end posts as vertical edges (x ±0.4), into the water; the fenders on it by eye. drop: the yellow bar vertical at x -165.45, z 7.3 (±0.15, ±0.1), 0.4 wide, from y 2.6 to the deck's edge, in two photos (it sloped from x -164.5 to -163.0 before); its lamps along its aft face. plinth: the Phalanx's top at 9.2 (±0.4, two photos), its plan 3 x 3 m by eye. hull.transom.points: the lower transom's corners above the water (±0.15, port and starboard alike below 3.2); under water its run to the keel is not seen. The lower transom stands at -163.4 ±0.3 by its chocks, the hull's -163.0 within that. Not built: the raised platform inside the recess, the box starboard of the Phalanx, the doors and fittings, the deck edge's white band (round-down or paint, not resolved).",
+			"deck2": "references/research/deck2: dvids7694421 (2023-03) rectified through its solved camera (3.0 px), the primary source; noaa2022 re-registered (a mosaic seam from (45, -45) to (98, 22), the image forward of it 6.4 m to starboard); commons220325-CO784-2240 through its camera. The two images agree to about 0.4 m, the floor on a mark seen in one. markings: the existing ones checked (centreline within 0.01 m, yellow sections 0.25, bars 0.0-0.3, the 78 0.15); the edge stripes run to u 227.4, 224.4 (port) and 243.9, 246.9 (starboard), not 197.37 and about 232, which were the 2022 mosaic's seam; the slots 0.10 m wide, not 0.30. New: bars 0 and starboard 9, the foul lines and dashed lines, the catapults' foul lines, the elevators' red-and-white outlines, the deflectors' yellow outlines (on the panels, which wear the deck's texture), the weapons elevators' hatches, helicopter spots 2-6, the waist cross bars, the catapults' track bands, the deck-edge line and the bow's and quarter's lines; each with its photos and sigma in results.json. zone: the darker landing-area non-skid (±1 m, 2022). stains: the touchdown rubber, its shoulders, the rollout, the deflectors' spill (darkening in linear light, feathered). paint: the deck's non-skid (82, 84, 88), the yellow (210, 162, 62) and the red (150, 62, 62) from the 2025-2026 deck-level photos, scaled so their white is the table's (±15-25). lights.edge: the port row out to the longer stripes, 17 as the starboard's (the replica's), the rule's spacing. Not measured: the distance numerals, spot 1, the pendant supports' outlines, the tie-down grid, the deck after 2023-03.",
+			"island2": "references/research/island2: three in-era photos resected on the island's known points (2.5-8.6 px, leave-one-out 0.02-0.4 m) and the catalogue's cameras; parts cast onto the planes they stand on or triangulated, each with its sigma in results.json. island.details: the mast's faceted trunk (2.6 x 2.1 m, not the 4 m pole), its ring bands, middle platform and drum, the yardarms' railings, radars, loudspeakers, antenna clusters, braces and whips, the mast house's railing and antennas, the masthead's platform, antenna and whip, the gaff's railing; the body's walkways and railings, the starboard platform, log-periodic antennas, the aft dishes and the ladder. The yardarm's deck 45.95-46.65, the gaff 55.4-55.85 to x -101.5, the bridge windows 32.25-33.2 (the forward view, tilted, reads 32.2-33.9; still open). weapons: the Mk 29 (a fit on 14 corners in two photos, 4.9 px; no public dimensions), the Mk 49 RAM (navy.mil's working circle, the guide measured) and the Mk 15 Phalanx (navy.mil, FAS, GD-OTS; the radome measured) as parts, each mount stowed as photographed: the Mk 29s trained outboard, level (their tops 17.87 and 18.2, not 18.21 and 18.68, which were triangulated across two dates and two poses); the starboard aft RAM aft, on its guide's middle (1.2 m from the painted circle's centre); the port forward RAM's pose and side not seen, on a pedestal to the overhead's top; the Phalanxes' gun training not resolved, the fantail's on a 1.59 m pedestal. antennas: the bow mast square, 0.6 m, to 30.9, its cap, whip, lights, dish and radome (dvids9688116); the port whips' hinge housings 0.6 m by eye. Not measured: doors, vents, the floodlights' fixtures, the roof railings, the port whips' length, the masts on the port sponsons and bow platforms."
 		},
 		"elevators": [
 			{
@@ -563,11 +618,11 @@
 						20.508
 					],
 					[
-						24.705,
+						24.39,
 						36.792
 					],
 					[
-						-2.785,
+						-2.66,
 						36.803
 					]
 				],
@@ -727,13 +782,42 @@
 		],
 		"fittings": {
 			"shuttle": {
-				"length": 1.5,
-				"width": 0.6,
-				"height": 0.3
+				"length": 1.25,
+				"width": 0.65,
+				"height": 0.3,
+				"top": 0.47
 			},
 			"deflector": {
 				"thickness": 0.4,
-				"angle": 50
+				"angle": 50,
+				"modules": 6
+			},
+			"sheave": {
+				"diameter": 1.0,
+				"height": 0.16
+			},
+			"support": {
+				"length": 1.45,
+				"pad": 0.28,
+				"width": 0.1,
+				"height": 0.08
+			},
+			"stanchion": {
+				"width": 1.0,
+				"head": 1.8,
+				"thickness": 0.15
+			},
+			"console": {
+				"surround": [
+					3.0,
+					2.4
+				],
+				"length": 1.5,
+				"width": 1.2,
+				"height": 1.3
+			},
+			"antenna": {
+				"radius": 0.06
 			}
 		},
 		"landing": {
@@ -752,60 +836,242 @@
 			"wires": [
 				{
 					"number": 1,
-					"x": 57.04,
+					"x": 54.14,
 					"ends": [
 						[
-							-106.325,
-							18.27,
-							-14.324
+							-109.695,
+							18.35,
+							-17.548
 						],
 						[
-							-102.481,
-							18.27,
-							9.467
+							-104.615,
+							18.35,
+							14.897
 						]
 					]
 				},
 				{
 					"number": 2,
-					"x": 69.17,
+					"x": 66.38,
 					"ends": [
 						[
-							-94.35,
-							18.27,
-							-16.259
+							-97.764,
+							18.35,
+							-19.567
 						],
 						[
-							-90.506,
-							18.27,
-							7.532
+							-92.464,
+							18.35,
+							12.549
 						]
 					]
 				},
 				{
 					"number": 3,
-					"x": 81.9,
+					"x": 79.22,
 					"ends": [
 						[
-							-81.775,
-							18.27,
-							-18.291
+							-85.123,
+							18.35,
+							-22.015
 						],
 						[
-							-77.931,
-							18.27,
-							5.501
+							-79.883,
+							18.35,
+							10.101
 						]
 					]
 				}
 			],
-			"target": 2
+			"target": 2,
+			"sheaves": [
+				{
+					"name": "wire_1_port",
+					"centre": [
+						-109.77,
+						-18.04
+					]
+				},
+				{
+					"name": "wire_1_starboard",
+					"centre": [
+						-104.53,
+						15.39
+					]
+				},
+				{
+					"name": "wire_2_port",
+					"centre": [
+						-97.84,
+						-20.06
+					]
+				},
+				{
+					"name": "wire_2_starboard",
+					"centre": [
+						-92.38,
+						13.04
+					]
+				},
+				{
+					"name": "wire_3_port",
+					"centre": [
+						-85.2,
+						-22.51
+					]
+				},
+				{
+					"name": "wire_3_starboard",
+					"centre": [
+						-79.8,
+						10.59
+					]
+				},
+				{
+					"name": "barricade_port",
+					"centre": [
+						-83.23,
+						-22.78
+					]
+				},
+				{
+					"name": "barricade_starboard",
+					"centre": [
+						-77.91,
+						10.26
+					]
+				}
+			],
+			"supports": [
+				{
+					"wire": 1,
+					"number": 1,
+					"centre": [
+						-108.79,
+						-11.445
+					]
+				},
+				{
+					"wire": 1,
+					"number": 2,
+					"centre": [
+						-107.928,
+						-6.114
+					]
+				},
+				{
+					"wire": 1,
+					"number": 3,
+					"centre": [
+						-106.589,
+						2.179
+					]
+				},
+				{
+					"wire": 1,
+					"number": 4,
+					"centre": [
+						-105.727,
+						7.51
+					]
+				},
+				{
+					"wire": 2,
+					"number": 1,
+					"centre": [
+						-96.706,
+						-13.397
+					]
+				},
+				{
+					"wire": 2,
+					"number": 2,
+					"centre": [
+						-95.845,
+						-8.066
+					]
+				},
+				{
+					"wire": 2,
+					"number": 3,
+					"centre": [
+						-94.505,
+						0.226
+					]
+				},
+				{
+					"wire": 2,
+					"number": 4,
+					"centre": [
+						-93.644,
+						5.557
+					]
+				},
+				{
+					"wire": 3,
+					"number": 1,
+					"centre": [
+						-84.031,
+						-15.445
+					]
+				},
+				{
+					"wire": 3,
+					"number": 2,
+					"centre": [
+						-83.169,
+						-10.114
+					]
+				},
+				{
+					"wire": 3,
+					"number": 3,
+					"centre": [
+						-81.83,
+						-1.822
+					]
+				},
+				{
+					"wire": 3,
+					"number": 4,
+					"centre": [
+						-80.968,
+						3.509
+					]
+				}
+			],
+			"barricade": {
+				"stanchions": [
+					{
+						"side": "port",
+						"hinge": [
+							-84.4,
+							-27.2
+						],
+						"tip": [
+							-92.71,
+							-26.09
+						]
+					},
+					{
+						"side": "starboard",
+						"hinge": [
+							-77.6,
+							14.5
+						],
+						"tip": [
+							-84.0,
+							14.6
+						]
+					}
+				]
+			}
 		},
 		"paint": {
 			"deck": [
-				86,
-				88,
-				92
+				82,
+				84,
+				88
 			],
 			"white": [
 				222,
@@ -813,17 +1079,489 @@
 				216
 			],
 			"yellow": [
-				214,
-				168,
-				46
+				210,
+				162,
+				62
 			],
 			"slot": [
 				38,
 				39,
 				41
+			],
+			"red": [
+				150,
+				62,
+				62
 			]
 		},
 		"markings": [
+			{
+				"name": "landing_area_nonskid",
+				"kind": "area",
+				"colour": [
+					70,
+					72,
+					76
+				],
+				"outline": [
+					[
+						-126,
+						-3.8
+					],
+					[
+						-126,
+						14.2
+					],
+					[
+						-108,
+						13.8
+					],
+					[
+						-96,
+						12.8
+					],
+					[
+						-84,
+						10.8
+					],
+					[
+						-72,
+						8.8
+					],
+					[
+						-60,
+						6.8
+					],
+					[
+						-48,
+						4.2
+					],
+					[
+						-36,
+						2.8
+					],
+					[
+						-24,
+						-0.8
+					],
+					[
+						-12,
+						-2.8
+					],
+					[
+						0,
+						-4.2
+					],
+					[
+						12,
+						-6.8
+					],
+					[
+						24,
+						-8.2
+					],
+					[
+						36,
+						-10.2
+					],
+					[
+						44,
+						-11.8
+					],
+					[
+						60,
+						-14.2
+					],
+					[
+						60,
+						-26.8
+					],
+					[
+						40,
+						-24.8
+					],
+					[
+						24,
+						-22.8
+					],
+					[
+						12,
+						-22.8
+					],
+					[
+						0,
+						-22.2
+					],
+					[
+						-12,
+						-21.2
+					],
+					[
+						-24,
+						-19.8
+					],
+					[
+						-36,
+						-18.8
+					],
+					[
+						-44,
+						-20.2
+					],
+					[
+						-48,
+						-23.2
+					],
+					[
+						-52,
+						-25.8
+					],
+					[
+						-64,
+						-24.2
+					],
+					[
+						-76,
+						-22.2
+					],
+					[
+						-88,
+						-20.2
+					],
+					[
+						-100,
+						-18.2
+					],
+					[
+						-112,
+						-16.2
+					],
+					[
+						-112,
+						-5.0
+					]
+				]
+			},
+			{
+				"name": "catapult_1_track_plates",
+				"kind": "line",
+				"colour": [
+					104,
+					106,
+					108
+				],
+				"width": 3.1,
+				"points": [
+					[
+						57.437,
+						17.315
+					],
+					[
+						163.63,
+						7.547
+					]
+				]
+			},
+			{
+				"name": "catapult_1_track_rails",
+				"kind": "line",
+				"colour": [
+					128,
+					129,
+					130
+				],
+				"width": 1.2,
+				"points": [
+					[
+						57.437,
+						17.315
+					],
+					[
+						163.63,
+						7.547
+					]
+				]
+			},
+			{
+				"name": "catapult_1_track_groove_port",
+				"kind": "line",
+				"colour": [
+					52,
+					53,
+					56
+				],
+				"width": 0.12,
+				"points": [
+					[
+						57.29,
+						15.722
+					],
+					[
+						163.483,
+						5.954
+					]
+				]
+			},
+			{
+				"name": "catapult_1_track_groove_starboard",
+				"kind": "line",
+				"colour": [
+					52,
+					53,
+					56
+				],
+				"width": 0.12,
+				"points": [
+					[
+						57.584,
+						18.908
+					],
+					[
+						163.777,
+						9.14
+					]
+				]
+			},
+			{
+				"name": "catapult_2_track_plates",
+				"kind": "line",
+				"colour": [
+					104,
+					106,
+					108
+				],
+				"width": 3.1,
+				"points": [
+					[
+						57.157,
+						-4.129
+					],
+					[
+						163.695,
+						-7.722
+					]
+				]
+			},
+			{
+				"name": "catapult_2_track_rails",
+				"kind": "line",
+				"colour": [
+					128,
+					129,
+					130
+				],
+				"width": 1.2,
+				"points": [
+					[
+						57.157,
+						-4.129
+					],
+					[
+						163.695,
+						-7.722
+					]
+				]
+			},
+			{
+				"name": "catapult_2_track_groove_port",
+				"kind": "line",
+				"colour": [
+					52,
+					53,
+					56
+				],
+				"width": 0.12,
+				"points": [
+					[
+						57.103,
+						-5.728
+					],
+					[
+						163.641,
+						-9.321
+					]
+				]
+			},
+			{
+				"name": "catapult_2_track_groove_starboard",
+				"kind": "line",
+				"colour": [
+					52,
+					53,
+					56
+				],
+				"width": 0.12,
+				"points": [
+					[
+						57.211,
+						-2.53
+					],
+					[
+						163.749,
+						-6.123
+					]
+				]
+			},
+			{
+				"name": "catapult_3_track_plates",
+				"kind": "line",
+				"colour": [
+					104,
+					106,
+					108
+				],
+				"width": 3.1,
+				"points": [
+					[
+						-36.739,
+						-20.509
+					],
+					[
+						72.141,
+						-29.513
+					]
+				]
+			},
+			{
+				"name": "catapult_3_track_rails",
+				"kind": "line",
+				"colour": [
+					128,
+					129,
+					130
+				],
+				"width": 1.2,
+				"points": [
+					[
+						-36.739,
+						-20.509
+					],
+					[
+						72.141,
+						-29.513
+					]
+				]
+			},
+			{
+				"name": "catapult_3_track_groove_port",
+				"kind": "line",
+				"colour": [
+					52,
+					53,
+					56
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-36.871,
+						-22.104
+					],
+					[
+						72.009,
+						-31.108
+					]
+				]
+			},
+			{
+				"name": "catapult_3_track_groove_starboard",
+				"kind": "line",
+				"colour": [
+					52,
+					53,
+					56
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-36.607,
+						-18.914
+					],
+					[
+						72.273,
+						-27.918
+					]
+				]
+			},
+			{
+				"name": "catapult_4_track_plates",
+				"kind": "line",
+				"colour": [
+					104,
+					106,
+					108
+				],
+				"width": 3.1,
+				"points": [
+					[
+						-55.306,
+						-32.563
+					],
+					[
+						51.601,
+						-32.653
+					]
+				]
+			},
+			{
+				"name": "catapult_4_track_rails",
+				"kind": "line",
+				"colour": [
+					128,
+					129,
+					130
+				],
+				"width": 1.2,
+				"points": [
+					[
+						-55.306,
+						-32.563
+					],
+					[
+						51.601,
+						-32.653
+					]
+				]
+			},
+			{
+				"name": "catapult_4_track_groove_port",
+				"kind": "line",
+				"colour": [
+					52,
+					53,
+					56
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-55.307,
+						-34.163
+					],
+					[
+						51.6,
+						-34.253
+					]
+				]
+			},
+			{
+				"name": "catapult_4_track_groove_starboard",
+				"kind": "line",
+				"colour": [
+					52,
+					53,
+					56
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-55.305,
+						-30.963
+					],
+					[
+						51.602,
+						-31.053
+					]
+				]
+			},
 			{
 				"name": "centreline",
 				"kind": "line",
@@ -859,9 +1597,9 @@
 				],
 				"width": 0.914,
 				"colour": [
-					214,
-					168,
-					46
+					210,
+					162,
+					62
 				]
 			},
 			{
@@ -879,9 +1617,9 @@
 				],
 				"width": 0.914,
 				"colour": [
-					214,
-					168,
-					46
+					210,
+					162,
+					62
 				]
 			},
 			{
@@ -899,9 +1637,9 @@
 				],
 				"width": 0.914,
 				"colour": [
-					214,
-					168,
-					46
+					210,
+					162,
+					62
 				]
 			},
 			{
@@ -919,9 +1657,9 @@
 				],
 				"width": 0.914,
 				"colour": [
-					214,
-					168,
-					46
+					210,
+					162,
+					62
 				]
 			},
 			{
@@ -939,9 +1677,9 @@
 				],
 				"width": 0.914,
 				"colour": [
-					214,
-					168,
-					46
+					210,
+					162,
+					62
 				]
 			},
 			{
@@ -959,9 +1697,9 @@
 				],
 				"width": 0.914,
 				"colour": [
-					214,
-					168,
-					46
+					210,
+					162,
+					62
 				]
 			},
 			{
@@ -979,9 +1717,9 @@
 				],
 				"width": 0.914,
 				"colour": [
-					214,
-					168,
-					46
+					210,
+					162,
+					62
 				]
 			},
 			{
@@ -999,9 +1737,9 @@
 				],
 				"width": 0.914,
 				"colour": [
-					214,
-					168,
-					46
+					210,
+					162,
+					62
 				]
 			},
 			{
@@ -1019,9 +1757,9 @@
 				],
 				"width": 0.914,
 				"colour": [
-					214,
-					168,
-					46
+					210,
+					162,
+					62
 				]
 			},
 			{
@@ -1033,8 +1771,8 @@
 						-2.611
 					],
 					[
-						32.703,
-						-33.683
+						62.342,
+						-38.504
 					]
 				],
 				"width": 0.914,
@@ -1053,8 +1791,8 @@
 						-5.681
 					],
 					[
-						32.211,
-						-36.695
+						58.897,
+						-41.016
 					]
 				],
 				"width": 0.305,
@@ -1073,8 +1811,8 @@
 						15.652
 					],
 					[
-						69.72,
-						-21.462
+						81.506,
+						-23.336
 					]
 				],
 				"width": 0.914,
@@ -1093,8 +1831,8 @@
 						18.76
 					],
 					[
-						69.718,
-						-18.375
+						84.957,
+						-20.785
 					]
 				],
 				"width": 0.305,
@@ -1731,7 +2469,7 @@
 						7.547
 					]
 				],
-				"width": 0.3,
+				"width": 0.1,
 				"colour": [
 					38,
 					39,
@@ -1751,7 +2489,7 @@
 						-7.722
 					]
 				],
-				"width": 0.3,
+				"width": 0.1,
 				"colour": [
 					38,
 					39,
@@ -1771,7 +2509,7 @@
 						-29.513
 					]
 				],
-				"width": 0.3,
+				"width": 0.1,
 				"colour": [
 					38,
 					39,
@@ -1791,7 +2529,7 @@
 						-32.653
 					]
 				],
-				"width": 0.3,
+				"width": 0.1,
 				"colour": [
 					38,
 					39,
@@ -2009,6 +2747,2754 @@
 						1.6
 					]
 				]
+			},
+			{
+				"name": "bar_port_0",
+				"kind": "area",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"outline": [
+					[
+						-148.507,
+						-7.652
+					],
+					[
+						-145.496,
+						-8.138
+					],
+					[
+						-144.912,
+						-4.525
+					],
+					[
+						-147.923,
+						-4.038
+					]
+				]
+			},
+			{
+				"name": "bar_starboard_0",
+				"kind": "area",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"outline": [
+					[
+						-145.2,
+						12.813
+					],
+					[
+						-142.189,
+						12.327
+					],
+					[
+						-141.607,
+						15.93
+					],
+					[
+						-144.618,
+						16.416
+					]
+				]
+			},
+			{
+				"name": "bar_starboard_9",
+				"kind": "area",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"outline": [
+					[
+						79.91,
+						-23.558
+					],
+					[
+						82.99,
+						-24.056
+					],
+					[
+						83.573,
+						-20.453
+					],
+					[
+						80.493,
+						-19.955
+					]
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "foul_line_starboard_1",
+				"points": [
+					[
+						-156.189,
+						21.355
+					],
+					[
+						-79.099,
+						8.899
+					]
+				],
+				"dash": [
+					1.92,
+					1.79
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "foul_line_starboard_2",
+				"points": [
+					[
+						-76.32,
+						8.45
+					],
+					[
+						-12.843,
+						-1.806
+					]
+				],
+				"dash": [
+					1.8,
+					1.82
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "foul_line_starboard_3",
+				"points": [
+					[
+						-11.937,
+						-1.952
+					],
+					[
+						33.728,
+						-9.33
+					]
+				],
+				"dash": [
+					1.76,
+					1.87
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "foul_line_starboard_4",
+				"points": [
+					[
+						34.54,
+						-9.462
+					],
+					[
+						85.951,
+						-17.768
+					]
+				],
+				"dash": [
+					1.83,
+					1.83
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "dashed_line_port_inner_1",
+				"points": [
+					[
+						-163.172,
+						-10.863
+					],
+					[
+						-111.122,
+						-19.273
+					]
+				],
+				"dash": [
+					1.9,
+					1.79
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "dashed_line_port_inner_2",
+				"points": [
+					[
+						-108.367,
+						-19.718
+					],
+					[
+						-97.227,
+						-21.518
+					]
+				],
+				"dash": [
+					1.88,
+					1.78
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "dashed_line_port_inner_3",
+				"points": [
+					[
+						-95.218,
+						-21.843
+					],
+					[
+						-83.465,
+						-23.742
+					]
+				],
+				"dash": [
+					1.88,
+					1.78
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "dashed_line_port_inner_4",
+				"points": [
+					[
+						-80.726,
+						-24.184
+					],
+					[
+						-72.71,
+						-25.48
+					]
+				],
+				"dash": [
+					1.88,
+					1.78
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "dashed_line_port_inner_5",
+				"points": [
+					[
+						-69.995,
+						-25.918
+					],
+					[
+						-52.951,
+						-28.672
+					]
+				],
+				"dash": [
+					1.88,
+					1.78
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "dashed_line_port_inner_6",
+				"points": [
+					[
+						-52.117,
+						-28.807
+					],
+					[
+						-31.633,
+						-32.117
+					]
+				],
+				"dash": [
+					1.88,
+					1.78
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "dashed_line_port_inner_7",
+				"points": [
+					[
+						-30.951,
+						-32.227
+					],
+					[
+						-17.921,
+						-34.332
+					]
+				],
+				"dash": [
+					1.88,
+					1.78
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "dashed_line_port_outer_1",
+				"points": [
+					[
+						-132.928,
+						-19.511
+					],
+					[
+						-56.315,
+						-32.56
+					]
+				],
+				"dash": [
+					1.87,
+					1.79
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.15,
+				"name": "dashed_line_port_outer_2",
+				"points": [
+					[
+						-53.777,
+						-32.992
+					],
+					[
+						-40.654,
+						-35.227
+					]
+				],
+				"dash": [
+					1.88,
+					1.78
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.17,
+				"name": "catapult_1_foul_line_1",
+				"points": [
+					[
+						37.133,
+						6.2
+					],
+					[
+						109.483,
+						-0.298
+					]
+				],
+				"dash": [
+					1.9,
+					1.75
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.17,
+				"name": "catapult_1_foul_line_2",
+				"points": [
+					[
+						110.688,
+						-0.406
+					],
+					[
+						127.62,
+						-1.926
+					]
+				],
+				"dash": [
+					1.55,
+					2.1
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.17,
+				"name": "catapult_1_foul_line_3",
+				"points": [
+					[
+						128.367,
+						-1.993
+					],
+					[
+						155.398,
+						-4.421
+					]
+				],
+				"dash": [
+					1.97,
+					1.76
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.17,
+				"name": "catapult_1_foul_line_4",
+				"points": [
+					[
+						157.948,
+						-4.65
+					],
+					[
+						163.85,
+						-5.18
+					]
+				],
+				"dash": [
+					1.9,
+					1.76
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"name": "catapult_2_foul_line_1",
+				"points": [
+					[
+						36.747,
+						9.255
+					],
+					[
+						74.406,
+						8.025
+					]
+				],
+				"dash": [
+					1.85,
+					1.82
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"name": "catapult_2_foul_line_2",
+				"points": [
+					[
+						76.805,
+						7.946
+					],
+					[
+						111.157,
+						6.824
+					]
+				],
+				"dash": [
+					1.89,
+					1.78
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"name": "catapult_2_foul_line_3",
+				"points": [
+					[
+						114.255,
+						6.723
+					],
+					[
+						120.077,
+						6.532
+					]
+				],
+				"dash": [
+					1.83,
+					1.83
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"name": "catapult_2_foul_line_4",
+				"points": [
+					[
+						120.852,
+						6.507
+					],
+					[
+						127.573,
+						6.287
+					]
+				],
+				"dash": [
+					1.83,
+					1.83
+				]
+			},
+			{
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"name": "catapult_2_foul_line_5",
+				"points": [
+					[
+						128.648,
+						6.252
+					],
+					[
+						163.0,
+						5.13
+					]
+				],
+				"dash": [
+					1.65,
+					1.98
+				]
+			},
+			{
+				"name": "catapult_3_foul_line",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.2,
+				"points": [
+					[
+						-54.02,
+						-6.25
+					],
+					[
+						103.74,
+						-19.32
+					]
+				]
+			},
+			{
+				"name": "catapult_4_foul_line",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.2,
+				"points": [
+					[
+						-72.4,
+						-19.88
+					],
+					[
+						84.6,
+						-19.84
+					]
+				]
+			},
+			{
+				"name": "elevator_1_outline",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-77.301,
+						36.1
+					],
+					[
+						-75.02,
+						20.508
+					],
+					[
+						-53.661,
+						20.464
+					],
+					[
+						-51.52,
+						36.1
+					]
+				]
+			},
+			{
+				"name": "elevator_1_outline_blocks",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-77.301,
+						36.1
+					],
+					[
+						-75.02,
+						20.508
+					],
+					[
+						-53.661,
+						20.464
+					],
+					[
+						-51.52,
+						36.1
+					]
+				],
+				"dash": [
+					0.305,
+					0.305
+				]
+			},
+			{
+				"name": "elevator_1_deck_line",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-74.313,
+						19.549
+					],
+					[
+						-53.713,
+						19.511
+					]
+				]
+			},
+			{
+				"name": "elevator_1_deck_line_blocks",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-74.313,
+						19.549
+					],
+					[
+						-53.713,
+						19.511
+					]
+				],
+				"dash": [
+					0.305,
+					0.305
+				]
+			},
+			{
+				"name": "elevator_2_outline",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-2.09,
+						36.1
+					],
+					[
+						0.077,
+						20.46
+					],
+					[
+						21.321,
+						20.457
+					],
+					[
+						23.469,
+						36.1
+					]
+				]
+			},
+			{
+				"name": "elevator_2_outline_blocks",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-2.09,
+						36.1
+					],
+					[
+						0.077,
+						20.46
+					],
+					[
+						21.321,
+						20.457
+					],
+					[
+						23.469,
+						36.1
+					]
+				],
+				"dash": [
+					0.305,
+					0.305
+				]
+			},
+			{
+				"name": "elevator_2_deck_line",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.305,
+				"points": [
+					[
+						0.3,
+						19.508
+					],
+					[
+						21.301,
+						19.443
+					]
+				]
+			},
+			{
+				"name": "elevator_2_deck_line_blocks",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.305,
+				"points": [
+					[
+						0.3,
+						19.508
+					],
+					[
+						21.301,
+						19.443
+					]
+				],
+				"dash": [
+					0.305,
+					0.305
+				]
+			},
+			{
+				"name": "elevator_3_outline",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-119.749,
+						-37.0
+					],
+					[
+						-117.62,
+						-21.466
+					],
+					[
+						-96.217,
+						-21.463
+					],
+					[
+						-93.902,
+						-37.0
+					]
+				]
+			},
+			{
+				"name": "elevator_3_outline_blocks",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-119.749,
+						-37.0
+					],
+					[
+						-117.62,
+						-21.466
+					],
+					[
+						-96.217,
+						-21.463
+					],
+					[
+						-93.902,
+						-37.0
+					]
+				],
+				"dash": [
+					0.305,
+					0.305
+				]
+			},
+			{
+				"name": "elevator_3_deck_line",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-95.452,
+						-20.712
+					],
+					[
+						-117.452,
+						-20.692
+					]
+				]
+			},
+			{
+				"name": "elevator_3_deck_line_blocks",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.305,
+				"points": [
+					[
+						-95.452,
+						-20.712
+					],
+					[
+						-117.452,
+						-20.692
+					]
+				],
+				"dash": [
+					0.305,
+					0.305
+				]
+			},
+			{
+				"name": "elevator_3_platform_bar",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-102.5,
+						-37.0
+					],
+					[
+						-102.05,
+						-37.0
+					],
+					[
+						-102.05,
+						-22.9
+					],
+					[
+						-102.5,
+						-22.9
+					],
+					[
+						-102.5,
+						-37.0
+					]
+				]
+			},
+			{
+				"name": "elevator_3_platform_square_1",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-105.25,
+						-31.67
+					],
+					[
+						-104.65,
+						-31.67
+					],
+					[
+						-104.65,
+						-31.07
+					],
+					[
+						-105.25,
+						-31.07
+					],
+					[
+						-105.25,
+						-31.67
+					]
+				]
+			},
+			{
+				"name": "elevator_3_platform_square_2",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-105.25,
+						-28.9
+					],
+					[
+						-104.65,
+						-28.9
+					],
+					[
+						-104.65,
+						-28.3
+					],
+					[
+						-105.25,
+						-28.3
+					],
+					[
+						-105.25,
+						-28.9
+					]
+				]
+			},
+			{
+				"name": "catapult_1_deflector_outline",
+				"kind": "line",
+				"colour": [
+					210,
+					162,
+					62
+				],
+				"width": 0.4,
+				"points": [
+					[
+						31.91,
+						13.98
+					],
+					[
+						36.22,
+						13.98
+					],
+					[
+						36.22,
+						24.44
+					],
+					[
+						31.91,
+						24.44
+					],
+					[
+						31.91,
+						13.98
+					]
+				]
+			},
+			{
+				"name": "catapult_2_deflector_outline",
+				"kind": "line",
+				"colour": [
+					210,
+					162,
+					62
+				],
+				"width": 0.4,
+				"points": [
+					[
+						32.02,
+						-9.15
+					],
+					[
+						36.18,
+						-9.15
+					],
+					[
+						36.18,
+						1.68
+					],
+					[
+						32.02,
+						1.68
+					],
+					[
+						32.02,
+						-9.15
+					]
+				]
+			},
+			{
+				"name": "catapult_3_deflector_outline",
+				"kind": "line",
+				"colour": [
+					210,
+					162,
+					62
+				],
+				"width": 0.4,
+				"points": [
+					[
+						-58.8,
+						-24.3
+					],
+					[
+						-54.16,
+						-24.3
+					],
+					[
+						-54.16,
+						-14.1
+					],
+					[
+						-58.8,
+						-14.1
+					],
+					[
+						-58.8,
+						-24.3
+					]
+				]
+			},
+			{
+				"name": "catapult_4_deflector_outline",
+				"kind": "line",
+				"colour": [
+					210,
+					162,
+					62
+				],
+				"width": 0.4,
+				"points": [
+					[
+						-77.06,
+						-38.2
+					],
+					[
+						-72.87,
+						-38.2
+					],
+					[
+						-72.87,
+						-27.46
+					],
+					[
+						-77.06,
+						-27.46
+					],
+					[
+						-77.06,
+						-38.2
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_1_outline",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"points": [
+					[
+						-41.92,
+						19.73
+					],
+					[
+						-41.748,
+						19.764
+					],
+					[
+						-41.602,
+						19.862
+					],
+					[
+						-41.504,
+						20.008
+					],
+					[
+						-41.47,
+						20.18
+					],
+					[
+						-41.47,
+						25.99
+					],
+					[
+						-41.504,
+						26.162
+					],
+					[
+						-41.602,
+						26.308
+					],
+					[
+						-41.748,
+						26.406
+					],
+					[
+						-41.92,
+						26.44
+					],
+					[
+						-44.39,
+						26.44
+					],
+					[
+						-44.562,
+						26.406
+					],
+					[
+						-44.708,
+						26.308
+					],
+					[
+						-44.806,
+						26.162
+					],
+					[
+						-44.84,
+						25.99
+					],
+					[
+						-44.84,
+						20.18
+					],
+					[
+						-44.806,
+						20.008
+					],
+					[
+						-44.708,
+						19.862
+					],
+					[
+						-44.562,
+						19.764
+					],
+					[
+						-44.39,
+						19.73
+					],
+					[
+						-41.92,
+						19.73
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_1_split",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"points": [
+					[
+						-43.16,
+						19.73
+					],
+					[
+						-43.16,
+						26.44
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_1_surround",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.25,
+				"points": [
+					[
+						-45.89,
+						19.28
+					],
+					[
+						-40.42,
+						19.28
+					],
+					[
+						-40.42,
+						26.89
+					],
+					[
+						-45.89,
+						26.89
+					],
+					[
+						-45.89,
+						19.28
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_1_surround_blocks",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.25,
+				"points": [
+					[
+						-45.89,
+						19.28
+					],
+					[
+						-40.42,
+						19.28
+					],
+					[
+						-40.42,
+						26.89
+					],
+					[
+						-45.89,
+						26.89
+					],
+					[
+						-45.89,
+						19.28
+					]
+				],
+				"dash": [
+					0.305,
+					0.305
+				]
+			},
+			{
+				"name": "weapons_hatch_2_outline",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"points": [
+					[
+						-10.79,
+						20.49
+					],
+					[
+						-10.618,
+						20.524
+					],
+					[
+						-10.472,
+						20.622
+					],
+					[
+						-10.374,
+						20.768
+					],
+					[
+						-10.34,
+						20.94
+					],
+					[
+						-10.34,
+						26.75
+					],
+					[
+						-10.374,
+						26.922
+					],
+					[
+						-10.472,
+						27.068
+					],
+					[
+						-10.618,
+						27.166
+					],
+					[
+						-10.79,
+						27.2
+					],
+					[
+						-13.24,
+						27.2
+					],
+					[
+						-13.412,
+						27.166
+					],
+					[
+						-13.558,
+						27.068
+					],
+					[
+						-13.656,
+						26.922
+					],
+					[
+						-13.69,
+						26.75
+					],
+					[
+						-13.69,
+						20.94
+					],
+					[
+						-13.656,
+						20.768
+					],
+					[
+						-13.558,
+						20.622
+					],
+					[
+						-13.412,
+						20.524
+					],
+					[
+						-13.24,
+						20.49
+					],
+					[
+						-10.79,
+						20.49
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_2_split",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"points": [
+					[
+						-12.07,
+						20.49
+					],
+					[
+						-12.07,
+						27.2
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_2_surround",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.25,
+				"points": [
+					[
+						-14.74,
+						20.04
+					],
+					[
+						-9.29,
+						20.04
+					],
+					[
+						-9.29,
+						27.65
+					],
+					[
+						-14.74,
+						27.65
+					],
+					[
+						-14.74,
+						20.04
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_2_surround_blocks",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.25,
+				"points": [
+					[
+						-14.74,
+						20.04
+					],
+					[
+						-9.29,
+						20.04
+					],
+					[
+						-9.29,
+						27.65
+					],
+					[
+						-14.74,
+						27.65
+					],
+					[
+						-14.74,
+						20.04
+					]
+				],
+				"dash": [
+					0.305,
+					0.305
+				]
+			},
+			{
+				"name": "weapons_hatch_3_outline",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"points": [
+					[
+						30.2,
+						19.42
+					],
+					[
+						30.372,
+						19.454
+					],
+					[
+						30.518,
+						19.552
+					],
+					[
+						30.616,
+						19.698
+					],
+					[
+						30.65,
+						19.87
+					],
+					[
+						30.65,
+						25.7
+					],
+					[
+						30.616,
+						25.872
+					],
+					[
+						30.518,
+						26.018
+					],
+					[
+						30.372,
+						26.116
+					],
+					[
+						30.2,
+						26.15
+					],
+					[
+						27.71,
+						26.15
+					],
+					[
+						27.538,
+						26.116
+					],
+					[
+						27.392,
+						26.018
+					],
+					[
+						27.294,
+						25.872
+					],
+					[
+						27.26,
+						25.7
+					],
+					[
+						27.26,
+						19.87
+					],
+					[
+						27.294,
+						19.698
+					],
+					[
+						27.392,
+						19.552
+					],
+					[
+						27.538,
+						19.454
+					],
+					[
+						27.71,
+						19.42
+					],
+					[
+						30.2,
+						19.42
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_3_split",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.18,
+				"points": [
+					[
+						28.91,
+						19.42
+					],
+					[
+						28.91,
+						26.15
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_3_surround",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.25,
+				"points": [
+					[
+						26.21,
+						18.97
+					],
+					[
+						31.7,
+						18.97
+					],
+					[
+						31.7,
+						26.6
+					],
+					[
+						26.21,
+						26.6
+					],
+					[
+						26.21,
+						18.97
+					]
+				]
+			},
+			{
+				"name": "weapons_hatch_3_surround_blocks",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.25,
+				"points": [
+					[
+						26.21,
+						18.97
+					],
+					[
+						31.7,
+						18.97
+					],
+					[
+						31.7,
+						26.6
+					],
+					[
+						26.21,
+						26.6
+					],
+					[
+						26.21,
+						18.97
+					]
+				],
+				"dash": [
+					0.305,
+					0.305
+				]
+			},
+			{
+				"name": "spot_6_line_aft",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-41.9,
+						-28.975
+					],
+					[
+						-36.0,
+						-28.975
+					],
+					[
+						-36.0,
+						-28.465
+					],
+					[
+						-41.9,
+						-28.465
+					],
+					[
+						-41.9,
+						-28.975
+					]
+				]
+			},
+			{
+				"name": "spot_6_line_forward",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-30.6,
+						-28.975
+					],
+					[
+						-25.3,
+						-28.975
+					],
+					[
+						-25.3,
+						-28.465
+					],
+					[
+						-30.6,
+						-28.465
+					],
+					[
+						-30.6,
+						-28.975
+					]
+				]
+			},
+			{
+				"name": "spot_6_numeral",
+				"kind": "text",
+				"text": "6",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"centre": [
+					-33.33,
+					-28.72
+				],
+				"height": 1.3,
+				"width": 1.1,
+				"up": [
+					1.0,
+					0.0
+				]
+			},
+			{
+				"name": "spot_5_line_aft",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-14.8,
+						-28.965
+					],
+					[
+						-7.3,
+						-28.965
+					],
+					[
+						-7.3,
+						-28.455
+					],
+					[
+						-14.8,
+						-28.455
+					],
+					[
+						-14.8,
+						-28.965
+					]
+				]
+			},
+			{
+				"name": "spot_5_line_forward",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-2.5,
+						-28.965
+					],
+					[
+						1.3,
+						-28.965
+					],
+					[
+						1.3,
+						-28.455
+					],
+					[
+						-2.5,
+						-28.455
+					],
+					[
+						-2.5,
+						-28.965
+					]
+				]
+			},
+			{
+				"name": "spot_5_numeral",
+				"kind": "text",
+				"text": "5",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"centre": [
+					-4.66,
+					-28.71
+				],
+				"height": 1.3,
+				"width": 1.1,
+				"up": [
+					1.0,
+					0.0
+				]
+			},
+			{
+				"name": "spot_4_line_aft",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						16.0,
+						-29.005
+					],
+					[
+						21.4,
+						-29.005
+					],
+					[
+						21.4,
+						-28.495
+					],
+					[
+						16.0,
+						-28.495
+					],
+					[
+						16.0,
+						-29.005
+					]
+				]
+			},
+			{
+				"name": "spot_4_line_forward",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						26.7,
+						-29.005
+					],
+					[
+						33.2,
+						-29.005
+					],
+					[
+						33.2,
+						-28.495
+					],
+					[
+						26.7,
+						-28.495
+					],
+					[
+						26.7,
+						-29.005
+					]
+				]
+			},
+			{
+				"name": "spot_4_numeral",
+				"kind": "text",
+				"text": "4",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"centre": [
+					24.01,
+					-28.75
+				],
+				"height": 1.3,
+				"width": 1.1,
+				"up": [
+					1.0,
+					0.0
+				]
+			},
+			{
+				"name": "spot_3_line_aft",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						44.9,
+						-36.955
+					],
+					[
+						52.4,
+						-36.955
+					],
+					[
+						52.4,
+						-36.445
+					],
+					[
+						44.9,
+						-36.445
+					],
+					[
+						44.9,
+						-36.955
+					]
+				]
+			},
+			{
+				"name": "spot_3_line_forward",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						54.1,
+						-36.955
+					],
+					[
+						63.5,
+						-36.955
+					],
+					[
+						63.5,
+						-36.445
+					],
+					[
+						54.1,
+						-36.445
+					],
+					[
+						54.1,
+						-36.955
+					]
+				]
+			},
+			{
+				"name": "spot_3_numeral",
+				"kind": "text",
+				"text": "3",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"centre": [
+					53.25,
+					-36.7
+				],
+				"height": 1.3,
+				"width": 1.1,
+				"up": [
+					1.0,
+					0.0
+				]
+			},
+			{
+				"name": "spot_2_line_aft",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						108.6,
+						-10.705
+					],
+					[
+						116.9,
+						-10.705
+					],
+					[
+						116.9,
+						-10.195
+					],
+					[
+						108.6,
+						-10.195
+					],
+					[
+						108.6,
+						-10.705
+					]
+				]
+			},
+			{
+				"name": "spot_2_line_forward",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						121.6,
+						-10.705
+					],
+					[
+						124.3,
+						-10.705
+					],
+					[
+						124.3,
+						-10.195
+					],
+					[
+						121.6,
+						-10.195
+					],
+					[
+						121.6,
+						-10.705
+					]
+				]
+			},
+			{
+				"name": "spot_2_numeral",
+				"kind": "text",
+				"text": "2",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"centre": [
+					118.88,
+					-10.45
+				],
+				"height": 1.3,
+				"width": 1.1,
+				"up": [
+					1.0,
+					0.0
+				]
+			},
+			{
+				"name": "waist_cross_bar_1",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-44.175,
+						-37.6
+					],
+					[
+						-43.725,
+						-37.6
+					],
+					[
+						-43.725,
+						-22.5
+					],
+					[
+						-44.175,
+						-22.5
+					],
+					[
+						-44.175,
+						-37.6
+					]
+				]
+			},
+			{
+				"name": "waist_cross_bar_2",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-15.475,
+						-37.6
+					],
+					[
+						-15.025,
+						-37.6
+					],
+					[
+						-15.025,
+						-22.5
+					],
+					[
+						-15.475,
+						-22.5
+					],
+					[
+						-15.475,
+						-37.6
+					]
+				]
+			},
+			{
+				"name": "waist_cross_bar_3",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						13.195,
+						-37.6
+					],
+					[
+						13.645,
+						-37.6
+					],
+					[
+						13.645,
+						-22.5
+					],
+					[
+						13.195,
+						-22.5
+					],
+					[
+						13.195,
+						-37.6
+					]
+				]
+			},
+			{
+				"name": "waist_cross_bar_4",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						42.325,
+						-37.6
+					],
+					[
+						42.775,
+						-37.6
+					],
+					[
+						42.775,
+						-22.5
+					],
+					[
+						42.325,
+						-22.5
+					],
+					[
+						42.325,
+						-37.6
+					]
+				]
+			},
+			{
+				"name": "waist_square_1",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-17.28,
+						-31.09
+					],
+					[
+						-16.48,
+						-31.09
+					],
+					[
+						-16.48,
+						-30.29
+					],
+					[
+						-17.28,
+						-30.29
+					],
+					[
+						-17.28,
+						-31.09
+					]
+				]
+			},
+			{
+				"name": "waist_square_2",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.12,
+				"points": [
+					[
+						-17.28,
+						-28.39
+					],
+					[
+						-16.48,
+						-28.39
+					],
+					[
+						-16.48,
+						-27.59
+					],
+					[
+						-17.28,
+						-27.59
+					],
+					[
+						-17.28,
+						-28.39
+					]
+				]
+			},
+			{
+				"name": "wire_1_numeral_600",
+				"kind": "text",
+				"text": "600",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"centre": [
+					-107.72,
+					2.84
+				],
+				"height": 0.35,
+				"width": 0.7,
+				"up": [
+					0.0,
+					1.0
+				]
+			},
+			{
+				"name": "console_bow_surround",
+				"kind": "line",
+				"colour": [
+					150,
+					62,
+					62
+				],
+				"width": 0.4,
+				"points": [
+					[
+						68.85,
+						5.4
+					],
+					[
+						67.825,
+						7.175
+					],
+					[
+						65.775,
+						7.175
+					],
+					[
+						64.75,
+						5.4
+					],
+					[
+						65.775,
+						3.625
+					],
+					[
+						67.825,
+						3.625
+					],
+					[
+						68.85,
+						5.4
+					]
+				]
+			},
+			{
+				"name": "console_bow_surround_stripes",
+				"kind": "line",
+				"colour": [
+					210,
+					162,
+					62
+				],
+				"width": 0.4,
+				"points": [
+					[
+						68.85,
+						5.4
+					],
+					[
+						67.825,
+						7.175
+					],
+					[
+						65.775,
+						7.175
+					],
+					[
+						64.75,
+						5.4
+					],
+					[
+						65.775,
+						3.625
+					],
+					[
+						67.825,
+						3.625
+					],
+					[
+						68.85,
+						5.4
+					]
+				],
+				"dash": [
+					0.3,
+					0.3
+				]
+			},
+			{
+				"name": "bow_cross_line",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.25,
+				"points": [
+					[
+						108.0,
+						-19.3
+					],
+					[
+						108.0,
+						-2.3
+					]
+				]
+			},
+			{
+				"name": "bow_disc",
+				"kind": "circle",
+				"centre": [
+					143.8,
+					-1.7
+				],
+				"radius": 0.5,
+				"fill": true,
+				"colour": [
+					222,
+					222,
+					216
+				]
+			},
+			{
+				"name": "starboard_quarter_cross_line",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.25,
+				"points": [
+					[
+						-132.0,
+						23.7
+					],
+					[
+						-132.0,
+						36.2
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_port_waist",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						-59.077,
+						-36.536
+					],
+					[
+						10.823,
+						-36.511
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_port_fwd_sponson",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						30.131,
+						-41.765
+					],
+					[
+						56.133,
+						-41.97
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_port_bowdiag",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						59.366,
+						-40.829
+					],
+					[
+						85.173,
+						-21.739
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_port_bow",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						95.028,
+						-18.507
+					],
+					[
+						166.748,
+						-12.154
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_stbd_bow",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						165.253,
+						12.173
+					],
+					[
+						110.075,
+						17.128
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_stbd_mid",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						-2.286,
+						36.012
+					],
+					[
+						-51.586,
+						35.975
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_stbd_fwd",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						69.423,
+						36.274
+					],
+					[
+						24.322,
+						35.987
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_stbd_aft",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						-77.024,
+						36.368
+					],
+					[
+						-109.123,
+						36.211
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_stbd_aft2",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						-108.618,
+						36.003
+					],
+					[
+						-150.317,
+						36.404
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_port_e3_fwd",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						-94.877,
+						-38.38
+					],
+					[
+						-83.308,
+						-41.622
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_port_mid",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						-83.744,
+						-39.48
+					],
+					[
+						-65.544,
+						-39.486
+					]
+				]
+			},
+			{
+				"name": "deck_edge_line_port_mid2",
+				"kind": "line",
+				"colour": [
+					222,
+					222,
+					216
+				],
+				"width": 0.46,
+				"points": [
+					[
+						-66.618,
+						-39.661
+					],
+					[
+						-58.377,
+						-36.299
+					]
+				]
 			}
 		],
 		"hull": {
@@ -2022,43 +5508,79 @@
 					],
 					[
 						-0.96,
-						10.42
+						9.0
 					],
 					[
-						-0.82,
-						12.55
+						-0.6,
+						10.8
 					],
 					[
-						-0.69,
-						13.65
-					],
-					[
-						-0.55,
-						14.35
-					],
-					[
-						-0.41,
-						14.74
-					],
-					[
-						-0.27,
-						14.93
-					],
-					[
-						-0.14,
-						14.99
+						-0.2,
+						11.8
 					],
 					[
 						0.0,
-						15.0
+						12.1
 					],
 					[
-						1.25,
-						15.0
+						0.46,
+						12.46
 					],
 					[
-						5.25,
-						15.0
+						0.73,
+						12.96
+					],
+					[
+						1.0,
+						13.19
+					],
+					[
+						1.27,
+						13.49
+					],
+					[
+						1.54,
+						13.8
+					],
+					[
+						1.91,
+						14.07
+					],
+					[
+						2.09,
+						14.25
+					],
+					[
+						2.53,
+						14.53
+					],
+					[
+						2.65,
+						14.63
+					],
+					[
+						3.14,
+						14.83
+					],
+					[
+						3.22,
+						14.93
+					],
+					[
+						3.76,
+						15.12
+					],
+					[
+						4.36,
+						15.3
+					],
+					[
+						4.96,
+						15.48
+					],
+					[
+						5.59,
+						16.03
 					]
 				]
 			},
@@ -2890,16 +6412,24 @@
 							6.27
 						],
 						[
-							10.33,
-							8.1
+							8.6,
+							7.4
 						],
 						[
-							13.11,
-							10.28
+							10.0,
+							8.7
 						],
 						[
-							15.89,
-							12.74
+							13.25,
+							12.3
+						],
+						[
+							14.0,
+							12.8
+						],
+						[
+							16.7,
+							14.56
 						],
 						[
 							18.66,
@@ -2959,16 +6489,24 @@
 							4.42
 						],
 						[
-							10.33,
-							6.44
+							8.6,
+							7.4
 						],
 						[
-							13.11,
-							8.84
+							10.0,
+							8.7
 						],
 						[
-							15.89,
-							11.56
+							13.25,
+							12.3
+						],
+						[
+							14.0,
+							12.8
+						],
+						[
+							16.7,
+							14.56
 						],
 						[
 							18.66,
@@ -3028,16 +6566,24 @@
 							3.33
 						],
 						[
-							10.33,
-							5.48
+							8.6,
+							7.4
 						],
 						[
-							13.11,
-							8.03
+							10.0,
+							8.7
 						],
 						[
-							15.89,
-							10.92
+							13.3,
+							11.5
+						],
+						[
+							14.0,
+							12.0
+						],
+						[
+							16.7,
+							14.11
 						],
 						[
 							18.66,
@@ -3076,128 +6622,88 @@
 					-1.7
 				],
 				[
-					153.0374370973958,
+					153.81,
 					0.0
 				],
 				[
-					153.32,
-					1.12
+					153.92,
+					1.0
 				],
 				[
-					153.46,
-					2.24
+					154.16,
+					2.0
 				],
 				[
-					153.62,
-					2.79
+					154.39,
+					3.0
 				],
 				[
-					153.69,
-					3.35
+					154.76,
+					4.0
 				],
 				[
-					153.84,
-					3.91
+					155.25,
+					5.0
 				],
 				[
-					154.03,
-					4.47
+					155.88,
+					6.0
 				],
 				[
-					154.27,
-					5.03
+					156.11,
+					7.0
 				],
 				[
-					154.56,
-					5.59
+					156.21,
+					7.62
 				],
 				[
-					154.9,
-					6.14
+					156.73,
+					8.0
 				],
 				[
-					155.26,
-					6.7
+					158.03,
+					9.0
 				],
 				[
-					155.7,
-					7.26
+					159.32,
+					10.0
 				],
 				[
-					156.19,
-					7.82
+					160.61,
+					11.0
 				],
 				[
-					156.29,
-					8.38
+					161.91,
+					12.0
 				],
 				[
-					157.07,
-					8.93
+					163.2,
+					13.0
 				],
 				[
-					157.76,
-					9.49
+					164.5,
+					14.0
 				],
 				[
-					158.55,
-					10.05
+					165.79,
+					15.0
 				],
 				[
-					159.19,
-					10.61
-				],
-				[
-					160.17,
-					11.17
-				],
-				[
-					160.94,
-					11.73
-				],
-				[
-					161.8,
-					12.29
-				],
-				[
-					162.57,
-					12.85
-				],
-				[
-					163.09,
-					13.41
-				],
-				[
-					163.96,
-					13.98
-				],
-				[
-					164.53,
-					14.54
-				],
-				[
-					165.36,
-					15.1
-				],
-				[
-					166.04,
-					15.67
+					166.23,
+					15.48
 				],
 				[
 					166.2,
-					16.24
+					16.0
 				],
 				[
 					166.2,
-					16.8
+					17.0
 				],
 				[
 					166.2,
-					17.37
-				],
-				[
-					166.2,
-					17.94
+					17.27
 				],
 				[
 					166.2,
@@ -3273,142 +6779,142 @@
 					],
 					[
 						-81.91,
-						5.05,
+						4.6,
 						-19.73
 					],
 					[
 						-78.08,
-						5.74,
+						4.6,
 						-19.84
 					],
 					[
 						-74.24,
-						5.89,
+						4.6,
 						-19.97
 					],
 					[
 						-70.38,
-						5.89,
+						4.6,
 						-19.92
 					],
 					[
 						-66.49,
-						5.89,
+						4.6,
 						-20.06
 					],
 					[
 						-62.59,
-						5.87,
+						4.6,
 						-20.15
 					],
 					[
 						-58.68,
-						5.88,
+						4.6,
 						-20.23
 					],
 					[
 						-54.74,
-						5.88,
+						4.6,
 						-20.36
 					],
 					[
 						-50.78,
-						5.62,
+						4.6,
 						-20.39
 					],
 					[
 						-46.81,
-						5.18,
+						4.6,
 						-20.36
 					],
 					[
 						-42.82,
-						4.44,
+						4.6,
 						-20.37
 					],
 					[
 						-38.8,
-						4.43,
+						4.6,
 						-20.43
 					],
 					[
 						-34.76,
-						4.37,
+						4.6,
 						-20.54
 					],
 					[
 						-30.7,
-						5.1,
+						4.6,
 						-20.46
 					],
 					[
 						-26.62,
-						5.08,
+						4.6,
 						-20.4
 					],
 					[
 						-22.51,
-						5.1,
+						4.6,
 						-20.44
 					],
 					[
 						-18.4,
-						4.06,
+						4.6,
 						-20.51
 					],
 					[
 						-1.68,
-						5.8,
+						4.6,
 						-20.54
 					],
 					[
 						2.55,
-						5.88,
+						4.6,
 						-20.53
 					],
 					[
 						6.81,
-						5.84,
+						4.6,
 						-20.51
 					],
 					[
 						11.08,
-						5.8,
+						4.6,
 						-20.44
 					],
 					[
 						32.82,
-						4.86,
+						4.6,
 						-19.44
 					],
 					[
 						37.23,
-						3.87,
+						4.6,
 						-19.14
 					],
 					[
 						41.67,
-						3.75,
+						4.6,
 						-18.88
 					],
 					[
 						46.15,
-						4.73,
+						4.6,
 						-18.5
 					],
 					[
 						50.64,
-						4.5,
+						4.6,
 						-18.05
 					],
 					[
 						55.16,
-						4.52,
+						4.6,
 						-17.66
 					],
 					[
 						59.71,
-						4.36,
+						4.6,
 						-16.94
 					],
 					[
@@ -3428,38 +6934,43 @@
 					],
 					[
 						97.04,
-						5.9,
+						6.85,
 						-10.83
 					],
 					[
 						101.83,
-						5.38,
+						7.24,
 						-10.05
 					],
 					[
-						105,
-						16.7,
-						-0.0
+						110,
+						7.9,
+						0.0
 					],
 					[
 						120,
-						16.7,
-						-0.0
+						7.9,
+						0.0
 					],
 					[
 						135,
-						16.7,
-						-0.0
+						7.9,
+						0.0
 					],
 					[
 						150,
-						16.7,
-						-0.0
+						7.9,
+						0.0
+					],
+					[
+						156.21,
+						7.9,
+						0.0
 					],
 					[
 						166.29,
-						16.7,
-						-0.0
+						7.9,
+						0.0
 					]
 				],
 				"starboard": [
@@ -3610,7 +7121,7 @@
 					],
 					[
 						-18.4,
-						4.06,
+						4.6,
 						20.51
 					],
 					[
@@ -3640,12 +7151,12 @@
 					],
 					[
 						37.23,
-						3.87,
+						4.6,
 						19.14
 					],
 					[
 						41.67,
-						3.75,
+						4.6,
 						18.88
 					],
 					[
@@ -3685,37 +7196,42 @@
 					],
 					[
 						97.04,
-						5.9,
+						6.85,
 						10.83
 					],
 					[
 						101.83,
-						5.38,
+						7.24,
 						10.05
 					],
 					[
-						105,
-						16.7,
+						110,
+						7.9,
 						0.0
 					],
 					[
 						120,
-						16.7,
+						7.9,
 						0.0
 					],
 					[
 						135,
-						16.7,
+						7.9,
 						0.0
 					],
 					[
 						150,
-						16.7,
+						7.9,
+						0.0
+					],
+					[
+						156.21,
+						7.9,
 						0.0
 					],
 					[
 						166.29,
-						16.7,
+						7.9,
 						0.0
 					]
 				]
@@ -3981,8 +7497,16 @@
 						2.19
 					],
 					[
-						65.43,
-						2.22
+						59.5,
+						2.81
+					],
+					[
+						67.92,
+						2.81
+					],
+					[
+						89.91,
+						2.71
 					],
 					[
 						93.11,
@@ -4031,6 +7555,122 @@
 				"length": 12.0,
 				"width": 5.46,
 				"height": 9.0
+			},
+			"screws": {
+				"lateral": [
+					6.0,
+					13.0
+				],
+				"diameter": 6.4
+			},
+			"face": {
+				"bottom": [
+					7.62,
+					2.02
+				],
+				"top": [
+					15.48,
+					12.81
+				],
+				"bullnose": 13.01
+			},
+			"flare": {
+				"port": [
+					[
+						[
+							89.91,
+							14.56,
+							-20.77
+						],
+						[
+							63.71,
+							4.92,
+							-17.37
+						]
+					],
+					[
+						[
+							67.92,
+							14.46,
+							-34.95
+						],
+						[
+							61.75,
+							7.32,
+							-23.77
+						],
+						[
+							63.71,
+							4.92,
+							-17.37
+						]
+					],
+					[
+						[
+							67.92,
+							14.46,
+							-34.95
+						],
+						[
+							34.28,
+							4.96,
+							-20.28
+						]
+					]
+				]
+			},
+			"walls": {
+				"port": [
+					{
+						"wall": [
+							[
+								-138.75,
+								-33.35
+							],
+							[
+								-118.7,
+								-33.2
+							]
+						],
+						"foot": 9.8
+					},
+					{
+						"wall": [
+							[
+								-15.0,
+								-36.9
+							],
+							[
+								20.7,
+								-36.9
+							]
+						],
+						"foot": 12.2
+					}
+				],
+				"starboard": [
+					{
+						"wall": [
+							[
+								-151.3,
+								36.65
+							],
+							[
+								-135.0,
+								36.65
+							]
+						],
+						"foot": 9.4
+					}
+				]
+			},
+			"antifouling": {
+				"top": -2.8,
+				"colour": [
+					105,
+					64,
+					57
+				]
 			}
 		},
 		"island": {
@@ -4434,8 +8074,8 @@
 				},
 				{
 					"name": "mast_platform_lower",
-					"bottom": 45.87,
-					"top": 46.37,
+					"bottom": 45.95,
+					"top": 46.65,
 					"outline": [
 						[
 							-93.0,
@@ -4457,8 +8097,8 @@
 				},
 				{
 					"name": "mast_yardarm_lower",
-					"bottom": 45.87,
-					"top": 46.37,
+					"bottom": 45.95,
+					"top": 46.65,
 					"outline": [
 						[
 							-90.8,
@@ -4526,15 +8166,15 @@
 				},
 				{
 					"name": "gaff",
-					"bottom": 56.07,
-					"top": 56.47,
+					"bottom": 55.4,
+					"top": 55.85,
 					"outline": [
 						[
-							-100.9,
+							-101.5,
 							30.2
 						],
 						[
-							-100.9,
+							-101.5,
 							30.8
 						],
 						[
@@ -4662,16 +8302,6 @@
 			],
 			"poles": [
 				{
-					"name": "mast_trunk",
-					"base": [
-						-91.0,
-						30.4
-					],
-					"bottom": 40.77,
-					"top": 53.87,
-					"radius": 2.0
-				},
-				{
 					"name": "pole",
 					"base": [
 						-94.56,
@@ -4680,28 +8310,4479 @@
 					"bottom": 56.57,
 					"top": 63.57,
 					"radius": 0.5
+				}
+			],
+			"windows": [
+				{
+					"name": "bridge_forward",
+					"plane": "x=-80.85",
+					"z": [
+						20.8,
+						35.6
+					],
+					"y": [
+						32.25,
+						33.2
+					]
 				},
 				{
-					"name": "pole_disc_lower",
-					"base": [
-						-94.56,
-						30.64
+					"name": "bridge_port",
+					"plane": "z=19.8",
+					"x": [
+						-92.5,
+						-82.3
 					],
-					"bottom": 61.27,
-					"top": 61.67,
-					"radius": 1.55
+					"y": [
+						32.25,
+						33.2
+					]
 				},
 				{
-					"name": "pole_disc_upper",
-					"base": [
-						-94.56,
-						30.64
+					"name": "primary_flight_control_forward",
+					"plane": "x=-81.5",
+					"z": [
+						21.0,
+						27.0
 					],
-					"bottom": 63.07,
-					"top": 63.37,
-					"radius": 0.95
+					"y": [
+						35.05,
+						35.9
+					]
+				},
+				{
+					"name": "primary_flight_control_port",
+					"plane": "z=19.8",
+					"x": [
+						-94.75,
+						-82.3
+					],
+					"y": [
+						35.05,
+						35.8
+					]
+				}
+			],
+			"panels": [
+				{
+					"name": "radar_large_1",
+					"corners": [
+						[
+							-100.84,
+							29.334,
+							32.441
+						],
+						[
+							-98.592,
+							29.346,
+							34.314
+						],
+						[
+							-98.009,
+							33.311,
+							34.065
+						],
+						[
+							-100.59,
+							33.159,
+							31.628
+						]
+					]
+				},
+				{
+					"name": "radar_large_2",
+					"plane": "z=24.0",
+					"x": [
+						-101.5,
+						-97.1
+					],
+					"y": [
+						29.4,
+						33.5
+					]
+				},
+				{
+					"name": "radar_large_3",
+					"plane": "x=-79.6",
+					"z": [
+						26.9,
+						30.7
+					],
+					"y": [
+						26.4,
+						30.2
+					]
+				},
+				{
+					"name": "radar_small_1",
+					"line": [
+						[
+							-96.5,
+							24.0
+						],
+						[
+							-99.05,
+							29.0
+						]
+					],
+					"along": [
+						1.2,
+						3.5
+					],
+					"y": [
+						37.1,
+						39.6
+					]
+				},
+				{
+					"name": "radar_small_2",
+					"line": [
+						[
+							-99.05,
+							29.0
+						],
+						[
+							-97.0,
+							33.5
+						]
+					],
+					"along": [
+						1.8,
+						3.5
+					],
+					"y": [
+						37.4,
+						40.0
+					]
+				},
+				{
+					"name": "radar_small_3",
+					"plane": "x=-81.9",
+					"z": [
+						29.6,
+						31.0
+					],
+					"y": [
+						37.6,
+						39.7
+					]
+				}
+			],
+			"details": [
+				{
+					"name": "mast_trunk",
+					"kind": "prism",
+					"outline": [
+						[
+							-91.7,
+							29.87
+						],
+						[
+							-91.7,
+							31.13
+						],
+						[
+							-91.28,
+							31.55
+						],
+						[
+							-89.52,
+							31.55
+						],
+						[
+							-89.1,
+							31.13
+						],
+						[
+							-89.1,
+							29.87
+						],
+						[
+							-89.52,
+							29.45
+						],
+						[
+							-91.28,
+							29.45
+						]
+					],
+					"bottom": 40.77,
+					"top": 53.87
+				},
+				{
+					"name": "mast_ring_upper",
+					"kind": "cylinder",
+					"base": [
+						-90.2,
+						52.0,
+						30.5
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 1.25,
+					"radius": 2.0
+				},
+				{
+					"name": "mast_platform_middle",
+					"kind": "prism",
+					"outline": [
+						[
+							-93.5,
+							29.6
+						],
+						[
+							-93.5,
+							31.4
+						],
+						[
+							-92.0,
+							32.6
+						],
+						[
+							-88.2,
+							32.6
+						],
+						[
+							-86.7,
+							31.4
+						],
+						[
+							-86.7,
+							29.6
+						],
+						[
+							-88.2,
+							28.4
+						],
+						[
+							-92.0,
+							28.4
+						]
+					],
+					"bottom": 50.2,
+					"top": 50.6
+				},
+				{
+					"name": "mast_platform_middle_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-93.5,
+							50.6,
+							29.6
+						],
+						[
+							-93.5,
+							50.6,
+							31.4
+						],
+						[
+							-92.0,
+							50.6,
+							32.6
+						],
+						[
+							-88.2,
+							50.6,
+							32.6
+						],
+						[
+							-86.7,
+							50.6,
+							31.4
+						],
+						[
+							-86.7,
+							50.6,
+							29.6
+						],
+						[
+							-88.2,
+							50.6,
+							28.4
+						],
+						[
+							-92.0,
+							50.6,
+							28.4
+						],
+						[
+							-93.5,
+							50.6,
+							29.6
+						]
+					],
+					"height": 1.1
+				},
+				{
+					"name": "mast_platform_middle_drum",
+					"kind": "cylinder",
+					"base": [
+						-87.75,
+						50.6,
+						30.75
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 1.1,
+					"radius": 0.55
+				},
+				{
+					"name": "mast_ring_lower",
+					"kind": "cylinder",
+					"base": [
+						-90.2,
+						48.0,
+						30.5
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 1.2,
+					"radius": 2.0
+				},
+				{
+					"name": "mast_yardarm_lower_railing_starboard_forward",
+					"kind": "railing",
+					"path": [
+						[
+							-88.65,
+							46.65,
+							31.6
+						],
+						[
+							-88.65,
+							46.65,
+							41.2
+						]
+					],
+					"height": 1.0
+				},
+				{
+					"name": "mast_yardarm_lower_railing_starboard_aft",
+					"kind": "railing",
+					"path": [
+						[
+							-90.75,
+							46.65,
+							31.6
+						],
+						[
+							-90.75,
+							46.65,
+							41.2
+						]
+					],
+					"height": 1.0
+				},
+				{
+					"name": "mast_yardarm_lower_railing_port_forward",
+					"kind": "railing",
+					"path": [
+						[
+							-88.65,
+							46.65,
+							17.6
+						],
+						[
+							-88.65,
+							46.65,
+							29.4
+						]
+					],
+					"height": 1.0
+				},
+				{
+					"name": "mast_yardarm_lower_railing_port_aft",
+					"kind": "railing",
+					"path": [
+						[
+							-90.75,
+							46.65,
+							17.6
+						],
+						[
+							-90.75,
+							46.65,
+							29.4
+						]
+					],
+					"height": 1.0
+				},
+				{
+					"name": "nav_radar_starboard_post",
+					"kind": "box",
+					"centre": [
+						-89.7,
+						47.42,
+						36.59
+					],
+					"size": [
+						0.2,
+						1.55,
+						0.2
+					]
+				},
+				{
+					"name": "nav_radar_starboard_antenna",
+					"kind": "box",
+					"centre": [
+						-89.7,
+						48.35,
+						36.59
+					],
+					"size": [
+						2.4,
+						0.3,
+						0.2
+					]
+				},
+				{
+					"name": "nav_radar_port_post",
+					"kind": "box",
+					"centre": [
+						-89.7,
+						47.33,
+						26.71
+					],
+					"size": [
+						0.2,
+						1.35,
+						0.2
+					]
+				},
+				{
+					"name": "nav_radar_port_antenna",
+					"kind": "box",
+					"centre": [
+						-89.7,
+						48.2,
+						26.71
+					],
+					"size": [
+						2.4,
+						0.3,
+						0.2
+					]
+				},
+				{
+					"name": "loudspeaker_1",
+					"kind": "cylinder",
+					"base": [
+						-88.5,
+						47.0,
+						32.22
+					],
+					"axis": [
+						1,
+						0,
+						0
+					],
+					"length": 0.7,
+					"radius": 0.3
+				},
+				{
+					"name": "loudspeaker_2",
+					"kind": "cylinder",
+					"base": [
+						-88.5,
+						47.0,
+						28.77
+					],
+					"axis": [
+						1,
+						0,
+						0
+					],
+					"length": 0.7,
+					"radius": 0.3
+				},
+				{
+					"name": "mast_yardarm_lower_antenna_cluster_starboard",
+					"kind": "box",
+					"centre": [
+						-89.7,
+						47.58,
+						38.21
+					],
+					"size": [
+						0.3,
+						1.85,
+						0.5
+					]
+				},
+				{
+					"name": "mast_yardarm_lower_antenna_cluster_port",
+					"kind": "box",
+					"centre": [
+						-89.7,
+						47.58,
+						22.37
+					],
+					"size": [
+						0.3,
+						1.85,
+						0.5
+					]
+				},
+				{
+					"name": "mast_yardarm_lower_brace_starboard",
+					"kind": "cylinder",
+					"base": [
+						-89.7,
+						45.5,
+						37.16
+					],
+					"end": [
+						-89.7,
+						42.67,
+						32.36
+					],
+					"radius": 0.18
+				},
+				{
+					"name": "mast_yardarm_lower_brace_port",
+					"kind": "cylinder",
+					"base": [
+						-89.7,
+						45.41,
+						21.53
+					],
+					"end": [
+						-89.7,
+						42.97,
+						27.78
+					],
+					"radius": 0.18
+				},
+				{
+					"name": "mast_yardarm_upper_railing_starboard_forward",
+					"kind": "railing",
+					"path": [
+						[
+							-89.05,
+							55.1,
+							31.8
+						],
+						[
+							-89.05,
+							55.1,
+							40.15
+						]
+					],
+					"height": 1.0
+				},
+				{
+					"name": "mast_yardarm_upper_railing_starboard_aft",
+					"kind": "railing",
+					"path": [
+						[
+							-91.15,
+							55.1,
+							31.8
+						],
+						[
+							-91.15,
+							55.1,
+							40.15
+						]
+					],
+					"height": 1.0
+				},
+				{
+					"name": "mast_yardarm_upper_railing_port_forward",
+					"kind": "railing",
+					"path": [
+						[
+							-89.05,
+							55.1,
+							20.69
+						],
+						[
+							-89.05,
+							55.1,
+							29.2
+						]
+					],
+					"height": 1.0
+				},
+				{
+					"name": "mast_yardarm_upper_railing_port_aft",
+					"kind": "railing",
+					"path": [
+						[
+							-91.15,
+							55.1,
+							20.69
+						],
+						[
+							-91.15,
+							55.1,
+							29.2
+						]
+					],
+					"height": 1.0
+				},
+				{
+					"name": "mast_yardarm_upper_whip_starboard_tip",
+					"kind": "cylinder",
+					"base": [
+						-90.1,
+						55.1,
+						40.48
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 2.12,
+					"radius": 0.03
+				},
+				{
+					"name": "mast_yardarm_upper_whip_starboard_inner",
+					"kind": "cylinder",
+					"base": [
+						-90.1,
+						55.1,
+						38.32
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 1.87,
+					"radius": 0.03
+				},
+				{
+					"name": "mast_yardarm_upper_whip_port_inner",
+					"kind": "cylinder",
+					"base": [
+						-90.1,
+						55.1,
+						22.57
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 1.61,
+					"radius": 0.03
+				},
+				{
+					"name": "mast_yardarm_upper_whip_port_tip",
+					"kind": "cylinder",
+					"base": [
+						-90.1,
+						55.1,
+						20.78
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 2.04,
+					"radius": 0.03
+				},
+				{
+					"name": "mast_yardarm_upper_antenna_cluster_starboard",
+					"kind": "box",
+					"centre": [
+						-90.1,
+						55.92,
+						39.08
+					],
+					"size": [
+						0.3,
+						1.65,
+						0.5
+					]
+				},
+				{
+					"name": "mast_yardarm_upper_antenna_cluster_port",
+					"kind": "box",
+					"centre": [
+						-90.1,
+						55.8,
+						21.55
+					],
+					"size": [
+						0.3,
+						1.4,
+						0.5
+					]
+				},
+				{
+					"name": "mast_yardarm_upper_brace_starboard",
+					"kind": "cylinder",
+					"base": [
+						-90.1,
+						54.27,
+						35.1
+					],
+					"end": [
+						-90.1,
+						53.23,
+						31.45
+					],
+					"radius": 0.15
+				},
+				{
+					"name": "mast_yardarm_upper_brace_port",
+					"kind": "cylinder",
+					"base": [
+						-90.1,
+						54.09,
+						25.36
+					],
+					"end": [
+						-90.1,
+						53.32,
+						29.3
+					],
+					"radius": 0.15
+				},
+				{
+					"name": "mast_house_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-94.2,
+							56.57,
+							28.0
+						],
+						[
+							-94.2,
+							56.57,
+							33.6
+						],
+						[
+							-86.0,
+							56.57,
+							33.6
+						],
+						[
+							-86.0,
+							56.57,
+							28.0
+						],
+						[
+							-94.2,
+							56.57,
+							28.0
+						]
+					],
+					"height": 1.0
+				},
+				{
+					"name": "mast_house_box_antenna",
+					"kind": "box",
+					"centre": [
+						-87.0,
+						57.55,
+						32.13
+					],
+					"size": [
+						1.0,
+						0.9,
+						0.98
+					]
+				},
+				{
+					"name": "mast_house_gps",
+					"kind": "cylinder",
+					"base": [
+						-87.0,
+						56.57,
+						29.75
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 1.43,
+					"radius": 0.12
+				},
+				{
+					"name": "masthead_platform",
+					"kind": "box",
+					"centre": [
+						-94.75,
+						61.6,
+						30.57
+					],
+					"size": [
+						2.9,
+						0.3,
+						2.65
+					]
+				},
+				{
+					"name": "masthead_platform_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-96.2,
+							61.75,
+							29.25
+						],
+						[
+							-96.2,
+							61.75,
+							31.9
+						],
+						[
+							-93.3,
+							61.75,
+							31.9
+						],
+						[
+							-93.3,
+							61.75,
+							29.25
+						],
+						[
+							-96.2,
+							61.75,
+							29.25
+						]
+					],
+					"height": 0.8
+				},
+				{
+					"name": "masthead_radar_pedestal",
+					"kind": "cylinder",
+					"base": [
+						-94.55,
+						61.75,
+						30.7
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 1.15,
+					"radius": 0.53
+				},
+				{
+					"name": "masthead_radar_antenna",
+					"kind": "box",
+					"centre": [
+						-94.55,
+						63.27,
+						30.7
+					],
+					"size": [
+						1.46,
+						0.25,
+						1.36
+					]
+				},
+				{
+					"name": "masthead_whip",
+					"kind": "cylinder",
+					"base": [
+						-93.7,
+						61.75,
+						30.8
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 2.82,
+					"radius": 0.03
+				},
+				{
+					"name": "masthead_pole_ladder",
+					"kind": "box",
+					"centre": [
+						-95.3,
+						59.03,
+						30.65
+					],
+					"size": [
+						0.2,
+						4.85,
+						0.5
+					]
+				},
+				{
+					"name": "gaff_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-95.6,
+							55.85,
+							30.2
+						],
+						[
+							-101.5,
+							55.85,
+							30.2
+						]
+					],
+					"height": 0.85
+				},
+				{
+					"name": "balcony_port_level_two",
+					"kind": "box",
+					"centre": [
+						-83.75,
+						25.650000000000002,
+						19.45
+					],
+					"size": [
+						9.1,
+						0.3,
+						1.1
+					]
+				},
+				{
+					"name": "balcony_port_level_two_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-88.3,
+							25.8,
+							18.9
+						],
+						[
+							-79.2,
+							25.8,
+							18.9
+						]
+					],
+					"height": 1.13
+				},
+				{
+					"name": "balcony_port_level_three",
+					"kind": "box",
+					"centre": [
+						-84.15,
+						28.3,
+						19.45
+					],
+					"size": [
+						8.3,
+						0.3,
+						1.1
+					]
+				},
+				{
+					"name": "balcony_port_level_three_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-88.3,
+							28.45,
+							18.9
+						],
+						[
+							-80.0,
+							28.45,
+							18.9
+						]
+					],
+					"height": 1.06
+				},
+				{
+					"name": "balcony_port_bridge",
+					"kind": "box",
+					"centre": [
+						-84.57,
+						30.650000000000002,
+						19.45
+					],
+					"size": [
+						7.45,
+						0.3,
+						1.1
+					]
+				},
+				{
+					"name": "balcony_port_bridge_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-88.3,
+							30.8,
+							18.9
+						],
+						[
+							-80.85,
+							30.8,
+							18.9
+						]
+					],
+					"height": 1.2
+				},
+				{
+					"name": "balcony_port_flight_control",
+					"kind": "box",
+					"centre": [
+						-84.9,
+						33.65,
+						19.45
+					],
+					"size": [
+						6.8,
+						0.3,
+						1.1
+					]
+				},
+				{
+					"name": "balcony_port_flight_control_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-88.3,
+							33.8,
+							18.9
+						],
+						[
+							-81.5,
+							33.8,
+							18.9
+						]
+					],
+					"height": 1.15
+				},
+				{
+					"name": "balcony_forward_bridge",
+					"kind": "box",
+					"centre": [
+						-80.35,
+						30.7,
+						29.75
+					],
+					"size": [
+						1.0,
+						0.3,
+						19.7
+					]
+				},
+				{
+					"name": "balcony_forward_bridge_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-79.85,
+							30.85,
+							19.9
+						],
+						[
+							-79.85,
+							30.85,
+							39.6
+						]
+					],
+					"height": 1.2
+				},
+				{
+					"name": "balcony_forward_flight_control",
+					"kind": "box",
+					"centre": [
+						-81.0,
+						33.9,
+						23.2
+					],
+					"size": [
+						1.0,
+						0.3,
+						7.0
+					]
+				},
+				{
+					"name": "balcony_forward_flight_control_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-80.5,
+							34.0,
+							19.7
+						],
+						[
+							-80.5,
+							34.0,
+							26.7
+						]
+					],
+					"height": 0.8
+				},
+				{
+					"name": "platform_starboard_under_wing",
+					"kind": "box",
+					"centre": [
+						-83.7,
+						29.85,
+						33.85
+					],
+					"size": [
+						1.7,
+						0.3,
+						2.5
+					]
+				},
+				{
+					"name": "platform_starboard_under_wing_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-82.85,
+							30.0,
+							32.6
+						],
+						[
+							-82.85,
+							30.0,
+							35.1
+						]
+					],
+					"height": 1.1
+				},
+				{
+					"name": "antenna_logperiodic_starboard_1",
+					"kind": "cylinder",
+					"base": [
+						-83.0,
+						30.5,
+						36.4
+					],
+					"end": [
+						-83.0,
+						30.5,
+						37.9
+					],
+					"radius": 0.05
+				},
+				{
+					"name": "antenna_logperiodic_starboard_2",
+					"kind": "cylinder",
+					"base": [
+						-83.0,
+						28.95,
+						36.4
+					],
+					"end": [
+						-83.0,
+						28.95,
+						37.9
+					],
+					"radius": 0.05
+				},
+				{
+					"name": "antenna_logperiodic_starboard_3",
+					"kind": "cylinder",
+					"base": [
+						-83.0,
+						28.3,
+						36.4
+					],
+					"end": [
+						-83.0,
+						28.3,
+						37.9
+					],
+					"radius": 0.05
+				},
+				{
+					"name": "antenna_logperiodic_starboard_4",
+					"kind": "cylinder",
+					"base": [
+						-83.0,
+						27.5,
+						36.4
+					],
+					"end": [
+						-83.0,
+						27.5,
+						37.9
+					],
+					"radius": 0.05
+				},
+				{
+					"name": "aft_dish_1",
+					"kind": "dish",
+					"centre": [
+						-105.24,
+						28.68,
+						24.3
+					],
+					"diameter": 1.1,
+					"facing": [
+						-1,
+						0,
+						0
+					]
+				},
+				{
+					"name": "aft_dish_1_bracket",
+					"kind": "box",
+					"centre": [
+						-103.72,
+						27.25,
+						24.3
+					],
+					"size": [
+						4.55,
+						0.3,
+						2.0
+					]
+				},
+				{
+					"name": "aft_dish_1_pedestal",
+					"kind": "cylinder",
+					"base": [
+						-105.04,
+						27.4,
+						24.3
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 0.88,
+					"radius": 0.25
+				},
+				{
+					"name": "aft_dish_2",
+					"kind": "dish",
+					"centre": [
+						-105.31,
+						25.93,
+						23.48
+					],
+					"diameter": 1.1,
+					"facing": [
+						-1,
+						0,
+						0
+					]
+				},
+				{
+					"name": "aft_dish_2_bracket",
+					"kind": "box",
+					"centre": [
+						-103.72,
+						24.45,
+						23.48
+					],
+					"size": [
+						4.55,
+						0.3,
+						2.0
+					]
+				},
+				{
+					"name": "aft_dish_2_pedestal",
+					"kind": "cylinder",
+					"base": [
+						-105.11,
+						24.6,
+						23.48
+					],
+					"axis": [
+						0,
+						1,
+						0
+					],
+					"length": 0.93,
+					"radius": 0.25
+				},
+				{
+					"name": "ladder_port_base",
+					"kind": "box",
+					"centre": [
+						-92.25,
+						26.8,
+						23.95
+					],
+					"size": [
+						0.5,
+						2.8,
+						0.2
+					]
+				},
+				{
+					"name": "gaff_railing",
+					"kind": "railing",
+					"path": [
+						[
+							-95.6,
+							55.85,
+							30.2
+						],
+						[
+							-101.5,
+							55.85,
+							30.2
+						]
+					],
+					"height": 0.85
 				}
 			]
-		}
+		},
+		"lens": {
+			"position": [
+				-11.499,
+				18.915,
+				-41.214
+			],
+			"facing": [
+				-0.982,
+				0.0,
+				0.188
+			],
+			"cells": 12,
+			"pitch": 0.165,
+			"lights": {
+				"datum": [
+					[
+						-11.994,
+						18.934,
+						-43.804
+					],
+					[
+						-11.958,
+						18.932,
+						-43.616
+					],
+					[
+						-11.921,
+						18.929,
+						-43.424
+					],
+					[
+						-11.886,
+						18.929,
+						-43.241
+					],
+					[
+						-11.852,
+						18.93,
+						-43.064
+					],
+					[
+						-11.816,
+						18.925,
+						-42.876
+					],
+					[
+						-11.781,
+						18.924,
+						-42.688
+					],
+					[
+						-11.745,
+						18.927,
+						-42.504
+					],
+					[
+						-11.711,
+						18.926,
+						-42.323
+					],
+					[
+						-11.675,
+						18.92,
+						-42.133
+					],
+					[
+						-11.311,
+						18.914,
+						-40.23
+					],
+					[
+						-11.274,
+						18.906,
+						-40.037
+					],
+					[
+						-11.239,
+						18.904,
+						-39.854
+					],
+					[
+						-11.205,
+						18.905,
+						-39.672
+					],
+					[
+						-11.169,
+						18.9,
+						-39.483
+					],
+					[
+						-11.132,
+						18.899,
+						-39.29
+					],
+					[
+						-11.096,
+						18.908,
+						-39.105
+					],
+					[
+						-11.061,
+						18.896,
+						-38.921
+					],
+					[
+						-11.026,
+						18.894,
+						-38.735
+					],
+					[
+						-10.99,
+						18.897,
+						-38.55
+					]
+				],
+				"cut": [
+					[
+						-11.655,
+						19.467,
+						-42.029
+					],
+					[
+						-11.606,
+						19.466,
+						-41.776
+					],
+					[
+						-11.369,
+						19.431,
+						-40.535
+					],
+					[
+						-11.32,
+						19.452,
+						-40.279
+					]
+				],
+				"waveoff": [
+					[
+						-11.744,
+						19.211,
+						-42.495
+					],
+					[
+						-11.695,
+						19.21,
+						-42.24
+					],
+					[
+						-11.656,
+						19.228,
+						-42.037
+					],
+					[
+						-11.33,
+						19.182,
+						-40.327
+					],
+					[
+						-11.283,
+						19.192,
+						-40.082
+					],
+					[
+						-11.232,
+						19.196,
+						-39.814
+					],
+					[
+						-11.744,
+						18.619,
+						-42.495
+					],
+					[
+						-11.695,
+						18.62,
+						-42.24
+					],
+					[
+						-11.656,
+						18.602,
+						-42.037
+					],
+					[
+						-11.33,
+						18.648,
+						-40.327
+					],
+					[
+						-11.283,
+						18.638,
+						-40.082
+					],
+					[
+						-11.232,
+						18.634,
+						-39.814
+					]
+				]
+			}
+		},
+		"lights": {
+			"centreline": {
+				"positions": [
+					[
+						-160.709,
+						18.27,
+						6.669
+					],
+					[
+						-147.169,
+						18.27,
+						4.481
+					],
+					[
+						-133.628,
+						18.27,
+						2.293
+					],
+					[
+						-120.088,
+						18.27,
+						0.106
+					],
+					[
+						-106.547,
+						18.27,
+						-2.082
+					],
+					[
+						-93.007,
+						18.27,
+						-4.27
+					],
+					[
+						-79.466,
+						18.27,
+						-6.457
+					],
+					[
+						-65.926,
+						18.27,
+						-8.645
+					],
+					[
+						-52.386,
+						18.27,
+						-10.833
+					],
+					[
+						-38.845,
+						18.27,
+						-13.02
+					],
+					[
+						-25.305,
+						18.27,
+						-15.208
+					],
+					[
+						-11.764,
+						18.27,
+						-17.395
+					],
+					[
+						1.776,
+						18.27,
+						-19.583
+					],
+					[
+						15.316,
+						18.27,
+						-21.771
+					],
+					[
+						28.857,
+						18.27,
+						-23.958
+					],
+					[
+						42.397,
+						18.27,
+						-26.146
+					],
+					[
+						55.938,
+						18.27,
+						-28.334
+					],
+					[
+						69.478,
+						18.27,
+						-30.521
+					]
+				],
+				"colour": "white",
+				"kind": "recovery"
+			},
+			"edge": {
+				"positions": [
+					[
+						-162.41,
+						18.27,
+						-3.863
+					],
+					[
+						-148.87,
+						18.27,
+						-6.051
+					],
+					[
+						-135.33,
+						18.27,
+						-8.238
+					],
+					[
+						-121.789,
+						18.27,
+						-10.426
+					],
+					[
+						-108.249,
+						18.27,
+						-12.613
+					],
+					[
+						-94.708,
+						18.27,
+						-14.801
+					],
+					[
+						-81.168,
+						18.27,
+						-16.989
+					],
+					[
+						-67.628,
+						18.27,
+						-19.176
+					],
+					[
+						-54.087,
+						18.27,
+						-21.364
+					],
+					[
+						-40.547,
+						18.27,
+						-23.552
+					],
+					[
+						-27.006,
+						18.27,
+						-25.739
+					],
+					[
+						-13.466,
+						18.27,
+						-27.927
+					],
+					[
+						0.075,
+						18.27,
+						-30.115
+					],
+					[
+						13.615,
+						18.27,
+						-32.302
+					],
+					[
+						27.155,
+						18.27,
+						-34.49
+					],
+					[
+						40.696,
+						18.27,
+						-36.679
+					],
+					[
+						54.236,
+						18.27,
+						-38.867
+					],
+					[
+						-159.008,
+						18.27,
+						17.2
+					],
+					[
+						-145.467,
+						18.27,
+						15.012
+					],
+					[
+						-131.927,
+						18.27,
+						12.825
+					],
+					[
+						-118.386,
+						18.27,
+						10.637
+					],
+					[
+						-104.846,
+						18.27,
+						8.449
+					],
+					[
+						-91.305,
+						18.27,
+						6.262
+					],
+					[
+						-77.765,
+						18.27,
+						4.074
+					],
+					[
+						-64.225,
+						18.27,
+						1.887
+					],
+					[
+						-50.684,
+						18.27,
+						-0.301
+					],
+					[
+						-37.144,
+						18.27,
+						-2.489
+					],
+					[
+						-23.603,
+						18.27,
+						-4.676
+					],
+					[
+						-10.063,
+						18.27,
+						-6.864
+					],
+					[
+						3.478,
+						18.27,
+						-9.052
+					],
+					[
+						17.018,
+						18.27,
+						-11.239
+					],
+					[
+						30.558,
+						18.27,
+						-13.427
+					],
+					[
+						44.099,
+						18.27,
+						-15.615
+					],
+					[
+						57.639,
+						18.27,
+						-17.802
+					]
+				],
+				"colour": "white",
+				"kind": "recovery"
+			},
+			"ramp": {
+				"positions": [
+					[
+						-160.952,
+						18.27,
+						5.164
+					],
+					[
+						-160.466,
+						18.27,
+						8.173
+					],
+					[
+						-161.195,
+						18.27,
+						3.66
+					],
+					[
+						-160.223,
+						18.27,
+						9.677
+					],
+					[
+						-161.438,
+						18.27,
+						2.155
+					],
+					[
+						-159.98,
+						18.27,
+						11.182
+					],
+					[
+						-161.681,
+						18.27,
+						0.651
+					],
+					[
+						-159.737,
+						18.27,
+						12.686
+					],
+					[
+						-161.924,
+						18.27,
+						-0.854
+					],
+					[
+						-159.494,
+						18.27,
+						14.191
+					],
+					[
+						-162.167,
+						18.27,
+						-2.358
+					],
+					[
+						-159.251,
+						18.27,
+						15.695
+					]
+				],
+				"colour": "white",
+				"kind": "recovery"
+			},
+			"forward": {
+				"positions": [
+					[
+						69.235,
+						18.27,
+						-32.026
+					],
+					[
+						69.721,
+						18.27,
+						-29.017
+					],
+					[
+						68.992,
+						18.27,
+						-33.53
+					],
+					[
+						69.964,
+						18.27,
+						-27.512
+					],
+					[
+						70.207,
+						18.27,
+						-26.008
+					],
+					[
+						70.45,
+						18.27,
+						-24.503
+					],
+					[
+						70.693,
+						18.27,
+						-22.999
+					]
+				],
+				"colour": "white",
+				"kind": "recovery"
+			},
+			"drop": {
+				"positions": [
+					[
+						-165.62,
+						16.3,
+						7.3
+					],
+					[
+						-165.62,
+						14.343,
+						7.3
+					],
+					[
+						-165.62,
+						12.386,
+						7.3
+					],
+					[
+						-165.62,
+						10.429,
+						7.3
+					],
+					[
+						-165.62,
+						8.471,
+						7.3
+					],
+					[
+						-165.62,
+						6.514,
+						7.3
+					],
+					[
+						-165.62,
+						4.557,
+						7.3
+					],
+					[
+						-165.62,
+						2.6,
+						7.3
+					]
+				],
+				"colour": "red",
+				"kind": "recovery"
+			},
+			"outline": {
+				"positions": [
+					[
+						-166.29,
+						18.27,
+						-15.862
+					],
+					[
+						-148.338,
+						18.27,
+						-17.175
+					],
+					[
+						-138.808,
+						18.27,
+						-26.258
+					],
+					[
+						-130.199,
+						18.27,
+						-36.909
+					],
+					[
+						-118.975,
+						18.27,
+						-29.708
+					],
+					[
+						-108.169,
+						18.27,
+						-21.364
+					],
+					[
+						-95.573,
+						18.27,
+						-27.485
+					],
+					[
+						-86.506,
+						18.27,
+						-38.759
+					],
+					[
+						-68.725,
+						18.27,
+						-40.038
+					],
+					[
+						-51.365,
+						18.27,
+						-36.897
+					],
+					[
+						-33.365,
+						18.27,
+						-36.893
+					],
+					[
+						-15.365,
+						18.27,
+						-36.888
+					],
+					[
+						2.635,
+						18.27,
+						-36.884
+					],
+					[
+						20.304,
+						18.27,
+						-39.463
+					],
+					[
+						37.957,
+						18.27,
+						-42.312
+					],
+					[
+						55.939,
+						18.27,
+						-42.622
+					],
+					[
+						70.882,
+						18.27,
+						-32.758
+					],
+					[
+						85.39,
+						18.27,
+						-22.127
+					],
+					[
+						102.909,
+						18.27,
+						-18.394
+					],
+					[
+						120.835,
+						18.27,
+						-16.757
+					],
+					[
+						138.76,
+						18.27,
+						-15.119
+					],
+					[
+						156.685,
+						18.27,
+						-13.481
+					],
+					[
+						166.228,
+						18.27,
+						-4.249
+					],
+					[
+						165.021,
+						18.27,
+						12.763
+					],
+					[
+						147.093,
+						18.27,
+						14.376
+					],
+					[
+						129.165,
+						18.27,
+						15.988
+					],
+					[
+						111.238,
+						18.27,
+						17.601
+					],
+					[
+						93.296,
+						18.27,
+						19.043
+					],
+					[
+						78.608,
+						18.27,
+						28.198
+					],
+					[
+						63.771,
+						18.27,
+						36.659
+					],
+					[
+						45.771,
+						18.27,
+						36.72
+					],
+					[
+						27.771,
+						18.27,
+						36.782
+					],
+					[
+						22.282,
+						18.27,
+						22.056
+					],
+					[
+						5.596,
+						18.27,
+						20.467
+					],
+					[
+						-2.1,
+						18.27,
+						32.549
+					],
+					[
+						-16.476,
+						18.27,
+						36.823
+					],
+					[
+						-34.476,
+						18.27,
+						36.849
+					],
+					[
+						-51.351,
+						18.27,
+						35.572
+					],
+					[
+						-56.323,
+						18.27,
+						20.506
+					],
+					[
+						-74.323,
+						18.27,
+						20.507
+					],
+					[
+						-78.126,
+						18.27,
+						36.808
+					],
+					[
+						-96.126,
+						18.27,
+						36.79
+					],
+					[
+						-113.751,
+						18.27,
+						36.463
+					],
+					[
+						-131.75,
+						18.27,
+						36.712
+					],
+					[
+						-149.748,
+						18.27,
+						36.962
+					],
+					[
+						-152.134,
+						18.27,
+						22.196
+					],
+					[
+						-164.273,
+						18.27,
+						15.481
+					],
+					[
+						-165.429,
+						18.27,
+						-2.482
+					]
+				],
+				"colour": "blue",
+				"kind": "outline"
+			},
+			"elevator": {
+				"positions": [
+					[
+						-51.161,
+						18.27,
+						36.873
+					],
+					[
+						-56.434,
+						18.27,
+						36.86
+					],
+					[
+						-61.706,
+						18.27,
+						36.847
+					],
+					[
+						-66.979,
+						18.27,
+						36.835
+					],
+					[
+						-72.251,
+						18.27,
+						36.822
+					],
+					[
+						-77.524,
+						18.27,
+						36.809
+					],
+					[
+						24.705,
+						18.27,
+						36.792
+					],
+					[
+						19.207,
+						18.27,
+						36.794
+					],
+					[
+						13.709,
+						18.27,
+						36.796
+					],
+					[
+						8.211,
+						18.27,
+						36.799
+					],
+					[
+						2.713,
+						18.27,
+						36.801
+					],
+					[
+						-2.785,
+						18.27,
+						36.803
+					],
+					[
+						-94.165,
+						18.27,
+						-37.5
+					],
+					[
+						-99.343,
+						18.27,
+						-37.495
+					],
+					[
+						-104.521,
+						18.27,
+						-37.49
+					],
+					[
+						-109.7,
+						18.27,
+						-37.484
+					],
+					[
+						-114.878,
+						18.27,
+						-37.479
+					],
+					[
+						-120.056,
+						18.27,
+						-37.474
+					]
+				],
+				"colour": "amber",
+				"kind": "recovery"
+			},
+			"flood": {
+				"positions": [
+					[
+						-88.6,
+						46.78,
+						34.87
+					],
+					[
+						-88.6,
+						46.74,
+						33.71
+					],
+					[
+						-88.6,
+						46.77,
+						28.1
+					],
+					[
+						-88.6,
+						46.75,
+						27.56
+					],
+					[
+						-88.6,
+						46.7,
+						25.82
+					],
+					[
+						-84.5,
+						41.48,
+						32.95
+					],
+					[
+						-84.5,
+						41.46,
+						32.21
+					],
+					[
+						-84.5,
+						41.44,
+						31.47
+					],
+					[
+						-84.5,
+						41.41,
+						30.72
+					],
+					[
+						-84.5,
+						41.39,
+						30.03
+					],
+					[
+						-84.5,
+						40.07,
+						26.83
+					],
+					[
+						-84.5,
+						38.24,
+						26.04
+					]
+				],
+				"colour": "green",
+				"kind": "flood"
+			},
+			"obstruction": {
+				"positions": [
+					[
+						-89.0,
+						53.37,
+						30.04
+					]
+				],
+				"colour": "red",
+				"kind": "navigation"
+			},
+			"masthead": {
+				"positions": [
+					[
+						-89.0,
+						49.55,
+						30.15
+					]
+				],
+				"colour": "white",
+				"kind": "navigation"
+			}
+		},
+		"consoles": [
+			{
+				"name": "bow",
+				"centre": [
+					67.0,
+					5.8
+				]
+			}
+		],
+		"antennas": [
+			{
+				"name": "port_aft",
+				"base": [
+					-91.5,
+					-40.3
+				],
+				"length": 4.2,
+				"lowered": [
+					-0.88,
+					-0.476
+				],
+				"mount": [
+					0.6,
+					0.7,
+					0.6
+				]
+			},
+			{
+				"name": "port_forward",
+				"base": [
+					-45.5,
+					-40.3
+				],
+				"length": 4.3,
+				"lowered": [
+					-0.783,
+					-0.622
+				],
+				"mount": [
+					0.6,
+					0.7,
+					0.6
+				]
+			},
+			{
+				"name": "starboard_forward",
+				"base": [
+					71.8,
+					31.5
+				],
+				"length": 12.63,
+				"width": 0.6,
+				"details": [
+					{
+						"name": "bow_mast_cap",
+						"kind": "box",
+						"centre": [
+							71.8,
+							30.75,
+							31.5
+						],
+						"size": [
+							1.15,
+							0.25,
+							1.15
+						]
+					},
+					{
+						"name": "bow_mast_top_antenna",
+						"kind": "cylinder",
+						"base": [
+							71.8,
+							30.9,
+							31.5
+						],
+						"axis": [
+							0,
+							1,
+							0
+						],
+						"length": 1.0,
+						"radius": 0.05
+					},
+					{
+						"name": "bow_mast_lights_1",
+						"kind": "cylinder",
+						"base": [
+							72.32,
+							29.8,
+							31.5
+						],
+						"axis": [
+							0,
+							1,
+							0
+						],
+						"length": 0.4,
+						"radius": 0.22
+					},
+					{
+						"name": "bow_mast_lights_2",
+						"kind": "cylinder",
+						"base": [
+							72.32,
+							29.1,
+							31.5
+						],
+						"axis": [
+							0,
+							1,
+							0
+						],
+						"length": 0.4,
+						"radius": 0.22
+					},
+					{
+						"name": "bow_mast_lights_3",
+						"kind": "cylinder",
+						"base": [
+							72.32,
+							28.400000000000002,
+							31.5
+						],
+						"axis": [
+							0,
+							1,
+							0
+						],
+						"length": 0.4,
+						"radius": 0.22
+					},
+					{
+						"name": "bow_mast_dish",
+						"kind": "dish",
+						"centre": [
+							71.8,
+							24.8,
+							32.1
+						],
+						"diameter": 0.5,
+						"facing": [
+							0,
+							0,
+							1
+						]
+					},
+					{
+						"name": "bow_mast_radome",
+						"kind": "cylinder",
+						"base": [
+							71.8,
+							22.75,
+							32.4
+						],
+						"axis": [
+							0,
+							1,
+							0
+						],
+						"length": 1.0,
+						"radius": 0.28
+					}
+				]
+			}
+		],
+		"parking": {
+			"x": -125.0,
+			"z": 14.5,
+			"heading": 0.0
+		},
+		"sponsons": [
+			{
+				"name": "port_aft",
+				"outline": [
+					[
+						-162.95,
+						-16.4
+					],
+					[
+						-162.95,
+						-17.75
+					],
+					[
+						-161.09,
+						-33.0
+					],
+					[
+						-140.45,
+						-33.35
+					],
+					[
+						-138.75,
+						-33.35
+					],
+					[
+						-138.75,
+						-16.4
+					]
+				],
+				"bottom": 9.82,
+				"top": [
+					15.57,
+					15.57,
+					15.6,
+					15.9,
+					15.93,
+					15.93
+				]
+			},
+			{
+				"name": "starboard_aft",
+				"outline": [
+					[
+						-162.6,
+						21.7
+					],
+					[
+						-162.6,
+						22.6
+					],
+					[
+						-161.39,
+						36.6
+					],
+					[
+						-151.3,
+						36.65
+					],
+					[
+						-151.3,
+						21.7
+					]
+				],
+				"bottom": [
+					10.35,
+					10.29,
+					9.34,
+					9.34,
+					10.35
+				],
+				"top": [
+					15.23,
+					15.2,
+					14.79,
+					14.79,
+					15.23
+				]
+			},
+			{
+				"name": "starboard_forward",
+				"outline": [
+					[
+						88.0,
+						19.8
+					],
+					[
+						88.0,
+						27.5
+					],
+					[
+						98.5,
+						27.5
+					],
+					[
+						101.5,
+						25.0
+					],
+					[
+						106.5,
+						19.8
+					]
+				],
+				"bottom": 12.5,
+				"top": 15.05
+			},
+			{
+				"name": "port_forward",
+				"outline": [
+					[
+						97.2,
+						-20.5
+					],
+					[
+						97.2,
+						-26.0
+					],
+					[
+						108.5,
+						-26.0
+					],
+					[
+						110.0,
+						-23.5
+					],
+					[
+						110.0,
+						-20.5
+					]
+				],
+				"bottom": 11.0,
+				"top": 12.9
+			},
+			{
+				"name": "fantail",
+				"outline": [
+					[
+						-170.0,
+						11.0
+					],
+					[
+						-170.0,
+						18.3
+					],
+					[
+						-164.1,
+						18.3
+					],
+					[
+						-164.1,
+						11.0
+					]
+				],
+				"bottom": 6.2,
+				"top": 6.9
+			},
+			{
+				"name": "port_gun_tub",
+				"outline": [
+					[
+						-161.0,
+						-33.0
+					],
+					[
+						-161.0,
+						-36.4
+					],
+					[
+						-157.0,
+						-36.4
+					],
+					[
+						-157.0,
+						-33.0
+					]
+				],
+				"bottom": 12.3,
+				"top": 14.4
+			},
+			{
+				"name": "starboard_gun_tub",
+				"outline": [
+					[
+						-161.05,
+						36.6
+					],
+					[
+						-161.05,
+						40.5
+					],
+					[
+						-157.0,
+						40.5
+					],
+					[
+						-157.0,
+						36.6
+					]
+				],
+				"bottom": 11.6,
+				"top": 14.5
+			}
+		],
+		"weapons": {
+			"kinds": {
+				"mk29": {
+					"parts": [
+						{
+							"name": "base_ring",
+							"kind": "cylinder",
+							"base": [
+								0,
+								0,
+								0
+							],
+							"axis": [
+								0,
+								1,
+								0
+							],
+							"length": 0.15,
+							"radius": 1.3
+						},
+						{
+							"name": "pedestal",
+							"kind": "cylinder",
+							"base": [
+								0,
+								0.15,
+								0
+							],
+							"axis": [
+								0,
+								1,
+								0
+							],
+							"length": 1.05,
+							"radius": 0.48
+						},
+						{
+							"name": "trunnion_block",
+							"kind": "box",
+							"centre": [
+								0,
+								1.74,
+								0
+							],
+							"size": [
+								1.2,
+								0.87,
+								0.4
+							]
+						},
+						{
+							"name": "guide_left",
+							"kind": "box",
+							"centre": [
+								-0.036,
+								1.738,
+								-0.893
+							],
+							"size": [
+								3.541,
+								1.085,
+								1.385
+							]
+						},
+						{
+							"name": "cap_left_lower_outer",
+							"kind": "cylinder",
+							"base": [
+								1.734,
+								1.466,
+								-1.239
+							],
+							"axis": [
+								1,
+								0,
+								0
+							],
+							"length": 0.38,
+							"radius": 0.251
+						},
+						{
+							"name": "cap_left_lower_inner",
+							"kind": "cylinder",
+							"base": [
+								1.734,
+								1.466,
+								-0.547
+							],
+							"axis": [
+								1,
+								0,
+								0
+							],
+							"length": 0.38,
+							"radius": 0.251
+						},
+						{
+							"name": "cap_left_upper_outer",
+							"kind": "cylinder",
+							"base": [
+								1.734,
+								2.009,
+								-1.239
+							],
+							"axis": [
+								1,
+								0,
+								0
+							],
+							"length": 0.38,
+							"radius": 0.251
+						},
+						{
+							"name": "cap_left_upper_inner",
+							"kind": "cylinder",
+							"base": [
+								1.734,
+								2.009,
+								-0.547
+							],
+							"axis": [
+								1,
+								0,
+								0
+							],
+							"length": 0.38,
+							"radius": 0.251
+						},
+						{
+							"name": "guide_right",
+							"kind": "box",
+							"centre": [
+								-0.036,
+								1.738,
+								0.893
+							],
+							"size": [
+								3.541,
+								1.085,
+								1.385
+							]
+						},
+						{
+							"name": "cap_right_lower_inner",
+							"kind": "cylinder",
+							"base": [
+								1.734,
+								1.466,
+								0.547
+							],
+							"axis": [
+								1,
+								0,
+								0
+							],
+							"length": 0.38,
+							"radius": 0.251
+						},
+						{
+							"name": "cap_right_lower_outer",
+							"kind": "cylinder",
+							"base": [
+								1.734,
+								1.466,
+								1.239
+							],
+							"axis": [
+								1,
+								0,
+								0
+							],
+							"length": 0.38,
+							"radius": 0.251
+						},
+						{
+							"name": "cap_right_upper_inner",
+							"kind": "cylinder",
+							"base": [
+								1.734,
+								2.009,
+								0.547
+							],
+							"axis": [
+								1,
+								0,
+								0
+							],
+							"length": 0.38,
+							"radius": 0.251
+						},
+						{
+							"name": "cap_right_upper_outer",
+							"kind": "cylinder",
+							"base": [
+								1.734,
+								2.009,
+								1.239
+							],
+							"axis": [
+								1,
+								0,
+								0
+							],
+							"length": 0.38,
+							"radius": 0.251
+						}
+					]
+				},
+				"ram": {
+					"parts": [
+						{
+							"name": "foundation",
+							"kind": "cylinder",
+							"base": [
+								0,
+								0,
+								0
+							],
+							"axis": [
+								0,
+								1,
+								0
+							],
+							"length": 0.55,
+							"radius": 0.9
+						},
+						{
+							"name": "carriage",
+							"kind": "box",
+							"centre": [
+								0,
+								1.0,
+								0
+							],
+							"size": [
+								1.2,
+								0.9,
+								1.1
+							]
+						},
+						{
+							"name": "side_enclosure",
+							"kind": "box",
+							"centre": [
+								0.2,
+								1.25,
+								-1.05
+							],
+							"size": [
+								0.9,
+								1.6,
+								0.55
+							]
+						},
+						{
+							"name": "guide",
+							"kind": "box",
+							"centre": [
+								0,
+								1.85,
+								0
+							],
+							"size": [
+								2.95,
+								1.5,
+								1.5
+							]
+						},
+						{
+							"name": "guide_front_face",
+							"kind": "box",
+							"centre": [
+								1.495,
+								1.85,
+								0
+							],
+							"size": [
+								0.04,
+								1.4,
+								1.4
+							]
+						}
+					]
+				},
+				"phalanx": {
+					"parts": [
+						{
+							"name": "base",
+							"kind": "cylinder",
+							"base": [
+								0,
+								0,
+								0
+							],
+							"axis": [
+								0,
+								1,
+								0
+							],
+							"length": 0.6,
+							"radius": 0.8
+						},
+						{
+							"name": "mount",
+							"kind": "box",
+							"centre": [
+								-0.1,
+								1.15,
+								0
+							],
+							"size": [
+								1.4,
+								1.1,
+								1.3
+							]
+						},
+						{
+							"name": "radome",
+							"kind": "cylinder",
+							"base": [
+								0,
+								1.68,
+								0
+							],
+							"axis": [
+								0,
+								1,
+								0
+							],
+							"length": 1.4,
+							"radius": 0.5,
+							"paint": "radome"
+						},
+						{
+							"name": "radome_top",
+							"kind": "dome",
+							"centre": [
+								0,
+								3.08,
+								0
+							],
+							"radius": 0.5,
+							"paint": "radome"
+						},
+						{
+							"name": "gun_barrels",
+							"kind": "cylinder",
+							"base": [
+								0.2,
+								1.25,
+								0
+							],
+							"axis": [
+								1,
+								0,
+								0
+							],
+							"length": 1.98,
+							"radius": 0.17
+						},
+						{
+							"name": "gun_housing",
+							"kind": "box",
+							"centre": [
+								-0.1,
+								1.25,
+								0
+							],
+							"size": [
+								0.9,
+								0.5,
+								0.5
+							]
+						},
+						{
+							"name": "flir",
+							"kind": "box",
+							"centre": [
+								0.2,
+								2.1,
+								-0.65
+							],
+							"size": [
+								0.45,
+								0.4,
+								0.3
+							]
+						}
+					]
+				}
+			},
+			"mounts": [
+				{
+					"kind": "mk29",
+					"place": "port_aft",
+					"foot": [
+						-158.33,
+						15.63,
+						-29.77
+					],
+					"train": -88,
+					"elevation": 0
+				},
+				{
+					"kind": "mk29",
+					"place": "starboard_forward",
+					"foot": [
+						91.4,
+						15.91,
+						24.25
+					],
+					"train": 90,
+					"elevation": 0
+				},
+				{
+					"kind": "ram",
+					"place": "starboard_aft",
+					"foot": [
+						-158.0,
+						15.35,
+						34.6
+					],
+					"train": 180,
+					"elevation": 0
+				},
+				{
+					"kind": "ram",
+					"place": "port_forward",
+					"foot": [
+						101.9,
+						14.7,
+						-22.6
+					],
+					"train": 0,
+					"elevation": 0,
+					"pedestal": 1.8
+				},
+				{
+					"kind": "phalanx",
+					"place": "fantail",
+					"foot": [
+						-167.27,
+						8.49,
+						15.77
+					],
+					"train": 0,
+					"elevation": 0,
+					"pedestal": 1.59
+				},
+				{
+					"kind": "phalanx",
+					"place": "starboard_forward",
+					"foot": [
+						97.29,
+						15.05,
+						24.68
+					],
+					"train": 0,
+					"elevation": 0
+				}
+			]
+		},
+		"domes_edge": [
+			{
+				"centre": [
+					-112.4,
+					38.0
+				],
+				"diameter": 3.0,
+				"floor": 16.9,
+				"platform": [
+					[
+						-115.0,
+						36.8
+					],
+					[
+						-109.5,
+						36.8
+					],
+					[
+						-109.5,
+						40.6
+					],
+					[
+						-110.7,
+						41.8
+					],
+					[
+						-113.8,
+						41.8
+					],
+					[
+						-115.0,
+						40.6
+					]
+				]
+			},
+			{
+				"centre": [
+					-45.8,
+					41.2
+				],
+				"diameter": 2.0,
+				"floor": 15.9,
+				"top": 18.4,
+				"foot": 14.4,
+				"platform": [
+					[
+						-47.2,
+						38.0
+					],
+					[
+						-44.4,
+						38.0
+					],
+					[
+						-44.4,
+						42.8
+					],
+					[
+						-47.2,
+						42.8
+					]
+				]
+			},
+			{
+				"centre": [
+					-49.9,
+					-41.2
+				],
+				"diameter": 2.2,
+				"floor": 16.9,
+				"platform": [
+					[
+						-52.0,
+						-39.7
+					],
+					[
+						-48.0,
+						-39.7
+					],
+					[
+						-48.0,
+						-43.0
+					],
+					[
+						-52.0,
+						-43.0
+					]
+				]
+			},
+			{
+				"centre": [
+					0.5,
+					-42.0
+				],
+				"diameter": 1.8,
+				"floor": 16.9,
+				"platform": [
+					[
+						-2.0,
+						-38.0
+					],
+					[
+						3.0,
+						-38.0
+					],
+					[
+						3.0,
+						-44.0
+					],
+					[
+						-2.0,
+						-44.0
+					]
+				]
+			}
+		],
+		"catwalks": {
+			"floor": 16.9,
+			"railing": 1.0,
+			"posts": 1.5,
+			"toe": 0.1,
+			"knees": {
+				"spacing": 2.05,
+				"depth": 0.8
+			},
+			"net": {
+				"width": 1.5,
+				"rise": 0.4,
+				"frames": 2.3
+			},
+			"runs": [
+				{
+					"side": "starboard",
+					"x": [
+						-151.6,
+						-109.2
+					],
+					"width": 0.95,
+					"net": false
+				},
+				{
+					"side": "starboard",
+					"x": [
+						-109.1,
+						-77.5
+					],
+					"width": 0.95,
+					"net": false
+				},
+				{
+					"side": "starboard",
+					"x": [
+						-51.2,
+						-2.8
+					],
+					"width": 0.95,
+					"net": false
+				},
+				{
+					"side": "starboard",
+					"x": [
+						24.7,
+						68.9
+					],
+					"width": 1.0,
+					"net": false
+				},
+				{
+					"side": "starboard",
+					"x": [
+						68.9,
+						88.7
+					],
+					"width": 2.0,
+					"net": false
+				},
+				{
+					"side": "starboard",
+					"x": [
+						106.7,
+						166.0
+					],
+					"width": 1.25,
+					"net": false
+				},
+				{
+					"side": "port",
+					"x": [
+						-138.9,
+						-120.0
+					],
+					"width": 1.6,
+					"net": true
+				},
+				{
+					"side": "port",
+					"x": [
+						-94.2,
+						-58.6
+					],
+					"width": 1.0,
+					"net": true
+				},
+				{
+					"side": "port",
+					"x": [
+						-58.6,
+						10.4
+					],
+					"width": 1.6,
+					"net": true
+				},
+				{
+					"side": "port",
+					"x": [
+						10.4,
+						55.8
+					],
+					"width": 1.25,
+					"net": true
+				},
+				{
+					"side": "port",
+					"x": [
+						55.8,
+						85.2
+					],
+					"width": 1.5,
+					"net": true
+				},
+				{
+					"side": "port",
+					"x": [
+						85.2,
+						166.0
+					],
+					"width": 1.15,
+					"net": true
+				}
+			],
+			"platforms": [
+				{
+					"side": "port",
+					"x": [
+						-92.0,
+						-84.0
+					],
+					"width": 4.0
+				},
+				{
+					"side": "port",
+					"x": [
+						-66.8,
+						-56.9
+					],
+					"width": 2.0
+				},
+				{
+					"side": "port",
+					"x": [
+						-42.0,
+						-27.0
+					],
+					"width": 2.0
+				},
+				{
+					"side": "port",
+					"x": [
+						-16.0,
+						-8.0
+					],
+					"width": 4.0
+				},
+				{
+					"side": "port",
+					"x": [
+						26.0,
+						31.0
+					],
+					"width": 2.0
+				},
+				{
+					"side": "port",
+					"x": [
+						96.0,
+						108.0
+					],
+					"width": 1.5
+				},
+				{
+					"side": "port",
+					"x": [
+						119.0,
+						122.0
+					],
+					"width": 1.5
+				},
+				{
+					"side": "port",
+					"x": [
+						134.0,
+						136.0
+					],
+					"width": 1.5
+				},
+				{
+					"side": "port",
+					"x": [
+						161.0,
+						164.0
+					],
+					"width": 1.5
+				}
+			],
+			"nets": [
+				{
+					"side": "bow",
+					"from": [
+						166.29,
+						-12.604
+					],
+					"to": [
+						166.101,
+						12.666
+					]
+				}
+			]
+		},
+		"racks": {
+			"canister": {
+				"length": 1.5,
+				"diameter": 0.8
+			},
+			"small": {
+				"length": 0.8,
+				"diameter": 0.5
+			},
+			"tiers": [
+				[
+					16.3,
+					17.2
+				],
+				[
+					17.3,
+					18.3
+				]
+			],
+			"groups": [
+				{
+					"side": "starboard",
+					"x": [
+						-123.8,
+						-118.6
+					],
+					"count": 3,
+					"z": [
+						38.0,
+						39.5
+					]
+				},
+				{
+					"side": "starboard",
+					"x": [
+						-93.7,
+						-86.8
+					],
+					"count": 4,
+					"z": [
+						38.0,
+						39.5
+					]
+				},
+				{
+					"side": "starboard",
+					"x": [
+						-85.1,
+						-78.2
+					],
+					"count": 4,
+					"z": [
+						38.0,
+						39.5
+					]
+				},
+				{
+					"side": "starboard",
+					"x": [
+						-43.4,
+						-35.2
+					],
+					"count": 5,
+					"z": [
+						38.0,
+						39.5
+					]
+				},
+				{
+					"side": "starboard",
+					"x": [
+						-27.1,
+						-23.8
+					],
+					"count": 2,
+					"z": [
+						38.0,
+						39.5
+					]
+				},
+				{
+					"side": "starboard",
+					"x": [
+						-21.0,
+						-17.1
+					],
+					"count": 2,
+					"z": [
+						38.0,
+						39.5
+					]
+				},
+				{
+					"side": "starboard",
+					"x": [
+						39.5,
+						42.9
+					],
+					"count": 2,
+					"z": [
+						38.0,
+						39.5
+					]
+				},
+				{
+					"side": "starboard",
+					"x": [
+						58.8,
+						62.0
+					],
+					"count": 2,
+					"z": [
+						38.0,
+						39.5
+					]
+				},
+				{
+					"side": "port",
+					"x": [
+						-132.6,
+						-121.1
+					],
+					"count": 6,
+					"z": [
+						-41.3,
+						-40.2
+					]
+				},
+				{
+					"side": "port",
+					"x": [
+						-66.8,
+						-56.9
+					],
+					"count": 4,
+					"z": [
+						-42.9,
+						-41.6
+					]
+				},
+				{
+					"side": "port",
+					"x": [
+						-53.7,
+						-52.1
+					],
+					"count": 1,
+					"z": [
+						-39.6,
+						-38.7
+					]
+				},
+				{
+					"side": "port",
+					"x": [
+						-47.7,
+						-44.3
+					],
+					"count": 2,
+					"z": [
+						-39.6,
+						-38.9
+					]
+				},
+				{
+					"side": "port",
+					"x": [
+						-36.9,
+						-28.6
+					],
+					"count": 4,
+					"z": [
+						-42.4,
+						-41.6
+					]
+				},
+				{
+					"side": "port",
+					"x": [
+						-7.4,
+						-4.4
+					],
+					"count": 2,
+					"z": [
+						-39.6,
+						-38.6
+					]
+				},
+				{
+					"side": "port",
+					"x": [
+						2.6,
+						4.0
+					],
+					"count": 1,
+					"z": [
+						-40.6,
+						-38.9
+					]
+				}
+			],
+			"rows": [
+				{
+					"side": "port",
+					"x": [
+						-131.8,
+						-129.0
+					],
+					"z": [
+						-39.9,
+						-39.3
+					]
+				},
+				{
+					"side": "port",
+					"x": [
+						-63.0,
+						-55.0
+					],
+					"z": [
+						-41.2,
+						-40.6
+					]
+				}
+			]
+		},
+		"openings": [
+			{
+				"name": "hangar_1",
+				"plane": "z=20.5",
+				"x": [
+					-74.3,
+					-51.9
+				],
+				"y": [
+					5.7,
+					15.1
+				]
+			},
+			{
+				"name": "hangar_2",
+				"plane": "z=20.5",
+				"x": [
+					1.6,
+					24.3
+				],
+				"y": [
+					5.7,
+					15.1
+				]
+			},
+			{
+				"name": "hangar_3",
+				"plane": "z=-20.5",
+				"x": [
+					-117.6,
+					-93.0
+				],
+				"y": [
+					5.7,
+					15.3
+				]
+			}
+		],
+		"lettering": {
+			"pixels": [
+				512,
+				256
+			],
+			"font": "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+			"background": [
+				149,
+				153,
+				156
+			],
+			"colour": [
+				236,
+				236,
+				230
+			],
+			"outline": [
+				40,
+				42,
+				44
+			],
+			"cells": {
+				"hull_number": {
+					"text": "78",
+					"box": [
+						0,
+						0,
+						256,
+						256
+					]
+				},
+				"draught_8": {
+					"text": "8",
+					"box": [
+						256,
+						0,
+						320,
+						108
+					],
+					"background": [
+						39,
+						39,
+						39
+					]
+				},
+				"draught_9": {
+					"text": "9",
+					"box": [
+						320,
+						0,
+						384,
+						108
+					],
+					"background": [
+						39,
+						39,
+						39
+					]
+				},
+				"draught_1": {
+					"text": "1",
+					"box": [
+						384,
+						0,
+						448,
+						108
+					],
+					"background": [
+						39,
+						39,
+						39
+					]
+				},
+				"draught_40": {
+					"text": "40",
+					"box": [
+						256,
+						128,
+						384,
+						236
+					],
+					"background": [
+						39,
+						39,
+						39
+					]
+				}
+			},
+			"plates": [
+				{
+					"name": "island_port",
+					"on": "island",
+					"cell": "hull_number",
+					"plane": "z=24.05",
+					"x": [
+						-90.1,
+						-85.1
+					],
+					"y": [
+						20.55,
+						25.4
+					]
+				},
+				{
+					"name": "island_starboard",
+					"on": "island",
+					"cell": "hull_number",
+					"plane": "z=33.4",
+					"x": [
+						-90.4,
+						-85.4
+					],
+					"y": [
+						23.3,
+						28.2
+					]
+				}
+			],
+			"draught": {
+				"height": 0.152,
+				"width": 0.09,
+				"aft": 0.6,
+				"numerals": [
+					{
+						"cell": "draught_8",
+						"text": "8",
+						"bottom": 0.091
+					},
+					{
+						"cell": "draught_9",
+						"text": "9",
+						"bottom": 0.396
+					},
+					{
+						"cell": "draught_40",
+						"text": "40",
+						"bottom": 0.701
+					},
+					{
+						"cell": "draught_1",
+						"text": "1",
+						"bottom": 1.006
+					}
+				]
+			}
+		},
+		"wedges": [
+			{
+				"name": "transom_port_flare",
+				"x": [
+					-162.5,
+					-161.5
+				],
+				"section": [
+					[
+						-15.7,
+						6.9
+					],
+					[
+						-20.57,
+						9.82
+					],
+					[
+						-15.7,
+						9.82
+					]
+				]
+			}
+		],
+		"transom": {
+			"face": -164.35,
+			"floor": 7.0,
+			"opening": {
+				"outline": [
+					[
+						-12.23,
+						7.0
+					],
+					[
+						-12.23,
+						8.8
+					],
+					[
+						-12.19,
+						9.11
+					],
+					[
+						-12.07,
+						9.4
+					],
+					[
+						-11.88,
+						9.65
+					],
+					[
+						-11.63,
+						9.84
+					],
+					[
+						-11.34,
+						9.96
+					],
+					[
+						-11.03,
+						10.0
+					],
+					[
+						-9.2,
+						10.0
+					],
+					[
+						-9.1,
+						10.96
+					],
+					[
+						-9.06,
+						11.24
+					],
+					[
+						-8.95,
+						11.51
+					],
+					[
+						-8.78,
+						11.74
+					],
+					[
+						-8.55,
+						11.91
+					],
+					[
+						-8.28,
+						12.02
+					],
+					[
+						-8.0,
+						12.06
+					],
+					[
+						-3.05,
+						12.06
+					],
+					[
+						-3.0,
+						12.6
+					],
+					[
+						-2.95,
+						12.96
+					],
+					[
+						-2.81,
+						13.3
+					],
+					[
+						-2.59,
+						13.59
+					],
+					[
+						-2.3,
+						13.81
+					],
+					[
+						-1.96,
+						13.95
+					],
+					[
+						-1.6,
+						14.0
+					],
+					[
+						10.8,
+						13.8
+					],
+					[
+						11.19,
+						13.75
+					],
+					[
+						11.55,
+						13.6
+					],
+					[
+						11.86,
+						13.36
+					],
+					[
+						12.1,
+						13.05
+					],
+					[
+						12.25,
+						12.69
+					],
+					[
+						12.3,
+						12.3
+					],
+					[
+						12.3,
+						7.0
+					]
+				],
+				"back": -161.2
+			},
+			"windows": [
+				{
+					"plane": "x=-164.35",
+					"z": [
+						-11.75,
+						-10.89
+					],
+					"y": [
+						13.61,
+						14.66
+					]
+				},
+				{
+					"plane": "x=-164.35",
+					"z": [
+						-10.43,
+						-9.58
+					],
+					"y": [
+						13.55,
+						14.6
+					]
+				},
+				{
+					"plane": "x=-164.35",
+					"z": [
+						-9.13,
+						-8.28
+					],
+					"y": [
+						13.55,
+						14.6
+					]
+				},
+				{
+					"plane": "x=-164.35",
+					"z": [
+						-7.76,
+						-6.91
+					],
+					"y": [
+						13.53,
+						14.58
+					]
+				},
+				{
+					"plane": "x=-164.35",
+					"z": [
+						-6.2,
+						-4.95
+					],
+					"y": [
+						13.54,
+						14.54
+					]
+				},
+				{
+					"plane": "x=-164.35",
+					"z": [
+						-4.27,
+						-3.82
+					],
+					"y": [
+						13.34,
+						14.49
+					]
+				}
+			],
+			"catwalk": {
+				"y": [
+					16.1,
+					16.8
+				]
+			},
+			"walkway": {
+				"plan": [
+					[
+						-164.35,
+						-12.2
+					],
+					[
+						-165.2,
+						-12.2
+					],
+					[
+						-165.2,
+						-9.0
+					],
+					[
+						-167.2,
+						-6.3
+					],
+					[
+						-167.2,
+						11.0
+					],
+					[
+						-164.1,
+						11.0
+					]
+				],
+				"thickness": 0.2,
+				"rail": [
+					[
+						-164.35,
+						-12.2
+					],
+					[
+						-165.2,
+						-12.2
+					],
+					[
+						-165.2,
+						-9.0
+					],
+					[
+						-167.2,
+						-6.3
+					],
+					[
+						-167.2,
+						11.0
+					]
+				],
+				"aft": [
+					[
+						-167.2,
+						-6.3
+					],
+					[
+						-167.2,
+						11.0
+					]
+				],
+				"fascia": [
+					6.0,
+					6.9
+				],
+				"member": [
+					5.2,
+					5.8
+				],
+				"railing": 1.0,
+				"posts": 1.8
+			},
+			"frame": {
+				"x": -167.28,
+				"z": [
+					-6.32,
+					6.23
+				],
+				"members": 8,
+				"top": 5.8,
+				"bottom": -1.0,
+				"size": 0.3
+			},
+			"fenders": [
+				{
+					"centre": [
+						-167.75,
+						4.5,
+						-3.2
+					],
+					"length": 2.4,
+					"diameter": 1.0
+				},
+				{
+					"centre": [
+						-167.75,
+						4.5,
+						3.2
+					],
+					"length": 2.4,
+					"diameter": 1.0
+				}
+			],
+			"drop": {
+				"x": -165.45,
+				"z": 7.3,
+				"width": 0.4,
+				"depth": 0.3,
+				"bottom": 2.6,
+				"top": 17.27
+			},
+			"plinth": {
+				"centre": [
+					-167.27,
+					15.77
+				],
+				"size": 2.0,
+				"bottom": 6.9,
+				"top": 8.49
+			}
+		},
+		"stains": [
+			{
+				"name": "touchdown_rubber",
+				"outline": [
+					[
+						-116.923,
+						-4.458
+					],
+					[
+						-47.819,
+						-15.624
+					],
+					[
+						-46.543,
+						-7.726
+					],
+					[
+						-115.647,
+						3.439
+					]
+				],
+				"darkening": 0.44,
+				"feather": 3.0
+			},
+			{
+				"name": "touchdown_rubber_shoulders",
+				"outline": [
+					[
+						-122.497,
+						-7.61
+					],
+					[
+						-43.521,
+						-20.37
+					],
+					[
+						-40.969,
+						-4.575
+					],
+					[
+						-119.945,
+						8.185
+					]
+				],
+				"darkening": 0.12,
+				"feather": 4.0
+			},
+			{
+				"name": "landing_rubber_forward",
+				"outline": [
+					[
+						-47.66,
+						-14.636
+					],
+					[
+						26.38,
+						-26.599
+					],
+					[
+						27.337,
+						-20.676
+					],
+					[
+						-46.703,
+						-8.713
+					]
+				],
+				"darkening": 0.12,
+				"feather": 4.0
+			},
+			{
+				"name": "catapult_3_deflector_spill",
+				"outline": [
+					[
+						-54.2,
+						-24.3
+					],
+					[
+						-51.0,
+						-24.3
+					],
+					[
+						-51.0,
+						-14.1
+					],
+					[
+						-54.2,
+						-14.1
+					]
+				],
+				"darkening": 0.2,
+				"feather": 1.5
+			},
+			{
+				"name": "catapult_4_deflector_spill",
+				"outline": [
+					[
+						-72.9,
+						-38.0
+					],
+					[
+						-69.0,
+						-38.0
+					],
+					[
+						-69.0,
+						-27.5
+					],
+					[
+						-72.9,
+						-27.5
+					]
+				],
+				"darkening": 0.2,
+				"feather": 1.5
+			},
+			{
+				"name": "catapult_1_deflector_spill",
+				"outline": [
+					[
+						36.2,
+						14.0
+					],
+					[
+						40.0,
+						14.0
+					],
+					[
+						40.0,
+						24.4
+					],
+					[
+						36.2,
+						24.4
+					]
+				],
+				"darkening": 0.1,
+				"feather": 1.5
+			},
+			{
+				"name": "catapult_2_deflector_spill",
+				"outline": [
+					[
+						36.2,
+						-9.1
+					],
+					[
+						40.0,
+						-9.1
+					],
+					[
+						40.0,
+						1.7
+					],
+					[
+						36.2,
+						1.7
+					]
+				],
+				"darkening": 0.15,
+				"feather": 1.5
+			}
+		]
 	}
 }

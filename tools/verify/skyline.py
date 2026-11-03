@@ -68,6 +68,8 @@ SECTORS = [(30, "top"), (75, "upper side"), (105, "side"), (150, "lower side"), 
 STRETCH = 24     # inches of stations a region spans
 AXIS = 110.0     # the waterline the body's sectors are measured round, on the centreline
 LABEL = "FS"     # the stations as a region's label names them
+SECTORED = ["body"]   # the families whose regions are split into sectors round the section
+SIDES = None     # names for either side of the centreline, [negative, positive], or None for a mirrored skin judged as one
 
 
 class Settings:
@@ -84,6 +86,11 @@ class Settings:
 	#              within 2.5 times it, and beyond (TOLERANCE)
 	#   solid      the materials whose outline is the model's own edge (SOLID)
 	#   label      the first coordinate as a region's label names it (LABEL)
+	#   sectored   the families split into sectors round the section (SECTORED)
+	#   sides      [name below zero, name above] on the third coordinate, each region split by side; none
+	#              judges a mirrored skin's two sides as one (SIDES)
+	#   horizon    degrees under the horizon before a ground photo's ray meets ground (HORIZON); measured
+	#              from level, or with the catalogue's "sea", from the sea's horizon at the camera's height
 	# and the frame's symbol and plural, as the misses print
 	def __init__(self, catalogue=None):
 		catalogue = catalogue or {}
@@ -96,6 +103,9 @@ class Settings:
 		self.tolerance = float(spec.get("tolerance", TOLERANCE))
 		self.solid = list(spec.get("solid", SOLID))
 		self.label = spec.get("label", LABEL)
+		self.sectored = list(spec.get("sectored", SECTORED))
+		self.sides = spec.get("sides", SIDES)
+		self.horizon = float(spec.get("horizon", HORIZON))
 		frame = mod.Frame(catalogue["frame"]) if "frame" in catalogue else None
 		self.symbol = frame.symbol if frame else mod.SYMBOL
 		self.plural = frame.plural if frame else mod.PLURAL
@@ -187,16 +197,42 @@ def family(name, settings=None):
 
 def region(name, point, settings=None):
 	# The stretch of skin a place on the outline belongs to: (part family,
-	# the settings' stretch of stations, and for the body the sector round
-	# the section)
+	# the settings' stretch of stations, and for the sectored families the
+	# sector round the section; with sides, the side too)
 	settings = settings or DEFAULT
 	station, waterline, buttline = point
 	f = family(name, settings)
 	stretch = int(station // settings.stretch * settings.stretch)
-	if f != "body":
-		return f, stretch, ""
-	angle = np.degrees(np.arctan2(abs(buttline), waterline - settings.axis))
-	return f, stretch, next(label for limit, label in settings.sectors if angle < limit)
+	sector = ""
+	if f in settings.sectored:
+		angle = np.degrees(np.arctan2(abs(buttline), waterline - settings.axis))
+		sector = next(label for limit, label in settings.sectors if angle < limit)
+	if settings.sides:
+		sector = " ".join(n for n in (sector, settings.sides[int(buttline >= 0)]) if n)
+	return f, stretch, sector
+
+
+def afloat(tris, sea):
+	# The triangles cut at the sea's surface, the part above it kept: the sea
+	# hides what lies under it, so it makes no outline. sea is (normal, offset),
+	# the normal pointing out of the water. Returns (triangles, the index of
+	# each one's source)
+	normal, offset = sea
+	d = tris @ normal - offset
+	above = (d >= 0).all(axis=1)
+	kept, source = [tris[above]], [np.nonzero(above)[0]]
+	for i in np.nonzero(~above & (d >= 0).any(axis=1))[0]:
+		polygon = []
+		for k in range(3):
+			a, b, da, db = tris[i, k], tris[i, (k + 1) % 3], d[i, k], d[i, (k + 1) % 3]
+			if da >= 0:
+				polygon.append(a)
+			if (da >= 0) != (db >= 0):
+				polygon.append(a + (b - a) * (da / (da - db)))
+		for k in range(1, len(polygon) - 1):
+			kept.append(np.array([[polygon[0], polygon[k], polygon[k + 1]]]))
+			source.append(np.array([i]))
+	return np.concatenate(kept), np.concatenate(source)
 
 
 def frontmost(flat, depth, size):
@@ -390,10 +426,16 @@ class Scene:
 		if photo.get("masks"):
 			masks = covered(photo["masks"], self.work, self.scale)
 			self.hidden = masks if self.hidden is None else self.hidden | masks
+		# the sea's surface, the normal out of the water (the model frame's y is up)
+		self.sea = None
+		if "sea" in catalogue:
+			normal, offset = frame.plane(catalogue["sea"])
+			self.sea = (normal, offset) if normal[1] >= 0 else (-normal, -offset)
 		ground = photo.get("ground")
 		if ground is None:
 			ground = entry.get("pose", {}).get("gear", 0) >= 1
-		self.ground = horizon(self.camera, self.centre, self.work, self.scale, frame.model([0, 1, 0]) - frame.model([0, 0, 0])) if ground else None
+		self.ground = horizon(self.camera, self.centre, self.work, self.scale, frame.model([0, 1, 0]) - frame.model([0, 0, 0]),
+			self.settings.horizon, self.sea) if ground else None
 
 	def places(self, model, joints, pose, parts=None):
 		# The places found along the model's outline in the pose (the points
@@ -411,6 +453,11 @@ class Scene:
 			return [], np.zeros((self.work[1], self.work[0]), bool)
 		names = [n if parts is None or n in parts else None for n, t in solid.items() for _ in range(len(t))] + [None] * sum(len(t) for t in clear.values())
 		tris = np.concatenate(list(solid.values()) + list(clear.values()))
+		if self.sea is not None:
+			tris, source = afloat(tris, self.sea)
+			names = [names[i] for i in source]
+			if not len(tris):
+				return [], np.zeros((self.work[1], self.work[0]), bool)
 		flat, depth = cam.project(self.camera, tris.reshape(-1, 3), self.centre)
 		flat, depth = flat.reshape(-1, 3, 2), depth.reshape(-1, 3)
 		ids = frontmost(flat * self.scale, depth, self.work)
@@ -439,19 +486,24 @@ def overlay(gray, mask, places, scale, path, settings=None):
 	image.save(path)
 
 
-def horizon(camera, centre, work, scale, up):
+def horizon(camera, centre, work, scale, up, degrees=HORIZON, sea=None):
 	# What a camera on the ground sees under the horizon, as a mask at the
-	# working scale: every pixel whose ray points more than HORIZON degrees
-	# below the model frame's horizontal (up: the frame's upward unit vector),
-	# on a coarse grid
+	# working scale: every pixel whose ray points more than `degrees` below the
+	# model frame's horizontal (up: the frame's upward unit vector), or with
+	# sea ((normal, offset), the normal out of the water) more than `degrees`
+	# below the sea's horizon at the camera's height, on a coarse grid
 	rows, columns = np.mgrid[0:work[1]:8, 0:work[0]:8]
 	rotation = cam.rotation(camera[1:4]).T
+	below = np.radians(degrees)
+	if sea is not None:
+		up = sea[0]
+		below += cam.dip(float(sea[0] @ cam.eye(camera) - sea[1]))
 	up = np.asarray(up, float) / np.linalg.norm(up)
 	coarse = np.zeros(rows.shape, bool)
 	for (i, j), r in np.ndenumerate(rows):
 		x = cam.undistort(camera, [(columns[i, j] / scale, r / scale)], centre)[0]
 		d = rotation @ np.array([x[0], x[1], 1.0])
-		coarse[i, j] = d @ up / np.linalg.norm(d) < -np.sin(np.radians(HORIZON))
+		coarse[i, j] = d @ up / np.linalg.norm(d) < -np.sin(below)
 	return np.repeat(np.repeat(coarse, 8, axis=0), 8, axis=1)[:work[1], :work[0]]
 
 

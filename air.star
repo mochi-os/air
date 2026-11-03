@@ -20,7 +20,7 @@ def database_create():
 	# already per-user, so no account column is needed. `updated` versions each
 	# key as an LWW-register so writes converge under multi-host replication.
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
-	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, grade text not null default '', remarks text not null default '', wire integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, title text not null default '')")
+	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, grade text not null default '', remarks text not null default '', wire integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, title text not null default '', passes integer not null default 0, traps integer not null default 0, points integer not null default 0, scored integer not null default 0)")
 	# A match is identified by where and when it ran; the unique index makes the
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
 	# then-insert.
@@ -37,6 +37,16 @@ def database_create():
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 15:
+		# The sortie's passes tallied for the log's grade average and boarding
+		# rate: those counted (all but a foul deck's), the traps, the points of
+		# those that score in tenths, and how many score; older rows keep 0.
+		columns = [c["name"] for c in mochi.db.table("matches")]
+		if "passes" not in columns:
+			mochi.db.execute("alter table matches add column passes integer not null default 0")
+			mochi.db.execute("alter table matches add column traps integer not null default 0")
+			mochi.db.execute("alter table matches add column points integer not null default 0")
+			mochi.db.execute("alter table matches add column scored integer not null default 0")
 	if version == 14:
 		# Recordings are kept forever (#57): nothing prunes, so the pin that
 		# exempted a recording from pruning and the index the prune read go.
@@ -207,9 +217,10 @@ def match_record(a):
 	# record, a checkpoint or the finish, takes its place.
 	started = whole(a, "started")
 	id = mochi.uid()
-	mochi.db.execute("insert into matches (id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, grade, remarks, wire, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do update set title=excluded.title, mode=excluded.mode, team=excluded.team, ended=excluded.ended, reason=excluded.reason, players=excluded.players, kills=excluded.kills, deaths=excluded.deaths, cheated=excluded.cheated, grade=excluded.grade, remarks=excluded.remarks, wire=excluded.wire where matches.reason='flying'",
+	mochi.db.execute("insert into matches (id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, grade, remarks, wire, passes, traps, points, scored, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do update set title=excluded.title, mode=excluded.mode, team=excluded.team, ended=excluded.ended, reason=excluded.reason, players=excluded.players, kills=excluded.kills, deaths=excluded.deaths, cheated=excluded.cheated, grade=excluded.grade, remarks=excluded.remarks, wire=excluded.wire, passes=excluded.passes, traps=excluded.traps, points=excluded.points, scored=excluded.scored where matches.reason='flying'",
 		id, world, title, session, a.input("mode", "")[:32], a.input("team", "")[:16], started, whole(a, "ended"), a.input("reason", "")[:32],
-		a.input("players", "")[:1024], whole(a, "kills"), whole(a, "deaths"), whole(a, "cheated"), a.input("grade", "")[:16], a.input("remarks", "")[:256], whole(a, "wire"), mochi.time.now())
+		a.input("players", "")[:1024], whole(a, "kills"), whole(a, "deaths"), whole(a, "cheated"), a.input("grade", "")[:16], a.input("remarks", "")[:256], whole(a, "wire"),
+		whole(a, "passes"), whole(a, "traps"), whole(a, "points"), whole(a, "scored"), mochi.time.now())
 	stored = mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ? and id = ?", world, session, started, id)
 	return {"data": {"stored": stored}}
 
@@ -231,7 +242,7 @@ def match_list(a):
 	# Totals span every row, not the page listed, and include cheated flights (a
 	# logbook, not a leaderboard). started/ended are epoch milliseconds, hence /
 	# 1000.
-	totals = mochi.db.row("select count(*) as flights, sum(ended - started) / 1000 as seconds, sum(kills) as kills, sum(deaths) as deaths, sum(cheated) as cheated from matches")
+	totals = mochi.db.row("select count(*) as flights, sum(ended - started) / 1000 as seconds, sum(kills) as kills, sum(deaths) as deaths, sum(cheated) as cheated, sum(passes) as passes, sum(traps) as traps, sum(points) as points, sum(scored) as scored from matches")
 	return {"data": {"matches": matches[:PAGE], "more": more, "totals": totals}}
 
 # servers() -> {"data": {"servers": [...]}}: the public world servers hosting

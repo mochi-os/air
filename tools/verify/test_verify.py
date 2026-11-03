@@ -441,6 +441,69 @@ class CameraTest(unittest.TestCase):
 		_, solved = bundle.solve()
 		np.testing.assert_allclose(solved["t"], target, atol=1e-3)
 
+	def test_horizon_lies_at_the_dip(self):
+		# the almanac's dip: 1.76 minutes of arc at 1 m, 7.04 at 16 m
+		self.assertEqual(cam.dip(0.0), 0.0)
+		self.assertAlmostEqual(math.degrees(cam.dip(16.0)) * 60, 7.04, places=6)
+		# pixels on the true horizon miss by nothing; the camera pitched down 2
+		# mrad, their rays point 2 mrad low (less off to the side)
+		c = cam.looking(np.array([0.0, 9.0, 300.0]), np.array([0.0, 9.0, 0.0]), 6000.0)
+		pixels = self.sea_horizon(c)
+		np.testing.assert_allclose(cam.horizon(c, pixels, self.centre, np.array([0, 1.0, 0]), 0.0), 0.0, atol=1e-6)
+		down = c.copy()
+		down[1:4] = cam.vector(cam.rotation([0.002, 0, 0]) @ cam.rotation(c[1:4]))
+		down[4:7] = -cam.rotation(down[1:4]) @ cam.eye(c)
+		expected = [-6000 * 0.002 * math.cos(a) for a in self.AZIMUTHS]
+		np.testing.assert_allclose(cam.horizon(down, pixels, self.centre, np.array([0, 1.0, 0]), 0.0), expected, atol=0.05)
+
+	AZIMUTHS = (-0.25, -0.1, 0.05, 0.2)
+
+	def sea_horizon(self, c, sea=0.0):
+		# where the sea's horizon falls in a camera looking along -z: far points
+		# at the dip below level, either side of ahead
+		eye = cam.eye(c)
+		d = cam.dip(eye[1] - sea)
+		directions = [[math.sin(a) * math.cos(d), -math.sin(d), -math.cos(a) * math.cos(d)] for a in self.AZIMUTHS]
+		return cam.project(c, eye + 1e5 * np.array(directions), self.centre)[0]
+
+	def test_horizon_fixes_a_camera_on_a_line(self):
+		# Four marks on one line, as a deck edge seen from near the water: the
+		# camera can swing about the line and see them the same. Started swung
+		# 5 mrad, the marks leave it there; the horizon brings it back
+		line = {f"edge{i}": np.array([x, 18.0, 36.0]) for i, x in enumerate((-100.0, -30.0, 40.0, 110.0))}
+		truth = cam.looking(np.array([5.0, 6.0, 300.0]), np.array([0.0, 18.0, 36.0]), 6000.0)
+		axis = np.array([0.0, 18.0, 36.0])
+		Q = cam.rotation([0.005, 0, 0])
+		swung = cam.carried(truth, (Q.T, axis - Q.T @ axis))
+		names = list(line)
+		marks = dict(zip(names, map(tuple, cam.project(truth, np.array([line[n] for n in names]), self.centre)[0])))
+		np.testing.assert_allclose(cam.project(swung, np.array([line[n] for n in names]), self.centre)[0], list(marks.values()), atol=1e-6)
+		points = {n: {"priors": [(np.eye(3)[i], p[i], 0.0) for i in range(3)]} for n, p in line.items()}
+
+		def solved(horizon):
+			photo = {"centre": self.centre, "width": 4000, "sigma": 1.0, "marks": marks, "camera": swung.copy(), "focal": (6000.0, 0.01)}
+			if horizon:
+				photo["horizon"] = list(map(tuple, self.sea_horizon(truth)))
+			bundle = cam.Bundle([photo], points, sea=(np.array([0, 1.0, 0]), 0.0))
+			bundle.initialise(log=lambda *_: None)
+			cameras, _ = bundle.solve()
+			return bundle, cameras[0]
+
+		_, without = solved(False)
+		self.assertGreater(np.linalg.norm(cam.eye(without) - cam.eye(truth)), 1.0)
+		bundle, held = solved(True)
+		np.testing.assert_allclose(cam.eye(held), cam.eye(truth), atol=0.05)
+		self.assertLess(max(abs(v) for v in bundle.horizons()[0]), 0.05)
+
+	def test_horizon_needs_a_sea(self):
+		photo = {"centre": self.centre, "width": 4000, "sigma": 1.0, "marks": {}, "horizon": [(0.0, 0.0)]}
+		with self.assertRaises(ValueError):
+			cam.Bundle([photo], {})
+		# a sea plane written facing down is turned to face up, out of the water
+		normal, offset = cam.Bundle([photo], {}, sea=([0, -1.0, 0], 2.0)).sea
+		np.testing.assert_allclose(normal, [0, 1, 0])
+		self.assertEqual(offset, -2.0)
+
 
 if __name__ == "__main__":
 	unittest.main()

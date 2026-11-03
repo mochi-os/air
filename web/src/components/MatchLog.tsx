@@ -43,6 +43,7 @@ import {
   ShieldAlert,
 } from 'lucide-react'
 import { conceal } from '../game/acmi'
+import { points } from '../game/lso'
 import {
   log,
   recording_load,
@@ -224,6 +225,26 @@ export function MatchLog({
     }
     return labels[grade] ?? grade
   }
+  // The perfect pass is OK underlined, as the LSO writes it; the write-up's
+  // underlined deviations (_LUL_) are underlined the same way.
+  const gradeText = (grade: string): ReactNode =>
+    grade === 'PERFECT' ? (
+      <span className='underline underline-offset-2'>{gradeLabel('OK')}</span>
+    ) : (
+      gradeLabel(grade)
+    )
+  const shorthand = (text: string): ReactNode =>
+    text.split(/_([^_]+)_/).map((part, i) =>
+      i % 2 ? (
+        <span key={i} className='underline underline-offset-2'>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    )
+  const worth = (value: number): string =>
+    formatNumber(value, Number.isInteger(value) ? 0 : 1)
   const wireLabel = (wire: number): string => {
     const labels: Record<number, string> = {
       1: t`1 WIRE`,
@@ -295,6 +316,13 @@ export function MatchLog({
   const deaths = totals?.deaths ?? 0
   const seconds = totals?.seconds ?? 0
   const ratio = deaths ? kills / deaths : kills
+  // The carrier passes over every flight: the grade average over those that
+  // score (points in tenths), and the boarding rate, traps out of the passes
+  // that count
+  const passes = totals?.passes ?? 0
+  const scored = totals?.scored ?? 0
+  const average = scored ? (totals?.points ?? 0) / 10 / scored : 0
+  const boarding = passes ? (totals?.traps ?? 0) / passes : 0
   // M:SS under an hour, H:MM:SS past it — the same clock the flight recorder
   // and the developer overlay show, so a duration reads the same everywhere.
   const clock = (total: number): string => {
@@ -363,6 +391,18 @@ export function MatchLog({
         <span>
           <Trans>K/D</Trans>: {formatNumber(ratio, 2)}
         </span>
+        {scored ? (
+          <span>
+            <Trans context='carrier landings'>Grade average</Trans>:{' '}
+            {formatNumber(average, 2)}
+          </span>
+        ) : null}
+        {passes ? (
+          <span>
+            <Trans context='carrier landings'>Boarding rate</Trans>:{' '}
+            {formatNumber(boarding * 100, 0)}%
+          </span>
+        ) : null}
       </div>
 
       {/* Only worth showing once there is something to narrow: one server and
@@ -515,7 +555,7 @@ export function MatchLog({
               </TableCell>
               <TableCell>{reasonLabel(m.reason)}</TableCell>
               {/* The cheat mark first, where it always sits, then the last
-                  pass as the LSO wrote it up: the grade and the wire
+                  pass as the LSO wrote it up: the grade, its points and the wire
                   translated, the shorthand verbatim - it is the same in every
                   language, like the radio calls. The grade and wire hold
                   together; the write-up wraps (the table's cells otherwise
@@ -535,13 +575,17 @@ export function MatchLog({
                 {m.grade ? (
                   <>
                     <span className='whitespace-nowrap'>
-                      {gradeLabel(m.grade)}
+                      {gradeText(m.grade)}
+                      {(() => {
+                        const value = points(m.grade, m.remarks)
+                        return value === null ? '' : ' (' + worth(value) + ')'
+                      })()}
                       {m.wire ? ', ' + wireLabel(m.wire) : ''}
                     </span>
                     {m.remarks ? (
                       <span className='text-muted-foreground'>
                         {' '}
-                        · {m.remarks}
+                        · {shorthand(m.remarks)}
                       </span>
                     ) : null}
                   </>

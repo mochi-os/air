@@ -158,7 +158,21 @@ function blend(a: Pose, b: Pose, f: number): Pose {
 // spacing, stations], the stations two to a vec4, and the greatest breadth;
 // and her screws, up to four pairs' offsets from her centre line (-1 for
 // none) and their diameter (0 for a ship without them, which draws no races).
-export function hull(waterline: Waterline, screws?: Screws) {
+// BOW is the bow wave's height coefficient and Froude speed for a ship that
+// gives neither entrance nor draught: the Nimitz model's waterline, tan a 0.11
+// and 11.3 m, which the Ford shares (the same hull form, dote2019) until her
+// own bow's waterline is measured
+export const BOW = [0.2435, 10.53]
+
+// bow is the bow wave's height coefficient, 2.2 tan a / cos a for her
+// waterline's half entrance angle a (degrees), and the speed her draught
+// (metres) makes a Froude number of one, sqrt(g d), for the shader's u_bow
+export function bow(entrance: number, draught: number): number[] {
+  const a = (entrance * Math.PI) / 180
+  return [(2.2 * Math.tan(a)) / Math.cos(a), Math.sqrt(9.81 * draught)]
+}
+
+export function hull(waterline: Waterline, screws?: Screws, shape?: { entrance: number; draught: number }) {
   const sides = waterline.sides.slice(0, HULL * 2)
   const count = sides.length
   const stations = new Float32Array(HULL * 4)
@@ -177,6 +191,7 @@ export function hull(waterline: Waterline, screws?: Screws) {
     beam: Math.max(...sides.map((side) => side[1] - side[0])),
     screws: [0, 1, 2, 3].map((i) => screws?.lateral[i] ?? -1),
     screw: screws?.diameter ?? 0,
+    bow: shape ? bow(shape.entrance, shape.draught) : BOW,
   }
 }
 
@@ -396,7 +411,7 @@ export class Wake {
 // It reads the sea's own clock, chart and wind (u_time, u_chart and SEA_TURN's
 // u_downwind and sea_drift), so it follows SEA_TURN in the sea's shader.
 export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform sampler2D u_trail; uniform float u_trail_step; uniform vec4 u_wake_group[${GROUPS}]; uniform float u_wake_count; uniform vec2 u_wake_origin; uniform vec4 u_wake_bounds;
-	uniform vec4 u_ship; uniform vec4 u_hull_span; uniform vec4 u_hull[${HULL}]; uniform float u_hull_beam,u_wake_sea,u_wake_travelled; uniform vec4 u_screws; uniform float u_screw;
+	uniform vec4 u_ship; uniform vec4 u_hull_span; uniform vec4 u_hull[${HULL}]; uniform float u_hull_beam,u_wake_sea,u_wake_travelled; uniform vec4 u_screws; uniform float u_screw; uniform vec2 u_bow;
 	vec2 trail_at(float along){   // how long ago her stern passed a place along metres astern on its way, and how fast she went
 		float k=clamp(along/max(u_trail_step,1.0e-4),0.0,${TRAIL - 1}.0), i=min(floor(k),${TRAIL - 2}.0);
 		return mix(texture2D(u_trail,vec2((i+0.5)/${TRAIL}.0,0.5)).rg,texture2D(u_trail,vec2((i+1.5)/${TRAIL}.0,0.5)).rg,k-i); }
@@ -412,7 +427,7 @@ export const WAKE = `uniform vec4 u_wake[${POINTS}]; uniform sampler2D u_trail; 
 		return board>0.0?across-sides.y:sides.x-across; }
 	float bow_height(float back, float lateral, float v){   // the bow wave's surface at a point of her frame, metres (see wake_at)
 		float aft=max(back,0.0), ahead=min(back,0.0), d=(lateral-0.3536*aft)/(1.0+0.15*aft);
-		float peak=0.2435*v*v/(9.81*(1.0+v/10.53));   // 2.2 tan a / cos a for her entrance, tan a 0.11; F over her 11.3 m draft
+		float peak=u_bow.x*v*v/(9.81*(1.0+v/u_bow.y));   // 2.2 tan a / cos a for her entrance a, and F over her draught (bow())
 		return peak*exp(-0.25*ahead*ahead-aft/(12.0+0.107*v*v)-d*d); }
 	void wake_at(vec2 p, float px, out float foam, out float air, out float slick, out vec2 lean){
 		foam=0.0; air=0.0; slick=0.0; lean=vec2(0.0);

@@ -5,7 +5,8 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import nimitz from '../assets/nimitz.json'
+import ford from '../assets/ford.json'
+import { type Contract, layout } from './ship'
 import {
   AGE,
   BAND,
@@ -22,6 +23,7 @@ import {
   WANDER,
   Wake,
   before,
+  BOW,
   hull,
   point,
   reading as carrier_reading,
@@ -35,7 +37,8 @@ const source = readFileSync(
   fileURLToPath(new URL('./engine.ts', import.meta.url)),
   'utf8'
 )
-const waterline = nimitz.waterline
+const ship = layout(ford as unknown as Contract)
+const waterline = ship.waterline!
 const length = waterline.stem - waterline.stern
 
 // A ship steaming steadily on heading h at speed v, at the origin at time 0;
@@ -87,7 +90,7 @@ function drawn(wake: Wake, time: number, now: Pose) {
 
 describe("the ship file's waterline", () => {
   it('runs from the stern to the stem in stations, port inside starboard, a fine bow to a point', () => {
-    expect(waterline.stem - waterline.stern).toBeCloseTo(313.87, 1) // the Nimitz's 317 m at the waterline, as the model is built
+    expect(waterline.stem - waterline.stern).toBeCloseTo(316.81, 1) // the Ford's 316.8 m at the waterline, as measured from the photos (1040 ft, 317.0 m, cited)
     expect(waterline.sides.length).toBeGreaterThan(2)
     expect(waterline.sides.length).toBeLessThanOrEqual(2 * 21)
     for (const [port, starboard] of waterline.sides)
@@ -107,22 +110,24 @@ describe("the ship file's waterline", () => {
       expect(shape.stations[i * 2]).toBeCloseTo(port, 4)
       expect(shape.stations[i * 2 + 1]).toBeCloseTo(starboard, 4)
     })
-    expect(shape.beam).toBeCloseTo(38.54, 2)
+    expect(shape.beam).toBeCloseTo(41.03, 2) // the Ford's 134 ft (40.8 m) at the waterline, as her stations are resampled
     // a ship without screws in her file draws no races
     expect(shape.screws).toEqual([-1, -1, -1, -1])
     expect(shape.screw).toBe(0)
   })
   it('carries her four screws, a pair either side of her centre line, 6.4 m across, which the engine hands the shader', () => {
-    expect(nimitz.screws.lateral).toEqual([6, 13])
-    expect(nimitz.screws.diameter).toBe(6.4)
-    const shape = hull(waterline, nimitz.screws)
+    expect(ship.screws!.lateral).toEqual([6, 13])
+    expect(ship.screws!.diameter).toBe(6.4)
+    const shape = hull(waterline, ship.screws)
     expect(shape.screws).toEqual([6, 13, -1, -1])
     expect(shape.screw).toBe(6.4)
     expect(source).toContain(
       'wake_shape=SHIP.waterline?wake_hull(SHIP.waterline,SHIP.screws):null;'
     )
+    // and the bow wave's entrance and draught, which the shader reads as u_bow
+    expect(shape.bow).toEqual(BOW)
     expect(source).toContain(
-      'u.u_screws.value.fromArray(wake_shape.screws); u.u_screw.value=wake_shape.screw;'
+      'u.u_screws.value.fromArray(wake_shape.screws); u.u_screw.value=wake_shape.screw; u.u_bow.value.fromArray(wake_shape.bow);'
     )
     expect(source).toContain(
       'u_screws:{value:new THREE.Vector4(-1,-1,-1,-1)}, u_screw:{value:0}'
@@ -552,7 +557,7 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
 
   // The flight deck overhangs the bow's waterline (13 m past the stem, 12 m and more to either side), so what
   // the bow does is seen from above only where it reaches out past the deck's edge.
-  const deck = nimitz.outline as number[][]
+  const deck = ship.outline as number[][]
   const tip = Math.max(...deck.map((p) => p[0])) - waterline.stem
   const stem = waterline.sides[waterline.sides.length - 1]
   const middle = (stem[0] + stem[1]) / 2
@@ -576,9 +581,19 @@ describe('what the shader draws at steerage way, and the sea breaking on her', (
       /float /g,
       'let '
     )
-    const f = new Function('max', 'min', 'exp', 'back', 'lateral', 'v', body)
+    const f = new Function(
+      'max',
+      'min',
+      'exp',
+      'u_bow',
+      'back',
+      'lateral',
+      'v',
+      body
+    )
+    const bow = { x: BOW[0], y: BOW[1] } // the shader's u_bow, as the engine hands it the ship's
     return (back: number, lateral: number, v: number) =>
-      f(Math.max, Math.min, Math.exp, back, lateral, v) as number
+      f(Math.max, Math.min, Math.exp, bow, back, lateral, v) as number
   })()
   const kelvin = Math.tan(Math.asin(1 / 3))
   // the crest at a station: the lateral where the surface stands highest

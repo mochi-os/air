@@ -12,6 +12,11 @@
 # authority, which the system store lacks: their entries set "insecure", and the
 # recorded hash is what vouches for the file.
 #
+# An image host that answers a page's headers with a web page of its own
+# (Reddit's) is asked as a browser asks for a picture: the entry says
+# "image": true. A photo's file is refused unless it is a picture, fetched or
+# kept, so such a page's hash is never recorded as the photo's.
+#
 # A web page ("volatile") changes under its own address, so its hash records
 # the copy read when the facts were taken from it: a cached copy is kept as it
 # is, and a fresh fetch that differs is reported rather than refused. Its facts
@@ -36,6 +41,20 @@ HEADERS = {
 	"Sec-Fetch-User": "?1",
 	"Upgrade-Insecure-Requests": "1",
 }
+PICTURE = {key: value for key, value in HEADERS.items() if key not in ("Sec-Fetch-User", "Upgrade-Insecure-Requests")}
+PICTURE.update({"Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8", "Sec-Fetch-Dest": "image", "Sec-Fetch-Mode": "no-cors",
+	"Sec-Fetch-Site": "cross-site"})
+# What a picture's file begins with, by its suffix
+SIGNATURES = {".jpg": b"\xff\xd8\xff", ".jpeg": b"\xff\xd8\xff", ".png": b"\x89PNG\r\n\x1a\n"}
+
+
+def picture(path, suffix):
+	# Whether a file meant to be a picture of this suffix is one
+	signature = SIGNATURES.get(suffix.lower())
+	if signature is None:
+		return True
+	with open(path, "rb") as f:
+		return f.read(len(signature)) == signature
 
 
 def digest(path):
@@ -52,15 +71,20 @@ def fetch(entry, record):
 	known = entry.get("sha256")
 	volatile = entry.get("volatile", False)
 	if target.exists() and known and (volatile or digest(target) == known):
+		if not picture(target, target.suffix):
+			raise SystemExit(f"{entry['id']}: {entry['file']} is not a picture: its recorded hash vouches for something else")
 		return "kept"
 	if not known and not record:
 		raise SystemExit(f"{entry['id']}: no sha256 recorded (run with --record)")
-	request = urllib.request.Request(entry["url"], headers=HEADERS)
+	request = urllib.request.Request(entry["url"], headers=PICTURE if entry.get("image") else HEADERS)
 	context = ssl._create_unverified_context() if entry.get("insecure") else None
 	partial = target.with_suffix(target.suffix + ".part")
 	with urllib.request.urlopen(request, timeout=300, context=context) as response, open(partial, "wb") as out:
 		while block := response.read(1 << 20):
 			out.write(block)
+	if not picture(partial, target.suffix):
+		partial.unlink()
+		raise SystemExit(f"{entry['id']}: {entry['url']} answered something other than a picture")
 	found = digest(partial)
 	if known and found != known:
 		if not volatile:

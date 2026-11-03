@@ -24,6 +24,7 @@ import pull_up from '../assets/voice/pull-up.mp3?url'
 import roll_left from '../assets/voice/roll-left.mp3?url'
 import roll_right from '../assets/voice/roll-right.mp3?url'
 import type { Message } from './voice'
+import { carried } from './carried'
 
 let context: AudioContext | null = null
 let master: GainNode | null = null
@@ -569,7 +570,8 @@ async function listen(): Promise<void> {
   await Promise.all(
     Object.entries(RECORDINGS).map(async ([message, url]) => {
       try {
-        const data = await (await fetch(url)).arrayBuffer()
+        const data =
+          (await carried(url)) ?? (await (await fetch(url)).arrayBuffer())
         voices.set(message as Message, await c.decodeAudioData(data))
       } catch {
         // stays missing, and the master caution tone covers its caution

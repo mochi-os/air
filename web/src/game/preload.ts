@@ -11,8 +11,9 @@
 import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import flight_wasm_url from '../assets/flight.wasm?url'
-import nimitz_model_url from '../assets/nimitz.glb?url'
+import ford_model_url from '../assets/ford.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
+import { carried } from './carried'
 
 interface Load {
   promise: Promise<ArrayBuffer>
@@ -57,6 +58,23 @@ function begin(url: string): Load {
   }
   load.promise = (async () => {
     try {
+      // Through the shell first, whose cache keeps it for the next visit; its
+      // progress keeps the stall clock moving as a direct read's chunks do.
+      const kept = await carried(url, (received) => {
+        load.received = received
+        moved = performance.now()
+      })
+      if (kept) {
+        load.received = kept.byteLength
+        load.done = true
+        moved = performance.now()
+        return kept
+      }
+      // A carried download that failed part way counted bytes this one will
+      // not hold: the count and the stall clock start again, as for a fresh
+      // fetch.
+      load.received = 0
+      moved = performance.now()
       const response = await fetch(url)
       if (!response.ok) throw new Error('HTTP ' + response.status)
       if (!load.total && !response.headers.get('Content-Encoding')) {
@@ -101,7 +119,7 @@ function begin(url: string): Load {
 // preload starts the big downloads; idempotent, call from the menu on mount.
 export function preload(): void {
   moved = performance.now()
-  begin(nimitz_model_url)
+  begin(ford_model_url)
   begin(fa18c_model_url)
   begin(stores_model_url)
   begin(amraam_model_url)

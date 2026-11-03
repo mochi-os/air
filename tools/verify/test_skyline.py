@@ -12,9 +12,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import skyline  # noqa: E402
 
 
-def look(eye, photo=None, pose=None, section=None):
+def look(eye, photo=None, pose=None, section=None, sea=None, silhouette=False):
 	# The places a scene finds on a plate (the body, 2 x 0.2 x 1 m) photographed from eye against a bright
-	# sky: photo is the catalogue's photo entry, pose the cameras file's, section the catalogue's "skyline"
+	# sky: photo is the catalogue's photo entry, pose the cameras file's, section the catalogue's "skyline",
+	# sea its "sea"; with silhouette, the model's silhouette mask too
 	import tempfile
 	import camera as cam
 	import model as mod
@@ -32,9 +33,11 @@ def look(eye, photo=None, pose=None, section=None):
 		catalogue = {"frame": JET, "photos": {"p": photo or {}}}
 		if section:
 			catalogue["skyline"] = section
+		if sea:
+			catalogue["sea"] = sea
 		entry = {"photo": "p", "file": "p.png", "size": size, "camera": list(camera), "pose": pose or {}}
-		places, _ = skyline.Scene(catalogue, root, mod.Frame(catalogue["frame"]), {}, entry).places(model, {}, {})
-		return places
+		places, shown = skyline.Scene(catalogue, root, mod.Frame(catalogue["frame"]), {}, entry).places(model, {}, {})
+		return (places, shown) if silhouette else places
 
 
 def profile(edge, jet=60.0, sky=200.0, noise=0.0, seed=0):
@@ -242,6 +245,40 @@ class SkylineTest(unittest.TestCase):
 		row = 200 - 500 * np.tan(np.radians(10 - skyline.HORIZON))
 		self.assertFalse(mask[int(row) - 12, 200])
 		self.assertTrue(mask[int(row) + 12, 200])
+		# a long lens 20 m over the sea: the catalogue's own margin under level, then the sea's horizon,
+		# which lies the dip at that height (0.13 deg) further down
+		level = cam.looking(np.array([30.0, 0.0, 0.0]), np.array([0.0, 0.0, 0.0]), 20000.0)
+		for degrees, sea, below in ((0.1, None, 0.1), (0.1, (np.array([0, 1.0, 0]), -20.0), 0.1 + np.degrees(cam.dip(20.0)))):
+			mask = skyline.horizon(level, (200, 200), (400, 400), 1.0, up, degrees, sea)
+			row = 200 + 20000 * np.tan(np.radians(below))
+			self.assertFalse(mask[int(row) - 10, 200], (degrees, sea))
+			self.assertTrue(mask[int(row) + 10, 200], (degrees, sea))
+
+	def test_sea(self):
+		# the plate stands half in the sea: what lies under the water makes no outline, so the silhouette
+		# stops at the waterline and no place is sought below it; with no sea the whole plate is the model's
+		side = (0.0, 0.0, 12.0)
+		whole, shown = look(side, silhouette=True)
+		afloat, kept = look(side, sea="waterline=105", silhouette=True)
+		rows = np.nonzero(shown.any(axis=1))[0]
+		middle = (rows.min() + rows.max()) // 2
+		self.assertTrue(shown[middle + 5:].any())
+		self.assertFalse(kept[middle + 2:].any())
+		self.assertTrue(kept[:middle - 2].any())
+		self.assertTrue(whole and afloat)
+		self.assertTrue(all(p["point"][1] >= 105 - 1e-6 for p in afloat))
+		self.assertTrue(any(p["point"][1] < 105 for p in whole))
+
+	def test_afloat(self):
+		# a triangle across the surface keeps the part above it, as one triangle or two; one under it goes
+		sea = (np.array([0, 1.0, 0]), 0.0)
+		tris = np.array([[[0, 1, 0], [1, -1, 0], [-1, -1, 0]], [[0, -1, 0], [1, 1, 0], [-1, 1, 0]], [[0, -1, 0], [1, -2, 0], [-1, -2, 0]]], float)
+		kept, source = skyline.afloat(tris, sea)
+		self.assertEqual(sorted(source.tolist()), [0, 1, 1])
+		self.assertTrue((kept[..., 1] >= -1e-9).all())
+		area = lambda t: 0.5 * np.linalg.norm(np.cross(t[:, 1] - t[:, 0], t[:, 2] - t[:, 0]), axis=1)
+		self.assertAlmostEqual(area(kept[source == 0]).sum(), 0.5, places=6)
+		self.assertAlmostEqual(area(kept[source == 1]).sum(), 1.5, places=6)
 
 	def test_scene_blue_sky(self):
 		# a plate seen from below against a deep blue sky, darker in grey than the brightness rule asks:
@@ -283,6 +320,8 @@ class SkylineTest(unittest.TestCase):
 		self.assertEqual(look(above, pose={"gear": 1}), [])
 		self.assertGreater(len(look(above, pose={"gear": 1}, photo={"ground": False})), 40)
 		self.assertEqual(look(above, photo={"ground": True}), [])
+		# the catalogue's horizon: looking 14 deg down at the plate, ground begins only 30 deg under level
+		self.assertGreater(len(look(above, photo={"ground": True}, section={"horizon": 30})), 40)
 
 	def test_masks(self):
 		# a polygon in the photo's own pixels over the plate's right end (beyond x 700; the plate spans 400-800):
@@ -323,6 +362,13 @@ class SkylineTest(unittest.TestCase):
 		self.assertEqual(skyline.region("fin_left", point, ship), ("body", 432, "top"))
 		self.assertEqual(skyline.label(("body", 432, "top"), skyline.Settings({"skyline": {"label": "frame"}})), "body frame 432-456 top")
 		self.assertEqual(skyline.label(("body", 440, "top"), skyline.Settings({"skyline": {"stretch": 40}})), "body FS 440-480 top")
+		# a ship's hull takes the sectors, and every region its side; the mirrored jet's do not
+		ship = skyline.Settings({"skyline": {"families": [["hull", ["hull"]]], "sectored": ["hull"], "sides": ["port", "starboard"]}})
+		self.assertEqual(skyline.region("hull", (450.0, 148.0, -30.0), ship), ("hull", 432, "upper side port"))
+		self.assertEqual(skyline.region("hull", (450.0, 148.0, 30.0), ship), ("hull", 432, "upper side starboard"))
+		self.assertEqual(skyline.region("deck", (450.0, 148.0, -30.0), ship), ("body", 432, "port"))
+		self.assertEqual(skyline.region("hull", (450.0, 148.0, -30.0)), ("body", 432, "upper side"))
+		self.assertEqual(skyline.label(("hull", 432, "upper side port"), ship), "hull FS 432-456 upper side port")
 
 	def test_summary_settings(self):
 		# the catalogue's moving families, tolerance and the frame's symbol, in the report

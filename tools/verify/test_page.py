@@ -57,6 +57,20 @@ class PageTest(unittest.TestCase):
 		self.assertIn('<td class="none" title="body frame 480-520: no photo">', text)
 		self.assertNotIn("body, deck", page.coverage(summary))
 
+	def test_coverage_sides(self):
+		# a catalogue whose regions are split by side (a ship's): a row per part
+		# and side, the body first, port before starboard, each cell filled
+		summary = {"universe": [["deck", 10, "starboard"], ["deck", 10, "port"], ["body", 10, "port"], ["hull", 20, "starboard"]],
+			"regions": [{"family": "deck", "stretch": 10, "sector": "port", "region": "deck x 10-20 port", "photos": {"a": 0.4, "b": 0.6}, "median": 0.5,
+				"finding": False}]}
+		settings = skyline.Settings({"skyline": {"stretch": 10, "label": "x", "sectored": [], "sides": ["port", "starboard"]}})
+		text = page.coverage(summary, settings)
+		self.assertLess(text.index("body, port"), text.index("deck, port"))
+		self.assertLess(text.index("deck, port"), text.index("deck, starboard"))
+		self.assertLess(text.index("deck, starboard"), text.index("hull, starboard"))
+		self.assertIn('<td class="two" title="deck x 10-20 port: 2 photos, a +0.4, b +0.6">+0.5</td>', text)
+		self.assertIn('<td class="none" title="deck x 10-20: no photo">', text)
+
 	def test_build(self):
 		# a run's outputs to a page: escaped text, images copied as JPEGs, the finding's sheet shown
 		with tempfile.TemporaryDirectory() as root:

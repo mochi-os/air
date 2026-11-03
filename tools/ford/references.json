@@ -309,9 +309,10 @@
 				"identified": "by the user; no hull number in frame"
 			},
 			"shows": "a raised blast deflector from behind (cooling panel modules, strut row, striped top edge, deck slot) and a raised catapult control cab beside it; an F-35C launching in afterburner beyond",
-			"note": "Decision 27: Kennedy photos may be used for the fittings the two ships share. 5607x3738. Replace with the Navy original (DVIDS or navy.mil) when found.",
-			"sha256": "efaf496794e4d5d11707be3fb1ab6db93d15ad379a79ca44a0f08b5d69c11a8c",
-			"bytes": 8411
+			"note": "Decision 27: Kennedy photos may be used for the fittings the two ships share. 5607x3738. Replace with the Navy original (DVIDS or navy.mil) when found. i.redd.it answers a page's request with its own web page; asked as for a picture (image), it serves the photo.",
+			"image": true,
+			"sha256": "7301642db73dc001eb613d20633cf697b9ecdc7bdb1c184ae1822a814e36f614",
+			"bytes": 1392634
 		},
 		{
 			"id": "souda2023",
@@ -359,6 +360,46 @@
 			"note": "Precision Landing Mode's first sea trials on CVN 77, 20 April 2015: on a 3-wire deck the 2 wire is the target.",
 			"sha256": "ff38c3b6ab7658f660747a41ed5173fbc2c49cc028599ed2e065c30cc757c6df",
 			"bytes": 139308
+		},
+		{
+			"id": "navedtra14310",
+			"title": "Aviation Boatswain's Mate E, chapter 3: Mk 7 Aircraft Recovery Equipment",
+			"authors": "Naval Education and Training Professional Development and Technology Center",
+			"date": "2001-07",
+			"url": "https://www.globalsecurity.org/military/library/policy/navy/nrtc/14310_ch3.pdf",
+			"licence": "US government work; Distribution Statement A: approved for public release, distribution is unlimited",
+			"use": "facts",
+			"file": "documents/navedtra14310.pdf",
+			"note": "NAVEDTRA 14310. Table 3-1, Mk 7 Mod 3 arresting gear: \"Length of deck pendant runout 344 ft (to tail hook)\", \"MAXIMUM ENERGY ABSORPTION 47,500,000 ft-lb\"; the constant runout valve \"is designed to stop all aircraft with the same amount of runout regardless of the aircraft's weight and speed\".",
+			"sha256": "7f1ab7c28a33d304c9be0034ec49c1f64c25bad6b91dc7dacf277470d0acc102",
+			"bytes": 2117095
+		},
+		{
+			"id": "meeker2009",
+			"title": "Indirect vector control of a redundant linear induction motor for aircraft launch",
+			"authors": "David C. Meeker, Michael J. Newman",
+			"date": "2009-11",
+			"url": "https://www.femm.info/dmeeker/pdf/MeekerNewman2009.pdf",
+			"licence": "NAVAIR Public Release 08-642; Distribution Statement A: approved for public release, distribution is unlimited",
+			"use": "facts",
+			"file": "documents/meeker2009.pdf",
+			"note": "Proceedings of the IEEE 97(11):1768-1776. The EMALS catapults' three requirements: \"Produce a sustained launch force of ~1.3 MN\", \"Achieve launch speeds of up to ~100 m/s (over a stroke of ~100 m)\", \"Brake the shuttle ... over a stroke of less than 10 m\"; the launch phases flux build-up, force ramp-up, constant acceleration and braking.",
+			"sha256": "84f18bfe44bf97bfea7deee7aa54b057c5420af4c60d516cb1b17f24df2fafaa",
+			"bytes": 691799
+		},
+		{
+			"id": "gsemals",
+			"title": "Electromagnetic Aircraft Launch System - EMALS",
+			"authors": "GlobalSecurity.org",
+			"date": "read 2026-11-01",
+			"url": "https://www.globalsecurity.org/military/systems/ship/systems/emals.htm",
+			"licence": "Copyright GlobalSecurity.org",
+			"use": "facts",
+			"file": "documents/gsemals.html",
+			"volatile": true,
+			"note": "Reproduces Doyle, Samuel, Conway and Klimowski, \"Electromagnetic aircraft launch system - EMALS\", IEEE Transactions on Magnetics 31(1):528-533, January 1995, which is paywalled: \"the EMALS is capable of operating within the 1.05 max peak-to-mean acceleration requirement\"; steam's \"nominally 1.25, with excursions up to 2.0\". The 1995 design is a synchronous motor, not the induction motor fielded.",
+			"sha256": "ebfc51e1cd3f7a169b6bbfccf1773076542b860b8b09a091dcbab03942943495",
+			"bytes": 46352
 		},
 		{
 			"id": "dvids7694421",
@@ -581,12 +622,12 @@
 			"ship": {
 				"hull": "CVN-78"
 			},
-			"shows": "stern: dead astern, low (camera near the water, about 2-3 deg up), at the shipyard during the move to Pier 3",
+			"shows": "bow: head-on, low (camera near the water), at the shipyard during the move to Pier 3",
 			"pixels": [
 				5036,
 				3597
 			],
-			"note": "The only low dead-astern photo: full transom, the flight deck's aft overhang and round-down, the aft sponsons and the hull's lines into the water at a light-ship waterline (well above the deployed one). Hull below the deployed waterline. Fit: November 2013, under construction (no mast top, deck structures incomplete): use for hull form only, not fittings. Spoilers: tugs across the waterline, bunting on the transom ('CVN' banner), yard crane. Pre-2017: outside decision 9's window for structure except the hull form.",
+			"note": "The bow from ahead, not the stern (references/research/stern): the stem and its flare, both hawse pipes with an anchor, the flight deck's forward overhang, and the hull's lines into the water at a light-ship waterline (well above the deployed one). Fit: November 2013, under construction: use for hull form only, not fittings. Spoilers: tugs across the waterline, bunting at the deck edge and a 'CVN' banner on the stem, yard crane. Pre-2017: outside decision 9's window for structure except the hull form.",
 			"sha256": "f5b274ab47aa74b9a6c89a5d0fdf68f82b9dc966cbc437f33b878a9841354b1d",
 			"bytes": 741983
 		},
@@ -1212,6 +1253,27 @@
 			"bytes": 5454049
 		},
 		{
+			"id": "kennedy10011978",
+			"number": "VIRIN 261014-N-AW439-1256; DVIDS 10011978",
+			"title": "PCU John F. Kennedy First F-35C Launch [Image 5 of 7]",
+			"authors": "U.S. Navy photo (DVIDS credits Mass Communication Specialist Seaman Kaitlyn Bailey)",
+			"date": "2026-10-14",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2610/10011978.jpg",
+			"page": "https://www.dvidshub.net/image/10011978/pcu-john-f-kennedy-first-f-35c-launch",
+			"licence": "PUBLIC DOMAIN - This work, PCU John F. Kennedy First F-35C Launch [Image 7 of 7], by SN Kaitlyn Bailey, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 7 of 7]",
+			"use": "trace",
+			"file": "photos/kennedy10011978.jpg",
+			"ship": {
+				"hull": "CVN-79",
+				"name": "PCU John F. Kennedy",
+				"identified": "by the DVIDS caption"
+			},
+			"shows": "deck blast deflector raised, seen from forward and to one side at deck height (35 mm), its face's six modules and panel rows; the catapult shuttle close in the foreground",
+			"note": "Kennedy (CVN-79), decision 27: used for the raised deflector's rise and seams (deflector2.py) and the shuttle's shape. 5826x3884, Canon EOS R3, 35 mm. Caption: \"A U.S. Navy F-35C Lightning II, attached to the 'Salty Dogs' of Air Test and Evaluation Squadron (VX) 23, is launched on the flight deck aboard PCU John F. Kennedy (CVN 79) ... October 14, 2026\". No hull number in frame: the gallery's caption names the ship.",
+			"sha256": "4210bc2d8b6f0905177f43f3ee1637a9ea3ce5cd24499299623ec72bfe27f30e",
+			"bytes": 4787979
+		},
+		{
 			"id": "dvids9411247",
 			"number": "VIRIN 251117-N-KB999-3187; DVIDS 9411247",
 			"title": "USS Gerald R. Ford (CVN 78) Daily Operations [Image 27 of 27]",
@@ -1256,6 +1318,52 @@
 			"note": "Bulbous bow, stem to the keel blocks, the red underwater hull and the boot-top, forward flare above; the dock walls give straight references. Fit: October 2013 float-out (island fitted, mast incomplete): hull form only. The Commons original was downloaded (3000x2002, 1,557,688 bytes); the public DVIDS original (https://d34w7g4gy10iej.cloudfront.net/photos/1310/1034896.jpg, 3000x2002, 1,946,458 bytes) is the same frame in a different file.",
 			"sha256": "b1ac1263ccb17311464e9a9a5e72baa5422391e4c98e33f7af1860455646df0f",
 			"bytes": 1557688
+		},
+		{
+			"id": "dvids9344251",
+			"number": "VIRIN 250923-N-BX517-1050; DVIDS 9344251",
+			"title": "USS Gerald R. Ford (CVN 78) Twilight Flight Operations [Image 3 of 9]",
+			"authors": "U.S. Navy photo (DVIDS credits Petty Officer 2nd Class Mariano Lopez)",
+			"date": "2025-09-23",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2509/9344251.jpg",
+			"page": "https://www.dvidshub.net/image/9344251/uss-gerald-r-ford-cvn-78-twilight-flight-operations",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Twilight Flight Operations [Image 9 of 9], by PO2 Mariano Lopez, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 9 of 9; this image is Image 3 of 9]",
+			"use": "trace",
+			"file": "photos/dvids9344251.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "island from forward at dusk (North Sea), mast and both yardarms in silhouette, its floodlights and two mast lights lit",
+			"note": "Hull: caption names CVN 78; the island and mast match the Ford's measured island (the camera solves on its yardarm and dome points), and Kennedy (CVN-79) was undelivered. 70 mm, the island out of focus (marks blurred, 10-25 px). Lit: 5 floods on the lower yardarm, 5 along the roof's forward edge, 2 at the upper block's port forward corner (all green-white), a red light on the mast trunk under the upper yardarm and a warm-white one between the yardarms.",
+			"pixels": [
+				4291,
+				6437
+			],
+			"sha256": "b56180f76879d914796d97c280e46bb463020f54b41f5d24ecd318602cd807c3",
+			"bytes": 2285226
+		},
+		{
+			"id": "dvids9478938",
+			"number": "VIRIN 260104-N-VW875-1030; DVIDS 9478938",
+			"title": "USS Gerald R. Ford (CVN 78) Flight Operations [Image 45 of 104]",
+			"authors": "U.S. Navy photo (DVIDS credits Seaman Abigail Reyes)",
+			"date": "2026-01-04",
+			"url": "https://d34w7g4gy10iej.cloudfront.net/photos/2601/9478938.jpg",
+			"page": "https://www.dvidshub.net/image/9478938/uss-gerald-r-ford-cvn-78-flight-operations",
+			"licence": "PUBLIC DOMAIN - This work, USS Gerald R. Ford (CVN 78) Flight Operations [Image 104 of 104], by SN Abigail Reyes, identified by DVIDS, must comply with the restrictions shown on https://www.dvidshub.net/about/copyright. [DVIDS quirk: the line names Image 104 of 104; this image is Image 45 of 104]",
+			"use": "trace",
+			"file": "photos/dvids9478938.jpg",
+			"ship": {
+				"hull": "CVN-78"
+			},
+			"shows": "flight deck at twilight from deck level, a signalman against the sky, the far deck edge with a row of blue lights lit above the coaming",
+			"note": "Hull: caption names CVN 78 (Caribbean deployment, January 2026); no hull number in frame; Kennedy undelivered. Evidence for blue deck-edge lights; no camera solvable (night, no deck anchors), so the lights' spacing is not measured.",
+			"pixels": [
+				5366,
+				3577
+			],
+			"sha256": "9e37582f7a41e07e76e428eb05d2deafc0efc6cad29e37e87288e826d69c5091",
+			"bytes": 3131242
 		}
 	]
 }

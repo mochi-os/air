@@ -381,6 +381,63 @@ class MatchTest(unittest.TestCase):
 			np.testing.assert_allclose(report["points"][name]["measured"], frame.source(self.truth[name]), atol=0.15, err_msg=name)
 		self.assertLess(report["photos"]["p1"]["rms"], 1.0)
 
+	def test_a_photo_names_its_own_focal(self):
+		# p0 carries an EXIF lens of 28 mm at 1000 pixels a centimetre (2800 px).
+		# Left alone that is its prior; a focal in the entry replaces it, and
+		# false leaves the photo none, as one without EXIF
+		r = self.root
+		exif = Image.Exif()
+		lens = exif.get_ifd(0x8769)
+		lens[0x920A], lens[0xA20E], lens[0xA210] = 28.0, 1000.0, 3
+		Image.new("L", (3000, 2000)).save(r / "references" / "photos" / "p0.jpg", exif=exif)
+		catalogue = json.loads((r / "photos.json").read_text())
+		catalogue["photos"]["p0"]["file"] = "photos/p0.jpg"
+
+		def prior(focal):
+			entry = catalogue["photos"]["p0"]
+			entry.pop("focal", None)
+			if focal != "absent":
+				entry["focal"] = focal
+			(r / "photos.json").write_text(json.dumps(catalogue))
+			return photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").photos[0]["focal"]
+
+		self.assertEqual(prior("absent"), (2800.0, 0.1))
+		self.assertEqual(prior(3200), (3200, 0.1))
+		self.assertIsNone(prior(False))
+
+	def test_the_horizon_holds_a_camera(self):
+		# p0's sea horizon, the sea 80 in under the model's origin (waterline 25):
+		# the solve fits it, the report and its text give its rms, and a catalogue
+		# without a sea refuses it
+		r = self.root
+		camera = cam.looking(np.array((10.0, 3.0, 14.0)), np.zeros(3), 3200.0)   # p0's, as setUp made it
+		eye = cam.eye(camera)
+		sea = (25 - 105) * 0.0254
+		d = cam.dip(eye[1] - sea)
+		forward = -eye * [1, 0, 1] / np.linalg.norm(eye * [1, 0, 1])
+		right = np.cross(forward, [0, 1.0, 0])
+		directions = [math.cos(d) * (math.cos(a) * forward + math.sin(a) * right) - math.sin(d) * np.array([0, 1.0, 0]) for a in (-0.3, 0.0, 0.3)]
+		horizon = cam.project(camera, eye + 1e5 * np.array(directions), (1500, 1000))[0]
+		catalogue = json.loads((r / "photos.json").read_text())
+		catalogue["photos"]["p0"]["horizon"] = horizon.tolist()
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		with self.assertRaises(ValueError):
+			photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None)
+		catalogue["sea"] = "waterline=25"
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		report = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None).report()
+		self.assertLess(report["photos"]["p0"]["horizon"], 1.0)
+		truth = mod.Frame(JET).source(eye)
+		np.testing.assert_allclose(report["photos"]["p0"]["camera"], truth, atol=2.0)
+		self.assertNotIn("horizon", report["photos"]["p1"])
+		self.assertRegex(photos.text(report), r"photo p0: .*, horizon rms [0-9.]+ px")
+		# the horizon drawn 30 px low moves the camera: an 8 m box seen from 17 m
+		# leaves its pitch and distance loose enough to fit both
+		catalogue["photos"]["p0"]["horizon"] = (horizon + [0, 30]).tolist()
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		report = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None).report()
+		self.assertGreater(np.linalg.norm(np.subtract(report["photos"]["p0"]["camera"], truth)), 10.0)
+
 
 if __name__ == "__main__":
 	unittest.main()

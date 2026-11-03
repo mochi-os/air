@@ -78,6 +78,24 @@ def cast(camera, pixel, centre, normal, offset):
 	return o + d * (offset - normal @ o) / (normal @ d)
 
 
+def dip(height):
+	# How far below level, in radians, the sea's horizon lies seen from height
+	# metres above the sea: 1.76 minutes of arc times the root of the height,
+	# the nautical almanac's figure with the air's usual refraction
+	return math.radians(1.76 / 60) * math.sqrt(max(height, 0.0))
+
+
+def horizon(camera, pixels, centre, normal, offset):
+	# Each pixel marked on the sea's horizon: how far, in pixels, its ray stands
+	# above where the horizon lies seen from the camera's height over the sea,
+	# the plane normal . p = offset with normal pointing up (+ the ray too high)
+	height = float(normal @ eye(camera) - offset)
+	x = undistort(camera, pixels, centre)
+	d = np.concatenate([x, np.ones((len(x), 1))], 1) @ rotation(camera[1:4])
+	d /= np.linalg.norm(d, axis=1, keepdims=True)
+	return (np.arcsin(np.clip(d @ normal, -1.0, 1.0)) + dip(height)) * camera[0]
+
+
 def looking(position, target, focal):
 	# A level camera (model y up) at position, aimed at target
 	forward = (target - position) / np.linalg.norm(target - position)
@@ -213,13 +231,24 @@ class Bundle:
 	#           a photo without a focal prior is held to a field of view between 1 and
 	#           100 degrees, so one with few marks cannot run off to an infinitely
 	#           distant, infinitely long lens; k1 is held near zero (sigma 0.1)
+	#           "horizon": [(u, v)], pixels on the sea's horizon, each held to the
+	#           horizon's dip below level from the camera's height (needs sea): it
+	#           fixes the pitch and roll of a low camera whose marks lie in a band
 	#   points  {name: {"priors": [(normal, offset, sigma metres)], "value": xyz or None}}
 	#           a point whose priors fix all three coordinates with sigma 0 is held fixed
 	#   mirror  (matrix, [(left name, right name)]): each pair solved as one point and its image
+	#   sea     (normal, offset): the sea's surface, normal . p = offset, for the horizons
 	# After solve(): spread {point: 3x3 covariance over its fixed directions} and
 	# loose {point: (k, 3) unit directions nothing fixes, empty for most}
-	def __init__(self, photos, points, mirror=None):
+	def __init__(self, photos, points, mirror=None, sea=None):
 		self.photos, self.points = photos, points
+		self.sea = None
+		if sea is not None:
+			normal, offset = np.asarray(sea[0], float), float(sea[1])
+			# the model frame's y is up: the normal points away from the water
+			self.sea = (normal, offset) if normal[1] >= 0 else (-normal, -offset)
+		if self.sea is None and any(photo.get("horizon") for photo in photos):
+			raise ValueError("a photo marks the horizon but the bundle has no sea")
 		self.reflect = np.eye(3)
 		self.twin = {}
 		if mirror:
@@ -332,6 +361,11 @@ class Bundle:
 			p, _ = project(photo, np.array([self.placed(ph, n, points[n]) for n in names]), ph["centre"])
 			r = ((p - np.array([ph["marks"][n] for n in names])) / ph["sigma"]).ravel()
 			out.append(robust(r, k) if k else r)
+		for i, photo in cameras.items():
+			ph = self.photos[i]
+			if ph.get("horizon"):
+				r = horizon(photo, ph["horizon"], ph["centre"], *self.sea) / ph["sigma"]
+				out.append(robust(r, k) if k else r)
 		for name, p in points.items():
 			for normal, offset, sigma in self.points[name]["priors"]:
 				if sigma > 0:
@@ -419,3 +453,8 @@ class Bundle:
 			p, depth = project(c, np.array([self.placed(ph, n, self.solved[n]) for n in names]), ph["centre"])
 			out[i] = {n: (float(q[0] - ph["marks"][n][0]), float(q[1] - ph["marks"][n][1]), float(d)) for n, q, d in zip(names, p, depth)}
 		return out
+
+	def horizons(self):
+		# Each horizon pixel's miss: {photo index: [pixels, + the ray too high]}
+		return {i: [float(v) for v in horizon(c, self.photos[i]["horizon"], self.photos[i]["centre"], *self.sea)]
+			for i, c in self.cameras.items() if self.photos[i].get("horizon")}

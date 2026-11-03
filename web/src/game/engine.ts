@@ -23,7 +23,7 @@
 // mounted by the React <GameCanvas> via startGame().
 import { bench_register } from './bench'   // FIRST: the #148 sampler must survive an engine-init failure
 import { atc_step, cruise_step } from './atc'
-import { pass_grade, pass_sample, pass_start, pass_wire } from './lso'
+import { pass_grade, pass_ramp, pass_sample, pass_start, pass_wire, tally } from './lso'
 import { demonstration_start, demonstration_step } from './demonstration'
 import { items as playback_items, number as playback_number, parse as playback_parse, scene as playback_scene } from './playback'
 import { KEY_DEFAULTS } from './keys'
@@ -74,15 +74,15 @@ import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
-// Model binaries are content-hashed bundle assets (assets/nimitz-<hash>.glb):
+// Model binaries are content-hashed bundle assets (assets/ford-<hash>.glb):
 // the URL changes when the bytes do, so there is no version constant to bump on
 // regen. The dev readout shows the hash.
-import nimitz_model_url from '../assets/nimitz.glb?url'
-import nimitz_deck from '../assets/nimitz.json'   // its deck layout, shared with the model tools (tools/nimitz/ship.py)
+import ford_model_url from '../assets/ford.glb?url'
+import ford_ship from '../assets/ford.json'   // its ship file, written beside it by tools/ford/build.py: the deck layout and the points the engine draws
+import { layout as ship_layout } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import fa18c_far_url from '../assets/fa18c-far.glb?url'   // the distant stages (#3): tools/fa18c
-import nimitz_far_url from '../assets/nimitz-far.glb?url'   // the carrier's far model (#3): tools/nimitz/far.py
 import amraam_model_url from '../assets/aim120c.glb?url'
 import hornet_font_url from '../assets/hornet.woff2?url'
 import moon_day_url from '../assets/moon-day.png?url'
@@ -182,19 +182,23 @@ const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, e
 	task:"free", start:"air", tod:"day", help:false };   // task and start as the menu's DEFAULT_CONFIG has them: a first-time player starts in free flight, in the air
 // CARRIER_MODELS: per-ship data; a second carrier is one more entry (#100). Its
 // deck layout - catapults and their blast deflectors, the landing line and wires,
-// the OLS, the elevators, the deck texture's extent and the deck outline - is the
-// JSON file beside its model, which the model tools read too (tools/nimitz/ship.py),
-// so the deck the jet flies and the deck the model paints are one set of numbers.
+// the lens, the elevators, the lights, the deck texture's extent and the deck
+// outline - is the ship file the model's build writes beside it (tools/ford), read
+// by ship.ts, so the deck the jet flies and the deck the model paints are one set
+// of numbers.
 // CARRIER {x,z} is world placement, not ship data. model_stamp: the content hash
 // from an imported asset URL, for the dev readout.
 function model_stamp(url){ const m=/-([\w-]+)\.\w+$/.exec(url); return m?m[1]:url; }
 const CARRIER_MODELS={
-	nimitz:{ url:nimitz_model_url, far:nimitz_far_url, length:333, yaw:20, bow:0, draft:0.375, deck:19,   // real USS Nimitz length. yaw:20 faces the bow to 070° (into the Midway wind) — the model's bow is +X (the retired Ford's was +Z, hence its yaw:110); both reach the same 070° recovery course. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
-		ident:"NIM",                                      // the ship's TACAN ident, shown beside the HUD's slant range
+	// The model is built in its ship file's frame at true scale (contract): the
+	// loader neither scales, centres nor sinks it. length is the flight deck's,
+	// end to end. No far model yet: whether she needs one is settled once the rest of her is done.
+	ford:{ url:ford_model_url, length:332.6, yaw:20, bow:0, contract:true,   // yaw:20 faces the bow to 070° (into the Midway wind): the model's bow is +X. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
+		ident:"GF",                                       // the ship's TACAN ident (ACP 113), shown beside the HUD's slant range
 		tacan:{ channel:74, band:"X" }, icls:11,          // the ship's TACAN and ICLS channels, which the pre-flight tunes: plausible values, not a real hull's
 		channels:[305000,262500,275800,318500],           // its tower, approach, marshal and landing signal officer frequencies, kHz, the first four comm presets of the mission load: plausible values too
-		...nimitz_deck } };
-const SHIP=CARRIER_MODELS.nimitz;   // the active carrier (a picker arrives with the second ship)
+		...ship_layout(ford_ship as Parameters<typeof ship_layout>[0]) } };
+const SHIP=CARRIER_MODELS.ford;   // the active carrier (a picker arrives with the second ship)
 function sanitize_cfg(){   // runs after every config merge (the server-backed store can hold stale eras too)
 	delete cfg.cats; delete cfg.cat_dy;   // pre-#100 configs carried ship data; CARRIER_MODELS owns it now
 	delete cfg.sens;   // the retired Sensitivity slider. Removing the SETTING did not remove the saved VALUE: the config is server-backed, so an account that moved it before the removal still carries it, and the two surviving reads (the multiplayer control sample, the nosewheel pedal) went on scaling by it with no UI left to correct it
@@ -217,7 +221,7 @@ function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nu
 	const nx=ownship.pos.x+ownship.fwd.x*nose, nz=ownship.pos.z+ownship.fwd.z*nose;
 	const fa=carrier_fore_aft(nx,nz)+dev_nudge.fa, lat=carrier_lateral(nx,nz)+dev_nudge.lat;
 	const hd=Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)*180/Math.PI+dev_nudge.hd;   // heading in the deck frame (0 = down the bow, + = port), from the forward vector through the inverse frame
-	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2)+" · nimitz "+model_stamp(nimitz_model_url);   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2)+" · ford "+model_stamp(ford_model_url);   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 }
 function copy_here(){   // dev (Ctrl+C): the live position line to the clipboard
 	const txt=here_text();
@@ -649,7 +653,7 @@ const ocean_mat = new THREE.ShaderMaterial({ fog:false, side:THREE.DoubleSide,
 		u_water:{value:null}, u_lagoon:{value:null}, u_water_half:{value:12000.0}, u_water_on:{value:0.0}, u_water_tint:{value:new THREE.Color(1,1,1)}, u_downwind:downwind, ...atmosphere_uniforms, u_mesh:{value:new THREE.Vector2(2.71,0.0245)},
 		u_detail:{value:build_water_detail()}, u_light:{value:1.0}, u_wind:{value:0.75}, u_sss:{value:new THREE.Color(0x16483f)}, u_foam:{value:build_foam_pattern()}, u_foam_gain:{value:2.2}, u_foam_debug:{value:0.0}, u_slope:{value:0.069}, u_displacement0:{value:null}, u_displacement1:{value:null}, u_derivative0:{value:null}, u_derivative1:{value:null}, u_derivative2:{value:null}, u_lengths:{value:new THREE.Vector3(CASCADES[0],CASCADES[1],CASCADES[2])}, u_spectrum:{value:new THREE.Vector3()}, u_beam:{value:new THREE.Color(1,1,1)},   // u_foam_gain: the foam's mean cover equals the soft cover's at 2.2, measured with dev_foam_cover (soft 0.18%; 0.11% at 1.4, 0.14% at 1.8, 0.18% at 2.2)
 		u_cloud_flat:{value:0.0}, ...cloud_shadow_uniforms,
-		u_wake:{value:new Float32Array(WAKE_POINTS*4)}, u_trail:{value:new THREE.DataTexture(new Float32Array(WAKE_TRAIL*2),WAKE_TRAIL,1,THREE.RGFormat,THREE.FloatType)}, u_trail_step:{value:0}, u_wake_group:{value:new Float32Array(WAKE_GROUPS*4)}, u_wake_count:{value:0}, u_wake_origin:{value:new THREE.Vector2()}, u_wake_bounds:{value:new THREE.Vector4()}, u_ship:{value:new THREE.Vector4()}, u_hull_span:{value:new THREE.Vector4(0,1,1,2)}, u_hull:{value:new Float32Array(WAKE_HULL*4)}, u_hull_beam:{value:0}, u_screws:{value:new THREE.Vector4(-1,-1,-1,-1)}, u_screw:{value:0}, u_wake_sea:{value:0}, u_wake_travelled:{value:0}, u_wake_turn:{value:new THREE.Vector2(1,0)},   // the ship's bow wave and wake (wake.ts), set each frame by wake_frame
+		u_wake:{value:new Float32Array(WAKE_POINTS*4)}, u_trail:{value:new THREE.DataTexture(new Float32Array(WAKE_TRAIL*2),WAKE_TRAIL,1,THREE.RGFormat,THREE.FloatType)}, u_trail_step:{value:0}, u_wake_group:{value:new Float32Array(WAKE_GROUPS*4)}, u_wake_count:{value:0}, u_wake_origin:{value:new THREE.Vector2()}, u_wake_bounds:{value:new THREE.Vector4()}, u_ship:{value:new THREE.Vector4()}, u_hull_span:{value:new THREE.Vector4(0,1,1,2)}, u_hull:{value:new Float32Array(WAKE_HULL*4)}, u_hull_beam:{value:0}, u_screws:{value:new THREE.Vector4(-1,-1,-1,-1)}, u_screw:{value:0}, u_bow:{value:new THREE.Vector2(0.2435,10.53)}, u_wake_sea:{value:0}, u_wake_travelled:{value:0}, u_wake_turn:{value:new THREE.Vector2(1,0)},   // the ship's bow wave and wake (wake.ts), set each frame by wake_frame
 		u_chart:{value:new THREE.Vector2()}, u_curve:{value:new THREE.Vector2()}, u_home:{value:new THREE.Vector4(1,0,0,1)}, u_home_shift:{value:new THREE.Vector2()} },   // the chart the sea's patterns are laid on; how the sea falls away from the frame's anchor; the chart's plan, where the atoll's imagery is laid (chart_settle)   // u_cloud_flat greys the far silvering and the reflection under a deck; the shadow itself comes from the shared ground map
 	vertexShader:`uniform float u_time,u_water_half,u_water_on; uniform vec2 u_mesh,u_chart,u_curve,u_home_shift; uniform vec4 u_home; uniform sampler2D u_water,u_lagoon; varying vec3 v_world; varying vec3 v_normal; varying float v_height; varying float v_calm; varying vec2 v_plan;
 		`+SEA_TURN+`
@@ -2055,10 +2059,10 @@ function model_of(g){ return g.children.find(c=>c.userData&&c.userData.model)||g
 // scene's light and the scene's haze, and fades out over the last DOT_FADE metres before DOT_RANGE:
 // how far a jet can be seen is the weather's and the light's, never the monitor's, and the same for
 // every player. The carrier has two stages: it keeps drawing its deck strip, underside and skirt from
-// the full model at every range (CARRIER_KEEP), which its far model leaves out (tools/nimitz/far.py).
+// the full model at every range (CARRIER_KEEP), which a far model would leave out.
 const STAGES=["full","medium","far","dot"], STAGE_LIMITS=[80,8,2], STAGE_MARGIN=1.15;
 const DOT_SIZE=3, DOT_RANGE=25000, DOT_FADE=5000, DOT_GAIN=0.42, DOT_MAX=128;   // DOT_SIZE: POINT_HEIGHT pixels, 2 reference pixels
-const CARRIER_LIMIT=150, CARRIER_KEEP=/^deck_(baked|underside|skirt)$/;
+const CARRIER_LIMIT=150, CARRIER_KEEP=/^deck(_baked|_underside|_skirt)?$/;
 const fleet_far={};   // aircraft kind -> its distant stages (fa18c-far.glb: airframe, up, down, burner, far), or "loading"
 // carrier_depth draws the carrier into the sun's shadow map pushed back from the sun in proportion to how
 // slanted each face is to it, three texels' worth of its slope and never more than 4 m: the underside of her
@@ -2069,6 +2073,10 @@ const carrier_depth=new THREE.MeshDepthMaterial({ depthPacking:THREE.RGBADepthPa
 carrier_depth.onBeforeCompile=(sh)=>{ const at="float fragCoordZ = 0.5 * vHighPrecisionZW[0] / vHighPrecisionZW[1] + 0.5;";
 	if(!sh.fragmentShader.includes(at)) console.warn("carrier shadow depth: three's depth shader changed; the deck's slope push is OFF");   // i18n-format-ok: developer console output, never shown to a user
 	sh.fragmentShader=sh.fragmentShader.replace(at,at+"\n\tfragCoordZ+=min(3.0*max(abs(dFdx(fragCoordZ)),abs(dFdy(fragCoordZ))),5.0e-4);"); };
+// carrier_shadow is a material's depth material for the sun's shadow: carrier_depth, or for a cut-out (the
+// catwalks' safety nets, alphaMode MASK) a copy that cuts the same holes, so the sea's light falls through them
+function carrier_shadow(mm){ if(!(mm.alphaTest>0)) return carrier_depth;
+	const d=carrier_depth.clone(); d.onBeforeCompile=carrier_depth.onBeforeCompile; d.map=mm.map; d.alphaTest=mm.alphaTest; return d; }
 let carrier_far=null;   // { group: the far model, near: the full model's meshes it replaces, far: drawn }
 let stage_dots=null;
 const _stage_eye=new THREE.Vector3(), _stage_light=new THREE.Color(), _carrier_at=new THREE.Vector3();
@@ -5356,6 +5364,12 @@ async function init_amraam_model(){
 // Placed so bow -> +X (yaw 90; flip to -90 or +180 if reversed) and the waterline sits at y=0.
 // draft_frac = fraction of the keel->deck height kept BELOW water; raise it to sit the hull deeper.
 let carrier_model=null; const _ray=new THREE.Raycaster();
+// carrier_images: each textured material's images, by its name (the contract's: the deck's paint and the lettering), so
+// each material wears its own
+function carrier_images(p){ const named={};
+	for(const m of p.json.materials||[]){ const base=m.pbrMetallicRoughness?.baseColorTexture, normal=m.normalTexture;
+		if(m.name&&(base||normal)) named[m.name]={ base:glb_image(p,base?.index), normal:glb_image(p,normal?.index) }; }
+	return named; }
 function glb_image(p,ti){ if(ti==null||!p.bin||!p.json.textures) return null; const t=p.json.textures[ti]; if(!t) return null;
 	const si=t.source!=null?t.source:(t.extensions&&t.extensions.KHR_texture_basisu?t.extensions.KHR_texture_basisu.source:null);   // KTX2 textures (#200) carry their image in the basisu extension
 	const im=p.json.images&&si!=null?p.json.images[si]:null; if(!im||im.bufferView==null) return null; const bv=p.json.bufferViews[im.bufferView];
@@ -5396,12 +5410,12 @@ function build_deck_grid(grp,deckY){
 	const mast={x:0,y:-1e9,z:0};   // the island mast top — found here because the deck grid EXCLUDES island geometry by design, so the old deck_y_at height scan can never see it (the masthead/floods silently vanished when the grid replaced raycasts)
 	grp.traverse(o=>{ if(!o.isMesh||!o.geometry.attributes.position) return;
 		const p=o.geometry.attributes.position, idx=o.geometry.index;
-		const n=idx?idx.count:p.count;
+		const n=idx?idx.count:p.count, body=o.name!=="island_details";   // the island's walkways, railings and antennas stand off its body high over the deck: neither its crash box nor its mast's top
 		for(let i=0;i<n;i+=3){
 			a.fromBufferAttribute(p, idx?idx.getX(i):i).applyMatrix4(o.matrixWorld);
 			b.fromBufferAttribute(p, idx?idx.getX(i+1):i+1).applyMatrix4(o.matrixWorld);
 			c.fromBufferAttribute(p, idx?idx.getX(i+2):i+2).applyMatrix4(o.matrixWorld);
-			for(const v2 of [a,b,c]){ const lf=carrier_fore_aft(v2.x,v2.z), ll=carrier_lateral(v2.x,v2.z), aboard=lf>-105&&lf<65&&ll>8&&ll<46;
+			for(const v2 of [a,b,c]){ const lf=carrier_fore_aft(v2.x,v2.z), ll=carrier_lateral(v2.x,v2.z), aboard=body&&lf>-105&&lf<65&&ll>8&&ll<46;
 				if(v2.y>mast.y&&aboard){ mast.x=v2.x; mast.y=v2.y; mast.z=v2.z; }
 				if(aboard&&v2.y>deckY+4&&v2.y<=deckY+24){ island.minFa=Math.min(island.minFa,lf); island.maxFa=Math.max(island.maxFa,lf); island.minLat=Math.min(island.minLat,ll); island.maxLat=Math.max(island.maxLat,ll); island.top=Math.max(island.top,v2.y); } }
 			if(Math.abs(a.y-deckY)>3.5||Math.abs(b.y-deckY)>3.5||Math.abs(c.y-deckY)>3.5) continue;   // deck band only: the island must NOT write cells, or cats near it would read roof heights
@@ -5460,9 +5474,7 @@ async function init_carrier_model(){
 		if(SHIP.url.startsWith("data:")){ const b64=SHIP.url.slice(SHIP.url.indexOf(",")+1); const bin=atob(b64);
 			const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); abuf=u.buffer; }
 		else { abuf=await asset_bytes(SHIP.url); }   // preload-owned download: single-flight with the menu's early start
-		const parts=glb_split(abuf); const M=(parts.json.materials||[]).find(m=>m.pbrMetallicRoughness&&m.pbrMetallicRoughness.baseColorTexture)||{};   // the first material CARRYING a texture (the Ford's was materials[0]; the Nimitz's baked deck material sits at the end)
-		const baseSrc=glb_image(parts, M.pbrMetallicRoughness&&M.pbrMetallicRoughness.baseColorTexture&&M.pbrMetallicRoughness.baseColorTexture.index);
-		const normSrc=glb_image(parts, M.normalTexture&&M.normalTexture.index);
+		const parts=glb_split(abuf), named=carrier_images(parts);
 		(parts.json.materials||[]).forEach(m=>{ if(m.pbrMetallicRoughness){ delete m.pbrMetallicRoughness.baseColorTexture; delete m.pbrMetallicRoughness.metallicRoughnessTexture; } delete m.normalTexture; delete m.occlusionTexture; delete m.emissiveTexture;
 			for(const ext of Object.values(m.extensions||{})){ for(const key of Object.keys(ext)){ if(key.endsWith("Texture")) delete ext[key]; } } });   // extension-held refs too (KHR_materials_specular etc.) — a dangling texture index kills the parse
 		delete parts.json.textures; delete parts.json.images; delete parts.json.samplers;
@@ -5471,18 +5483,20 @@ async function init_carrier_model(){
 		shiploader.parse(clean, "", async gltf=>{ try{
 			const gscene=gltf.scene; gscene.updateMatrixWorld(true);
 			const b0=new THREE.Box3().setFromObject(gscene), sz=b0.getSize(new THREE.Vector3());
-			const s=SHIP.length/Math.max(sz.x,sz.y,sz.z,1e-3);
-			const c0=b0.getCenter(new THREE.Vector3()); gscene.position.sub(c0);   // centre the MODEL's OWN bbox at the group origin: the deck-ops frame must be the model's local frame, independent of yaw — centring on the world AABB after rotation shifted the origin 8 m to starboard on this asymmetric hull (the rotated AABB's centre is not the rotated centre), which put every measured cat/wire/OLS coordinate 8 m off the drawn deck
+			const s=SHIP.contract?1:SHIP.length/Math.max(sz.x,sz.y,sz.z,1e-3);   // a contract model is built at true scale in its ship file's frame
+			const c0=b0.getCenter(new THREE.Vector3()); if(!SHIP.contract) gscene.position.sub(c0);   // centre the MODEL's OWN bbox at the group origin: the deck-ops frame must be the model's local frame, independent of yaw — centring on the world AABB after rotation shifted the origin 8 m to starboard on this asymmetric hull (the rotated AABB's centre is not the rotated centre), which put every measured cat/wire/OLS coordinate 8 m off the drawn deck
 			const grp=new THREE.Group(); grp.add(gscene); grp.scale.setScalar(s); grp.rotation.y=SHIP.yaw*D2R;
 			grp.position.set(CHART.x,0,CHART.z); grp.updateMatrixWorld(true);   // where the map charts the ship: carrier_rig carries it to where the ship is
-			const st=model_y_stats(grp); const waterline=st.keelY+SHIP.draft*(st.deckY-st.keelY);   // sink so waterline -> y=0
+			const st=SHIP.contract?{ keelY:0, topY:0, deckY:SHIP.deck }:model_y_stats(grp); const waterline=SHIP.contract?0:st.keelY+SHIP.draft*(st.deckY-st.keelY);   // sink so waterline -> y=0: a contract model's origin is on its waterline already
+			for(const name of Object.keys(SHIP.joints||{})) if(/^antenna_/.test(name)) ship_joint(name,ship_joint_max(name),grp);   // the deck-edge whips lie lowered for flight operations, which the game always is
 			grp.position.y-=waterline; grp.updateMatrixWorld(true);
 			with_charted(()=>build_deck_grid(grp, st.deckY-waterline));   // one triangle pass replaces every startup deck raycast
-			let baseTex=null,normTex=null;
-			if(baseSrc&&typeof createImageBitmap==="function"){ try{ baseTex=await make_tex(baseSrc,true); }catch{ /* texture optional */ } }
-			if(normSrc&&typeof createImageBitmap==="function"){ try{ normTex=await make_tex(normSrc,false); }catch{ /* texture optional */ } }
-			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; const hasuv=!!(o.geometry&&o.geometry.attributes&&o.geometry.attributes.uv);
-				if(baseTex&&hasuv)mm.map=baseTex; if(normTex&&hasuv)mm.normalMap=normTex; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; o.customDepthMaterial=carrier_depth; } });   // the map goes only where UVs exist: on the Nimitz only the baked deck strip has them (a map without UVs renders garbage)
+			const maps={};
+			if(typeof createImageBitmap==="function") for(const [name,src] of Object.entries(named)){ const t=maps[name]={ base:null, normal:null };
+				if(src.base){ try{ t.base=await make_tex(src.base,true); }catch{ /* texture optional */ } }
+				if(src.normal){ try{ t.normal=await make_tex(src.normal,false); }catch{ /* texture optional */ } } }
+			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; const hasuv=!!(o.geometry&&o.geometry.attributes&&o.geometry.attributes.uv), t=maps[mm.name];
+				if(t?.base&&hasuv)mm.map=t.base; if(t?.normal&&hasuv)mm.normalMap=t.normal; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; o.customDepthMaterial=carrier_shadow(mm); } });   // each material wears its own images, and only where UVs exist (a map without UVs renders garbage)
 			carrier_model=grp; carrier_rig.add(grp);
 			void init_carrier_far(grp,gscene);   // the far model follows; until it arrives the carrier is drawn in full
 			/* procedural carrier removed; nothing to hide */
@@ -7126,21 +7140,22 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const wireMat=new THREE.MeshStandardMaterial({color:0x26282a,metalness:0.8,roughness:0.45});   // greased working steel: dark gunmetal with a faint sheen
 	const sheaveMat=new THREE.MeshStandardMaterial({color:0x6a6e73,metalness:0.5,roughness:0.6});   // grey, per user — black boxes read as holes in the deck
 	const wires=[];
-	for(const wfa of SHIP.landing.wires){
-		const clat=strip_lat(wfa), hw=SHIP.landing.span/2;   // span the strip width, perpendicular to its centreline
-		const a=carrier_world(wfa-STRIP_ULAT*hw,clat+STRIP_UFA*hw), b=carrier_world(wfa+STRIP_ULAT*hw,clat-STRIP_UFA*hw);
+	for(const [i,wfa] of SHIP.landing.wires.entries()){
+		const clat=strip_lat(wfa), hw=SHIP.landing.span/2, ends=SHIP.landing.ends?.[i];   // span the strip width, perpendicular to its centreline, or between the sheaves the ship file measures
+		const a=ends?carrier_world(ends[0][0],ends[0][2]):carrier_world(wfa-STRIP_ULAT*hw,clat+STRIP_UFA*hw), b=ends?carrier_world(ends[1][0],ends[1][2]):carrier_world(wfa+STRIP_ULAT*hw,clat-STRIP_UFA*hw);
 		const ddx=b.x-a.x, ddz=b.z-a.z, len=Math.hypot(ddx,ddz);
 		const w=new THREE.Mesh(new THREE.BoxGeometry(len,0.05,0.05),wireMat); w.position.set((a.x+b.x)/2,dy+0.10,(a.z+b.z)/2); w.rotation.y=Math.atan2(-ddz,ddx); w.castShadow=true; scene.add(w);   // Mk 7 cross-deck pendant: 35 mm wire rope ~10 cm off the deck on its supports (drawn a touch fat for visibility)
 		wires.push({ax:a.x,az:a.z,bx:b.x,bz:b.z,mesh:w});
 		const wyaw=Math.atan2(-ddz,ddx);
-		for(const e of [a,b]){ const s=new THREE.Mesh(new THREE.BoxGeometry(1.3,0.24,0.5),sheaveMat); s.position.set(e.x,dy+0.12,e.z); s.rotation.y=wyaw; scene.add(s); }   // deck-edge fairing housings over the sheave pockets (the real 60-90 cm sheave wheels live BELOW deck) — long low deck-grey ramps aligned with the cable run
+		if(!ends) for(const e of [a,b]){ const s=new THREE.Mesh(new THREE.BoxGeometry(1.3,0.24,0.5),sheaveMat); s.position.set(e.x,dy+0.12,e.z); s.rotation.y=wyaw; scene.add(s); }   // deck-edge fairing housings over the sheave pockets (the real 60-90 cm sheave wheels live BELOW deck) — long low deck-grey ramps aligned with the cable run
 	}
 	const vsegs=[0,1].map(()=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(1,0.05,0.05),wireMat); m.visible=false; m.castShadow=true; scene.add(m); return m; });   // the caught wire, dragged into a V by the hook
 	// --- catapult shuttles: the towing spreader standing proud of each track slot; the launch bar drops onto it.
 	// Real C-13 shuttle: a low greased-steel block with a raised towing HORN at the rear that the bar hooks
 	// over — near-black worn metal, never painted ---
 	const shuttleMat=new THREE.MeshStandardMaterial({color:0x2e3136,metalness:0.75,roughness:0.4});
-	carrier_shuttles=SHIP.catapults.map(cat=>{
+	const rigged=!!(carrier_model&&SHIP.joints?.catapult_1_shuttle);   // the model carries its own shuttles and deflectors (the contract's joints)
+	carrier_shuttles=rigged?SHIP.catapults.map((cat,i)=>({ joint:`catapult_${i+1}_shuttle`, mesh:carrier_model.getObjectByName(`catapult_${i+1}_shuttle`), cat })):SHIP.catapults.map(cat=>{
 		const w=carrier_world(cat.x,cat.z), hd=cat.heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
 		const m=new THREE.Group();
@@ -7159,9 +7174,9 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const jbdDeck=new THREE.MeshStandardMaterial({color:0x5e605c,metalness:0.05,roughness:0.95});   // fallback only: a carrier without a deck_baked material
 	const jbdPitM=new THREE.MeshStandardMaterial({color:0x0c0d0f,metalness:0.1,roughness:1.0});
 	const jbdRamM=new THREE.MeshStandardMaterial({color:0xb9bec4,metalness:0.85,roughness:0.3});
-	let jbdTop:THREE.Material|null=null; carrier_model.traverse(o=>{ const m=(o as THREE.Mesh & {material?:THREE.Material}).material; if(!jbdTop && m?.name==='deck_baked') jbdTop=m; });   // the deck strip's own material: same texture, same light response
-	const tx=SHIP.texture.x, tz=SHIP.texture.z;   // the deck texture's extent: deck_baked maps u across tx and v across tz (bake_decktex.py)
-	carrier_jbds=SHIP.catapults.map(cat=>{
+	let jbdTop:THREE.Material|null=null; carrier_model.traverse(o=>{ const m=(o as THREE.Mesh & {material?:THREE.Material}).material; if(!jbdTop && (m?.name==='deck_baked'||m?.name==='deck')) jbdTop=m; });   // the deck strip's own material: same texture, same light response
+	const tx=SHIP.texture.x, tz=SHIP.texture.z;   // the deck texture's extent: the deck's paint maps u across tx and v across tz (tools/ford/paint.py)
+	carrier_jbds=rigged?SHIP.catapults.map((cat,i)=>({ joint:`catapult_${i+1}_deflector`, frac:0 })):SHIP.catapults.map(cat=>{
 		const box=cat.deflector, L=box.depth-2*JBD_INSET.end, bw=box.width-2*JBD_INSET.side;   // the box the bake paints, on the catapult's heading
 		const w=carrier_world(box.x,box.z), hd=cat.heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
 		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
@@ -7181,29 +7196,63 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		return { g, pivot, pit, rams, frac:0, length:L };
 	});
 	// --- OLS (meatball) on the port bracket of the carrier (measured); glideslope stays referenced to the touchdown, not this housing ---
-	const twfa=SHIP.landing.wires[SHIP.landing.wires.length>3?2:1], ofa=SHIP.ols.x, olat=SHIP.ols.z;   // OLS bracket position on the carrier's port side; the glideslope targets the 3-wire on a four-wire deck (the US aim wire), the middle wire on a three-wire fit
-	const o=carrier_world(ofa,olat), datumY=dy+(SHIP.ols.model?0.66:0.8), travel=SHIP.ols.model?1.1:1.0;   // datum height + ball travel matched to the model's lens column when it provides the structure
+	const aim=SHIP.landing.target?SHIP.landing.target-1:SHIP.landing.wires.length>3?2:1, ofa=SHIP.ols.x, olat=SHIP.ols.z;   // OLS bracket position on the carrier's port side; the target wire is the ship file's (the Ford's 2), or the 3-wire on a four-wire deck
+	const twfa=aim>0?(SHIP.landing.wires[aim-1]+SHIP.landing.wires[aim])/2:SHIP.landing.wires[aim];   // the hook's touchdown halfway between the wire before the target and the target, so it drags into the target: NATOPS's rule for a four-wire deck (halfway between the 2 and 3), carried to the Ford's three (between the 1 and 2)
+	const lens=SHIP.lens, lensY=y=>dy+(y-SHIP.deck);   // the lens as the ship file measures it: its heights over the waterline, carried to the deck's height here
+	const o=carrier_world(ofa,olat), datumY=lens?lensY(lens.position[1]):dy+(SHIP.ols.model?0.66:0.8), travel=lens?lens.cells*lens.pitch/2:SHIP.ols.model?1.1:1.0;   // datum height + ball travel: the measured lens's cells, or matched to the model's lens column when it provides the structure
+	const placed=list=>list.flatMap(q=>{ const w=carrier_world(q[0],q[2]); return [w.x,lensY(q[1]),w.z]; });   // the lens's measured lights in the world
 	if(!SHIP.ols.model){ const house=new THREE.Mesh(new THREE.BoxGeometry(2.0,1.4,0.6),new THREE.MeshStandardMaterial({color:0x181b1f,metalness:0.4,roughness:0.6})); house.position.set(o.x,dy+0.2,o.z); house.rotation.y=Math.atan2(-CARRIER_C,CARRIER_S); house.castShadow=true; scene.add(house); }
 	const at=(d,h)=>{ const q=carrier_world(ofa-STRIP_ULAT*d,olat+STRIP_UFA*d); return [q.x,h,q.z]; };   // flank the ball perpendicular to the strip (square to the approach)
 	const dspread=SHIP.ols.model?[-1.65,-1.2,-0.75,-0.3, 0.3,0.75,1.2,1.65]:[-3.3,-2.5,-1.7,-0.9, 0.9,1.7,2.5,3.3];
-	const dpos=[]; for(const d of dspread) dpos.push(...at(d,datumY)); const datumPts=ols_points(dpos,0x35e06a,7);   // green datum row (flanks the ball; spread matches the model's arm bar, TRIMMED to ±1.8 m in v54 — the authored 8.5 m bar overhung the flight deck by 2.2 m, under the cat-4 wingtip path)
-	const cpos=[]; for(const d of [-1.5,-0.5,0.5,1.5]) cpos.push(...at(d,dy+1.6)); const cutPts=ols_points(cpos,0x35e06a,4);   // cut lights
-	const wpos=[]; for(const d of (SHIP.ols.model?[-1.5,-1.5,1.5,1.5]:[-2.0,-0.7,0.7,2.0])) wpos.push(...at(d, wpos.length<6&&SHIP.ols.model?dy+0.9:dy+(SHIP.ols.model?1.5:2.0))); const wavePts=ols_points(wpos,0xff2a1e,7); wavePts.visible=false;   // waveoff (flashes on a low approach) — on the model's red columns when present (two heights per side)
+	const dpos=lens?placed(lens.lights.datum):[]; if(!lens) for(const d of dspread) dpos.push(...at(d,datumY)); const datumPts=ols_points(dpos,0x35e06a,7);   // green datum row (flanks the ball; spread matches the model's arm bar, TRIMMED to ±1.8 m in v54 — the authored 8.5 m bar overhung the flight deck by 2.2 m, under the cat-4 wingtip path)
+	const cpos=lens?placed(lens.lights.cut):[]; if(!lens) for(const d of [-1.5,-0.5,0.5,1.5]) cpos.push(...at(d,dy+1.6)); const cutPts=ols_points(cpos,0x35e06a,4);   // cut lights
+	const wpos=lens?placed(lens.lights.waveoff):[]; if(!lens) for(const d of (SHIP.ols.model?[-1.5,-1.5,1.5,1.5]:[-2.0,-0.7,0.7,2.0])) wpos.push(...at(d, wpos.length<6&&SHIP.ols.model?dy+0.9:dy+(SHIP.ols.model?1.5:2.0))); const wavePts=ols_points(wpos,0xff2a1e,7); wavePts.visible=false;   // waveoff (flashes on a low approach) — on the model's red columns when present (two heights per side)
 	// structure: horizontal arms carrying the datum / cut / waveoff light rows, on a mast up from the housing (so the lights aren't floating)
 	if(!SHIP.ols.model){   // procedural bracket structure — only when the ship model doesn't carry its own OLS
 	const strut=new THREE.MeshStandardMaterial({color:0x15181c,metalness:0.5,roughness:0.6});
 	const arm=(d,y,th)=>{ const a=at(-d,y), b=at(d,y), dx=b[0]-a[0], dz=b[2]-a[2], len=Math.hypot(dx,dz); const m=new THREE.Mesh(new THREE.BoxGeometry(len,th,th),strut); m.position.set((a[0]+b[0])/2,y,(a[2]+b[2])/2); m.rotation.y=Math.atan2(-dz,dx); m.castShadow=true; scene.add(m); };
-	arm(3.9,datumY,0.13);   // datum arm (through the housing)
-	const mast=new THREE.Mesh(new THREE.BoxGeometry(0.13,2.1,0.13),strut); mast.position.set(o.x,dy+1.1,o.z); mast.castShadow=true; scene.add(mast);   // mast from the housing up to the cut/waveoff
-	arm(2.3,dy+1.6,0.1); arm(2.3,dy+2.0,0.1); }   // cut + waveoff arms
+	// a measured lens's arms reach its outermost datum light, and carry its cut
+	// and its upper and lower wave-off rows at their measured heights
+	const reach=list=>Math.max(...list.map(q=>Math.hypot(q[0]-lens.position[0],q[2]-lens.position[2])))+0.15;
+	const height=(list,above)=>{ const ys=list.map(q=>lensY(q[1])).filter(y=>above?y>datumY:y<datumY); return ys.length?ys.reduce((a,b)=>a+b)/ys.length:null; };
+	arm(lens?reach(lens.lights.datum):3.9,datumY,0.13);   // datum arm (through the housing)
+	const top=lens?Math.max(datumY,...lens.lights.cut.map(q=>lensY(q[1]))):dy+2.0;
+	const mast=new THREE.Mesh(new THREE.BoxGeometry(0.13,top-dy,0.13),strut); mast.position.set(o.x,(top+dy)/2,o.z); mast.castShadow=true; scene.add(mast);   // mast from the housing up to the cut/waveoff
+	if(!lens){ arm(2.3,dy+1.6,0.1); arm(2.3,dy+2.0,0.1); }   // cut + waveoff arms
+	else for(const y of [height(lens.lights.cut,true),height(lens.lights.waveoff,true),height(lens.lights.waveoff,false)]) if(y!==null) arm(reach(lens.lights.waveoff),y,0.1); }
 	const bg=new THREE.BufferGeometry(); bg.setAttribute("position",new THREE.BufferAttribute(new Float32Array([o.x,datumY,o.z]),3)); bg.setAttribute("color",new THREE.BufferAttribute(new Float32Array([1,0.62,0]),3));
 	const ballPts=new THREE.Points(bg,screen_point(new THREE.PointsMaterial({map:light_dot,vertexColors:true,transparent:true,blending:THREE.NormalBlending,depthWrite:false,sizeAttenuation:false}),11)); ballPts.frustumCulled=false; ballPts.visible=false; scene.add(ballPts);   // the amber "ball" — screen-space, normal-blended so it reads amber/red
-	const td=carrier_world(twfa,strip_lat(twfa));   // touchdown reference (the 2-wire) — the glideslope references the wires, NOT the OLS housing on the bracket
+	const td=carrier_world(twfa,strip_lat(twfa));   // touchdown reference — the glideslope references the wires, NOT the OLS housing on the bracket
+	const ramp=Math.hypot(twfa-SHIP.landing.line[0][0],strip_lat(twfa)-SHIP.landing.line[0][1]);   // the round-down's distance short of the touchdown, along the landing line (its aft end)
 	const sdx=STRIP_UFA*CARRIER_C+STRIP_ULAT*CARRIER_S, sdz=-STRIP_UFA*CARRIER_S+STRIP_ULAT*CARRIER_C, sl=Math.hypot(sdx,sdz);
-	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, cutPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl }; carrier_ols.chart={ x:o.x, z:o.z, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, dy, deck:CARRIER.deckY };   // approach comes from the −fa (aft) side, opposite the rollout
+	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, cutPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, ramp }; carrier_ols.chart={ x:o.x, z:o.z, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, dy, deck:CARRIER.deckY };   // approach comes from the −fa (aft) side, opposite the rollout
 	// --- night lighting (darken-ship, night-only); heights + edges sampled off the REAL deck (which isn't flat), not a rectangle at deckY ---
 	const dh=(f,l)=>{ const w=carrier_world(f,l); return { x:w.x, z:w.z, y:deck_y_at(carrier_model,w.x,w.z,-1e9) }; };   // world pos + deck height at a carrier-local point (−1e9 = off the deck)
 	const edge_lat=(f,dir)=>{ let e=null; for(let l=0;Math.abs(l)<42;l+=dir*4){ const d=dh(f,l); if(d.y>dy-0.6 && d.y<dy+4) e=l; else if(e!==null) break; } return e; };   // scan out from the centre to the outermost still-DECK-LEVEL lat: the catwalks outboard sit ~1-2 m BELOW the lip and used to qualify, hanging edge lights off the ship (measured: dots at -0.84 and -2.2 m)
+	if(Object.keys(SHIP.lights||{}).length){   // the ship file's lights (tools/ford: measured, or placed by rule where no photo shows the fittings), each group in its colour
+		// recovery aids join the flight-ops group, the outline and the mast's lights burn all night, and the floods are
+		// work lights; heights are over the waterline, carried to the deck's height here, the deck's own a touch proud
+		const COLOURS={ white:0xfff6e8, blue:0x4f7dff, amber:0xffb060, green:0x9affd8, red:0xff2418 };
+		const placed=(list,lift)=>list.flatMap(q=>{ const w=carrier_world(q[0],q[2]); return [w.x,dy+(q[1]-SHIP.deck)+lift,w.z]; });
+		for(const [name,g] of Object.entries(SHIP.lights)){
+			const colour=COLOURS[g.colour]??0xffffff;
+			if(g.kind==="flood"){
+				const fixtures=placed(g.positions,0);
+				const mkpts=(size,color)=>{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(fixtures),3));
+					const lp=new THREE.Points(lg,screen_point(new THREE.PointsMaterial({map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}),size*POINT_HEIGHT/720));
+					lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); deck_floods.push(lp); };
+				mkpts(46,0x203c34); mkpts(13,0xe0fff2);   // the glare and the lamp's core, as the Nimitz's floods (below)
+				// two spotlights wash the deck from the floods' banks: the highest aimed at the landing area, the lowest at the bow
+				const sorted=[...g.positions].sort((a,b)=>b[1]-a[1]), ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
+				for(const [q,t] of [[sorted[0],ld],[sorted[sorted.length-1],bw]]){ const w=carrier_world(q[0],q[2]); const s2=new THREE.SpotLight(0xd8fff0,320,260,0.62,0.65,1); s2.castShadow=false;
+					s2.position.set(w.x,dy+(q[1]-SHIP.deck),w.z); s2.target.position.set(t.x,dy,t.z); scene.add(s2); scene.add(s2.target); s2.visible=false; flood_lights.push(s2); }
+				continue; }
+			const deck=g.kind==="recovery"||g.kind==="outline";
+			(g.kind==="recovery"?ops_lights:night_lights).push(glow_points(placed(g.positions,deck?0.25:0),colour,name==="drop"||g.kind==="navigation"?5:3)); }
+		// no photo shows the side and stern lights lit: on the beam edges and the fantail, by rule
+		for(const [dir,col] of [[-1,0xff2418],[1,0x24ff2a]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); night_lights.push(glow_points([d.x,d.y+1.2,d.z],col,5)); } }
+		{ const st2=dh(-160,0); if(st2.y>-1e8) night_lights.push(glow_points([st2.x,st2.y+1.5,st2.z],0xffffff,5)); }
+		return; }
 	const edge=[];
 	for(let f=-145;f<=150;f+=18){ for(const dir of [1,-1]){ const e=edge_lat(f,dir); if(e!==null){ const d=dh(f,e); edge.push(d.x,d.y+0.3,d.z); } } }
 	night_lights.push(glow_points(edge,0xf0d18a,3));                                      // warm-white deck-edge outline, on the real edge + deck height — stays up all night as the find-the-boat watch lighting
@@ -7565,6 +7614,16 @@ function clock_press(){
 const thrown={};   // the travel-only controls' positions (TRAVEL), as thrown
 function travel_at(name){ return thrown[name]??TRAVEL_REST[name]??0; }
 function travel_press(name,d){ thrown[name]=d===0&&TRAVEL[name]===2?1-travel_at(name):THREE.MathUtils.clamp(travel_at(name)+(d<0?-1:1),0,TRAVEL[name]-1); }   // d 0 flips a two-position control (#122), and steps any other up
+// ship_joint poses one of the carrier model's rigged parts (the ship file's joints, tools/ford): a slide moves
+// it along its axis and a turn turns it about it, from the rest the model was built in; ship_joint_max is the
+// most its keys move it. A part the model lacks is left alone.
+const _jointAxis=new THREE.Vector3(), _jointTurn=new THREE.Quaternion();
+function ship_joint(name,value,root=carrier_model){ const j=SHIP.joints?.[name], o=root?.getObjectByName(name); if(!j||!o) return;
+	const rest=o.userData.rest??(o.userData.rest={ p:o.position.clone(), q:o.quaternion.clone() });
+	_jointAxis.set(j.axis[0],j.axis[1],j.axis[2]).normalize();
+	if(j.motion==="slide") o.position.copy(rest.p).addScaledVector(_jointAxis,value);
+	else o.quaternion.copy(rest.q).multiply(_jointTurn.setFromAxisAngle(_jointAxis,value)); }
+function ship_joint_max(name){ const keys=SHIP.joints?.[name]?.keys; return keys?.length?keys[keys.length-1][1]:0; }
 function update_shuttles(){   // the hooked cat's shuttle rides with the jet's launch bar; the others sit home
 	if(!carrier_shuttles) return;
 	// The shuttle follows the launch bar tip whenever the jet is hooked - parked
@@ -7573,6 +7632,13 @@ function update_shuttles(){   // the hooked cat's shuttle rides with the jet's l
 	// the group origin leads the nose gear by 0.28 m.
 	const active=ownship.launching?cat_idx:on_cat_spot();   // the cat the jet is hooked to (on_cat_spot is -1 mid-launch)
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
+	if(carrier_shuttles[0]?.joint){   // the model's own: each slides from battery along its track, the hooked one under the nose wheel
+		for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i]; let travel=0;
+			if(i===active){ const wx=ownship.pos.x+ownship.fwd.x*nose, wz=ownship.pos.z+ownship.fwd.z*nose, h=s.cat.heading*D2R;
+				travel=(carrier_fore_aft(wx,wz)-s.cat.x)*Math.cos(h)-(carrier_lateral(wx,wz)-s.cat.z)*Math.sin(h); }
+			ship_joint(s.joint,THREE.MathUtils.clamp(travel,0,ship_joint_max(s.joint))); }
+		ship_joint("catapult_console_bow",active===0||active===1?ship_joint_max("catapult_console_bow"):0);   // the bow's console stands up while its catapults are manned
+		return; }
 	for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i];
 		if(i===active){ s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), 0, ownship.pos.z+ownship.fwd.z*(nose+0.28)); rig_local(s.mesh.position).y=s.home.y; }   // found in the world, placed on the rig the shuttles hang from
 		else s.mesh.position.copy(s.home); }
@@ -7584,6 +7650,7 @@ function update_jbds(dt){   // the hooked cat's deflector rises through run-up a
 	for(let i=0;i<carrier_jbds.length;i++){ const j=carrier_jbds[i];
 		const tgt=i===active?1:0, rate=tgt>j.frac?0.9:0.55;   // ~1.1 s up (hydraulic), ~1.8 s settle down
 		j.frac=THREE.MathUtils.clamp(j.frac+THREE.MathUtils.clamp(tgt-j.frac,-rate*dt,rate*dt),0,1);
+		if(j.joint){ ship_joint(j.joint,j.frac*ship_joint_max(j.joint)); continue; }   // the model's own deflector, to its joint's travel
 		const th=j.frac*JBD_ANG;
 		j.pivot.rotation.z=-th;   // -z rotation lifts the aft (free) edge
 		j.g.visible=j.frac>0.002;   // fully down = the painted deck IS the flush panel: even deck-textured, a 1.5 cm plate reads raised at grazing angles (its edge halves the border dashes and the parallax doubles them, with the steel side face drawing a dark outline)
@@ -9496,7 +9563,7 @@ function recording_sample(){
 				...(m.supported!==undefined?{support:m.supported}:{}),   // (#33 debrief): the shooter's radar still holding this round's trackfile THIS step - AMRAAM only, heaters have no midcourse phase to lose
 				...(grace?{fate:m.fate||"lost",killed:!!m.killed,...(m.burst!==undefined?{burst:m.burst,closure:m.closure,when:m.fated,judged:m.judged,...(m.off?{off:m.off}:{})}:{})}:{}) } }); }
 	if(carrier_model) list.push({ id:3, x:CARRIER.x, y:theatre.frame.sea(CARRIER.x,CARRIER.z).point.y, z:CARRIER.z, roll:0, pitch:0, yaw:(degrees(Math.atan2(CARRIER_C,CARRIER_S))+360)%360,   // the ship under way, by its compass heading: a replay poses the carrier from it, and Tacview draws it
-		name:"Nimitz", label:SHIP.ident, colour:"Blue", kind:"Sea+Watercraft+AircraftCarrier" });
+		name:"Gerald R. Ford", label:SHIP.ident, colour:"Blue", kind:"Sea+Watercraft+AircraftCarrier" });
 	for(const o of list){ const p=worldward(o); o.x=p.x; o.y=p.y; o.z=p.z; }   // a recording keeps the world frame, Earth-centred: the engine's moves under it
 	recorder.add(sim_time,list); }
 // recording_file renders what is buffered; null when nothing was captured.
@@ -10208,9 +10275,9 @@ function with_charted(build){ const x=CARRIER.x, z=CARRIER.z, yaw=CARRIER_YD, y=
 // has been, on the clock that poses her - the core's track in flight, the recording's in a
 // replay - so every player sees the same wake behind the same ship. A hull whose ship file
 // carries no waterline draws neither.
-const wake=new Wake(), wake_shape=SHIP.waterline?wake_hull(SHIP.waterline,SHIP.screws):null;
+const wake=new Wake(), wake_shape=SHIP.waterline?wake_hull(SHIP.waterline,SHIP.screws):null;   // the bow wave keeps BOW's entrance and draught: the Ford's waterline is not measured within 18 m of her stem, where the entrance is read
 if(wake_shape){ const u=ocean_mat.uniforms; u.u_hull_span.value.fromArray(wake_shape.span); u.u_hull.value.set(wake_shape.stations); u.u_hull_beam.value=wake_shape.beam;
-	u.u_screws.value.fromArray(wake_shape.screws); u.u_screw.value=wake_shape.screw; }
+	u.u_screws.value.fromArray(wake_shape.screws); u.u_screw.value=wake_shape.screw; u.u_bow.value.fromArray(wake_shape.bow); }
 function ship_known(t){ const p=flight_carrier(t); if(!p) return null;   // before the earliest time her track covers, she was steaming steadily on as it begins
 	if(t>=p.known) return p; const k=flight_carrier(p.known); return k?wake_before(k,p.known-t):null; }
 function ship_recorded(t){ const s=playback?playback_scene(playback,t).find(o=>(o.properties.Type||"").includes("Watercraft")):null;   // the recording's ship: a recording made before the ship sailed has none
@@ -10286,7 +10353,7 @@ const _slen=Math.hypot(SHIP.landing.line[1][0]-SHIP.landing.line[0][0],SHIP.land
 let _ground_kind="";   // surface kind under the last ground_height() hit: deck / runway / apron / ground / "" (sea) — read right after the call
 function ground_height(x,z){   // top of the solid surface under (x,z): carrier deck / runway / apron / island; -inf = open sea (no landing)
 	_ground_kind="";
-	if(Math.abs(x-CARRIER.x)<160 && Math.abs(z-CARRIER.z)<160){
+	if(Math.abs(carrier_fore_aft(x,z))<180 && Math.abs(carrier_lateral(x,z))<60){   // the ship's own footprint, in her frame whatever her heading (contact.go's deck search): a world-axis box cut her ends off when she headed near east or west
 		if(!carrier_model){ _ground_kind="deck"; return CARRIER.deckY; }   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
 		const h=deck_y_at(carrier_model,x,z,-1e9);
 		if(h>-1e8 && h<CARRIER.deckY+4){ _ground_kind="deck"; return h>CARRIER.deckY-2.5?CARRIER.deckY:h; }   // the flight deck is one horizontal plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to the measured plane; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
@@ -10327,12 +10394,19 @@ function check_collisions(dt){   // ownship vs the sea and the single-player ban
 let passes=[];   // this sortie's passes: {grade, remarks, wire}
 function pass_end(ending){ const p=ownship.pass||(ownship.pass=pass_start());
 	if(ending==="trap"&&carrier_ols) pass_wire(p, ols_dev(ownship.pos,carrier_ols).lat);
-	const g=pass_grade(p, ownship.touch||null, ending==="trap"?(ownship.wire||0):0, !!ownship.waved, ending);
-	ownship.grade=g.grade; ownship.remarks=g.remarks;
+	const t=ownship.touch, touch=t?{ sink:t.sink, bank:t.bank, short:t.deck?SHIP.landing.wires[0]-t.fa:0 }:null;   // short: how far aft of the first wire the main gear came down
+	const g=pass_grade(p, touch, !!ownship.waved, ending, cfg.tod==="night");
+	ownship.grade=g.grade; ownship.remarks=g.remarks; ownship.ended=true;
 	passes.push({ grade:g.grade, remarks:g.remarks, wire:ending==="trap"?(ownship.wire||0):0 });
 	if(g.remarks) radio("PADDLES: "+g.remarks);   // the LSO's shorthand is phraseology: verbatim in every locale, like the ball call
 	return g.grade; }
+// grade_text is a grade as the HUD shows it: the perfect pass is OK underlined, as the LSO writes it
+function grade_text(grade){ return grade==="PERFECT"?[...translate("OK")].map(c=>c+"\u0332").join(""):translate(grade); }
 function passes_text(){ return passes.map(p=>p.grade+(p.remarks?" "+p.remarks:"")+(p.wire?" "+p.wire+" wire":"")).join(" | "); }   // the sortie's passes for the recording header
+// passes_row is the sortie's passes for its log row: the last one as the row shows it, and all of them tallied
+// (lso.ts) for the log's grade average and boarding rate; points in tenths, the store's integers
+function passes_row(){ const last=passes[passes.length-1], t=tally(passes);
+	return { ...(last?{ grade:last.grade, remarks:last.remarks, wire:last.wire }:{ grade:"", remarks:"", wire:0 }), passes:t.passes, traps:t.traps, points:Math.round(t.points*10), scored:t.scored }; }
 // ---- landing test scenarios (dev-only, TEST_SCENARIOS + Shift+1..0): scripted hands-off approaches with exact
 // touchdown parameters, because a keyboard pilot can't reliably hit "sink 11 m/s, wings level" to test the gates.
 // The autopilot prescribes attitude + track to the touchdown; the outcome (land / bounce / crash / trap / bolter)
@@ -10868,7 +10942,8 @@ function scenery(){
 	const carrier={ position:{x:CHART.x, y:CARRIER.height, z:CHART.z}, heading:CHART.yaw, speed:0, prisms:island?[island.prism]:[], posts:island?[island.post]:[],   // where the map charts the ship; the core sets it under way from there
 		deck:SHIP.outline.map(q=>({x:q[0], z:q[1]})),
 		catapults:SHIP.catapults.map(c=>({ position:{x:c.x, y:0, z:c.z}, heading:c.heading*D2R, stroke:c.stroke, speed:c.speed })),   // shuttles ARE the nose-gear points — the core's native convention
-		wires:SHIP.landing.wires.map(fa=>({ a:{x:fa+SHIP.landing.span/2*STRIP_ULAT, y:0, z:strip_lat(fa)-SHIP.landing.span/2*STRIP_UFA}, b:{x:fa-SHIP.landing.span/2*STRIP_ULAT, y:0, z:strip_lat(fa)+SHIP.landing.span/2*STRIP_UFA} })) };   // pendants span SQUARE TO THE LANDING STRIP, as a real angled deck rigs them (the hook crosses them perpendicular on rollout); ship-axis-aligned wires skewed the catch geometry. NOT the topple fix — that was the world-side wing-leveler (#72 scenario 9) — but correct regardless
+		wires:SHIP.landing.wires.map((fa,i)=>{ const e=SHIP.landing.ends?.[i]; return e?{ a:{x:e[0][0], y:0, z:e[0][2]}, b:{x:e[1][0], y:0, z:e[1][2]} }   // where each pendant leaves its sheaves, as the ship file measures them
+			:{ a:{x:fa+SHIP.landing.span/2*STRIP_ULAT, y:0, z:strip_lat(fa)-SHIP.landing.span/2*STRIP_UFA}, b:{x:fa-SHIP.landing.span/2*STRIP_ULAT, y:0, z:strip_lat(fa)+SHIP.landing.span/2*STRIP_UFA} }; }) };   // pendants span SQUARE TO THE LANDING STRIP, as a real angled deck rigs them (the hook crosses them perpendicular on rollout); ship-axis-aligned wires skewed the catch geometry. NOT the topple fix — that was the world-side wing-leveler (#72 scenario 9) — but correct regardless
 	const prisms=obstacles.buildings.map(b=>({ outline:b.pts.map(q=>({x:q[0], z:q[1]})), top:b.topY }));
 	const posts=obstacles.posts.map(p=>({ position:{x:p.x, z:p.z}, radius:p.r, top:p.y1 }));
 	return { sea:3, fields, carrier, prisms, posts };   // the sea at the height flight ends, the world server's own figure: the served file must be the file the server flies
@@ -10932,7 +11007,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	if(core_catapult>=0 && core_catapult<SHIP.catapults.length) cat_idx=core_catapult;   // the active cat follows whichever shuttle the crew hooked you onto — without this, taxiing to another cat towed the wrong shuttle mesh
 	ownship.launching=core_catapult>=0&&core_stroke>=0;
 	const wire=out[STATE.wire];
-	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; pass_end("trap"); ownship.turned=false; ownship.taxied=false; notice(translate(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
+	if(wire>=0&&prev_wire<0){ ownship.trapped=true; ownship.wire=wire+1; pass_end("trap"); ownship.turned=false; ownship.taxied=false; notice(grade_text(ownship.grade)+", "+translate(ownship.wire+" WIRE"), 8); }
 	if(ownship.trapped&&!ownship.turned&&ownship.speed<0.5){ ownship.turned=true;   // chocked and chained: the deck crew turn the jet around and service it (#128)
 		ownship.rounds=MAGAZINE; ownship.msl=magazine(); ownship.amraam=stores_amraams(ownship.loadout||loadout()).length; ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; rearm_order(ownship); update_rails(ownship,ownship.msl);
 		const b=flight_get(); b[STATE.fuel]=FUEL(); external_fill(b); flight_set(b); }   // the deck crew top the externals too — every spawn and service is a full-tank fill (#17)
@@ -11639,7 +11714,8 @@ function step_world(dt){ sim_time+=dt;
 	if(carrier_ols && !ownship.trapped && ((ownship.hook??0)>0.5 || (ownship.gear??1)<0.5)){   // LSO watch: accumulate glideslope/lineup deviation through the in-close portion of a pass, and call the waveoff — the LSO waves off ANY unlandable pass, not just a low one
 		const s=ols_dev(ownship.pos,carrier_ols);
 		ownship.waving=false;   // current waveoff call (drives the flashing banner); waved is sticky for the pass grade
-		if(s.along>2500 || s.along<-70){ ownship.pass=pass_start(); ownship.waved=false; ownship.groove=false; }   // outside the pass → fresh slate. The forward bound is -70 m, NOT 0: touchdown and the wire catch happen 0..-30 m past the reference, so resetting at 0 wiped the in-close data the frame before lso_grade() read it — every trap scored NO-GRADE for want of data (#72). A bolter/go-around rolls or flies well past -70 and still resets for the next pass.
+		if(s.along>2500 || s.along<-70){ if(s.along<-70&&ownship.groove&&!ownship.ended&&!ownship.grounded) pass_end("own");   // flown past the touchdown, never down and never waved off: the pilot's own wave-off
+			ownship.pass=pass_start(); ownship.waved=false; ownship.groove=false; ownship.ended=false; ownship.closing=null; }   // outside the pass → fresh slate. The forward bound is -70 m, NOT 0: touchdown and the wire catch happen 0..-30 m past the reference, so resetting at 0 wiped the in-close data the frame before lso_grade() read it — every trap scored NO-GRADE for want of data (#72). A bolter/go-around rolls or flies well past -70 and still resets for the next pass.
 		else if(!ownship.grounded && s.dist<1852 && s.along>40){
 			const lineup=Math.abs(Math.atan2(s.lat,Math.max(s.along,1)))*180/Math.PI;
 			// Established gate: the LSO grades a jet in the groove (aligned, at approach
@@ -11647,7 +11723,12 @@ function step_world(dt){ sim_time+=dt;
 			// once armed so a drift past 6° still waves.
 			if(!ownship.groove && lineup<5 && ownship.speed<105) ownship.groove=true;
 			if(ownship.groove){
-			if((ownship.hook??0)>0.5) pass_sample(ownship.pass||(ownship.pass=pass_start()), s.along, s.dev, s.lat, ownship.aoa??0);   // the LSO's book (lso.ts): the worst of each thing in each segment
+			if((ownship.hook??0)>0.5){ const book=ownship.pass||(ownship.pass=pass_start()), was=ownship.closing;
+				const closure=was?(was.along-s.along)/Math.max(sim_time-was.t,1e-3):0, settle=closure>0?-(ownship.vely??0)-closure*Math.tan(GROOVE.slope*D2R):0;   // sinking faster than the slope's own rate at this closure: a settle
+				pass_sample(book, s.along, s.dev, s.lat, ownship.aoa??0, settle);   // the LSO's book (lso.ts): the worst of each thing in each segment
+				const hook=s.along+HOOK_AFT, before=was?was.along+HOOK_AFT:Infinity;
+				if(before>carrier_ols.ramp&&hook<=carrier_ols.ramp) pass_ramp(book, hook*(Math.tan((s.dev+GROOVE.slope)*D2R)-Math.tan(GROOVE.slope*D2R)));   // the hook crossing the round-down: its height off the optimum path, the ramp's glideslope
+				ownship.closing={ along:s.along, t:sim_time }; }
 			const wave=(s.dev<-0.7 && s.dist>250)   // dangerously low in close (matches the OLS waveoff lights); inside ~250 m the call is over (hook geometry reads falsely low there)
 				|| (lineup>6 && s.along>250)          // gross lineup deviation — drifting for the foul line or the island
 				|| (s.dev>1.8 && s.along<800 && s.along>250)   // way high in close: unlandable, go around
@@ -11673,7 +11754,7 @@ function reset_ownship(){
 	ownship.rounds=MAGAZINE; ownship.msl=magazine(); rearm_order(ownship); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");
 	master=default_master(); default_radar();   // the match's own weapon is already selected at spawn, and the radar set for it: a dead trigger at the merge is a trap, and so is arriving with the gun up in a heater fight   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
-	ownship.grounded=false; ownship.touch=null; ownship.pass=pass_start(); ownship.grade=""; ownship.remarks=""; ownship.waved=false; ownship.groove=false; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
+	ownship.grounded=false; ownship.touch=null; ownship.pass=pass_start(); ownship.grade=""; ownship.remarks=""; ownship.waved=false; ownship.groove=false; ownship.ended=false; ownship.closing=null; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
 	test_active=null; demonstration=null;   // a test scenario must not keep driving across a crash respawn (it would fly the fresh spawn straight into the deck, forever); the demonstration pilot is re-seated below by the Case I spawn alone
 	const st=mission_start(), wheels=on_wheels(st), parked=st==="deck"||st==="apron";
 	cold_start=parked&&!!cfg.cold;   // a parked start's choice of Ready or Cold and dark (#133); every other start runs
@@ -12937,7 +13018,7 @@ function sortie_row(reason){ return {
 	started:mission_began, ended:Date.now(), reason,
 	players:cfg.task==="joust"?"2":"1", kills:own_kills, deaths:own_deaths,
 	cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0,
-	...(()=>{ const last=passes[passes.length-1]; return last?{ grade:last.grade, remarks:last.remarks, wire:last.wire }:{ grade:"", remarks:"", wire:0 }; })() }; }   // the last pass is the landing the row shows
+	...passes_row() }; }   // the last pass is the landing the row shows
 // recording_checkpoint saves the flight as it flies (#16, checkpoint.ts): its
 // history row marked flying, then its recording, from the moment it is a
 // sortie and every minute after, so a frozen or closed tab keeps all but the
@@ -13782,7 +13863,7 @@ function match_row(reason){ return { world:join.server, title:join.title||"", se
 	team:net.teams.get(net.slot)||"",
 	started:match_started, ended:Date.now(), reason,
 	players:JSON.stringify([...remotes.keys()].length+1), kills:own_kills, deaths:own_deaths,
-	cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0, ...(()=>{ const last=passes[passes.length-1]; return last?{ grade:last.grade, remarks:last.remarks, wire:last.wire }:{ grade:"", remarks:"", wire:0 }; })() }; }   // mark cheated matches so an honest history stays honest (the match rules from the welcome populate cfg.cheats)
+	cheated:(cfg.cheats&&Object.values(cfg.cheats).some(Boolean))?1:0, ...passes_row() }; }   // mark cheated matches so an honest history stays honest (the match rules from the welcome populate cfg.cheats)
 function net_end(reason,results){ if(session_over) return;
 	net_finish(reason);
 	if(results&&results.name){ notice(results.name+" "+translate("WINS")); }   // joust outcome

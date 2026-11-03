@@ -69,11 +69,25 @@ def coverage(summary, settings=None):
 	stretches = sorted({k[1] for k in skin})
 	families = sorted({k[0] for k in skin if k[0] != "body"})
 	rows = [("body", sector) for _, sector in settings.sectors if any(k[0] == "body" and k[2] == sector for k in skin)] + [(f, "") for f in families]
+	if settings.sides:
+		# every region is split by side as well (a sectored family's sector
+		# then its side): a row per part and side present, the body first,
+		# each part's sectors in order round the section, port before starboard
+		order = [sector for _, sector in settings.sectors]
+
+		def place(row):
+			family, sector = row
+			words = sector.split()
+			side = settings.sides.index(words[-1]) if words and words[-1] in settings.sides else -1
+			around = order.index(words[0]) if words and words[0] in order else -1
+			return (family != "body", family, around, side)
+
+		rows = sorted({(k[0], k[2]) for k in skin}, key=place)
 	out = ['<div class="scroll"><table class="map"><thead><tr><th scope="col">Part</th>']
 	out += [f'<th scope="col">{s}</th>' for s in stretches]
 	out.append("</tr></thead><tbody>")
 	for family, sector in rows:
-		name = f"body, {sector}" if family == "body" else family
+		name = f"{family}, {sector}" if sector else family
 		out.append(f'<tr><th scope="row">{html.escape(name)}</th>')
 		for s in stretches:
 			key = (family, s, sector)

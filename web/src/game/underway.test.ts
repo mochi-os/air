@@ -379,7 +379,7 @@ describe("the carrier's island", () => {
 
 describe('the carrier under way in recordings', () => {
   it('records the ship by its compass heading, and a replay turns that back into the heading it steamed on', () => {
-    const recorded = /yaw:(\(degrees\(Math\.atan2\(CARRIER_C,CARRIER_S\)\)\+360\)%360),[^\n]*\n\t\tname:"Nimitz", label:SHIP\.ident, colour:"Blue", kind:"Sea\+Watercraft\+AircraftCarrier" \}\);\n\tfor\(const o of list\)[^\n]*\n\trecorder\.add\(sim_time,list\); \}/.exec(source)?.[1]
+    const recorded = /yaw:(\(degrees\(Math\.atan2\(CARRIER_C,CARRIER_S\)\)\+360\)%360),[^\n]*\n\t\tname:"Gerald R\. Ford", label:SHIP\.ident, colour:"Blue", kind:"Sea\+Watercraft\+AircraftCarrier" \}\);\n\tfor\(const o of list\)[^\n]*\n\trecorder\.add\(sim_time,list\); \}/.exec(source)?.[1]
     const replayed = /if\(type\.includes\("Watercraft"\)\)\{ carrier_place\(pose,([^;]*)\); continue; \}/.exec(source)?.[1]
     expect(recorded).toBeTruthy()
     expect(replayed).toBe('pose.yaw*D2R') // the compass heading, which carrier_place turns back into the engine's
@@ -482,7 +482,8 @@ describe('the carrier under way in the engine', () => {
       'utf8'
     )
     expect(depth).toContain('float fragCoordZ = 0.5 * vHighPrecisionZW[0] / vHighPrecisionZW[1] + 0.5;') // the line it patches is three's
-    expect(lift('init_carrier_model')).toMatch(/o\.receiveShadow=true; o\.customDepthMaterial=carrier_depth; \} \}\);/)
+    // the full model through carrier_shadow: carrier_depth, or for a cut-out (the nets) a copy that cuts the same holes (carrier.test.ts)
+    expect(lift('init_carrier_model')).toMatch(/o\.receiveShadow=true; o\.customDepthMaterial=carrier_shadow\(mm\); \} \}\);/)
     expect(lift('init_carrier_far')).toMatch(/o\.receiveShadow=true; o\.customDepthMaterial=carrier_depth; \} \}\);/)
   })
 

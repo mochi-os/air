@@ -782,33 +782,6 @@ function CreditsDialog() {
           </p>
           <p className='leading-relaxed'>
             <Trans>
-              Aircraft carrier <b>“USS Nimitz CVN-68 Aircraft Carrier”</b> by{' '}
-              <b>Muhamad Mirza Arrafi</b> (Sketchfab), licensed under{' '}
-              <b>CC BY 4.0</b>. Modified: rescaled, reoriented, sunk to the
-              waterline, and simplified for the web.
-            </Trans>{' '}
-            <a
-              className='text-primary hover:underline'
-              href='https://sketchfab.com/3d-models/uss-nimitz-cvn-68-aircraft-carrier-06cf0dba66874934a105b3fe2bfdb0f7'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              {/* jsx-text-ok: brand name */}
-              Sketchfab
-            </a>{' '}
-            ·{' '}
-            <a
-              className='text-primary hover:underline'
-              href='https://creativecommons.org/licenses/by/4.0/'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              {/* jsx-text-ok: licence name */}
-              CC BY 4.0
-            </a>
-          </p>
-          <p className='leading-relaxed'>
-            <Trans>
               Missile model <b>“AIM-120C AMRAAM”</b> by <b>Pippa</b>{' '}
               (Sketchfab), licensed under <b>CC BY 4.0</b>. Modified: rescaled,
               reoriented, and centred for placement.

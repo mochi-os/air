@@ -275,9 +275,9 @@ describe('distance stages in the engine', () => {
     )
     expect(far).toMatch(/carrier_rig\.add\(far\);/)
     expect(far).not.toMatch(/grp\.add\(/)
-    expect(source).toMatch(
-      /nimitz:\{ url:nimitz_model_url, far:nimitz_far_url,/
-    )
+    // the Ford names none yet, and is drawn in full at every range
+    expect(source).toMatch(/\tford:\{ url:ford_model_url, length:/)
+    expect(far).toMatch(/^async function init_carrier_far\(grp,gscene\)\{ if\(!SHIP\.far\) return;/)
   })
 
   it('ships the stages the engine names and a carrier far model without the deck parts or images', () => {
@@ -295,10 +295,10 @@ describe('distance stages in the engine', () => {
     ).toEqual(['airframe', 'burner', 'down', 'far', 'up'])
     for (const mesh of jet.meshes)
       expect(Object.keys(mesh.primitives[0].attributes)).toContain('COLOR_0')
-    const ship = json('../assets/nimitz-far.glb')
-    expect(ship.images ?? []).toHaveLength(0)
-    expect(ship.nodes.map((n: { name?: string }) => n.name)).not.toEqual(
-      expect.arrayContaining(['deck_baked'])
-    )
+    // the carrier's deck parts, which a far model would leave out, by the names the engine keeps
+    const ship = json('../assets/ford.glb')
+    const keep = new RegExp(/CARRIER_KEEP=\/(.*?)\/;/.exec(source)![1])
+    const kept = ship.nodes.map((n: { name?: string }) => n.name).filter((n: string) => keep.test(n))
+    expect(kept.sort()).toEqual(['deck', 'deck_skirt', 'deck_underside'])
   })
 })

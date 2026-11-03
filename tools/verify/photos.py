@@ -39,8 +39,14 @@
 #                  or open sea; true to leave out what lies under the horizon, false never to, absent to leave it out where
 #                  the pose has the gear down; polygons [[[x, y], ...], ...] in the photo's own pixels hiding what the model
 #                  does not carry),
+#                  "focal": the lens in the photo's own pixels, as the solve's prior in place of the EXIF's (a photo
+#                  cropped and enlarged keeps an EXIF that no longer fits its pixels), or false for none (a field of
+#                  view between 1 and 100 degrees, as a photo without EXIF),
+#                  "horizon": [[x, y], ...] pixels along the sea's horizon, which hold a low camera's pitch and roll
+#                  (needs "sea"),
 #                  "marks": {point: [x, y]}, "edges": {name: {"against": "outline" | curve name,
 #                  "points": [[x, y], ...], "snap": pixels}}, "locate": {name: [x, y, "plane=value"]}}}
+#   sea      the sea's surface as a plane ("waterline=0"), for the photos' horizons
 #   gate     {"edge": inches, "sigmas": n, "floor": inches, "field": degrees, "rms": pixels,
 #             "known": {"edge PHOTO:NAME" or "point NAME": why}}: what --check fails on (gate()); the
 #             inches are the frame's unit
@@ -219,10 +225,12 @@ class Match:
 			with Image.open(self.root / "references" / entry["file"]) as image:
 				size = image.size
 				lens = exif_focal(image)
+			if "focal" in entry:
+				lens = entry["focal"] or None
 			self.photos.append({"id": pid, "entry": entry, "size": size, "centre": (size[0] / 2, size[1] / 2), "width": size[0],
 				"sigma": entry.get("sigma", max(1.5, size[0] / 2500)), "marks": {n: tuple(p) for n, p in entry.get("marks", {}).items()},
 				"distortion": entry.get("distortion", len(entry.get("marks", {})) >= 20), "camera": None,
-				"focal": (lens, 0.1) if lens else None})
+				"focal": (lens, 0.1) if lens else None, "horizon": [tuple(p) for p in entry.get("horizon", [])]})
 			# each mark on a part this photo poses otherwise than the measuring pose, carried there
 			moves = {n: self.features.between(self.pose, entry.get("pose", {}), n) for n in entry.get("marks", {})}
 			self.photos[-1]["moves"] = {n: m for n, m in moves.items() if m is not None}
@@ -247,7 +255,8 @@ class Match:
 			for name in points:
 				if name.endswith(left) and name[: -len(left)] + right in points:
 					pairs.append((name, name[: -len(left)] + right))
-		self.bundle = cam.Bundle(self.photos, points, mirror=(self.frame.reflection(), pairs) if pairs else None)
+		sea = self.frame.plane(self.catalogue["sea"]) if "sea" in self.catalogue else None
+		self.bundle = cam.Bundle(self.photos, points, mirror=(self.frame.reflection(), pairs) if pairs else None, sea=sea)
 		missing = self.bundle.initialise(log=log)
 		for k in missing:
 			log(f"photo {self.photos[k]['id']}: too few known points to start its camera; left out")
@@ -257,6 +266,7 @@ class Match:
 	def report(self):
 		out = {"photos": {}, "points": {}, "anchors": {}, "edges": {}, "locate": {}}
 		misses = self.bundle.misses()
+		horizons = self.bundle.horizons()
 		f = self.frame
 		for k, photo in enumerate(self.photos):
 			if k not in self.cameras:
@@ -272,6 +282,8 @@ class Match:
 				"k1": round(float(c[7]), 4), "camera": [round(float(v), 1) for v in f.source(cam.eye(c))], "marks": len(m),
 				"rms": round(float(np.sqrt(np.mean(np.square(pixels)))) if pixels else 0.0, 1), "worst": max(inches.items(), key=lambda kv: kv[1]) if inches else None,
 				"misses": inches}
+			if k in horizons:
+				out["photos"][photo["id"]]["horizon"] = round(float(np.sqrt(np.mean(np.square(horizons[k])))), 1)
 		for name, p in self.points.items():
 			seen = sum(1 for ph in self.photos if name in ph["marks"])
 			at = f.source(p)
@@ -444,7 +456,8 @@ def text(report, symbol=mod.SYMBOL):
 			lines.append(f"photo {pid}: not solved")
 			continue
 		worst = f"{p['worst'][0]} {p['worst'][1]:.1f} {symbol}" if p["worst"] else "-"
-		lines.append(f"photo {pid}: {p['marks']} marks, rms {p['rms']} px, field {p['field']} deg, k1 {p['k1']}, camera at {p['camera']}, worst {worst}")
+		lines.append(f"photo {pid}: {p['marks']} marks, rms {p['rms']} px, field {p['field']} deg, k1 {p['k1']}, camera at {p['camera']}, worst {worst}"
+			+ (f", horizon rms {p['horizon']} px" if "horizon" in p else ""))
 		if p["outliers"]:
 			lines.append(f"  marks missing by more than 5 sigma (check them): {', '.join(p['outliers'])}")
 	lines.append("")

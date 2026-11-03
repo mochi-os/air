@@ -77,11 +77,22 @@ The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
 - `photos`: per photo, where each named point falls (`marks`), traced `edges`, the `pose` the model takes to
   match it (gear down, canopy open, surfaces deflected), pixels to cast onto a plane (`locate`), and
   `"solve": false` for one kept on file but too thinly marked to solve. The sky check (5a) reads `clear`,
-  `ground`, `stores` and `masks` beside them.
+  `ground`, `stores` and `masks` beside them. Two more hold a camera the marks leave loose:
+  - `focal`: the lens in the photo's own pixels, the solve's prior in place of the EXIF's, or `false` for no
+    prior. A photo cropped and enlarged keeps an EXIF focal that no longer fits its pixels: the Ford's
+    dvids9167788 solved 34% longer than its EXIF 28 mm.
+  - `horizon`: pixels along the sea's horizon. Each is held to the horizon's dip below level from the camera's
+    height over the sea (1.76 minutes of arc times the root of the height in metres, with refraction). It fixes
+    the pitch and roll of a low camera whose marks lie in one band, such as a deck edge seen from the water,
+    about which the camera could otherwise swing. The report gives its rms in pixels.
+- `sea`: the sea's surface as a plane in the frame's names (`"y=0"`), which `horizon` needs. The sky check (5a)
+  cuts the model at it, since the water hides what lies under it, and measures a ground photo's horizon from
+  the sea's.
 - `skyline`: the sky check's regions and what makes a finding (5a), each key defaulting to the F/A-18C's:
   `stretch` (24), `axis` (110), `sectors`, `families`, `moving`, `tolerance` (1), `solid` (the materials whose
-  outline is the model's own edge) and `label` (`"FS"`); with `notes` and `posing`, text for the review page
-  (6).
+  outline is the model's own edge), `label` (`"FS"`), `sectored` (the families split into sectors, `["body"]`),
+  `sides` (names for either side of the centreline, each region split by side; none for a mirrored skin) and
+  `horizon` (1.5, below); with `notes` and `posing`, text for the review page (6).
 - `poses`: the joints `poses.py` fits (5b), and `subject`: what the photos show, as the review page names it
   (`"aircraft"`).
 
@@ -141,7 +152,10 @@ than shaded skin, which is grey); in a photo whose catalogue entry says `"clear"
 open sea beyond the jet, no cloud) the walk reads the blue, not the grey, and the edge is where the blue ends.
 Green is never sky, nor anything under a ground photo's horizon. A ground photo is one whose entry says
 `"ground": true`, or, without the key, whose pose has the gear down; `"ground": false` never masks the
-horizon. Open sea seen from a low camera can pass for sky: say `true`.
+horizon. Open sea seen from a low camera can pass for sky: say `true`. Ground begins the `skyline`'s `horizon`
+degrees (1.5) under level, or with the catalogue's `sea`, that far under the sea's own horizon, the dip at the
+camera's height (1.76 minutes of arc times the root of the height in metres). The model is cut at the sea
+too: nothing under the water makes an outline.
 
 Each place is a miss in the frame's unit at the depth of the triangle making the outline there (+ where the
 model stands outside), on the region of skin it belongs to: part family, a stretch of stations, and for the
@@ -247,9 +261,16 @@ What went wrong on the F/A-18C, each a rule now:
   and wheels) leaves focal length and distance trading off, and its camera runs off to a distant telephoto. Mark
   six or more points spread along the whole object; a photo that cannot have them goes in the catalogue with
   `"solve": false` and a note why.
+- **Anchor what symmetry gives before reading a pair of free points.** A photo whose fixed marks all lie far
+  behind the part it measures (a carrier's bow seen from ahead, its marks on the island 250 m aft) leaves the
+  camera's sideways place and its heading trading off, and every free point it measures near the part moves
+  sideways together. The Ford's bow-face corners came out 2.7 m to starboard, port and starboard pair alike,
+  though each pair's half-width agreed with the model within 0.3 m. One anchor on the centreline (`points`, its
+  offset 0, the rest loose) brought all four within 0.4 m. A shift common to a mirror pair is the camera; a
+  difference between them is the model.
 - **Long lenses see depth weakly.** A photo from far off is nearly orthographic: it measures across its line of
   sight well and along it hardly at all. The bundle holds a photo without EXIF focal length to a field of view
-  between 1 and 100 degrees; it reads EXIF where the file keeps it.
+  between 1 and 100 degrees; it reads EXIF where the file keeps it, unless the photo's `focal` says otherwise.
 - **One name, one point.** The far wheel in a profile shows its inboard face, not the hub face the near wheels
   show; a head-on view shows a tyre's middle. Give each its own name. When two markers place a point
   differently (a seam against the slot cut into it), keep one definition and drop the other.
@@ -445,10 +466,18 @@ What went wrong on the F/A-18C, each a rule now:
   hour or so each. Check their marks against the overlays and the flagged misses; they also found the wrong
   photo labels.
 - **Measure a part's shape in its own frame.** A camera's registration error at one end of the model moves a
-  part as a whole: the F/A-18C's stabilator tips sat 3-6 in apart from photo to photo. Trace the part's outline,
-  cast it onto the part's posed plane from the solved camera, and read each edge against the part's own other
-  edges: shape survives a registration error, position doesn't. That trace showed the stabilator's leading corner
-  sharp and its trailing corner rounded (8 in radius), which no single photo's outline misses had shown.
+  part as a whole: the F/A-18C's stabilator tips sat 3-6 in apart from photo to photo. Cast the photo's outline
+  onto the part's posed plane from the solved camera and fit the shape with the part's offset free: shape
+  survives a registration error, position doesn't. The stabilator's trailing corner, fitted as a circle tangent
+  to the cited tip and trailing edge, read a 12-13.25 in radius in 7 stabilators of 4 photos, where the model's
+  own outline through the same fit read 7.5-8.0 for its 8. Don't judge a round by where the outline seems to
+  leave its line: a 13 in circle is still within 0.5 in of its tangent 3.6 in past the tangent point, and that
+  reading had put this one at 8 in.
+- **A mirrored pair's edge misses carry the camera's registration, left and right in opposite directions.** Read
+  a shape (a chord, a span) from the two sides averaged, or from each side against its own other edges (above).
+  One side at a time, the F/A-18C's stabilator chord read 2.5 in long; averaged, the three views from straight
+  above and below read it within 1 in. The free points' version of this is "Anchor what symmetry gives" above.
+  The sky check's misses are + where the model stands outside the photo's edge.
 
 ## Files
 

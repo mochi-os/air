@@ -59,9 +59,43 @@ class Paint(unittest.TestCase):
 		self.assertEqual(pieces[0], [[0, 0], [1, 0], [1.0, 2.0]])
 		self.assertEqual(pieces[1], [[1.0, 3.0], [1, 5]])
 
+	def test_text_turns_its_top_to_up(self):
+		# a 7 4 m tall along x with its top to the bow: its top bar spans the
+		# box's width at the forward end, its foot is narrow at the aft end
+		image = self.render({"kind": "text", "text": "7", "centre": [0, 0], "height": 4, "width": 2, "up": [1, 0], "colour": WHITE})
+		def painted(x):
+			return sum(at(image, x, z / 10) == WHITE for z in range(-12, 13))
+		self.assertGreater(painted(1.8), 12)
+		self.assertLess(painted(-1.8), 8)
+		self.assertGreater(painted(-1.8), 0)
+		self.assertEqual(at(image, 2.5, 0), GREY)      # nothing past the box
+		self.assertEqual(at(image, 0, 1.5), GREY)
+
+	def test_circles(self):
+		image = self.render({"kind": "circle", "centre": [-5, 0], "radius": 2, "fill": True, "colour": RED},
+			{"kind": "circle", "centre": [5, 0], "radius": 2, "fill": False, "width": 0.4, "colour": RED})
+		self.assertEqual(at(image, -5, 0), RED)
+		self.assertEqual(at(image, -5, 1.7), RED)
+		self.assertEqual(at(image, -5, 2.5), GREY)
+		self.assertEqual(at(image, 5, 0), GREY)        # the ring hollow
+		self.assertEqual(at(image, 5, 2), RED)
+
+	def test_stains_darken_in_linear_light(self):
+		# half the light gone over the stain's middle, none well outside it,
+		# and part of it across its feathered edge; the markings under it
+		# darkened alike
+		image = paint.render({**LAYOUT, "markings": [{"kind": "area", "outline": [[-2, -4], [2, -4], [2, 4], [-2, 4]], "colour": WHITE}],
+			"stains": [{"outline": [[-6, -4], [6, -4], [6, 4], [-6, 4]], "darkening": 0.5, "feather": 1.0}]})
+		half = lambda c: round(255 * ((((c / 255 + 0.055) / 1.055) ** 2.4 / 2) ** (1 / 2.4) * 1.055 - 0.055))
+		self.assertEqual(at(image, -4, 0), [half(c) for c in GREY])
+		self.assertEqual(at(image, 0, 0), [half(c) for c in WHITE])
+		self.assertEqual(at(image, -9, 0), GREY)
+		edge = at(image, -6, 0)[0]
+		self.assertTrue(half(GREY[0]) < edge < GREY[0], edge)
+
 	def test_unknown_kind(self):
 		with self.assertRaises(ValueError):
-			self.render({"kind": "circle", "colour": RED})
+			self.render({"kind": "triangle", "colour": RED})
 
 
 if __name__ == "__main__":

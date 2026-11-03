@@ -34,14 +34,33 @@ EXEMPT = {
 	"island.placement": "relative to an unnamed earlier carrier",
 	"island.taller": "relative to an unnamed earlier carrier",
 	"arresting.engines": "below the deck",
+	"arresting.runout": "the flight core's arresting gear (carrier.go), tested in carrier_test.go",
+	"catapults.force": "the flight core's catapult (carrier.go), tested in carrier_test.go",
+	"catapults.speed": "the flight core's cap on a shot, written into the ship file",
+	"catapults.profile": "the flight core's catapult (carrier.go), tested in carrier_test.go",
 	"markings.colours": "the paint's colours, measured from the photos (layout.paint)",
 	"markings.lens": "the shore layout's lens, a check on the Ford's when the lens is placed",
 	"radio.tacan": "the flight core's, not the model's",
 	"layout.catapults": "tracks, batteries and strokes the build writes as given; the shuttles' and deflectors' joints are tested in test_build.py",
 	"layout.fittings": "fittings' sizes the build writes as given",
 	"layout.landing": "the landing line and wires the build writes as given",
+	"layout.consoles": "the consoles the build writes as given; their motion is tested in test_build.py",
+	"layout.antennas": "the antennas the build writes as given; their motion is tested in test_build.py",
+	"layout.parking": "a placed spot the build writes as given",
+	"layout.sponsons": "built as given (references/research/sides, stern); the photo match checks their corners",
+	"layout.wedges": "built as given (references/research/stern); the photo match checks their corners",
+	"layout.weapons": "built as given",
+	"layout.domes_edge": "built as given",
+	"layout.catwalks": "built as given",
+	"layout.racks": "built as given",
+	"layout.openings": "built as given, dark on the hull",
+	"layout.transom": "built as given (references/research/transom); test_build checks the face, its recess and the walkway",
+	"layout.lettering": "plates built as given; test_build checks each reads from outside its face",
+	"layout.lens": "the lens the build writes as given, for the engine to draw",
+	"layout.lights": "the lights the build writes as given, for the engine to draw",
 	"layout.paint": "colours paint.py draws, not a shape",
 	"layout.markings": "the markings paint.py draws; their widths and spacings are checked against markings.*",
+	"layout.stains": "the darkening paint.py draws over the markings, not a shape",
 }
 
 
@@ -160,8 +179,13 @@ def checks(ship):
 			# from the inboard edge out
 			top_z = np.abs(top[:, 1])
 			sides = [np.linalg.norm(outline[i] - outline[(i + 1) % 4]) for i in range(4)]
-			yield result("elevators.length", f"{name}'s long side", value(FACTS["elevators"]["length"]) * FT, max(sides), 1.0)
-			yield result("elevators.width", f"{name}'s depth inboard", value(FACTS["elevators"]["width"]) * FT, top_z.max() - top_z.min(), 0.5)
+			# the published size is one starboard elevator's (facts.json says which)
+			if name == f"elevator_{FACTS['elevators']['length']['elevator']}":
+				yield result("elevators.length", f"{name}'s long side", value(FACTS["elevators"]["length"]) * FT, max(sides), 1.0)
+				# where the photos and the published figure disagree, the entry says which the model uses
+				width = FACTS["elevators"]["width"]
+				want = width["measured"]["value"] if width.get("use", "").startswith("measured") else value(width) * FT
+				yield result("elevators.width", f"{name}'s depth inboard", want, top_z.max() - top_z.min(), 0.5)
 	yield from elevators()
 
 	def fittings():
