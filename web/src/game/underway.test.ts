@@ -424,7 +424,7 @@ describe('the carrier under way in the engine', () => {
   it('builds the model, its far model and the deck aids where the map charts the ship, on the rig', () => {
     const model = lift('init_carrier_model')
     expect(model).toMatch(/grp\.position\.set\(CHART\.x,0,CHART\.z\);/)
-    expect(model).toMatch(/with_charted\(\(\)=>build_deck_grid\(grp, st\.deckY-waterline\)\);/)
+    expect(model).toMatch(/with_charted\(\(\)=>build_deck_grid\(grp, SHIP\.deck\)\);/)
     expect(model).toMatch(/carrier_model=grp; carrier_rig\.add\(grp\);/)
     expect(model).toMatch(/with_charted\(\(\)=>rig_adopt\(\(\)=>\{ CARRIER\.deckY=CARRIER\.height=deck_y_at\([^\n]*\n\t+build_carrier_deck_aids\(\); \}\)\);[^\n]*\n\t+ols_follow\(\);/)
     expect(model).not.toMatch(/scene\.add\(grp\)/)

@@ -190,10 +190,10 @@ const cfg = { record:true, render_scale:1.0, dyn_res:true, ocean_segments:256, e
 // from an imported asset URL, for the dev readout.
 function model_stamp(url){ const m=/-([\w-]+)\.\w+$/.exec(url); return m?m[1]:url; }
 const CARRIER_MODELS={
-	// The model is built in its ship file's frame at true scale (contract): the
-	// loader neither scales, centres nor sinks it. length is the flight deck's,
-	// end to end. No far model yet: whether she needs one is settled once the rest of her is done.
-	ford:{ url:ford_model_url, length:332.6, yaw:20, bow:0, contract:true,   // yaw:20 faces the bow to 070° (into the Midway wind): the model's bow is +X. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
+	// The model is built in its ship file's frame at true scale, its origin on
+	// the waterline: the loader neither scales, centres nor sinks it. length is
+	// the flight deck's, end to end. No far model yet: whether she needs one is settled once the rest of her is done.
+	ford:{ url:ford_model_url, length:332.6, yaw:20, bow:0,   // yaw:20 faces the bow to 070° (into the Midway wind): the model's bow is +X. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
 		ident:"GF",                                       // the ship's TACAN ident (ACP 113), shown beside the HUD's slant range
 		tacan:{ channel:74, band:"X" }, icls:11,          // the ship's TACAN and ICLS channels, which the pre-flight tunes: plausible values, not a real hull's
 		channels:[305000,262500,275800,318500],           // its tower, approach, marshal and landing signal officer frequencies, kHz, the first four comm presets of the mission load: plausible values too
@@ -5395,11 +5395,6 @@ async function make_tex(src,srgb){
 	// angles from altitude, where thin painted markings (landing strip, centreline) alias badly without it.
 	t.magFilter=THREE.LinearFilter; t.minFilter=THREE.LinearMipmapLinearFilter; t.generateMipmaps=true;
 	t.anisotropy=renderer.capabilities.getMaxAnisotropy(); t.needsUpdate=true; return t; }
-function model_y_stats(grp){ grp.updateMatrixWorld(true); const v=new THREE.Vector3(); let mn=Infinity,mx=-Infinity; const ys=[];
-	grp.traverse(o=>{ if(o.isMesh&&o.geometry&&o.geometry.attributes.position){ const pa=o.geometry.attributes.position; o.updateWorldMatrix(true,false);
-		for(let i=0;i<pa.count;i++){ v.fromBufferAttribute(pa,i).applyMatrix4(o.matrixWorld); if(v.y<mn)mn=v.y; if(v.y>mx)mx=v.y; ys.push(v.y); } } });
-	const NB=80,w=(mx-mn)/NB||1,h=new Array(NB).fill(0); for(const y of ys){ let b=Math.floor((y-mn)/w); if(b<0)b=0; if(b>=NB)b=NB-1; h[b]++; }
-	let pk=0; for(let i=0;i<NB;i++) if(h[i]>h[pk])pk=i; return { keelY:mn, topY:mx, deckY:mn+(pk+0.5)*w }; }
 let deck_grid=null;   // deck height field, carrier-local 1.5 m cells — built once at carrier load; raycasting the 358k-triangle hull cost 13 ms PER QUERY and startup makes ~300 of them (the 4-second loading hang)
 function build_deck_grid(grp,deckY){
 	const cell=1.5, minFa=-172, maxFa=172, minLat=-52, maxLat=48;
@@ -5410,7 +5405,7 @@ function build_deck_grid(grp,deckY){
 	const mast={x:0,y:-1e9,z:0};   // the island mast top — found here because the deck grid EXCLUDES island geometry by design, so the old deck_y_at height scan can never see it (the masthead/floods silently vanished when the grid replaced raycasts)
 	grp.traverse(o=>{ if(!o.isMesh||!o.geometry.attributes.position) return;
 		const p=o.geometry.attributes.position, idx=o.geometry.index;
-		const n=idx?idx.count:p.count, body=o.name!=="island_details";   // the island's walkways, railings and antennas stand off its body high over the deck: neither its crash box nor its mast's top
+		const n=idx?idx.count:p.count, body=!/^island_details(_\d+)?$/.test(o.name);   // the island's walkways, railings and antennas stand off its body high over the deck: neither its crash box nor its mast's top. In more than one material the loader makes the node a group of meshes numbered island_details_1, _2, ...
 		for(let i=0;i<n;i+=3){
 			a.fromBufferAttribute(p, idx?idx.getX(i):i).applyMatrix4(o.matrixWorld);
 			b.fromBufferAttribute(p, idx?idx.getX(i+1):i+1).applyMatrix4(o.matrixWorld);
@@ -5482,15 +5477,11 @@ async function init_carrier_model(){
 		const shiploader=new GLTFLoader(); shiploader.setMeshoptDecoder(MeshoptDecoder);   // the carrier ships meshopt-compressed
 		shiploader.parse(clean, "", async gltf=>{ try{
 			const gscene=gltf.scene; gscene.updateMatrixWorld(true);
-			const b0=new THREE.Box3().setFromObject(gscene), sz=b0.getSize(new THREE.Vector3());
-			const s=SHIP.contract?1:SHIP.length/Math.max(sz.x,sz.y,sz.z,1e-3);   // a contract model is built at true scale in its ship file's frame
-			const c0=b0.getCenter(new THREE.Vector3()); if(!SHIP.contract) gscene.position.sub(c0);   // centre the MODEL's OWN bbox at the group origin: the deck-ops frame must be the model's local frame, independent of yaw — centring on the world AABB after rotation shifted the origin 8 m to starboard on this asymmetric hull (the rotated AABB's centre is not the rotated centre), which put every measured cat/wire/OLS coordinate 8 m off the drawn deck
-			const grp=new THREE.Group(); grp.add(gscene); grp.scale.setScalar(s); grp.rotation.y=SHIP.yaw*D2R;
+			const grp=new THREE.Group(); grp.add(gscene); grp.rotation.y=SHIP.yaw*D2R;   // built at true scale in its ship file's frame, its origin on the waterline
 			grp.position.set(CHART.x,0,CHART.z); grp.updateMatrixWorld(true);   // where the map charts the ship: carrier_rig carries it to where the ship is
-			const st=SHIP.contract?{ keelY:0, topY:0, deckY:SHIP.deck }:model_y_stats(grp); const waterline=SHIP.contract?0:st.keelY+SHIP.draft*(st.deckY-st.keelY);   // sink so waterline -> y=0: a contract model's origin is on its waterline already
 			for(const name of Object.keys(SHIP.joints||{})) if(/^antenna_/.test(name)) ship_joint(name,ship_joint_max(name),grp);   // the deck-edge whips lie lowered for flight operations, which the game always is
-			grp.position.y-=waterline; grp.updateMatrixWorld(true);
-			with_charted(()=>build_deck_grid(grp, st.deckY-waterline));   // one triangle pass replaces every startup deck raycast
+			grp.updateMatrixWorld(true);
+			with_charted(()=>build_deck_grid(grp, SHIP.deck));   // one triangle pass replaces every startup deck raycast
 			const maps={};
 			if(typeof createImageBitmap==="function") for(const [name,src] of Object.entries(named)){ const t=maps[name]={ base:null, normal:null };
 				if(src.base){ try{ t.base=await make_tex(src.base,true); }catch{ /* texture optional */ } }
@@ -5500,8 +5491,8 @@ async function init_carrier_model(){
 			carrier_model=grp; carrier_rig.add(grp);
 			void init_carrier_far(grp,gscene);   // the far model follows; until it arrives the carrier is drawn in full
 			/* procedural carrier removed; nothing to hide */
-			const yd=(SHIP.yaw-(SHIP.bow??90))*D2R, dc=Math.cos(yd), ds=Math.sin(yd);                        // rotate the sample spot with the carrier heading (yaw - bow: the deck-ops frame, see the nimitz config)
-			with_charted(()=>rig_adopt(()=>{ CARRIER.deckY=CARRIER.height=deck_y_at(grp, CARRIER.x+(70*dc-6*ds), CARRIER.z+(-70*ds-6*dc), st.deckY-waterline);   // deck height near the catapult spot (carrier-relative)
+			const yd=(SHIP.yaw-(SHIP.bow??90))*D2R, dc=Math.cos(yd), ds=Math.sin(yd);                        // rotate the sample spot with the carrier heading (yaw - bow: the deck-ops frame, see CARRIER_MODELS)
+			with_charted(()=>rig_adopt(()=>{ CARRIER.deckY=CARRIER.height=deck_y_at(grp, CARRIER.x+(70*dc-6*ds), CARRIER.z+(-70*ds-6*dc), SHIP.deck);   // deck height near the catapult spot (carrier-relative)
 				build_carrier_deck_aids(); }));   // wires + OLS, now that the deck height is known: built where the map charts the ship, hung on the rig
 			ols_follow();
 			if(mission_start()==="carrier" && !ownship.launching && ownship.speed<5){ place_on_cat(); flight_push(); }   // re-spot on the cat at the now-known deck height, unless already taxiing / launched
@@ -7241,7 +7232,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 				const mkpts=(size,color)=>{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(fixtures),3));
 					const lp=new THREE.Points(lg,screen_point(new THREE.PointsMaterial({map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}),size*POINT_HEIGHT/720));
 					lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); deck_floods.push(lp); };
-				mkpts(46,0x203c34); mkpts(13,0xe0fff2);   // the glare and the lamp's core, as the Nimitz's floods (below)
+				mkpts(46,0x203c34); mkpts(13,0xe0fff2);   // the glare and the lamp's core: constant pixels and no depth test, since the island's superstructure hides every depth-tested placement near the mast
 				// two spotlights wash the deck from the floods' banks: the highest aimed at the landing area, the lowest at the bow
 				const sorted=[...g.positions].sort((a,b)=>b[1]-a[1]), ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
 				for(const [q,t] of [[sorted[0],ld],[sorted[sorted.length-1],bw]]){ const w=carrier_world(q[0],q[2]); const s2=new THREE.SpotLight(0xd8fff0,320,260,0.62,0.65,1); s2.castShadow=false;
@@ -7271,21 +7262,6 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const mt=(deck_grid&&deck_grid.mast)||{x:0,y:-1e9,z:0}; const my=mt.y,mx=mt.x,mz=mt.z;   // the island mast top, recorded during the grid build (the deck grid itself excludes the island, so a deck_y_at scan can never find the mast)
 	if(my>dy+3){ night_lights.push(glow_points([mx,my+1.2,mz],0xffffff,6));               // white masthead just above the mast top
 		night_lights.push(glow_points([mx,my+0.4,mz],0xff2418,5)); }                       // red obstruction light just below it
-	// ISLAND DECK FLOODS: one glare per AUTHORED lamp fitting — the model's yellow grid arrays
-	// (material_43) clustered at 0.9 m resolution = 68 individual fittings; wash spots shine
-	// from the two big banks. Day geometry and night light are the same objects.
-	if(my>dy+3){ const FIX=[[-68.0,29.1,16.6],[-67.9,34.8,16.6],[-62.2,28.7,16.4],[-59.9,28.3,7.5],[-59.6,28.4,8.0],[-59.3,28.4,5.2],[-58.9,28.2,5.2],[-58.5,28.1,8.5],[-58.0,28.1,8.6],[-57.9,28.1,5.3],[-57.8,28.1,8.2],[-57.4,28.0,7.5],[-55.8,27.9,7.4],[-55.6,27.9,7.9],[-55.2,27.7,8.5],[-55.1,27.8,8.5],[-54.7,27.7,5.6],[-54.1,27.7,5.6],[-53.8,27.7,8.1],[-53.4,27.6,7.9],[-52.7,28.4,19.3],[-52.7,32.1,19.3],[-50.0,27.4,10.9],[-48.6,34.4,5.9],[-45.3,37.5,16.6],[-44.8,23.9,18.4],[-44.4,24.1,18.4],[-44.3,34.4,5.9],[-43.7,23.9,18.4],[-43.1,23.9,18.9],[-42.8,24.1,18.9],[-42.1,24.1,18.9],[-41.5,23.9,18.9],[-41.1,24.0,18.7],[-40.5,24.1,18.9],[-39.8,23.9,19.0],[-39.4,24.2,18.9],[-39.0,24.3,18.4],[-39.0,24.6,19.0],[-39.0,33.6,18.6],[-38.6,24.6,18.9],[-38.6,25.0,18.4],[-38.6,26.0,18.9],[-38.6,27.0,19.0],[-38.6,27.5,19.0],[-38.6,28.4,18.9],[-38.6,29.5,18.9],[-38.6,29.9,18.9],[-38.4,25.3,19.0],[-38.4,26.3,18.9],[-38.4,27.8,18.9],[-38.4,28.7,19.0],[-38.3,28.1,15.7],[-38.3,31.7,15.7],[-38.3,32.1,15.7],[-38.2,29.2,15.9],[-38.2,30.6,15.9],[-38.2,33.1,15.9],[-38.2,33.9,15.9],[-38.1,28.4,15.6],[-38.1,28.7,15.6],[-38.1,29.7,15.6],[-38.1,32.6,15.6],[-38.1,34.1,15.6],[-38.0,29.3,15.7],[-38.0,30.1,15.8],[-38.0,32.1,15.7],[-38.0,33.2,15.8]];
-		const fixtures=[];
-		for(const [f,l,h] of FIX){ const q=carrier_world(f,l); fixtures.push(q.x, dy+h, q.z); }
-		const mk=(f,l,h,tx,tz)=>{ const q=carrier_world(f,l); const s2=new THREE.SpotLight(0xffd9a0,320,260,0.62,0.65,1); s2.castShadow=false;
-			s2.position.set(q.x,dy+h,q.z); s2.target.position.set(tx,dy,tz); scene.add(s2); scene.add(s2.target); s2.visible=false; return s2; };
-		const ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
-		flood_lights.push(mk(-56.6,28.0,5.9,ld.x,ld.z), mk(-42.8,31.1,12.0,bw.x,bw.z));
-		const mkpts=(size,color)=>{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(fixtures),3));
-			const lp=new THREE.Points(lg,screen_point(new THREE.PointsMaterial({map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}),size*POINT_HEIGHT/720));   // the glare sizes were tuned in 720-row captures
-			lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); deck_floods.push(lp); };
-		mkpts(46,0x4a3a20);
-		mkpts(13,0xfff2d2); }   // the white-hot lamp core   // flood GLARE sprites: constant pixels AND no depth test — the broad island superstructure occluded every depth-tested placement near the mast; a source this bright blooms through structure anyway
 }
 const HOOK_DROP=4, HOOK_AFT=9;   // the tailhook rides ~4 m below and ~9 m aft of the pilot's eye; the meatball flies the HOOK onto the wire, so the eye rides well above the 3.5° glideslope
 function ols_dev(p,o){   // hook's deviation off the 3.5° glideslope to the touchdown: along/lateral/distance + dev (+ high, − low)

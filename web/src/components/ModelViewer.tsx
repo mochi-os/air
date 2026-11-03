@@ -23,7 +23,6 @@ import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_new_model_url from '../assets/fa18c-new.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import ford_model_url from '../assets/ford.glb?url'
-import nimitz_model_url from '../assets/nimitz.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import { model } from '../game/library'
 import { posed } from '../game/model'
@@ -60,11 +59,6 @@ const MODELS: Entry[] = [
   {
     name: 'ford.glb',
     url: ford_model_url,
-    prepare: (gltf: GLTF) => gltf.scene.clone(true),
-  },
-  {
-    name: 'nimitz.glb',
-    url: nimitz_model_url,
     prepare: (gltf: GLTF) => gltf.scene.clone(true),
   },
 ].sort((a, b) => naturalCompare(a.name, b.name))
@@ -133,7 +127,7 @@ function frame(view: View, object: THREE.Object3D): void {
   controls.update()
 }
 
-// file is the model the URL names (?file=nimitz.glb); an unknown or missing one shows
+// file is the model the URL names (?file=ford.glb); an unknown or missing one shows
 // the first. onFile puts a switch back in the URL, so a view can be linked to.
 export function ModelViewer({
   file,

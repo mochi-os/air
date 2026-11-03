@@ -41,7 +41,7 @@ function Models() {
 
 export const Route = createFileRoute('/models')({
   component: Models,
-  // ?file=nimitz.glb - the model being viewed; the viewer checks it against its list
+  // ?file=ford.glb - the model being viewed; the viewer checks it against its list
   validateSearch: (search: Record<string, unknown>): { file?: string } => ({
     file: typeof search.file === 'string' ? search.file : undefined,
   }),

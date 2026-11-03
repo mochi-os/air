@@ -343,10 +343,18 @@ describe("the carrier's ship file", () => {
       return mesh
     }
     const root = new THREE.Group()
-    // the island's body to y 40, a walkway 1.1 m off its port face 12 m up, a whip over it
+    // the island's body to y 40, a walkway 1.1 m off its port face 12 m up and its
+    // railing, in two materials, which the glTF loader makes a group of that name
+    // holding a mesh for each, numbered; a whip over it
+    const details = new THREE.Group()
+    details.name = 'island_details'
+    details.add(
+      block('island_details_1', [-90, -85], [30, 30.2], [18.9, 20]),
+      block('island_details_2', [-90, -85], [30.2, 31.3], [18.9, 19])
+    )
     root.add(
       block('island', [-100, -80], [18, 40], [20, 35]),
-      block('island_details', [-90, -85], [30, 31], [18.9, 20]),
+      details,
       block('island_details', [-94.1, -94], [40, 60], [30, 30.1])
     )
     root.updateMatrixWorld(true)
