@@ -18,6 +18,9 @@ import * as communication from './communication'
 // panel systems block and pit_press are lifted as text and run against
 // stand-ins for the engine's state.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+// The core's idle spool, which the client's push hands a running engine: the
+// flight core's own figure, so a change there that the client misses fails here.
+const IDLE = Number(/\n\tidle\s*=\s*([\d.]+)/.exec(readFileSync(fileURLToPath(new URL('../../../../../world/games/air/flight/propulsion.go', import.meta.url)), 'utf8'))?.[1])
 function lift(name: string): string {
   const start = source.indexOf(`function ${name}(`)
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
@@ -130,8 +133,9 @@ describe('the electrical power panel (#21, #116)', () => {
     ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flight_push')}
 } flight_push(); return [...sent.slice(14,18),...sent.slice(110,114)];`)() as number[] // the lift stops at the function's own closing brace, which stands alone
   it('hands a ground start its engines turning: both generators on the line from the first frame', () => {
+    expect(IDLE).toBeGreaterThan(0)
     const idle = pushed(0, false, 1)
-    expect(idle).toEqual([0.04, 0, 0.04, 0, 0, 0, 0, 0]) // and lit: a jet stopped before it is handed over turning
+    expect(idle).toEqual([IDLE, 0, IDLE, 0, 0, 0, 0, 0]) // at the core's idle, and lit: a jet stopped before it is handed over turning
     expect(system().generators(words({ spoolL: idle[0], spoolR: idle[2] }))).toEqual([true, true])
   })
   it('trims an air start with its loadout on, as a Case II start (#138)', () => {
@@ -144,7 +148,7 @@ describe('the electrical power panel (#21, #116)', () => {
     expect(pushed(0.5, true)).toEqual([0, 0, 0, 0, 1, 1, 1, 1])
   })
   it('hands it the lever\'s power above idle', () => {
-    expect(pushed(0.5)[0]).toBeCloseTo(0.52, 9); expect(pushed(1)[0]).toBeCloseTo(1, 9)
+    expect(pushed(0.5)[0]).toBeCloseTo(IDLE + 0.5 * (1 - IDLE), 9); expect(pushed(1)[0]).toBeCloseTo(1, 9)
   })
 
   it('carries the essential bus on the U battery, then the E, for about 20 minutes, and recharges them', () => {
