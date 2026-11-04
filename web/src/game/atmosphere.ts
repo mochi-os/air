@@ -14,11 +14,12 @@
 // haze between the eye and what it sees (the sea, the clouds, the lit
 // materials) is the same air's, from the transmittance table (at_between) or
 // its integral (extinction). The aerosol is measured: its optical depth over
-// the place flown in the month of the game's moment (climatology).
+// the place flown in the month of the game's moment (climatology), of which the
+// game flies a clearer day's share (haze).
 //
 // Lengths are in kilometres, the planet's centre below the sea at GROUND.
 // Radiance is per unit of sun illuminance; the engine scales it.
-import { AEROSOL, COLUMNS, MONTHS, ROWS, STEP } from './aerosol'
+import { AEROSOL, COLUMNS, MONTHS, ROWS, SPACING, STEP } from './aerosol'
 
 export const GROUND = 6360
 export const TOP = 6460
@@ -320,8 +321,8 @@ export function* baking(aerosol: number): Generator<void, Tables, void> {
 
 // The aerosol optical depth at 550 nm over a place (latitude and longitude in
 // radians) at a time: the month's mean over ten years of NASA's MERRA-2
-// (aerosol.ts, tools/aerosol.py), bilinear between the table's nodes and linear
-// between the months' middles.
+// (aerosol.ts, tools/aerosol.py) every SPACING degrees, bilinear between the
+// table's nodes and linear between the months' middles.
 let nodes: Uint8Array | null = null
 export function climatology(
   latitude: number,
@@ -330,8 +331,11 @@ export function climatology(
 ): number {
   if (!nodes) nodes = Uint8Array.from(atob(AEROSOL), (c) => c.charCodeAt(0))
   const degrees = 180 / Math.PI
-  const row = Math.min(ROWS - 1, Math.max(0, (90 - latitude * degrees) / 2))
-  const column = ((((longitude * degrees + 180) % 360) + 360) % 360) / 2
+  const row = Math.min(
+    ROWS - 1,
+    Math.max(0, (90 - latitude * degrees) / SPACING)
+  )
+  const column = ((((longitude * degrees + 180) % 360) + 360) % 360) / SPACING
   const days = new Date(
     Date.UTC(time.getUTCFullYear(), time.getUTCMonth() + 1, 0)
   ).getUTCDate()
@@ -362,6 +366,18 @@ function node(month: number, row: number, column: number): number {
     (at(r0, c0) * (1 - fc) + at(r0, c1) * fc) * (1 - fr) +
     (at(r1, c0) * (1 - fc) + at(r1, c1) * fc) * fr
   )
+}
+
+// The share of the month's mean aerosol the game flies: a clearer day than the
+// mean, so a jet or a ship 5-20 km off keeps more of its contrast against the
+// sky. Over Midway in March a jet 10 km off at 500 ft keeps 55% of it, where the
+// mean leaves 45%, and one 20 km off at 5,000 ft 50%, where it leaves 41%.
+export const CLEAR = 0.7
+
+// The aerosol optical depth the game's air holds over a place (latitude and
+// longitude in radians) at a time.
+export function haze(latitude: number, longitude: number, time: Date): number {
+  return CLEAR * climatology(latitude, longitude, time)
 }
 
 // The mean extinction, per km, of the air between two heights (km) for a

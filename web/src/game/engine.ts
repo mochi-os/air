@@ -63,7 +63,7 @@ import { PATTERN_VERTEX as FOAM_VERTEX, PATTERN_FRAGMENT as FOAM_FRAGMENT } from
 import { Waves } from './waves'
 import { Wake, WAKE, POINTS as WAKE_POINTS, GROUPS as WAKE_GROUPS, HULL as WAKE_HULL, TRAIL as WAKE_TRAIL, hull as wake_hull, before as wake_before, point as wake_point } from './wake'
 import { slopes as spectrum_slopes, CASCADES } from './spectrum'
-import { tables as atmosphere_tables, radiance as sky_radiance, climatology as aerosol_climatology, baking as atmosphere_baking, ATMOSPHERE, FOG as AIR_FOG, SKY as SKY_SIZE, TRANSMITTANCE, SCATTERING, SKY_VIEW_VERTEX, SKY_VIEW_FRAGMENT } from './atmosphere'
+import { tables as atmosphere_tables, radiance as sky_radiance, haze as aerosol_haze, baking as atmosphere_baking, ATMOSPHERE, FOG as AIR_FOG, SKY as SKY_SIZE, TRANSMITTANCE, SCATTERING, SKY_VIEW_VERTEX, SKY_VIEW_FRAGMENT } from './atmosphere'
 import { shellStorage } from '@mochi/web'
 import { deviceDefaults, unreachable } from '../lib/config'
 import { demise, opponent, report } from './fate'
@@ -338,8 +338,8 @@ const SEA_TURN=`uniform vec2 u_downwind;
 // frame (or the same integral on the CPU), so they cannot disagree. The dome and the sea
 // write display values, so they show the table through the land's own curve (SKY_SHOWN).
 // The air's aerosol, its optical depth at 550 nm: NASA's MERRA-2 over the place flown in the month of
-// the hour's moment (atmosphere.ts climatology), and the tables baked for it (air_settle).
-let air_aerosol=aerosol_climatology(theatre.frame.latitude,theatre.frame.longitude,MOON_DAY.time);
+// the hour's moment, a clearer day's share of it (atmosphere.ts haze), and the tables baked for it (air_settle).
+let air_aerosol=aerosol_haze(theatre.frame.latitude,theatre.frame.longitude,MOON_DAY.time);
 let air_tables=atmosphere_tables(air_aerosol);
 function air_halves(data){ const half=new Uint16Array(data.length); for(let i=0;i<data.length;i++) half[i]=THREE.DataUtils.toHalfFloat(data[i]); return half; }   // half floats: linear filtering of full floats is an extension, of halves it is core
 function air_texture(data,width,height){
@@ -356,7 +356,7 @@ const sky_view_mat=new THREE.ShaderMaterial({ vertexShader:SKY_VIEW_VERTEX, frag
 // bake takes. A bake starts only past AIR_CHANGE of the aerosol held, and the newest wins.
 const AIR_CHANGE=0.02, AIR_SLICE=2;   // a share of the aerosol; the milliseconds of a frame a bake may take
 let air_bake=null;   // the bake under way: its steps and the aerosol it is for
-function air_wanted(){ return aerosol_climatology(theatre.frame.latitude,theatre.frame.longitude,(tod_preset===TOD.night?MOON_NIGHT:MOON_DAY).time); }
+function air_wanted(){ return aerosol_haze(theatre.frame.latitude,theatre.frame.longitude,(tod_preset===TOD.night?MOON_NIGHT:MOON_DAY).time); }
 function air_apply(aerosol,t){ const u=atmosphere_uniforms; air_aerosol=aerosol; air_tables=t; u.u_aerosol.value=aerosol;
 	for(const [texture,data] of [[u.u_transmittance.value,t.transmittance],[u.u_scattering.value,t.scattering]]){ texture.image.data=air_halves(data); texture.needsUpdate=true; } }
 function air_settle(now){ const want=air_wanted(), held=air_bake?air_bake.aerosol:air_aerosol;

@@ -10,7 +10,9 @@ import {
   baking,
   between,
   climatology,
+  CLEAR,
   extinction,
+  haze,
   medium,
   sphere,
   AIR,
@@ -27,7 +29,7 @@ import { DEGREE, tangent } from './earth'
 import { DAY as MOON_DAY, NIGHT as MOON_NIGHT, OBSERVER } from './moon'
 import { moon as sky_moon, seen as sky_seen } from './sky'
 
-// The air over Midway at the day's moment, as the engine bakes it at boot.
+// The measured aerosol over Midway at the day's moment, the month's mean.
 const midway = climatology(
   OBSERVER.latitude * DEGREE,
   OBSERVER.longitude * DEGREE,
@@ -126,6 +128,22 @@ describe('the aerosol', () => {
     expect(
       medium(2, 0.145).extinction[1] - medium(2, 0).extinction[1]
     ).toBeCloseTo((0.145 / 2) * Math.exp(-1), 6)
+  })
+
+  it("flies a clearer day than the month's mean: a jet 10 km off at 500 ft keeps 55% of its contrast, where the mean leaves 45%", () => {
+    const place = [
+      OBSERVER.latitude * DEGREE,
+      OBSERVER.longitude * DEGREE,
+    ] as const
+    expect(CLEAR).toBe(0.7)
+    expect(haze(...place, MOON_DAY.time)).toBeCloseTo(CLEAR * midway, 12)
+    const contrast = (aerosol: number, feet: number, km: number) =>
+      Math.exp(-extinction(feet / 3281, feet / 3281, aerosol) * km)
+    const flown = haze(...place, MOON_DAY.time)
+    expect(contrast(midway, 500, 10)).toBeCloseTo(0.45, 2)
+    expect(contrast(flown, 500, 10)).toBeCloseTo(0.55, 2)
+    expect(contrast(midway, 5000, 20)).toBeCloseTo(0.41, 2)
+    expect(contrast(flown, 5000, 20)).toBeCloseTo(0.5, 2)
   })
 
   it("is MERRA-2's over Midway: March's 0.145 at the day's moment, September's half April's", () => {
@@ -416,10 +434,10 @@ describe('the wiring', () => {
 
   it("bakes the air over the place flown in the hour's month: at once for the hour, a slice a frame as the frame moves", () => {
     expect(engine).toMatch(
-      /let air_aerosol=aerosol_climatology\(theatre\.frame\.latitude,theatre\.frame\.longitude,MOON_DAY\.time\);\nlet air_tables=atmosphere_tables\(air_aerosol\);/
+      /let air_aerosol=aerosol_haze\(theatre\.frame\.latitude,theatre\.frame\.longitude,MOON_DAY\.time\);\nlet air_tables=atmosphere_tables\(air_aerosol\);/
     )
     expect(engine).toMatch(
-      /function air_wanted\(\)\{ return aerosol_climatology\(theatre\.frame\.latitude,theatre\.frame\.longitude,\(tod_preset===TOD\.night\?MOON_NIGHT:MOON_DAY\)\.time\); \}/
+      /function air_wanted\(\)\{ return aerosol_haze\(theatre\.frame\.latitude,theatre\.frame\.longitude,\(tod_preset===TOD\.night\?MOON_NIGHT:MOON_DAY\)\.time\); \}/
     )
     expect(engine).toMatch(
       /function apply_time_of_day\(t\)\{ const p=TOD\[t\]\|\|TOD\.day; tod_preset=p; air_settle\(true\);/
