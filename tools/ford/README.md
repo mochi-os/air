@@ -33,14 +33,28 @@ python3 -I sources.py                      # every facts.json quote is in its fe
 ```
 python3 -I paint.py DECK.png                                                                     # the deck's texture
 python3 -I letters.py LETTERING.png                                                              # the lettering's texture
+python3 -I weather.py MAPS.npz MATERIAL COLOUR.png HEIGHT.png                                    # one weathered atlas (the build runs it)
 blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.json [FEATURES.json] [--draft]   # under the probe.slice memory cap
 ```
 
 - **`paint.py`** - the flight deck's paint (decision 6) from `layout.markings`, drawn in deck metres: the image
-  is the deck seen from above, bow to the right, port at the top.
+  is the deck seen from above, bow to the right, port at the top. Then `layout.stains` and the deck's wear as
+  photographed (`layout.wear`): the non-skid's mottling, the landing area's tyre marks generated landing by
+  landing and fitted to the band measured in a rectified overhead, the blast deflectors' soot, and fluid drips.
 - **`letters.py`** - the lettering (decision 17) from `layout.lettering`: each cell of a small atlas holds a
-  piece of text, white with a dark outline, stretched to fill its cell on the haze grey, so a plate needs no
-  transparency.
+  piece of text, white with a dark outline, stretched to fill its cell, or shapes drawn in the cell's own
+  metres: polygons with holes and a drop shadow (the island's 78s, traced from a rectified photo), discs and
+  rings, text in one colour or runs of several (the stencils and placards), and grime toward the foot. With
+  `cutout` the atlas is clear but for what is drawn, so a plate shows the weathered face behind it.
+- **`plates.py`** - the lettering plates' frames and the lamps round a cell's shapes (`lamps`: offset out from
+  each outline and into each hole, spaced evenly), shared by the build, which stands a lamp at each, and
+  `weather.py`, which runs rust from their brackets.
+- **`weather.py`** - one weathered atlas (decision 17) from the maps the build bakes for a group of meshes
+  (`layout.weathering.groups`): the haze grey shifting plate to plate with touch-ups and mottling, the plates'
+  seams and frames as grooves in a height map, streaks of rust or dirty water from the group's fittings and the
+  runs the photos measure (`runs`), each face's streaks as heavy as its photos' (`regions`), grime toward the
+  deck or the waterline, walking surfaces darker, the occlusion multiplied in. A group takes over the grey, or
+  the paint it names (`from`: the island's radomes, `domes`, in their own white).
 - **`build.py`** - the model in the plan's Contract: true metres, x forward, y up, z starboard, the origin on
   the centreline at the deployed waterline midway along the flight deck.
   - The deck wears `paint.py`'s texture and the lettering's plates `letters.py`'s, which the build runs
@@ -53,9 +67,17 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     - the port whips, which lower for flight operations;
     - the elevators.
   - The pendants, the lens's lights and the deck's lights are the engine's, drawn from the ship file.
-  - The island is prisms level by level (sloped where a level's plan at its top differs), radomes and poles,
-    and its details (`island.details`: the mast's trunk, rings, platforms, yardarm fittings and masthead, the
-    walkways and railings, antennas and dishes) as parts: boxes, cylinders, prisms, railings, dishes and domes.
+  - The island is prisms level by level (sloped where a level's plan at its top differs), radomes turned to
+    their measured profiles (`profile`: acorns, capsules, spheres on drums) and poles, and its details
+    (`island.details`: the mast's trunk, rings, platforms, yardarm fittings and masthead, the walkways with
+    their stiffeners and struts, railings, the windows' frames, mullions, wiper motors and conduits, the radar
+    faces' frames, the floodlight banks, ladders, pipes, the stair, the fittings on the base's faces, the
+    halyards) as parts: boxes, cylinders, prisms, railings, dishes, domes, lathes, paths (bars or pipes along
+    a line), ladders, stairs and plates. The windows and radar covers are plates on its faces.
+  - Unless `--draft`, each weathered group's faces are unwrapped into one atlas (a mesh's one `atlas` UV
+    layer, which its groups share) and baked: each texel's position, normal and occlusion, from which
+    `weather.py` draws the colour and height maps; the height is baked into a normal map. While a group bakes,
+    every other face's UVs are gathered to one point, so only its own faces reach its images.
   - The weapons are kinds of parts in their own frame (`weapons.kinds`: the Mk 29, RAM, Phalanx and gun) and the
     mounts that place them (`weapons.mounts`): each at its foot, trained and elevated as photographed, on a
     pedestal where it has one.
@@ -83,12 +105,18 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     from the railing's top on frames, except where a rack or platform stands. Every railing and the nets'
     frames are in the `rail` material, grey as the rest: bars thinner than a photo resolves, which the photo
     checks leave out.
-  - The lettering's plates: the island's numbers on its faces, and the stem's draught marks on the hull's
-    side just aft of the stem, tangent to it.
+  - The lettering's plates: the island's numbers on its faces with their lamps, its stencils and placards,
+    and the stem's draught marks on the hull's side just aft of the stem, tangent to it.
   - OUT.json is the ship file (`ford.json`): the deck layout the engine and the flight core read (the
     landing line, wires and their sheaves, the lens and the lights among it), the island's collision prisms,
     the hull's waterline, and every joint's axis, drive and keys.
   - FEATURES.json holds the named points and curves the photo match measures.
+- **Into the game:** `web/src/assets/ford.glb` is the build with its images in KTX2 and `ford.json` its ship
+  file. `python3 -I ../texswap.py OUT.glb ford.glb etc1s 1,3,5,7` encodes the deck and the weathered colour
+  atlases ETC1S (the deck's 4x4 blocks are 16 cm, finer than its thinnest marking; worn, UASTC made it 5.4 MB
+  against ETC1S's 1.1) and the lettering and the three normal maps UASTC (the build writes its images in the order deck,
+  hull normal, hull, island normal, island, radomes' normal, radomes, lettering, nets; check the order before
+  reusing the indices). Run it in a folder inside the project, which its sandboxed encoder can reach.
 
 ## Check
 
@@ -111,8 +139,21 @@ python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR   
 python3 -I test_sources.py
 python3 -I test_paint.py
 python3 -I test_check.py
+python3 -I test_weather.py
+python3 -I test_plates.py
 python3 -I test_build.py   # runs Blender: under the probe.slice memory cap
 ```
+
+`test_paint.py` also holds the tyre marks to the measured band (core and shoulders along the landing line), its
+taper, the streaks' contrast, the tracks' smoothness and their place on the texture, the soot on its panel, the
+drips' places and the mottling's spread.
+
+`test_weather.py` weathers a plain wall's maps: the seams darker and grooved, the plates' tones, touch-ups,
+streaks only below a sill, measured runs where they are put, regions scaling a face's streaks, a group's own
+paint, walking surfaces, the occlusion, the grime toward the deck, and the sources at the lamps and the
+radomes' seams, and a deck of its own non-skid (the stern's lower decks). `test_plates.py` checks the plates' frames, the rings offset round a shape and into its holes,
+the lamps carried onto a plate, and `letters.py`'s drawn shapes: a hole with the shadow cast into it, discs,
+rings, runs of colours and grime.
 
 ## Sky through the hull
 
@@ -134,7 +175,9 @@ the deck; a new sighting in the game becomes a ray here first.
 - the bow's face and the stem's front below it as the flat bottom of the sections ahead of them, a section at
   each of the front's knots, and a quarter's wall inside the deck's edge;
 - a sloped sponson's corners and a wedge's section, and the draught marks beside the stem reading from outside;
-- the island's details as parts (a railing, a dish facing aft, a brace to its end, a box), a weapon's mount
+- the island's details as parts (a railing, a dish facing aft, a brace to its end, a box, a bent pipe, a
+  ladder's rungs, a stair, a slab), a turned radome in its group above its seam, faces turned out, and the
+  lamps round a lettering cell's shapes standing out of the plate; a weapon's mount
   trained and elevated with its pedestal, the square mast with its fitting and a whip's hinge housing;
 - a blister rounded at its ends and a square one, standing out from the hull side and running on into it;
 - a gun tub's floor, its railing on the outboard sides only, and its knee down to the face; railings in
@@ -144,4 +187,6 @@ the deck; a new sighting in the game becomes a ray here first.
 - a catwalk's floor, railing and knees off the deck's edge, a platform off it, a dome's platform carried in
   to the edge, the raft canisters in their tiers, and the nets: cut out, both faces, none outboard of a
   platform, their frames in the railings' material;
+- the weathered atlases: each group's colour and normal maps at its size, its faces in its material with UVs,
+  the radomes their own group, and only the group's faces in its atlas;
 - the ship file.

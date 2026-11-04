@@ -30,6 +30,8 @@ import bpy
 from mathutils import Matrix, Vector
 
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from plates import framed as plate_frame, lamps as plate_lamps  # noqa: E402
 FACTS, LAYOUT = {}, {}
 
 # Blender works z up; the glTF exporter turns its (x, y, z) into (x, z, -y).
@@ -59,7 +61,9 @@ MATERIALS = {}
 # deck's and the lettering's come from their textures
 COLOURS = {"deck": (0.16, 0.16, 0.16, 1), "grey": (0.30, 0.32, 0.33, 1), "boot": (0.02, 0.02, 0.02, 1),
 	"lettering": (0.8, 0.8, 0.8, 1), "glass": (0.03, 0.04, 0.05, 1), "dark": (0.03, 0.03, 0.03, 1),
-	"lights": (0.5, 0.5, 0.45, 1), "panel": (0.24, 0.27, 0.30, 1),
+	# the radar faces' covers lighter than the haze grey round them, by eye
+	# in dvids9135541
+	"lights": (0.5, 0.5, 0.45, 1), "panel": (0.42, 0.44, 0.45, 1),
 	# the raft canisters white and the small ones blue, by eye in the overhead;
 	# the nets' cord from their image
 	"raft": (0.62, 0.62, 0.6, 1), "blue": (0.13, 0.35, 0.52, 1), "net": (0.03, 0.03, 0.03, 1),
@@ -68,6 +72,11 @@ COLOURS = {"deck": (0.16, 0.16, 0.16, 1), "grey": (0.30, 0.32, 0.33, 1), "boot":
 	"recess": (0.11, 0.12, 0.12, 1), "yellow": (0.67, 0.39, 0.03, 1),
 	# the Phalanx's radome, white
 	"radome": (0.7, 0.7, 0.68, 1),
+	# the island's fittings: the windows' wiper motors white, the fire
+	# stations' valves and extinguishers red, the signal lamps' lenses, an
+	# electrical box brown (references/research/island4)
+	"white": (0.62, 0.62, 0.6, 1), "red": (0.4, 0.03, 0.02, 1), "amber": (0.6, 0.3, 0.02, 1), "violet": (0.2, 0.06, 0.35, 1),
+	"brown": (0.15, 0.08, 0.04, 1),
 	# the railings and the nets' frames, grey as the ship's, their own so the
 	# photo checks can leave them out: bars thinner than any photo resolves,
 	# which the photos show the sky through
@@ -201,14 +210,59 @@ def primitive(make):
 
 
 def dome(centre, radius, plinth):
-	# A radome: a sphere on a cylinder reaching `plinth` below its centre
+	# A radome: a sphere on a cylinder reaching `plinth` below its centre, the
+	# sphere in the radomes' light, smooth paint (the plinth the face's grey)
 	c = at(*centre)
-	pieces = [primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=radius, matrix=Matrix.Translation(c)))]
+	sphere = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=radius, matrix=Matrix.Translation(c)))
+	pieces = [(sphere[0], sphere[1], ["radome"] * len(sphere[1]))]
 	if plinth > 0:
 		middle = c + DOWN * (plinth / 2)
 		pieces.append(primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=True, segments=16, radius1=radius, radius2=radius,
 			depth=plinth, matrix=Matrix.Translation(middle))))
 	return merge(pieces)
+
+
+def lathe(centre, profile, radome=None, segments=16, paint="grey"):
+	# A solid turned about an upright axis at centre [x, z]: profile [[y,
+	# radius], ...] from its foot up, a radius of 0 closing it to a point, an
+	# end left open closed by a flat cap; the bands above `radome` in the
+	# radomes' paint, below it `paint`
+	x, z = centre
+	vertices, rings = [], []
+	for y, r in profile:
+		if r <= 1e-6:
+			rings.append([len(vertices)])
+			vertices.append(at(x, y, z))
+			continue
+		rings.append(list(range(len(vertices), len(vertices) + segments)))
+		vertices += [at(x + r * math.cos(2 * math.pi * k / segments), y, z + r * math.sin(2 * math.pi * k / segments)) for k in range(segments)]
+	# wound outward as built: a profile running up winds each band out from
+	# the axis (down on a ledge stepping out, up on one stepping in), the foot's
+	# cap down and the top's up
+	faces, paints = [], []
+	for i, (low, high) in enumerate(zip(rings, rings[1:])):
+		band = "radome" if radome is not None and (profile[i][0] + profile[i + 1][0]) / 2 > radome else paint
+		for k in range(segments):
+			a, b = k, (k + 1) % segments
+			if len(low) == 1 and len(high) == 1:
+				continue
+			faces.append((low[0], high[a], high[b]) if len(low) == 1 else (low[a], high[0], low[b]) if len(high) == 1 else (low[a], high[a], high[b], low[b]))
+			paints.append(band)
+	if len(rings[0]) > 1:
+		faces.append(tuple(rings[0]))
+		paints.append(paint)
+	if len(rings[-1]) > 1:
+		faces.append(tuple(reversed(rings[-1])))
+		paints.append("radome" if radome is not None and profile[-1][0] > radome else paint)
+	return vertices, faces, paints
+
+
+def lamps(plate, cell, centre):
+	# The lamps round a lettering cell's shapes (plates.py), each a short
+	# cylinder standing out from the plate's face
+	spec = cell["lamps"]
+	return [shape({"kind": "cylinder", "base": list(foot), "axis": list(out), "length": spec["depth"], "radius": spec["diameter"] / 2,
+		"segments": 6, "paint": "lights"}) for foot, out in plate_lamps(plate, cell, centre)]
 
 
 def pole(base, bottom, top, radius):
@@ -395,10 +449,16 @@ def shape(p, frame=None):
 	# mast's fittings) as (vertices, faces, paints), its points in the ship's
 	# frame, or carried by `frame` (a matrix on Blender's points) from a
 	# kind's own: box {centre, size [x, y, z]}; cylinder {base, axis and
-	# length, or end; radius}; prism {outline, bottom, top}; railing {path,
-	# height, posts}: a top and a mid rail and posts; dish {centre, diameter,
-	# facing}: a disc; dome {centre, radius}: a sphere
-	paint = p.get("paint", "rail" if p["kind"] == "railing" else "grey")
+	# length, or end; radius; segments}; prism {outline, bottom, top}; railing
+	# {path, height, posts}: a top and a mid rail and posts; dish {centre,
+	# diameter, facing}: a disc; dome {centre, radius}: a sphere; lathe
+	# {centre [x, z], profile, radome}: turned about an upright axis (lathe());
+	# path {path, size, round, closed}: bars along a line, round ones as
+	# cylinders; ladder {bottom, top, along [x, z], width, rungs}: two stiles
+	# and rungs; stair {bottom, top, width, railing}: a girder, treads and a
+	# railing either side; plate {corners, outward, thickness}: a slab on a
+	# face
+	paint = p.get("paint", "rail" if p["kind"] in ("railing", "ladder") else "grey")
 	kind = p["kind"]
 	if kind == "box":
 		(cx, cy, cz), (sx, sy, sz) = p["centre"], p["size"]
@@ -417,9 +477,46 @@ def shape(p, frame=None):
 		a, b = at(*a), at(*b)
 		turn = Vector((0, 0, 1)).rotation_difference((b - a).normalized()).to_matrix().to_4x4()
 		place = Matrix.Translation((a + b) / 2) @ turn
-		vertices, faces = primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=True, segments=12, radius1=radius, radius2=radius,
-			depth=(b - a).length, matrix=place))
+		vertices, faces = primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=True, segments=p.get("segments", 12), radius1=radius,
+			radius2=radius, depth=(b - a).length, matrix=place))
 		piece = (vertices, faces, [paint] * len(faces))
+	elif kind == "lathe":
+		piece = lathe(p["centre"], p["profile"], p.get("radome"), p.get("segments", 16), paint)
+	elif kind == "plate":
+		piece = plate(p["corners"], p["outward"], p.get("thickness", 0.03), paint)
+	elif kind == "path":
+		points = p["path"] + (p["path"][:1] if p.get("closed") else [])
+		size = p["size"]
+		if p.get("round"):
+			piece = merge([shape({"kind": "cylinder", "base": a, "end": b, "radius": size / 2, "segments": 6, "paint": paint})
+				for a, b in zip(points, points[1:])])
+		else:
+			piece = merge([bar(a, b, size, paint) for a, b in zip(points, points[1:])])
+	elif kind == "ladder":
+		# two stiles `width` apart along the face, a rung every `rungs`
+		(x, y, z), top = p["bottom"], p["top"]
+		ax, az = p["along"]
+		h = p["width"] / 2
+		pieces = [bar([x + ax * k * h, y, z + az * k * h], [x + ax * k * h, top, z + az * k * h], 0.06, paint) for k in (-1, 1)]
+		count = int((top - y) / p.get("rungs", 0.3))
+		for i in range(1, count + 1):
+			r = y + i * (top - y) / (count + 1)
+			pieces.append(bar([x - ax * h, r, z - az * h], [x + ax * h, r, z + az * h], 0.035, paint))
+		piece = merge(pieces)
+	elif kind == "stair":
+		# a box girder under its middle, a tread every 0.2 m of rise, and a
+		# railing along either edge
+		a, b = Vector(p["bottom"]), Vector(p["top"])
+		run = Vector((b.x - a.x, 0, b.z - a.z)).normalized()
+		side = Vector((-run.z, 0, run.x)) * (p["width"] / 2)
+		pieces = [bar(list(a - Vector((0, 0.3, 0))), list(b - Vector((0, 0.3, 0))), 0.4, p.get("paint", "grey"))]
+		count = max(1, int((b.y - a.y) / 0.2))
+		for i in range(count + 1):
+			q = a + (b - a) * (i / count)
+			pieces.append(bar(list(q - side), list(q + side), 0.05, p.get("paint", "grey")))
+		for k in (-1, 1):
+			pieces.append(shape({"kind": "railing", "path": [list(a + side * k), list(b + side * k)], "height": p.get("railing", 1.0)}))
+		piece = merge(pieces)
 	elif kind == "prism":
 		piece = prism(p["outline"], p["bottom"], p["top"], paint=paint)
 	elif kind == "dome":
@@ -493,43 +590,30 @@ def island():
 	if not i:
 		return
 	pieces = [prism(p["outline"], p["bottom"], p["top"], p.get("upper")) for p in i.get("prisms", [])]
-	pieces += [dome(d["centre"], d["radius"], d.get("plinth", 0)) for d in i.get("domes", [])]
+	pieces += [lathe(d["centre"], d["profile"], d.get("radome")) if "profile" in d else dome(d["centre"], d["radius"], d.get("plinth", 0))
+		for d in i.get("domes", [])]
 	pieces += [pole(p["base"], p["bottom"], p["top"], p["radius"]) for p in i.get("poles", [])]
 	node("island", mesh=merge(pieces))
-	if i.get("details"):
-		# the mast's and the body's fittings, walkways and railings
-		node("island_details", mesh=merge([shape(p) for p in i["details"]]))
 	# its windows (glass) and the radar's faces (panel), on its faces
 	middle = [sum(c[0] for p in i.get("prisms", []) for c in p["outline"]) / max(1, sum(len(p["outline"]) for p in i.get("prisms", []))),
 		sum(c[1] for p in i.get("prisms", []) for c in p["outline"]) / max(1, sum(len(p["outline"]) for p in i.get("prisms", [])))]
+	cells = LAYOUT.get("lettering", {}).get("cells", {})
+	lit = [piece for p in LAYOUT.get("lettering", {}).get("plates", []) if p.get("on") == "island" and "lamps" in cells.get(p["cell"], {})
+		for piece in lamps(p, cells[p["cell"]], middle)]
+	if i.get("details") or lit:
+		# the mast's and the body's fittings, walkways and railings, and the
+		# lamps round the numbers
+		node("island_details", mesh=merge([shape(p) for p in i.get("details", [])] + lit))
 	details = [face(w, middle, "glass") for w in i.get("windows", [])] + [face(f, middle, "panel") for f in i.get("panels", [])]
 	plates = [p for p in LAYOUT.get("lettering", {}).get("plates", []) if p.get("on") == "island"]
 	details += [face(p, middle, "lettering") for p in plates]
 	if details:
 		node("island_faces", mesh=merge(details))
 		if plates:
-			lettered("island_faces", [framed(p, middle) for p in plates])
+			lettered("island_faces", [plate_frame(p, middle) for p in plates])
 	for p in i.get("prisms", []):
 		for k, (x, z) in enumerate(p.get("upper") or p["outline"]):
 			MARKS[f"island_{p['name']}_top_{k + 1}"] = (at(x, p["top"], z), "island")
-
-
-def framed(p, centre):
-	# A plane plate's frame as lettered() reads it (a plane with its ranges,
-	# facing away from `centre` [x, z] as face() builds it): its middle, the
-	# viewer's right and up seen from outside, and its size
-	axis, value = p["plane"].split("=")
-	value = float(value)
-	(y0, y1) = p["y"]
-	if axis == "z":
-		(a0, a1) = p["x"]
-		middle = ((a0 + a1) / 2, (y0 + y1) / 2, value)
-		right = (1, 0, 0) if value > centre[1] else (-1, 0, 0)   # aft to forward seen from starboard, forward to aft from port
-	else:
-		(a0, a1) = p["z"]
-		middle = (value, (y0 + y1) / 2, (a0 + a1) / 2)
-		right = (0, 0, -1) if value > centre[0] else (0, 0, 1)   # starboard to port seen from forward, port to starboard from aft
-	return {"middle": middle, "right": right, "up": (0, 1, 0), "size": (a1 - a0, y1 - y0), "cell": p["cell"]}
 
 
 def lettered(name, frames):
@@ -573,7 +657,10 @@ def plate(corners, outward, thickness=0.03, paint="dark"):
 def face(entry, centre, paint):
 	# A plate on a face the layout gives as a plane ("z=20.5" with x and y ranges,
 	# "x=-80.85" with z and y), as corners, or as a plan line with distances along
-	# it; facing away from `centre` [x, z]
+	# it; facing away from `centre` [x, z]; its own paint and thickness where
+	# it gives them
+	paint = entry.get("paint", paint)
+	thick = entry.get("thickness", 0.03)
 	(y0, y1) = entry["y"] if "y" in entry else (0, 0)
 	if "corners" in entry:
 		corners = entry["corners"]
@@ -583,7 +670,7 @@ def face(entry, centre, paint):
 		n = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
 		if n[0] * (mid[0] - centre[0]) + n[2] * (mid[2] - centre[1]) < 0:
 			n = [-c for c in n]
-		return plate(corners, n, paint=paint)
+		return plate(corners, n, thickness=thick, paint=paint)
 	if "line" in entry:
 		(ax, az), (bx, bz) = entry["line"]
 		length = math.hypot(bx - ax, bz - az)
@@ -593,7 +680,7 @@ def face(entry, centre, paint):
 		n = [-dz, 0, dx]
 		if n[0] * (p0[0] - centre[0]) + n[2] * (p0[1] - centre[1]) < 0:
 			n = [dz, 0, -dx]
-		return plate([[p0[0], y0, p0[1]], [p1[0], y0, p1[1]], [p1[0], y1, p1[1]], [p0[0], y1, p0[1]]], n, paint=paint)
+		return plate([[p0[0], y0, p0[1]], [p1[0], y0, p1[1]], [p1[0], y1, p1[1]], [p0[0], y1, p0[1]]], n, thickness=thick, paint=paint)
 	axis, value = entry["plane"].split("=")
 	value = float(value)
 	if axis == "z":
@@ -604,7 +691,7 @@ def face(entry, centre, paint):
 		(z0, z1) = entry["z"]
 		outward = [1 if value > centre[0] else -1, 0, 0]
 		corners = [[value, y0, z0], [value, y0, z1], [value, y1, z1], [value, y1, z0]]
-	return plate(corners, outward, paint=paint)
+	return plate(corners, outward, thickness=thick, paint=paint)
 
 
 def bar(a, b, size, paint="grey"):
@@ -1403,6 +1490,13 @@ def lettering_texture(facts):
 	texture = tree.nodes.new("ShaderNodeTexImage")
 	texture.image = image
 	tree.links.new(texture.outputs["Color"], tree.nodes["Principled BSDF"].inputs["Base Color"])
+	if LAYOUT["lettering"].get("cutout"):
+		# alphaMode MASK: clear but for the text, so the plate shows the
+		# weathered face behind it (the alpha rounded, as the nets')
+		cut = tree.nodes.new("ShaderNodeMath")
+		cut.operation = "ROUND"
+		tree.links.new(texture.outputs["Alpha"], cut.inputs[0])
+		tree.links.new(cut.outputs[0], tree.nodes["Principled BSDF"].inputs["Alpha"])
 
 
 def deck_texture(facts):
@@ -1419,6 +1513,259 @@ def deck_texture(facts):
 	texture = tree.nodes.new("ShaderNodeTexImage")
 	texture.image = image
 	tree.links.new(texture.outputs["Color"], tree.nodes["Principled BSDF"].inputs["Base Color"])
+
+
+# The ship frame's box, which the position bake encodes into [0, 1]
+FRAME_LOW, FRAME_SPAN = Vector((-220.0, -20.0, -80.0)), Vector((440.0, 120.0, 160.0))
+
+
+def regroup():
+	# Each weathered group's meshes (layout.weathering.groups) wear the group's
+	# own material in place of the grey, which its atlas then textures; in a
+	# draft build too, so a draft's materials are a full build's
+	for group in LAYOUT.get("weathering", {}).get("groups", []):
+		source = group.get("from", "grey")   # the paint the group takes over, the grey unless it names another
+		COLOURS[group["material"]] = COLOURS[source]
+		target = material(group["material"])
+		for name in group["meshes"]:
+			obj = NODES.get(name)
+			if obj is None or obj.type != "MESH":
+				continue
+			for i, m in enumerate(obj.data.materials):
+				if m.name == source:
+					obj.data.materials[i] = target
+
+
+def baked(objs, kind, size, tree_of, space="TANGENT", float_buffer=True, samples=1):
+	# Bakes `kind` for the objects into a new image, each material slot of
+	# theirs swapped for the material tree_of(image) builds while it bakes, at
+	# `samples` a texel; returns the image's pixels, top row first (H, W, 4)
+	import numpy as np
+	bpy.context.scene.cycles.samples = samples
+	image = bpy.data.images.new(f"bake_{kind}", size, size, alpha=True, float_buffer=float_buffer)
+	image.colorspace_settings.name = "Non-Color"
+	temporary = tree_of(image)
+	kept = {}
+	for o in objs:
+		kept[o.name] = list(o.data.materials)
+		for i in range(len(o.data.materials)):
+			o.data.materials[i] = temporary
+	bpy.ops.object.select_all(action="DESELECT")
+	for o in objs:
+		o.select_set(True)
+	bpy.context.view_layer.objects.active = objs[0]
+	bpy.ops.object.bake(type=kind, normal_space=space, margin=8, use_clear=True)
+	for o in objs:
+		for i, m in enumerate(kept[o.name]):
+			o.data.materials[i] = m
+	pixels = np.empty(size * size * 4, np.float32)
+	image.pixels.foreach_get(pixels)
+	bpy.data.materials.remove(temporary)
+	bpy.data.images.remove(image)
+	return pixels.reshape(size, size, 4)[::-1]
+
+
+def emitting(source):
+	# A material whose emission is `source` (a function adding the colour's
+	# node to a tree), with the bake's target image node active
+	def make(image):
+		m = bpy.data.materials.new("bake")
+		m.use_nodes = True
+		tree = m.node_tree
+		for n in list(tree.nodes):
+			tree.nodes.remove(n)
+		out = tree.nodes.new("ShaderNodeOutputMaterial")
+		emit = tree.nodes.new("ShaderNodeEmission")
+		tree.links.new(source(tree), emit.inputs["Color"])
+		tree.links.new(emit.outputs["Emission"], out.inputs["Surface"])
+		target = tree.nodes.new("ShaderNodeTexImage")
+		target.image = image
+		tree.nodes.active = target
+		return m
+	return make
+
+
+def weathered(facts, out):
+	# Each weathered group's atlas (weather.py): its meshes' faces in the
+	# group's material unwrapped and packed into one, each texel's position,
+	# normal and ambient occlusion baked, weather.py's colour and height maps
+	# drawn from them, and the height baked into a tangent-space normal map;
+	# the group's material wears the colour and the normal map
+	import numpy as np
+	spec = LAYOUT.get("weathering")
+	if not spec:
+		return
+	scene = bpy.context.scene
+	scene.render.engine = "CYCLES"
+	scene.cycles.device = "CPU"
+	if scene.world is None:
+		scene.world = bpy.data.worlds.new("world")
+	scene.world.light_settings.distance = spec.get("occlusion", 3.0)   # how far the occlusion looks, metres
+	folder = Path(tempfile.mkdtemp(dir=Path(out).parent))
+	for group in spec["groups"]:
+		target = MATERIALS[group["material"]]
+		objs = [NODES[n] for n in group["meshes"] if n in NODES and NODES[n].type == "MESH"]
+		if not objs:
+			continue
+		size = group["size"]
+		area = 0.0
+		for o in objs:
+			# one atlas layer a mesh, which each group's faces share, each
+			# group packing its own into the whole square
+			if "atlas" not in o.data.uv_layers:
+				o.data.uv_layers.new(name="atlas")
+			o.data.uv_layers.active = o.data.uv_layers["atlas"]
+			for poly in o.data.polygons:
+				poly.select = o.data.materials[poly.material_index] == target
+				if poly.select:
+					area += poly.area
+		bpy.ops.object.select_all(action="DESELECT")
+		for o in objs:
+			o.select_set(True)
+		bpy.context.view_layer.objects.active = objs[0]
+		# the group's faces selected in edit mode, by face: in vertex mode the
+		# vertices an earlier pass left selected decide what the UV operators
+		# move, which packed faces outside the group into its atlas and
+		# repacked a group already baked on the same mesh
+		bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+		bpy.ops.object.mode_set(mode="EDIT")
+		for o in objs:
+			mesh = bmesh.from_edit_mesh(o.data)
+			mine = {i for i, m in enumerate(o.data.materials) if m == target}
+			for f in mesh.faces:
+				f.select_set(False)
+			for f in mesh.faces:
+				f.select_set(f.material_index in mine)
+			bmesh.update_edit_mesh(o.data)
+		bpy.ops.uv.smart_project(angle_limit=1.15, island_margin=0.0, area_weight=0.0, scale_to_bounds=False)
+		bpy.ops.uv.average_islands_scale()
+		bpy.ops.uv.pack_islands(rotate=True, margin=4.0 / size)
+		bpy.ops.object.mode_set(mode="OBJECT")
+		# every other face's UVs gathered to one point while this group bakes (a
+		# new layer gives each face the whole square; another group's packing
+		# overlaps this one's), so only its own faces reach its images
+		others = {}
+		for o in objs:
+			layer = o.data.uv_layers["atlas"]
+			uv = np.empty(len(layer.data) * 2, np.float32)
+			layer.data.foreach_get("uv", uv)
+			mine = np.zeros(len(layer.data), bool)
+			for poly in o.data.polygons:
+				if o.data.materials[poly.material_index] == target:
+					mine[poly.loop_start : poly.loop_start + poly.loop_total] = True
+			others[o.name] = (~mine, uv.reshape(-1, 2)[~mine].copy())
+			uv.reshape(-1, 2)[~mine] = 0.0
+			layer.data.foreach_set("uv", uv)
+
+		def position(tree):
+			# the texel's place in the ship frame, scaled into the frame's box
+			geometry = tree.nodes.new("ShaderNodeNewGeometry")
+			low = tree.nodes.new("ShaderNodeVectorMath")
+			low.operation = "SUBTRACT"
+			low.inputs[1].default_value = FRAME_LOW
+			span = tree.nodes.new("ShaderNodeVectorMath")
+			span.operation = "DIVIDE"
+			span.inputs[1].default_value = FRAME_SPAN
+			tree.links.new(geometry.outputs["Position"], low.inputs[0])
+			tree.links.new(low.outputs["Vector"], span.inputs[0])
+			return span.outputs["Vector"]
+
+		def facing(tree):
+			geometry = tree.nodes.new("ShaderNodeNewGeometry")
+			half = tree.nodes.new("ShaderNodeVectorMath")
+			half.operation = "MULTIPLY_ADD"
+			half.inputs[1].default_value = (0.5, 0.5, 0.5)
+			half.inputs[2].default_value = (0.5, 0.5, 0.5)
+			tree.links.new(geometry.outputs["Normal"], half.inputs[0])
+			return half.outputs["Vector"]
+
+		def plain(image):
+			m = bpy.data.materials.new("bake")
+			m.use_nodes = True
+			target_node = m.node_tree.nodes.new("ShaderNodeTexImage")
+			target_node.image = image
+			m.node_tree.nodes.active = target_node
+			return m
+
+		# each map into the ship frame as it comes (Blender's (x, y, z) is the
+		# ship's (x, -z, y)), dropping what it no longer needs before the next
+		where = baked(objs, "EMIT", size, emitting(position))
+		valid = where[..., 3] > 0.5
+		low, span = np.array(FRAME_LOW[:], np.float32), np.array(FRAME_SPAN[:], np.float32)
+		ship = np.empty(where.shape[:2] + (3,), np.float32)
+		ship[..., 0] = low[0] + where[..., 0] * span[0]
+		ship[..., 1] = low[2] + where[..., 2] * span[2]
+		ship[..., 2] = -(low[1] + where[..., 1] * span[1])
+		del where
+		normal = baked(objs, "EMIT", size, emitting(facing), float_buffer=False)
+		facing_ship = np.empty(normal.shape[:2] + (3,), np.float16)
+		facing_ship[..., 0] = normal[..., 0] * 2 - 1
+		facing_ship[..., 1] = normal[..., 2] * 2 - 1
+		facing_ship[..., 2] = -(normal[..., 1] * 2 - 1)
+		del normal
+		ao = baked(objs, "AO", size, plain, float_buffer=False, samples=spec.get("samples", 32))[..., 0].astype(np.float16)
+		maps = folder / f"{group['material']}.npz"
+		np.savez(maps, position=ship, normal=facing_ship, ao=ao, valid=valid,
+			texel=np.float32(math.sqrt(area / max(int(valid.sum()), 1))))
+		del ship, facing_ship, ao, valid
+		colour_png, height_png = folder / f"{group['material']}.png", folder / f"{group['material']}_height.png"
+		subprocess.run(["python3", "-I", str(HERE / "weather.py"), str(maps), group["material"], str(colour_png), str(height_png),
+			"--facts", str(facts)], check=True)
+		maps.unlink()
+		height = bpy.data.images.load(str(height_png))
+		height.colorspace_settings.name = "Non-Color"
+
+		def bumped(image):
+			# the height, as a bump on a plain surface, for the normal bake
+			m = bpy.data.materials.new("bake")
+			m.use_nodes = True
+			tree = m.node_tree
+			bsdf = tree.nodes["Principled BSDF"]
+			source = tree.nodes.new("ShaderNodeTexImage")
+			source.image = height
+			bump = tree.nodes.new("ShaderNodeBump")
+			bump.inputs["Distance"].default_value = spec.get("relief", 0.01)   # metres of relief across the height map's range
+			tree.links.new(source.outputs["Color"], bump.inputs["Height"])
+			tree.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+			target_node = tree.nodes.new("ShaderNodeTexImage")
+			target_node.image = image
+			tree.nodes.active = target_node
+			return m
+
+		normals = baked(objs, "NORMAL", size, bumped, float_buffer=False, samples=4)
+		for o in objs:
+			layer = o.data.uv_layers["atlas"]
+			uv = np.empty(len(layer.data) * 2, np.float32)
+			layer.data.foreach_get("uv", uv)
+			rest, kept = others[o.name]
+			uv.reshape(-1, 2)[rest] = kept
+			layer.data.foreach_set("uv", uv)
+		bpy.data.images.remove(height)
+		height_png.unlink()
+		normal_image = bpy.data.images.new(f"{group['material']}_normal", size, size, alpha=False)
+		normal_image.colorspace_settings.name = "Non-Color"
+		normal_image.pixels.foreach_set(np.ascontiguousarray(normals[::-1]).ravel())
+		normal_image.pack()
+		colour = bpy.data.images.load(str(colour_png))
+		colour.name = group["material"]
+		colour.pack()
+		colour_png.unlink()
+		tree = target.node_tree
+		bsdf = tree.nodes["Principled BSDF"]
+		base = tree.nodes.new("ShaderNodeTexImage")
+		base.image = colour
+		mapped = tree.nodes.new("ShaderNodeUVMap")
+		mapped.uv_map = "atlas"
+		tree.links.new(mapped.outputs["UV"], base.inputs["Vector"])
+		tree.links.new(base.outputs["Color"], bsdf.inputs["Base Color"])
+		bumpy = tree.nodes.new("ShaderNodeTexImage")
+		bumpy.image = normal_image
+		tree.links.new(mapped.outputs["UV"], bumpy.inputs["Vector"])
+		relief = tree.nodes.new("ShaderNodeNormalMap")
+		relief.uv_map = "atlas"
+		tree.links.new(bumpy.outputs["Color"], relief.inputs["Color"])
+		tree.links.new(relief.outputs["Normal"], bsdf.inputs["Normal"])
+	folder.rmdir()
 
 
 def ship_file(hulled):
@@ -1488,10 +1835,12 @@ def main():
 	island()
 	sides()
 	hulled = hull()
+	regroup()
 	if "--draft" not in args:
 		deck_texture(facts)
 		if "lettering" in MATERIALS:
 			lettering_texture(facts)
+		weathered(facts, out[0])
 	bpy.ops.export_scene.gltf(filepath=out[0], export_format="GLB", export_yup=True, use_selection=False,
 		export_apply=False, export_animations=False, export_extras=False)
 	Path(out[1]).write_text(json.dumps(ship_file(hulled), indent="\t") + "\n")

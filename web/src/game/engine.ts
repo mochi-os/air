@@ -5487,7 +5487,7 @@ async function init_carrier_model(){
 				if(src.base){ try{ t.base=await make_tex(src.base,true); }catch{ /* texture optional */ } }
 				if(src.normal){ try{ t.normal=await make_tex(src.normal,false); }catch{ /* texture optional */ } } }
 			grp.traverse(o=>{ if(o.isMesh&&o.material){ const mm=o.material; const hasuv=!!(o.geometry&&o.geometry.attributes&&o.geometry.attributes.uv), t=maps[mm.name];
-				if(t?.base&&hasuv)mm.map=t.base; if(t?.normal&&hasuv)mm.normalMap=t.normal; mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; o.customDepthMaterial=carrier_shadow(mm); } });   // each material wears its own images, and only where UVs exist (a map without UVs renders garbage)
+				if(t?.base&&hasuv)mm.map=t.base; if(t?.normal&&hasuv){ mm.normalMap=t.normal; if(!o.geometry.attributes.tangent) mm.normalScale.y=-Math.abs(mm.normalScale.y); } mm.metalness=0.0; mm.roughness=0.9; cloud_shadow_receive(mm); mm.needsUpdate=true; o.castShadow=cfg.shadows; o.receiveShadow=true; o.customDepthMaterial=carrier_shadow(mm); } });   // each material wears its own images, and only where UVs exist (a map without UVs renders garbage)
 			carrier_model=grp; carrier_rig.add(grp);
 			void init_carrier_far(grp,gscene);   // the far model follows; until it arrives the carrier is drawn in full
 			/* procedural carrier removed; nothing to hide */

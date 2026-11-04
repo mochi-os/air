@@ -56,21 +56,35 @@ LAYOUT = {
 	# an island: a block whose sides lean in, a radome on its plinth, a mast
 	"island": {"prisms": [{"name": "block", "bottom": 19.0, "top": 31.0, "outline": [[-20, 20], [-5, 20], [-5, 28], [-20, 28]],
 		"upper": [[-19, 21], [-6, 21], [-6, 27], [-19, 27]]}],
-		"domes": [{"name": "radar", "centre": [-12, 33.0, 24], "radius": 1.5, "plinth": 2.0}],
+		"domes": [{"name": "radar", "centre": [-12, 33.0, 24], "radius": 1.5, "plinth": 2.0},
+			# an acorn turned on the roof: a drum, a collar, a frustum widening to a cap
+			{"name": "acorn", "centre": [-16, 22], "profile": [[31.0, 0.6], [32.0, 0.6], [32.0, 0.8], [33.0, 1.0], [33.6, 0.7], [33.9, 0.0]], "radome": 32.01}],
 		"poles": [{"name": "mast", "base": [-12, 24], "bottom": 31.0, "top": 45.0, "radius": 0.5}],
 		# a window on its forward face and a radar face on its port face
 		"windows": [{"name": "bridge", "plane": "x=-5", "z": [21, 27], "y": [28, 29]}],
-		"panels": [{"name": "radar", "plane": "z=20", "x": [-16, -12], "y": [24, 27]}],
+		"panels": [{"name": "radar", "plane": "z=20", "x": [-16, -12], "y": [24, 27]},
+			# and a thicker cover on the forward face
+			{"name": "cover", "plane": "x=-5", "z": [24.5, 26.5], "y": [24, 25], "thickness": 0.1}],
 		# a railing round the roof's port edge, a dish facing aft, a brace and a box
 		"details": [{"name": "rail", "kind": "railing", "path": [[-20, 31.0, 20], [-5, 31.0, 20]], "height": 1.0},
 			{"name": "dish", "kind": "dish", "centre": [-20.5, 25, 24], "diameter": 1.0, "facing": [-1, 0, 0]},
 			{"name": "brace", "kind": "cylinder", "base": [-12, 31, 24], "end": [-12, 29, 27], "radius": 0.2},
-			{"name": "box", "kind": "box", "centre": [-12, 40, 24], "size": [2, 0.5, 3]}]},
+			{"name": "box", "kind": "box", "centre": [-12, 40, 24], "size": [2, 0.5, 3]},
+			# a pipe with a bend, a ladder, a stair and a slab on the forward face
+			{"name": "pipe", "kind": "path", "round": True, "size": 0.1, "path": [[-6, 20, 28.5], [-6, 25, 28.5], [-8, 25, 28.5]]},
+			{"name": "ladder", "kind": "ladder", "bottom": [-19, 19.0, 28.5], "top": 22.0, "along": [1, 0], "width": 0.5},
+			{"name": "stair", "kind": "stair", "bottom": [-20, 25.0, 29.5], "top": [-14, 29.0, 29.5], "width": 1.0},
+			{"name": "rim", "kind": "plate", "corners": [[-4.5, 22, 22], [-4.5, 22, 24], [-4.5, 23, 24], [-4.5, 23, 22]], "outward": [1, 0, 0], "thickness": 0.2}]},
 	# a number on each long face of the island, from one cell of a two-cell atlas
 	"lettering": {"pixels": [64, 32], "font": "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", "background": [149, 153, 156],
-		"colour": [236, 236, 230], "outline": [40, 42, 44], "cells": {"number": {"text": "78", "box": [32, 0, 64, 32]}},
+		"colour": [236, 236, 230], "outline": [40, 42, 44], "cutout": True, "cells": {"number": {"text": "78", "box": [32, 0, 64, 32]},
+			# a square with a square hole, lamps round both, on the forward face
+			"square": {"box": [0, 0, 32, 32], "size": [2.0, 2.0], "shapes": [{"polygon": [[0.5, 0.5], [1.5, 0.5], [1.5, 1.5], [0.5, 1.5]],
+				"holes": [[[0.8, 0.8], [1.2, 0.8], [1.2, 1.2], [0.8, 1.2]]], "fill": [236, 236, 230], "offset": [0.1, 0.1]}],
+				"lamps": {"spacing": 0.5, "offset": 0.1, "diameter": 0.16, "depth": 0.15}}},
 		"plates": [{"name": "island_port", "on": "island", "cell": "number", "plane": "z=20", "x": [-12, -8], "y": [21, 23]},
-			{"name": "island_starboard", "on": "island", "cell": "number", "plane": "z=28", "x": [-12, -8], "y": [21, 23]}],
+			{"name": "island_starboard", "on": "island", "cell": "number", "plane": "z=28", "x": [-12, -8], "y": [21, 23]},
+			{"name": "lit", "on": "island", "cell": "square", "plane": "x=-4", "z": [21, 23], "y": [20, 22]}],
 		# a draught mark either side of the stem, half a metre up
 		"draught": {"height": 0.3, "width": 0.2, "aft": 1.0, "numerals": [{"cell": "number", "text": "8", "bottom": 0.5}]}},
 	# a sponson under the port quarter with a Phalanx on it, an opening in the
@@ -141,6 +155,16 @@ LAYOUT = {
 		# port creases from the gallery's foot to the knuckle: one from x 50
 		# down to 30, one from 40 by a corner at (25, 10, -26) down to 10
 		"flare": {"port": [[[50, 15.4, -40], [30, 6, -16]], [[40, 15.4, -40], [25, 10, -26], [10, 6, -16]]]}},
+	# the weathering: the island and the hull each a small atlas, its relief
+	# exaggerated so a texel 30 cm across still tilts at a seam
+	"weathering": {"samples": 2, "occlusion": 3.0, "relief": 0.5, "grey": [0.30, 0.32, 0.33],
+		"groups": [{"material": "island", "meshes": ["island", "island_details"], "size": 128,
+			"plates": {"height": 1.8, "width": 3.0, "origin": 19.0}, "frames": 0.6, "streaks": {"length": [0.5, 3.0]},
+			"runs": [{"top": [-5.1, 29.0, 24.0], "length": 2.0}], "regions": [{"box": [[-21, 19, 27], [-4, 32, 29]], "streaks": 0.5}]},
+			# the radomes their own group, from their paint
+			{"material": "domes", "from": "radome", "meshes": ["island"], "size": 128, "grey": [0.7, 0.7, 0.68], "walk": False,
+				"plates": {"height": 1.0, "width": 1000.0}, "frames": 1000.0, "streaks": {"length": [0.3, 1.0], "share": 1.0, "rust": 0.0}},
+			{"material": "hull", "meshes": ["hull", "sponsons"], "size": 128, "plates": {"height": 2.4, "width": 9.0}, "frames": 0.75}]},
 }
 
 
@@ -291,9 +315,11 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(rail[:, 1].max(), 32.025, places=3)   # the top rail over the path
 		self.assertAlmostEqual(rail[:, 0].min(), -20.025, places=3)
 		# in the railings' material, which the photo checks leave out, and nothing else of the island in it
+		# but the ladder and the stair's railings
 		railed = self.model.parts(materials=["rail"])["island_details"].reshape(-1, 3)
 		self.assertAlmostEqual(railed[:, 1].max(), 32.025, places=3)
-		self.assertTrue((np.abs(railed[:, 2] - 20) < 0.03).all())
+		self.assertTrue(((np.abs(railed[:, 2] - 20) < 0.03) | (np.abs(railed[:, 2] - 28.5) < 0.04) | (np.abs(railed[:, 2] - 29.0) < 0.03)
+			| (np.abs(railed[:, 2] - 30.0) < 0.03)).all())
 		dish = details[np.abs(details[:, 0] + 20.5) < 0.07]
 		np.testing.assert_allclose([dish[:, 1].min(), dish[:, 1].max(), dish[:, 2].min(), dish[:, 2].max()], [24.5, 25.5, 23.5, 24.5], atol=0.02)
 		self.assertAlmostEqual(np.ptp(dish[:, 0]), 0.12, places=3)   # a disc facing aft
@@ -301,6 +327,65 @@ class BuildTest(unittest.TestCase):
 		self.assertGreater(brace[:, 2].max(), 26.8)   # out to its end
 		box = details[details[:, 1] > 39]
 		np.testing.assert_allclose([box[:, 0].min(), box[:, 0].max(), box[:, 1].max(), box[:, 2].min()], [-13, -11, 40.25, 22.5], atol=1e-4)
+
+	def test_turned_radome(self):
+		# the acorn's bands in the radomes' group above its seam at 32, its
+		# drum the island's; each face turned out from the axis or up
+		tris = self.model.parts(materials=["domes"])["island"]
+		near = np.linalg.norm(tris[:, :, [0, 2]].mean(1) - [-16, 22], axis=1) < 1.2
+		acorn = tris[near]
+		self.assertAlmostEqual(acorn[:, :, 1].max(), 33.9, places=3)
+		self.assertGreaterEqual(acorn[:, :, 1].min(), 32.0 - 1e-6)
+		widest = np.linalg.norm(acorn.reshape(-1, 3)[:, [0, 2]] - [-16, 22], axis=1).max()
+		self.assertAlmostEqual(widest, 1.0, places=3)
+		normal = np.cross(acorn[:, 1] - acorn[:, 0], acorn[:, 2] - acorn[:, 0])
+		middle = acorn.mean(1)
+		radial = np.stack([middle[:, 0] + 16, np.zeros(len(middle)), middle[:, 2] - 22], 1)
+		self.assertTrue((np.einsum("ij,ij->i", normal, radial) + normal[:, 1] * 0.5 > 0).all())
+		drum = self.model.parts(materials=["island"])["island"].reshape(-1, 3)
+		drum = drum[np.linalg.norm(drum[:, [0, 2]] - [-16, 22], axis=1) < 0.61]
+		self.assertAlmostEqual(drum[:, 1].max(), 32.0, places=3)
+
+	def test_paths_ladders_stairs_and_slabs(self):
+		details = self.model.parts()["island_details"].reshape(-1, 3)
+		# the pipe round, up the face and along it at 25
+		pipe = details[(np.abs(details[:, 2] - 28.5) < 0.051) & (details[:, 0] > -8.1) & (details[:, 0] < -5.9) & (details[:, 1] < 25.1)]
+		np.testing.assert_allclose([pipe[:, 1].min(), pipe[:, 0].min()], [20, -8], atol=0.06)
+		upright = pipe[pipe[:, 1] < 24.8]
+		self.assertLess(np.hypot(upright[:, 0] + 6, upright[:, 2] - 28.5).max(), 0.0501)   # round, no square bar's corners
+		# the ladder: two stiles half a metre apart, a rung every 0.3 m
+		ladder = self.model.parts(materials=["rail"])["island_details"]
+		ladder = ladder[(np.abs(ladder[:, :, 2].mean(1) - 28.5) < 0.1) & (ladder[:, :, 1].max(1) <= 22.0 + 1e-6)]
+		rungs = ladder[np.ptp(ladder[:, :, 0], axis=1) > 0.4]
+		heights = np.sort(rungs[:, :, 1].mean(1))
+		self.assertEqual(1 + (np.diff(heights) > 0.1).sum(), 10)
+		self.assertAlmostEqual(np.ptp(ladder[:, :, 0]), 0.56, places=2)
+		# the stair: a tread every 0.2 m of its rise, a girder under it, railed
+		stair = details[(np.abs(details[:, 2] - 29.5) < 1.3) & (details[:, 0] <= -13.9) & (details[:, 1] > 24.0)]
+		self.assertAlmostEqual(stair[:, 1].max(), 30.0, places=1)   # its railing a metre over the top
+		self.assertLess(stair[:, 1].min(), 24.8)   # the girder under its foot
+		# the slab standing 0.2 m forward of its corners
+		slab = details[(details[:, 0] > -4.6) & (details[:, 0] < -4.2)]
+		self.assertAlmostEqual(slab[:, 0].max(), -4.3, places=3)
+
+	def test_lamps_round_the_shapes(self):
+		# a lamp at each point plates.lamps sets round the square and inside
+		# its hole, standing out of the plate's face, in the lamps' paint
+		sys.path.insert(0, str(HERE))
+		import plates
+		cell, plate = LAYOUT["lettering"]["cells"]["square"], LAYOUT["lettering"]["plates"][2]
+		feet = plates.lamps(plate, cell, [-12.5, 24])
+		self.assertEqual(len(feet), 13)   # ten round the square's 4.8 m, three round the hole's 0.8
+		lit = self.model.parts(materials=["lights"])["island_details"].reshape(-1, 3)
+		self.assertAlmostEqual(lit[:, 0].min(), -3.97, places=3)
+		self.assertAlmostEqual(lit[:, 0].max(), -3.82, places=3)
+		for (x, y, z), _ in feet:
+			near = lit[np.hypot(lit[:, 1] - y, lit[:, 2] - z) < 0.081]
+			self.assertGreaterEqual(len(near), 12, (y, z))
+		# none on the white: each lamp outside the square, or inside its hole
+		inside = (np.abs(lit[:, 1] - 21) < 0.5 - 0.01) & (np.abs(lit[:, 2] - 22) < 0.5 - 0.01)
+		hole = (np.abs(lit[:, 1] - 21) < 0.2) & (np.abs(lit[:, 2] - 22) < 0.2)
+		self.assertFalse((inside & ~hole).any())
 
 	def test_ship_file(self):
 		cat = self.ship["catapults"][0]
@@ -341,7 +426,68 @@ class BuildTest(unittest.TestCase):
 		start = 20 + length + 8 + view.get("byteOffset", 0)
 		png = raw[start : start + view["byteLength"]]
 		self.assertEqual((int.from_bytes(png[16:20], "big"), int.from_bytes(png[20:24], "big")), (64, 32))
-		self.assertEqual(len(gltf["images"]), 3)   # the deck's, the lettering's and the nets'
+		self.assertEqual(len(gltf["images"]), 9)   # the deck's, the lettering's, the nets', and the island's, hull's and radomes' colour and normal maps
+		# the lettering cut out: clear but for its text, so a plate shows the face behind it
+		self.assertEqual(lettering.get("alphaMode"), "MASK")
+		self.assertEqual(png[25], 6)   # colour type RGBA
+
+	def test_weathered_atlases(self):
+		# each weathered group's grey wears the group's material, unwrapped into
+		# its atlas, which carries a colour and a normal map at the group's size
+		raw = self.glb.read_bytes()
+		length = int.from_bytes(raw[12:16], "little")
+		gltf = json.loads(raw[20 : 20 + length])
+		binary = raw[20 + length + 8:]
+		from io import BytesIO
+		from PIL import Image
+		def picture(index):
+			view = gltf["bufferViews"][gltf["images"][gltf["textures"][index]["source"]]["bufferView"]]
+			start = view.get("byteOffset", 0)
+			return np.asarray(Image.open(BytesIO(binary[start : start + view["byteLength"]])), float)
+		materials = [m["name"] for m in gltf["materials"]]
+		srgb = lambda c: np.where(c <= 0.0031308, 12.92 * c, 1.055 * np.power(c, 1 / 2.4) - 0.055)
+		for group, meshes, size, paint, source, floor in (("island", ("island", "island_details"), 128, [0.30, 0.32, 0.33], "grey", 0.04),
+				("hull", ("hull", "sponsons"), 128, [0.30, 0.32, 0.33], "grey", 0.04), ("domes", ("island",), 128, [0.7, 0.7, 0.68], "radome", 0.01)):
+			m = gltf["materials"][materials.index(group)]
+			colour = picture(m["pbrMetallicRoughness"]["baseColorTexture"]["index"])
+			normal = picture(m["normalTexture"]["index"])
+			self.assertEqual(colour.shape[:2], (size, size), group)
+			self.assertGreater(colour[..., :3].std(), 2.0, group)   # weathered, not one flat grey
+			self.assertGreater(np.abs(normal[..., :2] - 128).max(), 3.0, group)   # the seams' relief
+			# only the group's own faces reach its atlas: the texels between its
+			# islands stay the plain paint (a face outside it, given the whole
+			# square by a new UV layer, covers most of them: 1-2% left here
+			# against 8-18%)
+			plain = np.floor(srgb(np.array(paint)) * 255 + 0.5)
+			self.assertGreater(np.all(colour[..., :3] == plain, axis=-1).mean(), floor, group)
+			# and its faces as baked: no two of its meshes' faces on one texel,
+			# though a later group unwraps the same mesh
+			if len(meshes) > 1:
+				covered = sum(self.covered(name, group, 256) for name in meshes)
+				self.assertLess((covered > 1).mean(), 0.002, group)
+			for name in meshes:
+				mesh = gltf["meshes"][next(n["mesh"] for n in gltf["nodes"] if n["name"] == name)]
+				worn = [pr for pr in mesh["primitives"] if materials[pr["material"]] == group]
+				self.assertTrue(worn and all("TEXCOORD_0" in pr["attributes"] for pr in worn), name)
+				self.assertFalse([pr for pr in mesh["primitives"] if materials[pr["material"]] == source], name)
+		# the island's radomes weathered in their own group, their plinths in
+		# the island's; the Phalanx's radome left in the plain paint
+		domes = self.model.parts(materials=["domes"])["island"].reshape(-1, 3)
+		self.assertAlmostEqual(domes[:, 1].max(), 34.5, places=2)
+		self.assertGreater(domes[:, 1].min(), 31.4)
+		self.assertTrue(self.model.parts(materials=["radome"])["weapons"].size)
+
+	def covered(self, name, material, size):
+		# how many of a node's faces in `material` cover each texel of its atlas
+		from PIL import Image, ImageDraw
+		mesh = self.model.nodes[self.model.index[name]]["mesh"]
+		image = Image.new("L", (size, size), 0)
+		pen = ImageDraw.Draw(image)
+		for k, (_, m) in enumerate(self.model.meshes[mesh]):
+			if m == material:
+				for t in self.model.uvs[mesh][k].reshape(-1, 3, 2):
+					pen.polygon([(u * size, v * size) for u, v in t], fill=1)
+		return np.asarray(image).astype(int)
 
 	def test_numbers_read_from_outside(self):
 		# each plate's cell (u 0.5-1 across the atlas, v 0 at its top row)
@@ -652,6 +798,10 @@ class BuildTest(unittest.TestCase):
 			self.assertGreater(len(plate), 0, paint)
 			self.assertAlmostEqual(plate[:, axis].min() if outward > 0 else plate[:, axis].max(), value, places=4)
 			self.assertAlmostEqual(plate[:, axis].max() if outward > 0 else plate[:, axis].min(), value + outward * 0.03, places=4)
+		# a face of its own thickness
+		cover = self.model.parts(materials=["panel"])["island_faces"].reshape(-1, 3)
+		cover = cover[np.abs(cover[:, 0] + 5) < 0.2]
+		self.assertAlmostEqual(np.ptp(cover[:, 0]), 0.1, places=4)
 
 	def test_hull_depth_and_waterline(self):
 		hull = self.ship["hull"]
@@ -769,7 +919,7 @@ class BuildTest(unittest.TestCase):
 		self.assertTrue((np.abs(transom[:, :, 0] + 90) < 1e-3).all(1).any())
 		# grey above it, but for the bow's end cap and the faces where the
 		# rising stem crosses the boot top
-		grey = self.faces("hull", materials=["grey"])[0]
+		grey = self.faces("hull", materials=["hull"])[0]
 		self.assertGreaterEqual(grey[(np.abs(grey[:, :, 0] + 90) < 1e-3).all(1)][:, :, 1].min(), 1.0 - 1e-4)   # the transom above the boot top
 		sides = grey[~((np.abs(grey[:, :, 0] + 90) < 1e-3).all(1) | (grey[:, :, 0] > 75).any(1))].reshape(-1, 3)
 		self.assertGreaterEqual(sides[:, 1].min(), 1.0 - 1e-4)

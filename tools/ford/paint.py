@@ -21,6 +21,21 @@
 # linear light: {"outline": [[x, z], ...], "darkening": 0-1 (the paint times
 # 1 - darkening), "feather": m (a soft edge that wide, half inside)}.
 #
+# Then layout.wear, the deck's wear as photographed (decision 17, amended
+# 2026-11-03), each by rule from measured numbers, seeded so a build paints
+# the same deck every time, in linear light over everything painted:
+#   "mottle": [[scale m, spread], ...]: the non-skid's tone wandering, value
+#     noise at each scale, the spread a share of the paint;
+#   "tyres": the landing area's rubber, generated landing by landing in the
+#     landing frame (s along layout.landing.line from its aft end, t across,
+#     + to starboard): each touchdown scattered about the engaged wire, two
+#     main-gear tracks pulled toward the centreline as the wire takes the
+#     jet, a spin-up smear, the rollout to its stop and the taxi on forward;
+#   "deflectors": each blast deflector panel's soot, a soft blob at a share
+#     along it from its aft edge and across it from its port end;
+#   "spots": fluid drips, small soft dark spots scattered over the deck
+#     outside the landing area.
+#
 # usage: python3 -I paint.py OUT.png [--facts PATH]
 import json, math, sys
 from pathlib import Path
@@ -156,8 +171,186 @@ def render(layout):
 		else:
 			raise ValueError(f"marking {m.get('name')}: unknown kind {m['kind']}")
 	image = image.resize(tuple(texture["pixels"]), Image.Resampling.BOX)
-	# the stains soft, so painted at the texture's own size
-	return stained(image, Canvas(texture, 1), layout.get("stains", []))
+	# the stains soft, so painted at the texture's own size, and the wear over them
+	image = stained(image, Canvas(texture, 1), layout.get("stains", []))
+	return worn(image, Canvas(texture, 1), layout)
+
+
+def noise(shape, cells, rng):
+	# Smooth value noise of unit spread over an image `shape` (rows, columns):
+	# random values on a grid of `cells` (rows, columns), interpolated up
+	grid = rng.standard_normal((cells[0] + 3, cells[1] + 3)).astype(np.float32)
+	big = Image.fromarray(grid, "F").resize((shape[1] + 2 * shape[1] // cells[1], shape[0] + 2 * shape[0] // cells[0]), Image.Resampling.BICUBIC)
+	out = np.asarray(big, np.float32)[shape[0] // cells[0] : shape[0] // cells[0] + shape[0], shape[1] // cells[1] : shape[1] // cells[1] + shape[1]]
+	return out / max(float(out.std()), 1e-6)
+
+
+def frame_of(layout):
+	# The landing frame: its aft end, along and across (+ to starboard) unit vectors
+	(ax, az), (bx, bz) = layout["landing"]["line"]
+	length = math.hypot(bx - ax, bz - az)
+	along = np.array([(bx - ax) / length, (bz - az) / length])
+	across = np.array([-along[1], along[0]])
+	if across[1] < 0:
+		across = -across
+	return np.array([ax, az]), along, across
+
+
+def wires_along(layout, origin, along):
+	# Each wire's distance along the landing line, from its dashes' middles
+	out = {}
+	for w in layout["landing"].get("wires", []):
+		(x0, _, z0), (x1, _, z1) = w["ends"]
+		middle = np.array([(x0 + x1) / 2, (z0 + z1) / 2])
+		out[w["number"]] = float((middle - origin) @ along)
+	return out
+
+
+def tyre_density(layout, spec, cell=0.1, parts=("smear", "rollout", "forward")):
+	# The rubber's optical density (minus the log of the paint's remaining
+	# share) on a grid in the landing frame: (density, s values, t values).
+	# Each landing touches down about its engaged wire (picked by its share)
+	# and scattered across the deck, the later the farther off the centreline
+	# (`round` metres along per square metre across); its two main-gear tracks leave a spin-up
+	# smear fading over its length, then roll on to the stop past the wire,
+	# pulled toward the centreline as the wire centres the jet; past a gap,
+	# the forward part's marks (bolters' and aircraft taxiing out) run along
+	# the centreline. `parts` leaves components out, for fitting their densities
+	rng = np.random.default_rng(spec.get("seed", 7))
+	origin, along, _ = frame_of(layout)
+	wires = wires_along(layout, origin, along)
+	s_max, t_max = spec.get("reach", 220.0), spec.get("width", 12.0)
+	ss = np.arange(0, s_max, cell)
+	ts = np.arange(-t_max, t_max + cell / 2, cell)
+	density = np.zeros((len(ts), len(ss)), np.float64)
+	half = spec["gauge"] / 2
+	sigma = spec["track"] / 2
+	k = np.arange(-int(3 * sigma / cell) - 1, int(3 * sigma / cell) + 3)
+	numbers, shares = zip(*spec["wires"].items())
+	def lay(s0, s1, t_of, value_of):
+		# a track from s0 to s1, at t_of(s), its density value_of(s)
+		i0, i1 = max(0, int(s0 / cell)), min(len(ss), int(s1 / cell))
+		if i1 <= i0:
+			return
+		s = ss[i0:i1]
+		# spread across the cells about the track's own place, not its nearest cell's
+		place = (t_of(s) + t_max) / cell
+		rows = np.floor(place).astype(int)[None, :] + k[:, None]
+		spread = np.exp(-0.5 * ((rows - place[None, :]) * cell / sigma) ** 2)
+		spread /= spread.sum(0, keepdims=True)
+		cols = np.broadcast_to(np.arange(i0, i1)[None, :], rows.shape)
+		ok = (rows >= 0) & (rows < len(ts))
+		np.add.at(density, (rows[ok], cols[ok]), (spread * value_of(s)[None, :])[ok])
+	lateral, smear, forward = spec["lateral"], spec["smear"], spec["forward"]
+	for _ in range(spec["landings"]):
+		wire = wires[int(rng.choice([int(n) for n in numbers], p=np.array(shares) / sum(shares)))]
+		centre = rng.normal(lateral["mean"], lateral["spread"])
+		# the farther off the centreline, the later the touchdown: the band's aft
+		# edge rounded, its aftmost on the centreline
+		touch = wire - spec["touchdown"]["before"] + rng.normal(0, spec["touchdown"]["spread"]) \
+			+ spec["touchdown"].get("round", 0.0) * (centre - lateral["mean"]) ** 2
+		heading = rng.normal(0, np.radians(lateral["heading"]))
+		stop = wire + rng.uniform(*spec["runout"])
+		length = rng.uniform(*smear["length"])
+		start, end = rng.uniform(*forward["start"]), rng.uniform(*forward["end"])
+		lane = rng.normal(lateral["mean"], forward["spread"])
+		# each landing's own weight of rubber, a few heavy ones standing out as streaks
+		weight = rng.lognormal(-0.5 * spec.get("variation", 0.0) ** 2, spec.get("variation", 0.0))
+		for side in (-1, 1):
+			def offset(s, side=side, centre=centre, heading=heading, touch=touch, wire=wire):
+				# the track drifts on its heading, then the wire pulls it in to the centreline's
+				drawn = np.exp(-np.clip(s - wire, 0, None) / lateral["pull"])
+				return (centre + side * half + heading * (s - touch)) * drawn + (lateral["mean"] + side * half) * (1 - drawn)
+			if "smear" in parts:
+				# the spin-up's smear: in over its first half metre, fading over its length
+				lay(touch, touch + 2 * length, offset, lambda s, touch=touch, length=length: weight * smear["density"]
+					* np.clip((s - touch) / 0.5, 0, 1) * np.exp(-(s - touch) / (length / 2)))
+			if "rollout" in parts:
+				lay(touch, stop, offset, lambda s: np.full(len(s), weight * spec["rollout"]))
+			if "forward" in parts:
+				lay(start, end, lambda s, side=side, lane=lane: side * half + lane + 0 * s, lambda s: np.full(len(s), weight * forward["density"]))
+	return density, ss, ts
+
+
+def worn(image, canvas, layout):
+	# layout.wear over the painted deck, in linear light: the tone's wandering
+	# multiplied in, then each layer's optical density
+	wear = layout.get("wear")
+	if not wear:
+		return image
+	lin = linear(np.asarray(image, np.float32))
+	height, width = lin.shape[:2]
+	xs = (canvas.x0 + (np.arange(width) + 0.5) / width * (canvas.x1 - canvas.x0)).astype(np.float32)
+	zs = (canvas.z0 + (np.arange(height) + 0.5) / height * (canvas.z1 - canvas.z0)).astype(np.float32)
+	rng = np.random.default_rng(wear.get("seed", 3))
+	def window(x0, x1, z0, z1):
+		# the texture's rows and columns over a box of deck metres
+		c0, c1 = np.searchsorted(xs, [x0, x1])
+		r0, r1 = np.searchsorted(zs, [z0, z1])
+		return slice(int(r0), int(r1)), slice(int(c0), int(c1))
+	# the non-skid's tone wandering
+	tone = np.ones((height, width), np.float32)
+	for scale, spread in wear.get("mottle", []):
+		cells = (max(2, int(round((canvas.z1 - canvas.z0) / scale))), max(2, int(round((canvas.x1 - canvas.x0) / scale))))
+		tone *= np.exp(spread * noise((height, width), cells, rng))
+	lin *= tone[:, :, None]
+	density = np.zeros((height, width), np.float32)
+	# the landing area's rubber, from its grid in the landing frame
+	if "tyres" in wear:
+		grid, ss, ts = tyre_density(layout, wear["tyres"])
+		origin, along, across = frame_of(layout)
+		corners = np.array([origin + along * s + across * t for s in (ss[0], ss[-1]) for t in (ts[0], ts[-1])])
+		rows, cols = window(corners[:, 0].min(), corners[:, 0].max(), corners[:, 1].min(), corners[:, 1].max())
+		x, z = np.meshgrid(xs[cols], zs[rows])
+		s = (x - origin[0]) * along[0] + (z - origin[1]) * along[1]
+		t = (x - origin[0]) * across[0] + (z - origin[1]) * across[1]
+		fi, fj = (t - ts[0]) / (ts[1] - ts[0]), (s - ss[0]) / (ss[1] - ss[0])
+		inside = (fi >= 0) & (fi < len(ts) - 1) & (fj >= 0) & (fj < len(ss) - 1)
+		i0, j0 = np.floor(fi[inside]).astype(int), np.floor(fj[inside]).astype(int)
+		a, b = fi[inside] - i0, fj[inside] - j0
+		g = grid.astype(np.float32)
+		part = np.zeros(x.shape, np.float32)
+		part[inside] = g[i0, j0] * (1 - a) * (1 - b) + g[i0 + 1, j0] * a * (1 - b) + g[i0, j0 + 1] * (1 - a) * b + g[i0 + 1, j0 + 1] * a * b
+		density[rows, cols] += part
+	# each blast deflector panel's soot, on the panel only
+	spec = wear.get("deflectors")
+	if spec:
+		for name, darkening in spec["panels"].items():
+			points = np.array(next(m for m in layout["markings"] if m["name"] == name)["points"][:4], float)
+			x0, x1, z0, z1 = points[:, 0].min(), points[:, 0].max(), points[:, 1].min(), points[:, 1].max()
+			cx, cz = x0 + spec["along"] * (x1 - x0), z0 + spec["across"] * (z1 - z0)
+			su, sw = spec["spread"]
+			rows, cols = window(x0, x1, z0, z1)
+			x, z = np.meshgrid(xs[cols], zs[rows])
+			density[rows, cols] += -math.log(1 - darkening) * np.exp(-0.5 * (((x - cx) / su) ** 2 + ((z - cz) / sw) ** 2))
+	# fluid drips over the deck, none in the landing area
+	spots = wear.get("spots")
+	if spots:
+		mask = Image.new("L", (width, height), 0)
+		draw = ImageDraw.Draw(mask)
+		clear = [canvas.pixel(p) for p in next(m for m in layout["markings"] if m["name"] == spots["clear"])["outline"]] if spots.get("clear") else None
+		outline = [canvas.pixel(p) for p in layout["deck"]["outline"]]
+		kept = 0
+		while kept < spots["count"]:
+			u, v = canvas.pixel((rng.uniform(canvas.x0, canvas.x1), rng.uniform(canvas.z0, canvas.z1)))
+			if not inside_polygon(u, v, outline) or (clear and inside_polygon(u, v, clear)):
+				continue
+			r = canvas.metres(rng.uniform(*spots["size"])) / 2
+			draw.ellipse([u - r, v - r * rng.uniform(0.6, 1.0), u + r, v + r * rng.uniform(0.6, 1.0)], fill=int(255 * rng.uniform(*spots["darkening"])))
+			kept += 1
+		share = np.asarray(mask.filter(ImageFilter.GaussianBlur(canvas.metres(0.1))), np.float32) / 255
+		density += -np.log(np.clip(1 - share, 1e-3, 1))
+	lin *= np.exp(-density)[:, :, None]
+	return Image.fromarray(encoded(lin), "RGB")
+
+
+def inside_polygon(u, v, polygon):
+	# Whether (u, v) lies inside a polygon, by crossings
+	inside = False
+	for (x0, y0), (x1, y1) in zip(polygon, polygon[1:] + polygon[:1]):
+		if (y0 > v) != (y1 > v) and u < x0 + (v - y0) * (x1 - x0) / (y1 - y0):
+			inside = not inside
+	return inside
 
 
 def main():

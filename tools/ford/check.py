@@ -54,6 +54,8 @@ EXEMPT = {
 	"layout.catwalks": "built as given",
 	"layout.racks": "built as given",
 	"layout.openings": "built as given, dark on the hull",
+	"layout.weathering": "the paint's wear by rule (weather.py); test_weather checks the rules, test_build the atlas",
+	"layout.wear": "the deck's wear by rule from measured numbers (paint.py); test_paint holds the tyres to the band measured in dvids7694421 and the soot to its panels",
 	"layout.tubs": "built as given (references/research/stern); test_build checks a tub's floor, railing and knee",
 	"layout.transom": "built as given (references/research/transom); test_build checks the face, its recess and the walkway",
 	"layout.lettering": "plates built as given; test_build checks each reads from outside its face",
@@ -161,7 +163,8 @@ def checks(ship):
 		yield result("island.width", "the island's base, athwartships", value(FACTS["island"]["width"]) * FT, plan[:, 1].max() - plan[:, 1].min(), 1.0)
 		i = ship.layout["island"]
 		block = max(p["top"] for p in i["prisms"] if not p["name"].startswith(("mast", "gaff")))   # the mast's parts left out
-		highest = max([p["top"] for p in i["prisms"]] + [p["top"] for p in i.get("poles", [])] + [d["centre"][1] + d["radius"] for d in i.get("domes", [])])
+		tops = [max(q[0] for q in d["profile"]) if "profile" in d else d["centre"][1] + d["radius"] for d in i.get("domes", [])]   # a turned radome's profile, or a sphere
+		highest = max([p["top"] for p in i["prisms"]] + [p["top"] for p in i.get("poles", [])] + tops)
 		yield result("layout.island", "the island's highest point, where its layout puts it", highest, ship.points(["island"])[:, 1].max(), 0.01)
 		yield result("island.height", "the island's block above the deck (the mast left out)", value(FACTS["island"]["height"]) * FT, block - height, 1.5)
 	yield from guard("island", "the island", island)

@@ -6,8 +6,10 @@
 # build.py's mapping (port at the top, the bow to the right).
 #
 # usage: python3 -I test_paint.py
-import sys, unittest
+import json, sys, unittest
 from pathlib import Path
+
+import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import paint  # noqa: E402
@@ -92,6 +94,163 @@ class Paint(unittest.TestCase):
 		self.assertEqual(at(image, -9, 0), GREY)
 		edge = at(image, -6, 0)[0]
 		self.assertTrue(half(GREY[0]) < edge < GREY[0], edge)
+
+	def test_wear_is_seeded_and_leaves_an_unworn_deck_alone(self):
+		worn = {**LAYOUT, "deck": {**LAYOUT["deck"], "outline": [[-10, -5], [10, -5], [10, 5], [-10, 5]]}, "markings": [],
+			"wear": {"seed": 1, "mottle": [[4, 0.05], [1, 0.05]]}}
+		a, b = paint.render(worn), paint.render(worn)
+		self.assertEqual(a.tobytes(), b.tobytes())
+		self.assertNotEqual(a.tobytes(), self.render().tobytes())
+		flat = paint.render({**worn, "wear": {"mottle": [[4, 0.0]]}})
+		self.assertEqual(flat.tobytes(), self.render().tobytes())
+
+	def test_mottle_spreads_as_asked(self):
+		# the tone's spread in linear light the mottle's, at its scale
+		worn = {**LAYOUT, "deck": {**LAYOUT["deck"], "texture": {"x": [-10, 10], "z": [-5, 5], "pixels": [400, 200]}}, "markings": [],
+			"wear": {"seed": 2, "mottle": [[1.0, 0.08]]}}
+		lin = paint.linear(np.asarray(paint.render(worn), np.float32))[..., 1]
+		spread = np.std(np.log(lin / np.median(lin)))
+		self.assertAlmostEqual(spread, 0.08, delta=0.02)
+
+	def test_soot_on_its_panel_only(self):
+		# the soot's core where the share puts it on the panel, as dark as asked,
+		# and none past the panel's outline
+		outline = [[-4, -3], [0, -3], [0, 3], [-4, 3], [-4, -3]]
+		worn = {**LAYOUT, "markings": [{"name": "jbd_outline", "kind": "line", "points": outline, "width": 0.01, "colour": GREY}],
+			"wear": {"deflectors": {"along": 0.25, "across": 0.5, "spread": [0.8, 1.5], "panels": {"jbd_outline": 0.8}}}}
+		image = np.asarray(paint.render(worn), np.float32)
+		lin = paint.linear(image)[..., 1]
+		grey = paint.linear(np.array(GREY, np.float32))[1]
+		row = lambda z: int((z + 5) / 10 * 100)
+		col = lambda x: int((x + 10) / 20 * 200)
+		panel = lin[row(-2.9) : row(2.9), col(-3.9) : col(-0.1)]
+		dark = 1 - panel / grey
+		def peak(profile, start):
+			# the core's place: a parabola through the profile's top, past the 8-bit ties
+			i = int(np.argmax(profile))
+			k = np.arange(max(0, i - 6), min(len(profile), i + 7))
+			a, b, _ = np.polyfit(k, profile[k], 2)
+			return start + -b / (2 * a) / 10
+		self.assertAlmostEqual(peak(dark.mean(0), -3.9), -3.0, delta=0.1)   # a quarter along from its aft edge
+		self.assertAlmostEqual(peak(dark.mean(1), -2.9), 0.0, delta=0.1)    # across its middle
+		self.assertAlmostEqual(panel.min() / grey, 0.2, delta=0.03)
+		self.assertTrue(np.allclose(lin[:, col(0.2) :], grey, atol=1e-4))     # forward of the panel
+		self.assertTrue(np.allclose(lin[: row(-3.2), :], grey, atol=1e-4))    # to port of it
+
+	def test_spots_on_the_deck_and_out_of_the_clear_area(self):
+		clear = [[-10, -5], [0, -5], [0, 5], [-10, 5]]
+		worn = {**LAYOUT, "deck": {**LAYOUT["deck"], "outline": [[-10, -5], [10, -5], [10, 0], [-10, 0]]},
+			"markings": [{"name": "landing", "kind": "area", "outline": clear, "colour": GREY}],
+			"wear": {"seed": 4, "spots": {"count": 40, "size": [0.5, 0.8], "darkening": [0.3, 0.4], "clear": "landing"}}}
+		lin = paint.linear(np.asarray(paint.render(worn), np.float32))[..., 1]
+		dark = lin < paint.linear(np.array(GREY, np.float32))[1] * 0.97
+		rows, cols = np.nonzero(dark)
+		self.assertTrue(len(rows))
+		# none centred in the clear area, aft of x 0, nor off the deck, to
+		# starboard of z 0 (each reaching its radius, 0.4 m, and its blur past)
+		self.assertGreaterEqual(cols.min(), 100 - 6)
+		self.assertLessEqual(rows.max(), 50 + 6)
+		self.assertGreater(cols.mean(), 120)
+		self.assertLess(rows.mean(), 40)
+
+	def test_tyres_meet_the_measured_band(self):
+		# the facts' generator against the band measured in the photo: the
+		# core and the shoulders' shares in 10 m steps along the landing line
+		# (the shoulders past the touchdown zone held at 1, their reference
+		# strip there darker than they are)
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		spec = layout["wear"]["tyres"]
+		grid, ss, ts = paint.tyre_density(layout, spec)
+		share = np.exp(-grid)
+		S, T = np.meshgrid(ss, ts)
+		misses = []
+		for s0, (core, shoulder) in spec["measured"].items():
+			cols = (S >= int(s0)) & (S < int(s0) + 10)
+			got = np.median(share[cols & (np.abs(T + 0.5) <= 2.5)]), np.median(share[cols & (np.abs(T + 0.5) > 2.5) & (np.abs(T + 0.5) <= 6)])
+			misses += [got[0] - core, got[1] - min(shoulder, 1.0)]
+		misses = np.array(misses)
+		self.assertLess(np.sqrt(np.mean(misses ** 2)), 0.12)
+		self.assertLess(np.abs(misses).max(), 0.25)
+
+	def small_tyres(self, **more):
+		# one landing on a short deck: its line along x, a wire at x -2
+		spec = {"seed": 5, "landings": 1, "gauge": 3.0, "track": 0.4, "wires": {"1": 1.0}, "reach": 20.0, "width": 5.0,
+			"touchdown": {"before": 3.0, "spread": 0.0}, "lateral": {"mean": 1.0, "spread": 0.0, "heading": 2.0, "pull": 1000.0},
+			"smear": {"length": [2.0, 2.0], "density": 1.0}, "rollout": 0.5, "runout": [5.0, 5.0],
+			"forward": {"start": [30.0, 30.0], "end": [30.0, 30.0], "spread": 0.0, "density": 0.0}}
+		spec.update(more)
+		layout = {**LAYOUT, "markings": [], "landing": {"line": [[-9, 0], [9, 0]], "wires": [{"number": 1, "ends": [[-2, 19, -3], [-2, 19, 3]]}]}}
+		return layout, spec
+
+	def test_tyres_land_where_the_landing_frame_puts_them(self):
+		# the rubber's grid carried onto the texture: across + to starboard (z +),
+		# along from the line's aft end; its darkness the grid's
+		layout, spec = self.small_tyres()
+		grid, ss, ts = paint.tyre_density(layout, spec)
+		image = paint.render({**layout, "wear": {"tyres": spec}})
+		lin = paint.linear(np.asarray(image, np.float32))[..., 1]
+		grey = paint.linear(np.array(GREY, np.float32))[1]
+		for s_, t_ in ((4.0, 2.5), (4.0, -0.5), (7.0, 2.5)):
+			j, i = int(round(s_ / (ss[1] - ss[0]))), int(round((t_ - ts[0]) / (ts[1] - ts[0])))
+			x, z = -9 + s_, t_
+			got = lin[int((z + 5) / 10 * 100), int((x + 10) / 20 * 200)] / grey
+			self.assertAlmostEqual(got, np.exp(-grid[i, j]), delta=0.08, msg=(s_, t_))
+		self.assertLess(lin[int((-0.5 + 5) * 10), int((-5 + 10) * 10)] / grey, 0.97)   # its port track, at t 1.0 - 1.5
+		self.assertAlmostEqual(lin[int((-4.0 + 5) * 10), int((-5 + 10) * 10)] / grey, 1.0, delta=0.01)   # nothing out at z -4
+
+	def test_tracks_run_smooth(self):
+		# a track on a slant moves across by less than a cell from step to step,
+		# not in the cells' steps
+		layout, spec = self.small_tyres()
+		grid, ss, ts = paint.tyre_density(layout, spec)
+		upper = grid[ts > 1.0]
+		t = ts[ts > 1.0]
+		rolling = (ss > 4.5) & (ss < 10.5)
+		centre = (upper[:, rolling] * t[:, None]).sum(0) / upper[:, rolling].sum(0)
+		self.assertLess(np.abs(np.diff(centre)).max(), 0.02)
+		self.assertGreater(abs(centre[-1] - centre[0]), 0.05)   # it does slant, by less than a cell over the run
+
+	def test_heavy_landings_stand_out_as_streaks(self):
+		# each landing's own weight of rubber: across the band at the wires its
+		# fine contrast (less a metre's running mean) half again what alike
+		# landings leave
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		spec = layout["wear"]["tyres"]
+		def contrast(variation):
+			grid, ss, ts = paint.tyre_density(layout, dict(spec, variation=variation))
+			across = np.exp(-grid[:, (ss >= 60) & (ss < 62)]).mean(1)
+			fine = across - np.convolve(across, np.ones(11) / 11, mode="same")
+			return np.std(fine[np.abs(ts + 0.5) < 4])
+		self.assertGreater(contrast(spec["variation"]), 1.4 * contrast(0.0))
+
+	def test_tyre_band_rounded_at_its_aft_edge(self):
+		# where the band begins, line by line across it: aftmost on the
+		# centreline, later the farther off it (the photo's rounded edge, not
+		# a straight one across)
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		spec = layout["wear"]["tyres"]
+		grid, ss, ts = paint.tyre_density(layout, spec)
+		share = np.exp(-grid)
+		def begins(near, far):
+			# where the band's dark mass starts over a strip of lines `near` to
+			# `far` off the centreline, either side
+			off = np.abs(ts - spec["lateral"]["mean"])
+			band = share[(off >= near) & (off < far)].mean(0)
+			run = np.convolve(band, np.ones(10) / 10, mode="valid")   # over a metre along
+			return ss[np.argmax(run < 0.7)] if (run < 0.7).any() else np.inf
+		# the nose on the centreline and over a centred jet's wheels, then later out to the sides
+		self.assertLess(begins(0.0, 1.5), begins(1.5, 3.0) + 0.5)
+		self.assertLess(begins(1.5, 3.0), begins(3.0, 4.5) - 4.0)
+		self.assertLess(begins(3.0, 4.5), begins(4.5, 6.0) - 2.0)
+
+	def test_tyre_band_tapers(self):
+		# wide at the touchdown, narrow past the wires, clean aft of the touchdown
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		grid, ss, ts = paint.tyre_density(layout, layout["wear"]["tyres"])
+		width = lambda s0: (np.exp(-grid[:, (ss >= s0) & (ss < s0 + 10)]).mean(1) < 0.85).sum() * (ts[1] - ts[0])
+		self.assertGreater(width(55), 8.0)
+		self.assertLess(width(100), width(55) * 0.6)
+		self.assertLess(width(15), 0.5)
 
 	def test_unknown_kind(self):
 		with self.assertRaises(ValueError):
