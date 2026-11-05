@@ -91,7 +91,9 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   leaning bow and aft edge are where the photos put them (`layout.canopy`), the glass's section a
   superellipse fitted to the photos' outlines. The nose carries the probes, fairings, light strips and blade
   the photos place (`layout.aoa`, `pitot`, `blisters`, `formation`, `blade`), the fins their tip pods
-  (`layout.pods`), and a simple cockpit with its pilot sits under the canopy (`layout.cockpit`). Each nozzle
+  (`layout.pods`) and a fixed root piece under each (`fin_root_*`: the root's section carried down the fin's
+  plane to half an inch inside the built skin, cast point by point every 2 in of chord, since the root is a
+  straight chord over a deck that falls away aft), and a simple cockpit with its pilot sits under the canopy (`layout.cockpit`). Each nozzle
   is twelve flaps, each its own joint (`layout.petals`): a curved outer flap with its stepped tab, and inside
   it the divergent and convergent flaps of the gas path, closing together; the burner's dark duct lies beyond
   the throat, and the paint gives the flaps bare metal outside, the divergent flaps' cooling holes and a dark
@@ -109,7 +111,9 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   image of its right twin, at rest and gear down; parts lying against each other (`SEAMS`: the inlets, the
   LEX and its fairing, the wing root, the fuselage) never crossing back and forth where they show; nothing
   poking through the LEX's fairing, which covers the wing's root end; the fuselage's store mounts on the
-  skin; no crease in the skin away from its real edges (`shape.bend`: fixed lines on the skin seen from
+  skin; each fin, its rudder's lower end and its root piece standing on the skin all along the root, each
+  face's foot (its lowest corners along the fin's span, either side of its mid-plane) on or in the skin
+  (`shape.seated`); no crease in the skin away from its real edges (`shape.bend`: fixed lines on the skin seen from
   above, below and outboard, and over the LEX and its fairing from above, each bend over 4 in either side
   counted where most of it lies within 2 in, so smooth curvature is not; the canopy is left out only on the
   lines that meet it; each view's tolerance lies between the fixed build and one with its rings spread out;

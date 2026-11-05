@@ -230,6 +230,65 @@ class ShapeTest(unittest.TestCase):
 		self.assertTrue(any(j == 2 and abs(c) > 0.1 for j, _, _, c in found))
 		self.assertFalse(any(j == 1 and abs(stations[i] - 300) < 8 and abs(c) > 0.1 for j, i, _, c in check.bends(np.stack([kink[0]] * 3), 1.5, np.stack([free, edge, free]))))
 
+	def test_seated(self):
+		tris = lambda lo, hi: (lambda v, f: v[f])(*box(lo, hi))
+		skin = tris((0.0, 90.0, -50.0), (100.0, 100.0, 50.0))   # its top at WL 100
+		stations = np.arange(10.0, 90.0, 5.0)
+		# a fin 2 in above the skin stands 2 in off it; one sunk half an inch, not at all
+		self.assertAlmostEqual(check.seated(tris((5.0, 102.0, 38.0), (95.0, 160.0, 42.0)), skin, stations), 2.0, places=6)
+		self.assertAlmostEqual(check.seated(tris((5.0, 99.5, 38.0), (95.0, 160.0, 42.0)), skin, stations), -0.5, places=6)
+		# a foot that floats over part of its length is judged there
+		lifted = np.concatenate([tris((5.0, 99.5, 38.0), (50.0, 160.0, 42.0)), tris((50.0, 103.0, 38.0), (95.0, 160.0, 42.0))])
+		self.assertAlmostEqual(check.seated(lifted, skin, stations), 3.0, places=6)
+		# one face of the foot lifted (the deck falls away outboard) is judged on that face
+		v, f = box((5.0, 99.5, 38.0), (95.0, 160.0, 42.0))
+		v[(v[:, 1] < 100) & (v[:, 2] > 40)] += [0.0, 2.5, 0.0]
+		self.assertAlmostEqual(check.seated(v[f], skin, stations), 2.0, places=6)
+		# and so is the inboard face
+		v, f = box((5.0, 99.5, 38.0), (95.0, 160.0, 42.0))
+		v[(v[:, 1] < 100) & (v[:, 2] < 40)] += [0.0, 2.5, 0.0]
+		self.assertAlmostEqual(check.seated(v[f], skin, stations), 2.0, places=6)
+		# a flat foot floating over a deck that falls outboard is judged where the deck lies lowest under it
+		top = lambda bl: 101.0 - (bl - 38.0)   # WL 101 under the inboard face, 97 under the outboard
+		corners = np.array([[0.0, top(30.0), 30.0], [100.0, top(30.0), 30.0], [100.0, top(48.0), 48.0], [0.0, top(48.0), 48.0]])
+		falling = corners[np.array([(0, 1, 2), (0, 2, 3)])]
+		self.assertAlmostEqual(check.seated(tris((5.0, 102.0, 38.0), (95.0, 160.0, 42.0)), falling, stations), 5.0, places=3)
+		# every corner within a tenth of an inch of the lowest counts: tilted 0.1 in up outboard, the foot's
+		# lowest corner on the outboard side is where the cut meets its closing face, not its outboard edge
+		v, f = box((5.0, 102.0, 38.0), (95.0, 160.0, 42.0))
+		v[(v[:, 1] < 103) & (v[:, 2] > 40)] += [0.0, 0.1, 0.0]
+		self.assertAlmostEqual(check.seated(v[f], falling, np.arange(55.0, 90.0, 5.0)), 5.1, places=3)
+		# a part high above its foot (a canted fin's tip) is not its foot
+		tip = tris((5.0, 150.0, 60.0), (95.0, 160.0, 64.0))
+		self.assertAlmostEqual(check.seated(np.concatenate([tris((5.0, 99.5, 38.0), (95.0, 104.0, 42.0)), tip]), skin, stations), -0.5, places=6)
+		# a face slanting down into the skin (a canted fin's foot) is judged at its foot, not partway up
+		slant = np.array([[0.0, 99.5, 36.0], [0.0, 99.5, 36.4], [0.0, 110.0, 40.0], [0.0, 110.0, 39.6]])
+		v = np.concatenate([slant, slant + [100.0, 0.0, 0.0]])
+		f = np.array([(0, 1, 2), (0, 2, 3), (4, 6, 5), (4, 7, 6), (0, 4, 5), (0, 5, 1), (1, 5, 6), (1, 6, 2), (2, 6, 7), (2, 7, 3), (3, 7, 4), (3, 4, 0)])
+		self.assertAlmostEqual(check.seated(v[f], skin, stations), -0.5, places=6)
+		# a canted fin on a root piece reaching into a deck that falls outboard: the
+		# closing faces between them lie lower than the inboard foot at the
+		# fin's middle, over deck lower still, and are not its foot
+		def prism(outline):
+			# an outline in (WL, BL) carried from FS 0 to 100, closed at both ends
+			ring = np.array([[0.0, wl, bl] for wl, bl in outline])
+			v = np.concatenate([ring, ring + [100.0, 0.0, 0.0]])
+			n = len(ring)
+			f = [(0, i, i + 1) for i in range(1, n - 1)] + [(n, n + i + 1, n + i) for i in range(1, n - 1)]
+			f += [(i, (i + 1) % n, n + (i + 1) % n) for i in range(n)] + [(i, n + (i + 1) % n, n + i) for i in range(n)]
+			return v[np.array(f)]
+		lean = np.array([math.cos(math.radians(20)), math.sin(math.radians(20))])
+		inner, outer = np.array([125.0, 35.8]), np.array([123.2, 40.8])
+		deck = lambda bl: 124.8 - 0.55 * (bl - 35.54)
+		fin = prism([inner, outer, outer + 30 * lean, inner + 30 * lean])
+		piece = prism([inner, outer, outer - 1.4 * lean, inner - 0.75 * lean])
+		sloped = prism([(deck(30.0), 30.0), (deck(48.0), 48.0), (90.0, 48.0), (90.0, 30.0)])
+		self.assertLess(check.seated(np.concatenate([fin, piece]), sloped, stations), 0.0)
+		# and the fin alone, its root above that deck, stands off it
+		self.assertGreater(check.seated(fin, sloped, stations), 0.5)
+		# no station cutting the part measures nothing
+		self.assertTrue(np.isnan(check.seated(tris((5.0, 102.0, 38.0), (95.0, 160.0, 42.0)), skin, np.array([200.0]))))
+
 	def test_kink(self):
 		x = np.arange(0.0, 16.0, 0.05)
 		# a bubble's side falling 30 deg onto a top falling 3 deg, meeting at BL 7

@@ -558,6 +558,9 @@ def stabilator(side):
 	joint(f"stabilator_{name}", span, AFT, DOWN, f"stabilator.{name}", IDENTITY)
 
 
+SEAT = (0.5, 12.0, 2.0)   # inches a part mounted on the skin reaches into it, above its foot it is cast down from, and between the points of its foot (fin())
+
+
 def fin(side):
 	name = side_name(side)
 	f = FACTS["fin"]
@@ -576,6 +579,41 @@ def fin(side):
 	spans = (reach[0] * height, reach[1] * height)
 	rudder = surface.fraction(value(f["rudder"]) / 2, spans)
 	node(f"fin_{name}", hinge=root, mesh=surface.panel((0, height), [(spans, rudder, "back")]))
+	# The root's section carried straight down the fin's plane to SEAT[0]
+	# inches inside the built skin, as a fixed part of its own (the fin keeps
+	# its cited root, height and area): the photos show the fin and the
+	# rudder's lower end standing on the fuselage all along the root
+	# (dvids9820808, dvids8842845), while the root is a straight chord at WL
+	# 122.5-125 over a deck that falls away aft, so the background showed
+	# through beneath it, 5.2 in by the rudder (the user's report). Each point
+	# is cast down from SEAT[1] inches above the root, outside the skin
+	# The root's section at every airfoil station and every SEAT[2] inches of
+	# chord between, on the straight edges the fin's own root ring has there,
+	# so the foot follows the deck (with the airfoil's stations alone, 11 in
+	# apart, the foot's straight runs stood up to 0.9 in out of it)
+	xs = sorted({0.0, 1.0} | {x for x in STATIONS if 0 < x < 1})
+	dense = sorted(set(xs) | set(np.linspace(0.0, 1.0, int(math.ceil(root_chord / SEAT[2])) + 1).tolist()))
+
+	def edge(x, face):
+		j = min(max(int(np.searchsorted(xs, x, side="right")) - 1, 0), len(xs) - 2)
+		f = (x - xs[j]) / (xs[j + 1] - xs[j])
+		return surface.point(0, xs[j], face).lerp(surface.point(0, xs[j + 1], face), f)
+
+	ring = [edge(x, 1) for x in dense] + [edge(x, -1) for x in reversed(dense)]
+	skin = built(["fuselage"])
+	foot = []
+	for point in ring:
+		hits = crossings(skin, point + span * (SEAT[1] * INCH), -span)
+		if not hits:
+			raise SystemExit(f"no skin beneath fin_{name}'s root")
+		foot.append(point - span * ((max(hits[0] - SEAT[1], 0.0) + SEAT[0]) * INCH))
+	# closed across its foot face by face from one side of the section to the
+	# other, so the closing faces follow the skin (one face over the whole
+	# foot bridged the deck's curve and stood out of it)
+	vertices, faces = loft([foot, ring])
+	k = len(dense)
+	faces = faces[:-2] + [faces[-1]] + [(i, i + 1, 2 * k - 2 - i, 2 * k - 1 - i) for i in range(k - 1)]
+	node(f"fin_root_{name}", hinge=root, mesh=(vertices, faces))
 	# the antenna pods on the trailing edge below the tip (layout.pods), each
 	# straddling the fin on its plane at its waterline; the upper one's blunt
 	# end is a landmark

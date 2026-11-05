@@ -425,6 +425,38 @@ def turns(h, noise=0.05):
 	return out
 
 
+def seated(part, skin, stations):
+	# How far a thin part standing on the skin (a fin; triangles, source
+	# coordinates) stands off it at its foot, the furthest over the stations:
+	# at each, on each side of the part's own mid-plane (through its middle,
+	# square to its thinnest direction), the section's corners lowest along the
+	# part's span (within a tenth of an inch), each against the skin's top at
+	# its buttline. 0 or less where every foot lies on or in the skin, NaN
+	# where no station cuts the part. Lowest by waterline instead, a face
+	# slanting down into the skin was judged halfway up, and a face meeting
+	# another part (a fin's root on a fairing under it) was judged at the
+	# closing face between them
+	points = part.reshape(-1, 3)
+	centre = points.mean(0)
+	normal = np.linalg.svd(points - centre, full_matrices=False)[2][-1]
+	span = np.cross(normal, [1.0, 0.0, 0.0])
+	span = span / np.linalg.norm(span) * (1.0 if span[1] >= 0 else -1.0)
+	worst = np.nan
+	for station in stations:
+		ends = verify.cut(part, [station, 0.0, 0.0], [1.0, 0.0, 0.0]).reshape(-1, 3)
+		if not len(ends):
+			continue
+		offsets, along = (ends - centre) @ normal, ends @ span
+		for sign in (1.0, -1.0):
+			on = sign * offsets >= 0
+			if not on.any():
+				continue
+			for foot in ends[on & (along <= along[on].min() + 0.1)]:
+				top = heights(skin, np.array([station - 0.01, station, station + 0.01]), np.array([foot[2], foot[2] + 0.01]))[0][1]
+				worst = foot[1] - top if np.isnan(worst) else max(worst, foot[1] - top)
+	return worst
+
+
 def kink(x, z, window=8, inside=(1.0, 15.9)):
 	# A top outline's corner (heights z at buttlines x, evenly spaced): where
 	# its slope over `window` steps either side turns up the most, within the
@@ -1627,6 +1659,14 @@ def checks(jet):
 			corners = np.unique(jet.points([name]), axis=0)
 			yield result("shape.stowed", f"{name}'s corners outside the airframe at rest", 0, (~enclosed(corners, hull)).sum(), 0, "corners")
 		skin = jet.points(["fuselage"]).reshape(-1, 3, 3)
+		# each fin, with its rudder's lower end, stands on the skin all along
+		# its root: no daylight under it (the user saw the background through
+		# a 5.2 in gap there)
+		place, chord = F["layout"]["fin"]["root"], value(F["fin"]["root"])
+		for side in ("left", "right"):
+			part = jet.points([f"fin_{side}", f"rudder_{side}", f"fin_root_{side}"]).reshape(-1, 3, 3)
+			gap = seated(part, skin, np.arange(place["station"] + 1.0, place["station"] + chord - 1.0, 2.0))
+			yield result("shape.seated", f"fin_{side}'s root standing off the skin beneath it, its furthest", 0.0, float(np.maximum(gap, 0.0)), 0.05)
 		for name, below in FLUSH:
 			s = standoff(jet.points([name]).reshape(-1, 3, 3), skin, below)
 			yield result("shape.flush", f"{name}'s outer face off the skin, its furthest from 0.15 in", 0.15, s[np.argmax(np.abs(s - 0.15))] if len(s) else np.inf, 0.15)
