@@ -101,6 +101,10 @@ def material(name):
 
 NODES, HINGES, JOINTS = {}, {}, {}
 STEP = 1.5   # metres between the hull's sections
+# A part stowed flush in the deck (a barricade stanchion, a console, a sunk
+# sheave) sits this far under the deck's top, which hides it: level with it,
+# the two surfaces fought for the same pixels and tore
+STOWED = 0.02
 # The features file's points and curves, each with the node it rides on: name
 # to (point, node) and name to ([points], node)
 MARKS, CURVES = {}, {}
@@ -395,23 +399,23 @@ def catapults():
 
 
 def consoles():
-	# The catapults' control consoles, stowed flush in the deck and rising out
-	# of it while the catapults are manned
+	# The catapults' control consoles, stowed in the deck just under its top
+	# (STOWED) and rising out of it while the catapults are manned
 	fittings = LAYOUT["fittings"]
 	top = LAYOUT["deck"]["height"]
 	for c in LAYOUT.get("consoles", []):
 		k = fittings["console"]
-		centre = at(c["centre"][0], top - k["height"], c["centre"][1])
+		centre = at(c["centre"][0], top - k["height"] - STOWED, c["centre"][1])
 		name = f"catapult_console_{c['name']}"
 		node(name, hinge=centre, mesh=box(centre, FORWARD, STARBOARD, k["length"], k["width"], k["height"]))
-		joint(name, UP, Vector(), UP, "raised while the catapults are manned", [[0, 0], [1, k["height"]]], motion="slide")
+		joint(name, UP, Vector(), UP, "raised while the catapults are manned", [[0, 0], [1, round(k["height"] + STOWED, 4)]], motion="slide")
 
 
 def arresting():
 	# The arresting gear's deck fittings: each pendant's round sheaves, raised
-	# while it is rigged and sinking flush when it is not; the leaf-spring
+	# while it is rigged and sinking under the deck when it is not; the leaf-spring
 	# supports under it, which a wheel or the hook presses flat; and the
-	# barricade's stanchions, lying flush in their trays and rising about
+	# barricade's stanchions, lying in their trays under the deck and rising about
 	# their heads. The pendants themselves are the engine's, drawn between
 	# their ends (decision 25).
 	landing = LAYOUT.get("landing", {})
@@ -420,27 +424,32 @@ def arresting():
 	(ax, az), (fx, fz) = landing.get("line", [[0, 0], [1, 0]])
 	along = (at(fx, top, fz) - at(ax, top, az)).normalized()
 	across = UP.cross(along).normalized()
+	# the sheaves in their own white where the facts give it
+	paint = "grey"
+	if "colour" in fittings.get("sheave", {}):
+		COLOURS["sheave"] = tuple(linear(c) for c in fittings["sheave"]["colour"]) + (1,)
+		paint = "sheave"
 	for sheave in landing.get("sheaves", []):
 		k = fittings["sheave"]
 		base = plan(sheave["centre"])
 		name = sheave["name"].replace("_port", "_sheave_port").replace("_starboard", "_sheave_starboard")
-		node(name, hinge=base + UP * k["height"], mesh=merge([primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=True,
+		node(name, hinge=base + UP * k["height"], paint=paint, mesh=primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=True,
 			segments=16, radius1=k["diameter"] / 2, radius2=k["diameter"] / 2, depth=k["height"],
-			matrix=Matrix.Translation(base + UP * (k["height"] / 2))))]))
-		joint(name, DOWN, Vector(), DOWN, "its wire's: sunk flush while the wire is not rigged", [[0, 0], [1, k["height"]]], motion="slide")
+			matrix=Matrix.Translation(base + UP * (k["height"] / 2)))))
+		joint(name, DOWN, Vector(), DOWN, "its wire's: sunk under the deck while the wire is not rigged", [[0, 0], [1, round(k["height"] + STOWED, 4)]], motion="slide")
 	for support in landing.get("supports", []):
 		k = fittings["support"]
 		base = plan(support["centre"])
 		name = f"wire_{support['wire']}_support_{support['number']}"
 		node(name, hinge=base + UP * k["height"], mesh=box(base, along, across, k["length"], k["width"], k["height"]))
-		joint(name, DOWN, Vector(), DOWN, "pressed flat by a wheel or the hook; nothing drives it yet", [[0, 0], [1, k["height"]]], motion="slide")
+		joint(name, DOWN, Vector(), DOWN, "pressed flat by a wheel or the hook; nothing drives it yet", [[0, 0], [1, round(k["height"] + STOWED, 4)]], motion="slide")
 	for stanchion in landing.get("barricade", {}).get("stanchions", []):
 		k = fittings["stanchion"]
 		hinge, tip = plan(stanchion["hinge"]), plan(stanchion["tip"])
 		run = tip - hinge
 		name = f"barricade_{stanchion['side']}"
-		# flush: its top is the deck's
-		node(name, hinge=hinge, mesh=box(hinge + run / 2 + DOWN * k["thickness"], run, UP.cross(run), run.length, k["width"], k["thickness"]))
+		# stowed: its top just under the deck's
+		node(name, hinge=hinge, mesh=box(hinge + run / 2 + DOWN * (k["thickness"] + STOWED), run, UP.cross(run), run.length, k["width"], k["thickness"]))
 		joint(name, UP.cross(run), run, UP, "none yet: rigged for a barricade arrestment", [[0, 0], [1, round(math.pi / 2, 4)]])
 
 
@@ -1732,7 +1741,9 @@ def weathered(facts, out):
 			tree.nodes.active = target_node
 			return m
 
-		normals = baked(objs, "NORMAL", size, bumped, float_buffer=False, samples=4)
+		# a flat group (layout.weathering.groups[].flat) wears its colour alone,
+		# no normal map
+		normals = None if group.get("flat") else baked(objs, "NORMAL", size, bumped, float_buffer=False, samples=4)
 		for o in objs:
 			layer = o.data.uv_layers["atlas"]
 			uv = np.empty(len(layer.data) * 2, np.float32)
@@ -1742,10 +1753,6 @@ def weathered(facts, out):
 			layer.data.foreach_set("uv", uv)
 		bpy.data.images.remove(height)
 		height_png.unlink()
-		normal_image = bpy.data.images.new(f"{group['material']}_normal", size, size, alpha=False)
-		normal_image.colorspace_settings.name = "Non-Color"
-		normal_image.pixels.foreach_set(np.ascontiguousarray(normals[::-1]).ravel())
-		normal_image.pack()
 		colour = bpy.data.images.load(str(colour_png))
 		colour.name = group["material"]
 		colour.pack()
@@ -1758,6 +1765,12 @@ def weathered(facts, out):
 		mapped.uv_map = "atlas"
 		tree.links.new(mapped.outputs["UV"], base.inputs["Vector"])
 		tree.links.new(base.outputs["Color"], bsdf.inputs["Base Color"])
+		if normals is None:
+			continue
+		normal_image = bpy.data.images.new(f"{group['material']}_normal", size, size, alpha=False)
+		normal_image.colorspace_settings.name = "Non-Color"
+		normal_image.pixels.foreach_set(np.ascontiguousarray(normals[::-1]).ravel())
+		normal_image.pack()
 		bumpy = tree.nodes.new("ShaderNodeTexImage")
 		bumpy.image = normal_image
 		tree.links.new(mapped.outputs["UV"], bumpy.inputs["Vector"])

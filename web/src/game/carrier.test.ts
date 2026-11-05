@@ -307,9 +307,11 @@ describe("the carrier's ship file", () => {
         )
       )
     )
-    // the deck's paint, the lettering, the nets, and the three weathered
-    // groups (the island, the hull, the island's radomes) with their normal maps
+    // the deck's paint, the lettering, the nets, the three weathered
+    // groups (the island, the hull, the island's radomes) with their normal
+    // maps, and the boot top's colour alone
     expect(Object.keys(images).sort()).toEqual([
+      'boot',
       'deck',
       'domes',
       'hull',
@@ -320,7 +322,14 @@ describe("the carrier's ship file", () => {
     const head = (src: { bytes: Uint8Array }) =>
       Array.from(src.bytes.slice(0, 8))
     const ktx2 = [0xab, 0x4b, 0x54, 0x58, 0x20, 0x32, 0x30, 0xbb] // «KTX 20»
-    for (const name of ['deck', 'lettering', 'domes', 'hull', 'island']) {
+    for (const name of [
+      'deck',
+      'lettering',
+      'domes',
+      'hull',
+      'island',
+      'boot',
+    ]) {
       expect(images[name].base.mime, name).toBe('image/ktx2')
       expect(head(images[name].base), name).toEqual(ktx2)
     }
@@ -328,6 +337,7 @@ describe("the carrier's ship file", () => {
       expect(images[name].normal.mime, name).toBe('image/ktx2')
       expect(head(images[name].normal), name).toEqual(ktx2)
     }
+    expect(images.boot.normal).toBeNull()
     expect(head(images.net.base)).toEqual([137, 80, 78, 71, 13, 10, 26, 10])
     expect(images.net.base.bytes[25]).toBe(6) // the nets' holes: an image with alpha (IHDR colour type RGBA)
     expect(images.deck.base.bytes.length).not.toBe(

@@ -18,11 +18,11 @@ DECK = 18.27
 SIZE = 120
 
 
-def wall(ao=None):
-	# The maps of a wall at z 10, x 0-6, y DECK to DECK + 6, top row first
+def wall(ao=None, base=DECK):
+	# The maps of a wall at z 10, x 0-6, y base to base + 6, top row first
 	rows, columns = np.mgrid[0:SIZE, 0:SIZE]
 	x = columns / SIZE * 6.0
-	y = DECK + 6.0 - rows / SIZE * 6.0
+	y = base + 6.0 - rows / SIZE * 6.0
 	position = np.stack([x, y, np.full_like(x, 10.0)], -1).astype(np.float32)
 	normal = np.broadcast_to(np.array([0.0, 0.0, 1.0], np.float32), position.shape).copy()
 	return {"position": position, "normal": normal, "ao": np.ones((SIZE, SIZE), np.float32) if ao is None else ao,
@@ -219,6 +219,184 @@ class WeatherTest(unittest.TestCase):
 		self.assertTrue(0.02 < (ratio < 0.8).mean() < 0.2)   # the patches, about their share
 		self.assertGreater(np.std(hb[left]), np.std(ha[left]) * 1.5)   # the grain
 		self.assertTrue(np.allclose(a[right], b[right]) and np.allclose(ha[right], hb[right]))
+
+	def test_wear_by_zone(self):
+		# the group's level where no zone says, each zone over the earlier, a
+		# box's edges blended over its `soft`, a facing taking only its faces
+		group = dict(GROUP, level=0.3, zones=[{"level": 1.0, "box": [[0, 0, 0], [10, 10, 10]], "soft": 2.0},
+			{"level": 0.0, "box": [[-50, -50, -50], [50, 50, 50]], "facing": "up"},
+			{"level": 0.8, "box": [[-50, -50, -50], [50, 50, 50]], "facing": "under"}])
+		p = np.array([[5, 5, 5], [30, 5, 5], [10, 5, 5], [5, 5, 5], [5, 5, 5], [20, 5, 5], [20, 5, 5]], float)
+		n = np.array([[0, 0, 1], [0, 0, 1], [0, 0, 1], [0, 1, 0], [0, -1, 0], [0, 0.6, 0.8], [0, -0.6, 0.8]], float)
+		level = weather.wear_level(p, n, group)
+		self.assertAlmostEqual(level[0], 1.0)    # deep in the box
+		self.assertAlmostEqual(level[1], 0.3)    # outside it
+		self.assertAlmostEqual(level[2], 0.65)   # on its face, halfway
+		self.assertAlmostEqual(level[3], 0.0)    # facing up, the later zone over the box's
+		self.assertAlmostEqual(level[4], 0.8)    # facing down
+		self.assertAlmostEqual(level[5], 0.3)    # sloping up or down, neither
+		self.assertAlmostEqual(level[6], 0.3)
+
+	def spread(self, colour, scale):
+		# the log luminance's spread against its own mean over `scale` metres
+		lum = np.log(colour @ [0.2126, 0.7152, 0.0722])
+		r = max(1, int(scale / 0.05 / 2))
+		mean = lum.copy()
+		for axis in (0, 1):
+			pad = [(0, 0), (0, 0)]
+			pad[axis] = (r + 1, r)
+			c = np.cumsum(np.pad(mean, pad, mode="edge"), axis=axis)
+			mean = (np.take(c, np.arange(2 * r + 1, c.shape[axis]), axis=axis) - np.take(c, np.arange(0, c.shape[axis] - 2 * r - 1), axis=axis)) / (2 * r + 1)
+		return float((lum - mean).std())
+
+	def worn(self, wear, level, maps=None, **extra):
+		colour, _ = weather.weather(maps or wall(), dict(GROUP, touchups=0.0, level=level, wear=wear, **extra), facts())
+		return colour
+
+	def test_the_worn_wall_blotchier(self):
+		# the paint's tone wanders the more the more worn, nothing at no wear,
+		# its blotches longer up the wall than across it
+		wear = {"blotches": [[1.0, 0.05, 2.0], [0.35, 0.03, 3.0]]}
+		plain, _ = weather.weather(wall(), dict(GROUP, touchups=0.0), facts())
+		clean, half, full = (self.worn(wear, level) for level in (0.0, 0.5, 1.0))
+		np.testing.assert_allclose(clean, plain)
+		# the spread the wear adds (the plates' own adds to it in quadrature),
+		# growing with the level squared
+		s0, s5, s1 = (self.spread(c, 1.0) for c in (clean, half, full))
+		ratio = (s1 ** 2 - s0 ** 2) / (s5 ** 2 - s0 ** 2)
+		self.assertGreater(s5, s0 * 1.2)
+		self.assertGreater(ratio, 2.5)
+		self.assertLess(ratio, 6.0)
+		shade = np.log(full[..., 1] / plain[..., 1])
+		up = np.abs(shade[5:] - shade[:-5]).mean()
+		across = np.abs(shade[:, 5:] - shade[:, :-5]).mean()
+		self.assertLess(up, across * 0.8)
+
+	def test_grime_patches_darker_and_browner(self):
+		wear = {"patches": {"scale": 0.8, "share": 0.15, "tint": [0.7, 0.68, 0.6], "stretch": 3.0}}
+		plain, worn = self.worn(wear, 0.0), self.worn(wear, 1.0)
+		ratio = worn / plain
+		# long up and down the wall
+		shade = np.log(ratio[..., 1])
+		self.assertLess(np.abs(shade[5:] - shade[:-5]).mean(), np.abs(shade[:, 5:] - shade[:, :-5]).mean() * 0.7)
+		patched = ratio[..., 1] < 0.97
+		self.assertGreater(patched.mean(), 0.02)
+		self.assertLess(patched.mean(), 0.4)
+		self.assertLess(ratio[..., 2][patched].mean(), ratio[..., 0][patched].mean())   # browner
+		self.assertGreater(ratio[..., 1][patched].min(), 0.67)   # no darker than the tint
+		np.testing.assert_allclose(self.worn(wear, 0.0), weather.weather(wall(), dict(GROUP, touchups=0.0), facts())[0])
+
+	def test_weeps_run_down_the_walls(self):
+		spec = {"spacing": 0.6, "height": 2.0, "share": 0.5, "length": [1.0, 3.0], "width": [0.08, 0.15], "rust": 0.5}
+		maps = wall()
+		p, n = maps["position"].reshape(-1, 3).astype(float), maps["normal"].reshape(-1, 3).astype(float)
+		rust, dirt = weather.weeps(p, n, np.ones(len(p)), spec, 7)
+		total = np.maximum(rust, dirt).reshape(SIZE, SIZE)
+		self.assertGreater((total > 0.05).mean(), 0.02)
+		self.assertLess((total > 0.05).mean(), 0.5)
+		self.assertGreater(rust.max(), 0.3)   # some rust,
+		self.assertGreater(dirt.max(), 0.3)   # some dirty water,
+		self.assertLessEqual(total.max(), 1.0)   # none above its top, where it would be stronger than at it
+		# long up and down, narrow across
+		self.assertLess(np.abs(total[2:] - total[:-2]).mean(), np.abs(total[:, 2:] - total[:, :-2]).mean() * 0.5)
+		# none where nothing is worn, nor on a level face
+		self.assertEqual(max(a.max() for a in weather.weeps(p, n, np.zeros(len(p)), spec, 7)), 0.0)
+		level = np.tile([0.0, 1.0, 0.0], (len(p), 1))
+		self.assertEqual(max(a.max() for a in weather.weeps(p, level, np.ones(len(p)), spec, 7)), 0.0)
+		# and as many as the wear says
+		some = np.maximum(*weather.weeps(p, n, np.full(len(p), 0.3), spec, 7))
+		self.assertLess((some > 0.05).mean(), (total > 0.05).mean() * 0.6)
+
+	def test_weeps_on_the_worn_wall(self):
+		# the wall's own weeps, darker and some rust-red, none unworn
+		wear = {"weeps": {"spacing": 0.6, "height": 2.0, "share": 0.5, "length": [1.0, 3.0], "width": [0.08, 0.15], "rust": 0.5}}
+		plain, worn = self.worn(wear, 0.0), self.worn(wear, 1.0)
+		ratio = worn / plain
+		self.assertGreater((ratio[..., 1] < 0.95).mean(), 0.01)
+		self.assertGreater((ratio[..., 0] / ratio[..., 2]).max(), 1.2)   # rust
+		np.testing.assert_allclose(plain, weather.weather(wall(), dict(GROUP, touchups=0.0), facts())[0])
+
+	def test_scum_line_above_the_boot_top(self):
+		# a band above the boot top (1 m) darker and greener, none below it or
+		# well above
+		wear = {"scum": {"height": 0.8, "tint": [0.8, 0.85, 0.7]}}
+		maps = wall(base=0.0)
+		plain, worn = self.worn(wear, 0.0, wall(base=0.0)), self.worn(wear, 1.0, maps)
+		ratio = worn / plain
+		row = lambda y: int(round((6.0 - y) / 6.0 * SIZE))
+		self.assertLess(ratio[row(1.1), :, 1].mean(), 0.9)
+		self.assertGreater(ratio[row(1.1), :, 1].mean(), ratio[row(1.1), :, 0].mean())   # greener
+		self.assertAlmostEqual(float(ratio[row(2.5)].mean()), 1.0, places=6)
+		self.assertAlmostEqual(float(ratio[row(0.5)].mean()), 1.0, places=6)
+
+	def test_scuffs_through_dark_paint(self):
+		# dark paint scuffed lighter in long marks fore and aft, none unworn
+		wear = {"scuffs": {"scale": 0.6, "share": 0.1, "lift": [0.05, 0.05, 0.05]}}
+		plain, worn = (self.worn(wear, level, grey=[0.02, 0.02, 0.02]) for level in (0.0, 1.0))
+		lift = (worn - plain)[..., 1]
+		scuffed = lift > 0.005
+		self.assertGreater(scuffed.mean(), 0.02)
+		self.assertLess(scuffed.mean(), 0.3)
+		self.assertLessEqual(lift.max(), 0.05 + 1e-6)
+		self.assertLess(np.abs(lift[:, 3:] - lift[:, :-3]).mean(), np.abs(lift[3:] - lift[:-3]).mean() * 0.7)
+		np.testing.assert_allclose(plain, weather.weather(wall(), dict(GROUP, touchups=0.0, grey=[0.02, 0.02, 0.02]), facts())[0])
+
+	def test_the_ship_wears_as_photographed(self):
+		# the facts' wear on flat walls in each zone, by the photos' own measure
+		# (references/research/weather/scripts/measure.py: the log luminance
+		# against its gaussian mean over 2 m and 0.5 m, robust): the hull's
+		# lower walls at the low end of the 2022-2025 broadsides' 5.4-7.3% and
+		# 2.2-3.8%, every other zone cleaner, the island's top and the mast the
+		# cleanest
+		import json
+		real = json.loads((Path(weather.HERE) / "facts.json").read_text())
+		groups = {g["material"]: g for g in real["layout"]["weathering"]["groups"]}
+
+		def measured(material, x0, x1, y0, y1, z, scale):
+			step = 0.05
+			X, Y = np.meshgrid(np.arange(x0, x1, step), np.arange(y1, y0, -step))
+			p = np.stack([X.ravel(), Y.ravel(), np.full(X.size, z)], 1)
+			n = np.tile([0.0, 0.0, np.sign(z)], (len(p), 1))
+			colour, _ = weather.texels(p, n, np.ones(len(p)), step, groups[material], real, [])
+			lum = np.log(colour @ [0.2126, 0.7152, 0.0722]).reshape(X.shape)
+			sigma = scale / step / 2
+			r = int(3 * sigma)
+			k = np.exp(-0.5 * (np.arange(-r, r + 1) / sigma) ** 2)
+			k /= k.sum()
+			mean = lum
+			for axis in (0, 1):
+				pad = [(0, 0), (0, 0)]
+				pad[axis] = (r, r)
+				b = np.pad(mean, pad, mode="reflect")
+				mean = sum(k[j] * np.take(b, np.arange(j, j + mean.shape[axis]), axis=axis) for j in range(len(k)))
+			res = (lum - mean).ravel()
+			return 1.4826 * np.median(np.abs(res - np.median(res)))
+		low = measured("hull", -30, 0, 1.5, 5.5, -20, 2.0)
+		self.assertGreater(low, 0.050)
+		self.assertLess(low, 0.073)
+		fine = measured("hull", -30, 0, 1.5, 5.5, -20, 0.5)
+		self.assertGreater(fine, 0.018)
+		self.assertLess(fine, 0.038)
+		flare = measured("hull", -30, 0, 9, 14, -20, 2.0)
+		base = measured("island", -90, -82, 19.5, 23, 30, 2.0)
+		middle = measured("island", -90, -82, 27, 33, 30, 2.0)
+		top = measured("island", -90, -82, 36, 40, 30, 2.0)
+		mast = measured("island", -92, -88, 42, 46, 30, 2.0)
+		self.assertLess(flare, low * 0.6)
+		self.assertLess(base, low)
+		self.assertLess(middle, base)
+		self.assertLess(top, middle)
+		self.assertLess(top, 0.02)
+		self.assertLess(mast, top * 1.05)
+
+	def test_lots_a_seed_apart_unrelated(self):
+		# the hash's values for keys one step apart in any place, the seed last
+		# above all, uncorrelated
+		k = np.arange(20000)
+		for a, b in ((weather.hashed(k, 3, 90), weather.hashed(k, 3, 96)), (weather.hashed(k, 7), weather.hashed(k, 8)),
+				(weather.hashed(k, 1, 2), weather.hashed(k + 1, 1, 2))):
+			self.assertLess(abs(np.corrcoef(a, b)[0, 1]), 0.03)
+			self.assertLess(abs(a.mean() - 0.5), 0.01)
 
 	def test_texels_outside_the_atlas_are_the_grey(self):
 		maps = wall()

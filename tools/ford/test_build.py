@@ -43,7 +43,7 @@ LAYOUT = {
 	"fittings": {"shuttle": {"length": 1.2, "width": 0.4, "height": 0.25, "top": 0.5},
 		"deflector": {"thickness": 0.3, "angle": 50},
 		"console": {"length": 3, "width": 2, "height": 1.5},
-		"sheave": {"diameter": 1.0, "height": 0.16},
+		"sheave": {"diameter": 1.0, "height": 0.16, "colour": [242, 242, 236]},
 		"support": {"length": 1.45, "pad": 0.28, "width": 0.1, "height": 0.08},
 		"stanchion": {"width": 1.0, "head": 1.8, "thickness": 0.15},
 		"antenna": {"radius": 0.06}},
@@ -164,7 +164,11 @@ LAYOUT = {
 			# the radomes their own group, from their paint
 			{"material": "domes", "from": "radome", "meshes": ["island"], "size": 128, "grey": [0.7, 0.7, 0.68], "walk": False,
 				"plates": {"height": 1.0, "width": 1000.0}, "frames": 1000.0, "streaks": {"length": [0.3, 1.0], "share": 1.0, "rust": 0.0}},
-			{"material": "hull", "meshes": ["hull", "sponsons"], "size": 128, "plates": {"height": 2.4, "width": 9.0}, "frames": 0.75}]},
+			{"material": "hull", "meshes": ["hull", "sponsons"], "size": 128, "plates": {"height": 2.4, "width": 9.0}, "frames": 0.75},
+			# the boot top its own atlas, colour only
+			{"material": "boot", "from": "boot", "meshes": ["hull"], "size": 64, "flat": True, "walk": False, "grey": [0.02, 0.02, 0.02],
+				"plates": {"height": 2.4, "width": 9.0}, "frames": 0.75, "level": 1.0,
+				"wear": {"scuffs": {"scale": 0.5, "share": 0.15, "lift": [0.1, 0.1, 0.1]}}}]},
 }
 
 
@@ -254,8 +258,8 @@ class BuildTest(unittest.TestCase):
 		elevator = self.posed(elevator_1=8)["elevator_1"].reshape(-1, 3)
 		self.assertAlmostEqual(elevator[:, 1].max(), 11.0, places=3)
 		console = self.model.parts()["catapult_console_bow"].reshape(-1, 3)
-		self.assertAlmostEqual(console[:, 1].max(), 19.0, places=3)   # stowed flush
-		raised = self.posed(catapult_console_bow=1.5)["catapult_console_bow"].reshape(-1, 3)
+		self.assertAlmostEqual(console[:, 1].max(), 19.0 - 0.02, places=3)   # stowed just under the deck, which hides it
+		raised = self.posed(catapult_console_bow=self.ship["joints"]["catapult_console_bow"]["keys"][-1][1])["catapult_console_bow"].reshape(-1, 3)
 		self.assertAlmostEqual(raised[:, 1].max(), 20.5, places=3)
 		self.assertAlmostEqual(raised[:, 1].min(), 19.0, places=3)
 
@@ -267,15 +271,21 @@ class BuildTest(unittest.TestCase):
 			level = shuttle[np.abs(shuttle[:, 1] - height) < 1e-4][:, [0, 2]]
 			self.assertAlmostEqual(np.ptp(level @ across), width, places=3)
 
-	def test_sheaves_sink_flush_and_supports_press_flat(self):
+	def test_sheaves_sink_and_supports_press_under_the_deck(self):
+		# each sunk or pressed just under the deck, which hides it
 		for name, proud in (("wire_1_sheave_port", 0.16), ("wire_1_sheave_starboard", 0.16), ("wire_1_support_1", 0.08)):
 			rest = self.model.parts()[name].reshape(-1, 3)
 			self.assertAlmostEqual(rest[:, 1].max(), 19.0 + proud, places=3, msg=name)
-			sunk = self.posed(**{name: proud})[name].reshape(-1, 3)
-			self.assertAlmostEqual(sunk[:, 1].max(), 19.0, places=3, msg=name)
+			travel = self.ship["joints"][name]["keys"][-1][1]   # its joint's whole travel
+			sunk = self.posed(**{name: travel})[name].reshape(-1, 3)
+			self.assertAlmostEqual(sunk[:, 1].max(), 19.0 - 0.02, places=3, msg=name)
 		sheave = self.model.parts()["wire_1_sheave_port"].reshape(-1, 3)
 		np.testing.assert_allclose(sheave[:, [0, 2]].mean(0), [-62, -16.5], atol=0.05)
 		self.assertAlmostEqual(np.ptp(sheave[:, 0]), 1.0, places=2)
+		# in their own white, the support in the grey
+		self.assertTrue(self.model.parts(materials=["sheave"])["wire_1_sheave_starboard"].size)
+		self.assertFalse(self.model.parts(materials=["grey"]).get("wire_1_sheave_port", np.zeros(0)).size)
+		self.assertTrue(self.model.parts(materials=["grey"])["wire_1_support_1"].size)
 		# the support lies along the landing line
 		support = self.model.parts()["wire_1_support_1"].reshape(-1, 3)[:, [0, 2]]
 		line = np.array([100, -10]) / np.hypot(100, 10)
@@ -283,7 +293,7 @@ class BuildTest(unittest.TestCase):
 
 	def test_barricade_stanchion_rises_about_its_head(self):
 		rest = self.model.parts()["barricade_port"].reshape(-1, 3)
-		self.assertAlmostEqual(rest[:, 1].max(), 19.0, places=3)   # flush in its tray
+		self.assertAlmostEqual(rest[:, 1].max(), 19.0 - 0.02, places=3)   # in its tray, just under the deck, which hides it
 		raised = self.posed(barricade_port=np.pi / 2)["barricade_port"].reshape(-1, 3)
 		length = np.hypot(8, 1)
 		self.assertAlmostEqual(raised[:, 1].max(), 19.0 + length, places=2)
@@ -426,7 +436,7 @@ class BuildTest(unittest.TestCase):
 		start = 20 + length + 8 + view.get("byteOffset", 0)
 		png = raw[start : start + view["byteLength"]]
 		self.assertEqual((int.from_bytes(png[16:20], "big"), int.from_bytes(png[20:24], "big")), (64, 32))
-		self.assertEqual(len(gltf["images"]), 9)   # the deck's, the lettering's, the nets', and the island's, hull's and radomes' colour and normal maps
+		self.assertEqual(len(gltf["images"]), 10)   # the deck's, the lettering's, the nets', the island's, hull's and radomes' colour and normal maps, and the boot top's colour
 		# the lettering cut out: clear but for its text, so a plate shows the face behind it
 		self.assertEqual(lettering.get("alphaMode"), "MASK")
 		self.assertEqual(png[25], 6)   # colour type RGBA
@@ -470,6 +480,15 @@ class BuildTest(unittest.TestCase):
 				worn = [pr for pr in mesh["primitives"] if materials[pr["material"]] == group]
 				self.assertTrue(worn and all("TEXCOORD_0" in pr["attributes"] for pr in worn), name)
 				self.assertFalse([pr for pr in mesh["primitives"] if materials[pr["material"]] == source], name)
+		# the boot top's atlas a colour map alone at its size, scuffed, its faces
+		# still the boot's paint below the boot top
+		m = gltf["materials"][materials.index("boot")]
+		self.assertNotIn("normalTexture", m)
+		colour = picture(m["pbrMetallicRoughness"]["baseColorTexture"]["index"])
+		self.assertEqual(colour.shape[:2], (64, 64))
+		self.assertGreater(colour[..., :3].std(), 2.0)
+		boot = self.model.parts(materials=["boot"])["hull"].reshape(-1, 3)
+		self.assertLessEqual(boot[:, 1].max(), 1.0 + 1e-3)
 		# the island's radomes weathered in their own group, their plinths in
 		# the island's; the Phalanx's radome left in the plain paint
 		domes = self.model.parts(materials=["domes"])["island"].reshape(-1, 3)

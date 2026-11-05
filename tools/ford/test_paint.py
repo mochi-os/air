@@ -140,6 +140,7 @@ class Paint(unittest.TestCase):
 	def test_spots_on_the_deck_and_out_of_the_clear_area(self):
 		clear = [[-10, -5], [0, -5], [0, 5], [-10, 5]]
 		worn = {**LAYOUT, "deck": {**LAYOUT["deck"], "outline": [[-10, -5], [10, -5], [10, 0], [-10, 0]]},
+			"elevators": [{"outline": [[6, 0], [10, 0], [10, 5], [6, 5]]}],
 			"markings": [{"name": "landing", "kind": "area", "outline": clear, "colour": GREY}],
 			"wear": {"seed": 4, "spots": {"count": 40, "size": [0.5, 0.8], "darkening": [0.3, 0.4], "clear": "landing"}}}
 		lin = paint.linear(np.asarray(paint.render(worn), np.float32))[..., 1]
@@ -147,11 +148,13 @@ class Paint(unittest.TestCase):
 		rows, cols = np.nonzero(dark)
 		self.assertTrue(len(rows))
 		# none centred in the clear area, aft of x 0, nor off the deck, to
-		# starboard of z 0 (each reaching its radius, 0.4 m, and its blur past)
+		# starboard of z 0, but on the elevator there (each reaching its
+		# radius, 0.4 m, and its blur past)
 		self.assertGreaterEqual(cols.min(), 100 - 6)
-		self.assertLessEqual(rows.max(), 50 + 6)
+		off = dark[50 + 6 :, : 160 - 6]
+		self.assertFalse(off.any())
+		self.assertTrue(dark[50 + 6 :, 160 + 6 :].any())
 		self.assertGreater(cols.mean(), 120)
-		self.assertLess(rows.mean(), 40)
 
 	def test_tyres_meet_the_measured_band(self):
 		# the facts' generator against the band measured in the photo: the
@@ -251,6 +254,95 @@ class Paint(unittest.TestCase):
 		self.assertGreater(width(55), 8.0)
 		self.assertLess(width(100), width(55) * 0.6)
 		self.assertLess(width(15), 0.5)
+
+	def lin_green(self, layout):
+		return paint.linear(np.asarray(paint.render(layout), np.float32))[..., 1] / paint.linear(np.array(GREY, np.float32))[1]
+
+	def at_lin(self, lin, x, z):
+		return lin[int((z + 5) / 10 * 100), int((x + 10) / 20 * 200)]
+
+	def test_tiedowns_on_their_lattice(self):
+		# a dark dot at each of the lattice's points, the odd rows half a step on,
+		# none between them, none in a clear area nor off the deck
+		ties = {"origin": [0.0, 0.0], "along": 2.0, "across": 1.0, "diameter": 0.3, "darkening": 0.5, "clear_suffixes": ["_panel"]}
+		layout = {**LAYOUT, "deck": {**LAYOUT["deck"], "outline": [[-10, -5], [10, -5], [10, 3.5], [-10, 3.5]]},
+			"elevators": [{"outline": [[-10, 3.5], [0, 3.5], [0, 5], [-10, 5]]}],
+			"markings": [{"name": "jbd_panel", "kind": "area", "outline": [[4.5, -4], [8.5, -4], [8.5, 4], [4.5, 4]], "colour": GREY}],
+			"wear": {"tiedowns": ties}}
+		lin = self.lin_green(layout)
+		self.assertLess(self.at_lin(lin, 0.0, 0.0), 0.7)      # a row's fitting
+		self.assertLess(self.at_lin(lin, -1.0, 1.0), 0.7)     # the next row's, half a step on
+		self.assertGreater(self.at_lin(lin, -1.0, 0.0), 0.98)  # between them
+		self.assertGreater(self.at_lin(lin, 0.0, 1.0), 0.98)
+		self.assertGreater(lin[int(1 / 10 * 100) :, int(14.6 / 20 * 200) : int(18.4 / 20 * 200)].min(), 0.98)   # none on the panel
+		self.assertGreater(lin[int(8.7 / 10 * 100) :, int(10.5 / 20 * 200) :].min(), 0.98)   # none off the deck, past z 3.5
+		self.assertLess(self.at_lin(lin, -4.0, 4.0), 0.7)     # on the elevator
+
+	def test_scorch_forward_of_the_hinge(self):
+		# darkest just forward of the hinge on the track's line, none aft of it,
+		# fading forward and to the sides
+		layout = {**LAYOUT, "markings": [], "catapults": [{"track": [[0.0, 0.0], [9.0, 0.0]], "battery": [0.5, 0.0], "deflector": {"hinge": [[-3.0, -2.0], [-3.0, 2.0]]}}],
+			"wear": {"deflectors": {"along": 0.25, "across": 0.5, "spread": [1.0, 1.0], "panels": {}, "forward": {"darkening": 0.5, "spread": [1.0, 1.5]}}}}
+		lin = self.lin_green(layout)
+		self.assertLess(self.at_lin(lin, -2.9, 0.0), 0.6)
+		self.assertGreater(self.at_lin(lin, -3.3, 0.0), 0.99)       # aft of the hinge
+		self.assertGreater(self.at_lin(lin, 0.5, 0.0), 0.97)        # 3.5 m forward
+		self.assertGreater(self.at_lin(lin, -2.9, 3.0), self.at_lin(lin, -2.9, 0.0) + 0.2)
+
+	def test_taxi_tracks_onto_the_catapult_and_the_elevator(self):
+		# the catapult's arcs from aft and to either side, arriving along its
+		# track; the elevator's from inboard onto its platform
+		layout = {**LAYOUT, "markings": [], "catapults": [{"track": [[0.0, 0.0], [9.0, 0.0]], "battery": [0.0, 0.0], "deflector": {"hinge": [[-3.0, -2.0], [-3.0, 2.0]]}}],
+			"elevators": [{"outline": [[2.0, 3.0], [6.0, 3.0], [6.0, 5.0], [2.0, 5.0]]}]}
+		taxi = {"seed": 2, "gauge": 1.0, "track": 0.2, "catapults": {"count": 20, "aft": [6.0, 8.0], "offset": [1.5, 3.5], "join": [2.0, 3.0], "density": 3.0},
+			"elevators": {"count": 10, "along": [2.0, 3.0], "inboard": [1.0, 2.0], "density": 3.0}}
+		canvas = paint.Canvas(layout["deck"]["texture"], 1)
+		cat = paint.taxi_density(layout, dict(taxi, elevators=None), canvas, (100, 200))
+		lift = paint.taxi_density(layout, dict(taxi, catapults=None), canvas, (100, 200))
+		row = lambda z: int((z + 5) / 10 * 100)
+		col = lambda x: int((x + 10) / 20 * 200)
+		near_track = cat[row(-0.8) : row(0.8), col(-1.5) : col(-0.5)]
+		self.assertGreater(near_track.sum(), 0)                                       # along the track before the battery
+		self.assertGreater(cat[:, col(-8) : col(-6)][np.r_[row(-5) : row(-1.6), row(1.6) : row(5)]].sum(), 0)   # starting off to the sides, aft
+		self.assertEqual(cat[:, col(0.5) :].sum(), 0)                               # none past the battery
+		self.assertGreater(lift[row(3.2) : row(5), col(2) : col(6)].sum(), 0)        # onto the platform
+		self.assertGreater(lift[row(1.0) : row(2.0), :].sum(), 0)                    # from inboard of it
+
+	def test_taxi_tracks_on_the_texture(self):
+		layout = {**LAYOUT, "markings": [], "catapults": [{"track": [[0.0, 0.0], [9.0, 0.0]], "battery": [0.0, 0.0], "deflector": {"hinge": [[-3.0, -2.0], [-3.0, 2.0]]}}]}
+		taxi = {"seed": 2, "gauge": 1.0, "track": 0.2, "catapults": {"count": 20, "aft": [6.0, 8.0], "offset": [1.5, 3.5], "join": [2.0, 3.0], "density": 3.0}}
+		lin = self.lin_green({**layout, "wear": {"taxi": taxi}})
+		self.assertLess(lin[:, : int(10 / 20 * 200)].min(), 0.9)
+		self.assertGreater(lin[:, int(10.5 / 20 * 200) :].min(), 0.999)
+
+	def test_taxi_tracks_fade_onto_the_catapult(self):
+		# their last share faded, where every one runs the same line to the battery
+		layout = {**LAYOUT, "markings": [], "catapults": [{"track": [[0.0, 0.0], [9.0, 0.0]], "battery": [0.0, 0.0], "deflector": {"hinge": [[-3.0, -2.0], [-3.0, 2.0]]}}]}
+		taxi = {"seed": 2, "gauge": 1.0, "track": 0.2, "catapults": {"count": 20, "aft": [6.0, 8.0], "offset": [1.5, 3.5], "join": [2.0, 3.0], "density": 3.0}}
+		canvas = paint.Canvas(layout["deck"]["texture"], 1)
+		end = np.s_[int(4.2 / 10 * 100) : int(5.8 / 10 * 100), int(9.0 / 20 * 200) : int(10.0 / 20 * 200)]   # the last metre before the battery
+		plain = paint.taxi_density(layout, taxi, canvas, (100, 200))[end].sum()
+		faded = paint.taxi_density(layout, {**taxi, "catapults": {**taxi["catapults"], "fade": 0.5}}, canvas, (100, 200))[end].sum()
+		self.assertLess(faded, plain * 0.3)
+
+	def test_taxi_tracks_turn_off_the_landing_area(self):
+		# from the landing line's stretch where aircraft stop, ahead along it
+		# and round to their destination, fading in where they all start
+		layout = {**LAYOUT, "markings": [], "landing": {"line": [[-10.0, -3.0], [10.0, -3.0]]}}
+		turns = {"count": 20, "along": [6.0, 8.0], "lateral": 0.2, "ahead": [2.0, 3.0], "ends": [[[4.0, 2.0], [6.0, 4.0]]], "density": 3.0}
+		taxi = {"seed": 2, "gauge": 1.0, "track": 0.2, "turns": turns}
+		canvas = paint.Canvas(layout["deck"]["texture"], 1)
+		grid = paint.taxi_density(layout, taxi, canvas, (100, 200))
+		row = lambda z: int((z + 5) / 10 * 100)
+		col = lambda x: int((x + 10) / 20 * 200)
+		self.assertGreater(grid[row(1.5) : row(4.5), col(3.5) : col(6.5)].sum(), 0)   # at their destination
+		self.assertGreater(grid[row(-4) : row(-2), col(-3) : col(0)].sum(), 0)        # leaving along the line
+		self.assertEqual(grid[:, col(7.5) :].sum(), 0)                               # none past it
+		self.assertEqual(grid[:, : col(-6)].sum(), 0)                                # nor aft of where they stop
+		self.assertEqual(grid[row(-5) : row(-4.5)].sum(), 0)                         # nor to port of the line
+		start = np.s_[row(-4.2) : row(-1.8), col(-4.5) : col(-1.5)]
+		faded = paint.taxi_density(layout, {**taxi, "turns": {**turns, "rise": 0.5}}, canvas, (100, 200))[start].sum()
+		self.assertLess(faded, grid[start].sum() * 0.5)
 
 	def test_unknown_kind(self):
 		with self.assertRaises(ValueError):

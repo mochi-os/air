@@ -33,8 +33,17 @@
 #     jet, a spin-up smear, the rollout to its stop and the taxi on forward;
 #   "deflectors": each blast deflector panel's soot, a soft blob at a share
 #     along it from its aft edge and across it from its port end;
-#   "spots": fluid drips, small soft dark spots scattered over the deck
-#     outside the landing area.
+#   "spots": fluid drips, small soft dark spots scattered over the deck and
+#     the elevators outside the landing area;
+#   "tiedowns": the tie-down fittings, a lattice of small dark dots (rows fore
+#     and aft `across` apart, a fitting every `along`, alternate rows half a
+#     step on), over the deck and the elevators, none on the catapults'
+#     track covers or the blast deflectors;
+#   "forward": each blast deflector's scorch on the deck just forward of its
+#     hinge, a soft half-ellipse against it on the track's line;
+#   "taxi": tyre tracks taxiing onto each catapult from aft of its deflector,
+#     curving onto the track, turning onto each elevator, and turning off
+#     the landing area toward the parking and the bow's catapults.
 #
 # usage: python3 -I paint.py OUT.png [--facts PATH]
 import json, math, sys
@@ -323,25 +332,161 @@ def worn(image, canvas, layout):
 			rows, cols = window(x0, x1, z0, z1)
 			x, z = np.meshgrid(xs[cols], zs[rows])
 			density[rows, cols] += -math.log(1 - darkening) * np.exp(-0.5 * (((x - cx) / su) ** 2 + ((z - cz) / sw) ** 2))
+	if spec and spec.get("forward"):
+		# the scorch just forward of each hinge, on the track's line
+		fwd = spec["forward"]
+		for c in layout.get("catapults", []):
+			(h0x, h0z), (h1x, h1z) = c["deflector"]["hinge"]
+			hx, hz = (h0x + h1x) / 2, (h0z + h1z) / 2
+			(ax, az), (bx, bz) = c["track"]
+			length = math.hypot(bx - ax, bz - az)
+			dx, dz = (bx - ax) / length, (bz - az) / length
+			k = (hx - ax) * dx + (hz - az) * dz
+			ox, oz = ax + dx * k, az + dz * k   # the track's line abreast the hinge
+			sa, sw = fwd["spread"]
+			rows, cols = window(ox - 4 * max(sa, sw), ox + 4 * max(sa, sw), oz - 4 * max(sa, sw), oz + 4 * max(sa, sw))
+			x, z = np.meshgrid(xs[cols], zs[rows])
+			along, across = (x - ox) * dx + (z - oz) * dz, -(x - ox) * dz + (z - oz) * dx
+			density[rows, cols] += -math.log(1 - fwd["darkening"]) * np.exp(-0.5 * ((along / sa) ** 2 + (across / sw) ** 2)) * (along >= 0)
+	# the deck and the elevators' platforms, which its outline is notched round
+	surfaces = []
+	def on_deck(u, v):
+		if not surfaces:
+			surfaces.extend([[canvas.pixel(p) for p in layout["deck"]["outline"]]] + [[canvas.pixel(p) for p in e["outline"]] for e in layout.get("elevators", [])])
+		return any(inside_polygon(u, v, q) for q in surfaces)
 	# fluid drips over the deck, none in the landing area
 	spots = wear.get("spots")
 	if spots:
 		mask = Image.new("L", (width, height), 0)
 		draw = ImageDraw.Draw(mask)
 		clear = [canvas.pixel(p) for p in next(m for m in layout["markings"] if m["name"] == spots["clear"])["outline"]] if spots.get("clear") else None
-		outline = [canvas.pixel(p) for p in layout["deck"]["outline"]]
 		kept = 0
 		while kept < spots["count"]:
 			u, v = canvas.pixel((rng.uniform(canvas.x0, canvas.x1), rng.uniform(canvas.z0, canvas.z1)))
-			if not inside_polygon(u, v, outline) or (clear and inside_polygon(u, v, clear)):
+			if not on_deck(u, v) or (clear and inside_polygon(u, v, clear)):
 				continue
 			r = canvas.metres(rng.uniform(*spots["size"])) / 2
 			draw.ellipse([u - r, v - r * rng.uniform(0.6, 1.0), u + r, v + r * rng.uniform(0.6, 1.0)], fill=int(255 * rng.uniform(*spots["darkening"])))
 			kept += 1
 		share = np.asarray(mask.filter(ImageFilter.GaussianBlur(canvas.metres(0.1))), np.float32) / 255
 		density += -np.log(np.clip(1 - share, 1e-3, 1))
+	# tyre tracks taxiing onto the catapults and the elevators
+	if wear.get("taxi"):
+		density += taxi_density(layout, wear["taxi"], canvas, (height, width))
+	# the tie-down fittings, over everything but the track covers and the deflectors
+	ties = wear.get("tiedowns")
+	if ties:
+		mask = Image.new("L", (width, height), 0)
+		draw = ImageDraw.Draw(mask)
+		keep_off = Image.new("L", (width, height), 0)
+		off = ImageDraw.Draw(keep_off)
+		for m in layout.get("markings", []):
+			if m["name"] in ties.get("clear", []) or any(m["name"].endswith(e) for e in ties.get("clear_suffixes", [])):
+				if m["kind"] == "area":
+					off.polygon([canvas.pixel(p) for p in m["outline"]], fill=255)
+				else:
+					stroke(off, canvas, m["points"], m["width"], 255)
+		ox, oz = ties["origin"]
+		r = canvas.metres(ties["diameter"]) / 2
+		value = int(255 * ties["darkening"])
+		k0, k1 = int(math.floor((canvas.z0 - oz) / ties["across"])), int(math.ceil((canvas.z1 - oz) / ties["across"]))
+		for k in range(k0, k1 + 1):
+			z_ = oz + k * ties["across"]
+			shift = (k % 2) * ties["along"] / 2
+			j0, j1 = int(math.floor((canvas.x0 - ox - shift) / ties["along"])), int(math.ceil((canvas.x1 - ox - shift) / ties["along"]))
+			for j in range(j0, j1 + 1):
+				u, v = canvas.pixel((ox + shift + j * ties["along"], z_))
+				if 0 <= u < width and 0 <= v < height and on_deck(u, v) and keep_off.getpixel((int(u), int(v))) == 0:
+					draw.ellipse([u - r, v - r, u + r, v + r], fill=value)
+		share = np.asarray(mask.filter(ImageFilter.GaussianBlur(canvas.metres(0.03))), np.float32) / 255
+		density += -np.log(np.clip(1 - share, 1e-3, 1))
 	lin *= np.exp(-density)[:, :, None]
 	return Image.fromarray(encoded(lin), "RGB")
+
+
+def taxi_density(layout, spec, canvas, shape):
+	# Tyre tracks taxiing on: each a quadratic curve from a start scattered
+	# aft of a catapult's deflector to its battery, through a point on the
+	# track's line so it arrives along the track; each elevator's from a start
+	# on the deck fore or aft of it, round its inboard corner, onto its
+	# platform; each turn off the landing area from where an arrested
+	# aircraft stops on the landing line, ahead along it and round to where
+	# it parks or the bow's catapults begin; two main-gear tracks a gauge
+	# apart, as density on the texture
+	rng = np.random.default_rng(spec.get("seed", 11))
+	height, width = shape
+	grid = np.zeros(shape, np.float64)
+	half = spec["gauge"] / 2
+	per_metre = width / (canvas.x1 - canvas.x0)
+	def lay(p0, p1, p2, value, fade=1.0, rise=0.0):
+		# fade: the share of the way along after which the track fades out,
+		# where the next ones overlap it (a catapult's last metres); rise: the
+		# share it fades in over, where they all start (the landing line)
+		n = max(8, int(math.dist(p0, p2) * per_metre * 1.5))
+		t = np.linspace(0, 1, n)[:, None]
+		weight = value * np.clip((1 - t[:, 0]) / max(1 - fade, 1e-6), 0, 1) if fade < 1 else np.full(n, value)
+		if rise > 0:
+			weight = weight * np.clip(t[:, 0] / rise, 0, 1)
+		curve = (1 - t) ** 2 * np.array(p0) + 2 * (1 - t) * t * np.array(p1) + t ** 2 * np.array(p2)
+		tangent = 2 * (1 - t) * (np.array(p1) - np.array(p0)) + 2 * t * (np.array(p2) - np.array(p1))
+		tangent /= np.maximum(np.linalg.norm(tangent, axis=1, keepdims=True), 1e-9)
+		normal = np.stack([-tangent[:, 1], tangent[:, 0]], 1)
+		for side in (-1, 1):
+			q = curve + side * half * normal
+			u = ((q[:, 0] - canvas.x0) / (canvas.x1 - canvas.x0) * width).astype(int)
+			v = ((q[:, 1] - canvas.z0) / (canvas.z1 - canvas.z0) * height).astype(int)
+			ok = (u >= 0) & (u < width) & (v >= 0) & (v < height)
+			np.add.at(grid, (v[ok], u[ok]), weight[ok] / 1.5)
+	cats = spec.get("catapults")
+	for c in layout.get("catapults", []) if cats else []:
+		(ax, az), (bx, bz) = c["track"]
+		length = math.hypot(bx - ax, bz - az)
+		d = np.array([(bx - ax) / length, (bz - az) / length])
+		n = np.array([-d[1], d[0]])
+		battery = np.array(c["battery"])
+		for _ in range(cats["count"]):
+			start = battery - d * rng.uniform(*cats["aft"]) + n * rng.uniform(-1, 1) * rng.uniform(*cats["offset"])
+			join = battery - d * rng.uniform(*cats["join"])
+			lay(start, join, battery, cats["density"] * rng.lognormal(-0.32, 0.8), cats.get("fade", 1.0))
+	lifts = spec.get("elevators")
+	for e in layout.get("elevators", []) if lifts else []:
+		outline = np.array(e["outline"], float)
+		middle = outline.mean(0)
+		inboard = outline[np.argsort(np.abs(outline[:, 1]))[:2]]   # its two corners nearer the centreline
+		edge_middle = inboard.mean(0)
+		toward = -np.sign(middle[1]) * np.array([0.0, 1.0])   # from the platform in toward the centreline
+		for _ in range(lifts["count"]):
+			way = rng.choice([-1, 1])
+			start = edge_middle + np.array([way * rng.uniform(*lifts["along"]), 0.0]) + toward * rng.uniform(*lifts["inboard"])
+			corner = edge_middle + toward * rng.uniform(1.0, 4.0)
+			end = middle + rng.uniform(-3, 3, 2)
+			lay(start, corner, end, lifts["density"] * rng.lognormal(-0.32, 0.8))
+	turns = spec.get("turns")
+	if turns and layout.get("landing", {}).get("line"):
+		(ax, az), (fx, fz) = layout["landing"]["line"]
+		length = math.hypot(fx - ax, fz - az)
+		d = np.array([(fx - ax) / length, (fz - az) / length])
+		n = np.array([-d[1], d[0]])
+		for _ in range(turns["count"]):
+			start = np.array([ax, az]) + d * rng.uniform(*turns["along"]) + n * rng.normal(0, turns["lateral"])
+			ahead = start + d * rng.uniform(*turns["ahead"])
+			(x0, z0), (x1, z1) = turns["ends"][rng.integers(len(turns["ends"]))]
+			end = np.array([rng.uniform(x0, x1), rng.uniform(z0, z1)])
+			lay(start, ahead, end, turns["density"] * rng.lognormal(-0.32, 0.8), rise=turns.get("rise", 0.0))
+	# each track the tyres' width across
+	sigma = max(1, int(round(spec.get("track", 0.3) / 2 * per_metre)))
+	k = np.exp(-0.5 * (np.arange(-3 * sigma, 3 * sigma + 1) / sigma) ** 2)
+	k /= k.sum()
+	rows = np.nonzero(grid.any(1))[0]
+	cols = np.nonzero(grid.any(0))[0]
+	if not len(rows):
+		return grid.astype(np.float32)
+	r0, r1, c0, c1 = max(0, rows[0] - 4 * sigma), min(height, rows[-1] + 4 * sigma + 1), max(0, cols[0] - 4 * sigma), min(width, cols[-1] + 4 * sigma + 1)
+	part = grid[r0:r1, c0:c1]
+	part = np.apply_along_axis(lambda a: np.convolve(a, k, mode="same"), 0, part)
+	part = np.apply_along_axis(lambda a: np.convolve(a, k, mode="same"), 1, part)
+	grid[r0:r1, c0:c1] = part
+	return grid.astype(np.float32)
 
 
 def inside_polygon(u, v, polygon):

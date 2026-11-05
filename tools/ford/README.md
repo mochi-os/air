@@ -40,7 +40,9 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
 - **`paint.py`** - the flight deck's paint (decision 6) from `layout.markings`, drawn in deck metres: the image
   is the deck seen from above, bow to the right, port at the top. Then `layout.stains` and the deck's wear as
   photographed (`layout.wear`): the non-skid's mottling, the landing area's tyre marks generated landing by
-  landing and fitted to the band measured in a rectified overhead, the blast deflectors' soot, and fluid drips.
+  landing and fitted to the band measured in a rectified overhead, the blast deflectors' soot and the scorch
+  forward of their hinges, fluid drips, the tie-down fittings' lattice, and tyre tracks taxiing onto the
+  catapults and the elevators and turning off the landing area.
 - **`letters.py`** - the lettering (decision 17) from `layout.lettering`: each cell of a small atlas holds a
   piece of text, white with a dark outline, stretched to fill its cell, or shapes drawn in the cell's own
   metres: polygons with holes and a drop shadow (the island's 78s, traced from a rectified photo), discs and
@@ -53,8 +55,15 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   (`layout.weathering.groups`): the haze grey shifting plate to plate with touch-ups and mottling, the plates'
   seams and frames as grooves in a height map, streaks of rust or dirty water from the group's fittings and the
   runs the photos measure (`runs`), each face's streaks as heavy as its photos' (`regions`), grime toward the
-  deck or the waterline, walking surfaces darker, the occlusion multiplied in. A group takes over the grey, or
-  the paint it names (`from`: the island's radomes, `domes`, in their own white).
+  deck or the waterline, walking surfaces darker, the occlusion multiplied in. Over that, wear by zone: each
+  texel's level, 0 almost clean to 1 the most worn, from the group's `level` and its `zones` (boxes, soft-edged,
+  and facings), scales the paint's blotching (stretched up the walls), grime patches, rust and dirty water
+  weeping down the walls, the scum line above the boot top and scuffs through dark paint (`wear`). The zones'
+  levels are measured in the public-domain broadsides, transoms and bows (`references/research/weather`): the
+  hull's lower walls the most worn, then the transom, the undersides, the island's lowest storeys, the flare
+  and the sponsons, the rest of the island, its top and the mast, and the radomes almost clean. A group takes
+  over the grey, or the paint it names (`from`: the island's radomes, `domes`, in their own white; the boot top,
+  `boot`, in its black, colour only: `flat`).
 - **`build.py`** - the model in the plan's Contract: true metres, x forward, y up, z starboard, the origin on
   the centreline at the deployed waterline midway along the flight deck.
   - The deck wears `paint.py`'s texture and the lettering's plates `letters.py`'s, which the build runs
@@ -62,8 +71,9 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   - Each moving part is a node on its hinge or slide line, resting unrotated:
     - the catapult shuttles, the blast deflectors (hinged on their measured forward edges) and the bow's
       control console;
-    - the arresting gear's deck sheaves and wire supports, and the barricade's stanchions, hinged at their
-      heads;
+    - the arresting gear's deck sheaves (in their own white) and wire supports, and the barricade's
+      stanchions, hinged at their heads; a part stowed in the deck sits 2 cm under its top (`STOWED`), which
+      hides it, where level with it the two surfaces tore;
     - the port whips, which lower for flight operations;
     - the elevators.
   - The pendants, the lens's lights and the deck's lights are the engine's, drawn from the ship file.
@@ -76,7 +86,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     a line), ladders, stairs and plates. The windows and radar covers are plates on its faces.
   - Unless `--draft`, each weathered group's faces are unwrapped into one atlas (a mesh's one `atlas` UV
     layer, which its groups share) and baked: each texel's position, normal and occlusion, from which
-    `weather.py` draws the colour and height maps; the height is baked into a normal map. While a group bakes,
+    `weather.py` draws the colour and height maps; the height is baked into a normal map, unless the group is
+    `flat` (the boot top: colour alone, its relief too fine to see). While a group bakes,
     every other face's UVs are gathered to one point, so only its own faces reach its images.
   - The weapons are kinds of parts in their own frame (`weapons.kinds`: the Mk 29, RAM, Phalanx and gun) and the
     mounts that place them (`weapons.mounts`): each at its foot, trained and elevated as photographed, on a
@@ -115,7 +126,7 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   file. `python3 -I ../texswap.py OUT.glb ford.glb etc1s 1,3,5,7` encodes the deck and the weathered colour
   atlases ETC1S (the deck's 4x4 blocks are 16 cm, finer than its thinnest marking; worn, UASTC made it 5.4 MB
   against ETC1S's 1.1) and the lettering and the three normal maps UASTC (the build writes its images in the order deck,
-  hull normal, hull, island normal, island, radomes' normal, radomes, lettering, nets; check the order before
+  hull normal, hull, island normal, island, radomes' normal, radomes, lettering, nets, boot top; check the order before
   reusing the indices). Run it in a folder inside the project, which its sandboxed encoder can reach.
 
 ## Check
@@ -145,13 +156,20 @@ python3 -I test_build.py   # runs Blender: under the probe.slice memory cap
 ```
 
 `test_paint.py` also holds the tyre marks to the measured band (core and shoulders along the landing line), its
-taper, the streaks' contrast, the tracks' smoothness and their place on the texture, the soot on its panel, the
-drips' places and the mottling's spread.
+taper and rounded aft edge, the streaks' contrast, the tracks' smoothness and their place on the texture, the soot
+on its panel and the scorch forward of its hinge, the drips' places, the mottling's spread, the tie-downs on their
+lattice, and the taxi tracks onto a catapult (faded where they join it) and an elevator, and off the landing
+area (faded in where they leave it).
 
 `test_weather.py` weathers a plain wall's maps: the seams darker and grooved, the plates' tones, touch-ups,
 streaks only below a sill, measured runs where they are put, regions scaling a face's streaks, a group's own
 paint, walking surfaces, the occlusion, the grime toward the deck, and the sources at the lamps and the
-radomes' seams, and a deck of its own non-skid (the stern's lower decks). `test_plates.py` checks the plates' frames, the rings offset round a shape and into its holes,
+radomes' seams, and a deck of its own non-skid (the stern's lower decks); the wear by zone (each zone over the
+last, its edges soft, its facings), the worn wall blotchier as the level rises and its blotches long up the
+wall, grime patches darker and browner, weeps down walls only, rusting and as many as the wear says, the scum
+line just above the boot top, scuffs long fore and aft, none of them on an unworn wall; the facts' wear
+against the photos' own measure (the lower hull at the low end of the 2022-2025 broadsides, every other zone
+cleaner, the island's top and the mast the cleanest); and the hash's lots a seed apart unrelated. `test_plates.py` checks the plates' frames, the rings offset round a shape and into its holes,
 the lamps carried onto a plate, and `letters.py`'s drawn shapes: a hole with the shadow cast into it, discs,
 rings, runs of colours and grime.
 
@@ -188,5 +206,5 @@ the deck; a new sighting in the game becomes a ray here first.
   to the edge, the raft canisters in their tiers, and the nets: cut out, both faces, none outboard of a
   platform, their frames in the railings' material;
 - the weathered atlases: each group's colour and normal maps at its size, its faces in its material with UVs,
-  the radomes their own group, and only the group's faces in its atlas;
+  the radomes their own group, and only the group's faces in its atlas; the boot top's colour alone;
 - the ship file.

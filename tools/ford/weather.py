@@ -14,6 +14,10 @@
 #   runs the photos show where they show them, each face's streaks as heavy
 #   as its photos';
 # - grime toward the deck and the waterline, and walking surfaces darker;
+# - wear by zone: each texel's level of wear (0 almost clean, 1 the most
+#   worn), from the group's zones, scaling the paint's blotching, its grime
+#   patches, rust and dirt weeping down the walls, the scum line above the
+#   boot top, and scuffs worn through dark paint;
 # - the baked occlusion multiplied in.
 # Everything is seeded, so a build gives the same texture every time.
 #
@@ -24,7 +28,12 @@
 #   "length", "width", "rust": bool, "weight"}], "regions": [{"box": [[x, y, z], [x, y, z]], "streaks": factor}],
 #   "decks": [{"box": [[x, y, z], [x, y, z]], "colour": [r, g, b] (linear), "dirt": {"mottle": [[scale, spread], ...],
 #   "patches": {"scale", "share", "darkening"}, "grain": relief}}]: walking surfaces in a box their own non-skid,
-#   dirtied}]}
+#   dirtied}],
+#   "flat": no normal map (build.py), "level": the wear where no zone says, "zones": [{"level", "box": [[x, y, z], [x, y, z]], "facing": "wall" | "under" |
+#   "up", "soft": metres}] (each later zone over the earlier, its box's edges blended over `soft`), "wear": {"blotches":
+#   [[scale, spread, stretch], ...], "patches": {"scale", "share", "tint": [r, g, b], "stretch"}, "weeps": {"spacing", "height",
+#   "share", "length": [min, max], "width": [min, max], "rust"}, "scum": {"height", "tint"}, "scuffs": {"scale",
+#   "share", "lift": [r, g, b]}}: each at full wear}]}
 #
 # usage: python3 -I weather.py MAPS.npz MATERIAL COLOUR.png HEIGHT.png [--facts PATH]
 import json, sys
@@ -43,13 +52,20 @@ NOISE = 0.371   # noise()'s own spread, which a dirt's spreads are given in unit
 
 def hashed(*keys):
 	# A deterministic value in [0, 1) per integer key tuple, elementwise (the
-	# multiply wraps, as the hash means it to)
+	# multiplies wrap, as the hash means them to). The keys folded in, then
+	# mixed through (a 64-bit finaliser) so that keys a step apart (seed + 1,
+	# seed + 2) give unrelated values, and the top bits taken
 	h = np.uint64(1469598103934665603)
 	with np.errstate(over="ignore"):
 		for k in keys:
 			h = (h ^ np.asarray(k, dtype=np.int64).astype(np.uint64)) * np.uint64(1099511628211)
 			h ^= h >> np.uint64(29)
-	return (h & np.uint64(0xFFFFFF)).astype(np.float64) / float(0x1000000)
+		h ^= h >> np.uint64(33)
+		h *= np.uint64(0xFF51AFD7ED558CCD)
+		h ^= h >> np.uint64(33)
+		h *= np.uint64(0xC4CEB9FE1A85EC53)
+		h ^= h >> np.uint64(33)
+	return (h >> np.uint64(40)).astype(np.float64) / float(1 << 24)
 
 
 def sill(f):
@@ -250,6 +266,76 @@ def streaks(p, n, sources, spec, seed, runs=()):
 	return rust, dirt
 
 
+def wear_level(p, n, group):
+	# Each texel's wear, 0 to 1: the group's level, then each zone over it in
+	# turn, a box's edges blended over `soft` metres
+	level = np.full(len(p), float(group.get("level", 0.0)))
+	for zone in group.get("zones", []):
+		member = np.ones(len(p))
+		if "box" in zone:
+			low, high = np.asarray(zone["box"], float)
+			soft = zone.get("soft", 1.0)
+			depth = np.minimum(p - low, high - p).min(axis=1)
+			t = np.clip(depth / soft + 0.5, 0, 1)
+			member *= t * t * (3 - 2 * t)
+		# a wall stands within 30 degrees of upright; an underside or a top
+		# lies within 30 degrees of level (the flare's slopes neither)
+		facing = zone.get("facing")
+		if facing == "wall":
+			member *= np.abs(n[:, 1]) < 0.5
+		elif facing == "under":
+			member *= n[:, 1] < -0.85
+		elif facing == "up":
+			member *= n[:, 1] > 0.85
+		level = level * (1 - member) + zone["level"] * member
+	return level
+
+
+def weeps(p, n, level, spec, seed):
+	# Rust and dirty water weeping down the walls from seams and fittings too
+	# small to model: in columns `spacing` apart along each wall, a run may
+	# start in each band `height` tall, by lot as often as the wear says
+	rust = np.zeros(len(p))
+	dirt = np.zeros(len(p))
+	wall = np.abs(n[:, 1]) < 0.5
+	i = np.nonzero(wall & (level > 0))[0]
+	if not len(i):
+		return rust, dirt
+	t = across(n[i])
+	u = np.einsum("ij,ij->i", p[i], t)
+	y = p[i, 1]
+	# the face's own key, so walls facing apart get their own runs
+	face = np.round(np.arctan2(n[i, 2], n[i, 0]) / 0.35).astype(np.int64)
+	spacing, height = spec["spacing"], spec["height"]
+	lo, hi = spec["length"]
+	w0, w1 = spec["width"]
+	column = np.floor(u / spacing).astype(np.int64)
+	band = np.floor(y / height).astype(np.int64)
+	for c in (column - 1, column, column + 1):
+		for b in range(0, int(np.ceil(hi / height)) + 1):
+			j = band + b
+			k = np.nonzero(hashed(c, j, face, seed + 90) < spec["share"] * level[i])[0]
+			if not len(k):
+				continue
+			key = (c[k], j[k], face[k])
+			top = (j[k] + 1) * height - hashed(*key, seed + 91) * height
+			length = lo + (hi - lo) * hashed(*key, seed + 92) ** 2
+			centre = (c[k] + 0.15 + 0.7 * hashed(*key, seed + 93)) * spacing
+			width = w0 + (w1 - w0) * hashed(*key, seed + 94)
+			below = top - y[k]
+			on = (below > 0) & (below < length) & (np.abs(u[k] - centre) < width * 1.5)
+			if not on.any():
+				continue
+			k, below, length, centre, width = k[on], below[on], length[on], centre[on], width[on]
+			rusty = hashed(c[k], j[k], face[k], seed + 96) < spec["rust"]
+			fade = (1 - below / length) ** 1.5
+			drips = 0.6 + 0.4 * noise(np.stack([c[k] * 1.0, below / 0.35, (u[k] - centre) / 0.05], 1), 1.0, seed + 95)
+			value = fade * np.exp(-((u[k] - centre) / (width / 2)) ** 2) * np.clip(drips, 0, 1)
+			rust[i[k[rusty]]] = np.maximum(rust[i[k[rusty]]], value[rusty])
+			dirt[i[k[~rusty]]] = np.maximum(dirt[i[k[~rusty]]], value[~rusty])
+	return rust, dirt
+
+
 def weather(maps, group, facts, chunk=1 << 20):
 	# The colour map (linear RGB) and the height map ([0, 1], 0.5 level) of one
 	# atlas, a chunk of its texels at a time; texels outside it the plain grey
@@ -319,8 +405,40 @@ def texels(position, normal, ao, texel, group, facts, sources):
 			cut = np.interp(patches["share"], [0.04, 0.08, 0.15, 0.25], [1.73, 1.44, 1.09, 0.72])
 			shade *= 1 - patches["darkening"] * np.clip((m - cut) / 0.4, 0, 1)
 		dirty[inside] = shade
+	level = wear_level(p, n, group)
 	colour = base * (tone * dirty)[:, None]
 	colour *= (1 - 0.06 * lines)[:, None]
+	wear = group.get("wear", {})
+	# the paint's tone wandering, the more the more worn, each scale's noise
+	# stretched up and down the walls as rain and spray lay it
+	shade = np.zeros(len(p))
+	for j, (scale, spread, *rest) in enumerate(wear.get("blotches", [])):
+		stretch = rest[0] if rest else 1.0
+		shade += spread * noise(p * [1, 1 / stretch, 1], scale, seed + 60 + j) / NOISE
+	colour *= np.exp(level * shade)[:, None]
+	# grime in patches, long up and down the walls as the water runs
+	patches = wear.get("patches")
+	if patches:
+		m = noise(p * [1, 1 / patches.get("stretch", 1.0), 1], patches["scale"], seed + 70) / NOISE
+		cut = np.interp(patches["share"], [0.04, 0.08, 0.15, 0.25], [1.73, 1.44, 1.09, 0.72])
+		amount = level * np.clip((m - cut) / 0.4, 0, 1)
+		colour *= 1 - amount[:, None] * (1 - np.array(patches["tint"]))[None, :]
+	# the scum line: a band above the boot top, discoloured
+	scum = wear.get("scum")
+	if scum:
+		boot = facts["layout"].get("hull", {}).get("boot", 0.0)
+		edge = scum["height"] * (0.7 + 0.3 * noise(p * [0.3, 1, 0.3], 1.5, seed + 75))
+		inside = (p[:, 1] > boot) & (p[:, 1] < boot + edge) & (np.abs(n[:, 1]) < 0.7)
+		amount = level[inside] * (1 - (p[inside, 1] - boot) / edge[inside]) ** 0.7
+		colour[inside] *= 1 - amount[:, None] * (1 - np.array(scum["tint"]))[None, :]
+	# dark paint scuffed through to lighter where fenders and tugs bear on it,
+	# the scuffs long fore and aft
+	scuffs = wear.get("scuffs")
+	if scuffs:
+		m = noise(p * [0.4, 1.5, 0.4], scuffs["scale"], seed + 80) / NOISE
+		cut = np.interp(scuffs["share"], [0.04, 0.08, 0.15, 0.25], [1.73, 1.44, 1.09, 0.72])
+		amount = level * np.clip((m - cut) / 0.4, 0, 1)
+		colour += amount[:, None] * np.array(scuffs["lift"])[None, :]
 	# walking surfaces: the non-skid's darker grey
 	walk = (n[:, 1] > 0.9) & group.get("walk", True) & ~decked
 	colour[walk] *= 0.78 + 0.04 * noise(p[walk], 0.25, seed + 9)[:, None]
@@ -331,6 +449,9 @@ def texels(position, normal, ao, texel, group, facts, sources):
 	colour *= (1 - 0.10 * rise * (0.6 + 0.4 * noise(p * [1, 0.2, 1], 0.4, seed + 10)))[:, None]
 	# streaks
 	rust, dirt = streaks(p, n, sources, group.get("streaks", {}), seed, group.get("runs", []))
+	if wear.get("weeps"):
+		r, d = weeps(p, n, level, wear["weeps"], seed)
+		rust, dirt = np.maximum(rust, r), np.maximum(dirt, d)
 	# each face's streaks as heavy as its photos'
 	for region in group.get("regions", []):
 		low, high = np.asarray(region["box"], float)
