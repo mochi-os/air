@@ -93,6 +93,24 @@ class GeometryTest(unittest.TestCase):
 			with self.assertRaises(KeyError):
 				jet.tris([])
 
+	def test_a_jet_short_of_parts_reports_every_group(self):
+		# Every check run on a model of one box: each group either measures or
+		# reports what it could not (a missing part, or nothing left to measure
+		# in a cut or a selection), and the run as a whole never raises
+		with tempfile.TemporaryDirectory() as d:
+			path = Path(d) / "m.glb"
+			i = 0.0254
+			glb(path, [{"name": "fuselage", "mesh": box(((456 - 500) * i, -5 * i, -10 * i), ((456 - 400) * i, 15 * i, 10 * i))}])
+			(Path(d) / "m.json").write_text(json.dumps({"joints": {}, "points": {}}))
+			jet = check.Jet(path, Path(d) / "m.json")
+			rows = list(check.checks(jet))
+			missing = [r for r in rows if "missing" in r]
+			self.assertTrue(missing)
+			for r in rows:
+				self.assertTrue("missing" in r or {"expected", "measured", "tolerance"} <= set(r), r)
+			# a draft carries no atlas: its paint goes unchecked rather than failing
+			self.assertFalse([r for r in rows if r["fact"].startswith("paint") or r["fact"] == "layout.stencils"])
+
 
 def triangles(lo, hi):
 	# a closed box's triangles in source coordinates (FS, WL, BL)
@@ -212,6 +230,60 @@ class ShapeTest(unittest.TestCase):
 		self.assertTrue(any(j == 2 and abs(c) > 0.1 for j, _, _, c in found))
 		self.assertFalse(any(j == 1 and abs(stations[i] - 300) < 8 and abs(c) > 0.1 for j, i, _, c in check.bends(np.stack([kink[0]] * 3), 1.5, np.stack([free, edge, free]))))
 
+	def test_kink(self):
+		x = np.arange(0.0, 16.0, 0.05)
+		# a bubble's side falling 30 deg onto a top falling 3 deg, meeting at BL 7
+		kinked = np.where(x < 7.0, -np.tan(np.radians(30)) * x, -np.tan(np.radians(30)) * 7.0 - np.tan(np.radians(3)) * (x - 7.0))
+		bl, wl, turn = check.kink(x, kinked)
+		self.assertAlmostEqual(bl, 7.0, delta=0.05)
+		self.assertAlmostEqual(wl, -np.tan(np.radians(30)) * 7.0, delta=0.03)
+		self.assertAlmostEqual(turn, 27.0, delta=0.5)
+		# the same corner rounded over 2 in turns under a third as much over 0.4 in
+		r = 2.0 / (np.radians(30) - np.radians(3))
+		a = -np.radians(30) + np.clip((x - 6.0) / r, 0, np.radians(27))
+		rounded = np.concatenate([[0.0], np.cumsum(np.tan((a[1:] + a[:-1]) / 2) * np.diff(x))])
+		self.assertLess(check.kink(x, rounded)[2], 9.0)
+		# a slot (turning past 90 deg at its foot) is not a corner, nor is anything outside the band
+		slot = kinked.copy(); slot[(x > 11.9) & (x < 12.1)] -= 5.0
+		self.assertGreater(abs(check.kink(x, slot, inside=(1.0, 6.0))[0] - 12.0), 1.0)
+		self.assertAlmostEqual(check.kink(x, slot)[0], 7.0, delta=0.05)
+		self.assertEqual(check.kink(x, kinked, inside=(8.0, 9.0))[2] < 1.0, True)
+		# gaps are skipped, and an empty band gives no corner
+		gapped = kinked.copy(); gapped[(x > 3.0) & (x < 4.0)] = np.nan
+		self.assertAlmostEqual(check.kink(x, gapped)[0], 7.0, delta=0.05)
+		self.assertEqual(check.kink(x, kinked, inside=(20.0, 30.0)), (np.inf, np.inf, 0.0))
+
+	def test_waves(self):
+		stations = np.arange(200.0, 400.0, 1.0)
+		free = np.ones(len(stations), bool)
+		line = lambda h: np.stack([h])
+		heights = lambda found: [(f[1], f[2], round(f[3], 2)) for f in found]
+		# a line narrowing steadily, or curving, or widest once, has no wave
+		self.assertEqual(check.waves(line(20 - 0.05 * (stations - 200)), stations, free), [])
+		self.assertEqual(check.waves(line(0.0004 * (stations - 300) ** 2), stations, free), [])
+		self.assertEqual(check.waves(line(-0.0004 * (stations - 300) ** 2), stations, free), [])
+		# a 0.4 in dip then hump on a narrowing line is: one dip and one hump, each about 0.4 deep or high
+		bump = 0.2 * np.sin((stations - 300) * math.pi / 20) * (np.abs(stations - 300) <= 40)
+		found = check.waves(line(20 - 0.005 * (stations - 200) - bump), stations, free)
+		self.assertEqual(sorted(s for _, _, s, _ in found), [-1, 1])
+		self.assertTrue(all(0.3 < h < 0.45 for _, _, _, h in found), heights(found))
+		self.assertTrue(all(270 <= st <= 330 for _, st, _, _ in found), heights(found))
+		# one within noise is not, on a level line
+		self.assertEqual(check.waves(line(20 - bump / 10), stations, free), [])
+		self.assertTrue(check.waves(line(20 - bump / 2), stations, free))
+		# nor one whose turns lie further apart than twice the span
+		long = 0.2 * np.cos((stations - 300) * math.pi / 60)   # turns at FS 240, 300 and 360
+		self.assertEqual(check.waves(line(long), stations, free, span=40.0), [])
+		self.assertTrue(check.waves(line(long), stations, free, span=80.0))
+		# nor across the skin's edges, a line's gaps, or a step between surfaces
+		wave = 20 - bump
+		self.assertTrue(check.waves(line(wave), stations, free))
+		self.assertEqual(check.waves(line(wave), stations, free & ~((stations > 285) & (stations < 315))), [])
+		gap = wave.copy(); gap[(stations > 285) & (stations < 315)] = np.nan
+		self.assertEqual(check.waves(line(gap), stations, free), [])
+		step = wave + np.where(stations < 300, 0.0, 3.0)
+		self.assertEqual(check.waves(line(step), stations, free), [])
+
 	def test_surface_distance(self):
 		triangle = np.array([[[0, 0, 0], [4, 0, 0], [0, 4, 0]]], float)
 		points = np.array([[1, 1, 2], [1, 1, -0.5], [2, -3, 0], [6, 0, 0], [-1, -1, 1]], float)
@@ -238,6 +310,60 @@ class ShapeTest(unittest.TestCase):
 		self.assertTrue(check.inside_segments(np.array([1.0, 1.0]), jumbled))
 		self.assertFalse(check.inside_segments(np.array([2.5, 1.0]), jumbled))
 		self.assertFalse(check.inside_segments(np.array([1.0, -0.5]), jumbled))
+
+	def test_a_measurement_of_nothing_fails(self):
+		self.assertTrue(check.failed(check.result("x", "y", 1.0, float("nan"), 0.5)))
+		self.assertTrue(check.failed(check.result("x", "y", 1.0, float("inf"), 0.5)))
+		self.assertFalse(check.failed(check.result("x", "y", 1.0, 1.2, 0.5)))
+
+	def test_coverage(self):
+		# texels whose centre two triangles both hold count 2; a texel on a
+		# shared edge counts for neither, so a mesh's own seams never read as overlap
+		quad = np.array([[[0.1, 0.1], [0.9, 0.1], [0.9, 0.9]], [[0.1, 0.1], [0.9, 0.9], [0.1, 0.9]]])
+		count = check.coverage(quad, 10)
+		self.assertEqual(int((count >= 2).sum()), 0)
+		self.assertEqual(int((count == 1).sum()), 64 - 8)   # the 8 x 8 texels inside, less the diagonal's 8
+		folded = np.concatenate([quad, quad[:1]])
+		self.assertEqual(int((count >= 2).sum()) + int((check.coverage(folded, 10) >= 2).sum()), 28)
+
+	def test_sample(self):
+		# read between texels, the image's first row at v = 0 (glTF's v runs down)
+		image = np.array([[0.0, 1.0], [0.5, 0.5]])
+		got = check.sample(image, np.array([[0.25, 0.25], [0.75, 0.25], [0.25, 0.75], [0.5, 0.25]]))
+		for value, want in zip(got, [0.0, 1.0, 0.5, 0.5]):
+			self.assertAlmostEqual(value, want)
+
+	def test_hits(self):
+		tris = np.array([[[0, 0, 0], [4, 0, 0], [0, 4, 0]], [[0, 0, -2], [4, 0, -2], [0, 4, -2]]], float)
+		k, bary = check.hits(tris, np.array([[1.0, 2.0, 5.0], [9.0, 9.0, 5.0]]), np.array([0.0, 0.0, -1.0]))
+		self.assertEqual(list(k), [0, -1])   # the nearer of the two; a miss is -1
+		self.assertAlmostEqual(bary[0, 0], 0.25)
+		self.assertAlmostEqual(bary[0, 1], 0.5)
+
+	def test_atlas(self):
+		# the paint material's base colour image, as brightness; none on a model without one
+		import io
+		from PIL import Image
+		with tempfile.TemporaryDirectory() as folder:
+			plain = Path(folder) / "plain.glb"
+			v, f = box((0, 0, 0), (1, 1, 1))
+			glb(plain, [{"name": "fuselage", "mesh": (v, f)}])
+			self.assertIsNone(check.atlas(plain))
+			png = io.BytesIO()
+			Image.fromarray(np.array([[0, 255], [128, 64]], np.uint8)).save(png, "PNG")
+			png = png.getvalue() + b"\0" * (-len(png.getvalue()) % 4)
+			document = {"asset": {"version": "2.0"}, "materials": [{"name": "glass"}, {"name": "paint", "pbrMetallicRoughness": {"baseColorTexture": {"index": 0}}}],
+				"textures": [{"source": 0}], "images": [{"bufferView": 0, "mimeType": "image/png"}],
+				"bufferViews": [{"buffer": 0, "byteOffset": 0, "byteLength": len(png)}], "buffers": [{"byteLength": len(png)}]}
+			text = json.dumps(document).encode()
+			text += b" " * (-len(text) % 4)
+			body = len(text).to_bytes(4, "little") + b"JSON" + text + len(png).to_bytes(4, "little") + b"BIN\0" + png
+			painted = Path(folder) / "painted.glb"
+			painted.write_bytes(b"glTF" + (2).to_bytes(4, "little") + (12 + len(body)).to_bytes(4, "little") + body)
+			got = check.atlas(painted)
+			self.assertEqual(got.shape, (2, 2))
+			self.assertAlmostEqual(got[0, 1], 1.0)
+			self.assertAlmostEqual(got[1, 0], 128 / 255)
 
 	def test_mirrored(self):
 		left = np.array([[400, 100, -20], [420, 110, -10]], float)

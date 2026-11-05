@@ -494,6 +494,31 @@ What went wrong on the F/A-18C, each a rule now:
   One side at a time, the F/A-18C's stabilator chord read 2.5 in long; averaged, the three views from straight
   above and below read it within 1 in. The free points' version of this is "Anchor what symmetry gives" above.
   The sky check's misses are + where the model stands outside the photo's edge.
+- **A measurement of nothing must fail.** NaN compares false against any tolerance, so a check that reads
+  NaN off a missed surface passes. The F/A-18C's `check.result()` turns a non-finite measurement into a
+  failure; `test_check.py` holds it.
+- **Leave a new photo's marks on surfaces it can't pose out of the shared solve.** Three rear-high photos
+  marked on their stabilator tips, hook, drooped flaps and nozzles, with those surfaces' poses guessed,
+  dragged the points ten other photos share and failed three edges elsewhere; on fixed structure alone
+  (fins, pods, LEX fences) the gate stayed clean. Keep the other marks in the photo's notes until its pose is
+  fitted.
+- **Triangulate from every pair, and read the spread as the uncertainty.** Photos marked on one cluster of
+  structure (all on the fins) leave their distances loose: adding two marks moved a camera 600 in. The
+  F/A-18C's speedbrake edges from three photos read 1.4-2.9 in above the skin at one station, pair by pair;
+  one pair alone, consistent both ways and stable to a pixel of trace, had said 2.9.
+- **Two casts of one line that disagree say the skin is wrong where they meet.** A cast lands where the sight
+  line meets the skin, so it moves with the skin's height, an oblique view far more than one square on. The
+  F/A-18C's joint behind the canopy cast at FS 333-334 from the right and 338-339 from the left, on a spine
+  2 in low. Triangulate the line instead: each pixel along it in one photo against the line's polyline in
+  another (mirrored across the centreline for a symmetric line), which needs no skin. Two left photos put
+  that joint within 0.3 in of each other, 0.0-0.4 px off their lines.
+- **Don't pass a skin through triangulated points one by one.** Points along one line scatter by a few tenths
+  of an inch, and a surface drawn exactly through them carries that scatter as waves the eye sees at once:
+  the F/A-18C's spine seam, passed point by point, rippled the side 0.5-0.7 in. Build the skin smooth and
+  hold it to the points within their spread.
+- **Trace a long line densely before triangulating far along it.** A polyline of three points over 100 in
+  stands off a curving line between its points, and the triangulation inherits the gap: the F/A-18C's seam
+  read 2 in inside a panel joint's end measured at the same station and height.
 
 ## Files
 

@@ -27,6 +27,8 @@ FRAME = verify.Frame({"names": ["station", "waterline", "buttline"], "unit": 0.0
 WING = ["wing_inner_{s}", "wing_outer_{s}", "flap_leading_inner_{s}", "flap_leading_outer_{s}", "flap_trailing_{s}", "aileron_{s}"]
 
 # Entries the check does not measure, and why
+PAINTED = {"layout.stencils"}   # facts only the paint's atlas shows
+
 EXEMPT = {
 	"overall.span.missiles": "needs the wingtip launchers and missiles (step 5, stores)",
 	"nose.junction": "the radome's joint is a paint line, not a shape",
@@ -63,7 +65,6 @@ EXEMPT = {
 	"layout.hardpoints": "store mounts the build writes as given, the fuselage ones draped onto the skin (shape.mount); step 5 checks them against the stores",
 	"layout.lights": "light points the build writes as given",
 	"layout.paint": "colours the paint bake writes into the atlas, not a shape (looked at on the comparison sheets)",
-	"layout.stencils": "stencils the paint bake draws into the atlas, not a shape",
 }
 
 
@@ -99,6 +100,7 @@ def leading_sweep(quarter, aspect, taper):
 
 class Jet:
 	def __init__(self, glb, points):
+		self.path = glb
 		self.model = verify.Model(glb)
 		self.document = json.loads(Path(points).read_text())
 		self.joints = self.document["joints"]
@@ -121,6 +123,23 @@ class Jet:
 		if len(chosen) != len(names):
 			raise KeyError(f"not built: {sorted(set(names) - set(parts))}")
 		return np.concatenate(chosen)
+
+	def textured(self, materials=("paint", "team")):
+		# The painted triangles at rest, in stations, waterlines and buttlines,
+		# with their corners' UVs: (triangles (N, 3, 3), UVs (N, 3, 2))
+		worlds = self.model.worlds({})
+		tris, uvs = [], []
+		for i, n in enumerate(self.model.nodes):
+			if n["mesh"] is None or i not in worlds:
+				continue
+			W = worlds[i]
+			for (t, material), uv in zip(self.model.meshes[n["mesh"]], self.model.uvs[n["mesh"]]):
+				if uv is not None and material in materials:
+					tris.append(FRAME.source((t @ W[:3, :3].T + W[:3, 3]).reshape(-1, 3)).reshape(-1, 3, 3))
+					uvs.append(uv)
+		if not tris:
+			raise KeyError("no painted triangles with UVs")
+		return np.concatenate(tris), np.concatenate(uvs)
 
 	def points(self, names, drives=None):
 		# every corner, in stations, waterlines and buttlines
@@ -389,6 +408,70 @@ def bends(H, step, free, jump=0.6):
 	return out
 
 
+def turns(h, noise=0.05):
+	# A line's turns, as (index, +1 for a hump or -1 for a dip), each standing
+	# noise above or below the run either side of it, alternating
+	out, kind, best = [], 0, 0
+	for i in range(1, len(h)):
+		if kind == 0:
+			if abs(h[i] - h[0]) > noise:
+				kind = 1 if h[i] > h[0] else -1
+				best = int(np.argmax(h[:i + 1]) if kind == 1 else np.argmin(h[:i + 1]))
+		elif kind * (h[i] - h[best]) > 0:
+			best = i
+		elif kind * (h[best] - h[i]) > noise:
+			out.append((best, kind))
+			kind, best = -kind, i
+	return out
+
+
+def kink(x, z, window=8, inside=(1.0, 15.9)):
+	# A top outline's corner (heights z at buttlines x, evenly spaced): where
+	# its slope over `window` steps either side turns up the most, within the
+	# buttlines `inside`, as (buttline, height, turn in degrees); a turn past
+	# 90 deg (a slot's foot) is not one, nor one beside a gap (NaN)
+	x, z = np.asarray(x), np.asarray(z)
+	h = window
+	lo = (z[h:-h] - z[:-2 * h]) / (x[h:-h] - x[:-2 * h])
+	hi = (z[2 * h:] - z[h:-h]) / (x[2 * h:] - x[h:-h])
+	bend = np.degrees(np.arctan(hi) - np.arctan(lo))
+	band = (x[h:-h] > inside[0]) & (x[h:-h] < inside[1]) & (bend < 90)
+	if not band.any():
+		return np.inf, np.inf, 0.0
+	i = int(np.argmax(np.where(band, bend, -99.0)))
+	return float(x[h:-h][i]), float(z[h:-h][i]), float(bend[i])
+
+
+def waves(H, stations, free, span=40.0, jump=0.6):
+	# Each line's waves: a dip between two humps, or a hump between two dips,
+	# the three turns within 2 * span inches, over a run of stations free of
+	# the skin's edges (free: one mask, or one per line), on the skin
+	# throughout and on one surface (no step over jump inches between
+	# neighbours: where a line leaves one surface for another). Lines are
+	# averaged over 3 stations first, against the loft's facets. Returns
+	# [(line, station, +1 hump or -1 dip, its height above or depth below the
+	# lower or higher of the turns either side)]
+	out = []
+	for j, raw in enumerate(H):
+		ok = np.isfinite(raw) & (free[j] if free.ndim == 2 else free)
+		step = np.abs(np.diff(np.where(np.isfinite(raw), raw, 0.0))) > jump
+		i = 0
+		while i < len(raw):
+			if not ok[i]:
+				i += 1
+				continue
+			k = i + 1
+			while k < len(raw) and ok[k] and not step[k - 1]:
+				k += 1
+			h = np.convolve(np.pad(raw[i:k], 1, mode="edge"), np.ones(3) / 3, mode="valid")
+			found = [(a, s) for a, s in turns(h) if 0 < a < len(h) - 1]
+			for (a, _), (b, s), (c, _) in zip(found, found[1:], found[2:]):
+				if stations[i + c] - stations[i + a] <= 2 * span:
+					out.append((j, float(stations[i + b]), s, float(min(abs(h[b] - h[a]), abs(h[b] - h[c])))))
+			i = k
+	return out
+
+
 def surface_distance(points, tris, chunk=256):
 	# Each point's (N, 3) distance to the nearest of the triangles (M, 3, 3):
 	# to the plane where the point stands over a triangle, else to its edges
@@ -439,6 +522,81 @@ def first_hit(tris, origin, direction):
 	return float(d[met].min()) if met.any() else None
 
 
+def hits(tris, origins, direction):
+	# Where rays from each origin (N, 3) along one direction first meet the
+	# triangles: (triangle index, barycentric (u, v)) per ray, index -1 for a miss
+	v0, e1, e2 = tris[:, 0], tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0]
+	p = np.cross(direction, e2)
+	det = (e1 * p).sum(1)
+	ok = np.abs(det) > 1e-12
+	inv = np.where(ok, 1 / np.where(ok, det, 1), 0)
+	q = np.cross(e1, direction)
+	out, bary = np.full(len(origins), -1), np.zeros((len(origins), 2))
+	for i, o in enumerate(origins):
+		s = o - v0
+		u = (s * p).sum(1) * inv
+		c = np.cross(s, e1)
+		v = (direction * c).sum(1) * inv
+		d = (e2 * c).sum(1) * inv
+		met = ok & (u >= -1e-6) & (v >= -1e-6) & (u + v <= 1 + 1e-6) & (d > 1e-9)
+		if met.any():
+			k = int(np.argmin(np.where(met, d, np.inf)))
+			out[i], bary[i] = k, (u[k], v[k])
+	return out, bary
+
+
+def atlas(path):
+	# The paint's atlas a GLB carries, as brightness 0..1 (H, W), or None (a
+	# draft, unpainted)
+	import io
+	from PIL import Image
+	data = Path(path).read_bytes()
+	length = int.from_bytes(data[12:16], "little")
+	gltf = json.loads(data[20:20 + length])
+	start = 20 + length
+	binary = data[start + 8:]
+	materials = {m.get("name"): m for m in gltf.get("materials", [])}
+	texture = materials.get("paint", {}).get("pbrMetallicRoughness", {}).get("baseColorTexture")
+	if texture is None:
+		return None
+	image = gltf["images"][gltf["textures"][texture["index"]]["source"]]
+	view = gltf["bufferViews"][image["bufferView"]]
+	raw = binary[view.get("byteOffset", 0): view.get("byteOffset", 0) + view["byteLength"]]
+	return np.asarray(Image.open(io.BytesIO(raw)).convert("L"), float) / 255
+
+
+def sample(image, uv):
+	# The atlas's brightness at UVs (N, 2), read between texels (glTF's v runs down the image)
+	h, w = image.shape
+	x, y = np.clip(uv[:, 0] * w - 0.5, 0, w - 1), np.clip(uv[:, 1] * h - 0.5, 0, h - 1)
+	x0, y0 = np.minimum(x.astype(int), w - 2), np.minimum(y.astype(int), h - 2)
+	fx, fy = x - x0, y - y0
+	return (image[y0, x0] * (1 - fx) * (1 - fy) + image[y0, x0 + 1] * fx * (1 - fy) + image[y0 + 1, x0] * (1 - fx) * fy + image[y0 + 1, x0 + 1] * fx * fy)
+
+
+def coverage(uvs, size):
+	# How many triangles (N, 3, 2 in UV) hold each texel's centre strictly
+	# inside, over a size x size atlas: islands laid over each other count 2
+	count = np.zeros((size, size), np.int32)
+	p = uvs * size
+	lo = np.floor(p.min(1) - 0.5).astype(int)
+	span = np.ceil(p.max(1) - 0.5).astype(int) - lo + 1
+	cross = lambda a, b: a[..., 0] * b[..., 1] - a[..., 1] * b[..., 0]
+	whole = cross(p[:, 1] - p[:, 0], p[:, 2] - p[:, 0])
+	for s in np.unique(span.max(1)):
+		pick = np.where((span.max(1) == s) & (np.abs(whole) > 1e-12))[0]
+		for chunk in np.array_split(pick, max(1, len(pick) * s * s // 2000000 + 1)):
+			grid = np.stack(np.meshgrid(np.arange(s), np.arange(s), indexing="ij"), -1).reshape(-1, 2)
+			q = lo[chunk, None, :] + grid[None] + 0.5
+			a, b, c = (p[chunk, k, None, :] for k in range(3))
+			w0, w1 = cross(b - q, c - q) / whole[chunk, None], cross(c - q, a - q) / whole[chunk, None]
+			inside = (w0 > 1e-6) & (w1 > 1e-6) & (1 - w0 - w1 > 1e-6)
+			x, y = q[..., 0].astype(int), q[..., 1].astype(int)
+			inside &= (x >= 0) & (x < size) & (y >= 0) & (y < size)
+			np.add.at(count, (y[inside], x[inside]), 1)
+	return count
+
+
 def mirrored(left, right):
 	# How far a left part's bounds (points, source coordinates) miss its right
 	# twin's, reflected across the centreline
@@ -446,19 +604,32 @@ def mirrored(left, right):
 	return float(max(np.abs(left.min(0) - right.min(0)).max(), np.abs(left.max(0) - right.max(0)).max()))
 
 
+def result(fact, what, expected, measured, tolerance, unit="in"):
+	# One measurement. A measurement of nothing (NaN off the skin) fails: NaN
+	# compares false against any tolerance, and would pass
+	measured = float(measured)
+	return {"fact": fact, "what": what, "expected": round(float(expected), 3), "measured": round(measured, 3) if math.isfinite(measured) else math.inf,
+		"tolerance": tolerance, "unit": unit}
+
+
+def failed(r):
+	return "missing" in r or abs(r["measured"] - r["expected"]) > r["tolerance"]
+
+
 def checks(jet):
 	# Yields {"fact", "what", "expected", "measured", "tolerance", "unit"} or {"fact", "what", "missing"}
 	F = FACTS
 
-	def result(fact, what, expected, measured, tolerance, unit="in"):
-		return {"fact": fact, "what": what, "expected": round(float(expected), 3), "measured": round(float(measured), 3),
-			"tolerance": tolerance, "unit": unit}
-
 	def guard(fact, what, fn):
+		# a group that cannot measure reports it, as a failure, and the rest run
+		# on: a fact or part not found (KeyError), or nothing left to measure (a
+		# reduction over an empty selection: ValueError, IndexError)
 		try:
 			return list(fn())
 		except KeyError as e:
 			return [{"fact": fact, "what": what, "missing": str(e).strip("'\"")}]
+		except (ValueError, IndexError) as e:
+			return [{"fact": fact, "what": what, "missing": f"nothing to measure ({type(e).__name__}: {e})"}]
 
 	apex = value(F["nose"]["apex"])
 	down = {"gear": 1}
@@ -467,7 +638,8 @@ def checks(jet):
 	# Overall
 	def overall():
 		p = jet.points(every)
-		yield result("overall.length", "nose apex to the aftmost point", value(F["overall"]["length"]) * 12, p[:, 0].max() - p[:, 0].min(), 1.0)
+		# to the foot NATOPS gives it in (facts: overall.length)
+		yield result("overall.length", "nose apex to the aftmost point", value(F["overall"]["length"]) * 12, p[:, 0].max() - p[:, 0].min(), 6.0)
 		w = jet.points([n.format(s=s) for n in WING for s in ("left", "right")])
 		yield result("overall.span.spread", "wingtip to wingtip", value(F["overall"]["span"]["spread"]) * 12, w[:, 2].max() - w[:, 2].min(), 1.0)
 		folded = jet.points([n for n in every if not n.startswith("gear")], {"fold": 1})
@@ -770,11 +942,21 @@ def checks(jet):
 		yield result("reference.leading", "mean chord's leading edge", value(F["reference"]["leading"]), f0 + f1 * ymac, 0.5, "FS in")
 		yield result("reference.span", "reference span (wingtip to wingtip)", value(F["reference"]["span"]) * 12, 2 * jet.points(names)[:, 2].max(), 1.0)
 		yield result("wing.sweep", "quarter-chord sweep", value(w["sweep"]), math.degrees(math.atan(f1 + 0.25 * c1)), 0.2, "deg")
-		# hinged surfaces: planform areas, both sides
+		# hinged surfaces: planform areas, both sides. The flaps' area is not
+		# built: their fronts stand on the hinge line (layout.hinge), below
 		areas = value(w["areas"])
-		for fact_key, nodes in (("aileron", ["aileron_{s}"]), ("lef", ["flap_leading_inner_{s}", "flap_leading_outer_{s}"]), ("tef", ["flap_trailing_{s}"])):
+		for fact_key, nodes in (("aileron", ["aileron_{s}"]), ("lef", ["flap_leading_inner_{s}", "flap_leading_outer_{s}"])):
 			total = sum(verify.area(jet.tris([n.format(s=s)]), FRAME.axes @ [0, 1, 0]) / 2 for n in nodes for s in ("left", "right")) / 0.0254 ** 2 / 144
 			yield result("wing.areas", f"{fact_key} area, both sides", areas[fact_key], total, areas[fact_key] * 0.03, "ft2")
+		# the flap's and aileron's fronts, as shares of the wing's chord half-way
+		# along each, against the hinge line the photos from below show
+		hinge = value(F["layout"]["hinge"])
+		# (the flap's built on it; the aileron's, set by its cited area, within an inch)
+		for part, reach_, tolerance in (("flap_trailing", F["layout"]["surfaces"]["tef"], 0.003), ("aileron", F["layout"]["surfaces"]["aileron"], 0.015)):
+			b = (reach_[0] + reach_[1]) / 2
+			chord = jet.cut([n.format(s="right") for n in WING], [0, 0, b], [0, 0, 1])
+			front = jet.cut([f"{part}_right"], [0, 0, b], [0, 0, 1])[:, 0].min()
+			yield result("layout.hinge", f"{part.split('_')[0]}'s front at BL {b:.0f}, share of the chord", hinge, (front - chord[:, 0].min()) / np.ptp(chord[:, 0]), tolerance, "of chord")
 		inner_area = verify.area(jet.tris(["flap_leading_inner_right"]), FRAME.axes @ [0, 1, 0]) / 2 / 0.0254 ** 2 / 144
 		yield result("wing.lef", "each inboard leading-edge flap's share of the total", value(w["lef"]), inner_area / areas["lef"], 0.01, "of total")
 
@@ -855,24 +1037,35 @@ def checks(jet):
 		inner, outer = r[:, 2].min(), r[:, 2].max()
 		rc, tc = value(s_["root"]), value(s_["tip"])
 		exposed = outer - inner
+		aspect = (value(s_["exposed"]) * 12) ** 2 / (value(s_["area"]) * 144)
+		lsweep = leading_sweep(value(s_["sweep"]), aspect, tc / rc)
+		# the trailing corner's round (layout.stabilator_corner): the angle the
+		# cited planform's tip and trailing edge include, and the station out
+		# where the round leaves the trailing edge
+		radius = value(F["layout"]["stabilator_corner"])
+		run = exposed * math.tan(math.radians(lsweep)) + tc - rc
+		included = math.pi / 2 - math.atan2(run, exposed)
+		begins = outer - radius / math.tan(included / 2) * math.sin(included)
 		samples = {}
-		for f in (0.03, 0.5, 0.85, 0.97):
+		for f in (0.03, 0.5, 0.75, 0.97):
 			b = inner + exposed * f
 			q = jet.cut(["stabilator_right"], [600, 100, b], [0, 0, 1])
 			samples[f] = q
 			chord = q[:, 0].max() - q[:, 0].min()
-			if f < 0.9:
-				# the outermost sample's chord is the trailing corner's round, checked below
+			if b < begins:
+				# a chord on the round is the round's, checked below
 				yield result("stabilator.root" if f < 0.5 else "stabilator.tip", f"chord {f:.0%} out", rc + (tc - rc) * f, chord, 0.6)
-		aspect = (value(s_["exposed"]) * 12) ** 2 / (value(s_["area"]) * 144)
-		lsweep = leading_sweep(value(s_["sweep"]), aspect, tc / rc)
 		a, b = samples[0.03], samples[0.97]
 		slope = (b[:, 0].min() - a[:, 0].min()) / (exposed * 0.94)
 		yield result("stabilator.sweep", "leading-edge sweep (from the quarter-chord's)", lsweep, math.degrees(math.atan(slope)), 0.3, "deg")
 		fa, fb = a[np.argmin(a[:, 0])], b[np.argmin(b[:, 0])]
 		yield result("stabilator.dihedral", "leading edge's slope", value(s_["dihedral"]), math.degrees(math.atan((fb[1] - fa[1]) / (fb[2] - fa[2]))), 0.2, "deg")
+		# cr201687's area is the theoretical planform's, with sharp corners: less
+		# the two trailing corners' rounds, each the corner's sliver between the
+		# round and the tip and trailing edge
+		sliver = radius * radius * (1 / math.tan(included / 2) - (math.pi - included) / 2)
 		area = sum(verify.area(jet.tris([f"stabilator_{s}"]), FRAME.axes @ [0, 1, 0]) / 2 for s in ("left", "right")) / 0.0254 ** 2 / 144
-		yield result("stabilator.area", "exposed area, both sides", value(s_["area"]), area, 2.0, "ft2")
+		yield result("stabilator.area", "exposed area, both sides, less the corners' rounds", value(s_["area"]) - 2 * sliver / 144, area, 0.3, "ft2")
 		for f, key in ((0.03, "root"), (0.97, "tip")):
 			q = samples[f]
 			chord = q[:, 0].max() - q[:, 0].min()
@@ -886,7 +1079,6 @@ def checks(jet):
 		# the tip and the trailing edge: the trailing edge's line measured clear of
 		# the round (3% and 70% out), and the outline at the tip and half-way
 		# round the corner where a circle of that radius puts it
-		radius = value(F["layout"]["stabilator_corner"])
 		clear = {}
 		for f in (0.03, 0.7):
 			b = inner + exposed * f
@@ -1062,10 +1254,20 @@ def checks(jet):
 			# the skin's height seen from a view, at one station and line, on a small even grid round it
 			return float(lines(skin, view, np.array([station - 0.5, station, station + 0.5]), np.array([across - 0.5, across, across + 0.5]))[1, 1])
 
-		for station, waterline in sp["crown"]:
+		# (the crown inside the hood behind the canopy, which the old model's top
+		# governs there by the user's decision, 2026-11-04, is left out)
+		for station, waterline in [p for p in sp["crown"] if p[0] >= F["layout"]["canopy"]["aft"]["station"] + 12]:
 			yield result("layout.spine", f"crown at FS {station:g} (dvids9820808's profile)", waterline, at("above", station, 0.0), 0.5, "WL in")
 		for station, waterline, buttline in sp["flank"]:
 			yield result("layout.spine", f"spine's flank at FS {station:g}, WL {waterline:g} (its panel joints' lower ends)", buttline, at("outboard", station, waterline), 1.0, "BL in")
+		# the side seam behind the canopy, triangulated by two photo pairs that part
+		# by 0.4-1.3 in along it: held to 0.75 in, aft of where the old model's
+		# section governs the shoulder (layout.dorsal, the user's decision)
+		governed = F["layout"]["canopy"]["aft"]["station"] + 85.0
+		for station, waterline, buttline in [p for p in sp["side"] if p[0] >= governed]:
+			yield result("layout.spine", f"spine's side seam behind the canopy at FS {station:g}, WL {waterline:g}", buttline, at("outboard", station, waterline), 0.75, "BL in")
+		for station, waterline, buttline in sp["rear"]:
+			yield result("layout.spine", f"spine's top between the fins at FS {station:g}, BL {buttline:g}", waterline, at("above", station, buttline), 1.0, "WL in")
 		for station, waterline in sp["deck"]:
 			yield result("layout.spine", f"deck beside the spine at FS {station:g} (dvids9820788)", waterline, at("above", station, 24.0), 1.0, "WL in")
 
@@ -1213,19 +1415,24 @@ def checks(jet):
 		chin = jet.points(["antenna_chin"])
 		yield result("layout.antennas", "chin fairing and posts' forward end", an["chin"][0], chin[:, 0].min(), 0.5, "FS in")
 		yield result("layout.antennas", "comb's aft post", an["comb"][-1] + 0.3, chin[:, 0].max(), 0.5, "FS in")
-		# the antenna pods on the fins' trailing edges
-		pd = F["layout"]["pod"]
+		# the antenna pods on the fins' trailing edges, each read within its own
+		# band of waterlines (an empty band reads as a miss)
 		for name in ("pod_left", "pod_right"):
-			p = jet.points([name])
-			yield result("layout.pod", f"{name} front", pd["from"], p[:, 0].min(), 0.5, "FS in")
-			yield result("layout.pod", f"{name} aft end", pd["to"], p[:, 0].max(), 0.5, "FS in")
-			yield result("layout.pod", f"{name} middle", pd["waterline"], (p[:, 1].min() + p[:, 1].max()) / 2, 0.5, "WL in")
-			yield result("layout.pod", f"{name} diameter", pd["diameter"], p[:, 1].max() - p[:, 1].min(), 0.3)
-			# the pod straddles the fin at its middle; its blunt end stands past the trailing edge
-			fin = jet.cut([name.replace("pod", "fin")], [(pd["from"] + pd["to"]) / 2, 100, 0], [1, 0, 0])
-			level = fin[np.abs(fin[:, 1] - pd["waterline"]) < 1.0]
-			yield result("layout.pod", f"{name} on its fin", (level[:, 2].min() + level[:, 2].max()) / 2 if len(level) else np.inf,
-				(p[:, 2].min() + p[:, 2].max()) / 2, 0.5, "BL in")
+			every = jet.points([name])
+			for k, (start, end, waterline, diameter) in enumerate(F["layout"]["pods"]["list"]):
+				p = every[np.abs(every[:, 1] - waterline) < diameter / 2 + 0.3]
+				if not len(p):
+					yield result("layout.pods", f"{name} {k}: its points", 1.0, 0.0, 0.5, "found")
+					continue
+				yield result("layout.pods", f"{name} {k}: front", start, p[:, 0].min(), 0.5, "FS in")
+				yield result("layout.pods", f"{name} {k}: aft end", end, p[:, 0].max(), 0.5, "FS in")
+				yield result("layout.pods", f"{name} {k}: middle", waterline, (p[:, 1].min() + p[:, 1].max()) / 2, 0.5, "WL in")
+				yield result("layout.pods", f"{name} {k}: diameter", diameter, p[:, 1].max() - p[:, 1].min(), 0.3)
+				# it straddles the fin at its middle; its blunt end stands at or past the trailing edge
+				fin = jet.cut([name.replace("pod", "fin")], [(start + end) / 2, 100, 0], [1, 0, 0])
+				sides = [a[2] + (b[2] - a[2]) * (waterline - a[1]) / (b[1] - a[1]) for a, b in fin.reshape(-1, 2, 3) if (a[1] - waterline) * (b[1] - waterline) <= 0 and a[1] != b[1]]
+				yield result("layout.pods", f"{name} {k}: on its fin", (min(sides) + max(sides)) / 2 if sides else np.inf,
+					(p[:, 2].min() + p[:, 2].max()) / 2, 0.5, "BL in")
 		# the blade antenna under the nose
 		b = F["layout"]["blade"]
 		p = jet.points(["blade_nose"])
@@ -1285,10 +1492,12 @@ def checks(jet):
 		for k, (st, wl, bl) in enumerate(c["sill"]):
 			sill = jet.cut(["canopy"], [st, 100, 0], [1, 0, 0])
 			low = sill[sill[:, 2] > 0]
-			yield result("layout.canopy", f"canopy's sill at FS {st}", wl, low[:, 1].min(), 1.0, "WL in") if len(low) else None
+			yield result("layout.canopy", f"canopy's sill at FS {st}", wl, low[:, 1].min() if len(low) else np.inf, 1.0, "WL in")
 		# the glass's section: its half-width halfway from the sill to the top, against the fitted superellipse,
-		# near each end of the canopy (the exponent runs from one at the bow's foot to the other at the aft corner)
-		for st in (250.0, 310.0):
+		# near each end of the canopy (the exponent runs from one at the bow's foot to the other at the aft
+		# corner), aft where the glass alone still makes the section: behind FS 290 the fairing's shoulders
+		# rise beside it (flared())
+		for st in (250.0, 290.0):
 			b = np.interp(st, [p[0] for p in c["sill"]], [p[2] for p in c["sill"]])
 			w = np.interp(st, [p[0] for p in c["sill"]], [p[1] for p in c["sill"]])
 			glass = jet.cut(["canopy"], [st, 100, 0], [1, 0, 0])
@@ -1296,13 +1505,28 @@ def checks(jet):
 			near = glass[np.abs(glass[:, 1] - halfway) < 0.4]
 			n = np.interp(st, [c["sill"][0][0], c["sill"][-1][0]], c["glass"])
 			yield result("layout.canopy", f"glass's half-width halfway up at FS {st:.0f}", b * (1 - 0.5 ** n) ** (1 / n),
-				np.abs(near[:, 2]).max(), 0.3, "BL in") if len(near) else None
+				np.abs(near[:, 2]).max() if len(near) else np.inf, 0.3, "BL in")
+		# the glass's lower edge, where the metal panel below it meets it, read off two left-side photos
+		glass = jet.model.parts(verify.pose(jet.joints, {}), materials=("glass",)).get("canopy", np.zeros((0, 3, 3)))
+		# Over the canopy's tail the old model's crease at its foot governs
+		# (layout.dorsal crease, the user's decision, 2026-11-04): where it
+		# stands above a reading (0.3-0.7 in over FS 295-319) the glass ends on it
+		ds = L["dorsal"]
+		settled = float(np.interp(12.0, ds["offsets"], ds["tops"]))
+		crown = lambda st: float(np.interp(st, [p[0] for p in L["spine"]["crown"]], [p[1] for p in L["spine"]["crown"]]))
+		for st, wl in c["glass_edge"]:
+			across = FRAME.source(verify.cut(glass, FRAME.model([st, 100, 0]), FRAME.axes @ np.array([1.0, 0, 0])).reshape(-1, 3)) if len(glass) else np.zeros((0, 3))
+			left = across[across[:, 2] < 0]
+			offset = st - c["aft"]["station"]
+			crease = crown(st) + float(np.interp(offset, [r[0] for r in ds["crease"]], [r[2] for r in ds["crease"]])) - settled if offset >= ds["crease"][0][0] else -np.inf
+			label = f"glass's lower edge at FS {st:g}, left" + (", on the old model's crease" if crease > wl else "")
+			yield result("layout.canopy", label, max(wl, crease), left[:, 1].min() if len(left) else np.inf, 0.75, "WL in")
 		# the bow and the aft edge lean: the glass's lowest stretch starts at the bow's foot and ends at the aft corner
 		whole = jet.points(["canopy"])
 		foot = whole[whole[:, 1] < c["bow"]["foot"] + 1.0]
-		yield result("layout.canopy", "canopy's lowest front (the bow's foot)", c["sill"][0][0], foot[:, 0].min(), 0.6, "FS in") if len(foot) else None
+		yield result("layout.canopy", "canopy's lowest front (the bow's foot)", c["sill"][0][0], foot[:, 0].min() if len(foot) else np.inf, 0.6, "FS in")
 		corner = whole[whole[:, 1] < c["sill"][-1][1] + 1.0]
-		yield result("layout.canopy", "canopy's lowest aft (the aft corner)", c["sill"][-1][0], corner[:, 0].max(), 0.6, "FS in") if len(corner) else None
+		yield result("layout.canopy", "canopy's lowest aft (the aft corner)", c["sill"][-1][0], corner[:, 0].max() if len(corner) else np.inf, 0.6, "FS in")
 		# no ledge under the sill: the body an inch below it stands within an inch of the sill's buttline
 		ledge = 0.0
 		for st in (250.0, 280.0, 310.0):
@@ -1316,7 +1540,36 @@ def checks(jet):
 		# the top line behind the crown, as the profiles show it
 		for st, wl in c["top"]:
 			cut = jet.cut(["canopy"], [st, 100, 0], [1, 0, 0])
-			yield result("layout.canopy", f"canopy's top at FS {st:.0f}", wl, cut[:, 1].max(), 0.3, "WL in") if len(cut) else None
+			yield result("layout.canopy", f"canopy's top at FS {st:.0f}", wl, cut[:, 1].max() if len(cut) else np.inf, 0.3, "WL in")
+		# behind the canopy the old model's section governs the shoulder (the
+		# user's decision, 2026-11-04), not the photos' joint, which stands 0.6-2
+		# in inside it: the skin's half-width at each depth below its top, at
+		# each offset aft of the canopy's aft end where it holds in full
+		skin = jet.points(["fuselage"]).reshape(-1, 3, 3)
+		ds = L["dorsal"]
+		for offset, row in zip(ds["offsets"], ds["widths"]):
+			if not 12 <= offset <= 55:
+				continue
+			st = c["aft"]["station"] + offset
+			top = lines(skin, "above", np.array([st - 0.01, st, st + 0.01]), np.array([0.0, 0.01]))[0][1]
+			for depth in (2.0, 3.0, 5.0, 8.0):   # not 1 in: the top is so flat there that 0.1 in of height moves the width an inch
+				wl = top - depth
+				width = lines(skin, "outboard", np.array([st - 0.01, st, st + 0.01]), np.array([wl, wl + 0.01]))[0][1]
+				yield result("layout.dorsal", f"skin's half-width {depth:g} in below its top, {offset:g} in aft of the canopy", float(np.interp(depth, ds["depths"], row)), width, 0.5, "BL in")
+		# the crease at the foot of the canopy's tail (layout.dorsal crease):
+		# where the top outline (canopy and body, highest at each buttline)
+		# turns most, as the old model's was found, its place and its turn,
+		# where the section is wholly the old model's. A corner rounded over
+		# between columns turns a quarter as much over 0.4 in
+		whole = np.concatenate([jet.points(["fuselage"]).reshape(-1, 3, 3), jet.points(["canopy"]).reshape(-1, 3, 3)])
+		bls = np.arange(0.0, 16.0, 0.05)
+		for offset in (-16.0, -8.0, -2.0, 2.0, 5.0):
+			st = c["aft"]["station"] + offset
+			bl, wl, bend = kink(bls, lines(whole, "above", np.array([st - 0.01, st, st + 0.01]), bls)[:, 1])
+			row = [float(np.interp(offset, [r[0] for r in ds["crease"]], [r[k] for r in ds["crease"]])) for k in (1, 2, 3)]
+			yield result("layout.dorsal", f"crease at the tail's foot, {offset:g} in aft of the canopy: its buttline", row[0], bl, 0.5, "BL in")
+			yield result("layout.dorsal", f"crease at the tail's foot, {offset:g} in aft of the canopy: its waterline", crown(st) + row[1] - settled, wl, 0.3, "WL in")
+			yield result("layout.dorsal", f"crease at the tail's foot, {offset:g} in aft of the canopy: its turn", row[2], bend, 0.4 * row[2], "deg")
 		hood = jet.cut(["canopy"], [c["crown"]["station"], 100, 0], [1, 0, 0])
 		yield result("layout.canopy", "canopy crown", c["crown"]["waterline"], hood[:, 1].max(), 0.4, "WL in")
 		whole = jet.points(["canopy"])
@@ -1330,6 +1583,20 @@ def checks(jet):
 			# within 3 in: the rings near the bow lean with it, their columns moved along
 			near = glass[np.abs(glass[:, 0] - station) < 3.0]
 			yield result("layout.canopy", f"windscreen glass's lowest at FS {station:.0f}, on its base line", base, float(near[:, 1].min()) if len(near) else 999.0, 1.0, "WL in")
+		# the windscreen's section above its frame sill (screen): its half-width
+		# halfway from the sill to the top against the fitted superellipse, where
+		# its exponent is held (FS 198) and rising to the canopy's (FS 220)
+		sill = c["screen"] + c["sill"]
+		for st in (198.0, 220.0):
+			b = np.interp(st, [p[0] for p in sill], [p[2] for p in sill])
+			w = np.interp(st, [p[0] for p in sill], [p[1] for p in sill])
+			cut = jet.cut(["fuselage", "windscreen"], [st, 100, 0], [1, 0, 0])
+			halfway = w + (cut[:, 1].max() - w) / 2 if len(cut) else 0.0
+			# where the section's segments cross the halfway height (none: a failure)
+			crossings = [a[2] + (b_[2] - a[2]) * (halfway - a[1]) / (b_[1] - a[1]) for a, b_ in cut.reshape(-1, 2, 3) if (a[1] - halfway) * (b_[1] - halfway) <= 0 and a[1] != b_[1]]
+			n = np.interp(st, [c["screen_glass"][0], c["sill"][0][0], c["sill"][-1][0]], [c["screen_glass"][1], c["glass"][0], c["glass"][1]])
+			yield result("layout.canopy", f"windscreen's half-width halfway up at FS {st:.0f}", b * (1 - 0.5 ** n) ** (1 / n),
+				max(np.abs(crossings)) if crossings else np.inf, 0.3, "BL in")
 		screen = jet.points(["windscreen"])
 		yield result("layout.canopy", "windscreen's front base", c["windscreen"]["station"], screen[:, 0].min(), 0.6, "FS in")
 		bow = jet.cut(["canopy", "windscreen"], [c["bow"]["station"], 100, 0], [1, 0, 0])
@@ -1396,7 +1663,11 @@ def checks(jet):
 				keep &= ~((stations >= a) & (stations <= b))
 			return keep
 
-		glass, inlet = (cp["windscreen"]["station"] - 14, cp["aft"]["station"] + 4), (lip - 8, join + 12)
+		# the glass runs on into the hood behind the canopy (layout.dorsal), whose
+		# back meets the spine's flat top at the corner the old model has there,
+		# by the user's decision (2026-11-04): an edge by design, 5 deg seen from
+		# above at FS 337
+		glass, inlet = (cp["windscreen"]["station"] - 14, cp["aft"]["station"] + 16), (lip - 8, join + 12)
 		side = np.arange(88.0, 148.0, 2.0)
 		sill = min(p[1] for p in cp["sill"]) - 9
 		# Each view's tolerance lies between the fixed build's worst (2.5, 2.9
@@ -1410,6 +1681,21 @@ def checks(jet):
 			if not found:
 				raise KeyError(f"no skin measured seen from {view}")
 			yield result("shape.bend", f"skin's sharpest crease seen from {view}, away from its edges", 0.0, max(abs(f[3]) for f in found), tolerance, "deg")
+		# the skin's waves on the same lines, from above out to the spine's
+		# shoulder: a dip between humps or a hump between dips within 80 in,
+		# which no crease check sees (the user saw a 0.4-0.8 in dip then hump
+		# behind the canopy three times, where the forebody's sections were
+		# blended into the rear fuselage and fitted to the side seam point by
+		# point; the smooth loft behind the canopy carries none)
+		for view, across, free in (("above", np.arange(0.0, 22.0, 1.5), clear(glass)), ("below", np.arange(0.0, 37.0, 1.5), clear(inlet)),
+				("outboard", side, np.array([clear(glass, inlet) if wl >= sill else clear(inlet) for wl in side]))):
+			H = lines(skin, view, stations, across)
+			if not np.isfinite(H).any():
+				raise KeyError(f"no skin measured seen from {view}")
+			found = waves(H, stations, free)
+			worst = max(found, key=lambda f: f[3], default=None)
+			where = f" (at FS {worst[1]:g}, {'BL' if view != 'outboard' else 'WL'} {across[worst[0]]:g})" if worst else ""
+			yield result("shape.wave", f"skin's largest dip then hump seen from {view}{where}", 0.0, worst[3] if worst else 0.0, 0.15)
 		# the LEX's upper surface and its fairing, which eases it down behind the
 		# junction onto the nacelle's shoulder: beside the body's wall (where the
 		# root meets it) to inside the wing's root, and short of its square aft end
@@ -1425,6 +1711,30 @@ def checks(jet):
 		# steps would lie as ledges, spread over inches rather than creased
 		found = bends(lines(skin, "below", stations, np.arange(0.0, 12.0, 1.5)), 1.5, clear(inlet) & (stations < lip - 8))
 		yield result("shape.bend", "belly's sharpest bend between the nose and the inlets", 0.0, max((abs(f[2]) for f in found), default=np.inf), 2.8, "deg")
+		# the deck between the fins falls aft with no hump: along its lines outboard
+		# of the ridge, the most it rises going aft over FS 520-660 (the user saw a
+		# 2.1 in hump at FS 592 behind a dip, the body fitted through the
+		# speedbrake's edges; 0.2 in on the old deck)
+		run = np.arange(520.0, 661.0, 2.0)
+		H = lines(jet.points(["fuselage"]).reshape(-1, 3, 3), "above", run, np.arange(13.0, 24.1, 1.0))
+		rise = max((float(np.nanmax(h[i:]) - h[i]) for h in H for i in range(len(h)) if np.isfinite(h[i])), default=np.inf)
+		yield result("shape.deck", "deck between the fins: the most it rises going aft, BL 13-24", 0.0, rise, 1.2)
+		sb = F["layout"]["speedbrake"]
+		# the speedbrake's place: its front, back and side edges
+		brake = jet.points(["speedbrake"])
+		yield result("layout.speedbrake", "speedbrake's forward edge", sb["front"], brake[:, 0].min(), 0.5, "FS in")
+		yield result("layout.speedbrake", "speedbrake's aft edge", sb["back"], brake[:, 0].max(), 0.5, "FS in")
+		yield result("layout.speedbrake", "speedbrake's half-width", sb["half"], np.abs(brake[:, 2]).max(), 0.3, "BL in")
+		# the canopy's aft end, which the crease checks leave out as an edge: its
+		# fairing lifts the canopy's section onto the spine's within inches, but
+		# turns no sharper than a fillet would (the fitted 11 deg an inch; 67
+		# where the spine stood up to 2 in proud of the canopy within an inch)
+		aft = cp["aft"]["station"]
+		near = np.arange(aft - 8, aft + 17, 1.0)
+		H = lines(jet.points(["fuselage", "canopy"]).reshape(-1, 3, 3), "above", near, np.arange(2.0, 16.01, 2.0))
+		turns = np.degrees(np.arctan(H[:, 2:] - H[:, 1:-1]) - np.arctan(H[:, 1:-1] - H[:, :-2]))
+		yield result("shape.bend", "skin's sharpest turn across the canopy's aft end seen from above, an inch either side", 0.0,
+			float(np.nanmax(np.abs(turns))) if np.isfinite(turns).any() else np.inf, 20.0, "deg")
 		# where each inlet's outer skin hands over to the fuselage: the part of the
 		# fuselage's section that the nacelle adds stands nowhere outside the
 		# inlet's last ring (its jump from the body to the nacelle, just ahead,
@@ -1469,14 +1779,135 @@ def checks(jet):
 
 	yield from guard("shape", "shapes", shapes)
 
+	# The paint, on a painted build (a draft carries no atlas: main() says so)
+	image = atlas(jet.path)
+	if image is None:
+		return
+
+	def paint():
+		tris, uvs = jet.textured()
+		size = image.shape[0]
+		# no texel lies under two painted faces: islands laid over each other
+		# let the bake write one over the other (the LEX's root over the warning
+		# box's corner, while its island took in faces turned away from it; 225
+		# texels where smart_project folded faces over others)
+		count = coverage(uvs, size)
+		yield result("paint.overlap", "atlas texels two painted faces both lie on", 0, int((count >= 2).sum()), 0, "texels")
+		normals = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
+		area = np.linalg.norm(normals, axis=1)
+		normals = normals / np.maximum(area, 1e-12)[:, None]
+		e1, e2 = uvs[:, 1] - uvs[:, 0], uvs[:, 2] - uvs[:, 0]
+		texel = np.sqrt(area / 2 / np.maximum(np.abs(e1[:, 0] * e2[:, 1] - e1[:, 1] * e2[:, 0]) / 2 * size * size, 1e-12))
+		centres = tris.mean(1)
+
+		def read(points, normal, near):
+			# the atlas's brightness where each point, moved out along the normal
+			# and cast back, meets the near triangles; NaN for a miss
+			k, bary = hits(tris[near], points + 2.0 * normal, -normal)
+			out = np.full(len(points), np.nan)
+			hit = k >= 0
+			if hit.any():
+				i = np.where(near)[0][k[hit]]
+				u, v = bary[hit].T
+				uv = uvs[i, 0] * (1 - u - v)[:, None] + uvs[i, 1] * u[:, None] + uvs[i, 2] * v[:, None]
+				out[hit] = sample(image, uv)
+			return out
+
+		# each stencil drawn on skin dense enough for its lettering (each
+		# stencil's own island), and whole: its ink just inside its edges dark
+		# against the paint beside it (a plane leaning off the skin left the
+		# warning box's top and bottom undrawn)
+		for key, spec in F["layout"]["stencils"].items():
+			if not isinstance(spec, dict):
+				continue
+			(fs, wl), (length, height) = spec["at"], spec["size"]
+			for side in (1, -1):
+				name = "right" if side > 0 else "left"
+				box = (np.abs(centres[:, 0] - fs) < length / 2) & (np.abs(centres[:, 1] - wl) < height / 2) & (centres[:, 2] * side > 0)
+				if not box.any():
+					raise KeyError(f"no painted skin under the {key} stencil, {name}")
+				outer = box & (centres[:, 2] * side > (centres[box, 2] * side).max() - 2.0)
+				yield result("layout.stencils", f"{key} stencil's skin, {name}: its coarsest texel", 0.0, float(texel[outer].max()), 0.15)
+				k, bary = hits(tris, np.array([[fs, wl, side * 80.0]]), np.array([0.0, 0.0, -side]))
+				if k[0] < 0:
+					raise KeyError(f"no skin at the {key} stencil's middle, {name}")
+				centre = tris[k[0], 0] + (tris[k[0], 1] - tris[k[0], 0]) * bary[0, 0] + (tris[k[0], 2] - tris[k[0], 0]) * bary[0, 1]
+				normal = normals[k[0]] * np.sign(normals[k[0], 2] * side)
+				up = np.array([0.0, 1.0, 0.0]) - normal * normal[1]
+				up /= np.linalg.norm(up)
+				across = np.cross(up, normal)
+				corners = [(-0.5, 0.5), (0.5, 0.5), (0.5, -0.5), (-0.5, -0.5)] if spec["kind"] == "box" else [(-0.5, 0.5), (0.0, -0.5), (0.5, 0.5)]
+				inset = 0.2
+				edges = list(zip(corners, corners[1:] + corners[:1])) if spec["kind"] == "box" else list(zip(corners, corners[1:]))
+				inner, outside = [], []
+				middle = np.mean(corners, 0)
+				for a, b in edges:
+					a, b = np.array(a) * (length, height), np.array(b) * (length, height)
+					inward = (middle * (length, height) - (a + b) / 2)
+					inward /= np.linalg.norm(inward)
+					for f in np.linspace(0.05, 0.95, 24):
+						q = a + (b - a) * f
+						inner.append(q + inward * inset)
+						outside.append(q - inward * 1.0)
+				near = (np.abs(centres - centre) < max(length, height)).all(1)
+				place = lambda qs: centre + np.array(qs)[:, :1] * across + np.array(qs)[:, 1:] * up
+				ink, paint_ = read(place(inner), normal, near), read(place(outside), normal, near)
+				ok = np.isfinite(ink)
+				if not ok.any() or not np.isfinite(paint_).any():
+					raise ValueError(f"the {key} stencil's edges are off the painted skin, {name}")
+				dark = float(np.mean(ink[ok] < 0.75 * np.nanmedian(paint_)))
+				yield result("layout.stencils", f"{key} stencil's edges inked, {name}: their share", 1.0, dark, 0.05, "share")
+
+		# the panel lines read along their whole length: each half inch of a line
+		# darker than the skin an inch either side (a line narrower than two
+		# texels, each texel wholly on it or off it by its centre, broke into dots)
+		p = F["layout"]["panels"]
+		every_line = [np.array(l, float) for l in p["lines"] + p["mirrored"]] + [np.array(l, float) * [1, 1, -1] for l in p["mirrored"]]
+		for station in p.get("rings", []):
+			segments = verify.cut(tris, [station, 100, 0], [1, 0, 0])
+			if not len(segments):
+				raise KeyError(f"no painted skin at the ring at FS {station}")
+			every_line += [s for s in segments]
+		gaps, total = 0, 0
+		for line in every_line:
+			points = np.concatenate([np.linspace(q, r, max(2, int(np.ceil(np.linalg.norm(r - q) / 0.5)) + 1))[:-1] for q, r in zip(line, line[1:])] + [line[-1:]])
+			if len(points) < 3:
+				continue
+			low, high = points.min(0) - 3, points.max(0) + 3
+			near = ((tris.min(1) <= high) & (tris.max(1) >= low)).all(1)
+			if not near.any():
+				raise KeyError("no painted skin near a panel line")
+			for i in range(1, len(points) - 1):
+				q = points[i]
+				j = np.where(near)[0][np.argmin(np.linalg.norm(centres[near] - q, axis=1))]
+				n = normals[j]
+				along = points[i + 1] - points[i - 1]
+				beside = np.cross(n, along)
+				if np.linalg.norm(beside) < 1e-9:
+					continue
+				beside /= np.linalg.norm(beside)
+				line_, left, right = read(np.array([q, q + 1.0 * beside, q - 1.0 * beside]), n, near)
+				reference = np.nanmax([left, right]) if np.isfinite([left, right]).any() else np.nan
+				if np.isfinite(line_) and np.isfinite(reference):
+					total += 1
+					gaps += line_ > 0.95 * reference
+		if not total:
+			raise ValueError("no panel line read off the paint")
+		yield result("layout.panels", "panel lines' share of their length no darker than the skin beside them", 0.0, gaps / total, 0.05, "share")
+
+	yield from guard("paint", "paint", paint)
+
 
 def main():
 	jet = Jet(sys.argv[1], sys.argv[2])
 	results = list(checks(jet))
 	covered = {r["fact"] for r in results}
+	# a draft's paint is unbaked: what only the paint shows goes unchecked, and says so
+	if atlas(sys.argv[1]) is None:
+		covered |= PAINTED
 	unaccounted = [e for e in entries(FACTS) if e not in covered and e not in EXEMPT]
 	stale = [e for e in EXEMPT if e not in entries(FACTS)]
-	failures = [r for r in results if "missing" in r or abs(r["measured"] - r["expected"]) > r["tolerance"]]
+	failures = [r for r in results if failed(r)]
 	if "--json" in sys.argv:
 		print(json.dumps({"results": results, "unaccounted": unaccounted, "stale": stale, "exempt": EXEMPT}, indent="\t"))
 	else:
@@ -1491,6 +1922,8 @@ def main():
 			print(f"UNCHECKED {e}: facts.json entry with no check and no exemption")
 		for e in stale:
 			print(f"STALE    {e}: exempted but no longer in facts.json")
+		if atlas(sys.argv[1]) is None:
+			print("PAINT    unchecked: the model carries no atlas (a draft)")
 		print(f"{len(results)} measurements, {len(failures)} outside tolerance; {len(EXEMPT)} entries exempt; {len(unaccounted)} unaccounted")
 	sys.exit(1 if failures or unaccounted or stale else 0)
 

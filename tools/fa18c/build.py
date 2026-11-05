@@ -28,6 +28,7 @@ import numpy as np
 import bpy
 from mathutils import Matrix, Vector
 from mathutils.bvhtree import BVHTree
+from mathutils.kdtree import KDTree
 
 HERE = Path(__file__).resolve().parent
 FACTS = json.loads((HERE / "facts.json").read_text())
@@ -286,6 +287,9 @@ SURFACES = {}
 TOPLINE, KEELLINE = [], []
 
 
+SHARP = set()   # points (rounded world metres) between which an edge is shaded sharp: the crease at the foot of the canopy's tail
+
+
 def node(name, parent=None, hinge=None, mesh=None, paint="paint"):
 	# An object at `hinge` (world space). Its mesh's vertices are given in
 	# world space and stored relative to the hinge. Every ancestor rests
@@ -306,6 +310,19 @@ def node(name, parent=None, hinge=None, mesh=None, paint="paint"):
 			polygon.material_index = names.index(n)
 		data.validate()
 		tidy(data)
+		if SHARP:
+			# edges laid along a designed crease (fuselage()), its points
+			# found within a tenth of a millimetre (the mesh keeps single
+			# precision)
+			tree = KDTree(len(SHARP))
+			for k, point in enumerate(SHARP):
+				tree.insert(point, k)
+			tree.balance()
+			sharp = data.attributes.get("sharp_edge") or data.attributes.new("sharp_edge", "BOOLEAN", "EDGE")
+			on = [tree.find(v.co + hinge)[2] < 1e-4 for v in data.vertices]
+			for edge, attribute in zip(data.edges, sharp.data):
+				if on[edge.vertices[0]] and on[edge.vertices[1]]:
+					attribute.value = True
 	obj = bpy.data.objects.new(name, data)
 	bpy.context.scene.collection.objects.link(obj)
 	if parent:
@@ -438,8 +455,10 @@ def wing(side):
 	share = value(w["lef"])   # each inboard leading-edge flap's share of the total; each outboard has (1 - 2 x share) / 2
 	inner_lef = surface.fraction(areas["lef"] * share, spans["lef"]["inner"])
 	outer_lef = surface.fraction(areas["lef"] * (1 - 2 * share) / 2, spans["lef"]["outer"])
-	tef = surface.fraction(areas["tef"] / 2, spans["tef"])
 	aileron = surface.fraction(areas["aileron"] / 2, spans["aileron"])
+	# the flaps' fronts on the hinge line the photos show (layout.hinge), where
+	# cr201687's flap area would put them about 5 in behind it
+	tef = 1 - LAYOUT["hinge"]["value"]
 	inside = 40.0   # the root buried in the fuselage
 	# the aileron starts inboard of the fold line: the inner panel stops at its
 	# hinge there, and that part of it folds with the outer panel
@@ -498,6 +517,10 @@ def wing(side):
 	for key, reach_, part in (("inner", spans["lef"]["inner"], "flap_leading_inner"), ("outer", spans["lef"]["outer"], "flap_leading_outer")):
 		CURVES[f"wing_leading_{key}_{name}"] = ([surface.point(reach_[0] + (reach_[1] - reach_[0]) * i / 12, 0) for i in range(13)], f"{part}_{name}")
 	CURVES[f"wingtip_{name}"] = ([surface.point(semispan, x) for x in (0, 0.25, 0.5, 0.75, 1)], f"wing_outer_{name}")
+	# the flap's and aileron's fronts on the lower surface, where the photos
+	# from below see the hinge line (layout.hinge)
+	for part, reach_, share in (("flap_trailing", spans["tef"], tef), ("aileron", spans["aileron"], aileron)):
+		CURVES[f"hinge_{part}_{name}"] = ([surface.point(reach_[0] + (reach_[1] - reach_[0]) * i / 8, 1 - share, -1) for i in range(9)], f"{part}_{name}")
 	return {"lef": [inner_lef, outer_lef], "tef": tef, "aileron": aileron}
 
 
@@ -553,13 +576,17 @@ def fin(side):
 	spans = (reach[0] * height, reach[1] * height)
 	rudder = surface.fraction(value(f["rudder"]) / 2, spans)
 	node(f"fin_{name}", hinge=root, mesh=surface.panel((0, height), [(spans, rudder, "back")]))
-	# the antenna pod on the trailing edge below the tip (layout.pod), on the
-	# fin's plane at its waterline
-	p = LAYOUT["pod"]
-	level = height - (place["tip"]["waterline"] - p["waterline"]) / math.cos(cant)
-	bl = -surface.point(level, 1).y / INCH   # Blender's y is to port
-	node(f"pod_{name}", mesh=pod(at(p["from"], p["waterline"], bl), at(p["to"], p["waterline"], bl), p["diameter"] / 2))
-	MARKS[f"pod_aft_{name}"] = (at(p["to"], p["waterline"], bl), f"pod_{name}")
+	# the antenna pods on the trailing edge below the tip (layout.pods), each
+	# straddling the fin on its plane at its waterline; the upper one's blunt
+	# end is a landmark
+	pieces = []
+	for k, (start, end, waterline, diameter) in enumerate(LAYOUT["pods"]["list"]):
+		level = height - (place["tip"]["waterline"] - waterline) / math.cos(cant)
+		bl = -surface.point(level, 1).y / INCH   # Blender's y is to port
+		pieces.append(pod(at(start, waterline, bl), at(end, waterline, bl), diameter / 2))
+		if k == 0:
+			MARKS[f"pod_aft_{name}"] = (at(end, waterline, bl), f"pod_{name}")
+	node(f"pod_{name}", mesh=merge(pieces))
 	a, b = surface.point(spans[0], 1 - rudder), surface.point(spans[1], 1 - rudder)
 	node(f"rudder_{name}", hinge=a, mesh=surface.piece(spans, (1 - rudder, 1), steps=3), paint="team")
 	joint(f"rudder_{name}", b - a, AFT, PORT, "rudder", IDENTITY)
@@ -763,13 +790,14 @@ def forebody():
 	located.sort()
 	bends = [(s, wl - sum(raw(s)[:2])) for s, wl in located]
 	# from TM-101724's last section, arriving level (a knot either side, or
-	# the bend starts on a slope), to the rear fuselage's top line across the
-	# blend (BLEND), which the HATP top line agrees with: TP-3111's section at
+	# the bend starts on a slope), toward the rear fuselage's top line at FS
+	# 357 and 404, which the HATP top line agrees with: TP-3111's section at
 	# FS 357, scaled off the HATP height, stands 1.3 in lower, and a top line
-	# falling to it within 20 in of the canopy creased the spine and left it
-	# sagging an inch before the blend raised it again
-	onto = [(s, smooth(CORE["top"], s) - sum(raw(s)[:2])) for s in BLEND]
-	FORE["top"] = [(176.0, 0.0), (184.0, 0.0)] + bends + onto + [(BLEND[1] + 10.0, onto[-1][1])]
+	# falling to it within 20 in of the canopy creased the spine. Behind the
+	# joint the loft (lofted()) takes the top onto the spine's crown; these
+	# knots shape the top line's run to the joint
+	onto = [(s, smooth(CORE["top"], s) - sum(raw(s)[:2])) for s in (357.0, 404.0)]
+	FORE["top"] = [(176.0, 0.0), (184.0, 0.0)] + bends + onto + [(414.0, onto[-1][1])]
 
 
 NOSE = 128.5   # facts.json nose.junction: the nosecone ends here
@@ -817,32 +845,410 @@ def section_shape(station):
 	return F["between"][key]
 
 
-def half_ring(station):
-	# The fuselage's starboard half at a station, top centreline to keel, as
-	# (buttline, waterline) at the half-ring's ANGLES round its centre
+def fore_outline(station):
+	# The forebody's starboard outline at a station before narrowed(), top
+	# centreline down, with its keel and height
 	F = FORE
 	keel, height, width = raw(station)
 	height += smooth(F["top"], station) if F["top"] and F["top"][0][0] < station < F["top"][-1][0] else 0.0
-	points = section_shape(station)
-	fore = narrowed(station, [(x * width, keel + y * height) for x, y in points])
-	if station <= BLEND[0]:
-		centre = (0.0, keel + height / 2)
-		return centre, polar(fore, centre, angles_at(station, centre, fore))
-	centre, union = union_ring(station)
-	w = min(1.0, (station - BLEND[0]) / (BLEND[1] - BLEND[0]))
-	w = w * w * (3 - 2 * w)
-	if w >= 1:
-		return centre, union
-	# each outline sampled round its own centre, then blended point by point:
-	# sampling the forebody round the rear fuselage's centre, which moves
-	# against it from station to station, steps where a ray grazes its side
-	own = (0.0, keel + height / 2)
-	forward = polar(fore, own, angles_at(station, own))
-	middle = (0.0, (1 - w) * own[1] + w * centre[1])
-	return middle, [((1 - w) * a[0] + w * b[0], (1 - w) * a[1] + w * b[1]) for a, b in zip(forward, union)]
+	return keel, height, [(x * width, keel + y * height) for x, y in section_shape(station)]
+
+
+def rounded(outline, pieces=4):
+	# A half-outline on a centripetal Catmull-Rom curve through its points,
+	# each run cut in `pieces`, mirrored across the centreline at both ends so
+	# the top and keel stay level. Sampled straight, the HALF points' runs left
+	# the half-ring's columns turning 1 and 13 deg in turn (two columns on one
+	# run), which the spine's slope behind the canopy read as a crease
+	ghost = [(-outline[1][0], outline[1][1])] + list(outline) + [(-outline[-2][0], outline[-2][1])]
+	out = [outline[0]]
+	for i in range(1, len(ghost) - 2):
+		p = ghost[i - 1:i + 3]
+		gaps = [max(math.hypot(b[0] - a[0], b[1] - a[1]), 1e-9) ** 0.5 for a, b in zip(p, p[1:])]
+		t = [0.0, gaps[0], gaps[0] + gaps[1], gaps[0] + gaps[1] + gaps[2]]
+
+		def mix(a, b, ta, tb, u):
+			f = (u - ta) / (tb - ta)
+			return (a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f)
+
+		for k in range(1, pieces + 1):
+			u = t[1] + (t[2] - t[1]) * k / pieces
+			a1, a2, a3 = mix(p[0], p[1], t[0], t[1], u), mix(p[1], p[2], t[1], t[2], u), mix(p[2], p[3], t[2], t[3], u)
+			b1, b2 = mix(a1, a2, t[0], t[2], u), mix(a2, a3, t[1], t[3], u)
+			out.append(mix(b1, b2, t[1], t[2], u))
+	return out
+
+
+LOFT = (334.0, 412.0)   # the spine behind the canopy, lofted from the joint to the rear fuselage (lofted())
+LOFT_GRID = np.linspace(0.0, 1.0, 241)   # shares of a section's height the loft runs along, top centreline (0) to keel (1)
+LOFT_ENDS = {}
+LOWER = (357.0, 136.0, 142.0)   # the cited section the loft's lower body passes through, and the waterlines (in it) between which its shoulder lets go of it
+
+
+def gridded(outline):
+	# A half-outline (top centreline down to the keel) as (top, keel, its
+	# half-widths at LOFT_GRID's shares of its height); rays grazing the
+	# outline step its height back up by hundredths, which are held out
+	points = np.array(outline, float)
+	heights = np.minimum.accumulate(points[:, 1])
+	top, keel = heights[0], heights[-1]
+	share, first = np.unique((top - heights) / (top - keel), return_index=True)
+	return top, keel, np.interp(LOFT_GRID, share, points[first, 0])
+
+
+def shares_along(points, outline):
+	# Each point's share of the way along an outline (an array of points, top
+	# centreline down), where it lies nearest
+	length = np.concatenate([[0.0], np.cumsum(np.hypot(*np.diff(outline, axis=0).T))])
+	start, edge = outline[:-1], np.diff(outline, axis=0)
+	size = np.maximum((edge * edge).sum(1), 1e-12)
+	out = []
+	for q in np.asarray(points, float):
+		f = np.clip(((q - start) * edge).sum(1) / size, 0, 1)
+		i = int(np.argmin(np.hypot(*(start + f[:, None] * edge - q).T)))
+		out.append((length[i] + f[i] * np.sqrt(size[i])) / length[-1])
+	return np.array(out)
+
+
+def hermite(t, length, a, b, da, db):
+	# The cubic from a (slope da) to b (slope db) over length, at t in 0..1
+	return (2 * t ** 3 - 3 * t ** 2 + 1) * a + (t ** 3 - 2 * t ** 2 + t) * length * da + (-2 * t ** 3 + 3 * t ** 2) * b + (t ** 3 - t ** 2) * length * db
+
+
+def leaving(chord, arriving):
+	# The slope a cubic leaves its start with, given its chord's slope and the
+	# slope it arrives with: straight (no turn at the start), held between
+	# level and three times the chord's slope, so a run that falls or rises
+	# from end to end does so throughout
+	natural = (3 * chord - arriving) / 2
+	return np.where(chord > 0, np.clip(natural, 0, 3 * chord), np.where(chord < 0, np.clip(natural, 3 * chord, 0), 0.0))
+
+
+def loft_outline(station):
+	# The loft's outline at a station, as an array of (half-width, height)
+	# from the top centreline down: each share of the height on its cubic,
+	# the top on the spine's crown
+	L = LOFT_ENDS
+	length = LOFT[1] - LOFT[0]
+	t = (station - LOFT[0]) / length
+	x = hermite(t, length, L["xa"], L["xb"], L["leave"], L["arrive"])
+	# below the shoulder, through the cited section too
+	h0, h1 = LOWER[0] - LOFT[0], LOFT[1] - LOWER[0]
+	if station <= LOWER[0]:
+		lower = hermite((station - LOFT[0]) / h0, h0, L["xa"], L["xm"], L["lleave"], L["middle"])
+	else:
+		lower = hermite((station - LOWER[0]) / h1, h1, L["xm"], L["xb"], L["middle"], L["arrive"])
+	x = x + L["lower"] * (lower - x)
+	keel = float(hermite(t, length, L["ka"], L["kb"], L["kleave"], L["karrive"]))
+	crown = [tuple(p) for p in SPINE["crown"]]
+	top = smooth(crown, station) + (L["ta"] - smooth(crown, LOFT[0])) * (1 - ease(4 * t)) + (L["tb"] - smooth(crown, LOFT[1])) * ease(4 * t - 3)
+	return np.array(dorsal(station, list(zip(x.tolist(), (top - LOFT_GRID * (top - keel)).tolist()))))
+
+
+def lofted(station):
+	# The fuselage behind the canopy (LOFT), as (centre, starboard half-ring).
+	# Each share of the section's height, top centreline to keel, runs on one
+	# cubic from its half-width in the joint's section (the forebody, through
+	# the triangulated joint) to the rear fuselage's, arriving with the rear
+	# fuselage's own slope and leaving the joint level, so it falls or rises
+	# from end to end without turning, slowly at first, as the side seam does
+	# (0.05 in an inch over FS 340-370, 0.1 over 384-403); the top runs on the
+	# spine's crown. Below the shoulder (LOWER) it passes through the cited FS
+	# 357 section as well, on a monotone cubic through the three, which the
+	# panel lines traced at FS 359 agree with (the loft between the two ends
+	# alone stood 1-1.3 in outside them); the shoulder lets go of it, the
+	# section there standing 2-3 in wider than the side seam. The side seam (layout.spine side) is not drawn through:
+	# the loft passes within 0.55 in of it (0.7 at FS 384), and drawn through
+	# its points, one by one or by a least-squares pull, it narrowed the side
+	# behind the joint and let it out again, a 0.2-0.7 in dip then hump. The
+	# half-ring's points slide along
+	# the outline from their places in the joint's ring to the rear
+	# fuselage's (cast as rays from the centre instead, they jumped between
+	# the belly's two crossings, a 0.4 in step at FS 387). Blending the
+	# forebody's sections into the rear fuselage's union over FS 357-404 and
+	# fitting the result to the seam with changes that faded in and out along
+	# the way left the side narrowing behind the joint, swelling again at FS
+	# 382 and dropping, a dip then a hump the user saw three times
+	L = LOFT_ENDS
+	length = LOFT[1] - LOFT[0]
+	if not L:
+		start = flared(LOFT[0], rounded(narrowed(LOFT[0], fore_outline(LOFT[0])[2])))
+		(ta, ka, xa), (tb, kb, xb), (_, kc, xc) = gridded(start), gridded(union_ring(LOFT[1], DENSE)[1]), gridded(union_ring(LOFT[1] + 4.0, DENSE)[1])
+		arrive, karrive = (xc - xb) / 4.0, (kc - kb) / 4.0
+		L.update(xa=xa, xb=xb, ka=ka, kb=kb, ta=ta, tb=tb, arrive=arrive, leave=np.zeros_like(xa),
+			karrive=karrive, kleave=float(leaving(np.array((kb - ka) / length), np.array(karrive))))
+		tm, km, xm = gridded(rounded(fore_outline(LOWER[0])[2]))
+		h0, h1 = LOWER[0] - LOFT[0], LOFT[1] - LOWER[0]
+		m0, m1 = (xm - xa) / h0, (xb - xm) / h1
+		safe = lambda m: np.where(m == 0, 1.0, m)
+		middle = np.where(m0 * m1 > 0, 3 * (h0 + h1) / ((2 * h1 + h0) / safe(m0) + (h1 + 2 * h0) / safe(m1)), 0.0)
+		share = (tm - LOFT_GRID * (tm - km) - LOWER[2]) / (LOWER[1] - LOWER[2])
+		L.update(xm=xm, middle=middle, lleave=leaving(m0, middle), lower=np.array([ease(f) for f in share]))
+		# the joint's ring as the loft's columns would have it, and as the
+		# crease at the tail's foot gathers them (placed()), which spread
+		# out again over CREASE[4] inches behind the tail's tip
+		PIN[0] = False
+		L["fa"] = shares_along(half_ring(LOFT[0])[1], loft_outline(LOFT[0]))
+		PIN[0] = True
+		L["ft"] = shares_along(half_ring(LOFT[0])[1], loft_outline(LOFT[0]))
+		L["fb"] = shares_along(union_ring(LOFT[1])[1], loft_outline(LOFT[1]))
+	t = (station - LOFT[0]) / length
+	outline = loft_outline(station)
+	length_along = np.concatenate([[0.0], np.cumsum(np.hypot(*np.diff(outline, axis=0).T))])
+	start = L["ft"] + ease((station - LOFT[0]) / CREASE[4]) * (L["fa"] - L["ft"])
+	want = ((1 - ease(t)) * start + ease(t) * L["fb"]) * length_along[-1]
+	ring = [(float(np.interp(d, length_along, outline[:, 0])), float(np.interp(d, length_along, outline[:, 1]))) for d in want]
+	return (0.0, (outline[0, 1] + outline[-1, 1]) / 2), ring
+
+
+def half_ring(station):
+	# The fuselage's starboard half at a station, top centreline to keel, as
+	# (buttline, waterline) at the half-ring's ANGLES round its centre: the
+	# forebody to the joint behind the canopy, the loft to the rear
+	# fuselage's union, and the union
+	if LOFT[0] < station < LOFT[1]:
+		return lofted(station)
+	if station >= LOFT[1]:
+		return union_ring(station)
+	keel, height, outline = fore_outline(station)
+	fore = rounded(narrowed(station, outline))
+	centre = (0.0, keel + height / 2)
+	angles = angles_at(station, centre, fore)
+	if station > FLARE[0]:
+		fore = flared(station, fore)
+	fore = dorsal(station, fore)
+	return centre, placed(station, fore, centre, angles)
+
+
+DORSAL = (10.0, 6.0, 10.0, 55.0, 85.0, 12.0, -30.0)   # inches below the base's flat top (the crown) the old model's section holds in full, then fades over; inches it fades in over from DORSAL[6] (ahead of the canopy's aft end: its base comes out from under the canopy's sides about 20 in ahead, and from 40 ahead it reshaped the glass the photos fit); inches aft of the canopy's aft end where it starts to fade out and has gone; and the offset by which its hood has settled onto the spine's flat top
+DORSAL_ROWS = {}
+
+
+def dorsal_row(offset):
+	# The old model's half-widths at each depth (layout.dorsal) at an offset
+	# from the canopy's aft end, each depth on a monotone cubic along the offsets
+	D = LAYOUT["dorsal"]
+	key = round(offset, 4)
+	if key not in DORSAL_ROWS:
+		DORSAL_ROWS[key] = np.array([smooth([(o, row[k]) for o, row in zip(D["offsets"], D["widths"])], offset) for k in range(len(D["depths"]))])
+	return DORSAL_ROWS[key]
+
+
+def dorsal(station, outline):
+	# The canopy's aft part and the fuselage behind it laid to the old
+	# model's outer surface there (layout.dorsal, a last resort taken at the
+	# user's decision, 2026-11-04): the canopy a narrow bubble on a broad
+	# flat-topped base whose corner, 2-3 in below the base's top at 16-18 in
+	# out, runs on aft along the spine; behind the canopy a hood carrying the
+	# bubble's lines down onto the flat top within DORSAL[5] inches; the
+	# corner fading out between DORSAL[3] and DORSAL[4] inches aft. Heights
+	# are taken from the base's flat top, the spine's crown: below it the
+	# old model's widths at the same heights, above it (the bubble and the
+	# hood) squashed so the old model's top meets ours, the canopy's top line
+	# and then the crown, the hood's top falling between as the old model's
+	# does. Down to DORSAL[0] inches below the base's flat top the outline is
+	# the old model's section, blended into the outline over DORSAL[1] below;
+	# it fades in over DORSAL[2] inches from DORSAL[6]. Swelling the canopy's
+	# own section out to the joint behind it stood its aft part almost as wide
+	# as the spine, with no tail and no corner (the user's report, three
+	# times). The photos' joint, side seam and crown at FS 330 put the
+	# shoulder and top lower here; the user chose this shape
+	D, aft = LAYOUT["dorsal"], LAYOUT["canopy"]["aft"]
+	d = station - aft["station"]
+	first = DORSAL[6]
+	if d <= first or d >= DORSAL[4]:
+		return outline
+	weight = ease((d - first) / DORSAL[2]) * (1 - ease((d - DORSAL[3]) / (DORSAL[4] - DORSAL[3])))
+	depths, row = np.array(D["depths"]), dorsal_row(d)
+	crown = smooth([tuple(c) for c in LAYOUT["spine"]["crown"]], station)
+	tops = list(zip(D["offsets"], D["tops"]))
+	old_top = smooth(tops, min(d, DORSAL[5])) if d < DORSAL[5] else None
+	settled = smooth(tops, DORSAL[5])
+	if d < 0:
+		# the canopy's own top (the photos' top line), rising from its last
+		# reading to the old model's height above the base's flat top by the
+		# canopy's aft end, 0.65 in over the photos' 153.5 (+-1 in, three
+		# photos): squashed to that, the tail's sides lay a third flatter
+		# and its crease turned 12 deg where the old model's turns 22
+		top = outline[0][1]
+		last = max(p[0] for p in LAYOUT["canopy"]["top"]) - aft["station"]
+		if d > last:
+			top += ease((d - last) / -last) * (crown + old_top - settled - top)
+	elif d < DORSAL[5]:
+		top = crown + old_top - settled
+	else:
+		top = crown
+
+	# the crease at the foot of the canopy's tail (layout.dorsal crease): its
+	# corner put into the section exactly, so the depths either side of it
+	# don't round it over, and its height in ours
+	corner = crease_at(d)
+	if corner is not None and old_top is not None:
+		deep = old_top - corner[1]
+		keep = np.abs(depths - deep) > 0.12
+		order = np.argsort(np.concatenate([depths[keep], [deep]]))
+		depths, row = np.concatenate([depths[keep], [deep]])[order], np.concatenate([row[keep], [corner[0]]])[order]
+		corner = crease_height(corner[1], crown, settled, old_top, top)
+	else:
+		corner = None
+
+	def width(y):
+		# the old model's half-width at a height: from the base's flat top,
+		# the part above it squashed to the old model's height there
+		if old_top is None:
+			return float(np.interp(crown - y, depths, row))
+		z = y - crown
+		if z > 0 and top > crown + 1e-6:
+			z *= (old_top - settled) / (top - crown)
+		return float(np.interp(old_top - settled - z, depths, row))
+
+	# depth below the base's flat top, so under the canopy's tall top the
+	# base's corner and sides are laid in full
+	floor = crown - DORSAL[0]
+	if corner is not None:
+		# a point of our outline at the corner's height, for the blend below
+		for k, ((x0, y0), (x1, y1)) in enumerate(zip(outline, outline[1:])):
+			if (y0 - corner) * (y1 - corner) < 0:
+				outline = list(outline[:k + 1]) + [(x0 + (x1 - x0) * (corner - y0) / (y1 - y0), corner)] + list(outline[k + 1:])
+				break
+	out = []
+	if weight >= 1:
+		heights = [float(y) for y in np.arange(top, floor - 1e-9, -0.25)]
+		if corner is not None:
+			heights = sorted({y for y in heights if abs(y - corner) > 1e-6} | {corner}, reverse=True)
+		for y in heights:
+			out.append((width(y), y))
+	for x, y in outline:
+		if weight >= 1 and y >= floor:
+			continue
+		h = crown - y
+		if y <= top and h <= DORSAL[0] + DORSAL[1]:
+			share = weight * (1.0 if h <= DORSAL[0] else ease(1 - (h - DORSAL[0]) / DORSAL[1]))
+			x = x + share * (width(y) - x)
+		out.append((x, y))
+	if corner is not None:
+		CREASES[round(station, 4)] = next((x, y) for x, y in out if y == corner)
+	return out
+
+
+CREASE = (8, -36.0, -30.0, 8.0, 8.0, 0.5)   # the half-ring's column on the crease at the foot of the canopy's tail (placed()); the offsets from the canopy's aft end over which the columns move onto it; inches behind the loft's start over which they spread again (lofted()); the turn (deg) and the share of the old model's section (dorsal()) from which its edges are shaded sharp
+CREASES = {}   # station: the crease's point in that station's section (dorsal())
+PIN = [True]   # whether placed() puts a column on the crease
+
+
+def crease_at(offset):
+	# The old model's crease at the foot of its canopy's tail (layout.dorsal
+	# crease) at an offset from the canopy's aft end: (half-width, height in
+	# the dorsal tops' datum, turn in degrees), or None off its ends
+	rows = LAYOUT["dorsal"]["crease"]
+	if offset < rows[0][0] or offset > rows[-1][0]:
+		return None
+	return tuple(float(np.interp(offset, [r[0] for r in rows], [r[k] for r in rows])) for k in (1, 2, 3))
+
+
+def crease_height(height, crown, settled, old_top, top):
+	# A height in the old model's tops datum as a waterline of ours, as
+	# dorsal() maps them: from the base's flat top (the crown), squashed above
+	# it to our top
+	z = height - settled
+	if z > 0 and top > crown + 1e-6:
+		z *= (top - crown) / (old_top - settled)
+	return crown + z
+
+
+def crease_line(station):
+	# The crease at the foot of the canopy's tail as a waterline at a station
+	# (layout.dorsal crease, its height from the base's flat top, unsquashed:
+	# within 0.07 in of dorsal()'s where it stands above the top, behind FS
+	# 321), its first height held ahead of it
+	D = LAYOUT["dorsal"]
+	offset = station - LAYOUT["canopy"]["aft"]["station"]
+	height = float(np.interp(offset, [r[0] for r in D["crease"]], [r[2] for r in D["crease"]]))
+	return smooth([tuple(c) for c in LAYOUT["spine"]["crown"]], station) + height - smooth(list(zip(D["offsets"], D["tops"])), DORSAL[5])
+
+
+def placed(station, outline, centre, angles):
+	# The half-ring's points on an outline: rays from the centre at the
+	# angles (polar()), but over the canopy's tail column CREASE[0] on the
+	# crease at its foot (layout.dorsal crease), the columns above it evenly
+	# along the tail from the top centreline and those below evenly on to the
+	# sill's column, so the crease is a line of the mesh. Rays from the centre
+	# grazed the narrow tail, and the corner fell between two columns where
+	# it pleased: the tail lumpy and its crease rounded over (the user's
+	# report). The columns move onto it from CREASE[1] to CREASE[2]
+	points = polar(outline, centre, angles)
+	d = station - LAYOUT["canopy"]["aft"]["station"]
+	if not PIN[0] or d <= CREASE[1] or d > LOFT[0] - LAYOUT["canopy"]["aft"]["station"]:
+		return points
+	key = round(station, 4)
+	height = CREASES[key][1] if key in CREASES else crease_line(station)
+	P = np.array(outline, float)
+	length = np.concatenate([[0.0], np.cumsum(np.hypot(*np.diff(P, axis=0).T))])
+	at = None
+	for i in range(len(P) - 1):
+		(x0, y0), (x1, y1) = P[i], P[i + 1]
+		if (y0 - height) * (y1 - height) <= 0 and y0 != y1:
+			at = length[i] + (length[i + 1] - length[i]) * (height - y0) / (y1 - y0)
+			break
+	along = shares_along(points, P) * length[-1]
+	k = CREASE[0]
+	assert at is not None and at < along[SILL], (station, height)
+	pinned = [at * j / k for j in range(k + 1)] + [at + (along[SILL] - at) * (j - k) / (SILL - k) for j in range(k + 1, SILL + 1)]
+	weight = ease((d - CREASE[1]) / (CREASE[2] - CREASE[1]))
+	out = list(points)
+	for j in range(1, SILL):
+		s = along[j] + weight * (pinned[j] - along[j])
+		out[j] = (float(np.interp(s, length, P[:, 0])), float(np.interp(s, length, P[:, 1])))
+	return out
+
+
+FLARE = (290.0, 0.15, 3.5)   # the station the canopy's aft fairing starts from (its shoulders widest there, WL 146-148), the inches its edge on the glass is rounded over, and how far inside the joint's section it starts round the glass's top
+FLARE_BASE = []
+
+
+def flared(station, outline):
+	# The canopy's aft fairing: at each height where the joint's section (the
+	# forebody's there, filled out to the triangulated joint, filled()) is
+	# wider than the canopy's own section at FLARE[0], the skin widens
+	# steadily from the one to the other by the joint, the outline drawn out
+	# wherever it stands inside that, the edge rounded over FLARE[1] inches.
+	# Above, where the joint is the narrower, the glass's pointed top runs on
+	# toward its tip as the photos' outlines put it (layout.canopy glass), and
+	# the joint's section rises round it from FLARE[2] inches inside, so the
+	# skin closes over the tip onto the spine's top (with the glass alone,
+	# the tip's sides dipped an inch below it). The
+	# glass's single superellipse, fitted to those outlines near its top,
+	# narrowed the shoulders by 0.7 in over FS 290-310 before the fairing
+	# swelled them out to the joint, a notch then hump the user saw on each
+	# shoulder; dvids7487368, from above, shows broad metal shoulders beside
+	# the glass's tip, its lower edge rising off the sill from about FS 310.
+	# Carrying the glass's pointed section to its aft end and swelling it out
+	# to the joint within 8 in stood a collar round the spine
+	if not FLARE_BASE:
+		joint = rounded(filled(LOFT[0], narrowed(LOFT[0], fore_outline(LOFT[0])[2])))
+		glass = rounded(narrowed(FLARE[0], fore_outline(FLARE[0])[2]))
+		FLARE_BASE[:] = [np.array([p[1] for p in reversed(s)]) for s in (joint, glass)] + [np.array([p[0] for p in reversed(s)]) for s in (joint, glass)]
+	heights, glass_heights, widths, glass_widths = FLARE_BASE
+	share = ease((station - FLARE[0]) / (LOFT[0] - FLARE[0]))
+	half = FLARE[1] / 2
+	out = []
+	for x, y in outline:
+		if heights[0] <= y <= heights[-1]:
+			joint, start = float(np.interp(y, heights, widths)), float(np.interp(y, glass_heights, glass_widths, right=0.0))
+			target = joint - FLARE[2] * (1 - share)
+			if joint > start:
+				target = max(target, start + (joint - start) * share)
+			# drawn out by as much as it stands inside, exactly where that is
+			# more than half the rounding, on a parabola where it is less
+			d = target - x
+			x += d if d >= half else (d + half) ** 2 / (2 * FLARE[1]) if d > -half else 0.0
+		out.append((x, y))
+	return out
 
 
 SHOULDER = 8.0   # inches below the canopy's sill over which narrowed() fades out
+SCREEN_FADE = 8.0   # inches across the windscreen's front base over which narrowed() fades in
+SPINE_FADE = 333.0   # the station by which narrowed() has faded out behind the canopy: the joint there (layout.canopy seam)
 
 
 def narrowed(station, outline):
@@ -850,15 +1256,33 @@ def narrowed(station, outline):
 	# cited sections between FS 184 and 253 leave the skin at its height 2-2.5 in
 	# too wide, and the canopy's outline as far outside the rear and head-on
 	# photos', so the section above the sill is drawn in across to pass through
-	# it, the change fading out over SHOULDER inches below. It fades in over the
-	# windscreen, whose outline the photos already match, and ends at the
-	# canopy's aft end, where the sill meets the skin unchanged.
+	# it, the change fading out over SHOULDER inches below. Ahead of the bow the
+	# windscreen's frame sill takes the sill's place, the same way. Behind the
+	# canopy's aft end its fairing carries the canopy's section on: each
+	# outline point's share of its width that the canopy's aft end keeps,
+	# fading out by the joint at SPINE_FADE, where two photos either side put
+	# the spine as full as the cited section. Stopping at the aft end stood the
+	# spine 0.7-2.1 in proud of the canopy within an inch; fading to FS 357
+	# left it 2-2.6 in low at the joint.
 	layout = LAYOUT["canopy"]
 	front, foot, back = layout["windscreen"]["station"], layout["sill"][0][0], layout["aft"]["station"]
-	if station <= front or station >= back:
+	if station <= front - SCREEN_FADE / 2 or station >= SPINE_FADE:
 		return outline
-	weight = 1.0 if station >= foot else ease((station - front) / (foot - front))
-	b, w = sill_point(station)
+	if station > back:
+		weight = ease(1 - (station - back) / (SPINE_FADE - back))
+		own = fore_outline(back)[2]
+		kept = [e[0] / o[0] if o[0] > 1e-9 else 1.0 for o, e in zip(own, narrowed(back, own))]
+		return [(x * (1 - weight * (1 - k)), y) for (x, y), k in zip(outline, kept)]
+	if station < foot:
+		# ahead of the bow's foot the windscreen's frame sill (layout.canopy
+		# screen, traced), running on into the canopy's, fading in across the
+		# windscreen's front base
+		weight = ease((station - (front - SCREEN_FADE / 2)) / SCREEN_FADE)
+		sill = layout["screen"] + layout["sill"]
+		b, w = between([(p[0], p[2]) for p in sill], station), between([(p[0], p[1]) for p in sill], station)
+	else:
+		weight = 1.0
+		b, w = sill_point(station)
 	width = 0.0
 	for (x0, y0), (x1, y1) in zip(outline, outline[1:]):
 		# the outline runs from the top centreline down: its first crossing of the sill's waterline
@@ -870,9 +1294,11 @@ def narrowed(station, outline):
 	k = 1 + weight * (b / width - 1)
 	drawn = [(x * (1 + (k - 1) * ease(1 - (w - y) / SHOULDER)), y) for x, y in outline]
 	# Above the sill the glass is a superellipse from the sill to the top
-	# centreline, its exponent fitted to the canopy's outlines in the photos:
-	# one at the bow's foot and one at the aft corner, linear between
-	glass = between([(foot, layout["glass"][0]), (layout["sill"][-1][0], layout["glass"][1])], station)
+	# centreline, its exponent fitted to the outlines in the photos: the
+	# windscreen's (layout.canopy screen_glass) held to its station, then the
+	# canopy's at the bow's foot and at the aft corner, linear between
+	screen = layout["screen_glass"]
+	glass = between([(screen[0], screen[1]), (foot, layout["glass"][0]), (layout["sill"][-1][0], layout["glass"][1])], station)
 	top = outline[0][1]
 	if top <= w:
 		return drawn
@@ -883,6 +1309,34 @@ def narrowed(station, outline):
 			x = (1 - weight) * x + weight * b * (1 - v ** glass) ** (1 / glass)
 		out.append((x, y))
 	return out
+
+
+JOINT_FILL = []   # (depth below the section's top, half-width to add) knots, from layout.canopy joint
+
+
+def filled(station, outline):
+	# The canopy's aft fairing stands fuller at its shoulders than the cited
+	# sections either side (layout.canopy joint, triangulated from two
+	# photos either side: up to 1.2 in of half-width at WL 146-150, none at
+	# the sill or the top). The fill grows from the canopy's aft end to the
+	# joint, where the section passes through it and the loft (lofted())
+	# carries it on
+	layout = LAYOUT["canopy"]
+	back, joint = layout["aft"]["station"], layout["joint"]
+	peak = sum(p[0] for p in joint) / len(joint)
+	if station <= back:
+		return outline
+	if not JOINT_FILL:
+		knots = [(0.0, 0.0)]
+		for fs, wl, bl in joint:
+			raw = narrowed(fs, fore_outline(fs)[2])
+			width = next(x0 + (x1 - x0) * (wl - y0) / (y1 - y0) for (x0, y0), (x1, y1) in zip(raw, raw[1:]) if (y0 - wl) * (y1 - wl) <= 0 and y0 != y1)
+			knots.append((raw[0][1] - wl, bl - width))
+		knots.append((max(k[0] for k in knots) + 1.5, 0.0))
+		JOINT_FILL[:] = sorted(knots)
+	weight = ease((station - back) / (peak - back))
+	top = outline[0][1]
+	return [(x + weight * smooth(JOINT_FILL, top - y) if top - y < JOINT_FILL[-1][0] else x, y) for x, y in outline]
 
 
 def ease(f):
@@ -969,13 +1423,17 @@ def fuselage():
 	# ring at each of the canopy's located stations
 	c = LAYOUT["canopy"]
 	located = {c["windscreen"]["station"], c["bow"]["station"], c["bow"]["station"] + BOW_FRAME, c["crown"]["station"], c["aft"]["station"]} | {p[0] for p in c["sill"]} | {p[0] for p in c["top"]}
+	# and every 2 in along the loft behind the canopy (LOFT), where 4 in between
+	# rings creased the spine's shoulder by 3-3.6 deg, and over the tunnel
+	# between the nacelles at FS 488-512 (3.6 deg seen from below); every inch
+	# where the canopy's fairing sheds its section (narrowed(), to SPINE_FADE);
 	# and every 3 in over the nose, where the section widens fastest and the
 	# probes, fairings, strips and door sit on the skin: 7-8 in apart, the
 	# rings creased it 3 deg each, and the loft's flat facets stood up to 0.3
 	# in off the section the fittings follow; every 4 in from the canopy's aft end to
 	# the nozzles, where 10-20 in between rings left the spine and nacelles
-	# faceted
-	stations = sorted(set(stations) | {float(x) for x in range(328, 692, 4)} | {float(x) for x in range(92, 217, 3)} | located
+	# faceted; every half inch over the canopy tail's rounded tip (layout.dorsal crease)
+	stations = sorted(set(stations) | {float(x) for x in range(328, 692, 4)} | {float(x) for x in range(int(LOFT[0]), int(LOFT[1]), 2)} | {x / 2 for x in range(657, 669)} | {float(x) for x in range(488, 514, 2)} | {float(x) for x in range(326, 336)} | {float(x) for x in range(92, 217, 3)} | located
 		| {float(r["station"]) for r in FACTS["sections"]} | {253.0, 296.0, 357.0})   # a ring at every cited and traced section
 	FUSELAGE_STATIONS[:] = stations
 	rings = []
@@ -983,12 +1441,108 @@ def fuselage():
 		columns = leaned(station)
 		ring = [at(s, wl, bl) for s, bl, wl in columns] + [at(s, wl, -bl) for s, bl, wl in reversed(columns[1:-1])]
 		rings.append(ring)
+	# the crease at the foot of the canopy's tail, its edges shaded sharp
+	# (node()) where it turns CREASE[3] degrees or more in the old model and
+	# its section is at least CREASE[5] the old model's
+	aft = LAYOUT["canopy"]["aft"]["station"]
+	n = len(rings[0])
+	for station, ring in zip(stations, rings):
+		corner = crease_at(station - aft)
+		if corner is None or corner[2] < CREASE[3] or station > LOFT[0] or ease((station - aft - DORSAL[6]) / DORSAL[2]) < CREASE[5]:
+			continue
+		for v in (ring[CREASE[0]], ring[n - CREASE[0]]):
+			SHARP.add(tuple(v))
 	canopy(stations, rings)
 	TOPLINE[:] = [ring[0] for ring in rings]
 	KEELLINE[:] = sorted((ring[len(ANGLES) - 1] for ring in rings), key=lambda v: -v.x)
 	LANDMARKS["apex"] = rings[0][0]
 	MARKS["apex"] = (rings[0][0], "fuselage")
 	return sorted(FORE["widths"].items())
+
+
+GLASS_RAIL = 1.0   # inches of the canopy's sill rail, metal, below the glass ahead of the edge's readings
+GLASS_FIT = []
+
+
+def glass_line(station):
+	# The glass's lower edge's waterline at a station (layout.canopy
+	# glass_edge): a quadratic fitted to the readings from both photos (rms
+	# 0.35 in), never closer to the sill than its rail ahead of them, and
+	# carried up from the last reading to the canopy's aft end on the top
+	# centreline, where the glass ends in its tip
+	layout = LAYOUT["canopy"]
+	edge = layout["glass_edge"]
+	if not GLASS_FIT:
+		GLASS_FIT[:] = list(np.polyfit([p[0] - 290.0 for p in edge], [p[1] for p in edge], 2))
+	fit = lambda s: float(np.polyval(GLASS_FIT, s - 290.0))
+	rail = sill_point(station)[1] + GLASS_RAIL
+	soft = 0.5
+	line = (fit(station) + rail + math.sqrt((fit(station) - rail) ** 2 + soft * soft)) / 2
+	last, end = max(p[0] for p in edge), layout["aft"]["station"]
+	if station > last:
+		# the tail's top there, the old model's height above the base's flat
+		# top (dorsal())
+		D = LAYOUT["dorsal"]
+		tip = smooth([tuple(c) for c in LAYOUT["spine"]["crown"]], end) + smooth(list(zip(D["offsets"], D["tops"])), 0.0) - smooth(list(zip(D["offsets"], D["tops"])), DORSAL[5])
+		line += (tip - fit(end)) * ease((station - last) / (end - last))
+	# never below the crease at the foot of the canopy's tail (layout.dorsal,
+	# the old model's at the user's decision), where the fit runs 0.3-0.7 in
+	# under it over FS 295-319 and the glass would lap 3 in out over the
+	# base's flat top: the glass ends on the crease, eased in where the
+	# columns gather onto it (placed())
+	d = station - end
+	if d > CREASE[1]:
+		weight = ease((d - CREASE[1]) / (CREASE[2] - CREASE[1]))
+		line += weight * max(0.0, crease_line(station) - line)
+	return line
+
+
+def glass_edge(vertices, entries):
+	# The glass's lower and aft edge: the canopy's faces cut along the
+	# glass's lower edge (glass_line()), glass above it, metal below: the
+	# canopy's sill rail, the broad panel below the glass toward its aft end
+	# that the photos show, and its tip at the canopy's aft end. Ended along
+	# the loft's own rings and columns, the glass ran down to the sill at the
+	# aft end in steps (the user's report). New points on edges two cut faces
+	# share are shared. Adds to vertices; returns the entries
+	# a point within a thousandth of an inch of the line is on it (the
+	# crease's, where the glass ends on it), in both pieces of a cut face
+	def side(i):
+		s = (vertices[i].z / INCH + ORIGIN["waterline"]) - glass_line(ORIGIN["station"] - vertices[i].x / INCH)
+		return 0.0 if abs(s) < 1e-3 else s
+	made = {}
+
+	def crossing(a, b):
+		key = (min(a, b), max(a, b))
+		if key not in made:
+			sa, sb = side(a), side(b)
+			vertices.append(vertices[a] + (vertices[b] - vertices[a]) * (sa / (sa - sb)))
+			made[key] = len(vertices) - 1
+		return made[key]
+
+	out = []
+	for face, kind in entries:
+		signs = [side(i) for i in face]
+		if kind != "glass" or min(signs) >= 0:
+			out.append((face, kind))
+			continue
+		if max(signs) <= 0:
+			out.append((face, "paint"))
+			continue
+		ahead, behind = [], []
+		for k, i in enumerate(face):
+			j = face[(k + 1) % len(face)]
+			si, sj = signs[k], signs[(k + 1) % len(face)]
+			if si >= 0:
+				ahead.append(i)
+			if si <= 0:
+				behind.append(i)
+			if (si > 0 and sj < 0) or (si < 0 and sj > 0):
+				c = crossing(i, j)
+				ahead.append(c)
+				behind.append(c)
+		out += [(tuple(ahead), "glass"), (tuple(behind), "paint")]
+	return out
 
 
 def canopy(stations, rings):
@@ -1034,6 +1588,7 @@ def canopy(stations, rings):
 		else:
 			frame = station < bow + BOW_FRAME or max(columns) == limit
 			groups["canopy"].append((face, "paint" if frame else "glass"))
+	groups["canopy"] = glass_edge(vertices, groups["canopy"])
 
 	def mesh(entries):
 		used = sorted({i for face, _ in entries for i in face})
@@ -1142,9 +1697,9 @@ def angles_at(station, centre, outline=None):
 	# fuselage's outline instead: even angles would leave a nacelle's top,
 	# nearly level with the centre, between two steps, and the ring's chord
 	# across it inches under it. Ahead of JOIN they follow the outline at
-	# JOIN, eased in from BLEND's end, so the columns stay put where the
+	# JOIN, eased in from the loft's end, so the columns stay put where the
 	# nacelles join
-	weight = ease((station - BLEND[1]) / (JOIN - BLEND[1]))
+	weight = ease((station - LOFT[1]) / (JOIN - LOFT[1]))
 	if weight > 0:
 		even = spread(max(station, JOIN), sill, len(lower))
 		lower = [(1 - weight) * a + weight * b for a, b in zip(lower, even)]
@@ -1185,7 +1740,6 @@ def along(station, start, count):
 
 
 
-BLEND = (357, 404)   # the traced forebody hands over to the rear fuselage's union between these stations
 AFT_STATIONS = [412, 420, 435, 450, 470, 490, 510, 530, 550, 570, 590, 610, 630, 650, 670, 692]
 
 
@@ -1468,7 +2022,7 @@ def engine_buttline(station):
 # than below ("upper"), fitted through the spine's flank points.
 SPINE = LAYOUT["spine"]
 CORE = {
-	"top": [(s, w) for s, w in SPINE["crown"] if s >= 357] + [(540, 138.2), (600, 130), (650, 127), (692, 124)],
+	"top": [(s, w) for s, w in SPINE["crown"] if s >= 357] + [(540, 138.2), (600, 129.6), (650, 127), (692, 124)],   # FS 600 0.4 in under the crown the fit had, which the deck now swells back up
 	"bottom": [(357, 84.2), (420, 83.5), (500, 84), (560, 85), (620, 88), (692, 93)],
 	"half": [(357, 23.2), (404, 24), (450, 22), (550, 20), (650, 17), (692, 12)],
 }
@@ -1479,14 +2033,17 @@ def upper_widths():
 	# junction, where the forebody has handed over, then through each flank
 	# point of layout.spine, which lies on the body's superellipse; narrowing
 	# on as it does over the last two points to the speedbrake's front (FS
-	# 545), and back to as below it by FS 620, between the fins, where the
-	# speedbrake (34 in wide) lies on a broad top the photos measure no flank
-	# of. (Turning at the last point measured, the flank creased 3-5 deg)
-	out = [(404.0, smooth(CORE["half"], 404))]
-	for s, wl, bl in SPINE["flank"]:
+	# 545), the narrow ridge the photos put ahead of it (layout.spine rear, FS
+	# 577), and back to as below it by FS 620. The broad top between the fins
+	# is the deck's (deck_top()), not the body's: fitting the body through the
+	# speedbrake's side edges stood its shoulders up in a hump at FS 592,
+	# behind a dip at the ridge
+	def through(s, wl, bl):
 		top, bottom = smooth(CORE["top"], s), smooth(CORE["bottom"], s)
 		share = abs((wl - (top + bottom) / 2) / ((top - bottom) / 2))
-		out.append((s, bl / (1 - share ** 2.6) ** (1 / 2.6)))
+		return (s, bl / (1 - share ** 2.6) ** (1 / 2.6))
+
+	out = [(404.0, smooth(CORE["half"], 404))] + [through(*p) for p in SPINE["flank"]]
 	(s0, a0), (s1, a1) = out[-2], out[-1]
 	return out + [(545.0, a1 + (a1 - a0) / (s1 - s0) * (545.0 - s1) / 2), (620.0, smooth(CORE["half"], 620))]
 
@@ -1495,11 +2052,21 @@ CORE["upper"] = upper_widths()
 # The deck behind the LEX: a flat top either side of the spine near the LEX
 # root's height (layout.spine deck), from the nacelles' tops at JOIN, risen
 # by FS 452 under the LEX's fairing; its shoulder falls outboard to WL 123 at BL
-# 40.5 (a line the panel tracing triangulated over FS 451-501), and it eases
-# back onto the nacelles' tops by FS 580, where the fins stand and the body
-# has broadened again, then on down inside them before it ends (ended level
-# with the nacelles' tops, a groove beside the spine opened in one ring)
-DECK_HALF, DECK_EXPONENT, DECK_END = 44.0, 5.0, 640.0   # its half-width at the nacelles' centre height, its superellipse's exponent
+# 40.5 (a line the panel tracing triangulated over FS 451-501). Between the fins
+# it carries the speedbrake: level to its front, then falling with its side
+# edges (layout.spine rear, FS 600-640), each knot DECK_SWELL under them, and
+# eased down behind its aft edge before it sinks inside the nacelles and ends
+# (ended level with the nacelles' tops, a groove beside the spine opened in one
+# ring; sunk onto the nacelles' tops by FS 580, a guess, it left the
+# speedbrake's edges 1.4-2.9 in low; sunk straight from its aft edge, it
+# creased the skin 6 deg there)
+DECK_HALF, DECK_EXPONENT, DECK_END = 44.0, 5.0, 692.0
+DECK_SWELL = 0.5   # inches the union swells the deck's top where it meets the spine and nacelles   # its half-width at the nacelles' centre height, its superellipse's exponent
+# How far the deck reaches under the nacelles' centre height. The union swells the
+# nacelles' sides where the deck's edge runs just inside them (2.4 in at FS 474);
+# ending 0.5 in under their centre, it left that swelling as a ledge along each
+# nacelle's widest line from FS 452 to 580, a 38 deg fold
+DECK_BELOW = 6.0
 
 
 def deck_top(station):
@@ -1509,7 +2076,7 @@ def deck_top(station):
 	start = (lambda b, w, a, up, down: w + up)(*nacelle_at(JOIN))
 	settled = (lambda b, w, a, up, down: w + up)(*nacelle_at(580.0))
 	floor = nacelle_at(DECK_END)[1] + 0.5
-	knots = [(JOIN - 4, start), (JOIN, start), (452.0, 128.05)] + [tuple(p) for p in SPINE["deck"] if p[0] > 455] + [(540.0, 126.8), (580.0, settled), (DECK_END, floor), (DECK_END + 4, floor)]
+	knots = [(JOIN - 4, start), (JOIN, start), (452.0, 128.05)] + [tuple(p) for p in SPINE["deck"] if p[0] > 455] + [(540.0, 126.8)] + [(s, wl - DECK_SWELL) for s, wl, bl in SPINE["rear"] if s >= 590] + [(LAYOUT["speedbrake"]["back"], SPINE["rear"][-1][1] - DECK_SWELL - 1.0), (LAYOUT["speedbrake"]["back"] + 16, SPINE["rear"][-1][1] - DECK_SWELL - 3.0), (DECK_END, floor), (DECK_END + 4, floor)]
 	return smooth(knots, station)
 
 
@@ -1519,7 +2086,7 @@ def deck_half(station):
 	# DECK_END as it sinks into the nacelles, so its edge, just inside their
 	# outboard sides, leaves them before it ends (ending at full width, it
 	# creased their sides 3-7 deg; drawn in over FS 580-640 only, 4)
-	return smooth([(490.0, DECK_HALF), (510.0, DECK_HALF), (DECK_END, DECK_HALF - 18.0), (DECK_END + 20, DECK_HALF - 18.0)], station)
+	return smooth([(490.0, DECK_HALF), (510.0, DECK_HALF), (640.0, DECK_HALF - 18.0), (DECK_END + 20, DECK_HALF - 18.0)], station)
 
 
 def core_at(station, waterline):
@@ -1533,8 +2100,10 @@ def core_at(station, waterline):
 	return (onward(CORE["upper"], station) if y > 0 else smooth(CORE["half"], station)) * (1 - share ** 2.6) ** (1 / 2.6)
 
 
-NACELLE = [(445, 30.3, 103.3, 15.3, 16.5), (470, None, 104.5, 17.5, 17.5), (520, None, 105.5, 19.5, 18.5), (580, None, 106.0, 21.0, 19.0), (640, None, 106.0, 20.0, 18.5), (692, None, 106.0, 18.5, 17.5)]
 NOZZLE = LAYOUT["nozzle"]   # the outer flaps' start and exit, their radii, and the axis's waterline
+# its centre falls from FS 580 onto the nozzles' axis at their start
+NACELLE = [(445, 30.3, 103.3, 15.3, 16.5), (470, None, 104.5, 17.5, 17.5), (520, None, 105.5, 19.5, 18.5), (580, None, 106.0, 21.0, 19.0),
+	(640, None, 106.0 + (NOZZLE["waterline"] - 106.0) * (640 - 580) / (692 - 580), 20.0, 18.5), (692, None, NOZZLE["waterline"], 18.5, 17.5)]
 # The fuselage station where each inlet's outer skin hands over to the rear
 # fuselage's nacelle, behind the plug that closes the duct
 JOIN = 440.0
@@ -1557,7 +2126,7 @@ def union_ring(station, angles=None):
 			parts.append(((side * b, w), (a, up, down), 2.3))
 		deck = deck_top(station)
 		if deck is not None and deck > w + 0.25:
-			parts.append(((0.0, w), (deck_half(station), deck - w, 0.5), DECK_EXPONENT))
+			parts.append(((0.0, w), (deck_half(station), deck - w, DECK_BELOW), DECK_EXPONENT))
 	ring = []
 	default = angles is None
 	for theta in angles or angles_at(station, centre):
@@ -2122,8 +2691,9 @@ def mechanisms():
 	node("probe", hinge=root, mesh=merge([cylinder(root, tip, 2.2, 1.9), cylinder(tip, tip + FORWARD * (2 * INCH), 1.9, 1.2)]))
 	joint("probe", UP + PORT * 0.4, FORWARD, -PORT, "probe", [[0, 0], [0.25, 0], [1, math.radians(28)]])
 	# Speedbrake: the dorsal panel between the fins, on the spine's skin,
-	# hinged at its forward edge
-	front, back, half = 545, 610, 17
+	# hinged at its forward edge (layout.speedbrake)
+	sb = LAYOUT["speedbrake"]
+	front, back, half = sb["front"], sb["back"], sb["half"]
 	skin_tree = built(["fuselage"])
 	node("speedbrake", hinge=draped(skin_tree, front, 0, out=0.15), mesh=cut((front, back), (-half, half)))
 	joint("speedbrake", PORT, AFT, UP, "speedbrake", [[0, 0], [1, math.radians(60)]])
@@ -2558,6 +3128,11 @@ def paint(directory):
 	bpy.ops.object.mode_set(mode="EDIT")
 	bpy.ops.mesh.select_all(action="SELECT")
 	bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.002, scale_to_bounds=False)
+	bpy.ops.object.mode_set(mode="OBJECT")
+	stencil_islands(parts)
+	unfolded(parts)
+	bpy.ops.object.mode_set(mode="EDIT")
+	bpy.ops.mesh.select_all(action="SELECT")
 	bpy.ops.uv.pack_islands(rotate=True, margin=0.002)
 	bpy.ops.object.mode_set(mode="OBJECT")
 	image = bpy.data.images.new("paint", ATLAS, ATLAS, alpha=False)
@@ -2622,7 +3197,8 @@ def paint(directory):
 	f = np.clip((up - start) / (end - start), 0, 1)
 	f = (f * f * (3 - 2 * f))[..., None]
 	grey = upper[None, None, :] * (1 - f) + lower[None, None, :] * f
-	colour = grey * (0.4 + 0.6 * shade[..., None]) * (panels(where, covered) * stencils(where, covered))[..., None]
+	size = texel_size(where, covered)
+	colour = grey * (0.4 + 0.6 * shade[..., None]) * (panels(where, covered, size) * stencils(where, covered, size))[..., None]
 	# The nozzles' flaps: bare metal outside; inside, the divergent flaps'
 	# faces from the exit to the throat and the dark beyond it, each texel
 	# by which way it faces from its engine's axis (layout.paint.nozzle)
@@ -2667,42 +3243,65 @@ def paint(directory):
 			m.node_tree.nodes.remove(next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE"))
 
 
-def panels(where, covered):
+def texel_size(where, covered):
+	# Each texel's size on the jet (metres): the distance to its nearer
+	# neighbour across the atlas on the same island (one no more than three
+	# times the atlas's usual step away), else the usual step
+	steps = []
+	for a, b, ok in ((where[:, 1:], where[:, :-1], covered[:, 1:] & covered[:, :-1]), (where[1:], where[:-1], covered[1:] & covered[:-1])):
+		d = np.where(ok, np.linalg.norm(a - b, axis=-1), np.nan)
+		steps.append(d)
+	usual = np.nanmedian(np.concatenate([s.ravel() for s in steps]))
+	size = np.full(where.shape[:2], np.inf)
+	for axis, d in enumerate(steps):
+		d = np.where(d < 3 * usual, d, np.inf)
+		pad = ((0, 0), (0, 1)) if axis == 0 else ((0, 1), (0, 0))
+		size = np.minimum(size, np.pad(d, pad, constant_values=np.inf))
+		pad = ((0, 0), (1, 0)) if axis == 0 else ((1, 0), (0, 0))
+		size = np.minimum(size, np.pad(d, pad, constant_values=np.inf))
+	return np.where(np.isfinite(size), size, usual)
+
+
+def panels(where, covered, size):
 	# The panel lines' shading over the atlas (layout.panels): 1 where none
-	# runs, darker within half the line's width of one. Each texel's place on
-	# the jet (where, Blender's axes, metres) is measured against the lines:
-	# rings round the fuselage at a station, and polylines given on the skin
+	# runs, darker by the share of each texel (size, its width on the jet) a
+	# line covers. Each texel's place on the jet (where, Blender's axes,
+	# metres) is measured against the lines: rings round the fuselage at a
+	# station, and polylines given on the skin. A texel wholly on or off a
+	# line by its centre broke lines narrower than two texels into dots
 	p = LAYOUT["panels"]
 	factor = np.ones(where.shape[:2])
 	half = p["width"] * INCH / 2
 	points = where[covered]
+	texel = size[covered]
+	reach = half + texel.max() / 2
 	order = np.argsort(points[:, 0])
 	xs = points[order, 0]
-	near = np.zeros(len(points), bool)
+	gap = np.full(len(points), np.inf)
 
 	def between_x(lo, hi):
 		return order[np.searchsorted(xs, lo): np.searchsorted(xs, hi)]
 
 	for station in p.get("rings", []):
 		x = at(station, ORIGIN["waterline"], 0).x
-		near[between_x(x - half, x + half)] = True
+		pick = between_x(x - reach, x + reach)
+		gap[pick] = np.minimum(gap[pick], np.abs(points[pick, 0] - x))
 	mirrored = p.get("mirrored", [])
 	skin = built([n for n, o in NODES.items() if o.type == "MESH"])
 	for k, line in enumerate(p.get("lines", []) + mirrored + [[(s, w, -b) for s, w, b in line] for line in mirrored]):
 		corners = on_parts(skin, [at(*c) for c in line], k)
 		for a, b in zip(corners, corners[1:]):
 			a, b = np.array(a), np.array(b)
-			pick = between_x(min(a[0], b[0]) - half, max(a[0], b[0]) + half)
+			pick = between_x(min(a[0], b[0]) - reach, max(a[0], b[0]) + reach)
 			if not len(pick):
 				continue
 			q = points[pick]
 			d = b - a
 			t = np.clip(((q - a) @ d) / max(d @ d, 1e-12), 0, 1)
-			gap = np.linalg.norm(q - (a + t[:, None] * d), axis=1)
-			near[pick[gap < half]] = True
-	shade = np.ones(len(points))
-	shade[near] = p["shade"]
-	factor[covered] = shade
+			gap[pick] = np.minimum(gap[pick], np.linalg.norm(q - (a + t[:, None] * d), axis=1))
+	# the share of a texel's width within half the line's width of the line
+	share = np.clip((np.minimum(gap + texel / 2, half) - np.maximum(gap - texel / 2, -half)) / texel, 0, 1)
+	factor[covered] = 1 - (1 - p["shade"]) * share
 	return factor
 
 
@@ -2725,7 +3324,180 @@ def on_parts(tree, corners, k, step=0.5, far=1.0):
 	return laid
 
 
-STENCIL = 10   # pixels per inch the stencils are drawn at before they are laid on the atlas
+STENCIL = 40   # pixels per inch the stencils are drawn at before they are laid on the atlas
+STENCIL_DENSITY = 4.0   # the stencils' skin's texels per inch, against the rest's
+STENCIL_MARGIN = 1.5    # inches round each stencil its own island reaches
+
+
+def stencil_frames():
+	# Each stencil (layout.stencils) on each side as (spec, centre, across, up,
+	# normal): flat in the plane touching the built skin at its middle, its
+	# lettering reading forward on the right and aft on the left. The ray from
+	# the section's centre leans 33 deg off the side wall's normal there: a
+	# plane square to it left the warning box's top and bottom 2-2.5 in off
+	# the skin, and they went undrawn
+	p = LAYOUT["stencils"]
+	tree = built(["fuselage"])
+	out = []
+	for key, spec in p.items():
+		if not isinstance(spec, dict):
+			continue
+		for side in (-1, 1):
+			station, waterline = spec["at"]
+			theta = surface_angle(station, waterline, side)
+			centre, normal, _, _ = tree.find_nearest(on_skin(station, theta))
+			normal = normal.normalized()
+			if normal.dot(on_skin(station, theta, 1.0) - centre) < 0:
+				normal = -normal
+			up = (UP - normal * UP.dot(normal)).normalized()
+			out.append((spec, centre, up.cross(normal), up, normal))
+	return out
+
+
+def stencil_islands(parts):
+	# The skin under each stencil on its own UV island, STENCIL_DENSITY times
+	# as dense as smart_project left the rest and laid flat in the stencil's
+	# plane, before the islands are packed: at the atlas's own texel (about 6
+	# mm) lettering half an inch high read as speckle. A face joins a
+	# stencil's island with a corner within STENCIL_MARGIN of it, facing its
+	# way and within 2 in of its plane: the LEX's root, lying under the warning
+	# box's margin, took the same place on the island and the bake wrote it
+	# over the box's corner
+	area, mapped = 0.0, 0.0
+	for o in parts:
+		uv = o.data.uv_layers.active.data
+		for f in o.data.polygons:
+			q = [uv[i].uv for i in f.loop_indices]
+			mapped += abs(sum(a.x * b.y - b.x * a.y for a, b in zip(q, q[1:] + q[:1]))) / 2
+			area += f.area
+	scale = math.sqrt(mapped / area) * STENCIL_DENSITY   # UV units per metre on the islands
+	for k, (spec, centre, across, up, normal) in enumerate(stencil_frames()):
+		reach = [(s / 2 + STENCIL_MARGIN) * INCH for s in spec["size"]]
+		joined = 0
+		for o in parts:
+			mesh, world = o.data, o.matrix_world
+			turn = world.to_3x3()
+			corners = [world @ v.co - centre for v in mesh.vertices]
+			inside = [abs(c.dot(normal)) < 3 * INCH and abs(c.dot(across)) < reach[0] and abs(c.dot(up)) < reach[1] for c in corners]
+			uv = mesh.uv_layers.active.data
+			for f in mesh.polygons:
+				if not any(inside[i] for i in f.vertices) or (turn @ f.normal).normalized().dot(normal) < 0.5 or abs((world @ f.center - centre).dot(normal)) > 2 * INCH:
+					continue
+				joined += 1
+				for i in f.loop_indices:
+					c = corners[mesh.loops[i].vertex_index]
+					uv[i].uv = (2.0 + k + c.dot(across) * scale, 2.0 + c.dot(up) * scale)
+		if not joined:
+			raise SystemExit(f"stencil {k}: no skin facing it within its margin (layout.stencils)")
+
+
+def flattened(mesh, triangles):
+	# A face's corners laid flat, triangle by triangle (its loop triangles,
+	# the split the export writes), each opened about the edge it shares with
+	# one already laid: {loop: (x, y)} in metres. Projected onto one plane, a
+	# twisted quad folded into a bow tie whose two halves lay over each other
+	point = lambda loop: mesh.vertices[mesh.loops[loop].vertex_index].co
+	a, b, c = triangles[0]
+	along = (point(b) - point(a)).normalized()
+	normal = (point(b) - point(a)).cross(point(c) - point(a)).normalized()
+	across = normal.cross(along)
+	flat = {a: (0.0, 0.0), b: ((point(b) - point(a)).length, 0.0), c: ((point(c) - point(a)).dot(along), (point(c) - point(a)).dot(across))}
+	laid = [triangles[0]]
+	waiting = list(triangles[1:])
+	while waiting:
+		for triangle in waiting:
+			known = [l for l in triangle if l in flat]
+			if len(known) < 2:
+				continue
+			p, q = known[:2]
+			r = next(l for l in triangle if l not in (p, q))
+			if r in flat:
+				waiting.remove(triangle)
+				break
+			# the side the laid triangle on this edge lies on (else the laid corners' middle)
+			other = next((l for t in laid if p in t and q in t for l in t if l not in (p, q)), None)
+			P, Q = (Vector((*flat[l], 0.0)) for l in (p, q))
+			O = Vector((*flat[other], 0.0)) if other is not None else sum((Vector((*v, 0.0)) for v in flat.values()), Vector()) / len(flat)
+			edge = Q - P
+			length = edge.length
+			d1, d2 = (point(r) - point(p)).length, (point(r) - point(q)).length
+			x = (d1 * d1 - d2 * d2 + length * length) / (2 * length)
+			y = math.sqrt(max(d1 * d1 - x * x, 0.0))
+			unit = edge / length
+			side = Vector((-unit.y, unit.x, 0.0))
+			if side.dot(O - P) > 0:
+				side = -side
+			R = P + unit * x + side * y
+			flat[r] = (R.x, R.y)
+			laid.append(triangle)
+			waiting.remove(triangle)
+			break
+		else:
+			break
+	return flat
+
+
+def unfolded(parts):
+	# Faces lying over others on the islands (a curved surface turning back
+	# past the plane smart_project laid it on, a sliver, or a twisted quad's
+	# two halves) each get an island of their own, laid flat at the islands'
+	# density: the bake wrote one over the other, 225 texels in all, most in
+	# the cockpit tub and the LEXes (check.py paint.overlap). Faces are seen
+	# as the export splits them (loop triangles), and only on the islands in
+	# the unit square: the stencils' lie outside it until packed
+	size = ATLAS * 2
+	area, mapped = 0.0, 0.0
+	for o in parts:
+		uv = o.data.uv_layers.active.data
+		for f in o.data.polygons:
+			q = [uv[i].uv for i in f.loop_indices]
+			mapped += abs(sum(a.x * b.y - b.x * a.y for a, b in zip(q, q[1:] + q[:1]))) / 2
+			area += f.area
+	scale = math.sqrt(mapped / area)
+	placed = 0
+	for o in parts:
+		mesh = o.data
+		uv = mesh.uv_layers.active.data
+		mesh.calc_loop_triangles()
+		split = {}
+		owners, corners = [], []
+		for lt in mesh.loop_triangles:
+			split.setdefault(lt.polygon_index, []).append(tuple(lt.loops))
+			owners.append(lt.polygon_index)
+			corners.append([tuple(uv[l].uv) for l in lt.loops])
+		if not corners:
+			continue
+		points = np.array(corners) * size
+		owners = np.array(owners)
+		lo = np.floor(points.min(1) - 0.5).astype(int)
+		span = np.ceil(points.max(1) - 0.5).astype(int) - lo + 1
+		cross = lambda a, b: a[..., 0] * b[..., 1] - a[..., 1] * b[..., 0]
+		whole = cross(points[:, 1] - points[:, 0], points[:, 2] - points[:, 0])
+		hits = []
+		for s in np.unique(span.max(1)):
+			pick = np.where((span.max(1) == s) & (np.abs(whole) > 1e-12))[0]
+			grid = np.stack(np.meshgrid(np.arange(s), np.arange(s), indexing="ij"), -1).reshape(-1, 2)
+			for chunk in np.array_split(pick, max(1, len(pick) * s * s // 2000000 + 1)):
+				q = lo[chunk, None, :] + grid[None] + 0.5
+				a, b, c = (points[chunk, k, None, :] for k in range(3))
+				w0, w1 = cross(b - q, c - q) / whole[chunk, None], cross(c - q, a - q) / whole[chunk, None]
+				inside = (w0 > 1e-6) & (w1 > 1e-6) & (1 - w0 - w1 > 1e-6) & (q[..., 0] >= 0) & (q[..., 0] < size) & (q[..., 1] >= 0) & (q[..., 1] < size)
+				which = np.broadcast_to(owners[chunk, None], inside.shape)[inside]
+				x, y = q[..., 0][inside].astype(int), q[..., 1][inside].astype(int)
+				hits.append(np.stack([which, y, x], 1))
+		hits = np.concatenate(hits) if hits else np.zeros((0, 3), int)
+		key = hits[:, 1].astype(np.int64) * size + hits[:, 2]
+		_, inverse, counts = np.unique(key, return_inverse=True, return_counts=True)
+		folded = set(np.unique(hits[counts[inverse] >= 2, 0]).tolist())
+		for index in folded:
+			flat = flattened(mesh, split[index])
+			if len(flat) < len(mesh.polygons[index].loop_indices):
+				raise SystemExit(f"{o.name}: face {index}'s triangles do not join edge to edge")
+			for loop, (x, y) in flat.items():
+				uv[loop].uv = (-2.0 - placed * 0.01 + x * scale, 2.0 + y * scale)
+			placed += 1
+	print(f"unfolded {placed} faces onto islands of their own")
+	return placed
 
 
 def stencil_image(spec, dark, light):
@@ -2756,36 +3528,39 @@ def stencil_image(spec, dark, light):
 	return np.asarray(image, float) / 255
 
 
-def stencils(where, covered):
-	# The stencils' shading over the atlas (layout.stencils): each laid on both
-	# sides' skin, flat in the plane touching the skin at its middle, its
-	# lettering reading forward on the right and aft on the left
+def stencils(where, covered, size):
+	# The stencils' shading over the atlas (layout.stencils), each texel the
+	# stencil's average over its own width on the jet (size): sampled at its
+	# centre, lettering finer than a texel read as speckle
+	from PIL import Image, ImageFilter
 	p = LAYOUT["stencils"]
 	factor = np.ones(where.shape[:2])
 	points = where[covered]
+	texel = size[covered]
 	shade = np.ones(len(points))
-	for key, spec in p.items():
-		if not isinstance(spec, dict):
+	images = {}
+	for spec, centre, across, up, normal in stencil_frames():
+		d = points - np.array(centre)
+		off = d @ np.array(normal)
+		u = d @ np.array(across) / (spec["size"][0] * INCH) + 0.5
+		v = 0.5 - d @ np.array(up) / (spec["size"][1] * INCH)
+		pick = (np.abs(off) < 1.5 * INCH) & (u >= 0) & (u < 1) & (v >= 0) & (v < 1)
+		if not pick.any():
 			continue
-		image = stencil_image(spec, p["dark"], p["light"])
-		# blurred to the atlas's texel (about 6 mm): lettering finer than that
-		# would read as speckle, so it reads as soft bands instead
-		from PIL import Image, ImageFilter
-		image = np.asarray(Image.fromarray((image * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(STENCIL * 0.12)), float) / 255
+		# blurred to half the texels' width there, then read between pixels
+		sigma = 0.5 * float(np.median(texel[pick])) / INCH * STENCIL
+		key = (id(spec), round(sigma, 2))
+		if key not in images:
+			drawn = stencil_image(spec, p["dark"], p["light"])
+			images[key] = np.asarray(Image.fromarray((drawn * 255).round().astype(np.uint8)).filter(ImageFilter.GaussianBlur(sigma)), float) / 255
+		image = images[key]
 		h, w = image.shape
-		for side in (-1, 1):
-			station, waterline = spec["at"]
-			theta = surface_angle(station, waterline, side)
-			centre = on_skin(station, theta)
-			normal = (on_skin(station, theta, 1.0) - centre).normalized()
-			up = (UP - normal * UP.dot(normal)).normalized()
-			across = up.cross(normal)   # the reading direction: forward on the right, aft on the left
-			d = points - np.array(centre)
-			off = d @ np.array(normal)
-			u = d @ np.array(across) / (spec["size"][0] * INCH) + 0.5
-			v = 0.5 - d @ np.array(up) / (spec["size"][1] * INCH)
-			pick = (np.abs(off) < 1.5 * INCH) & (u >= 0) & (u < 1) & (v >= 0) & (v < 1)
-			shade[pick] = np.minimum(shade[pick], image[(v[pick] * h).astype(int), (u[pick] * w).astype(int)])
+		x, y = np.clip(u[pick] * w - 0.5, 0, w - 1), np.clip(v[pick] * h - 0.5, 0, h - 1)
+		x0, y0 = np.minimum(x.astype(int), w - 2), np.minimum(y.astype(int), h - 2)
+		fx, fy = x - x0, y - y0
+		value = (image[y0, x0] * (1 - fx) * (1 - fy) + image[y0, x0 + 1] * fx * (1 - fy)
+			+ image[y0 + 1, x0] * (1 - fx) * fy + image[y0 + 1, x0 + 1] * fx * fy)
+		shade[pick] = np.minimum(shade[pick], value)
 	factor[covered] = shade
 	return factor
 
@@ -2813,7 +3588,8 @@ def points():
 	out["probe"] = e(PROBE[0])
 	out["belly"] = [e(at(s, keel_at(s), 0)) for s in (100, 250, 450, 600)]
 	out["wingtips"] = {n: e(LANDMARKS[f"wingtip_leading_{n}"].lerp(LANDMARKS[f"wingtip_trailing_{n}"], 0.5)) for n in ("left", "right")}
-	out["speedbrake"] = {"hinge": e(HINGES["speedbrake"]), "area": round(65 * 34 * INCH * INCH, 3)}
+	sb = LAYOUT["speedbrake"]
+	out["speedbrake"] = {"hinge": e(HINGES["speedbrake"]), "area": round((sb["back"] - sb["front"]) * 2 * sb["half"] * INCH * INCH, 3)}
 	hard = {}
 	belly = built(["fuselage", "inlet_left", "inlet_right"])
 	for station in LAYOUT["hardpoints"]["stations"]:

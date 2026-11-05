@@ -51,8 +51,28 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   and then a 4 in Gaussian (`smoothed()`), the traced sections' outlines by a 1 in Gaussian along them
   (`destaired()`). Every run between cited values (section shapes, ratios, widths, the rear body's and the
   nacelles' knots) is a monotone cubic that arrives level at its last knot (`onward()`), never a straight run,
-  which creases the skin at each knot. The top line follows the canopy's located points and then the rear
-  fuselage's top through the blend (FS 357-404). Behind the LEX the rear fuselage is a narrow spine on a
+  which creases the skin at each knot. The top line follows the canopy's located points to the joint
+  behind the canopy (FS 334). The canopy's aft fairing widens from the canopy's own section at FS 290 to
+  the joint's wherever the joint is the wider, and closes round the glass's pointed top above (`flared()`).
+  The glass ends on a cut along its lower edge as two side photos show it (`layout.canopy glass_edge`,
+  `glass_edge()`), rising from a rail along the sill to a rounded tip at the canopy's aft end, with the
+  canopy's metal panel below it; the faces are cut along that line, not ended on the loft's rings.
+  From 30 in ahead of the canopy's aft end to 85 in behind it the upper section is the old model's
+  (`layout.dorsal`, measured on it at the user's decision; `dorsal()`): a narrow
+  bubble on a broad flat-topped base whose corner runs on aft along the spine, a tail carrying the
+  canopy's lines down onto the flat top, heights taken from the base's top (the crown) with the part
+  above it squashed to our canopy's height ahead of the photos' last top reading (FS 318) and the old
+  model's own height from the canopy's aft end back. The crease at the tail's foot is the old model's,
+  measured every half inch (`layout.dorsal` crease, 30 in ahead of the aft end to its tip 10 in behind):
+  its corner goes into each section exactly, ring column `CREASE[0]` lies on it (`placed()`: the columns
+  above it evenly along the tail, those below evenly to the sill's column, gathering from FS 289 and
+  spreading again over 8 in behind the tip in `lofted()`), its edges are shaded sharp where it turns 8 deg
+  or more, and the glass ends on it where the photos' glass edge runs below it (FS 295-319). From the joint to the rear fuselage (FS 412)
+  each share of the section's height runs on one cubic from the joint's section to the rear fuselage's,
+  leaving the joint level and arriving with the rear fuselage's slope, its top on the spine's crown and
+  its lower body through the cited FS 357 section too (`lofted()`). No measured line is passed through
+  point by point there: the side seam's points, which scatter by a few tenths of an inch, rippled the side
+  when the skin was drawn through them. Behind the LEX the rear fuselage is a narrow spine on a
   broad deck (`layout.spine`): the crown is the profile photo's skyline cast onto the centreline (the HATP
   side view runs up to 3 in above it), the spine's width above its centre runs through the triangulated
   lower ends of its panel joints, and the deck stands near the LEX root's height from JOIN aft, joining the
@@ -71,7 +91,7 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   leaning bow and aft edge are where the photos put them (`layout.canopy`), the glass's section a
   superellipse fitted to the photos' outlines. The nose carries the probes, fairings, light strips and blade
   the photos place (`layout.aoa`, `pitot`, `blisters`, `formation`, `blade`), the fins their tip pods
-  (`layout.pod`), and a simple cockpit with its pilot sits under the canopy (`layout.cockpit`). Each nozzle
+  (`layout.pods`), and a simple cockpit with its pilot sits under the canopy (`layout.cockpit`). Each nozzle
   is twelve flaps, each its own joint (`layout.petals`): a curved outer flap with its stepped tab, and inside
   it the divergent and convergent flaps of the gas path, closing together; the burner's dark duct lies beyond
   the throat, and the paint gives the flaps bare metal outside, the divergent flaps' cooling holes and a dark
@@ -93,13 +113,20 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   above, below and outboard, and over the LEX and its fairing from above, each bend over 4 in either side
   counted where most of it lies within 2 in, so smooth curvature is not; the canopy is left out only on the
   lines that meet it; each view's tolerance lies between the fixed build and one with its rings spread out;
-  on the fairing a step counts as a bend, not as an edge);
+  on the fairing a step counts as a bend, not as an edge), and the canopy's aft end turning no sharper than
+  a fillet where its fairing meets the spine, an inch either side;
   the belly between the nose and the inlets bending no more than its curve; the fuselage's section,
   where each inlet hands over, standing nowhere outside the inlet's last ring where it juts out past the
-  section 4.5 in ahead (`shape.joint`); the spine's crown, flank and deck where the photos put them
+  section 4.5 in ahead (`shape.joint`); no wave on the same lines, a dip between humps or a hump
+  between dips within 80 in standing over 0.15 in (`shape.wave`), which no crease check sees; the
+  spine's crown, flank, side seam and deck where the photos put them (behind the canopy, where the old model's section governs by the user's decision, its widths instead, and the crease at the tail's foot in place within 0.5 in across and 0.3 in up, turning within 40% of the old model's angle: `layout.dorsal`)
   (`layout.spine`); and each
   panel line (`layout.panels`, cast onto the skin from the photos) within an inch of the skin as built,
-  which the paint otherwise finds only when it is baked.
+  which the paint otherwise finds only when it is baked. On a painted build it reads the paint too, off
+  the atlas the GLB carries: no texel lying under two painted faces (`paint.overlap`), each stencil on skin
+  of its own island, dense enough for its lettering, and drawn whole (`layout.stencils`), and the panel
+  lines darker than the skin beside them along their whole length. A draft carries no atlas: its paint goes
+  unchecked, and the check says so.
 - **`outline.py`** - the outline check: the model's top, side and front silhouettes at the HATP masks' scale,
   registered on the apex and centreline, with the share of their union both cover, and every place the
   outlines part by more than a threshold, worst first, in stations, waterlines and buttlines.
@@ -129,7 +156,9 @@ python3 -I test_check.py
 
 The build also unwraps every part into one atlas and bakes its ambient occlusion in Cycles (`paint.png`
 beside OUT.glb), the shading the paint is laid over, and each texel's surface normal, which picks the
-upper grey or, facing down, the lower (`layout.paint`, sampled in the reference photo).
+upper grey or, facing down, the lower (`layout.paint`, sampled in the reference photo). A texel of the 2048
+atlas is about 0.47 in on the jet: the skin under each stencil gets its own island four times as dense
+(`stencil_islands()`), and the panel lines, 0.4 in wide, shade each texel by the share of it they cover.
 
 Our model's distant stages wait until the model is finished (the user, 2026-11-02): the first set was
 deleted. These scripts stay for then, building from the painted model (the old model's own pipeline is below):
@@ -176,7 +205,7 @@ encoded to KTX2. The source atlases carry a service jet's wear: grime on the ski
 cockpit's sills, walls and throttle grips.
 
 ```
-git show bdd7ebc63^:web/src/assets/fa18c.glb > /tmp/source.glb
+git show 6e3003c50^:web/src/assets/fa18c.glb > /tmp/source.glb
 python3 fresh.py /tmp/source.glb /tmp/fresh.glb [preview]                    # preview: each atlas before and after
 python3 ../texswap.py /tmp/fresh.glb ../../web/src/assets/fa18c.glb etc1s 15,19,20,21,22
 ```
