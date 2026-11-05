@@ -97,6 +97,46 @@ def area(outline):
 	return abs(sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(outline, outline[1:] + outline[:1]))) / 2
 
 
+def rounding_inward(r):
+	# The round-down's edge's inward direction in plan, toward the deck's middle
+	(ax, az), (bx, bz) = r["edge"]
+	span = math.hypot(bx - ax, bz - az)
+	nx, nz = -(bz - az) / span, (bx - ax) / span
+	mx, mz = np.mean(np.array(FACTS["layout"]["deck"]["outline"], float), axis=0)
+	return (nx, nz) if (mx - ax) * nx + (mz - az) * nz >= 0 else (-nx, -nz)
+
+
+def rounding_distance(r, plan):
+	# Plan points' distances (N, [x, z]) in from the round-down's edge
+	(ax, az), _ = r["edge"]
+	nx, nz = rounding_inward(r)
+	return (plan[:, 0] - ax) * nx + (plan[:, 1] - az) * nz
+
+
+def rounding_miss(tris, r, height, inward):
+	# The worst gap between a deck's top (triangles, ship frame) and its
+	# round-down's curve, sampled across the edge's middle 90% and from 0.1 m
+	# inside its edge to 0.1 m short of the curve's end
+	(ax, az), (bx, bz) = r["edge"]
+	nx, nz = inward
+	curve = lambda d: height - r["drop"] * max(0.0, 1 - d / r["length"]) ** 2
+	worst = 0.0
+	for share in np.linspace(0.05, 0.95, 9):
+		x0, z0 = ax + (bx - ax) * share, az + (bz - az) * share
+		for d in np.linspace(0.1, r["length"] - 0.1, 7):
+			x, z = x0 + nx * d, z0 + nz * d
+			for (px, py, pz), (qx, qy, qz), (rx, ry, rz) in tris:
+				den = (qz - rz) * (px - rx) + (rx - qx) * (pz - rz)
+				if abs(den) < 1e-12:
+					continue
+				l1 = ((qz - rz) * (x - rx) + (rx - qx) * (z - rz)) / den
+				l2 = ((rz - pz) * (x - rx) + (px - rx) * (z - rz)) / den
+				if min(l1, l2, 1 - l1 - l2) >= -1e-9:
+					worst = max(worst, abs(l1 * py + l2 * qy + (1 - l1 - l2) * ry - curve(d)))
+					break
+	return worst
+
+
 def result(fact, what, expected, measured, tolerance, unit="m"):
 	return {"fact": fact, "what": what, "expected": float(expected), "measured": float(measured), "tolerance": tolerance, "unit": unit}
 
@@ -217,11 +257,16 @@ def checks(ship):
 	yield from markings()
 
 	def plan():
+		# the deck's top at its height but for its round-down, and its outline
+		# covered in plan (the round-down's curve adds a little surface)
 		top = ship.points(["deck"])
+		r = deck.get("round")
+		if r:
+			top = top[rounding_distance(r, top[:, [0, 2]]) >= r["length"] - 1e-6]
 		yield result("layout.deck", "the deck's top at its layout height", height, top[:, 1].mean(), 0.001)
 		tris = ship.parts["deck"]
 		cross = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
-		yield result("layout.deck", "the deck's top covers its layout outline", area(deck["outline"]), 0.5 * np.linalg.norm(cross, axis=1).sum(), 1.0, "m2")
+		yield result("layout.deck", "the deck's top covers its layout outline", area(deck["outline"]), 0.5 * np.abs(cross[:, 1]).sum(), 1.0, "m2")
 	yield from plan()
 
 	def shapes():
@@ -238,6 +283,16 @@ def checks(ship):
 		island = ship.points(["island"])
 		yield result("shape.island", "island reaching below the deck", 0, max(0.0, height - island[:, 1].min()), 0.01)
 	yield from guard("shape.island", "the island's shape", standing)
+
+	def rounding():
+		# the round-down: the deck's surface on the layout's curve across the
+		# whole edge, sampled between the cuts and away from the edge's ends
+		r = deck.get("round")
+		if not r:
+			return
+		worst = rounding_miss(ship.parts["deck"], r, height, rounding_inward(r))
+		yield result("shape.round_down", "the deck's top off its round-down's curve", 0, worst, 0.02)
+	yield from guard("shape.round_down", "the round-down", rounding)
 
 
 def main():

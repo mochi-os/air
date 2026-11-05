@@ -20,7 +20,9 @@ from model import Model, pose  # noqa: E402
 DECK = {"height": 19.0, "thickness": 0.6,
 	"outline": [[-100, -40], [100, -40], [100, 30], [20, 30], [20, 20], [0, 20], [0, 30], [-100, 30]],
 	"texture": {"x": [-110, 110], "z": [-45, 35], "pixels": [220, 80]},
-	"marks": {"bow_port": [100, -40]}}
+	"marks": {"bow_port": [100, -40]},
+	# rounding down 0.6 m to its aft edge over 3 m, the edge plate's foot to 17.8
+	"round": {"edge": [[-100, -40], [-100, 30]], "length": 3.0, "drop": 0.6, "fascia": 17.8, "steps": 6}}
 LAYOUT = {
 	"deck": DECK,
 	"elevators": [{"number": 1, "side": 1, "outline": [[0, 20], [20, 20], [20, 30], [0, 30]], "thickness": 0.9, "travel": 8.0}],
@@ -61,7 +63,12 @@ LAYOUT = {
 			{"name": "acorn", "centre": [-16, 22], "profile": [[31.0, 0.6], [32.0, 0.6], [32.0, 0.8], [33.0, 1.0], [33.6, 0.7], [33.9, 0.0]], "radome": 32.01}],
 		"poles": [{"name": "mast", "base": [-12, 24], "bottom": 31.0, "top": 45.0, "radius": 0.5}],
 		# a window on its forward face and a radar face on its port face
-		"windows": [{"name": "bridge", "plane": "x=-5", "z": [21, 27], "y": [28, 29]}],
+		"windows": [{"name": "bridge", "plane": "x=-5", "z": [21, 27], "y": [28, 29]},
+			# and one a glazed level's panes replace
+			{"name": "cabin_port", "plane": "z=20.4", "x": [-15, -9], "y": [23, 24], "cab": "cabin"}],
+		# a level glazed port and starboard, seen through
+		"cabs": [{"name": "cabin", "sill": 23.0, "head": 24.0, "floor": 22.0, "room": [[-14, 21.2], [-10, 21.2], [-10, 26.8], [-14, 26.8]],
+			"openings": [{"from": [-15, 20.4], "to": [-9, 20.4], "conduit": 0.3, "wipers": True}, {"from": [-15, 27.6], "to": [-9, 27.6]}]}],
 		"panels": [{"name": "radar", "plane": "z=20", "x": [-16, -12], "y": [24, 27]},
 			# and a thicker cover on the forward face
 			{"name": "cover", "plane": "x=-5", "z": [24.5, 26.5], "y": [24, 25], "thickness": 0.1}],
@@ -202,18 +209,50 @@ class BuildTest(unittest.TestCase):
 
 	def test_deck_in_the_ship_frame(self):
 		deck = self.model.parts()["deck"].reshape(-1, 3)
-		self.assertTrue(np.allclose(deck[:, 1], 19.0, atol=1e-4))
+		self.assertTrue(np.allclose(deck[deck[:, 0] > -97 + 1e-4][:, 1], 19.0, atol=1e-4))   # flat but for its round-down
 		self.assertAlmostEqual(deck[:, 0].min(), -100, places=3)
 		self.assertAlmostEqual(deck[:, 0].max(), 100, places=3)
 		self.assertAlmostEqual(deck[:, 2].min(), -40, places=3)   # port is negative z
 		self.assertAlmostEqual(deck[:, 2].max(), 30, places=3)
 		skirt = self.model.parts()["deck_skirt"].reshape(-1, 3)
-		self.assertAlmostEqual(skirt[:, 1].min(), 18.4, places=3)
+		self.assertAlmostEqual(skirt[skirt[:, 0] > -97 + 1e-4][:, 1].min(), 18.4, places=3)
+
+	def test_deck_rounds_down_to_its_aft_edge(self):
+		# the top on its curve: level 3 m in, 0.6 m down at the edge, a
+		# parabola between, cut at each of its six steps right across the deck
+		deck = self.model.parts()["deck"].reshape(-1, 3)
+		curve = lambda x: 19.0 - 0.6 * max(0.0, 1 - (x + 100) / 3.0) ** 2
+		near = deck[deck[:, 0] < -97 + 1e-4]
+		np.testing.assert_allclose(near[:, 1], [curve(x) for x in near[:, 0]], atol=1e-4)
+		# and inside it, not just along its edges: the surface's height at plan
+		# points between the steps, within the chord's sag of the curve
+		tris = self.model.parts()["deck"]
+		def surface(x, z):
+			for t in tris:
+				(ax, ay, az), (bx, by, bz), (cx, cy, cz) = t
+				d = (bz - cz) * (ax - cx) + (cx - bx) * (az - cz)
+				l1 = ((bz - cz) * (x - cx) + (cx - bx) * (z - cz)) / d
+				l2 = ((cz - az) * (x - cx) + (ax - cx) * (z - cz)) / d
+				if min(l1, l2, 1 - l1 - l2) >= -1e-9:
+					return l1 * ay + l2 * by + (1 - l1 - l2) * cy
+			return None
+		for x in (-99.75, -99.0, -98.25, -97.5):
+			for z in (-35.0, -5.0, 25.0):
+				self.assertAlmostEqual(surface(x, z), curve(x), delta=0.01, msg=(x, z))
+		self.assertAlmostEqual(deck[:, 1].min(), 18.4, places=4)
+		# the edge plate: at the aft edge from 18.4 down to its foot at 17.8, along
+		# the sides on the curve, not a slope to the next corner
+		skirt = self.model.parts()["deck_skirt"].reshape(-1, 3)
+		edge = skirt[np.abs(skirt[:, 0] + 100) < 1e-4]
+		np.testing.assert_allclose([edge[:, 1].max(), edge[:, 1].min()], [18.4, 17.8], atol=1e-4)
+		side = skirt[(np.abs(skirt[:, 2] + 40) < 1e-4) & (np.abs(skirt[:, 0] + 98.5) < 1e-3)]
+		self.assertAlmostEqual(side[:, 1].max(), curve(-98.5), places=4)
+		self.assertAlmostEqual(side[:, 1].min(), 18.4 - (18.4 - 17.8) * 0.25, places=4)
 
 	def test_deck_area_leaves_out_the_elevator(self):
 		tris = self.model.parts()["deck"]
 		a = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
-		self.assertAlmostEqual(0.5 * np.linalg.norm(a, axis=1).sum(), 200 * 70 - 20 * 10, places=1)
+		self.assertAlmostEqual(0.5 * np.abs(a[:, 1]).sum(), 200 * 70 - 20 * 10, places=1)   # in plan, the round-down's curve aside
 		# and every face of the top faces up
 		self.assertTrue((a[:, 1] > 0).all())
 
@@ -442,6 +481,93 @@ class BuildTest(unittest.TestCase):
 		# the lettering cut out: clear but for its text, so a plate shows the face behind it
 		self.assertEqual(lettering.get("alphaMode"), "MASK")
 		self.assertEqual(png[25], 6)   # colour type RGBA
+
+	def test_glazed_level_seen_through(self):
+		# its glass and fittings are details, which the engine's crash box
+		# leaves out: the body's sides stay where the blocks put them
+		body = self.model.parts()["island"].reshape(-1, 3)
+		self.assertGreaterEqual(body[:, 2].min(), 20 - 1e-4)
+		# a sight line across the block through both openings meets nothing of
+		# the island: the room is hollow and both walls open
+		tris = self.model.parts()["island"]
+		def crosses(a, b):
+			d = np.array(b) - np.array(a)
+			for t in tris:
+				e1, e2 = t[1] - t[0], t[2] - t[0]
+				h = np.cross(d, e2)
+				det = e1 @ h
+				if abs(det) < 1e-12:
+					continue
+				f = 1 / det
+				s_ = np.array(a) - t[0]
+				u = f * (s_ @ h)
+				q = np.cross(s_, e1)
+				v = f * (d @ q)
+				w = f * (e2 @ q)
+				if u >= 0 and v >= 0 and u + v <= 1 and 0 <= w <= 1:
+					return True
+			return False
+		self.assertFalse(crosses([-12, 23.5, 19.0], [-12, 23.5, 29.0]))
+		self.assertTrue(crosses([-12, 21.0, 19.0], [-12, 21.0, 29.0]))   # below the room, the block as it was
+		# the panes: see-through, leaning out 0.25 m at the head
+		raw = self.glb.read_bytes()
+		length = int.from_bytes(raw[12:16], "little")
+		gltf = json.loads(raw[20 : 20 + length])
+		pane = next(m for m in gltf["materials"] if m["name"] == "pane")
+		self.assertEqual(pane.get("alphaMode"), "BLEND")
+		glass = self.model.parts(materials=["pane"])["island_details"].reshape(-1, 3)
+		port = glass[glass[:, 2] < 24]
+		self.assertAlmostEqual(port[port[:, 1] < 23.5][:, 2].max(), 20.4, places=3)          # its foot on the face
+		self.assertAlmostEqual(port[port[:, 1] > 23.5][:, 2].min(), 20.4 - 0.25 - 0.02, places=3)   # its head out
+		# mullions every 1.5 m (five across 6 m), and consoles inside below the sill
+		# the cab's fittings among the details: within the level's own box
+		def cab(*materials):
+			q = self.model.parts(materials=list(materials))["island_details"].reshape(-1, 3)
+			return q[(q[:, 0] >= -15.6) & (q[:, 0] <= -8.4) & (q[:, 1] >= 21.9) & (q[:, 1] <= 24.5) & (q[:, 2] >= 19.9) & (q[:, 2] <= 28.1)]
+		dark = cab("dark")
+		heads = dark[(dark[:, 1] > 23.9) & (dark[:, 1] < 24.1) & (dark[:, 2] < 24)]
+		self.assertEqual(sorted(set(np.round(heads[:, 0] * 2) / 2)), [-15.0, -13.0, -11.0, -9.0])   # a frame every 2 m, at the heads
+		console = dark[(dark[:, 1] <= 23.0 + 1e-4) & (dark[:, 2] < 24) & (dark[:, 2] > 20.4)]
+		self.assertAlmostEqual(console[:, 1].min(), 22.0, places=3)
+		# a white wiper motor in each of the port opening's three bays, 0.1 m
+		# out from the glass 0.88 of the way up; none on the starboard one,
+		# which asks for none; a conduit 0.3 above the port head only
+		white = cab("white")
+		port = white[white[:, 2] < 24]
+		self.assertEqual(len(np.unique(np.round(port[:, 0], 1))), 6)         # three bars, two ends each
+		self.assertAlmostEqual(port[:, 1].mean(), 23.88, places=3)
+		self.assertAlmostEqual(port[:, 2].mean(), 20.4 - 0.25 * 0.88 - 0.1, places=3)
+		self.assertFalse((white[:, 2] > 24).any())
+		# the room behind the glass dark: its floor (y 22.0), which only the
+		# room's cut makes, the openings' starting at the sill
+		dark = self.model.parts(materials=["dark"])["island"]
+		floor = dark[(np.abs(dark[:, :, 1] - 22.0) < 1e-4).all(1)].reshape(-1, 3)
+		self.assertTrue(((floor[:, 2] > 21) & (floor[:, 2] < 27) & (floor[:, 0] > -14.1) & (floor[:, 0] < -9.9)).any())
+		grey = cab("grey", "island")   # the grey weathered into the island's atlas
+		self.assertAlmostEqual(grey[:, 1].mean(), 24.3, places=3)
+		self.assertTrue((grey[:, 2] < 21).all())                               # the port head's alone
+		# the window it replaces drawn as no plate of its own
+		faces = self.model.parts(materials=["glass"])["island_faces"].reshape(-1, 3)
+		self.assertFalse(((faces[:, 1] > 22.9) & (faces[:, 1] < 24.1)).any())
+
+	def test_radomes_smooth(self):
+		# the island's sphere 48 round its equator, and drawn smooth: its
+		# vertices shared between faces (flat shading gives each face its own)
+		points = self.model.parts(materials=["domes"])["island"].reshape(-1, 3)   # the sphere's, not its plinth's top
+		equator = points[(np.abs(points[:, 1] - 33.0) < 1e-3) & (np.abs(np.linalg.norm(points[:, [0, 2]] - [-12, 24], axis=1) - 1.5) < 0.01)]
+		self.assertEqual(len(np.unique(np.round(equator, 3), axis=0)), 48)
+		raw = self.glb.read_bytes()
+		length = int.from_bytes(raw[12:16], "little")
+		gltf = json.loads(raw[20 : 20 + length])
+		names = [m["name"] for m in gltf["materials"]]
+		mesh = gltf["meshes"][next(n["mesh"] for n in gltf["nodes"] if n["name"] == "island")]
+		for primitive in mesh["primitives"]:
+			vertices = gltf["accessors"][primitive["attributes"]["POSITION"]]["count"]
+			triangles = gltf["accessors"][primitive["indices"]]["count"] // 3
+			if names[primitive["material"]] == "domes":
+				self.assertLess(vertices, triangles)       # smooth: shared
+			elif names[primitive["material"]] == "island":
+				self.assertGreater(vertices, triangles)    # the plating flat
 
 	def test_weathered_atlases(self):
 		# each weathered group's grey wears the group's material, unwrapped into

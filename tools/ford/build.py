@@ -70,6 +70,8 @@ COLOURS = {"deck": (0.16, 0.16, 0.16, 1), "grey": (0.30, 0.32, 0.33, 1), "boot":
 	# the transom's recess, its paint in shade there (0.35-0.4 of the face's
 	# brightness in the same light); the drop-light bar the deck's yellow
 	"recess": (0.11, 0.12, 0.12, 1), "yellow": (0.67, 0.39, 0.03, 1),
+	# glass seen through: tinted, its alpha the share of light it stops
+	"pane": (0.03, 0.04, 0.05, 0.6),
 	# the Phalanx's radome, white
 	"radome": (0.7, 0.7, 0.68, 1),
 	# the island's fittings: the windows' wiper motors white, the fire
@@ -95,6 +97,10 @@ def material(name):
 		m.use_nodes = True
 		m.node_tree.nodes["Principled BSDF"].inputs["Base Color"].default_value = COLOURS[name]
 		m.diffuse_color = COLOURS[name]
+		if COLOURS[name][3] < 1:
+			# see-through: the exporter makes an alpha under 1 glTF's BLEND
+			m.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = COLOURS[name][3]
+			m.use_backface_culling = False
 		MATERIALS[name] = m
 	return MATERIALS[name]
 
@@ -130,6 +136,20 @@ def node(name, parent=None, hinge=None, mesh=None, paint="grey", smooth=False):
 			polygon.material_index = names.index(n)
 		data.validate()
 		tidy(data, smooth)
+		# a radome is smooth wherever it stands, its node's plating flat, and
+		# sharp where its profile steps (a seam's flange): only the radome's
+		# faces made smooth, and every edge past 30 degrees sharp
+		if not smooth and SMOOTHED & set(paints):
+			bm = bmesh.new()
+			bm.from_mesh(data)
+			smoothed = {names.index(n) for n in SMOOTHED if n in names}
+			for f in bm.faces:
+				f.smooth = f.material_index in smoothed
+			for e in bm.edges:
+				if len(e.link_faces) == 2 and e.calc_face_angle(0.0) > math.radians(30):
+					e.smooth = False
+			bm.to_mesh(data)
+			bm.free()
 	obj = bpy.data.objects.new(name, data)
 	bpy.context.scene.collection.objects.link(obj)
 	if parent:
@@ -137,6 +157,9 @@ def node(name, parent=None, hinge=None, mesh=None, paint="grey", smooth=False):
 	obj.location = hinge - (HINGES[parent] if parent else Vector())
 	NODES[name], HINGES[name] = obj, hinge.copy()
 	return obj
+
+
+SMOOTHED = {"radome"}   # paints drawn smooth in a flat node: turned and spherical shells
 
 
 def tidy(data, smooth):
@@ -217,16 +240,16 @@ def dome(centre, radius, plinth):
 	# A radome: a sphere on a cylinder reaching `plinth` below its centre, the
 	# sphere in the radomes' light, smooth paint (the plinth the face's grey)
 	c = at(*centre)
-	sphere = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=radius, matrix=Matrix.Translation(c)))
+	sphere = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=48, v_segments=24, radius=radius, matrix=Matrix.Translation(c)))
 	pieces = [(sphere[0], sphere[1], ["radome"] * len(sphere[1]))]
 	if plinth > 0:
 		middle = c + DOWN * (plinth / 2)
-		pieces.append(primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=True, segments=16, radius1=radius, radius2=radius,
+		pieces.append(primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=True, segments=48, radius1=radius, radius2=radius,
 			depth=plinth, matrix=Matrix.Translation(middle))))
 	return merge(pieces)
 
 
-def lathe(centre, profile, radome=None, segments=16, paint="grey"):
+def lathe(centre, profile, radome=None, segments=48, paint="grey"):
 	# A solid turned about an upright axis at centre [x, z]: profile [[y,
 	# radius], ...] from its foot up, a radius of 0 closing it to a point, an
 	# end left open closed by a flat cap; the bands above `radome` in the
@@ -298,30 +321,107 @@ def merge(pieces):
 	return vertices, faces, paints
 
 
+def round_down(d):
+	# The round-down (deck.round): the deck curving down to its aft edge over
+	# `length`, `drop` at the edge, leaving the flat deck level (a parabola in
+	# the distance from the edge), and the edge plate's foot falling to
+	# `fascia` there. Returns the plan distance from the edge, the top's and the
+	# plate foot's heights at a plan point, and the cut distances
+	r = d.get("round")
+	top, bottom = d["height"], d["height"] - d["thickness"]
+	if not r:
+		return None
+	(ax, az), (bx, bz) = r["edge"]
+	length = math.hypot(bx - ax, bz - az)
+	ex, ez = (bx - ax) / length, (bz - az) / length
+	# inward: toward the deck's middle
+	mx = sum(p[0] for p in d["outline"]) / len(d["outline"])
+	mz = sum(p[1] for p in d["outline"]) / len(d["outline"])
+	nx, nz = -ez, ex
+	if (mx - ax) * nx + (mz - az) * nz < 0:
+		nx, nz = -nx, -nz
+	span, drop = r["length"], r["drop"]
+
+	def distance(x, z):
+		return (x - ax) * nx + (z - az) * nz
+
+	def share(x, z):
+		# 1 at the edge, 0 where the round-down meets the flat deck
+		t = max(0.0, 1.0 - distance(x, z) / span)
+		return t * t
+
+	def height(x, z):
+		return top - drop * share(x, z)
+
+	def foot(x, z):
+		return bottom - (bottom - r.get("fascia", bottom - drop)) * share(x, z)
+
+	steps = r.get("steps", 6)
+	cuts = [span * k / steps for k in range(1, steps + 1)]
+	return {"distance": distance, "height": height, "foot": foot, "cuts": cuts, "inward": (nx, nz), "edge": (ax, az)}
+
+
+def rounded_ring(ring, shape):
+	# The deck's ring with a point wherever an edge crosses a round-down cut,
+	# so the edge plate follows the curve and not a slope between corners
+	if not shape:
+		return ring
+	out = []
+	for a, b in zip(ring, ring[1:] + ring[:1]):
+		out.append(a)
+		da, db = shape["distance"](*a), shape["distance"](*b)
+		crossings = []
+		for c in shape["cuts"]:
+			if (da - c) * (db - c) < 0:
+				t = (c - da) / (db - da)
+				crossings.append((t, [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]))
+		out += [q for _, q in sorted(crossings)]
+	return out
+
+
 def flight_deck():
 	# The flight deck: its top (`deck`, the painted texture), its edge plate
 	# (`deck_skirt`) and the underside of its overhang (`deck_underside`). The
 	# elevators' platforms are their own nodes, so the outline leaves them out.
+	# Where the deck rounds down to its aft edge (deck.round) the top is cut
+	# along the edge at each step of the curve and lowered to it, and the edge
+	# plate follows
 	d = LAYOUT["deck"]
 	top, bottom = d["height"], d["height"] - d["thickness"]
 	outline = d["outline"]
-	ring = outline if area(outline) < 0 else outline[::-1]
+	shape = round_down(d)
+	ring = rounded_ring(outline if area(outline) < 0 else outline[::-1], shape)
 	n = len(ring)
 	node("deck", mesh=([at(x, top, z) for x, z in ring], [tuple(range(n))], ["deck"]))
 	data = NODES["deck"].data
 	bm = bmesh.new()
 	bm.from_mesh(data)
 	bmesh.ops.triangulate(bm, faces=bm.faces, quad_method="BEAUTY", ngon_method="BEAUTY")
+	if shape:
+		# cut along the edge at each step, then each vertex to the curve
+		(ax, az), (nx, nz) = shape["edge"], shape["inward"]
+		hinge = HINGES["deck"]
+		for c in shape["cuts"]:
+			point = at(ax + nx * c, top, az + nz * c) - hinge
+			bmesh.ops.bisect_plane(bm, geom=list(bm.verts) + list(bm.edges) + list(bm.faces), plane_co=point, plane_no=at(nx, 0, nz))
+		bmesh.ops.remove_doubles(bm, verts=list(bm.verts), dist=1e-4)   # a cut through a point the ring already has there
+		bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3], quad_method="BEAUTY", ngon_method="BEAUTY")
+		for v in bm.verts:
+			p = v.co + hinge
+			x, z = p.x, -p.y
+			v.co.z = shape["height"](x, z) - hinge.z
 	bm.to_mesh(data)
 	bm.free()
 	painted("deck")
 	sides = [(i, n + i, n + (i + 1) % n, (i + 1) % n) for i in range(n)]
-	vertices = [at(x, top, z) for x, z in ring] + [at(x, bottom, z) for x, z in ring]
+	height = shape["height"] if shape else (lambda x, z: top)
+	foot = shape["foot"] if shape else (lambda x, z: bottom)
+	vertices = [at(x, height(x, z), z) for x, z in ring] + [at(x, foot(x, z), z) for x, z in ring]
 	node("deck_skirt", mesh=(vertices, sides, ["grey"] * n))
 	node("deck_underside", mesh=([at(x, bottom, z) for x, z in ring[::-1]], [tuple(range(n))], ["grey"]))
 	for name, (x, z) in d.get("marks", {}).items():
-		MARKS[f"deck_{name}"] = (at(x, top, z), "deck")
-	CURVES["deck_edge"] = ([at(x, top, z) for x, z in outline], "deck")
+		MARKS[f"deck_{name}"] = (at(x, height(x, z), z), "deck")
+	CURVES["deck_edge"] = ([at(x, height(x, z), z) for x, z in rounded_ring(outline, shape)], "deck")
 
 
 def painted(name):
@@ -491,7 +591,7 @@ def shape(p, frame=None):
 			radius2=radius, depth=(b - a).length, matrix=place))
 		piece = (vertices, faces, [paint] * len(faces))
 	elif kind == "lathe":
-		piece = lathe(p["centre"], p["profile"], p.get("radome"), p.get("segments", 16), paint)
+		piece = lathe(p["centre"], p["profile"], p.get("radome"), p.get("segments", 48), paint)
 	elif kind == "plate":
 		piece = plate(p["corners"], p["outward"], p.get("thickness", 0.03), paint)
 	elif kind == "path":
@@ -533,7 +633,7 @@ def shape(p, frame=None):
 		piece = ring(p["centre"], p["facing"], p["outer"], p["inner"], p.get("thickness", 0.1), p.get("segments", 16), paint)
 	elif kind == "dome":
 		c, r = at(*p["centre"]), p["radius"]
-		vertices, faces = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=r, matrix=Matrix.Translation(c)))
+		vertices, faces = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=16, radius=r, matrix=Matrix.Translation(c)))
 		piece = (vertices, faces, [paint] * len(faces))
 	elif kind == "railing":
 		height, rails = p["height"], []
@@ -648,22 +748,35 @@ def island():
 	i = LAYOUT.get("island")
 	if not i:
 		return
-	pieces = [prism(p["outline"], p["bottom"], p["top"], p.get("upper")) for p in i.get("prisms", [])]
-	pieces += [lathe(d["centre"], d["profile"], d.get("radome")) if "profile" in d else dome(d["centre"], d["radius"], d.get("plinth", 0))
+	blocks = [prism(p["outline"], p["bottom"], p["top"], p.get("upper")) for p in i.get("prisms", [])]
+	extras = [lathe(d["centre"], d["profile"], d.get("radome")) if "profile" in d else dome(d["centre"], d["radius"], d.get("plinth", 0))
 		for d in i.get("domes", [])]
-	pieces += [pole(p["base"], p["bottom"], p["top"], p["radius"]) for p in i.get("poles", [])]
-	node("island", mesh=merge(pieces))
-	# its windows (glass) and the radar's faces (panel), on its faces
+	extras += [pole(p["base"], p["bottom"], p["top"], p["radius"]) for p in i.get("poles", [])]
+	glazing = []
+	if not i.get("cabs"):
+		node("island", mesh=merge(blocks + extras))
+	else:
+		# the glazed levels cut from the blocks alone, the domes and poles
+		# joined in after, which the cuts would otherwise trim where they meet
+		# the roof; their glass and fittings go with the details, which stand
+		# off the body (the engine's crash box is the body's)
+		node("island", mesh=merge(blocks))
+		glazing = glazed(NODES["island"], i["cabs"])
+		if extras:
+			node("island_extras", mesh=merge(extras))
+			joined("island", "island_extras")
+	# its windows (glass) and the radar's faces (panel), on its faces; a
+	# glazed level's windows are its cab's panes
 	middle = [sum(c[0] for p in i.get("prisms", []) for c in p["outline"]) / max(1, sum(len(p["outline"]) for p in i.get("prisms", []))),
 		sum(c[1] for p in i.get("prisms", []) for c in p["outline"]) / max(1, sum(len(p["outline"]) for p in i.get("prisms", [])))]
 	cells = LAYOUT.get("lettering", {}).get("cells", {})
 	lit = [piece for p in LAYOUT.get("lettering", {}).get("plates", []) if p.get("on") == "island" and "lamps" in cells.get(p["cell"], {})
 		for piece in lamps(p, cells[p["cell"]], middle)]
-	if i.get("details") or lit:
-		# the mast's and the body's fittings, walkways and railings, and the
-		# lamps round the numbers
-		node("island_details", mesh=merge([shape(p) for p in i.get("details", [])] + lit))
-	details = [face(w, middle, "glass") for w in i.get("windows", [])] + [face(f, middle, "panel") for f in i.get("panels", [])]
+	if i.get("details") or lit or glazing:
+		# the mast's and the body's fittings, walkways and railings, the lamps
+		# round the numbers, and the glazed levels' glass and fittings
+		node("island_details", mesh=merge([shape(p) for p in i.get("details", [])] + lit + glazing))
+	details = [face(w, middle, "glass") for w in i.get("windows", []) if "cab" not in w] + [face(f, middle, "panel") for f in i.get("panels", [])]
 	plates = [p for p in LAYOUT.get("lettering", {}).get("plates", []) if p.get("on") == "island"]
 	details += [face(p, middle, "lettering") for p in plates]
 	if details:
@@ -673,6 +786,81 @@ def island():
 	for p in i.get("prisms", []):
 		for k, (x, z) in enumerate(p.get("upper") or p["outline"]):
 			MARKS[f"island_{p['name']}_top_{k + 1}"] = (at(x, p["top"], z), "island")
+
+
+def joined(name, other):
+	# Node `other`'s mesh joined into node `name`'s, `other` gone
+	bpy.ops.object.select_all(action="DESELECT")
+	NODES[other].select_set(True)
+	NODES[name].select_set(True)
+	bpy.context.view_layer.objects.active = NODES[name]
+	bpy.ops.object.join()
+	del NODES[other], HINGES[other]
+
+
+def glazed(obj, cabs):
+	# The island's glazed levels (layout.island.cabs), seen through: each
+	# one's room cut out of the island's block (Blender's exact boolean) from
+	# its floor to its head inside its walls, and an opening through each
+	# glazed face from the sill to the head; the cut faces the recess's dark.
+	# Returns what fills them: a pane in each opening leaning `lean` out at
+	# its head (in, where the face rakes back), a frame between bays about
+	# `mullions` apart, heavier bars at the sill and the head, a white wiper
+	# motor across each bay near its head where the opening has `wipers`, a
+	# conduit along the face `conduit` above the head where it gives one, and
+	# consoles along the glass inside. The rooms are dark, as the photos show
+	# them through the glass
+	out = []
+	for cab in cabs:
+		sill, head = cab["sill"], cab["head"]
+		# outward: away from the room's own middle (the island's lies too near
+		# an aft face to tell)
+		middle = [sum(q[0] for q in cab["room"]) / len(cab["room"]), sum(q[1] for q in cab["room"]) / len(cab["room"])]
+		openings = []
+		for o in cab["openings"]:
+			(ax, az), (bx, bz) = o["from"], o["to"]
+			length = math.hypot(bx - ax, bz - az)
+			dx, dz = (bx - ax) / length, (bz - az) / length
+			nx, nz = -dz, dx
+			if ((ax + bx) / 2 - middle[0]) * nx + ((az + bz) / 2 - middle[1]) * nz < 0:
+				nx, nz = -nx, -nz   # outward
+			openings.append((ax, az, bx, bz, length, dx, dz, nx, nz, o.get("lean", cab.get("lean", 0.25)), o.get("conduit"), o.get("wipers", False)))
+		cutters = [prism(cab["room"], cab["floor"], cab["head"], paint="dark")]
+		for ax, az, bx, bz, length, dx, dz, nx, nz, lean, _, _ in openings:
+			reach = 0.6 + max(lean, 0.0)
+			quad = [[ax - nx * 0.8, az - nz * 0.8], [bx - nx * 0.8, bz - nz * 0.8], [bx + nx * reach, bz + nz * reach], [ax + nx * reach, az + nz * reach]]
+			cutters.append(prism(quad, sill, head, paint="dark"))
+		cutter = node("cutter", mesh=merge(cutters))
+		cut = obj.modifiers.new("glazed", "BOOLEAN")
+		cut.operation, cut.solver, cut.object = "DIFFERENCE", "EXACT", cutter
+		cut.use_self, cut.material_mode = True, "TRANSFER"
+		bpy.context.view_layer.objects.active = obj
+		bpy.ops.object.modifier_apply(modifier=cut.name)
+		bpy.data.objects.remove(cutter, do_unlink=True)
+		del NODES["cutter"], HINGES["cutter"]
+		for ax, az, bx, bz, length, dx, dz, nx, nz, lean, conduit, wipers in openings:
+			foot = lambda s: [ax + dx * s, sill, az + dz * s]
+			top = lambda s: [ax + dx * s + nx * lean, head, az + dz * s + nz * lean]
+			out.append(sheet([foot(0), foot(length), top(length), top(0)], [nx, 0, nz], 0.02, "pane"))
+			count = max(1, round(length / cab.get("mullions", 2.0)))
+			for k in range(count + 1):
+				out.append(bar(foot(length * k / count), top(length * k / count), 0.15, "dark"))
+			out += [bar(foot(0), foot(length), 0.2, "dark"), bar(top(0), top(length), 0.2, "dark")]
+			# the wipers 0.1 m out from the glass, 0.88 of the way up
+			rise, off = sill + 0.88 * (head - sill), lean * 0.88 + 0.1
+			half = min(0.3, length / count / 2 * 0.8)
+			for k in range(count if wipers else 0):
+				m = length * (k + 0.5) / count
+				out.append(bar([ax + dx * (m - half) + nx * off, rise, az + dz * (m - half) + nz * off],
+					[ax + dx * (m + half) + nx * off, rise, az + dz * (m + half) + nz * off], 0.14, "white"))
+			if conduit:
+				out.append(bar([ax + nx * 0.06, head + conduit, az + nz * 0.06], [bx + nx * 0.06, head + conduit, bz + nz * 0.06], 0.08))
+			# a console along it inside, below the sill
+			c = [[ax - nx * 0.4 + dx * 0.4, az - nz * 0.4 + dz * 0.4], [bx - nx * 0.4 - dx * 0.4, bz - nz * 0.4 - dz * 0.4],
+				[bx - nx * 1.0 - dx * 0.4, bz - nz * 1.0 - dz * 0.4], [ax - nx * 1.0 + dx * 0.4, az - nz * 1.0 + dz * 0.4]]
+			if length > 1.0:
+				out.append(prism(c, cab["floor"], min(sill, cab["floor"] + 1.0), paint="dark"))
+	return out
 
 
 def lettered(name, frames):

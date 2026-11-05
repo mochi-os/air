@@ -67,7 +67,9 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
 - **`build.py`** - the model in the plan's Contract: true metres, x forward, y up, z starboard, the origin on
   the centreline at the deployed waterline midway along the flight deck.
   - The deck wears `paint.py`'s texture and the lettering's plates `letters.py`'s, which the build runs
-    unless `--draft`. Each plate maps its cell to read from outside its face.
+    unless `--draft`. Each plate maps its cell to read from outside its face. Its aft edge rounds down
+    (`deck.round`): the deck is cut along lines parallel to that edge and each vertex dropped on a parabola
+    over the last `length` metres, its edge plate's top and foot with it.
   - Each moving part is a node on its hinge or slide line, resting unrotated:
     - the catapult shuttles, the blast deflectors (hinged on their measured forward edges) and the bow's
       control console;
@@ -84,7 +86,15 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     faces' frames, the floodlight banks, ladders, pipes, the stair, the fittings on the base's faces, the
     halyards) as parts: boxes, cylinders, prisms, railings, dishes, domes, lathes, paths (bars or pipes along
     a line), ladders, stairs, plates and rings. The windows and radar covers are plates on its faces; a
-    window that gives a `radius` has its corners rounded, and a `frame` sets it in a flatter rim.
+    window that gives a `radius` has its corners rounded, and a `frame` sets it in a flatter rim. Its glazed
+    levels (`island.cabs`) are seen through: each one's room and an opening through each glazed face are cut
+    from the blocks (an exact boolean, before the radomes and poles join them, which it would trim), and
+    each opening is filled with a see-through pane (`pane`, dark, alpha 0.6: glTF's BLEND) leaning out at its
+    head, a frame about every 2 m, heavier sill and head bars, a wiper per bay where the opening has
+    `wipers`, a conduit above the head where it gives one, and a console inside, the room dark, all in
+    `island_details` (the engine's crash box is the body's); the windows the panes
+    replace (`cab`) draw no plate. The radomes are smooth
+    in a flat node (`SMOOTHED`), 48 round.
   - Unless `--draft`, each weathered group's faces are unwrapped into one atlas (a mesh's one `atlas` UV
     layer, which its groups share) and baked: each texel's position, normal and occlusion, from which
     `weather.py` draws the colour and height maps; the height is baked into a normal map, unless the group is
@@ -146,7 +156,8 @@ python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR   
 
 - **`check.py`** - measures the build and its ship file against every `facts.json` entry, each within a stated
   tolerance, and fails outside it. Entries it does not measure are in `EXEMPT` with the reason; `shape.*`
-  holds what no fact states (the hull under the deck, symmetric below its knuckles; the island on the deck).
+  holds what no fact states (the hull under the deck, symmetric below its knuckles; the island on the deck; the
+  deck's top on its round-down's curve).
 - **`photos.json`** - the photo match's catalogue for the shared tools in `../verify` (their README): the
   photos' marks, the deck plan's anchors, the sea at the waterline, and the ship's regions (port and starboard,
   by part family). Run both under the probe.slice memory cap.
@@ -201,6 +212,12 @@ the deck; a new sighting in the game becomes a ray here first.
 - the bow's face and the stem's front below it as the flat bottom of the sections ahead of them, a section at
   each of the front's knots, and a quarter's wall inside the deck's edge;
 - a sloped sponson's corners and a wedge's section, and the draught marks beside the stem reading from outside;
+- the deck's round-down: its surface on the curve at every vertex and between them, the edge plate's top and
+  foot with it;
+- a glazed level: a sight line across the block through both openings, the panes in BLEND leaning out,
+  a frame every 2 m, wipers only where asked, a conduit, consoles inside, the room's floor dark, and its
+  window drawn as no plate; a radome smooth and 48
+  round with the island's plating flat;
 - the island's details as parts (a railing, a dish facing aft, a brace to its end, a box, a bent pipe, a
   ladder's rungs, a stair, a slab), a turned radome in its group above its seam, faces turned out, and the
   lamps round a lettering cell's shapes standing out of the plate; a weapon's mount
