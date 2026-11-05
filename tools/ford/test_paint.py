@@ -344,6 +344,16 @@ class Paint(unittest.TestCase):
 		faded = paint.taxi_density(layout, {**taxi, "turns": {**turns, "rise": 0.5}}, canvas, (100, 200))[start].sum()
 		self.assertLess(faded, grid[start].sum() * 0.5)
 
+	def test_round_down_white_from_where_photographed(self):
+		# the facts' ramp: white from z -5.0 to starboard, light grey to port,
+		# the two meeting there on one line
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		ramps = {m["name"]: m for m in layout["markings"] if m["name"] in ("ramp", "ramp_port")}
+		self.assertEqual(ramps["ramp_port"]["points"][-1], ramps["ramp"]["points"][0])
+		self.assertAlmostEqual(ramps["ramp"]["points"][0][1], -5.0)
+		self.assertEqual(ramps["ramp"]["colour"], layout["paint"]["white"])
+		self.assertLess(sum(ramps["ramp_port"]["colour"]), sum(ramps["ramp"]["colour"]) * 0.9)
+
 	def test_unknown_kind(self):
 		with self.assertRaises(ValueError):
 			self.render({"kind": "triangle", "colour": RED})

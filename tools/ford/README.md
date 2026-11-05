@@ -83,7 +83,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     their stiffeners and struts, railings, the windows' frames, mullions, wiper motors and conduits, the radar
     faces' frames, the floodlight banks, ladders, pipes, the stair, the fittings on the base's faces, the
     halyards) as parts: boxes, cylinders, prisms, railings, dishes, domes, lathes, paths (bars or pipes along
-    a line), ladders, stairs and plates. The windows and radar covers are plates on its faces.
+    a line), ladders, stairs, plates and rings. The windows and radar covers are plates on its faces; a
+    window that gives a `radius` has its corners rounded, and a `frame` sets it in a flatter rim.
   - Unless `--draft`, each weathered group's faces are unwrapped into one atlas (a mesh's one `atlas` UV
     layer, which its groups share) and baked: each texel's position, normal and occlusion, from which
     `weather.py` draws the colour and height maps; the height is baked into a normal map, unless the group is
@@ -113,9 +114,15 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     edge domes' platforms (carried in to the catwalk or the band) and their knees likewise. The raft racks
     hang outboard of the railing: a canister lying fore and aft in each tier, on cradles. The safety nets
     (`nets`, the `net` material: a small image whose holes are cut out, both faces drawn) rise outward
-    from the railing's top on frames, except where a rack or platform stands. Every railing and the nets'
-    frames are in the `rail` material, grey as the rest: bars thinner than a photo resolves, which the photo
-    checks leave out.
+    from the railing's top on frames, except where a rack or platform stands, and over the bow and round the
+    stern's round-down (`catwalks.nets`, each hung to its own side from its own floor). Every railing and the
+    nets' frames are in the `rail` material, grey as the rest: bars thinner than a photo resolves, which the
+    photo checks leave out.
+  - The transom's face stands round its stepped recess, with the windows, the catwalk band, the walkway and
+    its fascia, the post frame and its fenders, the drop bar and the Phalanx's plinth; the rest as parts
+    (`transom.details`, measured in DVIDS 7694418 through its camera: `references/research/transom2`): the
+    recess's mezzanine, doors, cabinet, lamps and life ring, the boat landing under the post frame, the
+    scuppers, pipe and mooring chocks, and the port quarter's chocks.
   - The lettering's plates: the island's numbers on its faces with their lamps, its stencils and placards,
     and the stem's draught marks on the hull's side just aft of the stem, tangent to it.
   - OUT.json is the ship file (`ford.json`): the deck layout the engine and the flight core read (the
@@ -164,7 +171,8 @@ area (faded in where they leave it).
 `test_weather.py` weathers a plain wall's maps: the seams darker and grooved, the plates' tones, touch-ups,
 streaks only below a sill, measured runs where they are put, regions scaling a face's streaks, a group's own
 paint, walking surfaces, the occlusion, the grime toward the deck, and the sources at the lamps and the
-radomes' seams, and a deck of its own non-skid (the stern's lower decks); the wear by zone (each zone over the
+radomes' seams, and a deck of its own non-skid (the stern's lower decks) with its plates' seams lighter; the
+transom's rust where the photo puts it; the wear by zone (each zone over the
 last, its edges soft, its facings), the worn wall blotchier as the level rises and its blotches long up the
 wall, grime patches darker and browner, weeps down walls only, rusting and as many as the wear says, the scum
 line just above the boot top, scuffs long fore and aft, none of them on an unworn wall; the facts' wear
@@ -204,7 +212,9 @@ the deck; a new sighting in the game becomes a ray here first.
   hull whole and wound one way;
 - a catwalk's floor, railing and knees off the deck's edge, a platform off it, a dome's platform carried in
   to the edge, the raft canisters in their tiers, and the nets: cut out, both faces, none outboard of a
-  platform, their frames in the railings' material;
+  platform, the stern's hung aft from its own floor, their frames in the railings' material;
+- the transom's fittings: the walkway, drop bar, frame and plinth, a window rounded at its corners in a flatter
+  frame, and a ring part between its radii;
 - the weathered atlases: each group's colour and normal maps at its size, its faces in its material with UVs,
   the radomes their own group, and only the group's faces in its atlas; the boot top's colour alone;
 - the ship file.

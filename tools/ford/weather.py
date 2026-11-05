@@ -27,8 +27,8 @@
 #   "length": [min, max], "rust"}, "grey": [r, g, b] (the group's own paint), "runs": [{"top": [x, y, z],
 #   "length", "width", "rust": bool, "weight"}], "regions": [{"box": [[x, y, z], [x, y, z]], "streaks": factor}],
 #   "decks": [{"box": [[x, y, z], [x, y, z]], "colour": [r, g, b] (linear), "dirt": {"mottle": [[scale, spread], ...],
-#   "patches": {"scale", "share", "darkening"}, "grain": relief}}]: walking surfaces in a box their own non-skid,
-#   dirtied}],
+#   "patches": {"scale", "share", "darkening"}, "grain": relief, "seams": {"along", "across", "width", "lift", "origin": [x, z]}}}]:
+#   walking surfaces in a box their own non-skid, dirtied, its plates' seams lighter}],
 #   "flat": no normal map (build.py), "level": the wear where no zone says, "zones": [{"level", "box": [[x, y, z], [x, y, z]], "facing": "wall" | "under" |
 #   "up", "soft": metres}] (each later zone over the earlier, its box's edges blended over `soft`), "wear": {"blotches":
 #   [[scale, spread, stretch], ...], "patches": {"scale", "share", "tint": [r, g, b], "stretch"}, "weeps": {"spacing", "height",
@@ -404,6 +404,12 @@ def texels(position, normal, ao, texel, group, facts, sources):
 			# the noise's level that share of a deck lies above (its measured quantiles)
 			cut = np.interp(patches["share"], [0.04, 0.08, 0.15, 0.25], [1.73, 1.44, 1.09, 0.72])
 			shade *= 1 - patches["darkening"] * np.clip((m - cut) / 0.4, 0, 1)
+		# the plates' seams across it, lighter than the non-skid between them
+		seams = dirt.get("seams")
+		if seams:
+			(ox, oz), w = seams.get("origin", [0.0, 0.0]), max(seams["width"], texel * 0.75)
+			joins = np.maximum(seam(q[:, 0] - ox, seams["along"], w), seam(q[:, 2] - oz, seams["across"], w))
+			shade *= 1 + seams["lift"] * joins
 		dirty[inside] = shade
 	level = wear_level(p, n, group)
 	colour = base * (tone * dirty)[:, None]

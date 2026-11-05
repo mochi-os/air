@@ -112,7 +112,7 @@ LAYOUT = {
 		"net": {"width": 1.5, "rise": 0.4, "frames": 2.5},
 		"runs": [{"side": "port", "x": [-50, -30], "width": 1.5, "net": True}],
 		"platforms": [{"side": "port", "x": [-36, -34], "width": 2.0}],
-		"nets": [{"side": "bow", "from": [100, -40], "to": [100, 30]}]},
+		"nets": [{"side": "bow", "from": [100, -40], "to": [100, 30]}, {"side": "stern", "from": [-93, -10], "to": [-93, 10], "floor": 14.0}]},
 	# three racks of two canisters on the starboard edge, a row of small ones on the port catwalk
 	"racks": {"canister": {"length": 1.5, "diameter": 0.8}, "small": {"length": 0.8, "diameter": 0.5}, "tiers": [[17.0, 17.9], [18.0, 18.9]],
 		"groups": [{"side": "starboard", "x": [-60, -55], "count": 3, "z": [31.0, 32.5]}],
@@ -123,7 +123,9 @@ LAYOUT = {
 	# up: a recess 8 m wide and 3 high running in to x -88, a window to port,
 	# a walkway, a frame of four posts, a fender, the drop bar and a plinth
 	"transom": {"face": -92, "floor": 7.0, "opening": {"outline": [[-4, 7.0], [-4, 10.0], [4, 10.0], [4, 7.0]], "back": -88},
-		"windows": [{"plane": "x=-92", "z": [-8, -6], "y": [11, 12]}], "catwalk": {"y": [15.6, 16.2]},
+		"windows": [{"plane": "x=-92", "z": [-8, -6], "y": [11, 12], "radius": 0.2, "frame": 0.1}], "catwalk": {"y": [15.6, 16.2]},
+		# the rest as parts: a life ring on the recess's back wall
+		"details": [{"name": "ring", "kind": "ring", "centre": [-88, 8.5, 2], "facing": [-1, 0, 0], "outer": 0.4, "inner": 0.25, "thickness": 0.1, "paint": "red"}],
 		"walkway": {"plan": [[-92, -5], [-94, -5], [-94, 5], [-92, 5]], "thickness": 0.2, "rail": [[-92, -5], [-94, -5], [-94, 5]],
 			"aft": [[-94, -5], [-94, 5]], "fascia": [6.0, 6.9], "member": [5.2, 5.8], "railing": 1.0, "posts": 1.8},
 		"frame": {"x": -95, "z": [-3, 3], "members": 4, "top": 5.8, "bottom": -1.0, "size": 0.3},
@@ -647,7 +649,7 @@ class BuildTest(unittest.TestCase):
 	def test_nets_see_through_and_skip_the_platform(self):
 		nets = self.model.parts(materials=["net"])["nets"]
 		points = nets.reshape(-1, 3)
-		side = points[points[:, 0] < 0]
+		side = points[(points[:, 0] < 0) & (points[:, 0] > -90)]
 		self.assertAlmostEqual(side[:, 1].min(), 18.5, places=4)    # the railing's top
 		self.assertAlmostEqual(side[:, 1].max(), 18.9, places=4)
 		self.assertAlmostEqual(side[:, 2].min(), -43.0, places=4)   # 1.5 m out from the railing
@@ -657,6 +659,11 @@ class BuildTest(unittest.TestCase):
 		self.assertTrue(any(a < -40 < b for a, b in spans) and any(a < -32 < b for a, b in spans))
 		bow = points[points[:, 0] > 99]
 		self.assertAlmostEqual(bow[:, 0].max(), 101.5, places=4)
+		# the stern's hung aft of its line, from its own floor's railing
+		stern = points[points[:, 0] < -90]
+		self.assertAlmostEqual(stern[:, 0].max(), -93.0, places=4)
+		self.assertAlmostEqual(stern[:, 0].min(), -94.5, places=4)
+		np.testing.assert_allclose([stern[:, 1].min(), stern[:, 1].max()], [15.0, 15.4], atol=1e-4)
 		# a cut-out material on both faces, its image mapped
 		data = self.glb.read_bytes()
 		size = int.from_bytes(data[12:16], "little")
@@ -770,6 +777,21 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(fittings[:, 1][np.abs(fittings[:, 0] + 96) < 1.01].max(), 9.2, places=4)   # the plinth
 		glass = self.model.parts(materials=["glass"])["transom_fittings"].reshape(-1, 3)
 		self.assertAlmostEqual(glass[:, 0].min(), -92.03, places=4)
+		# the window's corners rounded at 0.2 m, its frame 0.1 m round it and
+		# flatter, the glass standing proud of it
+		corner = np.array([-8.0, 11.0])
+		self.assertGreater(np.linalg.norm(glass[:, [2, 1]] - corner, axis=1).min(), 0.05)
+		self.assertAlmostEqual(glass[:, 2].min(), -8.0, places=4)
+		frame = self.model.parts(materials=["panel"])["transom_fittings"].reshape(-1, 3)
+		np.testing.assert_allclose([frame[:, 2].min(), frame[:, 2].max(), frame[:, 1].min(), frame[:, 1].max()], [-8.1, -5.9, 10.9, 12.1], atol=1e-4)
+		self.assertAlmostEqual(frame[:, 0].min(), -92.015, places=4)
+		# the life ring: a flat ring between its radii round its centre, 0.1 m
+		# out from the back wall
+		ring = self.model.parts(materials=["red"])["transom_fittings"].reshape(-1, 3)
+		radius = np.linalg.norm(ring[:, 1:] - [8.5, 2], axis=1)
+		self.assertAlmostEqual(radius.min(), 0.25, places=3)
+		self.assertAlmostEqual(radius.max(), 0.4, places=3)
+		np.testing.assert_allclose([ring[:, 0].min(), ring[:, 0].max()], [-88.1, -88.0], atol=1e-4)
 
 	def test_sloped_sponson_and_wedge(self):
 		# each corner at its own heights, and named for the photo match

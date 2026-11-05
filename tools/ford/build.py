@@ -466,7 +466,8 @@ def shape(p, frame=None):
 	# cylinders; ladder {bottom, top, along [x, z], width, rungs}: two stiles
 	# and rungs; stair {bottom, top, width, railing}: a girder, treads and a
 	# railing either side; plate {corners, outward, thickness}: a slab on a
-	# face
+	# face; ring {centre, facing, outer, inner, thickness}: a flat ring
+	# standing out along `facing` (a life ring, a chock's rim)
 	paint = p.get("paint", "rail" if p["kind"] in ("railing", "ladder") else "grey")
 	kind = p["kind"]
 	if kind == "box":
@@ -528,6 +529,8 @@ def shape(p, frame=None):
 		piece = merge(pieces)
 	elif kind == "prism":
 		piece = prism(p["outline"], p["bottom"], p["top"], paint=paint)
+	elif kind == "ring":
+		piece = ring(p["centre"], p["facing"], p["outer"], p["inner"], p.get("thickness", 0.1), p.get("segments", 16), paint)
 	elif kind == "dome":
 		c, r = at(*p["centre"]), p["radius"]
 		vertices, faces = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=r, matrix=Matrix.Translation(c)))
@@ -546,6 +549,53 @@ def shape(p, frame=None):
 	if frame is not None:
 		piece = ([frame @ v for v in piece[0]], piece[1], piece[2])
 	return piece
+
+
+def ring(centre, facing, outer, inner, thickness, segments, paint):
+	# A flat ring round `centre` (ship frame) in the plane square to `facing`,
+	# from `inner` to `outer` radius, standing `thickness` out along `facing`
+	n = Vector(facing).normalized()
+	u = n.cross(Vector((0, 1, 0)) if abs(n.y) < 0.9 else Vector((1, 0, 0))).normalized()
+	w = n.cross(u)
+	c = Vector(centre)
+	points = []
+	for depth in (0.0, thickness):
+		for radius in (outer, inner):
+			for k in range(segments):
+				a = 2 * math.pi * k / segments
+				points.append(at(*(c + n * depth + (u * math.cos(a) + w * math.sin(a)) * radius)))
+	ring_of = lambda layer, which: layer * 2 * segments + which * segments   # the first vertex of a loop
+	faces = []
+	for k in range(segments):
+		j = (k + 1) % segments
+		for a, b in ((ring_of(0, 0), ring_of(0, 1)), (ring_of(1, 0), ring_of(1, 1)), (ring_of(0, 0), ring_of(1, 0)), (ring_of(0, 1), ring_of(1, 1))):
+			faces.append((a + k, a + j, b + j, b + k))
+	return points, faces, [paint] * len(faces)
+
+
+def rounded(corners, radius, steps=3):
+	# A rectangle's corners (ship frame, in order round it) with each rounded
+	# off at `radius` (at most half a side), as a polygon
+	out = []
+	n = len(corners)
+	for k in range(n):
+		p, a, b = Vector(corners[k]), Vector(corners[k - 1]), Vector(corners[(k + 1) % n])
+		r = min(radius, (a - p).length / 2, (b - p).length / 2)
+		u, w = (a - p).normalized(), (b - p).normalized()
+		middle = p + (u + w) * r
+		for i in range(steps + 1):
+			t = i / steps * math.pi / 2
+			out.append(list(middle - w * r * math.cos(t) - u * r * math.sin(t)))
+	return out
+
+
+def sheet(polygon, outward, thickness, paint):
+	# A polygon (ship frame) made a sheet `thickness` thick along `outward`
+	n = len(polygon)
+	out = Vector(outward).normalized() * thickness
+	vertices = [at(*q) for q in polygon] + [at(*(Vector(q) + out)) for q in polygon]
+	faces = [tuple(range(n)), tuple(range(2 * n - 1, n - 1, -1))] + [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
+	return vertices, faces, [paint] * len(faces)
 
 
 def mounted(m):
@@ -692,15 +742,21 @@ def face(entry, centre, paint):
 		return plate([[p0[0], y0, p0[1]], [p1[0], y0, p1[1]], [p1[0], y1, p1[1]], [p0[0], y1, p0[1]]], n, thickness=thick, paint=paint)
 	axis, value = entry["plane"].split("=")
 	value = float(value)
-	if axis == "z":
-		(x0, x1) = entry["x"]
-		outward = [0, 0, 1 if value > centre[1] else -1]
-		corners = [[x0, y0, value], [x1, y0, value], [x1, y1, value], [x0, y1, value]]
-	else:
+	def square(grow):
+		# the plate's corners on its plane, grown by `grow` all round
+		if axis == "z":
+			(x0, x1) = entry["x"]
+			return [[x0 - grow, y0 - grow, value], [x1 + grow, y0 - grow, value], [x1 + grow, y1 + grow, value], [x0 - grow, y1 + grow, value]]
 		(z0, z1) = entry["z"]
-		outward = [1 if value > centre[0] else -1, 0, 0]
-		corners = [[value, y0, z0], [value, y0, z1], [value, y1, z1], [value, y1, z0]]
-	return plate(corners, outward, thickness=thick, paint=paint)
+		return [[value, y0 - grow, z0 - grow], [value, y0 - grow, z1 + grow], [value, y1 + grow, z1 + grow], [value, y1 + grow, z0 - grow]]
+	outward = [0, 0, 1 if value > centre[1] else -1] if axis == "z" else [1 if value > centre[0] else -1, 0, 0]
+	if "radius" not in entry:
+		return plate(square(0), outward, thickness=thick, paint=paint)
+	# rounded corners; a frame round it, flatter, so the glass stands proud of it
+	pieces = [sheet(rounded(square(0), entry["radius"]), outward, thick, paint)]
+	if entry.get("frame"):
+		pieces.append(sheet(rounded(square(entry["frame"]), entry["radius"] + entry["frame"]), outward, thick / 2, entry.get("rim", "panel")))
+	return merge(pieces)
 
 
 def bar(a, b, size, paint="grey"):
@@ -993,7 +1049,9 @@ def nets():
 				lines.append((outer, r["side"], floor))
 			start = max(start, b)
 	for extra in spec.get("nets", []):
-		lines.append(([extra["from"], extra["to"]], -1, floor))
+		# a strip hangs to the line's left as it runs (forward over the bow,
+		# from port to starboard), aft over the stern
+		lines.append(([extra["from"], extra["to"]], 1 if extra["side"] == "stern" else -1, extra.get("floor", floor)))
 	strips, frames = [], []
 	for line, side, base in lines:
 		far, _ = offset(line, side, n["width"])
@@ -1085,6 +1143,9 @@ def upper_transom(x0, section):
 	pl = t["plinth"]
 	(cx, cz), half = pl["centre"], pl["size"] / 2
 	fittings.append(prism([[cx - half, cz - half], [cx + half, cz - half], [cx + half, cz + half], [cx - half, cz + half]], pl["bottom"], pl["top"]))
+	# the rest as photographed: the recess's mezzanine, doors, cabinet, lamps
+	# and life ring, the boat landing, the scuppers, pipe and chocks
+	fittings += [shape(d) for d in t.get("details", [])]
 	node("transom_fittings", mesh=merge(fittings))
 
 

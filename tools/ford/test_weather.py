@@ -220,6 +220,25 @@ class WeatherTest(unittest.TestCase):
 		self.assertGreater(np.std(hb[left]), np.std(ha[left]) * 1.5)   # the grain
 		self.assertTrue(np.allclose(a[right], b[right]) and np.allclose(ha[right], hb[right]))
 
+	def test_deck_seams_lighter(self):
+		# a deck's plates' seams lighter than the non-skid between them, along
+		# and across at their spacing from their origin, the rest as it was
+		rows, columns = np.mgrid[0:SIZE, 0:SIZE]
+		position = np.stack([columns / SIZE * 6.0, np.full((SIZE, SIZE), DECK), rows / SIZE * 6.0], -1).astype(np.float32)
+		maps = {"position": position, "normal": np.broadcast_to(np.array([0.0, 1.0, 0.0], np.float32), position.shape).copy(),
+			"ao": np.ones((SIZE, SIZE), np.float32), "valid": np.ones((SIZE, SIZE), bool), "texel": np.float32(0.05)}
+		box = [[-1.0, DECK - 0.1, -1.0], [7.0, DECK + 0.1, 7.0]]
+		plain = {"box": box, "colour": [0.30, 0.25, 0.20], "dirt": {}}
+		seamed = dict(plain, dirt={"seams": {"along": 2.0, "across": 1.5, "width": 0.05, "lift": 0.2, "origin": [0.5, 0.25]}})
+		a, _ = weather.weather(maps, dict(GROUP, touchups=0.0, decks=[plain]), facts())
+		b, _ = weather.weather(maps, dict(GROUP, touchups=0.0, decks=[seamed]), facts())
+		ratio = b.mean(-1) / a.mean(-1)
+		cell = lambda x, z: (int(round(z / 6.0 * SIZE)), int(round(x / 6.0 * SIZE)))
+		self.assertGreater(ratio[cell(2.5, 1.0)], 1.15)    # on a seam fore and aft of the plates (x 0.5, 2.5, 4.5)
+		self.assertGreater(ratio[cell(1.5, 3.25)], 1.15)   # and athwart (z 0.25, 1.75, 3.25, 4.75)
+		self.assertAlmostEqual(float(ratio[cell(1.5, 1.0)]), 1.0, places=5)   # between them
+		self.assertLess((ratio > 1.01).mean(), 0.15)
+
 	def test_wear_by_zone(self):
 		# the group's level where no zone says, each zone over the earlier, a
 		# box's edges blended over its `soft`, a facing taking only its faces
@@ -388,6 +407,24 @@ class WeatherTest(unittest.TestCase):
 		self.assertLess(top, middle)
 		self.assertLess(top, 0.02)
 		self.assertLess(mast, top * 1.05)
+
+	def test_transom_rust_where_photographed(self):
+		# the facts' runs down the lower transom (x -163.4, facing aft) at the
+		# photographed z -13.95, -12.55 and -15.2: rust down each, none between
+		import json
+		real = json.loads((Path(weather.HERE) / "facts.json").read_text())
+		hull = next(g for g in real["layout"]["weathering"]["groups"] if g["material"] == "hull")
+		step = 0.05
+		Z, Y = np.meshgrid(np.arange(-16.0, -11.0, step), np.arange(6.5, 1.0, -step))
+		p = np.stack([np.full(Z.size, -163.4), Y.ravel(), Z.ravel()], 1)
+		n = np.tile([-1.0, 0.0, 0.0], (len(p), 1))
+		rust, _ = weather.streaks(p, n, [], hull.get("streaks", {}), 1, hull["runs"])
+		rust = rust.reshape(Z.shape)
+		column = lambda z: int(round((z + 16.0) / step))
+		for z in (-13.95, -12.55, -15.2):
+			self.assertGreater(rust[:, column(z)].max(), 0.3, z)
+		self.assertEqual(rust[:, column(-13.25)].max(), 0.0)
+		self.assertEqual(rust[:, column(-11.5)].max(), 0.0)
 
 	def test_lots_a_seed_apart_unrelated(self):
 		# the hash's values for keys one step apart in any place, the seed last
