@@ -70,8 +70,11 @@ COLOURS = {"deck": (0.16, 0.16, 0.16, 1), "grey": (0.30, 0.32, 0.33, 1), "boot":
 	# the transom's recess, its paint in shade there (0.35-0.4 of the face's
 	# brightness in the same light); the drop-light bar the deck's yellow
 	"recess": (0.11, 0.12, 0.12, 1), "yellow": (0.67, 0.39, 0.03, 1),
-	# glass seen through: tinted, its alpha the share of light it stops
-	"pane": (0.03, 0.04, 0.05, 0.6),
+	# glass seen through: tinted, its alpha the share of light it stops; the
+	# rooms behind it painted, in their own shade. Together they read as the
+	# photos' windows do against their grey frames: about a quarter of the
+	# frame's brightness in sun, a tenth in shade (dvids7489972, 9405715)
+	"pane": (0.06, 0.07, 0.08, 0.45), "room": (0.06, 0.06, 0.065, 1),
 	# the Phalanx's radome, white
 	"radome": (0.7, 0.7, 0.68, 1),
 	# the island's fittings: the windows' wiper motors white, the fire
@@ -802,14 +805,15 @@ def glazed(obj, cabs):
 	# The island's glazed levels (layout.island.cabs), seen through: each
 	# one's room cut out of the island's block (Blender's exact boolean) from
 	# its floor to its head inside its walls, and an opening through each
-	# glazed face from the sill to the head; the cut faces the recess's dark.
-	# Returns what fills them: a pane in each opening leaning `lean` out at
-	# its head (in, where the face rakes back), a frame between bays about
-	# `mullions` apart, heavier bars at the sill and the head, a white wiper
-	# motor across each bay near its head where the opening has `wipers`, a
-	# conduit along the face `conduit` above the head where it gives one, and
-	# consoles along the glass inside. The rooms are dark, as the photos show
-	# them through the glass
+	# glazed face from the sill to the head. The room's walls and ceiling take
+	# the room's paint and its floor the dark; the openings' reveals are the
+	# wall's grey. Returns what fills them: a pane in each opening leaning
+	# `lean` out at its head (in, where the face rakes back), a frame between
+	# bays about `mullions` apart and heavier bars at the sill and the head,
+	# all in the island's grey as the photos show them, a white wiper motor
+	# across each bay near its head where the opening has `wipers`, a conduit
+	# along the face `conduit` above the head where it gives one, and dark
+	# consoles along the glass inside
 	out = []
 	for cab in cabs:
 		sill, head = cab["sill"], cab["head"]
@@ -825,11 +829,13 @@ def glazed(obj, cabs):
 			if ((ax + bx) / 2 - middle[0]) * nx + ((az + bz) / 2 - middle[1]) * nz < 0:
 				nx, nz = -nx, -nz   # outward
 			openings.append((ax, az, bx, bz, length, dx, dz, nx, nz, o.get("lean", cab.get("lean", 0.25)), o.get("conduit"), o.get("wipers", False)))
-		cutters = [prism(cab["room"], cab["floor"], cab["head"], paint="dark")]
+		vertices, faces, paints = prism(cab["room"], cab["floor"], cab["head"], paint="room")
+		paints[1] = "dark"   # prism()'s second face is its bottom: the floor
+		cutters = [(vertices, faces, paints)]
 		for ax, az, bx, bz, length, dx, dz, nx, nz, lean, _, _ in openings:
 			reach = 0.6 + max(lean, 0.0)
 			quad = [[ax - nx * 0.8, az - nz * 0.8], [bx - nx * 0.8, bz - nz * 0.8], [bx + nx * reach, bz + nz * reach], [ax + nx * reach, az + nz * reach]]
-			cutters.append(prism(quad, sill, head, paint="dark"))
+			cutters.append(prism(quad, sill, head))
 		cutter = node("cutter", mesh=merge(cutters))
 		cut = obj.modifiers.new("glazed", "BOOLEAN")
 		cut.operation, cut.solver, cut.object = "DIFFERENCE", "EXACT", cutter
@@ -844,8 +850,8 @@ def glazed(obj, cabs):
 			out.append(sheet([foot(0), foot(length), top(length), top(0)], [nx, 0, nz], 0.02, "pane"))
 			count = max(1, round(length / cab.get("mullions", 2.0)))
 			for k in range(count + 1):
-				out.append(bar(foot(length * k / count), top(length * k / count), 0.15, "dark"))
-			out += [bar(foot(0), foot(length), 0.2, "dark"), bar(top(0), top(length), 0.2, "dark")]
+				out.append(bar(foot(length * k / count), top(length * k / count), 0.15))
+			out += [bar(foot(0), foot(length), 0.2), bar(top(0), top(length), 0.2)]
 			# the wipers 0.1 m out from the glass, 0.88 of the way up
 			rise, off = sill + 0.88 * (head - sill), lean * 0.88 + 0.1
 			half = min(0.3, length / count / 2 * 0.8)

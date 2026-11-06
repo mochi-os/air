@@ -242,6 +242,14 @@ def checks(ship):
 		marks = {m["name"]: m for m in ship.layout["markings"]}
 		M = FACTS["markings"]
 		yield result("markings.centreline", "the centreline's width", value(M["centreline"]) * FT, marks["centreline"]["width"], 0.01)
+		# its yellow runs on over the round-down to the deck's aft edge, over
+		# the ramp's white (DVIDS 7694418)
+		(ex, ez), (gx, gz) = deck["round"]["edge"]
+		x, z = marks["centreline"]["points"][0]
+		miss = abs((gx - ex) * (z - ez) - (gz - ez) * (x - ex)) / math.hypot(gx - ex, gz - ez)
+		yield result("markings.centreline", "the centreline's aft end off the deck's aft edge", 0, miss, 0.05)
+		order = [m["name"] for m in ship.layout["markings"]]
+		yield result("markings.centreline", "the centreline's yellow drawn over the ramp", 1, order.index("centreline_yellow_1") > order.index("ramp"), 0, "")
 		yellow = sorted((m for n, m in marks.items() if n.startswith("centreline_yellow_")), key=lambda m: m["points"][0][0])
 		inner = [math.dist(*m["points"]) for m in yellow[1:-1]]
 		yield result("markings.sections", "the centreline's whole yellow sections", value(M["sections"]) * FT, np.mean(inner), 0.05)

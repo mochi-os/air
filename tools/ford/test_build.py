@@ -524,9 +524,11 @@ class BuildTest(unittest.TestCase):
 		def cab(*materials):
 			q = self.model.parts(materials=list(materials))["island_details"].reshape(-1, 3)
 			return q[(q[:, 0] >= -15.6) & (q[:, 0] <= -8.4) & (q[:, 1] >= 21.9) & (q[:, 1] <= 24.5) & (q[:, 2] >= 19.9) & (q[:, 2] <= 28.1)]
-		dark = cab("dark")
-		heads = dark[(dark[:, 1] > 23.9) & (dark[:, 1] < 24.1) & (dark[:, 2] < 24)]
+		# the frames in the island's grey, as the photos show them round the dark glass
+		grey = cab("grey", "island")   # the grey weathered into the island's atlas
+		heads = grey[(grey[:, 1] > 23.9) & (grey[:, 1] < 24.1) & (grey[:, 2] < 24)]
 		self.assertEqual(sorted(set(np.round(heads[:, 0] * 2) / 2)), [-15.0, -13.0, -11.0, -9.0])   # a frame every 2 m, at the heads
+		dark = cab("dark")
 		console = dark[(dark[:, 1] <= 23.0 + 1e-4) & (dark[:, 2] < 24) & (dark[:, 2] > 20.4)]
 		self.assertAlmostEqual(console[:, 1].min(), 22.0, places=3)
 		# a white wiper motor in each of the port opening's three bays, 0.1 m
@@ -538,14 +540,29 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(port[:, 1].mean(), 23.88, places=3)
 		self.assertAlmostEqual(port[:, 2].mean(), 20.4 - 0.25 * 0.88 - 0.1, places=3)
 		self.assertFalse((white[:, 2] > 24).any())
-		# the room behind the glass dark: its floor (y 22.0), which only the
-		# room's cut makes, the openings' starting at the sill
-		dark = self.model.parts(materials=["dark"])["island"]
-		floor = dark[(np.abs(dark[:, :, 1] - 22.0) < 1e-4).all(1)].reshape(-1, 3)
-		self.assertTrue(((floor[:, 2] > 21) & (floor[:, 2] < 27) & (floor[:, 0] > -14.1) & (floor[:, 0] < -9.9)).any())
-		grey = cab("grey", "island")   # the grey weathered into the island's atlas
-		self.assertAlmostEqual(grey[:, 1].mean(), 24.3, places=3)
-		self.assertTrue((grey[:, 2] < 21).all())                               # the port head's alone
+		# the room behind the glass: its floor (y 22.0), which only the room's
+		# cut makes, dark; its ceiling (y 24.0) and walls the room's paint
+		def flat(triangles, y):
+			return triangles[(np.abs(triangles[:, :, 1] - y) < 1e-4).all(1)].mean(1)
+		def inside(middles, x0, x1, z0, z1):
+			return ((middles[:, 0] > x0) & (middles[:, 0] < x1) & (middles[:, 2] > z0) & (middles[:, 2] < z1)).any()
+		none = np.empty((0, 3, 3))
+		dark = self.model.parts(materials=["dark"]).get("island", none)
+		self.assertTrue(inside(flat(dark, 22.0), -14.1, -9.9, 21, 27))
+		room = self.model.parts(materials=["room"]).get("island", none)
+		self.assertTrue(inside(flat(room, 24.0), -14, -10, 21.2, 26.8))
+		end = room[(np.abs(room[:, :, 0] + 14) < 1e-4).all(1)].mean(1)                 # the room's aft wall
+		self.assertTrue(((end[:, 1] > 22) & (end[:, 1] < 24) & (end[:, 2] > 21.2) & (end[:, 2] < 26.8)).any())
+		# the openings' reveals the wall's grey: the port sill (y 23.0) from the
+		# face (z 20) in to the room (21.2), and nothing dark or the room's there
+		body = self.model.parts(materials=["grey", "island"])["island"]
+		self.assertTrue(inside(flat(body, 23.0), -15, -9, 20, 21.2))
+		for other in (dark, room):
+			self.assertFalse(inside(flat(other, 23.0), -15, -9, 20, 21.2))
+		# a conduit 0.3 above the port head, its only grey above the head
+		conduit = grey[grey[:, 1] > 24.15]
+		self.assertAlmostEqual(conduit[:, 1].mean(), 24.3, places=3)
+		self.assertTrue((conduit[:, 2] < 21).all())                            # the port head's alone
 		# the window it replaces drawn as no plate of its own
 		faces = self.model.parts(materials=["glass"])["island_faces"].reshape(-1, 3)
 		self.assertFalse(((faces[:, 1] > 22.9) & (faces[:, 1] < 24.1)).any())
