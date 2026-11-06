@@ -76,7 +76,9 @@ The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
   anything asymmetric (a carrier's island).
 - `photos`: per photo, where each named point falls (`marks`), traced `edges`, the `pose` the model takes to
   match it (gear down, canopy open, surfaces deflected), pixels to cast onto a plane (`locate`), and
-  `"solve": false` for one kept on file but too thinly marked to solve. The sky check (5a) reads `clear`,
+  `"solve": false` for one kept on file but too thinly marked to solve, and `"use": "measure"` for a copyrighted or
+  uncredited photo, whose numbers may be read but whose pixels are never published: `page.py` shows the model through
+  its camera alone and the sky check's sheets a plain tile. The sky check (5a) reads `clear`,
   `ground`, `stores` and `masks` beside them. Three more set how its camera is solved:
   - `focal`: the lens in the photo's own pixels, the solve's prior in place of the EXIF's, or `false` for no
     prior. A photo cropped and enlarged keeps an EXIF focal that no longer fits its pixels: the Ford's
@@ -96,8 +98,8 @@ The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
 - `skyline`: the sky check's regions and what makes a finding (5a), each key defaulting to the F/A-18C's:
   `stretch` (24), `axis` (110), `sectors`, `families`, `moving`, `tolerance` (1), `solid` (the materials whose
   outline is the model's own edge), `label` (`"FS"`), `sectored` (the families split into sectors, `["body"]`),
-  `sides` (names for either side of the centreline, each region split by side; none for a mirrored skin) and
-  `horizon` (1.5, below); with `notes` and `posing`, text for the review page (6).
+  `sides` (names for either side of the centreline, each region split by side; none for a mirrored skin),
+  `stances` (below) and `horizon` (1.5, below); with `notes` and `posing`, text for the review page (6).
 - `poses`: the joints `poses.py` fits (5b), and `subject`: what the photos show, as the review page names it
   (`"aircraft"`).
 
@@ -170,7 +172,13 @@ body the sector round the section. The catalogue's `skyline` sets them: `familie
 prefix, ...]], ...]`, a part matching none is `body`), `stretch` (the first coordinate's span, 24 in on the
 F/A-18C), `sectors` (`[[limit, name], ...]` in degrees from straight up, each up to its limit, the last past
 180) round the line at `axis` on the second coordinate and 0 on the third (WL 110 on the centreline), and
-`label`, the first coordinate's name in a region's label (`"FS"`). Left out: places on glass (and any material
+`label`, the first coordinate's name in a region's label (`"FS"`). A part a drive in `stances` has moved
+from rest in a photo's pose is another shape: its places take the drive's word, and a region such as `gear
+FS 264-288 down` is judged apart from the same stretch stowed, where gear-up photos read the closed doors with
+the belly. Every drive that takes a part between two shapes belongs in the list, each word distinct within its
+family: the F/A-18C's gear, canopy, speedbrake, hook, probe, launch bar, ladder and wing fold (one photo with the
+speedbrake open had put the open panel in the top between the fins). The coverage counts each stance's
+regions, and the reach adds a pose with every stance its other poses leave stowed let down. Left out: places on glass (and any material
 not in `solid`), places whose search crosses a store (the catalogue's `stores`, below) or a mask, and weak
 cameras by the gate's rule.
 
@@ -183,8 +191,8 @@ ends with the coverage: every region of the skin judged by one photo only or by 
 Some regions no photo can judge: they make the outline from no direction at all (a belly between nacelles,
 a side under a wing root, parts behind glass). `--reach` finds them, rendering the model from directions
 spread evenly round it at three distances (1.6, 2.5 and 6 times its radius, the nearest with a wide lens, as
-photos taken beside the jet are), flown, gear down and with the canopy open, and writes the directions each
-region is on the outline from:
+photos taken beside the jet are), flown, gear down, with the canopy open, and with every other stance let down
+at once as on a deck (`postures()`), and writes the directions each region is on the outline from:
 
     python3 -I skyline.py CATALOGUE MODEL.glb POINTS.json OUT.json --reach [--count N]
 
@@ -194,7 +202,9 @@ photo judges, and names any a photo judges after all (a pose or a camera the rea
 longer on the skin. Distant cameras alone are not enough: on the F/A-18C six regions they found on no outline
 were judged by photos taken 12-20 m from the jet or with its canopy open. A region on the outline only from a
 narrow set of directions (straight ahead or behind, level) needs a photo from exactly there with sky behind;
-the reach's directions say which to look for. It writes each photo's
+the reach's directions say which to look for. Such regions also come and go between direction lattices (a
+240-direction run and a 400-direction one disagreed on 11 of the F/A-18C's): keep the count the catalogue's
+list was made with. It writes each photo's
 overlay (a line from the model's edge to the photo's, green within the tolerance, yellow within 2.5 times it,
 magenta beyond) and a sheet per finding with every photo's view of it. Check each finding's sheet by eye
 before it becomes a task.
@@ -524,6 +534,14 @@ What went wrong on the F/A-18C, each a rule now:
   photos the catalogue marks `"clear": true`, after a look at what lies beyond the jet. Clouds fool the grey walk too:
   a band on a white cloud with dark sea between it and the jet reads the cloud's edge, so a finding carried by one
   photo seen against cloud needs a look at its sheet before it counts.
+- **A line along the stations triangulates badly.** The F/A-18C's side seam runs nearly along the epipolar
+  lines of every pair of side views, so its ray from one photo meets the other's traced line at a grazing
+  angle: traces 1-2 px apart moved its triangulated buttline by up to 2.3 in, which read once as the rear
+  fuselage standing 2 in outside it (re-traced densely in two photos of the same side, it agreed with the build
+  within 0.6 in). Before reshaping to such a line, trace it again and see how far its points move.
+- **A sky-check place's point is its triangle's middle.** Each place records the centroid of the frontmost
+  triangle at that pixel, near the silhouette on a finely meshed skin but far from it on a long thin part (the
+  hook's triangles span tens of inches): cast its photo edge against the part's geometry, not that point.
 - **Some paint is as blue as the sky.** The Blue Angels' navy stands about 33 over its red and green against a
   clear sky's 43, a step short of the contrast, so read in blue the walk passed the navy for sky and stopped at the
   next gold stripe inward: the belly read 1.5-2 in outside in every Blue Angels photo, and the inlets 14-16 in,
@@ -531,6 +549,20 @@ What went wrong on the F/A-18C, each a rule now:
   the grey as well (the navy is dark) and keeps the edge nearer the sky (gold trim, which grey passes for sky, is
   found by its blue). A photo admitted or turned away on its sky-check misses was judged on those misses: run it
   again after a reading like this changes.
+- **Bright, even backgrounds pass for sky, and so can light paint.** White fabric shelters and an orange
+  building behind the F/A-18C's outer wing passed the sky test, and under an overcast its light grey flaps stood
+  within the sky's brightness, so the walk crossed them to the wing's dark underside and read them 12-14 in
+  inside. Four ground photos made a finding of the flaps that way. Before taking a cluster of misses, look at what
+  stands behind it in the photo, and mask what is not sky.
+- **A cluster of large misses may be something the model doesn't carry.** Swiss and Spanish jets carry a
+  flat-bottomed fitting under the belly between the intakes, which read 6-7 in below it (entered as a store); a
+  blade antenna under the forward fuselage read 5-12 in in five photos; the main gear doors' blister, which the
+  model lacked, read 2-5 in. Look at the photo at the place before reading such a cluster as the skin.
+- **Compare a photo with the others before trusting its reading of one region.** The head-on Navy photo read
+  the LEX's edge 1.6 in outside, but it also read the forebody's sides 1.1-1.7 in outside from FS 216 to 384,
+  where the other photos fit, while the sharpest head-on view read the LEX within 0.2 in. A photo's median
+  offset from the others on the regions they share, and on neighbouring parts, says whether a reading is its
+  camera's or the model's.
 - **Helpers mark well with a dictionary.** Three helpers marked twelve photos from `../fa18c/marking.md` in an
   hour or so each. Check their marks against the overlays and the flagged misses; they also found the wrong
   photo labels.

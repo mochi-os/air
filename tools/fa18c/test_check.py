@@ -319,6 +319,13 @@ class ShapeTest(unittest.TestCase):
 		self.assertEqual(check.waves(line(gap), stations, free), [])
 		step = wave + np.where(stations < 300, 0.0, 3.0)
 		self.assertEqual(check.waves(line(step), stations, free), [])
+		# nor on a face steeper than 0.7 across the lines (1.5 in apart), which the
+		# view across it measures; on a gentler one, it is
+		steep = np.stack([wave, wave + 3.0, wave + 6.0])
+		gentle = np.stack([wave, wave + 0.6, wave + 1.2])
+		self.assertEqual(check.waves(steep, stations, free, step=1.5), [])
+		self.assertTrue(check.waves(gentle, stations, free, step=1.5))
+		self.assertTrue(check.waves(steep, stations, free))
 
 	def test_surface_distance(self):
 		triangle = np.array([[[0, 0, 0], [4, 0, 0], [0, 4, 0]]], float)

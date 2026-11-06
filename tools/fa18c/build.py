@@ -281,6 +281,7 @@ LANDMARKS = {}
 # by (verify/photos.py), each with the node it rides on: name to (point, node)
 # and name to ([points], node)
 MARKS, CURVES = {}, {}
+RESTED = {}   # {node: matrix taking a point as the part stands extended to where it rests}
 PROBE = []   # the stowed probe's tip
 SURFACES = {}
 TOPLINE, KEELLINE = [], []
@@ -1013,7 +1014,7 @@ def lofted(station):
 	length_along = np.concatenate([[0.0], np.cumsum(np.hypot(*np.diff(outline, axis=0).T))])
 	want = ((1 - ease(t)) * L["fa"] + ease(t) * L["fb"]) * length_along[-1]
 	ring = [(float(np.interp(d, length_along, outline[:, 0])), float(np.interp(d, length_along, outline[:, 1]))) for d in want]
-	return (0.0, (outline[0, 1] + outline[-1, 1]) / 2), ring
+	return (0.0, (outline[0, 1] + outline[-1, 1]) / 2), keeled(station, ring)
 
 
 def half_ring(station):
@@ -1031,8 +1032,24 @@ def half_ring(station):
 	angles = angles_at(station, centre, fore)
 	if station > FLARE[0]:
 		fore = flared(station, fore)
-	fore = tailed(station, fore)
+	fore = keeled(station, tailed(station, fore))
 	return centre, polar(fore, centre, angles)
+
+
+def keeled(station, outline):
+	# layout.belly: the photos put the forebody's keel 0.5-2 in above the
+	# HATP line over its aft half while its lower sides fit, so the belly is
+	# flatter: the skin within a few inches of the keel (at least 4, and 2.5
+	# times the lift) is squashed up onto the photos' keel, nothing above that
+	keel = LAYOUT["belly"]["keel"]
+	if not keel[0][0] < station < keel[-1][0]:
+		return outline
+	low = min(y for _, y in outline)
+	lift = smooth([tuple(k) for k in keel], station) - low
+	if lift <= 0:
+		return outline
+	band = max(4.0, 2.5 * lift)
+	return [(x, low + lift + (y - low) * (band - lift) / band if y < low + band else y) for x, y in outline]
 
 
 def tailed(station, outline):
@@ -1545,13 +1562,13 @@ DENSE = [math.pi * i / 900 for i in range(901)]   # angles for the outline sprea
 OUTLINES = {}
 
 
-def outline(station, start):
+def outline(station, start, sided=True):
 	# The rear fuselage's outline at a station, densely, from the angle
 	# `start` round its centre to the keel: (angles, points, the length along
-	# it to each)
-	key = round(station, 4)
+	# it to each); unsided, without layout.nacelle side
+	key = (round(station, 4), sided)
 	if key not in OUTLINES:
-		OUTLINES[key] = np.array(union_ring(station, DENSE)[1])
+		OUTLINES[key] = np.array(union_ring(station, DENSE, sided)[1])
 	points, theta = OUTLINES[key], np.array(DENSE)
 	keep = theta > start
 	first = [np.interp(start, theta, points[:, 0]), np.interp(start, theta, points[:, 1])]
@@ -1563,15 +1580,23 @@ def outline(station, start):
 
 def spread(station, start, count):
 	# `count` angles from `start` to the keel round the rear fuselage's centre
-	# at a station, evenly along its outline
-	angles, _, length = outline(station, start)
+	# at a station, evenly along its outline without layout.nacelle side, as
+	# along() spaces them
+	angles, _, length = outline(station, start, False)
 	return [float(a) for a in np.interp(np.linspace(0.0, length[-1], count), length, angles)]
 
 
 def along(station, start, count):
 	# `count` points from `start` to the keel, evenly along the outline
-	_, path, length = outline(station, start)
-	return [(float(np.interp(d, length, path[:, 0])), float(np.interp(d, length, path[:, 1]))) for d in np.linspace(0.0, length[-1], count)]
+	# without layout.nacelle side, then at the same angles on the outline
+	# with it: spaced along the sided outline, the points under the nacelles
+	# moved with the side's length and the blister's edges creased the skin
+	# 3.7 deg where the chords between them cut its curve differently from
+	# station to station
+	angles, _, length = outline(station, start, False)
+	turns = np.interp(np.linspace(0.0, length[-1], count), length, angles)
+	theta, path, _ = outline(station, start)
+	return [(float(np.interp(a, theta, path[:, 0])), float(np.interp(a, theta, path[:, 1]))) for a in turns]
 
 
 
@@ -1823,12 +1848,19 @@ def exit_distance(centre, half, exponent, origin, direction, reach=120.0):
 	# How far along a ray from origin a superellipse (|dx/a|^n + |dy/b|^n <= 1)
 	# extends: the farthest inside point, 0 if the ray misses it. half is (a,
 	# b), or (a, b above the centre, b below it); a may be a pair, (above the
-	# centre, below it)
+	# centre, below it), or {"in", "out", "sign"}, the half-widths inboard and
+	# outboard (outboard where dx has the sign), with the exponent then
+	# {"in", "out"} too
 	t = np.linspace(0.0, reach, 961)
 	x = origin[0] + direction[0] * t - centre[0]
 	y = origin[1] + direction[1] * t - centre[1]
 	b = np.where(y > 0, half[1], half[-1])
-	a = np.where(y > 0, half[0][0], half[0][1]) if isinstance(half[0], tuple) else half[0]
+	if isinstance(half[0], dict):
+		out = x * half[0]["sign"] > 0
+		a = np.where(out, half[0]["out"], half[0]["in"])
+		exponent = np.where(out, exponent["out"], exponent["in"])
+	else:
+		a = np.where(y > 0, half[0][0], half[0][1]) if isinstance(half[0], tuple) else half[0]
 	inside = np.abs(x / a) ** exponent + np.abs(y / b) ** exponent <= 1.0
 	if not inside.any():
 		return 0.0
@@ -1857,7 +1889,7 @@ def engine_buttline(station):
 # than below ("upper"), fitted through the spine's flank points.
 SPINE = LAYOUT["spine"]
 CORE = {
-	"top": [(s, w) for s, w in SPINE["crown"] if s >= 357] + [(540, 138.2), (600, 129.6), (650, 127), (692, 124)],   # FS 600 0.4 in under the crown the fit had, which the deck now swells back up
+	"top": sorted([(s, w) for s, w in SPINE["crown"] if s >= 357] + [(540, 138.2), (600, 129.6)] + [tuple(p) for p in SPINE["crest"]]),   # FS 540 and 600 as fitted (600 0.4 in under the crown the fit had, which the deck now swells back up); behind and between the fins, the photos' crest
 	"bottom": [(357, 84.2), (420, 83.5), (500, 84), (560, 85), (620, 88), (692, 93)],
 	"half": [(357, 23.2), (404, 24), (450, 22), (550, 20), (650, 17), (692, 12)],
 }
@@ -1902,6 +1934,15 @@ DECK_SWELL = 0.5   # inches the union swells the deck's top where it meets the s
 # ending 0.5 in under their centre, it left that swelling as a ledge along each
 # nacelle's widest line from FS 452 to 580, a 38 deg fold
 DECK_BELOW = 6.0
+# the deck's half-width at the nacelles' centre height where layout.nacelle
+# side reshapes them: the union lets any part within a tenth of another swell
+# it, and the deck's edge left where it was, 3 in inside the narrowed side,
+# swelled the face 1.7 in at FS 548 (narrowing the nacelle to make up for it
+# pulled its lower side in 2-3 in, where the deck doesn't reach). Solved at
+# each station so the outline passes through the side's line, it came out
+# 28.2-31.3 in over FS 500-596, jagged by the outline's sampling, and the
+# jagged edge creased the side 3.1 deg
+DECK_SIDE = 30.0
 
 
 def deck_top(station):
@@ -1944,7 +1985,7 @@ NACELLE = [(445, 30.3, 103.3, 15.3, 16.5), (470, None, 104.5, 17.5, 17.5), (520,
 JOIN = 440.0
 
 
-def union_ring(station, angles=None):
+def union_ring(station, angles=None, sided=True):
 	# The rear fuselage at a station: the smooth union of the central body and
 	# the two nacelles, sampled at ANGLES round the central body's mid-height.
 	# The nacelles join it whole at JOIN: ahead of that the inlets' own outer
@@ -1954,21 +1995,50 @@ def union_ring(station, angles=None):
 	top, bottom, half = (smooth(CORE[k], station) for k in ("top", "bottom", "half"))
 	upper = onward(CORE["upper"], station)
 	centre = (0.0, (top + bottom) / 2)
-	parts = [((0.0, centre[1]), ((upper, half), (top - bottom) / 2), 2.6)]
-	if station >= JOIN - 1e-6:
-		b, w, a, up, down = nacelle_at(station)
-		for side in (1, -1):
-			parts.append(((side * b, w), (a, up, down), 2.3))
-		deck = deck_top(station)
-		if deck is not None and deck > w + 0.25:
-			parts.append(((0.0, w), (deck_half(station), deck - w, DECK_BELOW), DECK_EXPONENT))
-	ring = []
+	core = ((0.0, centre[1]), ((upper, half), (top - bottom) / 2), 2.6)
 	default = angles is None
-	for theta in angles or angles_at(station, centre):
-		direction = (math.sin(theta), math.cos(theta))
-		reaches = [exit_distance(c, h, n, centre, direction) for c, h, n in parts]
-		r = sum(x ** 10 for x in reaches) ** 0.1
-		ring.append((centre[0] + direction[0] * r, centre[1] + direction[1] * r))
+	turns = angles or angles_at(station, centre)
+	flat = nacelle_side(station) if sided and station >= JOIN - 1e-6 else None
+
+	def assembled(outboard):
+		# the parts, the nacelles' outboard halves `outboard` wide (with the
+		# side's exponent) where layout.nacelle side flattens them, and the
+		# deck's edge then drawn in to DECK_SIDE
+		parts = [core]
+		if station >= JOIN - 1e-6:
+			b, w, a, up, down = nacelle_at(station)
+			for side in (1, -1):
+				if outboard is None:
+					parts.append(((side * b, w), (a, up, down), 2.3))
+				else:
+					parts.append(((side * b, w), ({"in": a, "out": outboard, "sign": side}, up, down), {"in": 2.3, "out": flat[1]}))
+			deck = deck_top(station)
+			if deck is not None and deck > w + 0.25:
+				wide = deck_half(station)
+				if outboard is not None:
+					# a smooth minimum, so the edge leaves DECK_SIDE for the
+					# deck's own taper with no kink
+					wide = -math.log(math.exp(-wide) + math.exp(-DECK_SIDE))
+				parts.append(((0.0, w), (wide, deck - w, DECK_BELOW), DECK_EXPONENT))
+		ring = []
+		for theta in turns:
+			direction = (math.sin(theta), math.cos(theta))
+			reaches = [exit_distance(c, h, n, centre, direction) for c, h, n in parts]
+			r = sum(x ** 10 for x in reaches) ** 0.1
+			ring.append((centre[0] + direction[0] * r, centre[1] + direction[1] * r))
+		return ring
+
+	ring = assembled(None)
+	if flat is not None:
+		# the side as the photos have it, the deck's edge drawn in (DECK_SIDE);
+		# then the two outlines blended point by point by the side's weight
+		# (blending the width and exponent moved the corner unevenly and
+		# creased the skin 3.4-5 deg in the fades)
+		width = flat[0]
+		weight = flat[3]
+		side = assembled(width)
+		ring = [(x0 + (x1 - x0) * weight, y0 + (y1 - y0) * weight) for (x0, y0), (x1, y1) in zip(ring, side)]
+	ring = doored(station, ring)
 	if default and station >= JOIN - 1e-6:
 		# from JOIN aft the steps below the sill are points evenly along the
 		# outline itself, its leaps included: where the centre cannot see into
@@ -1978,6 +2048,132 @@ def union_ring(station, angles=None):
 		# station to station, twisting the loft's facets
 		ring = ring[:SILL] + along(station, angles_at(station, centre)[SILL], len(ring) - SILL)
 	return centre, ring
+
+
+def nacelle_side(station):
+	# layout.nacelle side: between the flap and the stabilator the photos put
+	# each nacelle's outer face flatter than its section's superellipse: the
+	# formation strips on it (line) inboard of its widest line, its lower
+	# corner seen from below (corner) outboard of it. There the outboard half
+	# of the section takes the half-width and exponent that pass through both
+	# (each's mean point), easing back to
+	# the section's own over the fades either side; the inboard half keeps
+	# its shape. Returns the side's (half-width, exponent) outboard, the
+	# line's waterline and the weight the outline takes it by, or None
+	side = LAYOUT["nacelle"]["side"]
+	start, end = side["fade"]
+	if not start < station < end:
+		return None
+	line, corner = side["line"], side["corner"]
+	first, last = line[0][0], max(line[-1][0], corner[-1][0])
+	weight = ease((station - start) / (first - start)) if station < first else ease((end - station) / (end - last)) if station > last else 1.0
+	b, w, a, up, down = nacelle_at(station)
+	# one point of each for the whole side (the strips' ends 0.3 in apart):
+	# held past their ends, points interpolated along the stations creased
+	# the skin where they stopped
+	lw, lb = (float(np.mean([p[k] for p in line])) for k in (1, 2))
+	cw, cb = (float(np.mean([p[k] for p in corner])) for k in (1, 2))
+
+	def reach(n):
+		# the half-width through the line's point at exponent n, and how far
+		# outside the superellipse the corner's point then lies
+		height = up if lw > w else down
+		width = (lb - b) / (1 - abs((lw - w) / height) ** n) ** (1 / n)
+		return width, abs((cb - b) / width) ** n + abs((cw - w) / (up if cw > w else down)) ** n - 1
+
+	low, high = 2.3, 8.0
+	if reach(low)[1] <= 0:
+		n = low
+	else:
+		for _ in range(50):
+			middle = (low + high) / 2
+			low, high = (middle, high) if reach(middle)[1] > 0 else (low, middle)
+		n = (low + high) / 2
+	width = reach(n)[0]
+	return width, n, lw, weight
+
+
+def doored(station, ring):
+	# layout.nacelle door: closed, the main gear doors stand below each
+	# nacelle as a long blister, which the HATP figure's wind-tunnel model
+	# lacks. Across the doors' span the outline under the nacelle is lowered
+	# onto the doors' line, the lowering easing out over 4 in inside each edge
+	# and over a band above the bottom (4 in and 1.5 times the depth), so the
+	# tunnel between the nacelles and their outer sides keep their shape. The
+	# fades are eased and the band grows smoothly: a clamped linear fade, or a
+	# band switching from a floor to a multiple of the depth, kinks the skin
+	# where a line along the stations crosses it (3.9 deg at FS 556)
+	n = LAYOUT["nacelle"]
+	door = [tuple(k) for k in n["door"]]
+	if not door[0][0] < station < door[-1][0]:
+		return ring
+	own = nacelle_bottom(station)
+	depth = own - smooth(door, station)
+	if depth <= 0:
+		return ring
+	inner, outer = n["span"]
+	band = 4.0 + 1.5 * depth
+	out = []
+	for x, y in ring:
+		across = ease((abs(x) - inner) / 4.0) * ease((outer - abs(x)) / 4.0)
+		height = 1.0 - ease((y - own) / band)
+		out.append((x, y - depth * across * height))
+	return out
+
+
+def flush(tree, ends, side, width, inward, proud=0.06, under=0.05, steps=6):
+	# A flush plate on a built face between two points ([FS, WL, BL] on the
+	# right; mirrored for the left), `width` inches across: each of its points
+	# cast along `inward` onto the face and stood `proud` off it, its back
+	# `under` beneath, so a plate follows the face it is measured on
+	(f0, w0, b0), (f1, w1, b1) = ends
+	a, b = at(f0, w0, side * b0), at(f1, w1, side * b1)
+	across = (b - a).cross(inward).normalized()
+	rings = []
+	for i in range(steps + 1):
+		middle = a.lerp(b, i / steps)
+		outer, inner = [], []
+		for k in (-1, 1):
+			start = middle + across * (k * width / 2 * INCH) - inward * (12 * INCH)
+			hit, normal = tree.ray_cast(start, inward)[:2]
+			if hit is None:
+				raise SystemExit(f"nothing under the plate at {middle}")
+			normal = -normal if normal.dot(inward) > 0 else normal
+			outer.append(hit + normal * (proud * INCH))
+			inner.append(hit - normal * (under * INCH))
+		rings.append(outer + inner[::-1])
+	return loft(rings)
+
+
+def lamps():
+	# The formation strips and lenses the photos place (layout.strips and
+	# lights): the strips on the fins' and the nacelles' outboard faces, the
+	# strobes' lenses on the fins' faces, the position lights' on the LEX's
+	# edges and the white one closing the right fin's upper pod, each flush
+	# on what it stands on. The tip launchers' strips stand on the launchers
+	# (stores, step 5) and the lights at the wing's fold on a fairing the
+	# build does not carry: those stay points. Lenses' sizes are estimated
+	strips, points = LAYOUT["strips"], LAYOUT["lights"]["points"]
+	lens = 2.0   # in across a lens, estimated
+	for side in (-1, 1):
+		name = side_name(side)
+		inward = Vector((0, side, 0))   # along the buttline toward the centreline
+		fin = built([f"fin_{name}"])
+		node(f"formation_fin_{name}", mesh=flush(fin, strips["fin"], side, strips["width"], inward), paint="lights")
+		node(f"formation_body_{name}", mesh=flush(built(["fuselage"]), strips["body"], side, strips["width"], inward), paint="lights")
+		# the strobes on the fins' faces, cast in along the buttline; the position
+		# lights under the LEX's edges, 0.9 in inboard of it, cast up onto it
+		for key, part, toward in ((f"strobe_{name}", f"fin_{name}", inward), (f"position_lex_{name}", f"lex_{name}", UP)):
+			f, w, b = points[key]["at"]
+			ends = [[f - lens / 2, w, abs(b)], [f + lens / 2, w, abs(b)]]
+			node(f"lamp_{key}", mesh=flush(built([part]), ends, side, lens, toward), paint="lights")
+	# the tail light: a lens 1 in across on the right fin's upper pod's aft
+	# end (2.6 in across), centred on the pod's axis, where the photos put
+	# it (layout.lights position_tail, within an inch)
+	end = MARKS["pod_aft_right"][0]
+	f, w, b = ORIGIN["station"] - end.x / INCH, ORIGIN["waterline"] + end.z / INCH, -end.y / INCH
+	ends = [[f - 0.5, w - 0.5, b], [f - 0.5, w + 0.5, b]]
+	node("lamp_position_tail", mesh=flush(built(["pod_right"]), ends, 1, 1.0, FORWARD), paint="lights")
 
 
 def mouth_box():
@@ -1991,15 +2187,16 @@ def mouth_box():
 
 
 def nacelle_bottom(station):
-	# layout.nacelle: the nacelle's lowest line, from the lip's bottom down onto
-	# the HATP side view's keel line and along it, then on to the nozzles, on a
-	# monotone cubic through the knots
+	# layout.nacelle: the nacelle's own lowest line, from the lip's bottom down
+	# onto the HATP side view's keel line and along it, through the photos'
+	# knots (line), then on to the nozzles, on a monotone cubic through the
+	# knots; the main gear doors' blister below it is the outline's (doored())
 	n = LAYOUT["nacelle"]
 	b, w, a, h = mouth_box()
 	low, high = n["keel"]
 	knots = [(LAYOUT["inlet"]["lip"]["bottom"][0], w - h)]
 	knots += [(float(s), profile("keel", s)) for s in range(int(low), int(high) + 1, 4)]
-	knots += [tuple(k) for k in n["aft"]]
+	knots += [tuple(k) for k in n["line"]] + [tuple(k) for k in n["aft"]]
 	return smooth(knots, station)
 
 
@@ -2407,6 +2604,7 @@ def gear():
 	axis = stowed.cross(extended).normalized()
 	frames = chain([(trunnion, axis, swing)])
 	undo = frames[0][2]
+	RESTED["gear_nose_strut"] = undo
 	node("gear_nose_strut", hinge=trunnion, mesh=rested(cylinder(trunnion, trunnion.lerp(axle, 0.6), 3.0), undo))
 	joint("gear_nose_strut", frames[0][1], stowed, extended, "gear", [[0, 0], [1, swing]])
 	node("gear_nose_oleo", parent="gear_nose_strut", hinge=trunnion, mesh=rested(cylinder(trunnion.lerp(axle, 0.5), axle, 2.2), undo))
@@ -2714,6 +2912,12 @@ def fittings():
 		(f0, w0), (f1, w1), (f2, w2), (f3, w3) = a[key]
 		node(f"antenna_{key}", mesh=prism([(f0, w0 - 1.0), (f1, w1 - 1.0), (f2, w2), (f3, w3)], half))
 		MARKS[f"antenna_{key}_tip_front"] = (at(f3, w3, 0), f"antenna_{key}")
+	# the blade under the forward fuselage, right of the nose gear's bay,
+	# raked aft and canted outboard, its base sunk an inch into the skin
+	(f0, w0, b0), (f1, w1, b1), (f2, w2, b2), (f3, w3, b3) = a["ventral"]
+	node("antenna_ventral", mesh=slab([at(f0, w0 + 1.0, b0), at(f1, w1 + 1.0, b1), at(f2, w2, b2), at(f3, w3, b3)], 0.4))
+	MARKS["antenna_ventral_tip_front"] = (at(f3, w3, b3), "antenna_ventral")
+	MARKS["antenna_ventral_tip_aft"] = (at(f2, w2, b2), "antenna_ventral")
 	station, waterline, buttline, diameter, proud = a["dome"]
 	node("antenna_dome", mesh=blister(station, waterline, math.copysign(1, buttline), diameter, diameter, proud))
 	# under the radome: three short posts and the chin fairing behind them
@@ -2807,9 +3011,11 @@ def cockpit():
 	pieces.append((loft([[at(s, w, b) for w, b in ((top, -h), (top, h), (top + 0.6, h), (top + 0.6, -h))]
 		for s, h in ((foot_station, room(foot_station, top + 0.6)), (edge, room(edge, top + 0.6)))]), "paint"))
 	node("cockpit_panel", parent="cockpit", mesh=painted(pieces))
-	# the HUD: two posts and the combiner between them
-	posts = [cylinder(at(foot_station, foot, b), at(head_station, head, b), 0.4) for b in (-3.2, 3.2)]
-	glass = slab([at(foot_station + 0.5, foot + 0.5, -3.0), at(foot_station + 0.5, foot + 0.5, 3.0), at(head_station, head, 3.0), at(head_station, head, -3.0)], 0.1)
+	# the HUD: two posts and the combiner between them, the posts where the
+	# photos put the frame's upper corners
+	w = c["widths"]["hud"]
+	posts = [cylinder(at(foot_station, foot, b), at(head_station, head, b), 0.4) for b in (-w, w)]
+	glass = slab([at(foot_station + 0.5, foot + 0.5, 0.2 - w), at(foot_station + 0.5, foot + 0.5, w - 0.2), at(head_station, head, w - 0.2), at(head_station, head, 0.2 - w)], 0.1)
 	node("cockpit_hud", parent="cockpit", mesh=painted([(posts[0], "paint"), (posts[1], "paint"), (glass, "glass")]))
 	# the seat: its headbox as the photo shows it, the back raked down along
 	# the headbox's front edge, and the pan
@@ -2818,8 +3024,8 @@ def cockpit():
 	rake = (fs1 - fs0) / (wl1 - wl0)
 	pan = 123.0
 	back = [(fs0 - rake * (wl0 - pan), pan), box[0], box[3], (box[3][0] - rake * (box[3][1] - pan + 2), pan - 2)]
-	# (its width estimated: 12 in, inside the glass that narrows to about 13 in at its height)
-	seat = [prism(box, 6.0), prism(back, 7.5), block((240.0, back[0][0]), (pan - 3, pan), (-8.0, 8.0))]
+	# (the headbox's width the photos'; the back's and the pan's estimated)
+	seat = [prism(box, c["widths"]["headbox"]), prism(back, 7.5), block((240.0, back[0][0]), (pan - 3, pan), (-8.0, 8.0))]
 	node("cockpit_seat", parent="cockpit", mesh=merge(seat))
 	# the stick between the pilot's knees
 	node("cockpit_stick", parent="cockpit", mesh=merge([cylinder(at(241, floor, 0), at(239.5, 133, 0), 0.6), cylinder(at(239.5, 133, 0), at(239.2, 137, 0), 0.9)]))
@@ -3137,6 +3343,24 @@ def panels(where, covered, size):
 	# the share of a texel's width within half the line's width of the line
 	share = np.clip((np.minimum(gap + texel / 2, half) - np.maximum(gap - texel / 2, -half)) / texel, 0, 1)
 	factor[covered] = 1 - (1 - p["shade"]) * share
+	# the slot along each LEX's root (layout.lex slot), an opening painted as
+	# a dark band its width wide until the paint is traced
+	slot = LAYOUT["lex"]["slot"]
+	half = slot["width"] * INCH / 2
+	reach = half + texel.max() / 2
+	gap = np.full(len(points), np.inf)
+	for sign in (1, -1):
+		ends = [at(f, w, b * sign) for f, w, b in (slot["front"], slot["aft"])]
+		laid = on_parts(skin, ends, "lex slot")
+		for a, b in zip(laid, laid[1:]):
+			a, b = np.array(a), np.array(b)
+			pick = between_x(min(a[0], b[0]) - reach, max(a[0], b[0]) + reach)
+			q = points[pick]
+			d = b - a
+			t = np.clip(((q - a) @ d) / max(d @ d, 1e-12), 0, 1)
+			gap[pick] = np.minimum(gap[pick], np.linalg.norm(q - (a + t[:, None] * d), axis=1))
+	share = np.clip((np.minimum(gap + texel / 2, half) - np.maximum(gap - texel / 2, -half)) / texel, 0, 1)
+	factor[covered] = np.minimum(factor[covered], 1 - (1 - slot["shade"]) * share)
 	return factor
 
 
@@ -3444,7 +3668,9 @@ def points():
 	out["hardpoints"] = hard
 	lights = {}
 	for name, spec in LAYOUT["lights"]["points"].items():
-		lights[name] = {"position": e(at(*spec["at"])), "colour": spec["colour"], "kind": spec["kind"]}
+		# a light on a gear part, given as the gear stands down, at rest on that part
+		position = RESTED[spec["node"]] @ at(*spec["at"]) if "node" in spec else at(*spec["at"])
+		lights[name] = {"position": e(position), "colour": spec["colour"], "kind": spec["kind"], **({"node": spec["node"]} if "node" in spec else {})}
 	out["lights"] = lights
 	return out
 
@@ -3484,6 +3710,7 @@ def main():
 	for side in (-1, 1):
 		lex(side, widths)
 	ladder()
+	lamps()
 	print("chord fractions:", json.dumps(fractions, default=lambda x: round(x, 3)))
 	located = points()
 	if "--draft" not in args:

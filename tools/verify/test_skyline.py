@@ -433,6 +433,110 @@ class SkylineTest(unittest.TestCase):
 			self.assertGreater(len(found["navy"]), 40)
 			self.assertGreater(float(np.median(found["navy"])), 2.0)
 
+	def test_stances(self):
+		# a gear leg stowed inside the body and let down by the "gear" drive: let down it is another shape, and
+		# its regions take the drive's word, so gear-down photos never share a region with gear-up ones; the
+		# coverage counts both stances, and the reach finds the leg on the outline only let down
+		import math
+		import tempfile
+		import camera as cam
+		import model as mod
+		from test_verify import JET, box, glb
+		joints = {"gear_leg": {"motion": "rotate", "axis": [0, 0, 1], "drive": "gear", "keys": [[0, 0], [1, math.pi / 2]]}}
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			glb(root / "m.glb", [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))},
+				{"name": "gear_leg", "mesh": box((-0.3, -0.04, -0.04), (0.3, 0.04, 0.04))}])
+			model = mod.Model(root / "m.glb")
+			frame = mod.Frame(JET)
+			self.assertEqual(skyline.stances(model, joints, {}), {})
+			self.assertEqual(skyline.stances(model, joints, {"gear": 1, "load": 1}), {"gear_leg": "down"})
+			self.assertEqual(skyline.stances(model, joints, {"gear": 1}, skyline.Settings({"skyline": {"stances": {}}})), {})
+			key = skyline.region("gear_leg", (300.0, 100.0, 0.0), stance="down")
+			self.assertEqual(key, ("gear", 288, "down"))
+			self.assertEqual(skyline.label(key), "gear FS 288-312 down")
+			self.assertEqual(skyline.region("gear_leg", (300.0, 100.0, 0.0)), ("gear", 288, ""))
+			# the coverage holds the leg's regions in both stances
+			skin = skyline.universe(model, joints, frame)
+			self.assertTrue(any(k[0] == "gear" and k[2] == "down" for k in skin))
+			self.assertTrue(any(k[0] == "gear" and k[2] == "" for k in skin))
+			# from the side, the leg let down stands out of the body and makes the outline; stowed it lies inside
+			seen = skyline.reach(model, joints, [{"gear": 1}], frame, count=24, width=200)
+			self.assertTrue(any(k[0] == "gear" and k[2] == "down" for k in seen))
+			self.assertFalse(any(k[0] == "gear" and k[2] == "" for k in seen))
+			# a photo of it let down: every place on the leg carries the word, none on the body
+			size = [1200, 600]
+			camera = cam.looking(np.array([0.0, 0.0, 12.0]), np.array([0.0, 0.0, 0.0]), 2400.0)
+			tris = np.concatenate(list(model.parts(mod.pose(joints, {"gear": 1})).values()))
+			flat, depth = cam.project(camera, tris.reshape(-1, 3), (size[0] / 2, size[1] / 2))
+			mask = skyline.frontmost(flat.reshape(-1, 3, 2), depth.reshape(-1, 3), tuple(size)) >= 0
+			(root / "references").mkdir()
+			Image.fromarray(np.where(mask[..., None], 60, 220).repeat(3, axis=2).astype(np.uint8)).save(root / "references" / "p.png")
+			entry = {"photo": "p", "size": size, "camera": list(camera), "pose": {"gear": 1}, "file": "p.png"}
+			places, _ = skyline.Scene({"frame": JET, "photos": {"p": {}}}, root, frame, {}, entry).places(model, joints, {"gear": 1})
+		leg = [p for p in places if p["part"] == "gear_leg"]
+		self.assertGreater(len(leg), 10)
+		self.assertTrue(all(p.get("stance") == "down" for p in leg))
+		self.assertFalse(any("stance" in p for p in places if p["part"] == "body"))
+		# judged, the leg let down and the same leg stowed are two regions, not one median of both
+		point = [300.0, 100.0, 0.0]
+		results = {"down": {"tried": 3, "places": [{"part": "gear_leg", "point": point, "miss": -4.0, "stance": "down"}] * 3},
+			"up": {"tried": 3, "places": [{"part": "gear_leg", "point": point, "miss": 2.0}] * 3}}
+		rows = {key: overall for key, _, overall, _ in skyline.judge(results)}
+		self.assertEqual(rows, {("gear", 288, "down"): -4.0, ("gear", 288, ""): 2.0})
+
+	def test_stance_drives(self):
+		# every drive that takes a part between two shapes splits its regions by default: an open speedbrake
+		# (a body part) is judged apart from the top it lies in shut, a lowered hook apart from the stowed one,
+		# and a launch bar the gear lets down and its own drive lowers takes the bar's word, not the gear's
+		import math
+		import tempfile
+		import model as mod
+		from test_verify import box, glb
+		turn = lambda drive: {"motion": "rotate", "axis": [0, 0, 1], "drive": drive, "keys": [[0, 0], [1, math.pi / 3]]}
+		joints = {"speedbrake": turn("speedbrake"), "hook": turn("hook"), "launch_bar": turn("bar")}
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			glb(root / "m.glb", [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))},
+				{"name": "speedbrake", "mesh": box((-0.3, 0.1, -0.1), (0.1, 0.12, 0.1))},
+				{"name": "hook", "mesh": box((-0.9, -0.12, -0.02), (-0.5, -0.1, 0.02))},
+				{"name": "launch_bar", "mesh": box((0.5, -0.12, -0.02), (0.8, -0.1, 0.02))}])
+			model = mod.Model(root / "m.glb")
+			moved = skyline.stances(model, joints, {"speedbrake": 1, "hook": 1, "bar": 1})
+			self.assertEqual(moved, {"speedbrake": "open", "hook": "down", "launch_bar": "lowered"})
+			self.assertEqual(skyline.label(skyline.region("speedbrake", (600.0, 130.0, 2.0), stance=moved["speedbrake"])), "body FS 600-624 top open")
+			self.assertEqual(skyline.label(skyline.region("speedbrake", (600.0, 130.0, 2.0))), "body FS 600-624 top")
+		# the reach renders those stances too: one pose lets down every drive the others leave stowed
+		poses = skyline.postures()
+		self.assertEqual(poses[:3], [{"load": 1, "nozzle": 1}, {"gear": 1}, {"gear": 1, "canopy": 1}])
+		self.assertEqual(set(poses[3]), {"gear", "speedbrake", "hook", "probe", "bar", "ladder", "fold"})
+		self.assertEqual(len(skyline.postures(skyline.Settings({"skyline": {"stances": {"gear": "down"}}}))), 3)
+
+	def test_sheets(self):
+		# a finding's sheet gathers each judging photo's places in that region, its stance included: the gear
+		# let down in two photos, 4 in inside in both, makes one sheet named for the region
+		import tempfile
+		point = [300.0, 100.0, 0.0]
+		results = {}
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			for photo in ("a", "b"):
+				Image.new("RGB", (600, 400), (90, 90, 90)).save(root / f"{photo}.png")
+				results[photo] = {"tried": 4, "scale": 1.0, "places": [{"part": "gear_leg", "point": point, "miss": -4.0, "stance": "down", "pixel": [300.0 + i, 200.0]} for i in range(4)]
+					+ [{"part": "body", "point": point, "miss": 0.1, "pixel": [100.0, 100.0 + i]} for i in range(4)]}
+			skyline.sheets(results, set(), root, side=120)
+			self.assertEqual(sorted(f.name for f in root.glob("finding *.png")), ["finding gear FS 288-312 down.png"])
+			# a photo measured only (copyrighted) shows as a plain tile: none of its pixels reach the sheet
+			Image.new("RGB", (600, 400), (255, 0, 0)).save(root / "b.png")
+			skyline.sheets(results, set(), root, side=120, private={"b"})
+			with Image.open(root / "finding gear FS 288-312 down.png") as sheet:
+				colours = np.asarray(sheet.convert("RGB")).reshape(-1, 3)
+			self.assertFalse(((colours[:, 0] > 200) & (colours[:, 1] < 50)).any())
+			skyline.sheets(results, set(), root, side=120)
+			with Image.open(root / "finding gear FS 288-312 down.png") as sheet:
+				colours = np.asarray(sheet.convert("RGB")).reshape(-1, 3)
+			self.assertTrue(((colours[:, 0] > 200) & (colours[:, 1] < 50)).any())
+
 	def test_ground(self):
 		# seen from above and to the side, everything beyond the plate lies under the horizon: a photo with
 		# the gear down is taken on the ground and judges nothing there, unless its entry says "ground": false;

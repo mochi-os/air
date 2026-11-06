@@ -183,13 +183,16 @@ def build(catalogue, cameras, sky, sheets, gate_text, out, kicker, name):
 		entry = catalogue["photos"].get(pid, {})
 		stats = summary["photos"].get(pid, {})
 		images = []
+		# a copyrighted photo is measured only: none of its pixels are published,
+		# only the model through its camera (the catalogue's "use": "measure")
+		private = entry.get("use") == "measure"
 		for kind, label in (("photo", "The photo"), ("model", "The model through the same camera"), ("over", "The model laid over the photo")):
 			source = Path(sheets) / f"{pid}-{kind}.jpg"
-			if source.exists():
+			if source.exists() and not (private and kind != "model"):
 				copy(source, img / f"{pid}-{kind}.jpg", WIDTH)
 				images.append((f"img/{pid}-{kind}.jpg", label))
 		overlay = Path(sky) / f"{pid}.png"
-		if overlay.exists():
+		if overlay.exists() and not private:
 			copy(overlay, img / f"{pid}-sky.jpg", WIDTH)
 			images.append((f"img/{pid}-sky.jpg", "The sky check: the model's outline and the photo's"))
 		what = entry.get("shows") or entry.get("what") or ""
@@ -198,7 +201,7 @@ def build(catalogue, cameras, sky, sheets, gate_text, out, kicker, name):
 			figures += f", {stats['judged']} of {stats['tried']} places judged"
 			if stats.get("median") is not None:
 				figures += f", median miss {stats['median']:.2f} {settings.symbol}"
-		flag = '<span class="chip weak">weak camera</span>' if stats.get("weak") else ""
+		flag = ('<span class="chip weak">weak camera</span>' if stats.get("weak") else "") + ('<span class="chip">copyrighted, measured only</span>' if private else "")
 		parts.append(f'<figure class="sheet" id="{e(pid)}"><figcaption><span class="pid">{e(pid)}</span> {flag}<span class="what">{e(what)}</span><span class="stats">{e(figures)}</span></figcaption><div class="quad">')
 		parts += [f'<a href="{src}"><img loading="lazy" src="{src}" alt="{e(label)}, {e(pid)}"></a>' for src, label in images]
 		parts.append("</div></figure>")

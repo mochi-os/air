@@ -77,6 +77,9 @@ AXIS = 110.0     # the waterline the body's sectors are measured round, on the c
 LABEL = "FS"     # the stations as a region's label names them
 SECTORED = ["body"]   # the families whose regions are split into sectors round the section
 SIDES = None     # names for either side of the centreline, [negative, positive], or None for a mirrored skin judged as one
+# Drives that take a part between two shapes (stowed and let down, shut and open): the regions of a part
+# one has moved take its word, distinct from the other words its family can carry
+STANCES = {"gear": "down", "canopy": "open", "speedbrake": "open", "hook": "down", "probe": "out", "bar": "lowered", "ladder": "out", "fold": "folded"}
 
 
 class Settings:
@@ -98,6 +101,8 @@ class Settings:
 	#              judges a mirrored skin's two sides as one (SIDES)
 	#   horizon    degrees under the horizon before a ground photo's ray meets ground (HORIZON); measured
 	#              from level, or with the catalogue's "sea", from the sea's horizon at the camera's height
+	#   stances    {drive: word}: the regions of a part the drive has moved from rest take the word, so a
+	#              region never mixes the gear down with the gear up (STANCES)
 	#   unseen     {region label: what measures it instead}: regions on no outline from any direction
 	#              (--reach finds them), reported apart from the regions no photo judges
 	# and the frame's symbol and plural, as the misses print
@@ -116,6 +121,7 @@ class Settings:
 		self.sides = spec.get("sides", SIDES)
 		self.horizon = float(spec.get("horizon", HORIZON))
 		self.unseen = dict(spec.get("unseen", {}))
+		self.stances = dict(spec.get("stances", STANCES))
 		frame = mod.Frame(catalogue["frame"]) if "frame" in catalogue else None
 		self.symbol = frame.symbol if frame else mod.SYMBOL
 		self.plural = frame.plural if frame else mod.PLURAL
@@ -212,10 +218,11 @@ def family(name, settings=None):
 	return "body"
 
 
-def region(name, point, settings=None):
+def region(name, point, settings=None, stance=""):
 	# The stretch of skin a place on the outline belongs to: (part family,
 	# the settings' stretch of stations, and for the sectored families the
-	# sector round the section; with sides, the side too)
+	# sector round the section; with sides, the side too; on a part a stance
+	# drive has moved, its word (stances()))
 	settings = settings or DEFAULT
 	station, waterline, buttline = point
 	f = family(name, settings)
@@ -226,7 +233,41 @@ def region(name, point, settings=None):
 		sector = next(label for limit, label in settings.sectors if angle < limit)
 	if settings.sides:
 		sector = " ".join(n for n in (sector, settings.sides[int(buttline >= 0)]) if n)
+	if stance:
+		sector = " ".join(n for n in (sector, stance) if n)
 	return f, stretch, sector
+
+
+def stances(model, joints, pose, settings=None):
+	# {part: word} for the parts a stance drive (the settings' stances) moves
+	# from rest in the pose: a gear leg let down, a door opened, a canopy
+	# raised is another shape than the same part stowed, and a region judged
+	# by both would mix them (gear-up photos read the closed doors with the
+	# belly, gear-down ones the legs)
+	settings = settings or DEFAULT
+	out, rest = {}, None
+	for drive, word in settings.stances.items():
+		value = pose.get(drive, 0)
+		if not value:
+			continue
+		if rest is None:
+			rest = model.parts(mod.pose(joints, {}), materials=settings.solid)
+		for name, tris in model.parts(mod.pose(joints, {drive: value}), materials=settings.solid).items():
+			if name not in rest or rest[name].shape != tris.shape or not np.allclose(rest[name], tris, atol=1e-6):
+				out[name] = word
+	return out
+
+
+def universe(model, joints, frame, settings=None):
+	# Every region of the skin: at rest, and with each stance drive's parts
+	# moved (stances())
+	settings = settings or DEFAULT
+	out = set()
+	for pose in [{}] + [{drive: 1} for drive in settings.stances]:
+		moved = stances(model, joints, pose, settings)
+		parts = model.parts(mod.pose(joints, pose), materials=settings.solid)
+		out |= {region(n, q, settings, moved.get(n, "")) for n, t in parts.items() for q in frame.source(t.reshape(-1, 3))[::3]}
+	return out
 
 
 def afloat(tris, sea):
@@ -537,6 +578,11 @@ class Scene:
 		points = self.frame.source(tris.mean(axis=1))
 		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.hidden, self.green, self.ground, self.blue,
 			water, self.seaward, self.paint)
+		# a place on a part a stance drive has moved carries its word (stances())
+		moved = stances(model, joints, pose, self.settings)
+		for p in places:
+			if p["part"] in moved:
+				p["stance"] = moved[p["part"]]
 		return places, ids >= 0
 
 
@@ -596,7 +642,7 @@ def judge(results, weaks=(), settings=None):
 		if photo in weaks:
 			continue
 		for p in places["places"]:
-			regions.setdefault(region(p["part"], p["point"], settings), {}).setdefault(photo, []).append(p["miss"])
+			regions.setdefault(region(p["part"], p["point"], settings, p.get("stance", "")), {}).setdefault(photo, []).append(p["miss"])
 	rows = []
 	for key, photos in regions.items():
 		photos = {ph: v for ph, v in photos.items() if len(v) >= MINIMUM}
@@ -720,6 +766,7 @@ def reach(model, joints, poses, frame, settings=None, count=240, width=800, dist
 	jobs = [(d, r) for r in distances for d in around]
 	for index, pose in enumerate(poses):
 		posed = mod.pose(joints, pose)
+		moved = stances(model, joints, pose, settings)
 		solid = model.parts(posed, materials=settings.solid)
 		clear = model.parts(posed, materials=["glass"])
 		names = [n for n, t in solid.items() for _ in range(len(t))] + [None] * sum(len(t) for t in clear.values())
@@ -727,7 +774,7 @@ def reach(model, joints, poses, frame, settings=None, count=240, width=800, dist
 		points = frame.source(tris.mean(axis=1))
 		flat = tris.reshape(-1, 3)
 		middle = (flat.min(0) + flat.max(0)) / 2
-		VIEW.update(flat=flat, keys=[region(n, q, settings) if n is not None else None for n, q in zip(names, points)], middle=middle,
+		VIEW.update(flat=flat, keys=[region(n, q, settings, moved.get(n, "")) if n is not None else None for n, q in zip(names, points)], middle=middle,
 			radius=float(np.linalg.norm(flat - middle, axis=1).max()), width=width)
 		if workers > 1:
 			with multiprocessing.get_context("fork").Pool(workers) as pool:
@@ -757,9 +804,12 @@ def digest(results, universe=(), weaks=(), settings=None):
 	return {"photos": photos, "regions": regions, "universe": sorted([list(k) for k in universe], key=lambda k: (k[0], k[2], k[1]))}
 
 
-def sheets(results, weaks, directory, side=480, settings=None):
+def sheets(results, weaks, directory, side=480, settings=None, private=()):
 	# For each finding, the overlay round its places in every photo judging
-	# it, side by side, to check by eye before it becomes a task
+	# it, side by side, to check by eye before it becomes a task. A photo in
+	# private (a copyrighted one, measured only: the catalogue's "use":
+	# "measure") shows as a plain tile with its miss, none of its pixels, since
+	# the sheets go on published pages
 	settings = settings or DEFAULT
 	directory = Path(directory)
 	for key, medians, overall, _ in judge(results, weaks, settings):
@@ -767,8 +817,13 @@ def sheets(results, weaks, directory, side=480, settings=None):
 			continue
 		tiles = []
 		for photo in sorted(medians):
+			if photo in private:
+				tile = Image.new("RGB", (side, side), (64, 64, 64))
+				ImageDraw.Draw(tile).text((4, 2), f"{photo} {medians[photo]:+.1f} {settings.symbol}: measured only, not shown", fill=(255, 255, 255))
+				tiles.append(tile)
+				continue
 			r = results[photo]
-			xy = np.array([q["pixel"] for q in r["places"] if region(q["part"], q["point"], settings) == key]) * r["scale"]
+			xy = np.array([q["pixel"] for q in r["places"] if region(q["part"], q["point"], settings, q.get("stance", "")) == key]) * r["scale"]
 			centre = xy.mean(axis=0)
 			reach = max(side / 2, float(np.abs(xy - centre).max()) + 30)
 			with Image.open(directory / f"{photo}.png") as image:
@@ -786,10 +841,20 @@ def sheets(results, weaks, directory, side=480, settings=None):
 		sheet.save(directory / f"finding {label(key, settings)}.png")
 
 
+def postures(settings=None):
+	# The poses the reach renders: flown (nozzles closed, the wings under load),
+	# gear down and gear down with the canopy open, as the photos are posed, and
+	# every stance those leave stowed let down at once, as parked on a deck
+	settings = settings or DEFAULT
+	poses = [{"load": 1, "nozzle": 1}, {"gear": 1}, {"gear": 1, "canopy": 1}]
+	others = {drive: 1 for drive in settings.stances if not any(drive in pose for pose in poses)}
+	return poses + ([{"gear": 1, **others}] if others else [])
+
+
 def reaching(argv):
-	# --reach: which regions can make the outline from some direction, flown
-	# and gear down, written to OUT.json ({region: [[azimuth, elevation,
-	# pose], ...]}) with the regions on no outline printed
+	# --reach: which regions can make the outline from some direction, flown,
+	# gear down and with every stance let down, written to OUT.json ({region:
+	# [[azimuth, elevation, pose], ...]}) with the regions on no outline printed
 	args = [a for a in argv if not a.startswith("--")]
 	catalogue_path, glb, points_path, out = args[:4]
 	catalogue = json.loads(Path(catalogue_path).read_text())
@@ -797,16 +862,12 @@ def reaching(argv):
 	settings = Settings(catalogue)
 	model = mod.Model(glb)
 	joints = json.loads(Path(points_path).read_text())["joints"]
-	rest = model.parts(mod.pose(joints, {}), materials=settings.solid)
-	universe = {region(n, q, settings) for n, t in rest.items() for q in frame.source(t.reshape(-1, 3))[::3]}
+	skin = universe(model, joints, frame, settings)
 	count = int(argv[argv.index("--count") + 1]) if "--count" in argv else 240
-	# flown (nozzles closed, the wings under load), gear down, and gear down with
-	# the canopy open, as the photos are posed
-	poses = [{"load": 1, "nozzle": 1}, {"gear": 1}, {"gear": 1, "canopy": 1}]
-	seen = reach(model, joints, poses, frame, settings, count, distances=(1.6, 2.5, 6.0), workers=6)
+	seen = reach(model, joints, postures(settings), frame, settings, count, distances=(1.6, 2.5, 6.0), workers=6)
 	Path(out).write_text(json.dumps({label(k, settings): v for k, v in sorted(seen.items(), key=lambda kv: label(kv[0], settings))}, indent="\t") + "\n")
-	never = sorted(label(k, settings) for k in universe - set(seen))
-	print(f"on no outline from any of {count} directions at 1.6, 2.5 and 6 radii, flown, gear down or the canopy open ({len(never)}): " + ", ".join(never))
+	never = sorted(label(k, settings) for k in skin - set(seen))
+	print(f"on no outline from any of {count} directions at 1.6, 2.5 and 6 radii, flown, gear down, the canopy open or every stance let down ({len(never)}): " + ", ".join(never))
 
 
 def main():
@@ -827,9 +888,8 @@ def main():
 	out = Path(out)
 	out.mkdir(parents=True, exist_ok=True)
 	spec = catalogue.get("gate")
-	# every region of the skin, at rest, for the coverage
-	rest = model.parts(mod.pose(joints, {}), materials=settings.solid)
-	universe = {region(n, q, settings) for n, t in rest.items() for q in frame.source(t.reshape(-1, 3))[::3]}
+	# every region of the skin, at rest and in each stance, for the coverage
+	skin = universe(model, joints, frame, settings)
 	results, weaks = {}, set()
 	for entry in json.loads(Path(cameras_path).read_text()):
 		photo = entry["photo"]
@@ -843,9 +903,9 @@ def main():
 		overlay(scene.gray, mask, places, scene.scale, out / f"{photo}.png", settings)
 		print(f"photo {photo}: {len(places)} places", file=sys.stderr)
 	(out / "skyline.json").write_text(json.dumps(results) + "\n")
-	print(summary(results, universe, weaks, settings))
-	(out / "summary.json").write_text(json.dumps(digest(results, universe, weaks, settings), indent="\t") + "\n")
-	sheets(results, weaks, out, settings=settings)
+	print(summary(results, skin, weaks, settings))
+	(out / "summary.json").write_text(json.dumps(digest(results, skin, weaks, settings), indent="\t") + "\n")
+	sheets(results, weaks, out, settings=settings, private={p for p, e in catalogue["photos"].items() if e.get("use") == "measure"})
 
 
 if __name__ == "__main__":

@@ -40,6 +40,8 @@
 #                  leave out what lies under the horizon, false never to, absent to leave it out where
 #                  the pose has the gear down; polygons [[[x, y], ...], ...] in the photo's own pixels hiding what the model
 #                  does not carry),
+#                  "use": "measure" for a copyrighted or uncredited photo, whose numbers may be read but whose pixels are
+#                  never published (page.py shows the model alone, skyline.py's sheets a plain tile),
 #                  "focal": the lens in the photo's own pixels, as the solve's prior in place of the EXIF's (a photo
 #                  cropped and enlarged keeps an EXIF that no longer fits its pixels), or false for none (a field of
 #                  view between 1 and 100 degrees, as a photo without EXIF),

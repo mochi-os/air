@@ -109,6 +109,25 @@ class PageTest(unittest.TestCase):
 				"median miss 0.80 in"):
 				self.assertIn(words, text)
 
+	def test_build_measured(self):
+		# a copyrighted photo is measured only: the page shows the model through its camera, never its pixels
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			sky, sheets, out = root / "sky", root / "sheets", root / "out"
+			sky.mkdir()
+			sheets.mkdir()
+			summary = {"photos": {"p1": {"tried": 10, "judged": 4, "median": 0.8, "weak": False}}, "regions": [], "universe": []}
+			(sky / "summary.json").write_text(json.dumps(summary))
+			Image.new("RGB", (3000, 2000)).save(sky / "p1.png")
+			for kind in ("photo", "model", "over"):
+				Image.new("RGB", (1600, 1000)).save(sheets / f"p1-{kind}.jpg")
+			page.build({"photos": {"p1": {"use": "measure"}}}, [{"photo": "p1", "rms": 4.0, "field": 30.0}], sky, sheets, GATE, out, "F/A-18C", "Hornet shape review")
+			self.assertEqual(sorted(f.name for f in (out / "img").glob("p1-*")), ["p1-model.jpg"])
+			text = (out / "index.html").read_text()
+			self.assertIn("copyrighted, measured only", text)
+			self.assertNotIn("p1-photo.jpg", text)
+			self.assertNotIn("p1-sky.jpg", text)
+
 	def test_build_settings(self):
 		# a ship's catalogue: its subject, the frame's unit, the tolerance, the stretch and how its parts are
 		# posed, all in the page's text; the notes still show beside the findings

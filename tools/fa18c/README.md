@@ -45,7 +45,9 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   moving part a node on its hinge resting unrotated, and its joints in OUT.json. The lifting surfaces take
   NACA 65A sections from TR-84's tables; the hinged surfaces' chord fractions follow from their published
   areas over the spans in `facts.json` `layout`. The forebody lofts the cited sections over the HATP keel
-  line, its nosecone on TM-101724's drooped axis; the LEX is a blade whose span and heights come from
+  line, its nosecone on TM-101724's drooped axis; over FS 150-404 its bottom is flattened up onto the keel the
+  photos' lower outline reads (`layout.belly`, `keeled()`), 0.3-2.1 in above that line, within 4-5 in of
+  the keel only, its lower sides held; the LEX is a blade whose span and heights come from
   TM-101724, cr186938 and the traced sections, faired behind the LEX-wing junction onto the wing root. Every
   trace is read through its pixel steps, never step by step: the HATP profiles through each step's midpoint
   and then a 4 in Gaussian (`smoothed()`), the traced sections' outlines by a 1 in Gaussian along them
@@ -77,9 +79,20 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   (`layout.inlet`), its flat side inboard beside a splitter plate. Behind the lip its outer skin rides the
   nacelle as it grows (`target()`), carrying the mouth's D as it stands off the nacelle at the lip, that
   difference fading out by `JOIN` (FS 440), where it hands over to the rear fuselage on one ring, behind the
-  duct's plug, where the nacelles join the fuselage whole; each nacelle's bottom follows `layout.nacelle`.
+  duct's plug, where the nacelles join the fuselage whole; each nacelle's bottom follows `layout.nacelle`:
+  the HATP keel line to FS 500, the photos' lower outline over FS 606-630, and the profile photo's outline
+  on to the nozzles. Below it the closed main gear doors stand as a long blister (`layout.nacelle` door,
+  FS 460-576, up to 3.8 in deep), which the HATP figure's wind-tunnel model lacks: `doored()` lowers the
+  outline onto the doors' line across their span only (BL 16-42), so the tunnel between the nacelles keeps
+  its shape, and the blister ends in the step up the photos show at FS 574-578. Between the flaps and the
+  stabilators each nacelle's outer side is flatter than its section (`layout.nacelle` side, from the body
+  strips and the lower corner seen from below): `nacelle_side()` solves the outboard half's width and
+  exponent through both, `union_ring()` draws the deck's edge in to `DECK_SIDE`, where the union passes within
+  0.1 in of the strips' line, and the plain and reshaped outlines are blended point by point, easing in from FS 480 and out by
+  FS 680. Behind the speedbrake the top's centreline runs through the sky check's crest
+  (`layout.spine` crest); ahead of it the crest stays as fitted, the photos there unsettled.
   From `JOIN` aft the points that bridge the tunnel between the nacelles run evenly along the outline
-  (`along()`). Behind the forebody the sections' lower
+  without the side's reshaping, placed at the same angles on the outline with it (`along()`). Behind the forebody the sections' lower
   steps run evenly along the outline, not round its centre, and the fuselage is split into triangles before
   any panel is cut from it, so panel and skin share them. The canopy's sill, top line and
   leaning bow and aft edge are where the photos put them (`layout.canopy`), the glass's section a
@@ -123,7 +136,8 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   which the paint otherwise finds only when it is baked. On a painted build it reads the paint too, off
   the atlas the GLB carries: no texel lying under two painted faces (`paint.overlap`), each stencil on skin
   of its own island, dense enough for its lettering, and drawn whole (`layout.stencils`), and the panel
-  lines darker than the skin beside them along their whole length. A draft carries no atlas: its paint goes
+  lines darker than the skin beside them along their whole length, as is the LEX's root slot against the LEX
+  beside it. A draft carries no atlas: its paint goes
   unchecked, and the check says so.
 - **`outline.py`** - the outline check: the model's top, side and front silhouettes at the HATP masks' scale,
   registered on the apex and centreline, with the share of their union both cover, and every place the
@@ -156,7 +170,9 @@ The build also unwraps every part into one atlas and bakes its ambient occlusion
 beside OUT.glb), the shading the paint is laid over, and each texel's surface normal, which picks the
 upper grey or, facing down, the lower (`layout.paint`, sampled in the reference photo). A texel of the 2048
 atlas is about 0.47 in on the jet: the skin under each stencil gets its own island four times as dense
-(`stencil_islands()`), and the panel lines, 0.4 in wide, shade each texel by the share of it they cover.
+(`stencil_islands()`), and the panel lines, 0.4 in wide, shade each texel by the share of it they cover. The
+slot along each LEX's root (`layout.lex` slot), an opening, is painted the same way as a dark band 3 in wide
+until the paint is traced.
 
 Our model's distant stages wait until the model is finished (the user, 2026-11-02): the first set was
 deleted. These scripts stay for then, building from the painted model (the old model's own pipeline is below):
@@ -195,6 +211,8 @@ middle (the fold's at its leading end, on the fold line's axis). Each wing mesh 
 
 The model viewer (`/air/models`) shows the latest painted build as `fa18c-new.glb`, beside the file it
 replaces. After a build, copy the model in (`cp OUT.glb ../../web/src/assets/fa18c-new.glb`), then `/build air`.
+The copy is git-ignored until the model replaces the game's: a clone without it builds, and lists no such
+model.
 
 ## Factory-fresh paint
 
