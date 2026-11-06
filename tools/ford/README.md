@@ -85,7 +85,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   - The island is prisms level by level (sloped where a level's plan at its top differs), radomes turned to
     their measured profiles (`profile`: acorns, capsules, spheres on drums) and poles, and its details
     (`island.details`: the mast's trunk, rings, platforms, yardarm fittings and masthead, the walkways with
-    their stiffeners and struts, railings, the windows' frames, mullions, wiper motors and conduits, the radar
+    their stiffeners and struts, railings (the roofs' from `references/research/roofs`: the radome decks', the
+    top roof's, and posts with sagging chains round the aft radome platforms), the windows' frames, mullions, wiper motors and conduits, the radar
     faces' frames, the floodlight banks, ladders, pipes, the stair, the fittings on the base's faces, the
     halyards) as parts: boxes, cylinders, prisms, railings, dishes, domes, lathes, paths (bars or pipes along
     a line), ladders, stairs, plates and rings. The windows and radar covers are plates on its faces; a
@@ -174,7 +175,8 @@ python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR   
   deck's top on its round-down's curve). The landing centreline reaches the deck's aft edge, its yellow drawn
   over the ramp's white, as DVIDS 7694418 shows it across the round-down; and the bow control station's band lies right
   outside its lid's rim on every side. The drop-light pole's yellow runs from its foot to its top with no face
-  reaching into its gap, and lines of sight aft from it past the walkway's height meet nothing.
+  reaching into its gap, and lines of sight aft from it past the walkway's height meet nothing. Every island
+  railing and chain keeps clear of every radome's profile across its height.
 - **`photos.json`** - the photo match's catalogue for the shared tools in `../verify` (their README): the
   photos' marks, the deck plan's anchors, the sea at the waterline, and the ship's regions (port and starboard,
   by part family). Run both under the probe.slice memory cap.

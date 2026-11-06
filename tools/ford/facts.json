@@ -609,7 +609,8 @@
 			"transom3": "references/research/transom3 (transom3_layout.py, scripts): DVIDS 7694418 with 7107228 and 9142598, pixels cast through their cameras onto the layout's planes, each checked against something on it. sponsons.fantail: its underside sloping from the fascia's foot (6.2) to the lower transom (3.4), its starboard edge out to the box's; transom.plinth: the Phalanx's gun deck raised to 8.49 with sloping sides; transom.details stern3_*: the box behind the mount (top 12.6, z 15.3-20.5, 1.05 m out, +-0.5), the fantail's railing, fairlead and gas bottles, the LSO's windscreen with its two windows at the port quarter's corner, the box on its pedestal on the sponson's deck, a hose reel on the gallery, the red ladder down to the stern's catwalk. sponsons.quarter_starboard: the transom face run on to the starboard_aft sponson's corner down to 9.9. catwalks: the port quarter's gallery with its net; nets sagging 0.2 m between frames. The starboard_aft sponson's aft-face bottom left as marked (10.29-9.34): 7694418 and 7107228 show a silhouette 0.3-1.3 m lower but sloping opposite ways, so likely the hull beyond. The dark netted space by the sponson's forward end in 7694418 casts onto no surface the model has, so is not built.",
 			"overhead": "references/research/overhead (overhead_layout.py, scripts): DVIDS 7694421 (the 2023 overhead), pixels cast through its camera onto the deck or a sponson's top, each checked against something known beside it; the colours kept as they were (the user). markings overhead_*: the barricade stanchions' trays outlined in orange with their small marks, an orange rectangle and square and a white double square at the bow. transom.details overhead_*: the starboard aft sponson's white grid (0.596 x 0.673 m) and the red circle round the RAM; the port aft sponson's pipe, low box and the netted cage at its forward end (posts and height from 7694418), and the gallery's ladder down to it. catwalks: the port gallery ends at the cage (x -143). Left out: the Mk 29's shadow (it read as a hatch), the loose hose and planks.",
 			"iccs": "references/research/iccs (iccs_layout.py): the plans cast through DVIDS 7694421's camera; the bow's rise through 7107230's and 7107228's; the bow's body from a copyrighted Business Insider photo (measured only, decision 28) with DVIDS 8755444 and 9425021: faces leaning in, 0.15 m inside the lid at the foot and 0.45 at the head, a pane in each; the waist's from DVIDS 9259190: two panes inboard and one in each angled face, a thin lid, its lean not measured, its outboard face and what it stands on not seen.",
-			"drop": "references/research/drop (drop_layout.py): the drop-light pole's yellow found across its axis every 0.2 m in DVIDS 7107228, 7694418, 9142598 and 7107229. It stands at x -165.3 z 7.45 (fitted to three photos at 3.6 px), 0.4 m wide, from 16.4 (no yellow from the edge plate down to 16.25-16.5 in all four) to 2.2 (2.1-2.3), in two sections with nothing from 11.65 down to 9.0 (three photos; the box beside the gap is 1.1 m forward of the pole, at the mezzanine's edge, so it hides nothing). The walkway is cut back round it to a ledge at x -165.1 from z 5.9 to 7.9 (+-0.3), as the pole shows unbroken through the walkway's height dead astern and from the port quarter; its railing turns in along the cut. The ladder up its port side runs on down to its foot. Its lamps belong to the lights."
+			"drop": "references/research/drop (drop_layout.py): the drop-light pole's yellow found across its axis every 0.2 m in DVIDS 7107228, 7694418, 9142598 and 7107229. It stands at x -165.3 z 7.45 (fitted to three photos at 3.6 px), 0.4 m wide, from 16.4 (no yellow from the edge plate down to 16.25-16.5 in all four) to 2.2 (2.1-2.3), in two sections with nothing from 11.65 down to 9.0 (three photos; the box beside the gap is 1.1 m forward of the pole, at the mezzanine's edge, so it hides nothing). The walkway is cut back round it to a ledge at x -165.1 from z 5.9 to 7.9 (+-0.3), as the pole shows unbroken through the walkway's height dead astern and from the port quarter; its railing turns in along the cut. The ladder up its port side runs on down to its foot. Its lamps belong to the lights.",
+			"roofs": "references/research/roofs (roofs_layout.py): the island's roof railings, each run drawn into the photos that show it at its roof's height and 1 m above. Pipe railings, 1.0 m: the starboard radome deck's forward, starboard and aft edges (DVIDS 9688116, 7107230, 9142613, 7107228), on a lip to x -80.85 (by eye: the large radome's pedestal reaches past the bridge face the roof was cut to, and the railing runs in front of it); the port radome deck's port edge and corner (commons170728-ES536-0113, 7107229), 0.08 m outside the roof's edge, clear of the small radome; the top roof's port and starboard edges (commons, 9142613, 7107228). Posts and two sagging chains round the aft radome platforms (7694418, 7107228; the lower's from 9142613 only). Every railing clear of every radome's profile (check.py shape.railings)."
 		},
 		"elevators": [
 			{
@@ -19515,6 +19516,1652 @@
 					],
 					"radius": 0.12,
 					"segments": 8
+				},
+				{
+					"name": "roof_railing_starboard_deck",
+					"kind": "railing",
+					"path": [
+						[
+							-80.95,
+							33.87,
+							33.6
+						],
+						[
+							-80.95,
+							33.87,
+							38.9
+						],
+						[
+							-96.5,
+							33.87,
+							38.9
+						],
+						[
+							-96.5,
+							33.87,
+							33.6
+						]
+					],
+					"height": 1.0,
+					"posts": 1.5
+				},
+				{
+					"name": "roof_railing_port_deck",
+					"kind": "railing",
+					"path": [
+						[
+							-82.5,
+							37.27,
+							19.72
+						],
+						[
+							-88.62,
+							37.27,
+							19.72
+						],
+						[
+							-91.9,
+							37.27,
+							22.13
+						],
+						[
+							-91.9,
+							37.27,
+							24.0
+						]
+					],
+					"height": 1.0,
+					"posts": 1.5
+				},
+				{
+					"name": "roof_railing_top_port",
+					"kind": "railing",
+					"path": [
+						[
+							-82.82,
+							40.4,
+							26.9
+						],
+						[
+							-92.1,
+							40.4,
+							26.9
+						],
+						[
+							-92.1,
+							40.4,
+							24.1
+						]
+					],
+					"height": 1.0,
+					"posts": 1.5
+				},
+				{
+					"name": "roof_railing_top_starboard",
+					"kind": "railing",
+					"path": [
+						[
+							-82.82,
+							40.4,
+							33.4
+						],
+						[
+							-92.2,
+							40.4,
+							33.4
+						]
+					],
+					"height": 1.0,
+					"posts": 1.5
+				},
+				{
+					"name": "bridge_roof_lip",
+					"kind": "prism",
+					"outline": [
+						[
+							-81.4,
+							33.5
+						],
+						[
+							-80.85,
+							33.5
+						],
+						[
+							-80.85,
+							39.0
+						],
+						[
+							-81.25,
+							39.0
+						]
+					],
+					"bottom": 33.67,
+					"top": 33.87
+				},
+				{
+					"name": "aft_platform_chain_upper_post_1",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-102.2,
+							31.17,
+							25.6
+						],
+						[
+							-102.2,
+							32.22,
+							25.6
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_2",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-103.433,
+							31.17,
+							25.6
+						],
+						[
+							-103.433,
+							32.22,
+							25.6
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_3",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-104.667,
+							31.17,
+							25.6
+						],
+						[
+							-104.667,
+							32.22,
+							25.6
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_4",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.9,
+							31.17,
+							25.6
+						],
+						[
+							-105.9,
+							32.22,
+							25.6
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_5",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.9,
+							31.17,
+							26.76
+						],
+						[
+							-105.9,
+							32.22,
+							26.76
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_6",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.9,
+							31.17,
+							27.92
+						],
+						[
+							-105.9,
+							32.22,
+							27.92
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_7",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.9,
+							31.17,
+							29.08
+						],
+						[
+							-105.9,
+							32.22,
+							29.08
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_8",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.9,
+							31.17,
+							30.24
+						],
+						[
+							-105.9,
+							32.22,
+							30.24
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_9",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.9,
+							31.17,
+							31.4
+						],
+						[
+							-105.9,
+							32.22,
+							31.4
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_10",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-104.812,
+							31.17,
+							31.4
+						],
+						[
+							-104.812,
+							32.22,
+							31.4
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_11",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-103.725,
+							31.17,
+							31.4
+						],
+						[
+							-103.725,
+							32.22,
+							31.4
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_12",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-102.638,
+							31.17,
+							31.4
+						],
+						[
+							-102.638,
+							32.22,
+							31.4
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_post_13",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-101.55,
+							31.17,
+							31.4
+						],
+						[
+							-101.55,
+							32.22,
+							31.4
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_upper_top_1",
+					"kind": "path",
+					"path": [
+						[
+							-102.2,
+							32.17,
+							25.6
+						],
+						[
+							-102.611,
+							32.063,
+							25.6
+						],
+						[
+							-103.022,
+							32.063,
+							25.6
+						],
+						[
+							-103.433,
+							32.17,
+							25.6
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_1",
+					"kind": "path",
+					"path": [
+						[
+							-102.2,
+							31.72,
+							25.6
+						],
+						[
+							-102.611,
+							31.631,
+							25.6
+						],
+						[
+							-103.022,
+							31.631,
+							25.6
+						],
+						[
+							-103.433,
+							31.72,
+							25.6
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_2",
+					"kind": "path",
+					"path": [
+						[
+							-103.433,
+							32.17,
+							25.6
+						],
+						[
+							-103.844,
+							32.063,
+							25.6
+						],
+						[
+							-104.256,
+							32.063,
+							25.6
+						],
+						[
+							-104.667,
+							32.17,
+							25.6
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_2",
+					"kind": "path",
+					"path": [
+						[
+							-103.433,
+							31.72,
+							25.6
+						],
+						[
+							-103.844,
+							31.631,
+							25.6
+						],
+						[
+							-104.256,
+							31.631,
+							25.6
+						],
+						[
+							-104.667,
+							31.72,
+							25.6
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_3",
+					"kind": "path",
+					"path": [
+						[
+							-104.667,
+							32.17,
+							25.6
+						],
+						[
+							-105.078,
+							32.063,
+							25.6
+						],
+						[
+							-105.489,
+							32.063,
+							25.6
+						],
+						[
+							-105.9,
+							32.17,
+							25.6
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_3",
+					"kind": "path",
+					"path": [
+						[
+							-104.667,
+							31.72,
+							25.6
+						],
+						[
+							-105.078,
+							31.631,
+							25.6
+						],
+						[
+							-105.489,
+							31.631,
+							25.6
+						],
+						[
+							-105.9,
+							31.72,
+							25.6
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_4",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							32.17,
+							25.6
+						],
+						[
+							-105.9,
+							32.063,
+							25.987
+						],
+						[
+							-105.9,
+							32.063,
+							26.373
+						],
+						[
+							-105.9,
+							32.17,
+							26.76
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_4",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							31.72,
+							25.6
+						],
+						[
+							-105.9,
+							31.631,
+							25.987
+						],
+						[
+							-105.9,
+							31.631,
+							26.373
+						],
+						[
+							-105.9,
+							31.72,
+							26.76
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_5",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							32.17,
+							26.76
+						],
+						[
+							-105.9,
+							32.063,
+							27.147
+						],
+						[
+							-105.9,
+							32.063,
+							27.533
+						],
+						[
+							-105.9,
+							32.17,
+							27.92
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_5",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							31.72,
+							26.76
+						],
+						[
+							-105.9,
+							31.631,
+							27.147
+						],
+						[
+							-105.9,
+							31.631,
+							27.533
+						],
+						[
+							-105.9,
+							31.72,
+							27.92
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_6",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							32.17,
+							27.92
+						],
+						[
+							-105.9,
+							32.063,
+							28.307
+						],
+						[
+							-105.9,
+							32.063,
+							28.693
+						],
+						[
+							-105.9,
+							32.17,
+							29.08
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_6",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							31.72,
+							27.92
+						],
+						[
+							-105.9,
+							31.631,
+							28.307
+						],
+						[
+							-105.9,
+							31.631,
+							28.693
+						],
+						[
+							-105.9,
+							31.72,
+							29.08
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_7",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							32.17,
+							29.08
+						],
+						[
+							-105.9,
+							32.063,
+							29.467
+						],
+						[
+							-105.9,
+							32.063,
+							29.853
+						],
+						[
+							-105.9,
+							32.17,
+							30.24
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_7",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							31.72,
+							29.08
+						],
+						[
+							-105.9,
+							31.631,
+							29.467
+						],
+						[
+							-105.9,
+							31.631,
+							29.853
+						],
+						[
+							-105.9,
+							31.72,
+							30.24
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_8",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							32.17,
+							30.24
+						],
+						[
+							-105.9,
+							32.063,
+							30.627
+						],
+						[
+							-105.9,
+							32.063,
+							31.013
+						],
+						[
+							-105.9,
+							32.17,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_8",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							31.72,
+							30.24
+						],
+						[
+							-105.9,
+							31.631,
+							30.627
+						],
+						[
+							-105.9,
+							31.631,
+							31.013
+						],
+						[
+							-105.9,
+							31.72,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_9",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							32.17,
+							31.4
+						],
+						[
+							-105.538,
+							32.063,
+							31.4
+						],
+						[
+							-105.175,
+							32.063,
+							31.4
+						],
+						[
+							-104.812,
+							32.17,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_9",
+					"kind": "path",
+					"path": [
+						[
+							-105.9,
+							31.72,
+							31.4
+						],
+						[
+							-105.538,
+							31.631,
+							31.4
+						],
+						[
+							-105.175,
+							31.631,
+							31.4
+						],
+						[
+							-104.812,
+							31.72,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_10",
+					"kind": "path",
+					"path": [
+						[
+							-104.812,
+							32.17,
+							31.4
+						],
+						[
+							-104.45,
+							32.063,
+							31.4
+						],
+						[
+							-104.087,
+							32.063,
+							31.4
+						],
+						[
+							-103.725,
+							32.17,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_10",
+					"kind": "path",
+					"path": [
+						[
+							-104.812,
+							31.72,
+							31.4
+						],
+						[
+							-104.45,
+							31.631,
+							31.4
+						],
+						[
+							-104.087,
+							31.631,
+							31.4
+						],
+						[
+							-103.725,
+							31.72,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_11",
+					"kind": "path",
+					"path": [
+						[
+							-103.725,
+							32.17,
+							31.4
+						],
+						[
+							-103.362,
+							32.063,
+							31.4
+						],
+						[
+							-103.0,
+							32.063,
+							31.4
+						],
+						[
+							-102.638,
+							32.17,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_11",
+					"kind": "path",
+					"path": [
+						[
+							-103.725,
+							31.72,
+							31.4
+						],
+						[
+							-103.362,
+							31.631,
+							31.4
+						],
+						[
+							-103.0,
+							31.631,
+							31.4
+						],
+						[
+							-102.638,
+							31.72,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_top_12",
+					"kind": "path",
+					"path": [
+						[
+							-102.638,
+							32.17,
+							31.4
+						],
+						[
+							-102.275,
+							32.063,
+							31.4
+						],
+						[
+							-101.912,
+							32.063,
+							31.4
+						],
+						[
+							-101.55,
+							32.17,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_upper_middle_12",
+					"kind": "path",
+					"path": [
+						[
+							-102.638,
+							31.72,
+							31.4
+						],
+						[
+							-102.275,
+							31.631,
+							31.4
+						],
+						[
+							-101.912,
+							31.631,
+							31.4
+						],
+						[
+							-101.55,
+							31.72,
+							31.4
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_post_1",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.8,
+							26.77,
+							29.6
+						],
+						[
+							-105.8,
+							27.82,
+							29.6
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_post_2",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.8,
+							26.77,
+							30.86
+						],
+						[
+							-105.8,
+							27.82,
+							30.86
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_post_3",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.8,
+							26.77,
+							32.12
+						],
+						[
+							-105.8,
+							27.82,
+							32.12
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_post_4",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.8,
+							26.77,
+							33.38
+						],
+						[
+							-105.8,
+							27.82,
+							33.38
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_post_5",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.8,
+							26.77,
+							34.64
+						],
+						[
+							-105.8,
+							27.82,
+							34.64
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_post_6",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-105.8,
+							26.77,
+							35.9
+						],
+						[
+							-105.8,
+							27.82,
+							35.9
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_post_7",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-104.737,
+							26.77,
+							35.9
+						],
+						[
+							-104.737,
+							27.82,
+							35.9
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_post_8",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-103.675,
+							26.77,
+							35.9
+						],
+						[
+							-103.675,
+							27.82,
+							35.9
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_post_9",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-102.612,
+							26.77,
+							35.9
+						],
+						[
+							-102.612,
+							27.82,
+							35.9
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_post_10",
+					"kind": "path",
+					"size": 0.05,
+					"path": [
+						[
+							-101.55,
+							26.77,
+							35.9
+						],
+						[
+							-101.55,
+							27.82,
+							35.9
+						]
+					]
+				},
+				{
+					"name": "aft_platform_chain_lower_top_1",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.77,
+							29.6
+						],
+						[
+							-105.8,
+							27.663,
+							30.02
+						],
+						[
+							-105.8,
+							27.663,
+							30.44
+						],
+						[
+							-105.8,
+							27.77,
+							30.86
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_middle_1",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.32,
+							29.6
+						],
+						[
+							-105.8,
+							27.231,
+							30.02
+						],
+						[
+							-105.8,
+							27.231,
+							30.44
+						],
+						[
+							-105.8,
+							27.32,
+							30.86
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_top_2",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.77,
+							30.86
+						],
+						[
+							-105.8,
+							27.663,
+							31.28
+						],
+						[
+							-105.8,
+							27.663,
+							31.7
+						],
+						[
+							-105.8,
+							27.77,
+							32.12
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_middle_2",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.32,
+							30.86
+						],
+						[
+							-105.8,
+							27.231,
+							31.28
+						],
+						[
+							-105.8,
+							27.231,
+							31.7
+						],
+						[
+							-105.8,
+							27.32,
+							32.12
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_top_3",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.77,
+							32.12
+						],
+						[
+							-105.8,
+							27.663,
+							32.54
+						],
+						[
+							-105.8,
+							27.663,
+							32.96
+						],
+						[
+							-105.8,
+							27.77,
+							33.38
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_middle_3",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.32,
+							32.12
+						],
+						[
+							-105.8,
+							27.231,
+							32.54
+						],
+						[
+							-105.8,
+							27.231,
+							32.96
+						],
+						[
+							-105.8,
+							27.32,
+							33.38
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_top_4",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.77,
+							33.38
+						],
+						[
+							-105.8,
+							27.663,
+							33.8
+						],
+						[
+							-105.8,
+							27.663,
+							34.22
+						],
+						[
+							-105.8,
+							27.77,
+							34.64
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_middle_4",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.32,
+							33.38
+						],
+						[
+							-105.8,
+							27.231,
+							33.8
+						],
+						[
+							-105.8,
+							27.231,
+							34.22
+						],
+						[
+							-105.8,
+							27.32,
+							34.64
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_top_5",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.77,
+							34.64
+						],
+						[
+							-105.8,
+							27.663,
+							35.06
+						],
+						[
+							-105.8,
+							27.663,
+							35.48
+						],
+						[
+							-105.8,
+							27.77,
+							35.9
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_middle_5",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.32,
+							34.64
+						],
+						[
+							-105.8,
+							27.231,
+							35.06
+						],
+						[
+							-105.8,
+							27.231,
+							35.48
+						],
+						[
+							-105.8,
+							27.32,
+							35.9
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_top_6",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.77,
+							35.9
+						],
+						[
+							-105.446,
+							27.663,
+							35.9
+						],
+						[
+							-105.092,
+							27.663,
+							35.9
+						],
+						[
+							-104.737,
+							27.77,
+							35.9
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_middle_6",
+					"kind": "path",
+					"path": [
+						[
+							-105.8,
+							27.32,
+							35.9
+						],
+						[
+							-105.446,
+							27.231,
+							35.9
+						],
+						[
+							-105.092,
+							27.231,
+							35.9
+						],
+						[
+							-104.737,
+							27.32,
+							35.9
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_top_7",
+					"kind": "path",
+					"path": [
+						[
+							-104.737,
+							27.77,
+							35.9
+						],
+						[
+							-104.383,
+							27.663,
+							35.9
+						],
+						[
+							-104.029,
+							27.663,
+							35.9
+						],
+						[
+							-103.675,
+							27.77,
+							35.9
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_middle_7",
+					"kind": "path",
+					"path": [
+						[
+							-104.737,
+							27.32,
+							35.9
+						],
+						[
+							-104.383,
+							27.231,
+							35.9
+						],
+						[
+							-104.029,
+							27.231,
+							35.9
+						],
+						[
+							-103.675,
+							27.32,
+							35.9
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_top_8",
+					"kind": "path",
+					"path": [
+						[
+							-103.675,
+							27.77,
+							35.9
+						],
+						[
+							-103.321,
+							27.663,
+							35.9
+						],
+						[
+							-102.967,
+							27.663,
+							35.9
+						],
+						[
+							-102.612,
+							27.77,
+							35.9
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_middle_8",
+					"kind": "path",
+					"path": [
+						[
+							-103.675,
+							27.32,
+							35.9
+						],
+						[
+							-103.321,
+							27.231,
+							35.9
+						],
+						[
+							-102.967,
+							27.231,
+							35.9
+						],
+						[
+							-102.612,
+							27.32,
+							35.9
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_top_9",
+					"kind": "path",
+					"path": [
+						[
+							-102.612,
+							27.77,
+							35.9
+						],
+						[
+							-102.258,
+							27.663,
+							35.9
+						],
+						[
+							-101.904,
+							27.663,
+							35.9
+						],
+						[
+							-101.55,
+							27.77,
+							35.9
+						]
+					],
+					"size": 0.03
+				},
+				{
+					"name": "aft_platform_chain_lower_middle_9",
+					"kind": "path",
+					"path": [
+						[
+							-102.612,
+							27.32,
+							35.9
+						],
+						[
+							-102.258,
+							27.231,
+							35.9
+						],
+						[
+							-101.904,
+							27.231,
+							35.9
+						],
+						[
+							-101.55,
+							27.32,
+							35.9
+						]
+					],
+					"size": 0.03
 				}
 			],
 			"cabs": [

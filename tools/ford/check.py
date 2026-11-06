@@ -351,6 +351,34 @@ def checks(ship):
 		yield result("shape.drop", "lines of sight aft from the pole that the walkway blocks", 0, blocked, 0, "")
 	yield from guard("shape.drop", "the drop-light pole", pole)
 
+	def railings():
+		# every island railing and chain (references/research/roofs) clear of
+		# every radome: across the railing's height, its bars no nearer a
+		# radome's axis than the radome's profile there
+		island = ship.layout["island"]
+		lines = [(d["name"], d["path"], d["height"]) for d in island["details"] if d["kind"] == "railing"]
+		lines += [(d["name"], d["path"], 0.0) for d in island["details"] if d["name"].startswith("aft_platform_chain_") and d["kind"] == "path"]
+		worst, where = 0.0, ""
+		for dome in island["domes"]:
+			profile = dome.get("profile")
+			if not profile:
+				continue
+			heights, radii = [q[0] for q in profile], [q[1] for q in profile]
+			cx, cz = dome["centre"]
+			for name, path, rise in lines:
+				for a, b in zip(path, path[1:]):
+					ax, az, bx, bz = a[0] - cx, a[2] - cz, b[0] - cx, b[2] - cz
+					t = max(0.0, min(1.0, -(ax * (bx - ax) + az * (bz - az)) / max((bx - ax) ** 2 + (bz - az) ** 2, 1e-12)))
+					distance = math.hypot(ax + (bx - ax) * t, az + (bz - az) * t)
+					y = a[1] + (b[1] - a[1]) * t
+					for level in np.linspace(min(y, y + rise), max(y, y + rise), 11):
+						if heights[0] <= level <= heights[-1]:
+							into = np.interp(level, heights, radii) + 0.025 - distance
+							if into > worst:
+								worst, where = into, f" ({name} into {dome['name']})"
+		yield result("shape.railings", f"the island's railings reaching into a radome{where}", 0, worst, 0.0)
+	yield from guard("shape.railings", "the island's railings", railings)
+
 
 def main():
 	ship = Ship(sys.argv[1], sys.argv[2])
