@@ -71,8 +71,11 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     (`deck.round`): the deck is cut along lines parallel to that edge and each vertex dropped on a parabola
     over the last `length` metres, its edge plate's top and foot with it.
   - Each moving part is a node on its hinge or slide line, resting unrotated:
-    - the catapult shuttles, the blast deflectors (hinged on their measured forward edges) and the bow's
-      control console;
+    - the catapult shuttles, the blast deflectors (hinged on their measured forward edges) and the two
+      integrated catapult control stations (`consoles`): each a cab sliding up `rise` out of the surface it
+      sits in, its lid the layout's outline with its top in the deck's paint, a darker tier under it, its
+      faces leaning in from its foot to its head with `panes` windows in each, and a skirt that stays under
+      the surface; the waist's stands in a well outboard of the deck's edge (`sponsons`);
     - the arresting gear's deck sheaves (in their own white) and wire supports, and the barricade's
       stanchions, hinged at their heads; a part stowed in the deck sits 2 cm under its top (`STOWED`), which
       hides it, where level with it the two surfaces tore;
@@ -134,11 +137,13 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   - The transom's face stands round its stepped recess, with the windows, the catwalk band, the walkway and
     its fascia, the post frame and its fenders, the drop bar and the Phalanx's raised deck (`transom.plinth`:
     its plan at its foot and its `upper` plan at its top, its sides sloping between); the rest as parts
-    (`transom.details`, measured in DVIDS 7694418 through its camera: `references/research/transom2` and
-    `transom3`): the recess's mezzanine, doors, cabinet, lamps and life ring, the boat landing under the post
-    frame, the scuppers, pipe and mooring chocks, the port quarter's chocks, the box behind the Phalanx with
-    its sponson's railing, fairlead and gas bottles, the LSO's windscreen at the port quarter's corner, a box
-    on its pedestal and a hose reel there, and the red ladder down to the stern's catwalk.
+    (`transom.details`, measured in DVIDS 7694418 and the 2023 overhead through their cameras:
+    `references/research/transom2`, `transom3` and `overhead`): the recess's mezzanine, doors, cabinet, lamps and
+    life ring, the boat landing under the post frame, the scuppers, pipe and mooring chocks, the port quarter's
+    chocks, the box behind the Phalanx with its sponson's railing, fairlead and gas bottles, the LSO's windscreen
+    at the port quarter's corner, a box on its pedestal and a hose reel there, the red ladder down to the stern's
+    catwalk, the starboard aft sponson's white grid and the red circle round its RAM, and the port aft sponson's
+    pipe, low box and netted cage with the gallery's ladder down to it.
   - The lettering's plates: the island's numbers on its faces with their lamps, its stencils and placards,
     and the stem's draught marks on the hull's side just aft of the stem, tangent to it.
   - OUT.json is the ship file (`ford.json`): the deck layout the engine and the flight core read (the
@@ -164,7 +169,8 @@ python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR   
   tolerance, and fails outside it. Entries it does not measure are in `EXEMPT` with the reason; `shape.*`
   holds what no fact states (the hull under the deck, symmetric below its knuckles; the island on the deck; the
   deck's top on its round-down's curve). The landing centreline reaches the deck's aft edge, its yellow drawn
-  over the ramp's white, as DVIDS 7694418 shows it across the round-down.
+  over the ramp's white, as DVIDS 7694418 shows it across the round-down; and the bow control station's band lies right
+  outside its lid's rim on every side.
 - **`photos.json`** - the photo match's catalogue for the shared tools in `../verify` (their README): the
   photos' marks, the deck plan's anchors, the sea at the waterline, and the ship's regions (port and starboard,
   by part family). Run both under the probe.slice memory cap.
@@ -212,6 +218,8 @@ the deck; a new sighting in the game becomes a ray here first.
 
 `test_build.py` builds a small lopsided ship, so a flipped axis shows, and checks:
 - the frame, and each joint's sign;
+- the control stations: stowed under their surfaces, raised by their rise with the skirt still under, the lid's
+  top in the deck's paint over a dark tier, the faces leaning in, and a window counted into each face asked for;
 - the deck's paint mapping against `paint.py`'s, and the texture on the deck;
 - the lettering's texture, and that each plate reads from outside its face;
 - the island's sloped levels;

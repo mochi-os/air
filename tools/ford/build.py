@@ -203,6 +203,25 @@ def area(outline):
 	return sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(outline, outline[1:] + outline[:1])) / 2
 
 
+def inset(outline, distance):
+	# A convex plan polygon [[x, z], ...] with each side moved `distance` in,
+	# square to itself, its corners where the moved sides meet
+	cx, cz = sum(p[0] for p in outline) / len(outline), sum(p[1] for p in outline) / len(outline)
+	lines = []
+	for a, b in zip(outline, outline[1:] + outline[:1]):
+		length = math.hypot(b[0] - a[0], b[1] - a[1])
+		dx, dz = (b[0] - a[0]) / length, (b[1] - a[1]) / length
+		nx, nz = -dz, dx
+		if (cx - a[0]) * nx + (cz - a[1]) * nz < 0:
+			nx, nz = -nx, -nz   # inward
+		lines.append((a[0] + nx * distance, a[1] + nz * distance, dx, dz))
+	corners = []
+	for (ax, az, adx, adz), (bx, bz, bdx, bdz) in zip(lines[-1:] + lines[:-1], lines):
+		t = ((bx - ax) * bdz - (bz - az) * bdx) / (adx * bdz - adz * bdx)
+		corners.append([ax + adx * t, az + adz * t])
+	return corners
+
+
 def slab(outline, top, bottom, paints=("grey", "grey", "grey")):
 	# A plan polygon [[x, z], ...] between two heights: (vertices, faces,
 	# materials), the top, bottom and sides painted as given
@@ -504,16 +523,55 @@ def catapults():
 
 
 def consoles():
-	# The catapults' control consoles, stowed in the deck just under its top
-	# (STOWED) and rising out of it while the catapults are manned
-	fittings = LAYOUT["fittings"]
-	top = LAYOUT["deck"]["height"]
+	# The catapults' integrated control stations (ICCS): each a cab sunk in the
+	# surface it sits in (`top`, the deck's unless given) and rising `rise` out
+	# of it while its catapults are manned. Its lid is the layout's `outline`,
+	# a plate `lid` thick whose top wears the deck's paint (stowed, that top
+	# lies STOWED under the surface); under it a darker tier `tier` deep, set in
+	# by as much; then the body, its faces leaning in from its foot (`inset[0]`
+	# inside the outline) to its top (`inset[1]`), `panes` windows in each face
+	# (a count a side, from the outline's first corner) in frames `frame`
+	# wide; and under its foot a skirt `skirt` deep, which stays below the
+	# surface when it is raised
+	k = LAYOUT["fittings"]["console"]
 	for c in LAYOUT.get("consoles", []):
-		k = fittings["console"]
-		centre = at(c["centre"][0], top - k["height"] - STOWED, c["centre"][1])
+		surface = c.get("top", LAYOUT["deck"]["height"])
+		lid, tier = c.get("lid", k["lid"]), c.get("tier", k["tier"])
+		travel = c["rise"] + STOWED
+		# its heights at rest: raised, less the travel
+		top = surface - STOWED
+		foot = surface - travel
+		head = top - lid - tier
+		vertices, faces, paints = prism(c["outline"], top - lid, top)
+		paints[0] = "deck"   # prism()'s first face is its top
+		pieces = [(vertices, faces, paints)]
+		if tier > 0:
+			pieces.append(prism(inset(c["outline"], tier), head, top - lid, paint="dark"))
+		low, high = inset(c["outline"], c["inset"][0]), inset(c["outline"], c["inset"][1])
+		pieces += [prism(low, foot, head, upper=high), prism(low, foot - k["skirt"], foot)]
+		cx, cz = sum(p[0] for p in low) / len(low), sum(p[1] for p in low) / len(low)
+		n = len(low)
+		for i, count in enumerate(c.get("panes", [1] * n)):
+			if not count:
+				continue
+			# the face's corners: A and B at its foot, C above B and D above A
+			A, B = Vector((low[i][0], foot, low[i][1])), Vector((low[(i + 1) % n][0], foot, low[(i + 1) % n][1]))
+			C, D = Vector((high[(i + 1) % n][0], head, high[(i + 1) % n][1])), Vector((high[i][0], head, high[i][1]))
+			normal = (B - A).cross(D - A).normalized()
+			if normal.dot(Vector(((A.x + B.x) / 2 - cx, 0, (A.z + B.z) / 2 - cz))) < 0:
+				normal = -normal   # outward
+			span, rake = (B - A).length, (D - A).length
+			sa, ta = k["frame"] / span, k["frame"] / rake
+			width = (1 - 2 * sa - (count - 1) * sa) / count
+			point = lambda s, t: (A + (B - A) * s) * (1 - t) + (D + (C - D) * s) * t + normal * 0.005
+			for j in range(count):
+				s0 = sa + j * (width + sa)
+				corners = [point(s0, ta), point(s0 + width, ta), point(s0 + width, 1 - ta), point(s0, 1 - ta)]
+				pieces.append(plate([list(q) for q in corners], list(normal), 0.02, "glass"))
 		name = f"catapult_console_{c['name']}"
-		node(name, hinge=centre, mesh=box(centre, FORWARD, STARBOARD, k["length"], k["width"], k["height"]))
-		joint(name, UP, Vector(), UP, "raised while the catapults are manned", [[0, 0], [1, round(k["height"] + STOWED, 4)]], motion="slide")
+		node(name, hinge=at(cx, foot, cz), mesh=merge(pieces))
+		painted(name)
+		joint(name, UP, Vector(), UP, "raised while its catapults are manned", [[0, 0], [1, round(travel, 4)]], motion="slide")
 
 
 def arresting():

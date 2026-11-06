@@ -215,3 +215,16 @@ export function layout(c: Contract): Layout {
   }
   return out
 }
+
+// The offset that stands each catapult control station up (its slide at its
+// last key), by node name, for a view that shows them raised rather than
+// stowed under the deck
+export function stations(joints: Record<string, Joint>): Record<string, Point> {
+  const out: Record<string, Point> = {}
+  for (const [name, j] of Object.entries(joints)) {
+    if (!name.startsWith('catapult_console_') || j.motion !== 'slide' || !j.keys.length) continue
+    const top = j.keys[j.keys.length - 1][1]
+    out[name] = [j.axis[0] * top, j.axis[1] * top, j.axis[2] * top]
+  }
+  return out
+}

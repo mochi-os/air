@@ -3,7 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, expect, it } from 'vitest'
-import { type Contract, layout, STATIONS } from './ship'
+import { type Contract, layout, STATIONS, stations } from './ship'
 
 // A small deck: a landing line angled to port, one wire whose pendant runs
 // between sheaves 16 m to port and 18 to starboard of where it crosses the
@@ -159,5 +159,15 @@ describe('layout', () => {
     expect(read.draught).toBe(11.5)
     expect(read.entrance).toBe(13.5)
     expect(read.screws).toEqual({ lateral: [6, 13], diameter: 6.4 })
+  })
+
+  it('stands the catapult control stations up by their last key, along their axes, and nothing else', () => {
+    const raised = stations({
+      catapult_console_bow: { motion: 'slide', axis: [0, 1, 0], drive: '', keys: [[0, 0], [1, 0.72]] },
+      catapult_console_waist: { motion: 'slide', axis: [0, 1, 0], drive: '', keys: [[0, 0], [1, 0.67]] },
+      catapult_1_shuttle: { motion: 'slide', axis: [1, 0, 0], drive: '', keys: [[0, 0], [1, 90]] },
+      catapult_1_deflector: { motion: 'rotate', axis: [0, 0, 1], drive: '', keys: [[0, 0], [1, 0.87]] },
+    })
+    expect(raised).toEqual({ catapult_console_bow: [0, 0.72, 0], catapult_console_waist: [0, 0.67, 0] })
   })
 })

@@ -31,7 +31,11 @@ LAYOUT = {
 	"catapults": [{"number": 1, "track": [[0, -10], [90, -10 - 90 * np.tan(np.radians(5))]], "battery": [10, -10.875], "stroke": 90.0,
 		# its hinge skewed 0.5 m forward at the starboard end, square to neither track nor ship
 		"deflector": {"hinge": [[5, -15.44], [5.5, -5.44]], "depth": 5}}],
-	"consoles": [{"name": "bow", "centre": [12, -2]}],
+	# a bow station, an elongated hexagon in the deck rising 1 m, and a waist
+	# one at a deck edge in a surface 2 cm under it, no tier, windows on three faces
+	"consoles": [{"name": "bow", "outline": [[10.4, -2], [11.0, -3.2], [13.0, -3.2], [13.6, -2], [13.0, -0.8], [11.0, -0.8]], "rise": 1.0, "inset": [0.15, 0.45]},
+		{"name": "waist", "outline": [[-30, -40], [-26, -40], [-27, -38.4], [-29, -38.4]], "top": 18.98, "rise": 0.6, "inset": [0.05, 0.2],
+			"tier": 0, "lid": 0.08, "panes": [0, 1, 2, 1]}],
 	# a landing line angled to port, one wire with its sheaves and a support,
 	# a barricade stanchion lying aft from its head
 	"landing": {"line": [[-90, 0], [10, -10]], "wires": [{"number": 1, "x": 30, "ends": [[-62, 19.08, -16], [-58, 19.08, 12]]}], "target": 1,
@@ -45,7 +49,7 @@ LAYOUT = {
 			"details": [{"name": "box", "kind": "box", "centre": [80, 28, 25.5], "size": [0.4, 0.4, 0.4]}]}],
 	"fittings": {"shuttle": {"length": 1.2, "width": 0.4, "height": 0.25, "top": 0.5},
 		"deflector": {"thickness": 0.3, "angle": 50},
-		"console": {"length": 3, "width": 2, "height": 1.5},
+		"console": {"lid": 0.1, "tier": 0.12, "skirt": 0.3, "frame": 0.1},
 		"sheave": {"diameter": 1.0, "height": 0.16, "colour": [242, 242, 236]},
 		"support": {"length": 1.45, "pad": 0.28, "width": 0.1, "height": 0.08},
 		"stanchion": {"width": 1.0, "head": 1.8, "thickness": 0.15},
@@ -301,9 +305,37 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(elevator[:, 1].max(), 11.0, places=3)
 		console = self.model.parts()["catapult_console_bow"].reshape(-1, 3)
 		self.assertAlmostEqual(console[:, 1].max(), 19.0 - 0.02, places=3)   # stowed just under the deck, which hides it
-		raised = self.posed(catapult_console_bow=self.ship["joints"]["catapult_console_bow"]["keys"][-1][1])["catapult_console_bow"].reshape(-1, 3)
-		self.assertAlmostEqual(raised[:, 1].max(), 20.5, places=3)
-		self.assertAlmostEqual(raised[:, 1].min(), 19.0, places=3)
+		self.assertEqual(self.ship["joints"]["catapult_console_bow"]["keys"], [[0, 0], [1, 1.02]])
+		raised = self.posed(catapult_console_bow=1.02)["catapult_console_bow"].reshape(-1, 3)
+		self.assertAlmostEqual(raised[:, 1].max(), 20.0, places=3)         # its rise over the deck
+		self.assertAlmostEqual(raised[:, 1].min(), 19.0 - 0.3, places=3)   # its skirt still under it
+		np.testing.assert_allclose([console[:, 0].min(), console[:, 0].max(), console[:, 2].min(), console[:, 2].max()], [10.4, 13.6, -3.2, -0.8], atol=1e-4)   # the lid
+		# the lid's top in the deck's paint, the tier under it dark
+		none = np.empty((0, 3, 3))
+		lid = self.model.parts(materials=["deck"]).get("catapult_console_bow", none).reshape(-1, 3)
+		self.assertGreater(len(lid), 0)
+		self.assertTrue(np.allclose(lid[:, 1], 19.0 - 0.02, atol=1e-4))
+		tier = self.model.parts(materials=["dark"]).get("catapult_console_bow", none).reshape(-1, 3)
+		self.assertGreater(len(tier), 0)
+		np.testing.assert_allclose([tier[:, 1].min(), tier[:, 1].max()], [18.98 - 0.22, 18.98 - 0.1], atol=1e-4)
+		# the body's faces leaning in from its foot (on the deck when raised) to its head
+		body = self.model.parts(materials=["grey"])["catapult_console_bow"].reshape(-1, 3)
+		foot, head = body[np.isclose(body[:, 1], 19.0 - 1.02, atol=1e-4)], body[np.isclose(body[:, 1], 18.98 - 0.22, atol=1e-4)]
+		self.assertGreater(np.ptp(foot[:, 2]) - np.ptp(head[:, 2]), 0.5)   # 0.15 in at its foot, 0.45 at its head, each side
+		self.assertAlmostEqual(np.ptp(foot[:, 2]), 2.4 - 0.3, places=3)
+		# a window in each of its six faces, and in the waist's three
+		self.assertEqual(len(self.model.parts(materials=["glass"])["catapult_console_bow"]), 6 * 12)
+		glass = self.model.parts(materials=["glass"])["catapult_console_waist"]
+		self.assertEqual(len(glass), 4 * 12)
+		inboard = (glass[:, :, 2] > -38.8) & (glass[:, :, 0] < -27.05) & (glass[:, :, 0] > -28.95)   # its face, clear of the corners
+		self.assertEqual(int(inboard.all(1).sum()), 2 * 12)   # two in its inboard face
+		outboard = (glass[:, :, 2] < -39.7) & (glass[:, :, 0] > -29.5) & (glass[:, :, 0] < -26.5)
+		self.assertFalse(outboard.all(1).any())                              # none in its outboard one
+		# the waist's lid stowed under its own surface, rising as its joint says, with no tier
+		waist = self.model.parts()["catapult_console_waist"].reshape(-1, 3)
+		self.assertAlmostEqual(waist[:, 1].max(), 18.98 - 0.02, places=3)
+		self.assertEqual(self.ship["joints"]["catapult_console_waist"]["keys"], [[0, 0], [1, 0.62]])
+		self.assertNotIn("catapult_console_waist", self.model.parts(materials=["dark"]))
 
 	def test_shuttle_narrows_to_its_top(self):
 		shuttle = self.model.parts()["catapult_1_shuttle"].reshape(-1, 3)
@@ -445,7 +477,7 @@ class BuildTest(unittest.TestCase):
 		self.assertEqual(cat["stroke"], 90.0)
 		self.assertEqual(self.ship["deck"]["outline"], DECK["outline"])
 		self.assertEqual(sorted(self.ship["joints"]), ["antenna_port_aft", "barricade_port", "catapult_1_deflector", "catapult_1_shuttle",
-			"catapult_console_bow", "elevator_1", "wire_1_sheave_port", "wire_1_sheave_starboard", "wire_1_support_1"])
+			"catapult_console_bow", "catapult_console_waist", "elevator_1", "wire_1_sheave_port", "wire_1_sheave_starboard", "wire_1_support_1"])
 		self.assertEqual(self.ship["consoles"], LAYOUT["consoles"])
 		self.assertEqual(self.ship["antennas"], LAYOUT["antennas"])
 		self.assertEqual(self.ship["joints"]["catapult_1_shuttle"]["keys"], [[0, 0], [1, 90.0]])

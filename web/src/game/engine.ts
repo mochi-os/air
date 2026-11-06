@@ -7613,7 +7613,8 @@ function update_shuttles(){   // the hooked cat's shuttle rides with the jet's l
 			if(i===active){ const wx=ownship.pos.x+ownship.fwd.x*nose, wz=ownship.pos.z+ownship.fwd.z*nose, h=s.cat.heading*D2R;
 				travel=(carrier_fore_aft(wx,wz)-s.cat.x)*Math.cos(h)-(carrier_lateral(wx,wz)-s.cat.z)*Math.sin(h); }
 			ship_joint(s.joint,THREE.MathUtils.clamp(travel,0,ship_joint_max(s.joint))); }
-		ship_joint("catapult_console_bow",active===0||active===1?ship_joint_max("catapult_console_bow"):0);   // the bow's console stands up while its catapults are manned
+		ship_joint("catapult_console_bow",active===0||active===1?ship_joint_max("catapult_console_bow"):0);   // each control station stands up while its catapults are manned: the bow's for 1 and 2,
+		ship_joint("catapult_console_waist",active===2||active===3?ship_joint_max("catapult_console_waist"):0);   // the waist's for 3 and 4
 		return; }
 	for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i];
 		if(i===active){ s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), 0, ownship.pos.z+ownship.fwd.z*(nose+0.28)); rig_local(s.mesh.position).y=s.home.y; }   // found in the world, placed on the rig the shuttles hang from

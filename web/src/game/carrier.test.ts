@@ -271,18 +271,18 @@ describe("the carrier's ship file", () => {
     set('missing', 3) // a part the model lacks is left alone
   })
 
-  it("slides the hooked catapult's shuttle under the nose wheel along its track, the others at battery, and raises the bow console", () => {
+  it("slides the hooked catapult's shuttle under the nose wheel along its track, the others at battery, and raises the manned catapults' control station", () => {
     const set: Record<string, number> = {}
     const run = new Function(
-      'set',
+      'set', 'cat_idx',
       `const THREE={ MathUtils:{ clamp:(v,a,b)=>Math.min(Math.max(v,a),b) } }, D2R=Math.PI/180;
       const carrier_shuttles=[{ joint:'catapult_1_shuttle', cat:{ x:40, z:5, heading:5 } }, { joint:'catapult_3_shuttle', cat:{ x:-20, z:-20, heading:0 } }];
-      const ownship={ launching:false, pos:{ x:37, z:4.6 }, fwd:{ x:Math.cos(5*D2R), z:-Math.sin(5*D2R) } }, cat_idx=0, on_cat_spot=()=>0;
+      const ownship={ launching:false, pos:{ x:37, z:4.6 }, fwd:{ x:Math.cos(5*D2R), z:-Math.sin(5*D2R) } }, on_cat_spot=()=>cat_idx;
       const AIRCRAFT_MODELS={ fa18c:{ nose:5.3 } }, own_aircraft=()=>'fa18c', carrier_fore_aft=(x,z)=>x, carrier_lateral=(x,z)=>z;
-      const ship_joint=(name,value)=>{ set[name]=value; }, ship_joint_max=(name)=>name==='catapult_console_bow'?1.3:90;
+      const ship_joint=(name,value)=>{ set[name]=value; }, ship_joint_max=(name)=>name==='catapult_console_bow'?1.3:name==='catapult_console_waist'?0.7:90;
       ${lift('update_shuttles')} update_shuttles();`
     )
-    run(set)
+    run(set, 0)
     const h = (5 * Math.PI) / 180
     const wheel = [37 + Math.cos(h) * 5.3, 4.6 - Math.sin(h) * 5.3]
     const travel = (wheel[0] - 40) * Math.cos(h) - (wheel[1] - 5) * Math.sin(h)
@@ -290,6 +290,11 @@ describe("the carrier's ship file", () => {
     expect(set.catapult_1_shuttle).toBeCloseTo(travel, 9)
     expect(set.catapult_3_shuttle).toBe(0)
     expect(set.catapult_console_bow).toBe(1.3)
+    expect(set.catapult_console_waist).toBe(0) // the waist's stays down
+    const waist: Record<string, number> = {}
+    run(waist, 3) // hooked to catapult 4
+    expect(waist.catapult_console_waist).toBe(0.7)
+    expect(waist.catapult_console_bow).toBe(0)
   })
 
   it("gives each of the model's textured materials its own image, by name", () => {

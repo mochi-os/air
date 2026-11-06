@@ -23,9 +23,11 @@ import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_new_model_url from '../assets/fa18c-new.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import ford_model_url from '../assets/ford.glb?url'
+import ford_ship from '../assets/ford.json'
 import stores_model_url from '../assets/stores.glb?url'
 import { model } from '../game/library'
 import { posed } from '../game/model'
+import { layout, stations } from '../game/ship'
 import { normalize_round } from '../game/weapons'
 
 interface Entry {
@@ -55,11 +57,19 @@ const MODELS: Entry[] = [
   },
   // Our own Gerald R. Ford, the carrier the game flies from, as
   // tools/ford/build.py builds it, at rest: elevators up, deflectors flush,
-  // the port whips upright.
+  // the port whips upright; but its catapult control stations raised, which
+  // at rest lie hidden under the deck.
   {
     name: 'ford.glb',
     url: ford_model_url,
-    prepare: (gltf: GLTF) => gltf.scene.clone(true),
+    prepare: (gltf: GLTF) => {
+      const ship = gltf.scene.clone(true)
+      // the JSON's points are number[], the contract's tuples
+      const { joints } = layout(ford_ship as unknown as Parameters<typeof layout>[0])
+      for (const [name, offset] of Object.entries(stations(joints)))
+        ship.getObjectByName(name)?.position.add(new THREE.Vector3(...offset))
+      return ship
+    },
   },
 ].sort((a, b) => naturalCompare(a.name, b.name))
 

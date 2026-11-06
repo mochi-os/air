@@ -250,6 +250,18 @@ def checks(ship):
 		yield result("markings.centreline", "the centreline's aft end off the deck's aft edge", 0, miss, 0.05)
 		order = [m["name"] for m in ship.layout["markings"]]
 		yield result("markings.centreline", "the centreline's yellow drawn over the ramp", 1, order.index("centreline_yellow_1") > order.index("ramp"), 0, "")
+		# the bow control station's band right outside its lid's rim on every
+		# side (DVIDS 9405623, 9405624): each side's middle half its width out
+		# from the lid's outline
+		lid = next(c for c in ship.layout["consoles"] if c["name"] == "bow")["outline"]
+		edges = list(zip(lid, lid[1:] + lid[:1]))
+		def off(p):
+			return min(abs((b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0])) / math.dist(a, b) for a, b in edges)
+		for name in ("console_bow_surround", "console_bow_surround_stripes"):
+			band = marks[name]
+			middles = [((a[0] + b[0]) / 2, (a[1] + b[1]) / 2) for a, b in zip(band["points"], band["points"][1:])]
+			worst = max(abs(off(p) - band["width"] / 2) for p in middles)
+			yield result("shape.console_band", f"{name}'s inner edge off the bow station's lid", 0, worst, 0.02)
 		yellow = sorted((m for n, m in marks.items() if n.startswith("centreline_yellow_")), key=lambda m: m["points"][0][0])
 		inner = [math.dist(*m["points"]) for m in yellow[1:-1]]
 		yield result("markings.sections", "the centreline's whole yellow sections", value(M["sections"]) * FT, np.mean(inner), 0.05)

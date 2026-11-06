@@ -1528,9 +1528,71 @@
 	"consoles": [
 		{
 			"name": "bow",
-			"centre": [
-				67.0,
-				5.8
+			"rise": 0.7,
+			"inset": [
+				0.15,
+				0.45
+			],
+			"outline": [
+				[
+					65.19,
+					5.54
+				],
+				[
+					65.9,
+					4.46
+				],
+				[
+					67.86,
+					4.45
+				],
+				[
+					68.51,
+					5.63
+				],
+				[
+					67.83,
+					6.79
+				],
+				[
+					65.84,
+					6.8
+				]
+			]
+		},
+		{
+			"name": "waist",
+			"rise": 0.65,
+			"inset": [
+				0.05,
+				0.2
+			],
+			"lid": 0.08,
+			"tier": 0,
+			"top": 18.25,
+			"outline": [
+				[
+					-35.61,
+					-39.85
+				],
+				[
+					-31.3,
+					-39.88
+				],
+				[
+					-32.6,
+					-38.2
+				],
+				[
+					-34.27,
+					-38.19
+				]
+			],
+			"panes": [
+				0,
+				1,
+				2,
+				1
 			]
 		}
 	],
@@ -2736,7 +2798,7 @@
 				1.0,
 				-0.0
 			],
-			"drive": "raised while the catapults are manned",
+			"drive": "raised while its catapults are manned",
 			"keys": [
 				[
 					0,
@@ -2744,7 +2806,26 @@
 				],
 				[
 					1,
-					1.32
+					0.72
+				]
+			]
+		},
+		"catapult_console_waist": {
+			"motion": "slide",
+			"axis": [
+				0.0,
+				1.0,
+				-0.0
+			],
+			"drive": "raised while its catapults are manned",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					0.67
 				]
 			]
 		},
