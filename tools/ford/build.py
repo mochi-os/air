@@ -65,8 +65,10 @@ COLOURS = {"deck": (0.16, 0.16, 0.16, 1), "grey": (0.30, 0.32, 0.33, 1), "boot":
 	# in dvids9135541
 	"lights": (0.5, 0.5, 0.45, 1), "panel": (0.42, 0.44, 0.45, 1),
 	# the raft canisters white and the small ones blue, by eye in the overhead;
-	# the nets' cord from their image
-	"raft": (0.62, 0.62, 0.6, 1), "blue": (0.13, 0.35, 0.52, 1), "net": (0.03, 0.03, 0.03, 1),
+	# the nets' cord a dirty rust-brown, by eye at the hue of their brown
+	# pixels in dvids7694418 (chromaticity 0.41, 0.30, 0.28 under the shade's
+	# blue light, so warmer still in white light)
+	"raft": (0.62, 0.62, 0.6, 1), "blue": (0.13, 0.35, 0.52, 1), "net": (0.16, 0.09, 0.05, 1),
 	# the transom's recess, its paint in shade there (0.35-0.4 of the face's
 	# brightness in the same light); the drop-light bar the deck's yellow
 	"recess": (0.11, 0.12, 0.12, 1), "yellow": (0.67, 0.39, 0.03, 1),
@@ -1185,9 +1187,9 @@ def racks():
 
 
 def net_material():
-	# The nets' material: a small net of dark cord, the holes cut out (glTF
-	# alphaMode MASK: the image's alpha, rounded, as the surface's alpha), on
-	# both faces
+	# The nets' material: a small net of the nets' cord, the holes cut out
+	# (glTF alphaMode MASK: the image's alpha, rounded, as the surface's
+	# alpha), on both faces
 	if "net" in MATERIALS:
 		return MATERIALS["net"]
 	m = material("net")
@@ -1197,7 +1199,7 @@ def net_material():
 	for v in range(size):
 		for u in range(size):
 			on = u % cell < cord or v % cell < cord
-			pixels += [0.08, 0.08, 0.08, 1.0 if on else 0.0]
+			pixels += [*COLOURS["net"][:3], 1.0 if on else 0.0]
 	image.pixels = pixels
 	image.pack()
 	tree = m.node_tree
@@ -1248,15 +1250,21 @@ def nets():
 		lines.append(([extra["from"], extra["to"]], 1 if extra["side"] == "stern" else -1, extra.get("floor", floor)))
 	strips, frames = [], []
 	for line, side, base in lines:
-		far, _ = offset(line, side, n["width"])
 		y0, y1 = base + height, base + height + n["rise"]
-		k = len(line)
-		vertices = [at(x, y0, z) for x, z in line] + [at(x, y1, z) for x, z in far]
+		# a frame every `frames` or so, evenly, and the net's outer edge
+		# hanging `sag` between each pair of them (its middle the lowest)
+		total = sum(math.dist(a, b) for a, b in zip(line, line[1:]))
+		count = max(1, round(total / n["frames"]))
+		points = along_line(line, total / (2 * count))
+		near = [p for p, _ in points]
+		far = [[p[0] - d[1] * side * n["width"], p[1] + d[0] * side * n["width"]] for p, d in points]
+		drop = [n.get("sag", 0.0) * (k % 2) for k in range(len(points))]
+		k = len(points)
+		vertices = [at(x, y0, z) for x, z in near] + [at(x, y1 - s, z) for (x, z), s in zip(far, drop)]
 		faces = [(i, i + 1, k + i + 1, k + i) for i in range(k - 1)]
 		strips.append((vertices, faces, ["net"] * len(faces)))
-		frames += [bar([a[0], y1, a[1]], [b[0], y1, b[1]], 0.05, "rail") for a, b in zip(far, far[1:])]
-		for p, d in along_line(line, n["frames"]):
-			q = [p[0] - d[1] * side * n["width"], p[1] + d[0] * side * n["width"]]
+		frames += [bar([a[0], y1 - sa, a[1]], [b[0], y1 - sb, b[1]], 0.05, "rail") for a, b, sa, sb in zip(far, far[1:], drop, drop[1:])]
+		for (p, _), q in list(zip(points, far))[::2]:
 			frames.append(bar([p[0], base, p[1]], [q[0], y1, q[1]], 0.05, "rail"))
 	if not strips:
 		return
@@ -1289,8 +1297,8 @@ def upper_transom(x0, section):
 	# carried aft from x0 to the face; the face round its stepped recess, the
 	# recess running in to its back wall (`transom`). The windows and the
 	# catwalk band on the face, the walkway with its railing and fascia, the
-	# post frame and its fenders, the drop-light bar and the Phalanx's plinth
-	# (`transom_fittings`)
+	# post frame and its fenders, the drop-light bar and the Phalanx's raised
+	# deck (`transom_fittings`)
 	t = LAYOUT["transom"]
 	x1, floor = t["face"], t["floor"]
 	hole, back = t["opening"]["outline"], t["opening"]["back"]
@@ -1334,9 +1342,10 @@ def upper_transom(x0, section):
 	d = t["drop"]
 	fittings.append(prism([[d["x"] - d["depth"] / 2, d["z"] - d["width"] / 2], [d["x"] + d["depth"] / 2, d["z"] - d["width"] / 2],
 		[d["x"] + d["depth"] / 2, d["z"] + d["width"] / 2], [d["x"] - d["depth"] / 2, d["z"] + d["width"] / 2]], d["bottom"], d["top"], paint="yellow"))
+	# the Phalanx's raised deck: its plan at its foot, and at its top where
+	# its sides slope
 	pl = t["plinth"]
-	(cx, cz), half = pl["centre"], pl["size"] / 2
-	fittings.append(prism([[cx - half, cz - half], [cx + half, cz - half], [cx + half, cz + half], [cx - half, cz + half]], pl["bottom"], pl["top"]))
+	fittings.append(prism(pl["outline"], pl["bottom"], pl["top"], pl.get("upper")))
 	# the rest as photographed: the recess's mezzanine, doors, cabinet, lamps
 	# and life ring, the boat landing, the scuppers, pipe and chocks
 	fittings += [shape(d) for d in t.get("details", [])]

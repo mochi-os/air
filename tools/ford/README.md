@@ -125,16 +125,20 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     rails and posts on the outer edge, plate knees under it down to the edge. The platforms off them, the
     edge domes' platforms (carried in to the catwalk or the band) and their knees likewise. The raft racks
     hang outboard of the railing: a canister lying fore and aft in each tier, on cradles. The safety nets
-    (`nets`, the `net` material: a small image whose holes are cut out, both faces drawn) rise outward
-    from the railing's top on frames, except where a rack or platform stands, and over the bow and round the
-    stern's round-down (`catwalks.nets`, each hung to its own side from its own floor). Every railing and the
+    (`nets`, the `net` material: a small image of rust-brown cord whose holes are cut out, both faces drawn)
+    rise outward from the railing's top on frames, their outer edge hanging `catwalks.net.sag` between each
+    pair, except where a rack or platform stands, and over the bow and round the stern's round-down
+    (`catwalks.nets`, each hung to its own side from its own floor). Every railing and the
     nets' frames are in the `rail` material, grey as the rest: bars thinner than a photo resolves, which the
     photo checks leave out.
   - The transom's face stands round its stepped recess, with the windows, the catwalk band, the walkway and
-    its fascia, the post frame and its fenders, the drop bar and the Phalanx's plinth; the rest as parts
-    (`transom.details`, measured in DVIDS 7694418 through its camera: `references/research/transom2`): the
-    recess's mezzanine, doors, cabinet, lamps and life ring, the boat landing under the post frame, the
-    scuppers, pipe and mooring chocks, and the port quarter's chocks.
+    its fascia, the post frame and its fenders, the drop bar and the Phalanx's raised deck (`transom.plinth`:
+    its plan at its foot and its `upper` plan at its top, its sides sloping between); the rest as parts
+    (`transom.details`, measured in DVIDS 7694418 through its camera: `references/research/transom2` and
+    `transom3`): the recess's mezzanine, doors, cabinet, lamps and life ring, the boat landing under the post
+    frame, the scuppers, pipe and mooring chocks, the port quarter's chocks, the box behind the Phalanx with
+    its sponson's railing, fairlead and gas bottles, the LSO's windscreen at the port quarter's corner, a box
+    on its pedestal and a hose reel there, and the red ladder down to the stern's catwalk.
   - The lettering's plates: the island's numbers on its faces with their lamps, its stencils and placards,
     and the stem's draught marks on the hull's side just aft of the stem, tangent to it.
   - OUT.json is the ship file (`ford.json`): the deck layout the engine and the flight core read (the
@@ -231,9 +235,10 @@ the deck; a new sighting in the game becomes a ray here first.
 - the flare's sections at the deck's corners, its creases' facets in place of the sections' strips, and the
   hull whole and wound one way;
 - a catwalk's floor, railing and knees off the deck's edge, a platform off it, a dome's platform carried in
-  to the edge, the raft canisters in their tiers, and the nets: cut out, both faces, none outboard of a
-  platform, the stern's hung aft from its own floor, their frames in the railings' material;
-- the transom's fittings: the walkway, drop bar, frame and plinth, a window rounded at its corners in a flatter
+  to the edge, the raft canisters in their tiers, and the nets: cut out, both faces, rust-brown, their outer
+  edge hanging between the frames, a net on both sides of a platform and none outboard of it, the stern's hung
+  aft from its own floor, their frames in the railings' material;
+- the transom's fittings: the walkway, drop bar, frame and the plinth's sloping sides, a window rounded at its corners in a flatter
   frame, and a ring part between its radii;
 - the weathered atlases: each group's colour and normal maps at its size, its faces in its material with UVs,
   the radomes their own group, and only the group's faces in its atlas; the boot top's colour alone;

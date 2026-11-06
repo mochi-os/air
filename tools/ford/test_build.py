@@ -6,10 +6,11 @@
 # and the ship file, on a small deck built in Blender; and the provenance rule.
 #
 # usage: systemd-run --user --collect --wait --pipe --quiet --slice=probe.slice -p MemoryMax=6G -p MemorySwapMax=0 python3 -I /home/alistair/mochi/apps/air/tools/ford/test_build.py
-import json, re, subprocess, sys, tempfile, unittest
+import io, json, re, subprocess, sys, tempfile, unittest
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "verify"))
@@ -116,7 +117,7 @@ LAYOUT = {
 	# a port catwalk from x -50 to -30 with a net outboard of it, but for a
 	# platform off it at x -36 to -34; and a net across the bow
 	"catwalks": {"floor": 17.5, "railing": 1.0, "posts": 1.5, "toe": 0.1, "knees": {"spacing": 2.0, "depth": 0.8},
-		"net": {"width": 1.5, "rise": 0.4, "frames": 2.5},
+		"net": {"width": 1.5, "rise": 0.4, "frames": 2.5, "sag": 0.2},
 		"runs": [{"side": "port", "x": [-50, -30], "width": 1.5, "net": True}],
 		"platforms": [{"side": "port", "x": [-36, -34], "width": 2.0}],
 		"nets": [{"side": "bow", "from": [100, -40], "to": [100, 30]}, {"side": "stern", "from": [-93, -10], "to": [-93, 10], "floor": 14.0}]},
@@ -138,7 +139,7 @@ LAYOUT = {
 		"frame": {"x": -95, "z": [-3, 3], "members": 4, "top": 5.8, "bottom": -1.0, "size": 0.3},
 		"fenders": [{"centre": [-95.5, 4.5, -1.5], "length": 1.5, "diameter": 0.8}],
 		"drop": {"x": -93, "z": 2, "width": 0.4, "depth": 0.3, "bottom": 2.6, "top": 18.4},
-		"plinth": {"centre": [-96, 8], "size": 2.0, "bottom": 6.9, "top": 9.2}},
+		"plinth": {"outline": [[-97.2, 6.8], [-94.8, 6.8], [-94.8, 9.2], [-97.2, 9.2]], "upper": [[-97, 7], [-95, 7], [-95, 9], [-97, 9]], "bottom": 6.9, "top": 9.2}},
 	# a hull 8 m deep: 30 m on the waterline amidships, narrowing to 18 at
 	# x 60 and to its stem, which rises from x 70 below to the deck at 95; a
 	# transom from 2 m down at x -90; knuckles 6 m up to port, 5 to starboard
@@ -796,10 +797,14 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(side[:, 1].min(), 18.5, places=4)    # the railing's top
 		self.assertAlmostEqual(side[:, 1].max(), 18.9, places=4)
 		self.assertAlmostEqual(side[:, 2].min(), -43.0, places=4)   # 1.5 m out from the railing
+		# its outer edge hanging 0.2 m between the frames, at their tips at each frame
+		edge = side[np.isclose(side[:, 2], -43.0, atol=1e-4)]
+		self.assertEqual(sorted(set(np.round(edge[:, 1], 4))), [18.7, 18.9])
 		# none outboard of the platform, and the run's net either side of it
 		spans = [(t[:, 0].min(), t[:, 0].max()) for t in nets if t[:, 0].max() < 0]
 		self.assertFalse(any(a < -35 < b for a, b in spans))
-		self.assertTrue(any(a < -40 < b for a, b in spans) and any(a < -32 < b for a, b in spans))
+		inside = lambda x0, x1: any(a >= x0 - 1e-4 and b <= x1 + 1e-4 for a, b in spans)
+		self.assertTrue(inside(-50, -36) and inside(-34, -30))
 		bow = points[points[:, 0] > 99]
 		self.assertAlmostEqual(bow[:, 0].max(), 101.5, places=4)
 		# the stern's hung aft of its line, from its own floor's railing
@@ -815,6 +820,14 @@ class BuildTest(unittest.TestCase):
 		self.assertEqual(net.get("alphaMode"), "MASK")
 		self.assertTrue(net.get("doubleSided"))
 		self.assertIn("baseColorTexture", net["pbrMetallicRoughness"])
+		# the cord rust-brown, as the photo has it: red over green over blue
+		image = gltf["images"][gltf["textures"][net["pbrMetallicRoughness"]["baseColorTexture"]["index"]]["source"]]
+		view = gltf["bufferViews"][image["bufferView"]]
+		start = 20 + size + 8 + view.get("byteOffset", 0)
+		pixels = np.asarray(Image.open(io.BytesIO(data[start:start + view["byteLength"]])).convert("RGBA")).reshape(-1, 4)
+		cord = pixels[pixels[:, 3] > 127][:, :3].astype(int).mean(0)
+		self.assertGreater(cord[0], 1.4 * cord[1])
+		self.assertGreater(cord[1], 1.4 * cord[2])
 		mesh = gltf["meshes"][next(n["mesh"] for n in gltf["nodes"] if n["name"] == "nets")]
 		self.assertIn("TEXCOORD_0", mesh["primitives"][0]["attributes"])
 		# their frames in the railings' material, which the photo checks leave out with the nets
@@ -918,6 +931,11 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(dark[:, 1].min(), -1.0, places=4)   # the frame's posts into the water
 		self.assertEqual(len(np.unique(np.round(dark[dark[:, 1] < 0, 2], 2))), 8)   # four posts, two faces each
 		self.assertAlmostEqual(fittings[:, 1][np.abs(fittings[:, 0] + 96) < 1.01].max(), 9.2, places=4)   # the plinth
+		# its sides sloping: its top inside its upper plan, its foot out to its outline
+		plinth = fittings[(np.abs(fittings[:, 0] + 96) < 1.3) & (np.abs(fittings[:, 2] - 8) < 1.3) & (fittings[:, 1] > 6.8)]
+		top = plinth[np.isclose(plinth[:, 1], 9.2, atol=1e-4)]
+		self.assertLessEqual(np.abs(top[:, 0] + 96).max(), 1.0 + 1e-4)
+		self.assertTrue((np.linalg.norm(plinth - [-97.2, 6.9, 6.8], axis=1) < 1e-4).any())
 		glass = self.model.parts(materials=["glass"])["transom_fittings"].reshape(-1, 3)
 		self.assertAlmostEqual(glass[:, 0].min(), -92.03, places=4)
 		# the window's corners rounded at 0.2 m, its frame 0.1 m round it and
