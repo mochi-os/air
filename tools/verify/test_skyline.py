@@ -393,6 +393,46 @@ class SkylineTest(unittest.TestCase):
 			# the blue is read only in a photo the catalogue calls clear: elsewhere a cloud would pass for the jet
 			self.assertEqual(found["unread"], [])
 
+	def test_scene_blue_paint(self):
+		# a navy plate (the Blue Angels' blue, about 33 over its red and green against a clear sky's 43) with a
+		# gold band 12 pixels inside its edge: read by its blue alone the walk passes the navy for sky and takes
+		# the band for the edge; with the catalogue's "paint": "blue" it is read by brightness as well and the
+		# edge nearer the sky taken, which still finds gold trim at the edge itself, by its blue
+		import tempfile
+		import camera as cam
+		import model as mod
+		from test_verify import JET, box, glb
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			glb(root / "m.glb", [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))}])
+			model = mod.Model(root / "m.glb")
+			size = [1200, 600]
+			camera = cam.looking(np.array([0.0, 0.0, 12.0]), np.array([0.0, 0.0, 0.0]), 2400.0)
+			flat, depth = cam.project(camera, model.triangles(mod.pose({}, {})).reshape(-1, 3), (size[0] / 2, size[1] / 2))
+			mask = skyline.frontmost(flat.reshape(-1, 3, 2), depth.reshape(-1, 3), tuple(size)) >= 0
+			# each pixel's depth inside the plate, in pixels (erosions to remove it)
+			inside, left = np.zeros(mask.shape), mask.copy()
+			for k in range(1, 30):
+				inside[left] = k
+				left = left & np.roll(left, 1, 0) & np.roll(left, -1, 0) & np.roll(left, 1, 1) & np.roll(left, -1, 1)
+			sky, navy, gold = np.array([178, 211, 254]), np.array([0, 19, 52]), np.array([230, 190, 40])
+			(root / "references").mkdir()
+			entry = {"photo": "p", "size": size, "camera": list(camera), "pose": {}}
+			found = {}
+			for name, band, paint in (("navy", (12, 20), None), ("painted", (12, 20), "blue"), ("trim", (0, 6), "blue")):
+				skin = np.where(((inside > band[0]) & (inside <= band[1]))[..., None], gold, navy)
+				photo = np.where(mask[..., None], skin, sky).astype(np.uint8)
+				Image.fromarray(photo).save(root / "references" / f"{name}.png")
+				catalogue = {"frame": JET, "photos": {"p": dict({"clear": True}, **({"paint": paint} if paint else {}))}}
+				places, _ = skyline.Scene(catalogue, root, mod.Frame(JET), {}, dict(entry, file=f"{name}.png")).places(model, {}, {})
+				found[name] = [p["miss"] for p in places]
+			for name in ("painted", "trim"):
+				self.assertGreater(len(found[name]), 40, name)
+				self.assertLess(float(np.median(np.abs(found[name]))), 0.5, name)
+			# by its blue alone the navy reads as sky: the model stands outside by the band's inset
+			self.assertGreater(len(found["navy"]), 40)
+			self.assertGreater(float(np.median(found["navy"])), 2.0)
+
 	def test_ground(self):
 		# seen from above and to the side, everything beyond the plate lies under the horizon: a photo with
 		# the gear down is taken on the ground and judges nothing there, unless its entry says "ground": false;
@@ -567,6 +607,63 @@ class SkylineTest(unittest.TestCase):
 		self.assertEqual((r["region"], r["median"], r["places"], r["finding"], r["moving"]), ("fin FS 600-624", 1.9, 6, True, False))
 		self.assertEqual(r["photos"], {"a": 2.0, "b": 1.8})
 		self.assertEqual(d["universe"], [["body", 432, "top"], ["fin", 600, ""]])
+
+	def test_directions(self):
+		d = skyline.directions(200)
+		self.assertEqual(d.shape, (200, 3))
+		np.testing.assert_allclose(np.linalg.norm(d, axis=1), 1.0, atol=1e-12)
+		# spread evenly: no side favoured, and every direction has a neighbour within 20 degrees
+		np.testing.assert_allclose(d.mean(0), 0.0, atol=0.02)
+		nearest = np.sort(d @ d.T, axis=1)[:, -2]
+		self.assertGreater(nearest.min(), np.cos(np.radians(20)))
+
+	def test_reach(self):
+		# a body with a fin standing on it and a part inside it: the part inside is on no outline from any
+		# direction; the fin is on the outline from the side, never from straight above or below, where the body's
+		# own outline lies round it
+		import tempfile
+		import model as mod
+		from test_verify import JET, box, glb
+		with tempfile.TemporaryDirectory() as root:
+			path = Path(root) / "m.glb"
+			glb(path, [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))}, {"name": "fin_test", "mesh": box((-0.3, 0.1, -0.01), (0.3, 0.6, 0.01))},
+				{"name": "gear_inner", "mesh": box((-0.2, -0.05, -0.2), (0.2, 0.05, 0.2))}])
+			model = mod.Model(path)
+			seen = skyline.reach(model, {}, [{}], mod.Frame(JET), count=60, width=240)
+			# close in with a wide lens, and in parallel
+			close = skyline.reach(model, {}, [{}], mod.Frame(JET), count=24, width=200, distances=(1.6,), workers=2)
+			alone = skyline.reach(model, {}, [{}], mod.Frame(JET), count=24, width=200, distances=(1.6,), workers=1)
+		families = {k[0] for k in seen}
+		self.assertNotIn("gear", families)
+		self.assertIn("fin", families)
+		self.assertIn("body", families)
+		fin = [v for k, v in seen.items() if k[0] == "fin"]
+		elevations = [abs(e) for views in fin for _, e, _, _ in views]
+		self.assertLess(max(elevations), 80.0)
+		self.assertTrue(all(pose == 0 and d == 6.0 for views in seen.values() for _, _, pose, d in views))
+		# close in, the part inside is still on no outline, the fin is on it, and the workers agree with one alone
+		self.assertNotIn("gear", {k[0] for k in close})
+		self.assertIn("fin", {k[0] for k in close})
+		self.assertEqual(close, alone)
+		self.assertTrue(all(d == 1.6 for views in close.values() for _, _, _, d in views))
+
+	def test_unseen(self):
+		# regions listed as on no outline are reported with what measures them, not as unjudged; one a photo
+		# judges after all, and one no longer on the skin, are named
+		from test_verify import JET
+		place = {"miss": 0.2, "part": "fuselage", "point": [450.0, 148.0, 0.0]}
+		results = {"a": {"tried": 10, "places": [place] * 3}}
+		universe = {("body", 432, "top"), ("body", 456, "bottom"), ("body", 480, "bottom")}
+		settings = skyline.Settings({"frame": JET, "skyline": {"unseen": {"body FS 456-480 bottom": "the cited section at FS 470"}}})
+		text = skyline.summary(results, universe, settings=settings)
+		self.assertIn("judged by no photo (1): body FS 480-504 bottom", text)
+		self.assertIn("on no outline, measured otherwise (1): body FS 456-480 bottom (the cited section at FS 470)", text)
+		self.assertNotIn("listed as on no outline but", text)
+		settings = skyline.Settings({"frame": JET, "skyline": {"unseen": {"body FS 432-456 top": "x", "body FS 999-1023 top": "y"}}})
+		text = skyline.summary(results, universe, settings=settings)
+		self.assertIn("judged by one photo only (0): ", text)
+		self.assertIn("listed as on no outline but judged by a photo (1): body FS 432-456 top", text)
+		self.assertIn("listed as on no outline but no longer on the skin (1): body FS 999-1023 top", text)
 
 	def test_finding(self):
 		# the median over the photos past the tolerance, and two thirds of them on its side

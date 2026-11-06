@@ -57,17 +57,11 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   The glass ends on a cut along its lower edge as two side photos show it (`layout.canopy glass_edge`,
   `glass_edge()`), rising from a rail along the sill to a rounded tip at the canopy's aft end, with the
   canopy's metal panel below it; the faces are cut along that line, not ended on the loft's rings.
-  From 30 in ahead of the canopy's aft end to 85 in behind it the upper section is the old model's
-  (`layout.dorsal`, measured on it at the user's decision; `dorsal()`): a narrow
-  bubble on a broad flat-topped base whose corner runs on aft along the spine, a tail carrying the
-  canopy's lines down onto the flat top, heights taken from the base's top (the crown) with the part
-  above it squashed to our canopy's height ahead of the photos' last top reading (FS 318) and the old
-  model's own height from the canopy's aft end back. The crease at the tail's foot is the old model's,
-  measured every half inch (`layout.dorsal` crease, 30 in ahead of the aft end to its tip 10 in behind):
-  its corner goes into each section exactly, ring column `CREASE[0]` lies on it (`placed()`: the columns
-  above it evenly along the tail, those below evenly to the sill's column, gathering from FS 289 and
-  spreading again over 8 in behind the tip in `lofted()`), its edges are shaded sharp where it turns 8 deg
-  or more, and the glass ends on it where the photos' glass edge runs below it (FS 295-319). From the joint to the rear fuselage (FS 412)
+  Past the photos' last top reading (FS 318) the canopy's top falls on to the spine's crown at its aft end
+  (FS 325), and behind it the spine runs flat on the crown, meeting the canopy at the corner the profiles
+  show: the section's part above the crown is squashed to that top (`tailed()`, `layout.canopy` tail, the
+  user's decision once the sky check had twelve photos on it; the old model's section laid here before
+  stood its hood 1.8 in higher and its base 2-2.7 in outside the head-on photos). From the joint to the rear fuselage (FS 412)
   each share of the section's height runs on one cubic from the joint's section to the rear fuselage's,
   leaving the joint level and arriving with the rear fuselage's slope, its top on the spine's crown and
   its lower body through the cited FS 357 section too (`lofted()`). No measured line is passed through
@@ -123,7 +117,7 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   where each inlet hands over, standing nowhere outside the inlet's last ring where it juts out past the
   section 4.5 in ahead (`shape.joint`); no wave on the same lines, a dip between humps or a hump
   between dips within 80 in standing over 0.15 in (`shape.wave`), which no crease check sees; the
-  spine's crown, flank, side seam and deck where the photos put them (behind the canopy, where the old model's section governs by the user's decision, its widths instead, and the crease at the tail's foot in place within 0.5 in across and 0.3 in up, turning within 40% of the old model's angle: `layout.dorsal`)
+  spine's crown, flank, side seam and deck where the photos put them (and the canopy's top behind its aft end within 0.3 in of the photos' height: `layout.canopy`)
   (`layout.spine`); and each
   panel line (`layout.panels`, cast onto the skin from the photos) within an inch of the skin as built,
   which the paint otherwise finds only when it is baked. On a painted build it reads the paint too, off

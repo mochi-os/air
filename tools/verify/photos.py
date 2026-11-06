@@ -35,13 +35,16 @@
 #            pairs need, and the one the cited points describe (the F/A-18C's: gear down)
 #   photos   {id: {"file": path under the catalogue's references folder, "pose": {drive: value, "joints": {joint: value}}
 #                  (a joint named there takes that value past its drive), "solve": false to leave it out,
-#                  "stores", "clear", "ground" and "masks" for skyline.py (its load; true where the background is clear blue sky
-#                  or open sea; true to leave out what lies under the horizon, false never to, absent to leave it out where
+#                  "stores", "clear", "paint", "ground" and "masks" for skyline.py (its load; true where the background is clear
+#                  blue sky or open sea; "blue" where the jet's own paint is as blue as that sky (the Blue Angels); true to
+#                  leave out what lies under the horizon, false never to, absent to leave it out where
 #                  the pose has the gear down; polygons [[[x, y], ...], ...] in the photo's own pixels hiding what the model
 #                  does not carry),
 #                  "focal": the lens in the photo's own pixels, as the solve's prior in place of the EXIF's (a photo
 #                  cropped and enlarged keeps an EXIF that no longer fits its pixels), or false for none (a field of
 #                  view between 1 and 100 degrees, as a photo without EXIF),
+#                  "sigma": how far its marks may miss, in pixels (default the larger of 1.5 and the width over 2500;
+#                  a photo whose marks disagree with the rest under any one camera takes its own rms in the bundle),
 #                  "horizon": [[x, y], ...] pixels along the sea's horizon, which hold a low camera's pitch and roll
 #                  (needs "sea"),
 #                  "marks": {point: [x, y]}, "edges": {name: {"against": "outline" | curve name,

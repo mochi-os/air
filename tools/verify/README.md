@@ -77,7 +77,7 @@ The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
 - `photos`: per photo, where each named point falls (`marks`), traced `edges`, the `pose` the model takes to
   match it (gear down, canopy open, surfaces deflected), pixels to cast onto a plane (`locate`), and
   `"solve": false` for one kept on file but too thinly marked to solve. The sky check (5a) reads `clear`,
-  `ground`, `stores` and `masks` beside them. Two more hold a camera the marks leave loose:
+  `ground`, `stores` and `masks` beside them. Three more set how its camera is solved:
   - `focal`: the lens in the photo's own pixels, the solve's prior in place of the EXIF's, or `false` for no
     prior. A photo cropped and enlarged keeps an EXIF focal that no longer fits its pixels: the Ford's
     dvids9167788 solved 34% longer than its EXIF 28 mm.
@@ -85,6 +85,11 @@ The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
     height over the sea (1.76 minutes of arc times the root of the height in metres, with refraction). It fixes
     the pitch and roll of a low camera whose marks lie in one band, such as a deck edge seen from the water,
     about which the camera could otherwise swing. The report gives its rms in pixels.
+  - `sigma`: how far its marks may miss, in pixels (by default the larger of 1.5 and the width over 2500).
+    Where its marks disagree with the rest under any one camera, give it its own rms in the bundle: at the
+    default it pulls the points it shares and can push another photo past the gate. The F/A-18C's dvids9437764
+    fitted at 9 px; at the default 2.4 px it moved dvids9820744's wing edge from 1.17 to 1.51 in (its overlay
+    then kept it out of the solve: Pitfalls).
 - `sea`: the sea's surface as a plane in the frame's names (`"y=0"`), which `horizon` needs. The sky check (5a)
   cuts the model at it, since the water hides what lies under it, and measures a ground photo's horizon from
   the sea's.
@@ -150,6 +155,8 @@ often darkens toward the jet), the first sharp change of brightness that holds, 
 half-way crossing. Sky is even and either bright or blue (a deep blue sky or open sea reads darker in grey
 than shaded skin, which is grey); in a photo whose catalogue entry says `"clear": true` (clear blue sky or
 open sea beyond the jet, no cloud) the walk reads the blue, not the grey, and the edge is where the blue ends.
+A jet painted as blue as the sky (the Blue Angels) also takes `"paint": "blue"`: its edge is read in both the
+blue and the grey, and the one nearer the sky taken.
 Green is never sky, nor anything under a ground photo's horizon. A ground photo is one whose entry says
 `"ground": true`, or, without the key, whose pose has the gear down; `"ground": false` never masks the
 horizon. Open sea seen from a low camera can pass for sky: say `true`. Ground begins the `skyline`'s `horizon`
@@ -171,7 +178,23 @@ A region is a finding when two or more photos judge it (3 places each at least),
 `tolerance` (1 in), and two thirds of them miss on that side: each photo is one measurement with its camera's
 own error. Findings on the families in `moving` (the F/A-18C's rudders, flaps, ailerons, leading-edge flaps,
 stabilators, nozzles, gear and canopy) are listed apart: their misses follow each photo's pose. The report
-ends with the coverage: every region of the skin judged by one photo only or by none. It writes each photo's
+ends with the coverage: every region of the skin judged by one photo only or by none.
+
+Some regions no photo can judge: they make the outline from no direction at all (a belly between nacelles,
+a side under a wing root, parts behind glass). `--reach` finds them, rendering the model from directions
+spread evenly round it at three distances (1.6, 2.5 and 6 times its radius, the nearest with a wide lens, as
+photos taken beside the jet are), flown, gear down and with the canopy open, and writes the directions each
+region is on the outline from:
+
+    python3 -I skyline.py CATALOGUE MODEL.glb POINTS.json OUT.json --reach [--count N]
+
+List each region it finds on no outline in the catalogue's `skyline` `unseen`, with what measures it instead
+(a cited section, a seam triangulated from photo pairs). The report then lists them apart from the regions no
+photo judges, and names any a photo judges after all (a pose or a camera the reach did not try) or that is no
+longer on the skin. Distant cameras alone are not enough: on the F/A-18C six regions they found on no outline
+were judged by photos taken 12-20 m from the jet or with its canopy open. A region on the outline only from a
+narrow set of directions (straight ahead or behind, level) needs a photo from exactly there with sky behind;
+the reach's directions say which to look for. It writes each photo's
 overlay (a line from the model's edge to the photo's, green within the tolerance, yellow within 2.5 times it,
 magenta beyond) and a sheet per finding with every photo's view of it. Check each finding's sheet by eye
 before it becomes a task.
@@ -257,6 +280,12 @@ sketch to several inches. Say which in the facts table.
 
 What went wrong on the F/A-18C, each a rule now:
 
+- **Judge the outline against sky only, not any even background.** Taking any background even enough beyond
+  the edge (trees, hillsides, tarmac), with the walk's evenness, contrast and sharpness the only tests, was
+  tried on the F/A-18C's 29 photos (2026-11-04): those places missed by a median of 1.89 in against 0.71 on sky,
+  57% past 1.5 in against 25%, and where one photo judged one region against both, the two differed by over an
+  inch in 68% of them (dvids9820808: 0.45 in on sky, 6.70 elsewhere). A treeline or a field's edge is a sharp,
+  held step too. Coverage the sky leaves open needs another photo, not a looser background.
 - **Spread the marks in depth.** A photo whose marks bunch at one end (a rear view marking only fins, nozzles
   and wheels) leaves focal length and distance trading off, and its camera runs off to a distant telephoto. Mark
   six or more points spread along the whole object; a photo that cannot have them goes in the catalogue with
@@ -287,6 +316,23 @@ What went wrong on the F/A-18C, each a rule now:
   leading edge, 35 in ahead of the lip; the model's inlet, fitted near them, was 40 in too far forward. A
   second marker reading the same photo from the dictionary caught it. Have a feature that a check turns on
   marked by two helpers, or re-read by one, before moving the model.
+- **A point the view hides is not marked where its outline turns.** Seen from behind, the canopy's crown is
+  only the top of a dome's outline, a grazing point about 0.25 m ahead of the crown from 8 degrees above; a
+  helper moved it onto the crown with the model's own canopy profile, which makes it no measurement of the
+  model. A wingtip's leading corner under an empty rail was marked where the leading edge meets the rail, up
+  to 15 px inboard. Each failed the gate (the crown 2.9 in forward, the corner 2.6 in inboard) and was set
+  aside. Set such a mark aside with its reason in the photo's notes, never adjust it from the model.
+- **A camera that passes the gate can still be out of register.** Two launch photos solved within the gate
+  (rms 4.7 and 11.7 px), but their overlays showed the model's wings, or its tail, off the photo's along their
+  whole length: one's marks all lay within the fins' span, so nothing held its roll across the wings; the
+  other's nose and tail disagreed under any one camera. Their median miss gave them away (1.36 and 1.93 in,
+  against 0.45-1.1 for the rest), and each read findings of its own (6.8 and 8 in). Read each new photo's
+  overlay and median miss before trusting what it judges, and leave out one that misses broadly.
+- **Record each photo's stores from that photo.** Eight ground photos of one jet were given the load one profile
+  seemed to show, bare wing pylons; a profile cannot tell a near-side tank from a far-side one, and the same
+  jet's front-quarter view showed tanks on both inboard pylons. Recorded bare, the tank's outline read as the
+  belly 1.4 in inside, and a task was filed on it. Settle a load from a view that separates the stations (a
+  front or rear quarter), and where none does, keep the default.
 - **A drawn line needs a surface to be measured on.** Casting a traced edge onto an assumed plane is only
   right if the edge lies in it: the splitter's leading edge, cast onto a flat plane, disagreed by 15 in
   between photos because it bows outboard. Solve such an edge from two views together, refining each
@@ -478,6 +524,13 @@ What went wrong on the F/A-18C, each a rule now:
   photos the catalogue marks `"clear": true`, after a look at what lies beyond the jet. Clouds fool the grey walk too:
   a band on a white cloud with dark sea between it and the jet reads the cloud's edge, so a finding carried by one
   photo seen against cloud needs a look at its sheet before it counts.
+- **Some paint is as blue as the sky.** The Blue Angels' navy stands about 33 over its red and green against a
+  clear sky's 43, a step short of the contrast, so read in blue the walk passed the navy for sky and stopped at the
+  next gold stripe inward: the belly read 1.5-2 in outside in every Blue Angels photo, and the inlets 14-16 in,
+  where the model's outline lay on the photo's edge to a pixel. Their entries say `"paint": "blue"`, which reads
+  the grey as well (the navy is dark) and keeps the edge nearer the sky (gold trim, which grey passes for sky, is
+  found by its blue). A photo admitted or turned away on its sky-check misses was judged on those misses: run it
+  again after a reading like this changes.
 - **Helpers mark well with a dictionary.** Three helpers marked twelve photos from `../fa18c/marking.md` in an
   hour or so each. Check their marks against the overlays and the flagged misses; they also found the wrong
   photo labels.
@@ -528,7 +581,7 @@ What went wrong on the F/A-18C, each a rule now:
 - `view.py`: Blender: renders the model through solved cameras.
 - `crop.py`: crops with a labelled pixel grid, for marking.
 - `skyline.py`: the outline against the sky in every solved photo, by region, with findings, coverage and
-  sheets.
+  sheets; with `--reach`, which regions can make the outline at all, and from where.
 - `poses.py`: fits each photo's moving parts to its outline against the sky, for the catalogue's poses.
 - `page.py`: the review page for one build, from its gate, sky check and sheets.
 - `cast.py`: casts a solved photo's pixels onto the posed model's surface or a plane of the project's frame,

@@ -289,29 +289,6 @@ class ShapeTest(unittest.TestCase):
 		# no station cutting the part measures nothing
 		self.assertTrue(np.isnan(check.seated(tris((5.0, 102.0, 38.0), (95.0, 160.0, 42.0)), skin, np.array([200.0]))))
 
-	def test_kink(self):
-		x = np.arange(0.0, 16.0, 0.05)
-		# a bubble's side falling 30 deg onto a top falling 3 deg, meeting at BL 7
-		kinked = np.where(x < 7.0, -np.tan(np.radians(30)) * x, -np.tan(np.radians(30)) * 7.0 - np.tan(np.radians(3)) * (x - 7.0))
-		bl, wl, turn = check.kink(x, kinked)
-		self.assertAlmostEqual(bl, 7.0, delta=0.05)
-		self.assertAlmostEqual(wl, -np.tan(np.radians(30)) * 7.0, delta=0.03)
-		self.assertAlmostEqual(turn, 27.0, delta=0.5)
-		# the same corner rounded over 2 in turns under a third as much over 0.4 in
-		r = 2.0 / (np.radians(30) - np.radians(3))
-		a = -np.radians(30) + np.clip((x - 6.0) / r, 0, np.radians(27))
-		rounded = np.concatenate([[0.0], np.cumsum(np.tan((a[1:] + a[:-1]) / 2) * np.diff(x))])
-		self.assertLess(check.kink(x, rounded)[2], 9.0)
-		# a slot (turning past 90 deg at its foot) is not a corner, nor is anything outside the band
-		slot = kinked.copy(); slot[(x > 11.9) & (x < 12.1)] -= 5.0
-		self.assertGreater(abs(check.kink(x, slot, inside=(1.0, 6.0))[0] - 12.0), 1.0)
-		self.assertAlmostEqual(check.kink(x, slot)[0], 7.0, delta=0.05)
-		self.assertEqual(check.kink(x, kinked, inside=(8.0, 9.0))[2] < 1.0, True)
-		# gaps are skipped, and an empty band gives no corner
-		gapped = kinked.copy(); gapped[(x > 3.0) & (x < 4.0)] = np.nan
-		self.assertAlmostEqual(check.kink(x, gapped)[0], 7.0, delta=0.05)
-		self.assertEqual(check.kink(x, kinked, inside=(20.0, 30.0)), (np.inf, np.inf, 0.0))
-
 	def test_waves(self):
 		stations = np.arange(200.0, 400.0, 1.0)
 		free = np.ones(len(stations), bool)

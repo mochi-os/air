@@ -30,7 +30,13 @@
 # people). The catalogue's "skyline" section sets the regions and what makes a
 # finding (Settings), each key it leaves out keeping the F/A-18C's value.
 #
+# With --reach it instead finds which regions can make the outline at all,
+# from directions spread round the model, flown and gear down: a region on
+# no outline from any direction no photo can judge (the catalogue's
+# skyline "unseen" records what measures it instead).
+#
 # usage: python3 -I skyline.py CATALOGUE.json MODEL.glb POINTS.json CAMERAS.json OUT_DIR [--only ID,ID]
+#        python3 -I skyline.py CATALOGUE.json MODEL.glb POINTS.json OUT.json --reach [--count N]
 import json, sys
 from pathlib import Path
 
@@ -92,6 +98,8 @@ class Settings:
 	#              judges a mirrored skin's two sides as one (SIDES)
 	#   horizon    degrees under the horizon before a ground photo's ray meets ground (HORIZON); measured
 	#              from level, or with the catalogue's "sea", from the sea's horizon at the camera's height
+	#   unseen     {region label: what measures it instead}: regions on no outline from any direction
+	#              (--reach finds them), reported apart from the regions no photo judges
 	# and the frame's symbol and plural, as the misses print
 	def __init__(self, catalogue=None):
 		catalogue = catalogue or {}
@@ -107,6 +115,7 @@ class Settings:
 		self.sectored = list(spec.get("sectored", SECTORED))
 		self.sides = spec.get("sides", SIDES)
 		self.horizon = float(spec.get("horizon", HORIZON))
+		self.unseen = dict(spec.get("unseen", {}))
 		frame = mod.Frame(catalogue["frame"]) if "frame" in catalogue else None
 		self.symbol = frame.symbol if frame else mod.SYMBOL
 		self.plural = frame.plural if frame else mod.PLURAL
@@ -324,7 +333,7 @@ def covered(polygons, work, scale):
 	return np.asarray(image) > 0
 
 
-def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None, water=None, seaward=None):
+def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None, water=None, seaward=None, paint=None):
 	# Every place along the model's edge where the photo shows sky beyond it:
 	# [{pixel, edge, miss (the frame's unit), part, point}]. gray and ids (each pixel's
 	# frontmost triangle, frontmost()) are at the working scale; names,
@@ -338,7 +347,12 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 	# band that is blue (blue: each pixel's blue over its red and green) is
 	# sky however dark: a deep blue sky or sea reads darker in grey than the
 	# brightness that keeps shaded skin from passing for sky, which is grey.
-	# Against a blue sky the edge is read where the blue ends. A place on a part
+	# Against a blue sky the edge is read where the blue ends, unless paint is
+	# "blue": a jet painted as blue as the sky (the Blue Angels' navy reads
+	# about 33 over its red and green against a clear sky's 43, short of the
+	# contrast, so the walk passes its edge for the next gold stripe inward) is
+	# read by its brightness as well, and the edge nearer the sky taken: its
+	# gold trim, which brightness passes for sky, is found by its blue. A place on a part
 	# seen past a nearer one just inside it is not judged, nor one on water (a
 	# mask at the working scale of the model's waterline): there the outline is
 	# the sea's, which each photo's draught, waves and wake move. Where the band
@@ -393,9 +407,13 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 
 		# a blue sky is judged by its blue, however dark: in grey, shaded skin
 		# can match it and the walk would pass the skin's edge for the next
-		# bright step inward; the skin is never that blue
+		# bright step inward; grey skin is never that blue
 		if blue is not None and blue[y0[-BAND:], x0[-BAND:]].mean() >= BLUE:
-			return edge_along(along(blue), 0.0, attached)
+			found = edge_along(along(blue), 0.0, attached)
+			if paint == "blue":
+				edges = [f for f in (found, edge_along(along(gray), attached=attached)) if f is not None]
+				found = max(edges) if edges else None
+			return found
 		return edge_along(along(gray), attached=attached)
 
 	for row, column in rim(mask):
@@ -454,6 +472,8 @@ class Scene:
 		self.green = colour[..., 1] - np.maximum(colour[..., 0], colour[..., 2])
 		clear = photo.get("clear", False)
 		self.blue = colour[..., 2] - np.maximum(colour[..., 0], colour[..., 1]) if clear else None
+		# "paint": "blue" where the jet itself is as blue as the sky (measure())
+		self.paint = photo.get("paint")
 		stores = catalogue.get("stores")
 		self.hidden = None
 		if stores:
@@ -516,7 +536,7 @@ class Scene:
 		ids = frontmost(flat * self.scale, depth, self.work)
 		points = self.frame.source(tris.mean(axis=1))
 		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.hidden, self.green, self.ground, self.blue,
-			water, self.seaward)
+			water, self.seaward, self.paint)
 		return places, ids >= 0
 
 
@@ -628,12 +648,98 @@ def summary(results, universe=(), weaks=(), settings=None):
 		lines.append("on moving surfaces (check each photo's pose before the shape):")
 		lines += moving
 	judged = {key: len(medians) for key, medians, _, _ in rows}
-	one = sorted(label(k, settings) for k, n in judged.items() if n == 1)
-	none = sorted(label(k, settings) for k in set(universe) - set(judged))
+	unseen = settings.unseen
+	one = sorted(label(k, settings) for k, n in judged.items() if n == 1 and label(k, settings) not in unseen)
+	none = sorted(label(k, settings) for k in set(universe) - set(judged) if label(k, settings) not in unseen)
 	lines.append("")
 	lines.append(f"judged by one photo only ({len(one)}): " + ", ".join(one))
 	lines.append(f"judged by no photo ({len(none)}): " + ", ".join(none))
+	if unseen:
+		# on no outline from any direction (reach()), so no photo can judge them:
+		# what measures each instead; one a photo judges after all is listed again
+		labels = {label(k, settings) for k in universe}
+		listed = sorted(u for u in unseen if u in labels)
+		lines.append(f"on no outline, measured otherwise ({len(listed)}): " + "; ".join(f"{u} ({unseen[u]})" for u in listed))
+		judging = sorted(u for u in listed if any(label(k, settings) == u for k in judged))
+		if judging:
+			lines.append(f"listed as on no outline but judged by a photo ({len(judging)}): " + ", ".join(judging))
+		gone = sorted(u for u in unseen if u not in labels)
+		if gone:
+			lines.append(f"listed as on no outline but no longer on the skin ({len(gone)}): " + ", ".join(gone))
 	return "\n".join(lines)
+
+
+def directions(count):
+	# count unit directions spread evenly round a sphere (a Fibonacci
+	# lattice), in the model frame (x ahead, y up)
+	k = np.arange(count) + 0.5
+	up = 1 - 2 * k / count
+	around = np.pi * (1 + 5 ** 0.5) * k
+	level = np.sqrt(1 - up * up)
+	return np.stack([level * np.cos(around), up, level * np.sin(around)], -1)
+
+
+VIEW = {}   # the posed model one reach() pass renders, shared with its workers
+
+
+def viewed(job):
+	# The regions at least MINIMUM of whose places lie on the silhouette's rim
+	# from one direction at one distance (in the model's radii), for reach()
+	direction, distance = job
+	flat, keys, middle, radius, width = VIEW["flat"], VIEW["keys"], VIEW["middle"], VIEW["radius"], VIEW["width"]
+	focal = width / 2 / (1.1 * radius / (distance * radius))
+	if distance < 2:
+		# close: a wide lens framing the whole model, as the photos taken near the jet are
+		focal = width / 2 / np.tan(np.arcsin(min(0.99, 1.0 / distance)))
+	camera = cam.looking(middle + direction * distance * radius, middle, focal)
+	pixels, depth = cam.project(camera, flat, (width / 2, width / 2))
+	ids = frontmost(pixels.reshape(-1, 3, 2), depth.reshape(-1, 3), (width, width))
+	hits = {}
+	for row, column in rim(ids >= 0):
+		key = keys[ids[row, column]]
+		if key is not None:
+			hits[key] = hits.get(key, 0) + 1
+	return [key for key, n in hits.items() if n >= MINIMUM]
+
+
+def reach(model, joints, poses, frame, settings=None, count=240, width=800, distances=(6.0,), workers=1):
+	# Which regions of the skin can make the outline at all, and from where:
+	# the model in each pose (the points file's drives) seen from count
+	# directions spread evenly round it, at each distance (in the model's
+	# radii, round its middle; under 2, a wide lens close in, as photos taken
+	# beside the jet are), framing it whole, and the regions of the solid
+	# parts at least MINIMUM of whose places lie on the silhouette's rim, as a
+	# photo must have to judge one (glass hides what lies behind it but is no
+	# outline, as in Scene.places). {region: [(azimuth, elevation, pose
+	# index, distance), ...]}, in degrees: azimuth round from straight ahead
+	# toward the third coordinate's positive side, elevation up from level
+	import multiprocessing
+	settings = settings or DEFAULT
+	seen = {}
+	around = directions(count)
+	jobs = [(d, r) for r in distances for d in around]
+	for index, pose in enumerate(poses):
+		posed = mod.pose(joints, pose)
+		solid = model.parts(posed, materials=settings.solid)
+		clear = model.parts(posed, materials=["glass"])
+		names = [n for n, t in solid.items() for _ in range(len(t))] + [None] * sum(len(t) for t in clear.values())
+		tris = np.concatenate(list(solid.values()) + list(clear.values()))
+		points = frame.source(tris.mean(axis=1))
+		flat = tris.reshape(-1, 3)
+		middle = (flat.min(0) + flat.max(0)) / 2
+		VIEW.update(flat=flat, keys=[region(n, q, settings) if n is not None else None for n, q in zip(names, points)], middle=middle,
+			radius=float(np.linalg.norm(flat - middle, axis=1).max()), width=width)
+		if workers > 1:
+			with multiprocessing.get_context("fork").Pool(workers) as pool:
+				found = pool.map(viewed, jobs, chunksize=4)
+		else:
+			found = [viewed(job) for job in jobs]
+		for (direction, distance), keys in zip(jobs, found):
+			azimuth = round(float(np.degrees(np.arctan2(direction[2], direction[0]))), 1)
+			elevation = round(float(np.degrees(np.arcsin(np.clip(direction[1], -1, 1)))), 1)
+			for key in keys:
+				seen.setdefault(key, []).append((azimuth, elevation, index, distance))
+	return seen
 
 
 def digest(results, universe=(), weaks=(), settings=None):
@@ -680,7 +786,32 @@ def sheets(results, weaks, directory, side=480, settings=None):
 		sheet.save(directory / f"finding {label(key, settings)}.png")
 
 
+def reaching(argv):
+	# --reach: which regions can make the outline from some direction, flown
+	# and gear down, written to OUT.json ({region: [[azimuth, elevation,
+	# pose], ...]}) with the regions on no outline printed
+	args = [a for a in argv if not a.startswith("--")]
+	catalogue_path, glb, points_path, out = args[:4]
+	catalogue = json.loads(Path(catalogue_path).read_text())
+	frame = mod.Frame(catalogue["frame"])
+	settings = Settings(catalogue)
+	model = mod.Model(glb)
+	joints = json.loads(Path(points_path).read_text())["joints"]
+	rest = model.parts(mod.pose(joints, {}), materials=settings.solid)
+	universe = {region(n, q, settings) for n, t in rest.items() for q in frame.source(t.reshape(-1, 3))[::3]}
+	count = int(argv[argv.index("--count") + 1]) if "--count" in argv else 240
+	# flown (nozzles closed, the wings under load), gear down, and gear down with
+	# the canopy open, as the photos are posed
+	poses = [{"load": 1, "nozzle": 1}, {"gear": 1}, {"gear": 1, "canopy": 1}]
+	seen = reach(model, joints, poses, frame, settings, count, distances=(1.6, 2.5, 6.0), workers=6)
+	Path(out).write_text(json.dumps({label(k, settings): v for k, v in sorted(seen.items(), key=lambda kv: label(kv[0], settings))}, indent="\t") + "\n")
+	never = sorted(label(k, settings) for k in universe - set(seen))
+	print(f"on no outline from any of {count} directions at 1.6, 2.5 and 6 radii, flown, gear down or the canopy open ({len(never)}): " + ", ".join(never))
+
+
 def main():
+	if "--reach" in sys.argv:
+		return reaching([a for a in sys.argv[1:] if a not in ("--reach",)])
 	args = [a for a in sys.argv[1:] if not a.startswith("--")]
 	only = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else None
 	if only:

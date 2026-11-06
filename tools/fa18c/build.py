@@ -28,7 +28,6 @@ import numpy as np
 import bpy
 from mathutils import Matrix, Vector
 from mathutils.bvhtree import BVHTree
-from mathutils.kdtree import KDTree
 
 HERE = Path(__file__).resolve().parent
 FACTS = json.loads((HERE / "facts.json").read_text())
@@ -287,9 +286,6 @@ SURFACES = {}
 TOPLINE, KEELLINE = [], []
 
 
-SHARP = set()   # points (rounded world metres) between which an edge is shaded sharp: the crease at the foot of the canopy's tail
-
-
 def node(name, parent=None, hinge=None, mesh=None, paint="paint"):
 	# An object at `hinge` (world space). Its mesh's vertices are given in
 	# world space and stored relative to the hinge. Every ancestor rests
@@ -310,19 +306,6 @@ def node(name, parent=None, hinge=None, mesh=None, paint="paint"):
 			polygon.material_index = names.index(n)
 		data.validate()
 		tidy(data)
-		if SHARP:
-			# edges laid along a designed crease (fuselage()), its points
-			# found within a tenth of a millimetre (the mesh keeps single
-			# precision)
-			tree = KDTree(len(SHARP))
-			for k, point in enumerate(SHARP):
-				tree.insert(point, k)
-			tree.balance()
-			sharp = data.attributes.get("sharp_edge") or data.attributes.new("sharp_edge", "BOOLEAN", "EDGE")
-			on = [tree.find(v.co + hinge)[2] < 1e-4 for v in data.vertices]
-			for edge, attribute in zip(data.edges, sharp.data):
-				if on[edge.vertices[0]] and on[edge.vertices[1]]:
-					attribute.value = True
 	obj = bpy.data.objects.new(name, data)
 	bpy.context.scene.collection.objects.link(obj)
 	if parent:
@@ -980,7 +963,7 @@ def loft_outline(station):
 	keel = float(hermite(t, length, L["ka"], L["kb"], L["kleave"], L["karrive"]))
 	crown = [tuple(p) for p in SPINE["crown"]]
 	top = smooth(crown, station) + (L["ta"] - smooth(crown, LOFT[0])) * (1 - ease(4 * t)) + (L["tb"] - smooth(crown, LOFT[1])) * ease(4 * t - 3)
-	return np.array(dorsal(station, list(zip(x.tolist(), (top - LOFT_GRID * (top - keel)).tolist()))))
+	return np.array(tailed(station, list(zip(x.tolist(), (top - LOFT_GRID * (top - keel)).tolist()))))
 
 
 def lofted(station):
@@ -1022,19 +1005,13 @@ def lofted(station):
 		middle = np.where(m0 * m1 > 0, 3 * (h0 + h1) / ((2 * h1 + h0) / safe(m0) + (h1 + 2 * h0) / safe(m1)), 0.0)
 		share = (tm - LOFT_GRID * (tm - km) - LOWER[2]) / (LOWER[1] - LOWER[2])
 		L.update(xm=xm, middle=middle, lleave=leaving(m0, middle), lower=np.array([ease(f) for f in share]))
-		# the joint's ring as the loft's columns would have it, and as the
-		# crease at the tail's foot gathers them (placed()), which spread
-		# out again over CREASE[4] inches behind the tail's tip
-		PIN[0] = False
+		# the joint's ring as the loft's columns have it, and the union's
 		L["fa"] = shares_along(half_ring(LOFT[0])[1], loft_outline(LOFT[0]))
-		PIN[0] = True
-		L["ft"] = shares_along(half_ring(LOFT[0])[1], loft_outline(LOFT[0]))
 		L["fb"] = shares_along(union_ring(LOFT[1])[1], loft_outline(LOFT[1]))
 	t = (station - LOFT[0]) / length
 	outline = loft_outline(station)
 	length_along = np.concatenate([[0.0], np.cumsum(np.hypot(*np.diff(outline, axis=0).T))])
-	start = L["ft"] + ease((station - LOFT[0]) / CREASE[4]) * (L["fa"] - L["ft"])
-	want = ((1 - ease(t)) * start + ease(t) * L["fb"]) * length_along[-1]
+	want = ((1 - ease(t)) * L["fa"] + ease(t) * L["fb"]) * length_along[-1]
 	ring = [(float(np.interp(d, length_along, outline[:, 0])), float(np.interp(d, length_along, outline[:, 1]))) for d in want]
 	return (0.0, (outline[0, 1] + outline[-1, 1]) / 2), ring
 
@@ -1054,190 +1031,31 @@ def half_ring(station):
 	angles = angles_at(station, centre, fore)
 	if station > FLARE[0]:
 		fore = flared(station, fore)
-	fore = dorsal(station, fore)
-	return centre, placed(station, fore, centre, angles)
+	fore = tailed(station, fore)
+	return centre, polar(fore, centre, angles)
 
 
-DORSAL = (10.0, 6.0, 10.0, 55.0, 85.0, 12.0, -30.0)   # inches below the base's flat top (the crown) the old model's section holds in full, then fades over; inches it fades in over from DORSAL[6] (ahead of the canopy's aft end: its base comes out from under the canopy's sides about 20 in ahead, and from 40 ahead it reshaped the glass the photos fit); inches aft of the canopy's aft end where it starts to fade out and has gone; and the offset by which its hood has settled onto the spine's flat top
-DORSAL_ROWS = {}
-
-
-def dorsal_row(offset):
-	# The old model's half-widths at each depth (layout.dorsal) at an offset
-	# from the canopy's aft end, each depth on a monotone cubic along the offsets
-	D = LAYOUT["dorsal"]
-	key = round(offset, 4)
-	if key not in DORSAL_ROWS:
-		DORSAL_ROWS[key] = np.array([smooth([(o, row[k]) for o, row in zip(D["offsets"], D["widths"])], offset) for k in range(len(D["depths"]))])
-	return DORSAL_ROWS[key]
-
-
-def dorsal(station, outline):
-	# The canopy's aft part and the fuselage behind it laid to the old
-	# model's outer surface there (layout.dorsal, a last resort taken at the
-	# user's decision, 2026-11-04): the canopy a narrow bubble on a broad
-	# flat-topped base whose corner, 2-3 in below the base's top at 16-18 in
-	# out, runs on aft along the spine; behind the canopy a hood carrying the
-	# bubble's lines down onto the flat top within DORSAL[5] inches; the
-	# corner fading out between DORSAL[3] and DORSAL[4] inches aft. Heights
-	# are taken from the base's flat top, the spine's crown: below it the
-	# old model's widths at the same heights, above it (the bubble and the
-	# hood) squashed so the old model's top meets ours, the canopy's top line
-	# and then the crown, the hood's top falling between as the old model's
-	# does. Down to DORSAL[0] inches below the base's flat top the outline is
-	# the old model's section, blended into the outline over DORSAL[1] below;
-	# it fades in over DORSAL[2] inches from DORSAL[6]. Swelling the canopy's
-	# own section out to the joint behind it stood its aft part almost as wide
-	# as the spine, with no tail and no corner (the user's report, three
-	# times). The photos' joint, side seam and crown at FS 330 put the
-	# shoulder and top lower here; the user chose this shape
-	D, aft = LAYOUT["dorsal"], LAYOUT["canopy"]["aft"]
-	d = station - aft["station"]
-	first = DORSAL[6]
-	if d <= first or d >= DORSAL[4]:
+def tailed(station, outline):
+	# The canopy's aft end on the photos (layout.canopy tail, the user's
+	# decision, 2026-11-05): from the canopy's last top reading its top falls
+	# on through the photos' height over the spine's crown at its aft end,
+	# and behind that lies on the crown, the spine running flat to the
+	# canopy's aft frame as the profiles show it; the outline's part above
+	# the crown is squashed to that top. The old model's section laid here
+	# (2026-11-04) stood its hood 1.8 in over the crown and its base 2-2.7 in
+	# outside the head-on photos' outline beside the canopy
+	C = LAYOUT["canopy"]
+	aft, last = C["aft"]["station"], max(p[0] for p in C["top"])
+	if station <= last:
 		return outline
-	weight = ease((d - first) / DORSAL[2]) * (1 - ease((d - DORSAL[3]) / (DORSAL[4] - DORSAL[3])))
-	depths, row = np.array(D["depths"]), dorsal_row(d)
 	crown = smooth([tuple(c) for c in LAYOUT["spine"]["crown"]], station)
-	tops = list(zip(D["offsets"], D["tops"]))
-	old_top = smooth(tops, min(d, DORSAL[5])) if d < DORSAL[5] else None
-	settled = smooth(tops, DORSAL[5])
-	if d < 0:
-		# the canopy's own top (the photos' top line), rising from its last
-		# reading to the old model's height above the base's flat top by the
-		# canopy's aft end, 0.65 in over the photos' 153.5 (+-1 in, three
-		# photos): squashed to that, the tail's sides lay a third flatter
-		# and its crease turned 12 deg where the old model's turns 22
-		top = outline[0][1]
-		last = max(p[0] for p in LAYOUT["canopy"]["top"]) - aft["station"]
-		if d > last:
-			top += ease((d - last) / -last) * (crown + old_top - settled - top)
-	elif d < DORSAL[5]:
-		top = crown + old_top - settled
-	else:
-		top = crown
-
-	# the crease at the foot of the canopy's tail (layout.dorsal crease): its
-	# corner put into the section exactly, so the depths either side of it
-	# don't round it over, and its height in ours
-	corner = crease_at(d)
-	if corner is not None and old_top is not None:
-		deep = old_top - corner[1]
-		keep = np.abs(depths - deep) > 0.12
-		order = np.argsort(np.concatenate([depths[keep], [deep]]))
-		depths, row = np.concatenate([depths[keep], [deep]])[order], np.concatenate([row[keep], [corner[0]]])[order]
-		corner = crease_height(corner[1], crown, settled, old_top, top)
-	else:
-		corner = None
-
-	def width(y):
-		# the old model's half-width at a height: from the base's flat top,
-		# the part above it squashed to the old model's height there
-		if old_top is None:
-			return float(np.interp(crown - y, depths, row))
-		z = y - crown
-		if z > 0 and top > crown + 1e-6:
-			z *= (old_top - settled) / (top - crown)
-		return float(np.interp(old_top - settled - z, depths, row))
-
-	# depth below the base's flat top, so under the canopy's tall top the
-	# base's corner and sides are laid in full
-	floor = crown - DORSAL[0]
-	if corner is not None:
-		# a point of our outline at the corner's height, for the blend below
-		for k, ((x0, y0), (x1, y1)) in enumerate(zip(outline, outline[1:])):
-			if (y0 - corner) * (y1 - corner) < 0:
-				outline = list(outline[:k + 1]) + [(x0 + (x1 - x0) * (corner - y0) / (y1 - y0), corner)] + list(outline[k + 1:])
-				break
-	out = []
-	if weight >= 1:
-		heights = [float(y) for y in np.arange(top, floor - 1e-9, -0.25)]
-		if corner is not None:
-			heights = sorted({y for y in heights if abs(y - corner) > 1e-6} | {corner}, reverse=True)
-		for y in heights:
-			out.append((width(y), y))
-	for x, y in outline:
-		if weight >= 1 and y >= floor:
-			continue
-		h = crown - y
-		if y <= top and h <= DORSAL[0] + DORSAL[1]:
-			share = weight * (1.0 if h <= DORSAL[0] else ease(1 - (h - DORSAL[0]) / DORSAL[1]))
-			x = x + share * (width(y) - x)
-		out.append((x, y))
-	if corner is not None:
-		CREASES[round(station, 4)] = next((x, y) for x, y in out if y == corner)
-	return out
-
-
-CREASE = (8, -36.0, -30.0, 8.0, 8.0, 0.5)   # the half-ring's column on the crease at the foot of the canopy's tail (placed()); the offsets from the canopy's aft end over which the columns move onto it; inches behind the loft's start over which they spread again (lofted()); the turn (deg) and the share of the old model's section (dorsal()) from which its edges are shaded sharp
-CREASES = {}   # station: the crease's point in that station's section (dorsal())
-PIN = [True]   # whether placed() puts a column on the crease
-
-
-def crease_at(offset):
-	# The old model's crease at the foot of its canopy's tail (layout.dorsal
-	# crease) at an offset from the canopy's aft end: (half-width, height in
-	# the dorsal tops' datum, turn in degrees), or None off its ends
-	rows = LAYOUT["dorsal"]["crease"]
-	if offset < rows[0][0] or offset > rows[-1][0]:
-		return None
-	return tuple(float(np.interp(offset, [r[0] for r in rows], [r[k] for r in rows])) for k in (1, 2, 3))
-
-
-def crease_height(height, crown, settled, old_top, top):
-	# A height in the old model's tops datum as a waterline of ours, as
-	# dorsal() maps them: from the base's flat top (the crown), squashed above
-	# it to our top
-	z = height - settled
-	if z > 0 and top > crown + 1e-6:
-		z *= (top - crown) / (old_top - settled)
-	return crown + z
-
-
-def crease_line(station):
-	# The crease at the foot of the canopy's tail as a waterline at a station
-	# (layout.dorsal crease, its height from the base's flat top, unsquashed:
-	# within 0.07 in of dorsal()'s where it stands above the top, behind FS
-	# 321), its first height held ahead of it
-	D = LAYOUT["dorsal"]
-	offset = station - LAYOUT["canopy"]["aft"]["station"]
-	height = float(np.interp(offset, [r[0] for r in D["crease"]], [r[2] for r in D["crease"]]))
-	return smooth([tuple(c) for c in LAYOUT["spine"]["crown"]], station) + height - smooth(list(zip(D["offsets"], D["tops"])), DORSAL[5])
-
-
-def placed(station, outline, centre, angles):
-	# The half-ring's points on an outline: rays from the centre at the
-	# angles (polar()), but over the canopy's tail column CREASE[0] on the
-	# crease at its foot (layout.dorsal crease), the columns above it evenly
-	# along the tail from the top centreline and those below evenly on to the
-	# sill's column, so the crease is a line of the mesh. Rays from the centre
-	# grazed the narrow tail, and the corner fell between two columns where
-	# it pleased: the tail lumpy and its crease rounded over (the user's
-	# report). The columns move onto it from CREASE[1] to CREASE[2]
-	points = polar(outline, centre, angles)
-	d = station - LAYOUT["canopy"]["aft"]["station"]
-	if not PIN[0] or d <= CREASE[1] or d > LOFT[0] - LAYOUT["canopy"]["aft"]["station"]:
-		return points
-	key = round(station, 4)
-	height = CREASES[key][1] if key in CREASES else crease_line(station)
-	P = np.array(outline, float)
-	length = np.concatenate([[0.0], np.cumsum(np.hypot(*np.diff(P, axis=0).T))])
-	at = None
-	for i in range(len(P) - 1):
-		(x0, y0), (x1, y1) = P[i], P[i + 1]
-		if (y0 - height) * (y1 - height) <= 0 and y0 != y1:
-			at = length[i] + (length[i + 1] - length[i]) * (height - y0) / (y1 - y0)
-			break
-	along = shares_along(points, P) * length[-1]
-	k = CREASE[0]
-	assert at is not None and at < along[SILL], (station, height)
-	pinned = [at * j / k for j in range(k + 1)] + [at + (along[SILL] - at) * (j - k) / (SILL - k) for j in range(k + 1, SILL + 1)]
-	weight = ease((d - CREASE[1]) / (CREASE[2] - CREASE[1]))
-	out = list(points)
-	for j in range(1, SILL):
-		s = along[j] + weight * (pinned[j] - along[j])
-		out[j] = (float(np.interp(s, length, P[:, 0])), float(np.interp(s, length, P[:, 1])))
-	return out
+	top = outline[0][1]
+	if top <= crown + 1e-6:
+		return outline
+	end = smooth([tuple(c) for c in LAYOUT["spine"]["crown"]], aft) + C["tail"]["height"]
+	want = smooth([tuple(p) for p in C["top"]] + [(aft, end)], station) if station < aft else crown
+	scale = max(0.0, want - crown) / (top - crown)
+	return [(x, crown + (y - crown) * scale if y > crown else y) for x, y in outline]
 
 
 FLARE = (290.0, 0.15, 3.5)   # the station the canopy's aft fairing starts from (its shoulders widest there, WL 146-148), the inches its edge on the glass is rounded over, and how far inside the joint's section it starts round the glass's top
@@ -1470,8 +1288,8 @@ def fuselage():
 	# rings creased it 3 deg each, and the loft's flat facets stood up to 0.3
 	# in off the section the fittings follow; every 4 in from the canopy's aft end to
 	# the nozzles, where 10-20 in between rings left the spine and nacelles
-	# faceted; every half inch over the canopy tail's rounded tip (layout.dorsal crease)
-	stations = sorted(set(stations) | {float(x) for x in range(328, 692, 4)} | {float(x) for x in range(int(LOFT[0]), int(LOFT[1]), 2)} | {x / 2 for x in range(657, 669)} | {float(x) for x in range(488, 514, 2)} | {float(x) for x in range(326, 336)} | {float(x) for x in range(92, 217, 3)} | located
+	# faceted
+	stations = sorted(set(stations) | {float(x) for x in range(328, 692, 4)} | {float(x) for x in range(int(LOFT[0]), int(LOFT[1]), 2)} | {float(x) for x in range(488, 514, 2)} | {float(x) for x in range(326, 336)} | {float(x) for x in range(92, 217, 3)} | located
 		| {float(r["station"]) for r in FACTS["sections"]} | {253.0, 296.0, 357.0})   # a ring at every cited and traced section
 	FUSELAGE_STATIONS[:] = stations
 	rings = []
@@ -1479,17 +1297,6 @@ def fuselage():
 		columns = leaned(station)
 		ring = [at(s, wl, bl) for s, bl, wl in columns] + [at(s, wl, -bl) for s, bl, wl in reversed(columns[1:-1])]
 		rings.append(ring)
-	# the crease at the foot of the canopy's tail, its edges shaded sharp
-	# (node()) where it turns CREASE[3] degrees or more in the old model and
-	# its section is at least CREASE[5] the old model's
-	aft = LAYOUT["canopy"]["aft"]["station"]
-	n = len(rings[0])
-	for station, ring in zip(stations, rings):
-		corner = crease_at(station - aft)
-		if corner is None or corner[2] < CREASE[3] or station > LOFT[0] or ease((station - aft - DORSAL[6]) / DORSAL[2]) < CREASE[5]:
-			continue
-		for v in (ring[CREASE[0]], ring[n - CREASE[0]]):
-			SHARP.add(tuple(v))
 	canopy(stations, rings)
 	TOPLINE[:] = [ring[0] for ring in rings]
 	KEELLINE[:] = sorted((ring[len(ANGLES) - 1] for ring in rings), key=lambda v: -v.x)
@@ -1518,20 +1325,10 @@ def glass_line(station):
 	line = (fit(station) + rail + math.sqrt((fit(station) - rail) ** 2 + soft * soft)) / 2
 	last, end = max(p[0] for p in edge), layout["aft"]["station"]
 	if station > last:
-		# the tail's top there, the old model's height above the base's flat
-		# top (dorsal())
-		D = LAYOUT["dorsal"]
-		tip = smooth([tuple(c) for c in LAYOUT["spine"]["crown"]], end) + smooth(list(zip(D["offsets"], D["tops"])), 0.0) - smooth(list(zip(D["offsets"], D["tops"])), DORSAL[5])
+		# the canopy's top there, the photos' height above the spine's crown
+		# (layout.canopy tail, tailed())
+		tip = smooth([tuple(c) for c in LAYOUT["spine"]["crown"]], end) + layout["tail"]["height"]
 		line += (tip - fit(end)) * ease((station - last) / (end - last))
-	# never below the crease at the foot of the canopy's tail (layout.dorsal,
-	# the old model's at the user's decision), where the fit runs 0.3-0.7 in
-	# under it over FS 295-319 and the glass would lap 3 in out over the
-	# base's flat top: the glass ends on the crease, eased in where the
-	# columns gather onto it (placed())
-	d = station - end
-	if d > CREASE[1]:
-		weight = ease((d - CREASE[1]) / (CREASE[2] - CREASE[1]))
-		line += weight * max(0.0, crease_line(station) - line)
 	return line
 
 
@@ -1543,8 +1340,8 @@ def glass_edge(vertices, entries):
 	# the loft's own rings and columns, the glass ran down to the sill at the
 	# aft end in steps (the user's report). New points on edges two cut faces
 	# share are shared. Adds to vertices; returns the entries
-	# a point within a thousandth of an inch of the line is on it (the
-	# crease's, where the glass ends on it), in both pieces of a cut face
+	# a point within a thousandth of an inch of the line is on it, in both
+	# pieces of a cut face
 	def side(i):
 		s = (vertices[i].z / INCH + ORIGIN["waterline"]) - glass_line(ORIGIN["station"] - vertices[i].x / INCH)
 		return 0.0 if abs(s) < 1e-3 else s

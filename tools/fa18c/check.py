@@ -457,23 +457,6 @@ def seated(part, skin, stations):
 	return worst
 
 
-def kink(x, z, window=8, inside=(1.0, 15.9)):
-	# A top outline's corner (heights z at buttlines x, evenly spaced): where
-	# its slope over `window` steps either side turns up the most, within the
-	# buttlines `inside`, as (buttline, height, turn in degrees); a turn past
-	# 90 deg (a slot's foot) is not one, nor one beside a gap (NaN)
-	x, z = np.asarray(x), np.asarray(z)
-	h = window
-	lo = (z[h:-h] - z[:-2 * h]) / (x[h:-h] - x[:-2 * h])
-	hi = (z[2 * h:] - z[h:-h]) / (x[2 * h:] - x[h:-h])
-	bend = np.degrees(np.arctan(hi) - np.arctan(lo))
-	band = (x[h:-h] > inside[0]) & (x[h:-h] < inside[1]) & (bend < 90)
-	if not band.any():
-		return np.inf, np.inf, 0.0
-	i = int(np.argmax(np.where(band, bend, -99.0)))
-	return float(x[h:-h][i]), float(z[h:-h][i]), float(bend[i])
-
-
 def waves(H, stations, free, span=40.0, jump=0.6):
 	# Each line's waves: a dip between two humps, or a hump between two dips,
 	# the three turns within 2 * span inches, over a run of stations free of
@@ -1286,17 +1269,13 @@ def checks(jet):
 			# the skin's height seen from a view, at one station and line, on a small even grid round it
 			return float(lines(skin, view, np.array([station - 0.5, station, station + 0.5]), np.array([across - 0.5, across, across + 0.5]))[1, 1])
 
-		# (the crown inside the hood behind the canopy, which the old model's top
-		# governs there by the user's decision, 2026-11-04, is left out)
-		for station, waterline in [p for p in sp["crown"] if p[0] >= F["layout"]["canopy"]["aft"]["station"] + 12]:
+		for station, waterline in sp["crown"]:
 			yield result("layout.spine", f"crown at FS {station:g} (dvids9820808's profile)", waterline, at("above", station, 0.0), 0.5, "WL in")
 		for station, waterline, buttline in sp["flank"]:
 			yield result("layout.spine", f"spine's flank at FS {station:g}, WL {waterline:g} (its panel joints' lower ends)", buttline, at("outboard", station, waterline), 1.0, "BL in")
 		# the side seam behind the canopy, triangulated by two photo pairs that part
-		# by 0.4-1.3 in along it: held to 0.75 in, aft of where the old model's
-		# section governs the shoulder (layout.dorsal, the user's decision)
-		governed = F["layout"]["canopy"]["aft"]["station"] + 85.0
-		for station, waterline, buttline in [p for p in sp["side"] if p[0] >= governed]:
+		# by 0.4-1.3 in along it: held to 0.75 in
+		for station, waterline, buttline in sp["side"]:
 			yield result("layout.spine", f"spine's side seam behind the canopy at FS {station:g}, WL {waterline:g}", buttline, at("outboard", station, waterline), 0.75, "BL in")
 		for station, waterline, buttline in sp["rear"]:
 			yield result("layout.spine", f"spine's top between the fins at FS {station:g}, BL {buttline:g}", waterline, at("above", station, buttline), 1.0, "WL in")
@@ -1540,19 +1519,11 @@ def checks(jet):
 				np.abs(near[:, 2]).max() if len(near) else np.inf, 0.3, "BL in")
 		# the glass's lower edge, where the metal panel below it meets it, read off two left-side photos
 		glass = jet.model.parts(verify.pose(jet.joints, {}), materials=("glass",)).get("canopy", np.zeros((0, 3, 3)))
-		# Over the canopy's tail the old model's crease at its foot governs
-		# (layout.dorsal crease, the user's decision, 2026-11-04): where it
-		# stands above a reading (0.3-0.7 in over FS 295-319) the glass ends on it
-		ds = L["dorsal"]
-		settled = float(np.interp(12.0, ds["offsets"], ds["tops"]))
 		crown = lambda st: float(np.interp(st, [p[0] for p in L["spine"]["crown"]], [p[1] for p in L["spine"]["crown"]]))
 		for st, wl in c["glass_edge"]:
 			across = FRAME.source(verify.cut(glass, FRAME.model([st, 100, 0]), FRAME.axes @ np.array([1.0, 0, 0])).reshape(-1, 3)) if len(glass) else np.zeros((0, 3))
 			left = across[across[:, 2] < 0]
-			offset = st - c["aft"]["station"]
-			crease = crown(st) + float(np.interp(offset, [r[0] for r in ds["crease"]], [r[2] for r in ds["crease"]])) - settled if offset >= ds["crease"][0][0] else -np.inf
-			label = f"glass's lower edge at FS {st:g}, left" + (", on the old model's crease" if crease > wl else "")
-			yield result("layout.canopy", label, max(wl, crease), left[:, 1].min() if len(left) else np.inf, 0.75, "WL in")
+			yield result("layout.canopy", f"glass's lower edge at FS {st:g}, left", wl, left[:, 1].min() if len(left) else np.inf, 0.75, "WL in")
 		# the bow and the aft edge lean: the glass's lowest stretch starts at the bow's foot and ends at the aft corner
 		whole = jet.points(["canopy"])
 		foot = whole[whole[:, 1] < c["bow"]["foot"] + 1.0]
@@ -1573,35 +1544,14 @@ def checks(jet):
 		for st, wl in c["top"]:
 			cut = jet.cut(["canopy"], [st, 100, 0], [1, 0, 0])
 			yield result("layout.canopy", f"canopy's top at FS {st:.0f}", wl, cut[:, 1].max() if len(cut) else np.inf, 0.3, "WL in")
-		# behind the canopy the old model's section governs the shoulder (the
-		# user's decision, 2026-11-04), not the photos' joint, which stands 0.6-2
-		# in inside it: the skin's half-width at each depth below its top, at
-		# each offset aft of the canopy's aft end where it holds in full
-		skin = jet.points(["fuselage"]).reshape(-1, 3, 3)
-		ds = L["dorsal"]
-		for offset, row in zip(ds["offsets"], ds["widths"]):
-			if not 12 <= offset <= 55:
-				continue
-			st = c["aft"]["station"] + offset
-			top = lines(skin, "above", np.array([st - 0.01, st, st + 0.01]), np.array([0.0, 0.01]))[0][1]
-			for depth in (2.0, 3.0, 5.0, 8.0):   # not 1 in: the top is so flat there that 0.1 in of height moves the width an inch
-				wl = top - depth
-				width = lines(skin, "outboard", np.array([st - 0.01, st, st + 0.01]), np.array([wl, wl + 0.01]))[0][1]
-				yield result("layout.dorsal", f"skin's half-width {depth:g} in below its top, {offset:g} in aft of the canopy", float(np.interp(depth, ds["depths"], row)), width, 0.5, "BL in")
-		# the crease at the foot of the canopy's tail (layout.dorsal crease):
-		# where the top outline (canopy and body, highest at each buttline)
-		# turns most, as the old model's was found, its place and its turn,
-		# where the section is wholly the old model's. A corner rounded over
-		# between columns turns a quarter as much over 0.4 in
+		# the canopy's top falling to the photos' height over the crown at its
+		# aft end and the spine flat behind it (layout.canopy tail, the sky
+		# check's side photos)
 		whole = np.concatenate([jet.points(["fuselage"]).reshape(-1, 3, 3), jet.points(["canopy"]).reshape(-1, 3, 3)])
-		bls = np.arange(0.0, 16.0, 0.05)
-		for offset in (-16.0, -8.0, -2.0, 2.0, 5.0):
+		for offset in (0.0, 4.0, 8.0):
 			st = c["aft"]["station"] + offset
-			bl, wl, bend = kink(bls, lines(whole, "above", np.array([st - 0.01, st, st + 0.01]), bls)[:, 1])
-			row = [float(np.interp(offset, [r[0] for r in ds["crease"]], [r[k] for r in ds["crease"]])) for k in (1, 2, 3)]
-			yield result("layout.dorsal", f"crease at the tail's foot, {offset:g} in aft of the canopy: its buttline", row[0], bl, 0.5, "BL in")
-			yield result("layout.dorsal", f"crease at the tail's foot, {offset:g} in aft of the canopy: its waterline", crown(st) + row[1] - settled, wl, 0.3, "WL in")
-			yield result("layout.dorsal", f"crease at the tail's foot, {offset:g} in aft of the canopy: its turn", row[2], bend, 0.4 * row[2], "deg")
+			top = lines(whole, "above", np.array([st - 0.01, st, st + 0.01]), np.array([0.0, 0.01]))[0][1]
+			yield result("layout.canopy", f"canopy's top {offset:g} in aft of its aft end, above the crown (the photos' sky check)", c["tail"]["height"], top - crown(st), 0.3, "WL in")
 		hood = jet.cut(["canopy"], [c["crown"]["station"], 100, 0], [1, 0, 0])
 		yield result("layout.canopy", "canopy crown", c["crown"]["waterline"], hood[:, 1].max(), 0.4, "WL in")
 		whole = jet.points(["canopy"])
@@ -1703,11 +1653,9 @@ def checks(jet):
 				keep &= ~((stations >= a) & (stations <= b))
 			return keep
 
-		# the glass runs on into the hood behind the canopy (layout.dorsal), whose
-		# back meets the spine's flat top at the corner the old model has there,
-		# by the user's decision (2026-11-04): an edge by design, 5 deg seen from
-		# above at FS 337
-		glass, inlet = (cp["windscreen"]["station"] - 14, cp["aft"]["station"] + 16), (lip - 8, join + 12)
+		# the canopy's top meets the spine's flat top at its aft end at the corner
+		# the profiles show there (layout.canopy tail): an edge by design
+		glass, inlet = (cp["windscreen"]["station"] - 14, cp["aft"]["station"] + 4), (lip - 8, join + 12)
 		side = np.arange(88.0, 148.0, 2.0)
 		sill = min(p[1] for p in cp["sill"]) - 9
 		# Each view's tolerance lies between the fixed build's worst (2.5, 2.9
