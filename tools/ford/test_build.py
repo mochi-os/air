@@ -138,11 +138,14 @@ LAYOUT = {
 		"windows": [{"plane": "x=-92", "z": [-8, -6], "y": [11, 12], "radius": 0.2, "frame": 0.1}], "catwalk": {"y": [15.6, 16.2]},
 		# the rest as parts: a life ring on the recess's back wall
 		"details": [{"name": "ring", "kind": "ring", "centre": [-88, 8.5, 2], "facing": [-1, 0, 0], "outer": 0.4, "inner": 0.25, "thickness": 0.1, "paint": "red"}],
-		"walkway": {"plan": [[-92, -5], [-94, -5], [-94, 5], [-92, 5]], "thickness": 0.2, "rail": [[-92, -5], [-94, -5], [-94, 5]],
-			"aft": [[-94, -5], [-94, 5]], "fascia": [6.0, 6.9], "member": [5.2, 5.8], "railing": 1.0, "posts": 1.8},
+		# the walkway cut back round the drop bar to a ledge at x -92.8 from
+		# z 1.5 to 2.5, its railing in two lines turning in along the cut
+		"walkway": {"plan": [[-92, -5], [-94, -5], [-94, 1.5], [-92.8, 1.5], [-92.8, 2.5], [-94, 2.5], [-94, 5], [-92, 5]], "thickness": 0.2,
+			"rail": [[[-92, -5], [-94, -5], [-94, 1.5], [-93.0, 1.5]], [[-93.0, 2.5], [-94, 2.5], [-94, 5]]],
+			"aft": [[[-94, -5], [-94, 1.5], [-92.8, 1.5]], [[-92.8, 2.5], [-94, 2.5], [-94, 5]]], "fascia": [6.0, 6.9], "member": [5.2, 5.8], "railing": 1.0, "posts": 1.8},
 		"frame": {"x": -95, "z": [-3, 3], "members": 4, "top": 5.8, "bottom": -1.0, "size": 0.3},
 		"fenders": [{"centre": [-95.5, 4.5, -1.5], "length": 1.5, "diameter": 0.8}],
-		"drop": {"x": -93, "z": 2, "width": 0.4, "depth": 0.3, "bottom": 2.6, "top": 18.4},
+		"drop": {"x": -93, "z": 2, "width": 0.4, "depth": 0.3, "bottom": 2.6, "top": 18.4, "gap": [9.0, 12.0]},
 		"plinth": {"outline": [[-97.2, 6.8], [-94.8, 6.8], [-94.8, 9.2], [-97.2, 9.2]], "upper": [[-97, 7], [-95, 7], [-95, 9], [-97, 9]], "bottom": 6.9, "top": 9.2}},
 	# a hull 8 m deep: 30 m on the waterline amidships, narrowing to 18 at
 	# x 60 and to its stem, which rises from x 70 below to the deck at 95; a
@@ -959,6 +962,45 @@ class BuildTest(unittest.TestCase):
 		bar = self.model.parts(materials=["yellow"])["transom_fittings"].reshape(-1, 3)
 		np.testing.assert_allclose([bar[:, 0].min(), bar[:, 0].max(), bar[:, 2].min(), bar[:, 2].max(), bar[:, 1].min(), bar[:, 1].max()],
 			[-93.15, -92.85, 1.8, 2.2, 2.6, 18.4], atol=1e-4)
+		# in two sections, nothing in its gap
+		heights = set(np.round(bar[:, 1], 4))
+		self.assertTrue({9.0, 12.0} <= heights, heights)
+		self.assertFalse(((bar[:, 1] > 9.0 + 1e-4) & (bar[:, 1] < 12.0 - 1e-4)).any())
+		# the walkway cut back round it: looking aft from the bar's aft face
+		# down past the walkway's floor, fascia and member, nothing in the way
+		walk = self.model.parts(materials=["grey", "rail"])["transom_fittings"]
+
+		def blocked(origin, direction):
+			# whether a ray meets a triangle (Moller-Trumbore)
+			a, b, c = walk[:, 0], walk[:, 1], walk[:, 2]
+			e1, e2 = b - a, c - a
+			p = np.cross(direction, e2)
+			det = np.einsum("ij,ij->i", e1, p)
+			ok = np.abs(det) > 1e-12
+			inv = np.where(ok, 1 / np.where(ok, det, 1), 0)
+			s = origin - a
+			u = np.einsum("ij,ij->i", s, p) * inv
+			q = np.cross(s, e1)
+			v = np.einsum("j,ij->i", direction, q) * inv
+			t = np.einsum("ij,ij->i", e2, q) * inv
+			return bool((ok & (u >= 0) & (v >= 0) & (u + v <= 1) & (t > 1e-6) & (t < 3)).any())
+		for y in np.arange(5.25, 7.0, 0.1):
+			for z in (1.85, 2.0, 2.15):
+				self.assertFalse(blocked(np.array([-93.16, y, z]), np.array([-1.0, 0, 0])), (y, z))
+		self.assertTrue(blocked(np.array([-93.16, 6.5, 0.0]), np.array([-1.0, 0, 0])))   # beside the cut, the fascia
+		# the fascia along the cut's sides stands out into the cut, not into
+		# the walkway; none along the ledge's edge, where the bar stands
+		fascia = fittings[np.isclose(fittings[:, 1], 6.0, atol=1e-4) | np.isclose(fittings[:, 1], 6.9, atol=1e-4)]
+		for z in (1.6, 2.4):
+			self.assertTrue((np.abs(fascia[:, 2] - z) < 1e-4).any(), z)
+		for z in (1.4, 2.6):
+			self.assertFalse(((np.abs(fascia[:, 2] - z) < 1e-4) & (fascia[:, 0] > -93.9)).any(), z)
+		self.assertFalse(blocked(np.array([-93.5, 6.5, 2.0]), np.array([1.0, 0, 0])))   # none on the ledge's edge
+		# its railing in two lines: on both sides of the cut, none across it
+		rail = self.model.parts(materials=["rail"])["transom_fittings"].reshape(-1, 3)
+		rail = rail[(rail[:, 0] < -92.5) & (rail[:, 1] > 7.0)]
+		self.assertTrue((rail[:, 2] < 1.6).any() and (rail[:, 2] > 2.4).any())
+		self.assertFalse(blocked(np.array([-93.5, 7.5, 2.0]), np.array([1.0, 0, 0])))
 		dark = self.model.parts(materials=["dark"])["transom_fittings"].reshape(-1, 3)
 		self.assertAlmostEqual(dark[:, 1].min(), -1.0, places=4)   # the frame's posts into the water
 		self.assertEqual(len(np.unique(np.round(dark[dark[:, 1] < 0, 2], 2))), 8)   # four posts, two faces each

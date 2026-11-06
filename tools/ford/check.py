@@ -314,6 +314,43 @@ def checks(ship):
 		yield result("shape.round_down", "the deck's top off its round-down's curve", 0, worst, 0.02)
 	yield from guard("shape.round_down", "the round-down", rounding)
 
+	def pole():
+		# the drop-light pole (references/research/drop): its yellow from its
+		# foot to its top with nothing in its gap, and nothing of the walkway
+		# aft of it, so it shows unbroken past the walkway from astern
+		d, floor = ship.layout["transom"]["drop"], ship.layout["transom"]["floor"]
+		parts = ship.model.parts(materials=["yellow"])
+		if "transom_fittings" not in parts:
+			raise KeyError("transom_fittings")
+		tris = parts["transom_fittings"]
+		tris = tris[np.all((np.abs(tris[:, :, 0] - d["x"]) < d["depth"]) & (np.abs(tris[:, :, 2] - d["z"]) < d["width"]), axis=1)]
+		yield result("shape.drop", "the drop-light pole's top", d["top"], tris[:, :, 1].max(), 0.01)
+		yield result("shape.drop", "the drop-light pole's foot", d["bottom"], tris[:, :, 1].min(), 0.01)
+		# a yellow face reaching into the gap, whatever its corners
+		low, high = d.get("gap", [d["top"], d["top"]])
+		across = (tris[:, :, 1].min(axis=1) < high - 1e-3) & (tris[:, :, 1].max(axis=1) > low + 1e-3)
+		yield result("shape.drop", "the drop-light pole's yellow faces reaching into its gap", 0, int(across.sum()), 0, "")
+		# every face of the transom's fittings but the pole's own (the
+		# walkway is weathered, so in no one material)
+		walk = ship.parts["transom_fittings"]
+		a, e1, e2 = walk[:, 0], walk[:, 1] - walk[:, 0], walk[:, 2] - walk[:, 0]
+		direction = np.array([-1.0, 0, 0])
+		p = np.cross(direction, e2)
+		det = np.einsum("ij,ij->i", e1, p)
+		ok = np.abs(det) > 1e-12
+		inv = np.where(ok, 1 / np.where(ok, det, 1), 0)
+		blocked = 0
+		for level in np.arange(floor - 1.75, floor, 0.1):
+			for z in (d["z"] - d["width"] / 3, d["z"], d["z"] + d["width"] / 3):
+				s = np.array([d["x"] - d["depth"] / 2 - 0.01, level, z]) - a
+				u = np.einsum("ij,ij->i", s, p) * inv
+				q = np.cross(s, e1)
+				v = (q @ direction) * inv
+				t = np.einsum("ij,ij->i", e2, q) * inv
+				blocked += bool((ok & (u >= 0) & (v >= 0) & (u + v <= 1) & (t > 1e-6) & (t < 4)).any())
+		yield result("shape.drop", "lines of sight aft from the pole that the walkway blocks", 0, blocked, 0, "")
+	yield from guard("shape.drop", "the drop-light pole", pole)
+
 
 def main():
 	ship = Ship(sys.argv[1], sys.argv[2])

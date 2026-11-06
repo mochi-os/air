@@ -203,6 +203,16 @@ def area(outline):
 	return sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(outline, outline[1:] + outline[:1])) / 2
 
 
+def inside(point, outline):
+	# Whether a plan point [x, z] lies inside a plan polygon (even-odd)
+	x, z = point
+	result = False
+	for (ax, az), (bx, bz) in zip(outline, outline[1:] + outline[:1]):
+		if (az > z) != (bz > z) and x < ax + (z - az) * (bx - ax) / (bz - az):
+			result = not result
+	return result
+
+
 def inset(outline, distance):
 	# A convex plan polygon [[x, z], ...] with each side moved `distance` in,
 	# square to itself, its corners where the moved sides meet
@@ -1385,10 +1395,19 @@ def upper_transom(x0, section):
 	fittings += railing([[x1 - 0.1, zs - 0.3], [x1 - 0.1, zp + 0.3]], t["catwalk"]["y"][0], rail)
 	w = t["walkway"]
 	fittings.append(prism(w["plan"], floor - w["thickness"], floor))
-	fittings += railing(w["rail"], floor, rail)
-	(ax, az), (bx, bz) = w["aft"]
-	for (y0, y1), depth in ((w["fascia"], 0.1), (w["member"], 0.2)):
-		fittings.append(prism([[ax, az], [ax - depth, az], [bx - depth, bz], [bx, bz]], y0, y1))
+	# its railing one line, or several where the walkway is cut back
+	for line in (w["rail"] if isinstance(w["rail"][0][0], list) else [w["rail"]]):
+		fittings += railing(line, floor, rail)
+	# the fascia and the member under it along each piece of its aft edge (one
+	# line or several), each standing out from the walkway
+	lines = w["aft"] if isinstance(w["aft"][0][0], list) else [w["aft"]]
+	for (ax, az), (bx, bz) in [piece for line in lines for piece in zip(line, line[1:])]:
+		length = math.hypot(bx - ax, bz - az)
+		nx, nz = (bz - az) / length, -(bx - ax) / length
+		if inside([(ax + bx) / 2 + nx * 0.01, (az + bz) / 2 + nz * 0.01], w["plan"]):
+			nx, nz = -nx, -nz
+		for (y0, y1), depth in ((w["fascia"], 0.1), (w["member"], 0.2)):
+			fittings.append(prism([[ax, az], [ax + nx * depth, az + nz * depth], [bx + nx * depth, bz + nz * depth], [bx, bz]], y0, y1))
 	f = t["frame"]
 	(z0, z1) = f["z"]
 	for k in range(f["members"]):
@@ -1397,9 +1416,13 @@ def upper_transom(x0, section):
 	fittings.append(bar([f["x"], f["top"] - f["size"] / 2, z0], [f["x"], f["top"] - f["size"] / 2, z1], f["size"], "dark"))
 	for fender in t["fenders"]:
 		fittings.append(cylinder(fender["centre"], fender["diameter"] / 2, fender["length"], "dark", across=True))
+	# the drop-light pole, in two sections where it has a `gap`
 	d = t["drop"]
-	fittings.append(prism([[d["x"] - d["depth"] / 2, d["z"] - d["width"] / 2], [d["x"] + d["depth"] / 2, d["z"] - d["width"] / 2],
-		[d["x"] + d["depth"] / 2, d["z"] + d["width"] / 2], [d["x"] - d["depth"] / 2, d["z"] + d["width"] / 2]], d["bottom"], d["top"], paint="yellow"))
+	plan = [[d["x"] - d["depth"] / 2, d["z"] - d["width"] / 2], [d["x"] + d["depth"] / 2, d["z"] - d["width"] / 2],
+		[d["x"] + d["depth"] / 2, d["z"] + d["width"] / 2], [d["x"] - d["depth"] / 2, d["z"] + d["width"] / 2]]
+	ends = [d["bottom"], *d.get("gap", []), d["top"]]
+	for y0, y1 in zip(ends[::2], ends[1::2]):
+		fittings.append(prism(plan, y0, y1, paint="yellow"))
 	# the Phalanx's raised deck: its plan at its foot, and at its top where
 	# its sides slope
 	pl = t["plinth"]

@@ -135,7 +135,10 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     nets' frames are in the `rail` material, grey as the rest: bars thinner than a photo resolves, which the
     photo checks leave out.
   - The transom's face stands round its stepped recess, with the windows, the catwalk band, the walkway and
-    its fascia, the post frame and its fenders, the drop bar and the Phalanx's raised deck (`transom.plinth`:
+    its fascia (cut back round the drop-light pole: its `rail` and its `aft` edge each one line or several,
+    the fascia standing out from the walkway along each piece), the post frame and its fenders, the
+    drop-light pole (`transom.drop`, in two sections where it has a `gap`; `references/research/drop`) and
+    the Phalanx's raised deck (`transom.plinth`:
     its plan at its foot and its `upper` plan at its top, its sides sloping between); the rest as parts
     (`transom.details`, measured in DVIDS 7694418 and the 2023 overhead through their cameras:
     `references/research/transom2`, `transom3` and `overhead`): the recess's mezzanine, doors, cabinet, lamps and
@@ -170,7 +173,8 @@ python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR   
   holds what no fact states (the hull under the deck, symmetric below its knuckles; the island on the deck; the
   deck's top on its round-down's curve). The landing centreline reaches the deck's aft edge, its yellow drawn
   over the ramp's white, as DVIDS 7694418 shows it across the round-down; and the bow control station's band lies right
-  outside its lid's rim on every side.
+  outside its lid's rim on every side. The drop-light pole's yellow runs from its foot to its top with no face
+  reaching into its gap, and lines of sight aft from it past the walkway's height meet nothing.
 - **`photos.json`** - the photo match's catalogue for the shared tools in `../verify` (their README): the
   photos' marks, the deck plan's anchors, the sea at the waterline, and the ship's regions (port and starboard,
   by part family). Run both under the probe.slice memory cap.
@@ -247,7 +251,9 @@ the deck; a new sighting in the game becomes a ray here first.
   edge hanging between the frames, a net on both sides of a platform and none outboard of it, the stern's hung
   aft from its own floor, their frames in the railings' material;
 - the transom's fittings: the walkway, drop bar, frame and the plinth's sloping sides, a window rounded at its corners in a flatter
-  frame, and a ring part between its radii;
+  frame, and a ring part between its radii; the drop bar in two sections round its gap, the walkway cut back round it so
+  nothing stands aft of it, the fascia along the cut's sides standing out into the cut and none on the ledge's edge, the
+  railing in two lines;
 - the weathered atlases: each group's colour and normal maps at its size, its faces in its material with UVs,
   the radomes their own group, and only the group's faces in its atlas; the boot top's colour alone;
 - the ship file.
