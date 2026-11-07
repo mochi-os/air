@@ -137,6 +137,35 @@ def rounding_miss(tris, r, height, inward):
 	return worst
 
 
+def hits(tris, origin, direction, reach):
+	# Whether a ray from origin meets one of the triangles (N, 3, 3) within
+	# reach, either side of it
+	origin, direction = np.asarray(origin, float), np.asarray(direction, float)
+	end = origin + direction * reach
+	low, high = np.minimum(origin, end) - 1e-6, np.maximum(origin, end) + 1e-6
+	tris = tris[np.all((tris.max(axis=1) >= low) & (tris.min(axis=1) <= high), axis=1)]
+	a, e1, e2 = tris[:, 0], tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0]
+	p = np.cross(direction, e2)
+	det = np.einsum("ij,ij->i", e1, p)
+	ok = np.abs(det) > 1e-12
+	inv = np.where(ok, 1 / np.where(ok, det, 1), 0)
+	s = origin - a
+	u = np.einsum("ij,ij->i", s, p) * inv
+	q = np.cross(s, e1)
+	v = (q @ direction) * inv
+	t = np.einsum("ij,ij->i", e2, q) * inv
+	return bool((ok & (u >= 0) & (v >= 0) & (u + v <= 1) & (t > 1e-6) & (t < reach)).any())
+
+
+def inside(outline, x, z):
+	# Whether plan point (x, z) lies inside the polygon [[x, z], ...]
+	crossings = 0
+	for (ax, az), (bx, bz) in zip(outline, outline[1:] + outline[:1]):
+		if (az > z) != (bz > z) and x < ax + (z - az) * (bx - ax) / (bz - az):
+			crossings += 1
+	return crossings % 2 == 1
+
+
 def result(fact, what, expected, measured, tolerance, unit="m"):
 	return {"fact": fact, "what": what, "expected": float(expected), "measured": float(measured), "tolerance": tolerance, "unit": unit}
 
@@ -316,8 +345,9 @@ def checks(ship):
 
 	def pole():
 		# the drop-light pole (references/research/drop): its yellow from its
-		# foot to its top with nothing in its gap, and nothing of the walkway
-		# aft of it, so it shows unbroken past the walkway from astern
+		# foot to its top with nothing in its gap, nothing of the walkway aft
+		# of it, so it shows unbroken past the walkway from astern, and the
+		# recess's raised deck out past it at the gap's foot
 		d, floor = ship.layout["transom"]["drop"], ship.layout["transom"]["floor"]
 		parts = ship.model.parts(materials=["yellow"])
 		if "transom_fittings" not in parts:
@@ -330,26 +360,79 @@ def checks(ship):
 		low, high = d.get("gap", [d["top"], d["top"]])
 		across = (tris[:, :, 1].min(axis=1) < high - 1e-3) & (tris[:, :, 1].max(axis=1) > low + 1e-3)
 		yield result("shape.drop", "the drop-light pole's yellow faces reaching into its gap", 0, int(across.sum()), 0, "")
-		# every face of the transom's fittings but the pole's own (the
-		# walkway is weathered, so in no one material)
+		# every face of the transom's fittings (the walkway is weathered, so
+		# in no one material); the rays below start clear of the pole's own
 		walk = ship.parts["transom_fittings"]
-		a, e1, e2 = walk[:, 0], walk[:, 1] - walk[:, 0], walk[:, 2] - walk[:, 0]
-		direction = np.array([-1.0, 0, 0])
-		p = np.cross(direction, e2)
-		det = np.einsum("ij,ij->i", e1, p)
-		ok = np.abs(det) > 1e-12
-		inv = np.where(ok, 1 / np.where(ok, det, 1), 0)
-		blocked = 0
-		for level in np.arange(floor - 1.75, floor, 0.1):
-			for z in (d["z"] - d["width"] / 3, d["z"], d["z"] + d["width"] / 3):
-				s = np.array([d["x"] - d["depth"] / 2 - 0.01, level, z]) - a
-				u = np.einsum("ij,ij->i", s, p) * inv
-				q = np.cross(s, e1)
-				v = (q @ direction) * inv
-				t = np.einsum("ij,ij->i", e2, q) * inv
-				blocked += bool((ok & (u >= 0) & (v >= 0) & (u + v <= 1) & (t > 1e-6) & (t < 4)).any())
+		across = (d["z"] - d["width"] / 3, d["z"], d["z"] + d["width"] / 3)
+		aft = d["x"] - d["depth"] / 2
+		blocked = sum(hits(walk, [aft - 0.01, level, z], [-1.0, 0, 0], 4) for level in np.arange(floor - 1.75, floor, 0.1) for z in across)
 		yield result("shape.drop", "lines of sight aft from the pole that the walkway blocks", 0, blocked, 0, "")
+		# the recess's raised deck runs out past the pole at its gap's foot,
+		# interrupting it (7694418): something under each point just aft of
+		# the pole there, within 0.6 m of the foot
+		if "gap" in d:
+			under = sum(hits(walk, [aft - 0.05, d["gap"][0] + 0.6, z], [0, -1.0, 0], 0.61) for z in across)
+			yield result("shape.drop", "points just aft of the pole at its gap's foot with a deck under them", len(across), under, 0, "")
 	yield from guard("shape.drop", "the drop-light pole", pole)
+
+	def platforms():
+		# every open edge of the transom's decks railed (the photos rail every
+		# one: references/research/drop): sampled every 0.25 m clear of the
+		# corners, an edge is open where nothing stands within 1 m below just
+		# beyond it (a deck it steps down to) and no wall rises just beyond it,
+		# and railed where something stands 0.3-1.6 m over the deck within
+		# 0.5 m inside it. The walkway's cut round the drop-light pole, where
+		# the pole's ladder comes down, is open in every photo.
+		t = ship.layout["transom"]
+		tris = np.concatenate([p[p[:, :, 0].min(axis=1) < t["face"] + 6] for p in ship.parts.values()])
+		details = {e["name"]: e for e in t["details"]}
+		slats = [e for e in t["details"] if e["name"].startswith("landing_slat_")]
+		if not slats or "mezzanine" not in details:
+			raise KeyError("landing_slat, mezzanine")
+		fore, aft = max(e["path"][0][0] for e in slats), min(e["path"][0][0] for e in slats)
+		size, level = slats[0]["size"], slats[0]["path"][0][1] + slats[0]["size"] / 2
+		port, starboard = slats[0]["path"][0][2], slats[0]["path"][-1][2]
+		fantail = next(s for s in ship.layout["sponsons"] if s["name"] == "fantail")
+		decks = [
+			("mezzanine", details["mezzanine"]["outline"], details["mezzanine"]["top"]),
+			("ledge", details["mezzanine_ledge"]["outline"], details["mezzanine_ledge"]["top"]),
+			("walkway", t["walkway"]["plan"], t["floor"]),
+			("fantail", fantail["outline"], fantail["top"]),
+			("landing", [[fore + size / 2, port], [aft - size / 2, port], [aft - size / 2, starboard], [fore + size / 2, starboard]], level),
+		]
+		d = t["drop"]
+		down = np.array([0, -1.0, 0])
+		bare, opened = [], set()
+		for name, outline, top in decks:
+			for a, b in zip(outline, outline[1:] + outline[:1]):
+				a, b = np.array(a, float), np.array(b, float)
+				span = np.linalg.norm(b - a)
+				if span < 0.4:
+					continue
+				along = (b - a) / span
+				out = np.array([along[1], -along[0]])
+				middle = (a + b) / 2
+				if inside(outline, *(middle + out * 0.05)):
+					out = -out
+				for s in np.arange(0.15, span - 0.15 + 1e-9, 0.25):
+					x, z = a + along * s
+					if name == "walkway" and x > d["x"] - d["depth"] and abs(z - d["z"]) < 1.6:
+						continue
+					beyond = [x + out[0] * 0.2, top + 0.3, z + out[1] * 0.2]
+					if hits(tris, beyond, down, 1.3):
+						continue
+					if hits(tris, [x - out[0] * 0.1, top + 0.25, z - out[1] * 0.1], [out[0], 0, out[1]], 0.6):
+						continue
+					opened.add(name)
+					if not any(hits(tris, [x - out[0] * k, top + 1.6, z - out[1] * k], down, 1.3) for k in np.arange(0.0, 0.51, 0.05)):
+						bare.append((name, round(float(x), 2), round(float(z), 2)))
+		yield result("shape.platforms", "transom decks with an open edge found", len(decks), len(opened), 0, "")
+		where = ""
+		if bare:
+			names = sorted({b[0] for b in bare})
+			where = " (" + "; ".join(f"{n} {[b[1:] for b in bare if b[0] == n][:3]}" for n in names) + ")"
+		yield result("shape.platforms", f"points along the transom decks' open edges with no railing{where}", 0, len(bare), 0, "")
+	yield from guard("shape.platforms", "the transom decks' railings", platforms)
 
 	def railings():
 		# every island railing and chain (references/research/roofs) clear of
@@ -384,8 +467,12 @@ def checks(ship):
 		# sponson keeps to its top: the railing's line, and the circle's
 		# underside all round, within 0.01 m of the top's plane (a flat circle
 		# on a sloping top sinks into it on one side) and inside its edges
-		# (one past them hangs in the air)
+		# (one past them hangs in the air). A railing standing on another
+		# deck's top over a sponson (the recess's raised deck runs out over
+		# the fantail) is that deck's.
 		details = ship.layout["transom"]["details"]
+		decks = [d for d in details if d["kind"] == "prism" and "outline" in d and not isinstance(d["top"], list)]
+		elsewhere = lambda q: any(abs(q[1] - e["top"]) < 0.01 and inside(e["outline"], q[0], q[2]) for e in decks)
 		worst, where = 0.0, ""
 		for s in ship.layout["sponsons"]:
 			outline = s["outline"]
@@ -393,17 +480,9 @@ def checks(ship):
 			plane, *_ = np.linalg.lstsq(np.c_[np.array(outline), np.ones(len(outline))], np.array(tops), rcond=None)
 			top = lambda x, z: plane[0] * x + plane[1] * z + plane[2]
 
-			def inside(x, z):
-				# even-odd: whether a plan point lies inside the outline
-				within = False
-				for (ax, az), (bx, bz) in zip(outline, outline[1:] + outline[:1]):
-					if (az > z) != (bz > z) and x < ax + (z - az) * (bx - ax) / (bz - az):
-						within = not within
-				return within
-
 			def outside(x, z):
 				# how far a plan point lies outside the outline (0 inside)
-				if inside(x, z):
+				if inside(outline, x, z):
 					return 0.0
 				best = math.inf
 				for (ax, az), (bx, bz) in zip(outline, outline[1:] + outline[:1]):
@@ -413,10 +492,10 @@ def checks(ship):
 
 			points = []
 			for d in details:
-				if d["kind"] == "railing" and inside(d["path"][0][0], d["path"][0][2]):
+				if d["kind"] == "railing" and inside(outline, d["path"][0][0], d["path"][0][2]) and not elsewhere(d["path"][0]):
 					for a, b in zip(d["path"], d["path"][1:]):
 						points += [(d["name"], *(np.array(a) + (np.array(b) - np.array(a)) * k / 10)) for k in range(11)]
-				elif d["kind"] == "ring" and inside(d["centre"][0], d["centre"][2]):
+				elif d["kind"] == "ring" and inside(outline, d["centre"][0], d["centre"][2]):
 					n = np.array(d["facing"], float) / np.linalg.norm(d["facing"])
 					if abs(n[1]) < 0.9:
 						continue

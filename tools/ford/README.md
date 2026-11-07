@@ -89,7 +89,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     top roof's, and posts with sagging chains round the aft radome platforms), the windows' frames, mullions, wiper motors and conduits, the radar
     faces' frames, the floodlight banks, ladders, pipes, the stair, the fittings on the base's faces, the
     halyards) as parts: boxes, cylinders, prisms, railings, dishes, domes, lathes, paths (bars or pipes along
-    a line), ladders, stairs, plates and rings. The windows and radar covers are plates on its faces; a
+    a line), ladders, stairs, plates and rings. A railing's posts stand evenly along each straight run, or,
+    `bent`, along the whole of a path bent round a rounded corner. The windows and radar covers are plates on its faces; a
     window that gives a `radius` has its corners rounded, and a `frame` sets it in a flatter rim. Its glazed
     levels (`island.cabs`) are seen through: each one's room and an opening through each glazed face are cut
     from the blocks (an exact boolean, before the radomes and poles join them, which it would trim), and
@@ -144,7 +145,7 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     the Phalanx's raised deck (`transom.plinth`:
     its plan at its foot and its `upper` plan at its top, its sides sloping between); the rest as parts
     (`transom.details`, measured in DVIDS 7694418 and the 2023 overhead through their cameras:
-    `references/research/transom2`, `transom3`, `overhead` and `sponsons`): the recess's mezzanine, doors and
+    `references/research/transom2`, `transom3`, `overhead` and `sponsons`): the recess's mezzanine (run out past the pole by `drop`), doors and
     cabinet, the boat landing under the post frame, the scuppers, pipe and mooring chocks, the port quarter's
     chocks, the box behind the Phalanx with its sponson's railing, fairlead and gas bottles, the LSO's windscreen
     at the port quarter's corner, a box on its pedestal and a hose reel there, the red circle round the starboard aft sponson's RAM, the port aft sponson's pipe, low box and
@@ -179,7 +180,10 @@ python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR   
   deck's top on its round-down's curve). The landing centreline reaches the deck's aft edge, its yellow drawn
   over the ramp's white, as DVIDS 7694418 shows it across the round-down; and the bow control station's band lies right
   outside its lid's rim on every side. The drop-light pole's yellow runs from its foot to its top with no face
-  reaching into its gap, and lines of sight aft from it past the walkway's height meet nothing. Every island
+  reaching into its gap, lines of sight aft from it past the walkway's height meet nothing, and the
+  recess's raised deck stands out past it at the gap's foot. Every transom deck's edge with a drop beyond it
+  (no deck within 1 m below, no wall) has a railing over it, but for the walkway's cut where the pole's ladder
+  comes down. Every island
   railing and chain keeps clear of every radome's profile across its height. Every railing and deck circle on a
   sponson keeps to its top, within 0.01 m of its plane and inside its edges.
 - **`photos.json`** - the photo match's catalogue for the shared tools in `../verify` (their README): the
@@ -260,7 +264,7 @@ the deck; a new sighting in the game becomes a ray here first.
 - the transom's fittings: the walkway, drop bar, frame and the plinth's sloping sides, a window rounded at its corners in a flatter
   frame, and a ring part between its radii; the drop bar in two sections round its gap, the walkway cut back round it so
   nothing stands aft of it, the fascia along the cut's sides standing out into the cut and none on the ledge's edge, the
-  railing in two lines;
+  railing in two lines; a railing bent round a corner, its posts evenly along the whole of it;
 - the weathered atlases: each group's colour and normal maps at its size, its faces in its material with UVs,
   the radomes their own group, and only the group's faces in its atlas; the boot top's colour alone;
 - the ship file.

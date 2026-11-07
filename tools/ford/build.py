@@ -711,13 +711,16 @@ def shape(p, frame=None):
 		vertices, faces = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=16, radius=r, matrix=Matrix.Translation(c)))
 		piece = (vertices, faces, [paint] * len(faces))
 	elif kind == "railing":
-		height, rails = p["height"], []
-		for a, b in zip(p["path"], p["path"][1:]):
+		# rails along the path, posts evenly along each straight run from
+		# corner to corner, or, where the path is `bent` (one rail bent round a
+		# rounded corner's many short runs), evenly along the whole of it
+		height, rails, path = p["height"], [], p["path"]
+		for a, b in zip(path, path[1:]):
 			for rise, size in ((height, 0.05), (height / 2, 0.04)):
 				rails.append(bar([a[0], a[1] + rise, a[2]], [b[0], b[1] + rise, b[2]], size, paint))
-			for q, _ in along_line([[a[0], a[2]], [b[0], b[2]]], p.get("posts", 1.5)):
-				y = a[1] + (b[1] - a[1]) * (math.dist([a[0], a[2]], q) / max(math.dist([a[0], a[2]], [b[0], b[2]]), 1e-9))
-				rails.append(bar([q[0], y, q[1]], [q[0], y + height, q[1]], 0.05, paint))
+		for run in ([path] if p.get("bent") else [[a, b] for a, b in zip(path, path[1:])]):
+			for q, _ in along_line([[v[0], v[2]] for v in run], p.get("posts", 1.5)):
+				rails.append(bar([q[0], level(run, q), q[1]], [q[0], level(run, q) + height, q[1]], 0.05, paint))
 		piece = merge(rails)
 	else:
 		raise ValueError(f"part {p.get('name')}: unknown kind {kind}")
@@ -1109,6 +1112,18 @@ def along_line(line, spacing):
 				break
 			s -= length
 	return out
+
+
+def level(path, q):
+	# A path's height at plan point q on it, from the run nearest q
+	best = None
+	for a, b in zip(path, path[1:]):
+		dx, dz = b[0] - a[0], b[2] - a[2]
+		t = min(max(((q[0] - a[0]) * dx + (q[1] - a[2]) * dz) / max(dx * dx + dz * dz, 1e-18), 0.0), 1.0)
+		gap = math.dist(q, [a[0] + dx * t, a[2] + dz * t])
+		if best is None or gap < best[0]:
+			best = (gap, a[1] + (b[1] - a[1]) * t)
+	return best[1]
 
 
 def railing(line, floor, spec, paint="rail"):

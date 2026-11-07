@@ -56,6 +56,32 @@ class EntriesTest(unittest.TestCase):
 		straight = lambda x: height - 0.6 * max(0.0, 1 - x / 3.0)                         # a ramp, not the parabola
 		self.assertGreater(check.rounding_miss(deck(straight), r, height, inward), 0.1)
 
+	def test_hits(self):
+		# a 10 m triangle on the plane y = 1, met from above and below, within
+		# reach only, never by a ray along it; its middle is far from every corner
+		tri = np.array([[[0, 1, 0], [10, 1, 0], [0, 1, 10]]], float)
+		self.assertTrue(check.hits(tri, [2, 3, 2], [0, -1, 0], 2.5))
+		self.assertTrue(check.hits(tri, [2, -1, 2], [0, 1, 0], 2.5))
+		self.assertFalse(check.hits(tri, [2, 3, 2], [0, -1, 0], 1.5))
+		self.assertFalse(check.hits(tri, [8, 3, 8], [0, -1, 0], 5))
+		self.assertFalse(check.hits(tri, [-1, 1, 2], [1, 0, 0], 5))
+		self.assertFalse(check.hits(tri, [2, 3, 2], [0, 1, 0], 5))
+		# a sloping one (y = x), whose box the rays below overlap: short of it,
+		# and pointing away from it
+		slope = np.array([[[0, 0, 0], [10, 10, 0], [0, 0, 10]]], float)
+		self.assertTrue(check.hits(slope, [2, 6, 2], [0, -1, 0], 5))
+		self.assertFalse(check.hits(slope, [2, 6, 2], [0, -1, 0], 3))
+		self.assertFalse(check.hits(slope, [2, 6, 2], [0, 1, 0], 5))
+
+	def test_inside(self):
+		# an L: its notch is outside, whichever way round the outline runs
+		ell = [[0, 0], [4, 0], [4, 1], [1, 1], [1, 4], [0, 4]]
+		for outline in (ell, ell[::-1]):
+			self.assertTrue(check.inside(outline, 0.5, 3))
+			self.assertTrue(check.inside(outline, 3, 0.5))
+			self.assertFalse(check.inside(outline, 3, 3))
+			self.assertFalse(check.inside(outline, -1, 0.5))
+
 	def test_rounding_inward(self):
 		# toward the deck's middle, whichever way the edge runs
 		r = dict(check.FACTS["layout"]["deck"]["round"])

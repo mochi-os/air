@@ -6,7 +6,7 @@
 # and the ship file, on a small deck built in Blender; and the provenance rule.
 #
 # usage: systemd-run --user --collect --wait --pipe --quiet --slice=probe.slice -p MemoryMax=6G -p MemorySwapMax=0 python3 -I /home/alistair/mochi/apps/air/tools/ford/test_build.py
-import io, json, re, subprocess, sys, tempfile, unittest
+import io, json, math, re, subprocess, sys, tempfile, unittest
 from pathlib import Path
 
 import numpy as np
@@ -136,11 +136,16 @@ LAYOUT = {
 	# a walkway, a frame of four posts, a fender, the drop bar and a plinth
 	"transom": {"face": -92, "floor": 7.0, "opening": {"outline": [[-4, 7.0], [-4, 10.0], [4, 10.0], [4, 7.0]], "back": -88},
 		"windows": [{"plane": "x=-92", "z": [-8, -6], "y": [11, 12], "radius": 0.2, "frame": 0.1}], "catwalk": {"y": [15.6, 16.2]},
-		# the rest as parts: a life ring on the recess's back wall, and a
-		# quarter of a deck circle on a deck sloping 0.1 m a metre aft
+		# the rest as parts: a life ring on the recess's back wall, a
+		# quarter of a deck circle on a deck sloping 0.1 m a metre aft, and a
+		# railing in the recess bent round a corner of radius 0.5 drawn in six
+		# short runs, 5.79 m long in all
 		"details": [{"name": "ring", "kind": "ring", "centre": [-88, 8.5, 2], "facing": [-1, 0, 0], "outer": 0.4, "inner": 0.25, "thickness": 0.1, "paint": "red"},
 			{"name": "arc", "kind": "ring", "centre": [-93, 7.3, -3], "facing": [0.1, 1, 0], "outer": 1.0, "inner": 0.8, "thickness": 0.02, "segments": 12,
-				"sweep": [0, 90], "paint": "white"}],
+				"sweep": [0, 90], "paint": "white"},
+			{"name": "bend", "kind": "railing", "height": 1.0, "posts": 1.5, "bent": True, "path": [[-88.5, 8.0, -3.5]]
+				+ [[round(-90.5 + 0.5 * math.cos(math.radians(-90 - 15 * k)), 4), 8.0, round(-3.0 + 0.5 * math.sin(math.radians(-90 - 15 * k)), 4)] for k in range(7)]
+				+ [[-91.0, 8.0, 0.0]]}],
 		# the walkway cut back round the drop bar to a ledge at x -92.8 from
 		# z 1.5 to 2.5, its railing in two lines turning in along the cut
 		"walkway": {"plan": [[-92, -5], [-94, -5], [-94, 1.5], [-92.8, 1.5], [-92.8, 2.5], [-94, 2.5], [-94, 5], [-92, 5]], "thickness": 0.2,
@@ -1036,6 +1041,26 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(radius.min(), 0.25, places=3)
 		self.assertAlmostEqual(radius.max(), 0.4, places=3)
 		np.testing.assert_allclose([ring[:, 0].min(), ring[:, 0].max()], [-88.1, -88.0], atol=1e-4)
+
+	def test_bent_railing(self):
+		# a railing bent round a rounded corner: its posts evenly along the
+		# whole of it (5.79 m at 1.5: five, 1.45 m apart), not one at each end
+		# of the corner's short runs; its rails round the corner
+		rail = self.model.parts(materials=["rail"])["transom_fittings"].reshape(-1, 3)
+		bend = rail[(rail[:, 0] > -91.1) & (rail[:, 0] < -88.4) & (rail[:, 2] < 0.1) & (rail[:, 1] > 7.9) & (rail[:, 1] < 9.1)]
+		feet = bend[np.isclose(bend[:, 1], 8.0, atol=1e-4)][:, [0, 2]]
+		posts = []
+		for p in feet[np.lexsort((feet[:, 1], feet[:, 0]))]:
+			if not any(math.dist(p, q) < 0.1 for q in posts):
+				posts.append(p)
+		posts = [np.mean(feet[np.linalg.norm(feet - p, axis=1) < 0.1], axis=0) for p in posts]
+		self.assertEqual(len(posts), 5)
+		gaps = [min(math.dist(p, q) for q in posts if q is not p) for p in posts]
+		self.assertGreater(min(gaps), 1.0)
+		# the top rail passes through the corner's middle, 0.5 from its centre
+		top = bend[np.isclose(bend[:, 1], 9.0, atol=0.03)]
+		middle = np.array([-90.5 - 0.5 * math.cos(math.radians(45)), -3.0 - 0.5 * math.sin(math.radians(45))])
+		self.assertLess(np.linalg.norm(top[:, [0, 2]] - middle, axis=1).min(), 0.04)
 
 	def test_ring_sweep(self):
 		# a deck circle the deck's edge cuts: only its swept arc, from forward
