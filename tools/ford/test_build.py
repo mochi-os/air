@@ -136,8 +136,11 @@ LAYOUT = {
 	# a walkway, a frame of four posts, a fender, the drop bar and a plinth
 	"transom": {"face": -92, "floor": 7.0, "opening": {"outline": [[-4, 7.0], [-4, 10.0], [4, 10.0], [4, 7.0]], "back": -88},
 		"windows": [{"plane": "x=-92", "z": [-8, -6], "y": [11, 12], "radius": 0.2, "frame": 0.1}], "catwalk": {"y": [15.6, 16.2]},
-		# the rest as parts: a life ring on the recess's back wall
-		"details": [{"name": "ring", "kind": "ring", "centre": [-88, 8.5, 2], "facing": [-1, 0, 0], "outer": 0.4, "inner": 0.25, "thickness": 0.1, "paint": "red"}],
+		# the rest as parts: a life ring on the recess's back wall, and a
+		# quarter of a deck circle on a deck sloping 0.1 m a metre aft
+		"details": [{"name": "ring", "kind": "ring", "centre": [-88, 8.5, 2], "facing": [-1, 0, 0], "outer": 0.4, "inner": 0.25, "thickness": 0.1, "paint": "red"},
+			{"name": "arc", "kind": "ring", "centre": [-93, 7.3, -3], "facing": [0.1, 1, 0], "outer": 1.0, "inner": 0.8, "thickness": 0.02, "segments": 12,
+				"sweep": [0, 90], "paint": "white"}],
 		# the walkway cut back round the drop bar to a ledge at x -92.8 from
 		# z 1.5 to 2.5, its railing in two lines turning in along the cut
 		"walkway": {"plan": [[-92, -5], [-94, -5], [-94, 1.5], [-92.8, 1.5], [-92.8, 2.5], [-94, 2.5], [-94, 5], [-92, 5]], "thickness": 0.2,
@@ -189,21 +192,27 @@ LAYOUT = {
 }
 
 
+def build(cls, layout):
+	# Builds a layout into a test class's own folder: its model, ship file and
+	# features
+	cls.folder = tempfile.TemporaryDirectory()
+	where = Path(cls.folder.name)
+	(where / "facts.json").write_text(json.dumps({"layout": layout}))
+	out = [where / "ford.glb", where / "ford.json", where / "features.json"]
+	run = subprocess.run(["blender", "-b", "--factory-startup", "--python-use-system-env", "-P", str(HERE / "build.py"), "--",
+		*map(str, out), "--facts", str(where / "facts.json")], capture_output=True, text=True)
+	if run.returncode or "Traceback" in run.stdout + run.stderr:
+		raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+	cls.glb = out[0]
+	cls.model = Model(out[0])
+	cls.ship = json.loads(out[1].read_text())
+	cls.features = json.loads(out[2].read_text())
+
+
 class BuildTest(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
-		cls.folder = tempfile.TemporaryDirectory()
-		where = Path(cls.folder.name)
-		(where / "facts.json").write_text(json.dumps({"layout": LAYOUT}))
-		out = [where / "ford.glb", where / "ford.json", where / "features.json"]
-		run = subprocess.run(["blender", "-b", "--factory-startup", "--python-use-system-env", "-P", str(HERE / "build.py"), "--",
-			*map(str, out), "--facts", str(where / "facts.json")], capture_output=True, text=True)
-		if run.returncode or "Traceback" in run.stdout + run.stderr:
-			raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
-		cls.glb = out[0]
-		cls.model = Model(out[0])
-		cls.ship = json.loads(out[1].read_text())
-		cls.features = json.loads(out[2].read_text())
+		build(cls, LAYOUT)
 
 	@classmethod
 	def tearDownClass(cls):
@@ -1028,6 +1037,28 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(radius.max(), 0.4, places=3)
 		np.testing.assert_allclose([ring[:, 0].min(), ring[:, 0].max()], [-88.1, -88.0], atol=1e-4)
 
+	def test_ring_sweep(self):
+		# a deck circle the deck's edge cuts: only its swept arc, from forward
+		# round to starboard, lying on the sloping deck its facing gives, and
+		# closed at either end
+		triangles = self.model.parts(materials=["white"])["transom_fittings"]
+		points = triangles.reshape(-1, 3)
+		centre, normal = np.array([-93, 7.3, -3]), np.array([0.1, 1, 0]) / np.linalg.norm([0.1, 1, 0])
+		offset = points - centre
+		height = offset @ normal
+		self.assertGreater(height.min(), -1e-4)
+		self.assertLess(height.max(), 0.02 + 1e-4)
+		across = offset - np.outer(height, normal)
+		radius = np.linalg.norm(across, axis=1)
+		self.assertAlmostEqual(radius.min(), 0.8, places=3)
+		self.assertAlmostEqual(radius.max(), 1.0, places=3)
+		angle = np.degrees(np.arctan2(across[:, 2], across[:, 0])).reshape(-1, 3)
+		self.assertAlmostEqual(angle.min(), 0.0, places=2)
+		self.assertAlmostEqual(angle.max(), 90.0, places=2)
+		# twelve segments of four faces and an end face at either end
+		self.assertEqual(len(triangles), (12 * 4 + 2) * 2)
+		self.assertEqual(int((np.ptp(angle, axis=1) < 1e-3).sum()), 4)
+
 	def test_sloped_sponson_and_wedge(self):
 		# each corner at its own heights, and named for the photo match
 		marks = self.features["landmarks"]
@@ -1199,6 +1230,33 @@ class BuildTest(unittest.TestCase):
 		self.assertGreaterEqual(grey[(np.abs(grey[:, :, 0] + 90) < 1e-3).all(1)][:, :, 1].min(), 1.0 - 1e-4)   # the transom above the boot top
 		sides = grey[~((np.abs(grey[:, :, 0] + 90) < 1e-3).all(1) | (grey[:, :, 0] > 75).any(1))].reshape(-1, 3)
 		self.assertGreaterEqual(sides[:, 1].min(), 1.0 - 1e-4)
+
+
+class SquareStepTest(unittest.TestCase):
+	# the fixture with its port deck edge stepping out square at x -80, z -36
+	# aft of it and -40 forward
+	@classmethod
+	def setUpClass(cls):
+		layout = json.loads(json.dumps(LAYOUT))
+		outline = layout["deck"]["outline"]
+		assert outline[0] == [-100, -40]
+		layout["deck"]["outline"] = [[-100, -36], [-80, -36], [-80, -40]] + outline[1:]
+		build(cls, layout)
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.folder.cleanup()
+
+	def test_hull_steps_square_under_the_edge(self):
+		# the hull widens to the edge forward of the step in a face across
+		# the ship at the step, not sloping back to the section before it:
+		# no face reaching past the narrow edge lies aft of the step
+		hull = self.model.parts()["hull"]
+		wide = hull[(hull[:, :, 2] < -36.5).any(axis=1) & (hull[:, :, 0] < -60).all(axis=1)]
+		self.assertGreater(len(wide), 0)
+		self.assertGreater(wide[:, :, 0].min(), -80.0101)
+		narrow = hull[(hull[:, :, 0] < -80.02).all(axis=1)]
+		self.assertGreater(narrow[:, :, 2].min(), -36.0001)
 
 
 class ProvenanceTest(unittest.TestCase):

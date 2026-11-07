@@ -379,6 +379,60 @@ def checks(ship):
 		yield result("shape.railings", f"the island's railings reaching into a radome{where}", 0, worst, 0.0)
 	yield from guard("shape.railings", "the island's railings", railings)
 
+	def sponsons():
+		# every railing and deck circle (a ring facing up) standing on a
+		# sponson keeps to its top: the railing's line, and the circle's
+		# underside all round, within 0.01 m of the top's plane (a flat circle
+		# on a sloping top sinks into it on one side) and inside its edges
+		# (one past them hangs in the air)
+		details = ship.layout["transom"]["details"]
+		worst, where = 0.0, ""
+		for s in ship.layout["sponsons"]:
+			outline = s["outline"]
+			tops = s["top"] if isinstance(s["top"], list) else [s["top"]] * len(outline)
+			plane, *_ = np.linalg.lstsq(np.c_[np.array(outline), np.ones(len(outline))], np.array(tops), rcond=None)
+			top = lambda x, z: plane[0] * x + plane[1] * z + plane[2]
+
+			def inside(x, z):
+				# even-odd: whether a plan point lies inside the outline
+				within = False
+				for (ax, az), (bx, bz) in zip(outline, outline[1:] + outline[:1]):
+					if (az > z) != (bz > z) and x < ax + (z - az) * (bx - ax) / (bz - az):
+						within = not within
+				return within
+
+			def outside(x, z):
+				# how far a plan point lies outside the outline (0 inside)
+				if inside(x, z):
+					return 0.0
+				best = math.inf
+				for (ax, az), (bx, bz) in zip(outline, outline[1:] + outline[:1]):
+					t = max(0.0, min(1.0, ((x - ax) * (bx - ax) + (z - az) * (bz - az)) / max((bx - ax) ** 2 + (bz - az) ** 2, 1e-12)))
+					best = min(best, math.hypot(x - ax - (bx - ax) * t, z - az - (bz - az) * t))
+				return best
+
+			points = []
+			for d in details:
+				if d["kind"] == "railing" and inside(d["path"][0][0], d["path"][0][2]):
+					for a, b in zip(d["path"], d["path"][1:]):
+						points += [(d["name"], *(np.array(a) + (np.array(b) - np.array(a)) * k / 10)) for k in range(11)]
+				elif d["kind"] == "ring" and inside(d["centre"][0], d["centre"][2]):
+					n = np.array(d["facing"], float) / np.linalg.norm(d["facing"])
+					if abs(n[1]) < 0.9:
+						continue
+					c = np.array(d["centre"], float)
+					a0, a1 = d.get("sweep", [0, 360])
+					for angle in np.radians(np.linspace(a0, a1, 181)):
+						u = np.array([math.cos(angle), 0.0, math.sin(angle)])
+						u = (u - n * (u @ n)) / np.linalg.norm(u - n * (u @ n))
+						points += [(d["name"], *(c + u * radius)) for radius in (d["inner"], d["outer"])]
+			for name, x, y, z in points:
+				miss = max(abs(y - top(x, z)) - 0.01, outside(x, z), 0.0)
+				if miss > worst:
+					worst, where = miss, f" ({name} on {s['name']})"
+		yield result("shape.sponsons", f"the sponsons' railings and deck circles off their tops{where}", 0, worst, 0.0)
+	yield from guard("shape.sponsons", "the sponsons' railings and deck circles", sponsons)
+
 
 def main():
 	ship = Ship(sys.argv[1], sys.argv[2])

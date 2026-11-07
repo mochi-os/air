@@ -639,8 +639,10 @@ def shape(p, frame=None):
 	# cylinders; ladder {bottom, top, along [x, z], width, rungs}: two stiles
 	# and rungs; stair {bottom, top, width, railing}: a girder, treads and a
 	# railing either side; plate {corners, outward, thickness}: a slab on a
-	# face; ring {centre, facing, outer, inner, thickness}: a flat ring
-	# standing out along `facing` (a life ring, a chock's rim)
+	# face; ring {centre, facing, outer, inner, thickness, sweep}: a flat ring
+	# standing out along `facing` (a life ring, a chock's rim), or with
+	# `sweep` [from, to] only that arc of it (a deck circle the deck's edge
+	# cuts)
 	paint = p.get("paint", "rail" if p["kind"] in ("railing", "ladder") else "grey")
 	kind = p["kind"]
 	if kind == "box":
@@ -703,7 +705,7 @@ def shape(p, frame=None):
 	elif kind == "prism":
 		piece = prism(p["outline"], p["bottom"], p["top"], paint=paint)
 	elif kind == "ring":
-		piece = ring(p["centre"], p["facing"], p["outer"], p["inner"], p.get("thickness", 0.1), p.get("segments", 16), paint)
+		piece = ring(p["centre"], p["facing"], p["outer"], p["inner"], p.get("thickness", 0.1), p.get("segments", 16), paint, p.get("sweep"))
 	elif kind == "dome":
 		c, r = at(*p["centre"]), p["radius"]
 		vertices, faces = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=16, radius=r, matrix=Matrix.Translation(c)))
@@ -724,25 +726,33 @@ def shape(p, frame=None):
 	return piece
 
 
-def ring(centre, facing, outer, inner, thickness, segments, paint):
+def ring(centre, facing, outer, inner, thickness, segments, paint, sweep=None):
 	# A flat ring round `centre` (ship frame) in the plane square to `facing`,
-	# from `inner` to `outer` radius, standing `thickness` out along `facing`
+	# from `inner` to `outer` radius, standing `thickness` out along `facing`.
+	# With `sweep` [from, to] (degrees in plan, from forward toward starboard,
+	# for a ring facing up) only that arc, its ends closed
 	n = Vector(facing).normalized()
-	u = n.cross(Vector((0, 1, 0)) if abs(n.y) < 0.9 else Vector((1, 0, 0))).normalized()
-	w = n.cross(u)
 	c = Vector(centre)
-	points = []
-	for depth in (0.0, thickness):
-		for radius in (outer, inner):
-			for k in range(segments):
-				a = 2 * math.pi * k / segments
-				points.append(at(*(c + n * depth + (u * math.cos(a) + w * math.sin(a)) * radius)))
-	ring_of = lambda layer, which: layer * 2 * segments + which * segments   # the first vertex of a loop
+	if sweep is None:
+		u = n.cross(Vector((0, 1, 0)) if abs(n.y) < 0.9 else Vector((1, 0, 0))).normalized()
+		w = n.cross(u)
+		directions = [u * math.cos(2 * math.pi * k / segments) + w * math.sin(2 * math.pi * k / segments) for k in range(segments)]
+	else:
+		def direction(degrees):
+			d = Vector((math.cos(math.radians(degrees)), 0, math.sin(math.radians(degrees))))
+			return (d - n * d.dot(n)).normalized()
+		directions = [direction(sweep[0] + (sweep[1] - sweep[0]) * k / segments) for k in range(segments + 1)]
+	count = len(directions)
+	points = [at(*(c + n * depth + d * radius)) for depth in (0.0, thickness) for radius in (outer, inner) for d in directions]
+	ring_of = lambda layer, which: layer * 2 * count + which * count   # the first vertex of a loop
 	faces = []
 	for k in range(segments):
-		j = (k + 1) % segments
+		j = (k + 1) % count
 		for a, b in ((ring_of(0, 0), ring_of(0, 1)), (ring_of(1, 0), ring_of(1, 1)), (ring_of(0, 0), ring_of(1, 0)), (ring_of(0, 1), ring_of(1, 1))):
 			faces.append((a + k, a + j, b + j, b + k))
+	if sweep is not None:
+		for k in (0, segments):
+			faces.append((ring_of(0, 0) + k, ring_of(0, 1) + k, ring_of(1, 1) + k, ring_of(1, 0) + k))
 	return points, faces, [paint] * len(faces)
 
 
@@ -1613,6 +1623,11 @@ def hull():
 	# gallery's knots, the walls' ends, the creases' ends), so the flare is
 	# flat between them and creases only there
 	turns = {p[0] for o in outlines for p in o}
+	# and where the deck's edge steps out square (a side of its outline across
+	# the ship), a section either side of the step, so the hull steps square
+	# under the edge rather than sloping across to the section before
+	deck = LAYOUT["deck"]["outline"]
+	turns |= {a[0] + d for a, b in zip(deck, deck[1:] + deck[:1]) if a[0] == b[0] for d in (-0.01, 0.01)}
 	for name in ("port", "starboard"):
 		turns |= {p[0] for p in h["knuckle"][name]} | {p[0] for p in h["gallery"][name]}
 		turns |= {w["wall"][e][0] for w in walls.get(name, []) for e in (0, -1)}

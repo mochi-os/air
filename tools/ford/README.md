@@ -114,7 +114,9 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   - The hull is a loft of sections from the transom to the bow: keel, hull side to each side's knuckle, the
     flare, and the gallery wall up to the deck's edge, or along a wall (`hull.walls`: the quarters', the port
     midbody's) up the wall standing under it. A section stands at every corner of the deck's edge and every
-    knot of the knuckle and the gallery, so the flare is flat between them and creases only there; where
+    knot of the knuckle and the gallery, so the flare is flat between them and creases only there, and either
+    side of a square step in the deck's edge (the starboard quarter's notch), so the hull steps square under
+    it; where
     `hull.flare` gives creases that slant (the angled deck's), flat facets between them take the sections'
     place; the blisters on the hull side under the elevators (`hull.blisters`) stand out from it. It is symmetric below the knuckles, wears `antifouling` below the band's top, `boot` up to the
     boot top, and ahead of its last station runs each height straight to the bow's forward edge: the stem's
@@ -142,12 +144,14 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     the Phalanx's raised deck (`transom.plinth`:
     its plan at its foot and its `upper` plan at its top, its sides sloping between); the rest as parts
     (`transom.details`, measured in DVIDS 7694418 and the 2023 overhead through their cameras:
-    `references/research/transom2`, `transom3` and `overhead`): the recess's mezzanine, doors, cabinet, lamps and
-    life ring, the boat landing under the post frame, the scuppers, pipe and mooring chocks, the port quarter's
+    `references/research/transom2`, `transom3`, `overhead` and `sponsons`): the recess's mezzanine, doors and
+    cabinet, the boat landing under the post frame, the scuppers, pipe and mooring chocks, the port quarter's
     chocks, the box behind the Phalanx with its sponson's railing, fairlead and gas bottles, the LSO's windscreen
-    at the port quarter's corner, a box on its pedestal and a hose reel there, the red ladder down to the stern's
-    catwalk, the starboard aft sponson's white grid and the red circle round its RAM, and the port aft sponson's
-    pipe, low box and netted cage with the gallery's ladder down to it.
+    at the port quarter's corner, a box on its pedestal and a hose reel there, the red circle round the starboard aft sponson's RAM, the port aft sponson's pipe, low box and
+    netted cage with the gallery's ladder down to it, both aft sponsons' railings, the red circle round the
+    Mk 29 (a ring's `sweep` keeps the arcs the deck's edges leave), and the wall under the port notch's forward
+    catwalk with its locker, ladder, low box and door. A deck circle takes its sponson's slope through its
+    `facing`.
   - The lettering's plates: the island's numbers on its faces with their lamps, its stencils and placards,
     and the stem's draught marks on the hull's side just aft of the stem, tangent to it.
   - OUT.json is the ship file (`ford.json`): the deck layout the engine and the flight core read (the
@@ -176,7 +180,8 @@ python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR   
   over the ramp's white, as DVIDS 7694418 shows it across the round-down; and the bow control station's band lies right
   outside its lid's rim on every side. The drop-light pole's yellow runs from its foot to its top with no face
   reaching into its gap, and lines of sight aft from it past the walkway's height meet nothing. Every island
-  railing and chain keeps clear of every radome's profile across its height.
+  railing and chain keeps clear of every radome's profile across its height. Every railing and deck circle on a
+  sponson keeps to its top, within 0.01 m of its plane and inside its edges.
 - **`photos.json`** - the photo match's catalogue for the shared tools in `../verify` (their README): the
   photos' marks, the deck plan's anchors, the sea at the waterline, and the ship's regions (port and starboard,
   by part family). Run both under the probe.slice memory cap.
