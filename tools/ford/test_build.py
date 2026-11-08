@@ -140,7 +140,8 @@ LAYOUT = {
 		# quarter of a deck circle on a deck sloping 0.1 m a metre aft, and a
 		# railing in the recess bent round a corner of radius 0.5 drawn in six
 		# short runs, 5.79 m long in all
-		"details": [{"name": "ring", "kind": "ring", "centre": [-88, 8.5, 2], "facing": [-1, 0, 0], "outer": 0.4, "inner": 0.25, "thickness": 0.1, "paint": "red"},
+		"details": [{"name": "ring", "kind": "ring", "centre": [-88, 8.5, 2], "facing": [-1, 0, 0], "outer": 0.4, "inner": 0.25, "thickness": 0.1, "paint": "red",
+				"mark": "transom_ring"},
 			{"name": "arc", "kind": "ring", "centre": [-93, 7.3, -3], "facing": [0.1, 1, 0], "outer": 1.0, "inner": 0.8, "thickness": 0.02, "segments": 12,
 				"sweep": [0, 90], "paint": "white"},
 			{"name": "bend", "kind": "railing", "height": 1.0, "posts": 1.5, "bent": True, "path": [[-88.5, 8.0, -3.5]]
@@ -1041,6 +1042,8 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(radius.min(), 0.25, places=3)
 		self.assertAlmostEqual(radius.max(), 0.4, places=3)
 		np.testing.assert_allclose([ring[:, 0].min(), ring[:, 0].max()], [-88.1, -88.0], atol=1e-4)
+		# and named for the photo match at its centre, as its `mark` asks
+		self.assertEqual(self.features["landmarks"]["transom_ring"], {"at": [-88, 8.5, 2], "node": "transom_fittings"})
 
 	def test_bent_railing(self):
 		# a railing bent round a rounded corner: its posts evenly along the

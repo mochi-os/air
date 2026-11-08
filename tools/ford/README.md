@@ -145,14 +145,15 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     the Phalanx's raised deck (`transom.plinth`:
     its plan at its foot and its `upper` plan at its top, its sides sloping between); the rest as parts
     (`transom.details`, measured in DVIDS 7694418 and the 2023 overhead through their cameras:
-    `references/research/transom2`, `transom3`, `overhead` and `sponsons`): the recess's mezzanine (run out past the pole by `drop`), doors and
+    `references/research/transom2`, `transom3`, `overhead` and `sponsons`): the recess's mezzanine (run out past the pole by `drop`)
+    with its yellow-topped box and the white disc on bars over its aft starboard corner, doors and
     cabinet, the boat landing under the post frame, the scuppers, pipe and mooring chocks, the port quarter's
     chocks, the box behind the Phalanx with its sponson's railing, fairlead and gas bottles, the LSO's windscreen
     at the port quarter's corner, a box on its pedestal and a hose reel there, the red circle round the starboard aft sponson's RAM, the port aft sponson's pipe, low box and
     netted cage with the gallery's ladder down to it, both aft sponsons' railings, the red circle round the
     Mk 29 (a ring's `sweep` keeps the arcs the deck's edges leave), and the wall under the port notch's forward
     catwalk with its locker, ladder, low box and door. A deck circle takes its sponson's slope through its
-    `facing`.
+    `facing`. A part that gives a `mark` is a landmark for the photo match at its `centre`.
   - The lettering's plates: the island's numbers on its faces with their lamps, its stencils and placards,
     and the stem's draught marks on the hull's side just aft of the stem, tangent to it.
   - OUT.json is the ship file (`ford.json`): the deck layout the engine and the flight core read (the

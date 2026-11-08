@@ -1453,8 +1453,12 @@ def upper_transom(x0, section):
 	pl = t["plinth"]
 	fittings.append(prism(pl["outline"], pl["bottom"], pl["top"], pl.get("upper")))
 	# the rest as photographed: the recess's mezzanine, doors, cabinet, lamps
-	# and life ring, the boat landing, the scuppers, pipe and chocks
+	# and life ring, the boat landing, the scuppers, pipe and chocks; a part
+	# that gives a `mark` is a landmark for the photo match at its centre
 	fittings += [shape(d) for d in t.get("details", [])]
+	for d in t.get("details", []):
+		if "mark" in d:
+			MARKS[d["mark"]] = (at(*d["centre"]), "transom_fittings")
 	node("transom_fittings", mesh=merge(fittings))
 
 
