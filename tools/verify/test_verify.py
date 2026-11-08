@@ -363,6 +363,45 @@ class CameraTest(unittest.TestCase):
 		misses = bundle.misses()
 		self.assertLess(max(math.hypot(du, dv) for m in misses.values() for du, dv, _ in m.values()), 2.0)
 
+	def test_bundle_spread_comes_from_the_photos_that_see_a_point(self):
+		# Three photos marked to 0.3 px see the points u0-u3, the first of them
+		# also "far"; a fourth sees only "far". Its marks 6 px out, the points
+		# it never sees keep the spread the three give them, with or without
+		# it, and "far" carries its noise (one scale for the whole bundle let
+		# the noisy photo widen every point, and leaving it out narrowed them
+		# all)
+		rng = np.random.default_rng(21)
+		anchors = {f"a{i}": p for i, p in enumerate(scene(2, 6))}
+		unknown = {f"u{i}": p for i, p in enumerate(scene(3, 4))}
+		far = np.array([1.5, -0.5, 2.0])
+		photos = []
+		for k, (position, focal) in enumerate((((25, 3, 10), 8000), ((-8, 2, 22), 7000), ((18, -4, -14), 9000))):
+			c = cam.looking(np.array(position, float), np.zeros(3), focal)
+			marks = {**anchors, **unknown, **({"far": far} if k == 0 else {})}
+			names = list(marks)
+			pixels = cam.project(c, np.array([marks[n] for n in names]), self.centre)[0] + rng.normal(0, 0.3, (len(names), 2))
+			photos.append({"centre": self.centre, "width": 4000, "sigma": 1.0, "marks": dict(zip(names, map(tuple, pixels)))})
+
+		def fourth(noise):
+			c = cam.looking(np.array([5.0, 20.0, -20.0]), np.zeros(3), 8000)
+			marks = {**anchors, "far": far}
+			names = list(marks)
+			pixels = cam.project(c, np.array([marks[n] for n in names]), self.centre)[0] + rng.normal(0, noise, (len(names), 2))
+			return {"centre": self.centre, "width": 4000, "sigma": 1.0, "marks": dict(zip(names, map(tuple, pixels)))}
+
+		def spreads(photos):
+			points = {n: {"priors": [(np.eye(3)[i], p[i], 0.0) for i in range(3)]} for n, p in anchors.items()}
+			points.update({n: {"priors": [], "value": p + 0.05} for n, p in {**unknown, "far": far}.items()})
+			bundle = cam.Bundle([dict(ph) for ph in photos], points)
+			self.assertEqual(bundle.initialise(log=lambda *_: None), [])
+			bundle.solve()
+			return {n: float(np.sqrt(np.diag(bundle.spread[n])).max()) for n in (*unknown, "far")}
+
+		clean, noisy = spreads(photos + [fourth(0.3)]), spreads(photos + [fourth(6.0)])
+		for name in unknown:
+			self.assertLess(abs(noisy[name] / clean[name] - 1), 0.1, name)
+		self.assertGreater(noisy["far"] / clean["far"], 2.0)
+
 	def test_bundle_shrugs_off_a_wrong_mark(self):
 		# one mark 300 px off (a mis-click): the robust loss keeps it from
 		# dragging the points the other marks agree on

@@ -84,7 +84,11 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   on to the nozzles. Below it the closed main gear doors stand as a long blister (`layout.nacelle` door,
   FS 460-576, up to 3.8 in deep), which the HATP figure's wind-tunnel model lacks: `doored()` lowers the
   outline onto the doors' line across their span only (BL 16-42), so the tunnel between the nacelles keeps
-  its shape, and the blister ends in the step up the photos show at FS 574-578. Between the flaps and the
+  its shape, and the blister ends in the step up the photos show at FS 574-578. Over the main gear bays
+  the bottom runs nearly flat out to the bay's outboard edge, where the outer door hangs, and a band rises
+  straight from it to a crease on the side (`layout.nacelle` bay): `bay()` joins that wedge to the sided
+  outline, and one of the loft's columns (`BAY_COLUMN`) is pinned to the corner, which columns 4-5 in apart
+  otherwise cut off by more or less from station to station. Between the flaps and the
   stabilators each nacelle's outer side is flatter than its section (`layout.nacelle` side, from the body
   strips and the lower corner seen from below): `nacelle_side()` solves the outboard half's width and
   exponent through both, `union_ring()` draws the deck's edge in to `DECK_SIDE`, where the union passes within
@@ -100,13 +104,25 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   the photos place (`layout.aoa`, `pitot`, `blisters`, `formation`, `blade`), the fins their tip pods
   (`layout.pods`) and a fixed root piece under each (`fin_root_*`: the root's section carried down the fin's
   plane to half an inch inside the built skin, cast point by point every 2 in of chord, since the root is a
-  straight chord over a deck that falls away aft), and a simple cockpit with its pilot sits under the canopy (`layout.cockpit`). Each nozzle
+  straight chord over a deck that falls away aft) with the riveted fairing along its outboard side
+  (`fin_fairing_*`, `layout.fin` fairing: from the fin's face at the photos' upper edge straight down to the
+  nacelle at its foot); under each outer panel hangs the fairing at the fold hinge that carries the position
+  light (`underwing()`, `layout.wing_fairing`: pointed in plan, a blunt nose, square at the aileron's hinge and
+  a shallower tail piece on the aileron, both folding and flexing with the panel), and a simple cockpit with
+  its pilot sits under the canopy (`layout.cockpit`). Each nozzle
   is twelve flaps, each its own joint (`layout.petals`): a curved outer flap with its stepped tab, and inside
   it the divergent and convergent flaps of the gas path, closing together; the burner's dark duct lies beyond
   the throat, and the paint gives the flaps bare metal outside, the divergent flaps' cooling holes and a dark
-  ring of brackets at the exit (`layout.paint.nozzle`). Flush panels (the speedbrake, the nose-gear
-  doors) are cut from the fuselage's own built skin (`cut()`) and offset off every facet; parts that stow
-  inside it (the gear, the ladder in the LEX) are placed by ray casts on the built parts (`built()`). The third
+  ring of brackets at the exit (`layout.paint.nozzle`). Flush panels (the speedbrake, the gear doors) are
+  cut from the fuselage's own built skin (`cut()`, between stations and buttlines or inside a convex plan
+  outline) and offset off every facet; parts that stow inside it (the gear, the ladder in the LEX) are placed
+  by ray casts on the built parts (`built()`). The gear stands where the photos put it (`layout.gear` legs and
+  doors): each main leg a post down to a trailing arm's pivot, the arm carrying the wheel (its turn about the
+  pivot the leg's compression), a side brace and a shock absorber; the nose leg a vertical post, the piston
+  and the trailing axle, a drag brace and the launch bar raised, with the landing lamp and the approach lights' box on the post's front. The braces fold as the gear retracts, which
+  one rigid part cannot, so they are shown only with the gear down (a "show" joint). Each door, hinged on the
+  skin, opens by the angle that brings its free edge's ends nearest the photos', and closes as long along the
+  skin as the photos show it open. The third
   output, the features file, names points and curves on the model with the node each rides on, for the photo
   match. `--draft` leaves out the paint bake (seconds instead of minutes).
 - **`check.py`** - the facts check: measures the built model back against every `facts.json` entry, posed
@@ -167,7 +183,10 @@ python3 -I test_check.py
 ```
 
 The build also unwraps every part into one atlas and bakes its ambient occlusion in Cycles (`paint.png`
-beside OUT.glb), the shading the paint is laid over, and each texel's surface normal, which picks the
+beside OUT.glb), the shading the paint is laid over. Faces of more than four corners are triangulated first (a
+long bent cap laid flat in one piece overlapped itself); faces the islands lay over others get islands of their
+own (`unfolded()`), and once packed the atlas is searched again at its own size, what it finds laid into a strip
+along its right side the packing leaves free (`STRIP`), never packed again. Each texel's surface normal picks the
 upper grey or, facing down, the lower (`layout.paint`, sampled in the reference photo). A texel of the 2048
 atlas is about 0.47 in on the jet: the skin under each stencil gets its own island four times as dense
 (`stencil_islands()`), and the panel lines, 0.4 in wide, shade each texel by the share of it they cover. The
@@ -209,21 +228,22 @@ middle (the fold's at its leading end, on the fold line's axis). Each wing mesh 
 - each joint's turn and rise against the mesh;
 - the seams at 1 and 7.5 g.
 
-The model viewer (`/air/models`) shows the latest painted build as `fa18c-new.glb`, beside the file it
-replaces. After a build, copy the model in (`cp OUT.glb ../../web/src/assets/fa18c-new.glb`), then `/build air`.
-The copy is git-ignored until the model replaces the game's: a clone without it builds, and lists no such
-model.
+The game flies this model (claude/plans/air-fa18c.md, step 4). After a painted build that passes its checks,
+copy the model and its points file in together, `cp OUT.glb ../../web/src/assets/fa18c.glb` and
+`cp OUT.json ../../web/src/assets/fa18c.json`, then `/build air`: the engine reads its joints and points from the
+JSON, so the two must come from one build. Until the cockpit, stores and distant stages are rebuilt, the old model
+stays as `fa18c-old.glb`: the pilot's jet in first person, the setup's preview and the frame those are measured in.
 
 ## Factory-fresh paint
 
-`web/src/assets/fa18c.glb` is the JPEG model from before #200 with its atlases repainted clean (#147), then
+`web/src/assets/fa18c-old.glb` (`fa18c.glb` until our model replaced it) is the JPEG model from before #200 with its atlases repainted clean (#147), then
 encoded to KTX2. The source atlases carry a service jet's wear: grime on the skin, and chipped paint on the
 cockpit's sills, walls and throttle grips.
 
 ```
 git show 6e3003c50^:web/src/assets/fa18c.glb > /tmp/source.glb
 python3 fresh.py /tmp/source.glb /tmp/fresh.glb [preview]                    # preview: each atlas before and after
-python3 ../texswap.py /tmp/fresh.glb ../../web/src/assets/fa18c.glb etc1s 15,19,20,21,22
+python3 ../texswap.py /tmp/fresh.glb ../../web/src/assets/fa18c-old.glb etc1s 15,19,20,21,22
 ```
 
 - **`fresh.py`** - repaints each atlas in `ATLASES` over the texels its materials' triangles cover. The exterior
@@ -248,8 +268,8 @@ python3 ../texswap.py /tmp/fresh.glb ../../web/src/assets/fa18c.glb etc1s 15,19,
 Builds `web/src/assets/fa18c-far.glb`, the stages the engine draws another jet with once it is small
 on screen (engine.ts, distance stages): a merged **medium** model of about 5,000 triangles from 80 down
 to 8 reference pixels long (1/1080 of the view's height; 280 m to 2.8 km at normal zoom), a **far**
-silhouette of 400 from 8 to 2, then a dot. The shipped `fa18c.glb` is never rewritten: its rig finds
-parts by name, so nothing here round-trips it.
+silhouette of 400 from 8 to 2, then a dot, cut from the old model (`fa18c-old.glb`) in its frame until they are
+rebuilt from ours. The old model is never rewritten: its rig finds parts by name, so nothing here round-trips it.
 
 ```
 cd ../../web && pnpm exec tsx tools/pose.ts ../tools/fa18c/pose.json   # posed as the engine draws it

@@ -14,6 +14,7 @@ import * as THREE from 'three'
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
+import fa18c_old_url from '../assets/fa18c-old.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
 import { load } from './model'
 import { asset } from './preload'
@@ -76,7 +77,7 @@ export function model(
 
 // WARM is what every match needs, in the order the menu parses it: the jet
 // first, then what hangs on it.
-export const WARM = [fa18c_model_url, stores_model_url, amraam_model_url]
+export const WARM = [fa18c_model_url, fa18c_old_url, stores_model_url, amraam_model_url]   // the old model is the pilot's cockpit until ours is built
 
 // warm parses the listed models in order, each when the browser is idle, on
 // one hidden renderer released once the last is in. Idempotent: the menu

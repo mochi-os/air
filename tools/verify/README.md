@@ -127,7 +127,9 @@ solves every photo's camera (focal length, pose, one radial distortion term) and
 only start the solve. It reports:
 
 - each photo's fit (pixels), and each mark's miss in project units at the depth it lies;
-- each point the photos measure, with its uncertainty, beside the model's, and the miss. A point seen from
+- each point the photos measure, with its uncertainty (from the photos that see it: each photo's marks weighed
+  by how well that photo fits, so a photo that fits badly widens only its own points), beside the model's, and
+  the miss. A point seen from
   only one direction is reported `loose` along that camera's line of sight: the photos fix a line, not a
   point, so it is measured at the line's nearest point to the model's and its miss is the part the photo
   sees, across the line;
@@ -378,6 +380,13 @@ What went wrong on the F/A-18C, each a rule now:
   standing 5 in too high.
 - **Distrust a lone answer.** The reported uncertainty is optimistic for a coordinate few photos see across.
   Re-solve with photos added or removed: a value that moves by more than its uncertainty is not settled.
+- **A verdict must not hang on a photo that never sees the point.** The bundle scaled every point's uncertainty
+  by one figure for the whole solve, so a 14 mm photo fitting at 17 px widened every point and hid ten misses,
+  and taking it out failed them all, every miss unchanged. Each photo now scales only its own rows (2026-11-06).
+  Adding photos can still move points: the F/A-18C's points aft of the LEX slid 1-1.6 in aft relative to the
+  nose (the fin tips over 38 photos) when one new photo's `hook_pivot`, marked on a boss of the lowered shank,
+  joined the solve: a mark at the jet's far end that only two other photos see can stretch the whole frame. Leave
+  each new group, then each photo in the guilty group, out once and compare before taking a shift for the model's.
 - **Static is not taxiing.** Photos of moving jets sit at their own attitude; a manual's static heights describe
   another. Say which a number is.
 - **A miss may be a definition.** A flat canopy top has no single crown; a sloping bow has no single station.

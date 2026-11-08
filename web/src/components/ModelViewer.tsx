@@ -21,6 +21,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
+import fa18c_old_url from '../assets/fa18c-old.glb?url'
 import ford_model_url from '../assets/ford.glb?url'
 import ford_ship from '../assets/ford.json'
 import stores_model_url from '../assets/stores.glb?url'
@@ -35,33 +36,19 @@ interface Entry {
   prepare: (gltf: GLTF) => THREE.Object3D // a clone: the library's stock is shared and never changed in place
 }
 
-// Our own F/A-18C as tools/fa18c/build.py last built it, at rest: gear up,
-// every surface neutral. Each rebuild is copied in by hand and kept out of git
-// until it replaces fa18c.glb in the game, so a clone without one lists none
-const fa18c_new_model_url = Object.values(
-  import.meta.glob<string>('../assets/fa18c-new.glb', {
-    query: '?url',
-    import: 'default',
-    eager: true,
-  }),
-)[0]
-
 const MODELS: Entry[] = [
   {
     name: 'aim120c.glb',
     url: amraam_model_url,
     prepare: (gltf: GLTF) => normalize_round(gltf.scene.clone(true)),
   },
-  { name: 'fa18c.glb', url: fa18c_model_url, prepare: posed },
-  ...(fa18c_new_model_url
-    ? [
-        {
-          name: 'fa18c-new.glb',
-          url: fa18c_new_model_url,
-          prepare: (gltf: GLTF) => gltf.scene.clone(true),
-        },
-      ]
-    : []),
+  // Our own F/A-18C as tools/fa18c/build.py builds it, at rest: gear up, every
+  // surface neutral.
+  { name: 'fa18c.glb', url: fa18c_model_url, prepare: (gltf: GLTF) => gltf.scene.clone(true) },
+  // The model it replaces, still the pilot's cockpit in first person and the
+  // setup's preview under the old stores until ours are built
+  // (claude/plans/air-fa18c.md, step 4).
+  { name: 'fa18c-old.glb', url: fa18c_old_url, prepare: posed },
   {
     name: 'stores.glb',
     url: stores_model_url,

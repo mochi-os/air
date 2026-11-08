@@ -350,9 +350,18 @@ class Bundle:
 				points[left] = self.reflect @ points[right]
 		return cameras, points
 
-	def residuals(self, x, k=None):
+	def residuals(self, x, k=None, rows=None):
+		# rows, when given a dict, collects each photo's rows of the result
+		# (its marks', then its horizon's) as {photo: [(start, end, kind)]}
 		cameras, points = self.unpack(x)
 		out = []
+
+		def add(r, i, kind):
+			if rows is not None:
+				start = sum(len(o) for o in out)
+				rows.setdefault(i, []).append((start, start + len(r), kind))
+			out.append(r)
+
 		for i, photo in cameras.items():
 			ph = self.photos[i]
 			names = [n for n in ph["marks"] if n in points]
@@ -360,12 +369,12 @@ class Bundle:
 				continue
 			p, _ = project(photo, np.array([self.placed(ph, n, points[n]) for n in names]), ph["centre"])
 			r = ((p - np.array([ph["marks"][n] for n in names])) / ph["sigma"]).ravel()
-			out.append(robust(r, k) if k else r)
+			add(robust(r, k) if k else r, i, "marks")
 		for i, photo in cameras.items():
 			ph = self.photos[i]
 			if ph.get("horizon"):
 				r = horizon(photo, ph["horizon"], ph["centre"], *self.sea) / ph["sigma"]
-				out.append(robust(r, k) if k else r)
+				add(robust(r, k) if k else r, i, "horizon")
 		for name, p in points.items():
 			for normal, offset, sigma in self.points[name]["priors"]:
 				if sigma > 0:
@@ -406,17 +415,29 @@ class Bundle:
 		x, _ = levenberg(lambda v: self.residuals(v, robustness), x, range(len(x)), iterations=iterations, valid=valid)
 		self.x = x
 		self.cameras, self.solved = self.unpack(x)
-		# Each point's uncertainty from the normal equations, scaled by how
-		# well the marks fit
-		error = self.residuals(x)
+		# Each point's uncertainty from the normal equations, each photo's rows
+		# scaled by how well that photo's own marks fit (their chi-squared over
+		# its degrees of freedom, at least 1): one scale for the whole bundle
+		# let a photo that fits badly widen every point's uncertainty, and a
+		# photo left out narrow them all, flipping the gate on points it never
+		# saw
+		rows = {}
+		error = self.residuals(x, rows=rows)
 		J = np.empty((len(error), len(x)))
 		for i in range(len(x)):
 			step = 1e-6 * max(1.0, abs(x[i]))
 			trial = x.copy()
 			trial[i] += step
 			J[:, i] = (self.residuals(trial) - error) / step
-		dof = max(1, len(error) - len(x))
-		scale = float(error @ error) / dof
+		weight = np.ones(len(error))
+		for i, spans in rows.items():
+			marks = [(a, b) for a, b, kind in spans if kind == "marks"]
+			count = sum(b - a for a, b in marks)
+			chi = sum(float(error[a:b] @ error[a:b]) for a, b in marks)
+			factor = max(1.0, chi / max(1, count - self.camera_slot[i][1]))
+			for a, b, _ in spans:
+				weight[a:b] = 1.0 / factor
+		J = J * np.sqrt(weight)[:, None]
 		# The normal equations scaled to a unit diagonal, so pixels, radians and
 		# metres compare. A direction they leave unfixed (a point seen by one
 		# photo moves freely along that camera's ray) is loose, not certain: the
@@ -428,7 +449,7 @@ class Bundle:
 		w, V = np.linalg.eigh(A / np.outer(d, d))
 		null = w < 1e-9 * max(float(w.max()), 1e-300)
 		fixed = V[:, ~null]
-		cov = (fixed / w[~null]) @ fixed.T / np.outer(d, d) * max(scale, 1.0)
+		cov = (fixed / w[~null]) @ fixed.T / np.outer(d, d)
 		free = V[:, null] / d[:, None]
 		free /= np.maximum(np.linalg.norm(free, axis=0), 1e-300)
 		self.spread, self.loose = {}, {}

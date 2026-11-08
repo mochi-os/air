@@ -247,7 +247,7 @@ describe('the brake pressure gauge', () => {
 // GLB, cut by model_cut, and the lines from the design eye to the gauge and the
 // controls the block hid are traced through what is left of it.
 describe('the cockpit shell over the lower left panel', () => {
-  const glb = readFileSync(fileURLToPath(new URL('../assets/fa18c.glb', import.meta.url)))
+  const glb = readFileSync(fileURLToPath(new URL('../assets/fa18c-old.glb', import.meta.url)))   // the old model's cockpit, the pilot's in first person until ours is built
   const json = JSON.parse(glb.subarray(20, 20 + glb.readUInt32LE(12)).toString('utf8'))
   const bin = glb.subarray(28 + glb.readUInt32LE(12))
   const read = (i: number) => {
@@ -385,7 +385,7 @@ describe('the cockpit shell over the lower left panel', () => {
 // them, in the frame of the canopy frame mesh (Object_1329), so they open and jettison
 // with it. Each must sit on that mesh's surface and face out of it, 25 to a sill.
 describe('the canopy sill rivets', () => {
-  const glb = readFileSync(fileURLToPath(new URL('../assets/fa18c.glb', import.meta.url)))
+  const glb = readFileSync(fileURLToPath(new URL('../assets/fa18c-old.glb', import.meta.url)))   // the old model's cockpit, the pilot's in first person until ours is built
   const json = JSON.parse(glb.subarray(20, 20 + glb.readUInt32LE(12)).toString('utf8'))
   const bin = glb.subarray(28 + glb.readUInt32LE(12))
   const read = (i: number) => {

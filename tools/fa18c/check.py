@@ -63,7 +63,6 @@ EXEMPT = {
 	"gravity@F-18B SRA, 66% fuel, clean, gear up": "a centre of gravity, not a shape",
 	"layout.eye": "the design eye is a point the build writes as given",
 	"layout.hardpoints": "store mounts the build writes as given, the fuselage ones draped onto the skin (shape.mount); step 5 checks them against the stores",
-	"layout.lights": "light points the build writes as given; the lenses built on them are checked under layout.strips",
 	"layout.paint": "colours the paint bake writes into the atlas, not a shape (looked at on the comparison sheets)",
 }
 
@@ -229,11 +228,12 @@ def shoelace(loop):
 HULL = ["fuselage", "lex_left", "lex_right", "inlet_left", "inlet_right", "wing_inner_left", "wing_inner_right", "canopy", "windscreen",
 	"fin_left", "fin_right"]
 STOWED = [f"gear_{leg}_{piece}" for leg in ("left", "right", "nose") for piece in ("strut", "oleo", "wheel")] + [
-	"launch_bar", "ladder", "probe", "cockpit_tub", "cockpit_panel", "cockpit_seat", "cockpit_stick", "cockpit_hud", "pilot"]
-FLUSH = [("speedbrake", False), ("gear_nose_door_left", True), ("gear_nose_door_right", True), ("probe_door", False)]
+	"launch_bar", "gear_nose_lamps", "lamp_gear_nose", "ladder", "probe", "cockpit_tub", "cockpit_panel", "cockpit_seat", "cockpit_stick", "cockpit_hud", "pilot"]
+FLUSH = [("speedbrake", False), ("gear_nose_door_left", True), ("gear_nose_door_right", True), ("gear_nose_door_long", True), ("gear_nose_door_aft", True),
+	("gear_door_inner_left", True), ("gear_door_inner_right", True), ("gear_door_outer_left", True), ("gear_door_outer_right", True), ("probe_door", False)]
 # The parts with no twin that stand to one side; every other one is
 # symmetric about the centreline
-ONE_SIDED = {"antenna_dome", "antenna_ventral", "lamp_position_tail", "ladder", "pilot", "probe", "probe_door"}
+ONE_SIDED = {"antenna_dome", "antenna_ventral", "gear_nose_door_aft", "gear_nose_door_long", "gear_nose_lamps", "lamp_gear_nose", "lamp_position_tail", "ladder", "pilot", "probe", "probe_door"}
 
 
 def enclosed(points, tris):
@@ -663,8 +663,18 @@ def checks(jet):
 		yield result("overall.length", "nose apex to the aftmost point", value(F["overall"]["length"]) * 12, p[:, 0].max() - p[:, 0].min(), 6.0)
 		w = jet.points([n.format(s=s) for n in WING for s in ("left", "right")])
 		yield result("overall.span.spread", "wingtip to wingtip", value(F["overall"]["span"]["spread"]) * 12, w[:, 2].max() - w[:, 2].min(), 1.0)
-		folded = jet.points([n for n in every if not n.startswith("gear")], {"fold": 1})
-		yield result("overall.span.folded", "span with the wings folded", value(F["overall"]["span"]["folded"]) * 12, folded[:, 2].max() - folded[:, 2].min(), 1.5)
+		# the folded panels' span, without the fairings under them (layout.wing_fairing),
+		# which turn outboard with the panel 4.3 in a side: see facts overall.span.folded
+		folded = jet.points([n for n in every if not n.startswith("gear") and not n.startswith("fairing_") and not n.startswith("lamp_position_fold")], {"fold": 1})
+		yield result("overall.span.folded", "span with the wings folded, the panels without their underwing fairings", value(F["overall"]["span"]["folded"]) * 12, folded[:, 2].max() - folded[:, 2].min(), 1.5)
+		# the outer panel turned as far as the photos fold it (layout.fold): the
+		# rigid turn taking its points at rest onto its points folded
+		for side in ("left", "right"):
+			spread, turned = jet.points([f"wing_outer_{side}"]), jet.points([f"wing_outer_{side}"], {"fold": 1})
+			u, _, vt = np.linalg.svd((turned - turned.mean(0)).T @ (spread - spread.mean(0)))
+			rotation = u @ vt
+			angle = math.degrees(math.acos(max(-1.0, min(1.0, (np.trace(rotation) - 1) / 2))))
+			yield result("layout.fold", f"{side} outer wing's fold", F["layout"]["fold"]["angle"], angle, 1.0, "deg")
 		# the ground: the plane through the three tyres' lowest points (the jet
 		# need not sit level on its gear)
 		contacts = []
@@ -1171,6 +1181,49 @@ def checks(jet):
 		run = (top[0] - bottom[0]) / 0.94
 		yield result("layout.fin", "tip leading edge", place["tip"]["station"], top[0] + run * 0.03, 1.0, "FS in")
 		yield result("layout.fin", "root leading edge", place["root"]["station"], bottom[0] - run * 0.03, 1.5, "FS in")
+		# the fairing along the right fin's root, outboard: where its upper edge
+		# meets the leading edge, its upper edge's height and its foot's
+		# buttline at the photos' stations, its front, its upper edge's step
+		# off the fin's face, and how far its foot stands outboard of the
+		# face carried down (the views from behind)
+		fair = place["fairing"]
+		q = jet.points(["fin_fairing_right"])
+		peak = q[np.argmax(q[:, 1])]
+		front_top = fair["top"][0]
+		yield result("layout.fin", "fairing's upper edge meeting the leading edge", front_top[0], peak[0], 1.5, "FS in")
+		yield result("layout.fin", "fairing's upper edge meeting the leading edge", front_top[1], peak[1], 1.0, "WL in")
+		yield result("layout.fin", "fairing's front", fair["foot"][0][0], q[:, 0].min(), 1.5, "FS in")
+		for station, waterline in fair["top"][1:]:
+			c = jet.cut(["fin_fairing_right"], [station, 0, 0], [1, 0, 0])
+			if not len(c):
+				raise KeyError(f"no fin_fairing_right at FS {station}")
+			yield result("layout.fin", f"fairing's upper edge at FS {station:.0f}", waterline, c[:, 1].max(), 1.0, "WL in")
+		for station, buttline in fair["foot"][1:]:
+			c = jet.cut(["fin_fairing_right"], [min(station, fair["top"][-1][0] - 0.5), 0, 0], [1, 0, 0])
+			if not len(c):
+				raise KeyError(f"no fin_fairing_right at FS {station}")
+			low = c[c[:, 1] < c[:, 1].min() + 1.0]
+			yield result("layout.fin", f"fairing's foot at FS {station:.0f}", buttline, low[:, 2].max(), 1.0, "BL in")
+		station, waterline = fair["top"][2]
+		c = jet.cut(["fin_fairing_right"], [station, 0, 0], [1, 0, 0])
+		f = jet.cut(["fin_right"], [station, 0, 0], [1, 0, 0])
+
+		def face(wl):
+			# the outermost buttline where the fin's cut (segments, point pairs) crosses WL wl
+			a, b = f[0::2], f[1::2]
+			hit = (a[:, 1] - wl) * (b[:, 1] - wl) < 0
+			if not hit.any():
+				raise KeyError(f"no fin_right face at FS {station}, WL {wl}")
+			t = (wl - a[hit, 1]) / (b[hit, 1] - a[hit, 1])
+			return float((a[hit, 2] + (b[hit, 2] - a[hit, 2]) * t).max())
+
+		edge = c[c[:, 1] > c[:, 1].max() - 0.3]
+		yield result("layout.fin", f"fairing's upper edge's step off the fin's face at FS {station:.0f}", fair["step"], edge[:, 2].max() - face(c[:, 1].max() - 0.15), 0.3, "in")
+		w0, w1 = waterline + 5.0, waterline + 15.0
+		low = c[c[:, 1] < c[:, 1].min() + 1.0]
+		foot = low[np.argmax(low[:, 2])]
+		carried = face(w0) + (face(w1) - face(w0)) * (foot[1] - w0) / (w1 - w0)
+		yield result("layout.fin", f"fairing's foot outboard of the fin's face carried down, FS {station:.0f}", fair["standoff"], foot[2] - carried, 0.75, "in")
 
 	yield from guard("fin", "fins", fin)
 
@@ -1289,6 +1342,35 @@ def checks(jet):
 			f = (waterline - b[1]) / ((a[1] - b[1]) or 1)
 			return float(abs(b[2] + (a[2] - b[2]) * f))
 
+		# the main gear bay's corner (layout.nacelle bay): the bottom's outboard
+		# edge along its knots, where the eases leave it whole; the band above
+		# it at the outer door's hinge, and the crease
+		bay = F["layout"]["nacelle"]["bay"]
+
+		def edge(station, buttline, side):
+			# the skin's lowest waterline where the station's cut crosses the buttline
+			q = jet.cut(["fuselage"], [station, 100, 0], [1, 0, 0]).reshape(-1, 2, 3)
+			sign = 1 if side == "right" else -1
+			a, b = q[:, 0], q[:, 1]
+			hit = (a[:, 2] * sign - buttline) * (b[:, 2] * sign - buttline) < 0
+			if not hit.any():
+				raise KeyError(f"nothing of the {side} nacelle at FS {station}, BL {buttline}")
+			t = (buttline - a[hit, 2] * sign) / (b[hit, 2] * sign - a[hit, 2] * sign)
+			return float((a[hit, 1] + (b[hit, 1] - a[hit, 1]) * t).min())
+
+		f0, f1, f2, f3 = bay["fade"]
+		hinge = F["layout"]["gear"]["doors"]["outer"]["hinge"]
+		across = lambda s: float(np.interp(s, [k[0] for k in bay["buttline"]], [k[1] for k in bay["buttline"]]))
+		crease, beside = bay["crease"]
+		for side in ("left", "right"):
+			for s, w in bay["edge"]:
+				if f1 <= s <= f2:
+					yield result("layout.nacelle", f"{side} main gear bay's outboard edge at FS {s:g}", w, edge(s, across(s) - 0.5, side), 1.0, "WL in")
+			for s in hinge[:2]:
+				yield result("layout.nacelle", f"{side} main gear bay's band at the outer door's hinge, FS {s:g}", across(s), outer(s, (edge(s, across(s) - 0.5, side) + crease) / 2, side), 1.0, "BL in")
+			yield result("layout.nacelle", f"{side} main gear bay's crease, FS {hinge[0]:g}", beside, outer(hinge[0], crease, side), 1.0, "BL in")
+			# aft of the door, where its buttline eases in
+			yield result("layout.nacelle", f"{side} main gear bay's corner at FS 594", across(594), outer(594, edge(594, across(594) - 0.5, side) + 1.0, side), 1.0, "BL in")
 		# and between them the face is not hollow: no point of it inside the
 		# chord from the line to the corner, wherever the side reshapes it (the
 		# union swelling the face at the line pinched it 0.6 in at FS 548)
@@ -1507,12 +1589,37 @@ def checks(jet):
 				yield result("layout.strips", f"{key} strip's length on the {side}", float(np.linalg.norm(ends[1] - ends[0])), float(along.max() - along.min()), 0.8, "in")
 			# the strobes on the fins' faces (the buttline the face's), the position
 			# lights under the LEX's edges (the waterline the face's)
-			for key, face in ((f"strobe_{side}", 2), (f"position_lex_{side}", 1)):
+			# and the position lights on the underwing fairings' noses, cast aft
+			# and up onto them (both the station and the height the nose's)
+			for key, faces in ((f"strobe_{side}", (2,)), (f"position_lex_{side}", (1,)), (f"position_fold_{side}", (0, 1))):
 				p = jet.points([f"lamp_{key}"])
 				centre = (p.min(axis=0) + p.max(axis=0)) / 2
 				at = np.array(lamps[key]["at"], float)
 				for i, word in enumerate(("FS", "WL", "BL")):
-					yield result("layout.strips", f"{key} lens" + (", the face it stands on" if i == face else ""), at[i], centre[i], 2.0 if i == face else 0.8, f"{word} in")
+					yield result("layout.strips", f"{key} lens" + (", the face it stands on" if i in faces else ""), at[i], centre[i], 2.0 if i in faces else 0.8, f"{word} in")
+		# the fairings under the outer panels (layout.wing_fairing): their tips,
+		# their buttline and width at the widest, their depth under the wing
+		# ahead of the aileron's hinge
+		uw = F["layout"]["wing_fairing"]
+		body, tail = jet.points(["fairing_wing_right"]), jet.points(["fairing_aileron_right"])
+		yield result("layout.wing_fairing", "front tip", uw["front"][0], body[:, 0].min(), 1.0, "FS in")
+		yield result("layout.wing_fairing", "aft tip", uw["aft"][0], tail[:, 0].max(), 1.0, "FS in")
+		middle = (uw["front"][0] + uw["aft"][0]) / 2
+		c = jet.cut(["fairing_wing_right", "fairing_aileron_right"], [middle, 0, 0], [1, 0, 0])
+		if not len(c):
+			raise KeyError(f"no underwing fairing at FS {middle}")
+		yield result("layout.wing_fairing", "width at its middle", uw["width"], c[:, 2].max() - c[:, 2].min(), 0.5, "in")
+		yield result("layout.wing_fairing", "buttline at its middle", (uw["front"][2] + uw["aft"][2]) / 2, (c[:, 2].max() + c[:, 2].min()) / 2, 0.5, "BL in")
+		station = uw["front"][0] + uw["nose"] + 4.0
+		c, wing = jet.cut(["fairing_wing_right"], [station, 0, 0], [1, 0, 0]), jet.cut(["wing_outer_right", "flap_leading_outer_right"], [station, 0, 0], [1, 0, 0])
+		across = (uw["front"][2] + uw["aft"][2]) / 2
+		a_, b_ = wing[0::2], wing[1::2]
+		hit = (a_[:, 2] - across) * (b_[:, 2] - across) < 0
+		if not len(c) or not hit.any():
+			raise KeyError(f"no underwing fairing or wing at FS {station}")
+		t = (across - a_[hit, 2]) / (b_[hit, 2] - a_[hit, 2])
+		lower = float((a_[hit, 1] + (b_[hit, 1] - a_[hit, 1]) * t).min())
+		yield result("layout.wing_fairing", f"depth under the wing at FS {station:g}", uw["depth"], lower - c[:, 1].min(), 1.0, "in")
 		p = jet.points(["lamp_position_tail"])
 		centre = (p.min(axis=0) + p.max(axis=0)) / 2
 		yield result("layout.strips", "tail light's lens, on its pod's end, off where the photos put the light", 0.0, float(np.linalg.norm(centre - np.array(lamps["position_tail"]["at"], float))), 1.5, "in")
@@ -1583,6 +1690,12 @@ def checks(jet):
 		yield result("layout.hook", "hook's pivot station", hook["pivot"][0], pivot[0], 0.1, "FS in")
 		yield result("layout.hook", "hook's pivot height", hook["pivot"][1], pivot[1], 0.1, "WL in")
 		yield result("layout.hook", "hook's length, pivot to tip", hook["length"], float(np.hypot(*(np.array(hook["point"]) - pivot[:2]))), 0.3, "in")
+		# lowered, the shoe's lowest point in the direction the photos put it
+		# from the pivot (its distance, 2.9 in past the stowed tip's, unsettled)
+		down_hook = jet.points(["hook"], {"hook": 1})
+		low = down_hook[np.argmin(down_hook[:, 1])]
+		want = math.degrees(math.atan2(pivot[1] - hook["lowered"][1], hook["lowered"][0] - pivot[0]))
+		yield result("layout.hook", "lowered hook's lowest point below the pivot's horizontal, aft", want, math.degrees(math.atan2(pivot[1] - low[1], low[0] - pivot[0])), 1.0, "deg")
 		# the keel: its bottom on the photos' line, its aft end at the pivot,
 		# its forward end where it leaves the body
 		keel = F["layout"]["keel"]
@@ -1617,6 +1730,117 @@ def checks(jet):
 		# the nose pair's outer sidewalls, less one tyre's width: the centres' spacing
 		p = jet.points(["gear_nose_wheel"], down)
 		yield result("layout.gear", "nose wheels' spacing", gear["spacing"], p[:, 2].max() - p[:, 2].min() - gear["tyres"]["nose"]["width"], 0.3)
+		# the legs where the photos put them, gear down (layout.gear legs)
+		legs, axes = gear["legs"], (("FS", 0), ("WL", 1), ("BL", 2))
+		m = legs["main"]
+		for side in ("left", "right"):
+			# where the post crosses the photos' top's waterline (it runs on up
+			# inside the airframe to its retraction pivot), the arm's pivot end
+			# (its foremost ring), the side brace's top (its innermost ring)
+			ring = jet.cut([f"gear_{side}_strut"], [0, m["top"][1], 0], [0, 1, 0], down)
+			if not len(ring):
+				raise KeyError(f"no {side} main post at WL {m['top'][1]}")
+			top = ring.mean(0)
+			arm = np.unique(jet.points([f"gear_{side}_oleo"], down), axis=0)
+			pivot = arm[np.argsort(arm[:, 0])[:12]].mean(0)
+			brace = np.unique(jet.points([f"gear_{side}_brace"], down), axis=0)
+			brace = brace[np.argsort(np.abs(brace[:, 2]))[:12]].mean(0)
+			for label, want, got, axes_ in (("post at the photos' top", m["top"], top, (("FS", 0), ("BL", 2))), ("arm's pivot end", m["pivot"], pivot, axes),
+					("side brace's top", m["brace"][0], brace, axes)):
+				for unit, i in axes_:
+					yield result("layout.gear", f"{side} main {label}", want[i], abs(got[i]) if i == 2 else got[i], 1.0, f"{unit} in")
+		n = legs["nose"]
+		oleo = np.unique(jet.points(["gear_nose_oleo"], down), axis=0)
+		top = oleo[np.argsort(oleo[:, 1])[-12:]].mean(0)
+		yield result("layout.gear", "nose piston's top", n["oleo"][0], top[0], 0.5, "FS in")
+		yield result("layout.gear", "nose piston's top", n["oleo"][1], top[1], 0.5, "WL in")
+		bar = np.unique(jet.points(["launch_bar"], down), axis=0)
+		tip = bar[np.argsort(bar[:, 0])[:8]].mean(0)
+		yield result("layout.gear", "launch bar's raised tip", n["bar"]["tip"][0], tip[0], 1.0, "FS in")
+		yield result("layout.gear", "launch bar's raised tip", n["bar"]["tip"][1], tip[1], 1.0, "WL in")
+		# the strut's lamps, gear down (layout.lights gear): the landing lamp's
+		# lens (its front, its middle, its size) and the approach lights' three
+		# lenses (the middle one's place, their spacing)
+		lit, spots = np.unique(jet.points(["lamp_gear_nose"], down), axis=0), F["layout"]["lights"]
+		landing = np.array(spots["points"]["landing"]["at"], float)
+		near = lit[np.linalg.norm(lit - landing, axis=1) < 4.0]
+		if not len(near):
+			raise KeyError("no landing lens near the landing light's point")
+		yield result("layout.lights", "landing lamp's lens front", landing[0], near[:, 0].min(), 0.8, "FS in")
+		for i, unit in ((1, "WL"), (2, "BL")):
+			yield result("layout.lights", "landing lamp's lens middle", landing[i], (near[:, i].min() + near[:, i].max()) / 2, 0.8, f"{unit} in")
+		yield result("layout.lights", "landing lamp's lens across", spots["gear"]["landing"]["diameter"] - 0.6, near[:, 1].max() - near[:, 1].min(), 0.5, "in")
+		approach = np.array(spots["points"]["approach"]["at"], float)
+		spacing = spots["gear"]["approach"]["spacing"]
+		middles = []
+		for k in (1, 0, -1):
+			lens = lit[np.linalg.norm(lit - (approach + [0, k * spacing, 0]), axis=1) < 0.9]
+			if not len(lens):
+				raise KeyError(f"no approach lens {k:+d} from the amber one")
+			middles.append((lens.min(axis=0) + lens.max(axis=0)) / 2)
+		for i, unit in enumerate(("FS", "WL", "BL")):
+			yield result("layout.lights", "approach lights' amber lens", approach[i], middles[1][i], 0.8, f"{unit} in")
+		yield result("layout.lights", "approach lights' lenses apart, green to red", 2 * spacing, middles[0][1] - middles[2][1], 0.3, "in")
+		brace = np.unique(jet.points(["gear_nose_brace"], down), axis=0)
+		if not len(brace):
+			raise KeyError("no nose drag brace with the gear down")
+		pin = brace[np.argsort(brace[:, 1])[:12]].mean(0)
+		yield result("layout.gear", "nose drag brace's pin", n["brace"][0], pin[0], 1.0, "FS in")
+		yield result("layout.gear", "nose drag brace's pin", n["brace"][1], pin[1], 1.0, "WL in")
+		# each door open as the photos show it: its lowest point
+		doors = gear["doors"]
+		def skin(station, height):
+			# the fuselage's outboard buttline at a height, on the right
+			c = jet.cut(["fuselage"], [station, 0, 0], [1, 0, 0])
+			a_, b_ = c[0::2], c[1::2]
+			hit = ((a_[:, 1] - height) * (b_[:, 1] - height) < 0) & (np.maximum(a_[:, 2], b_[:, 2]) > 0)
+			if not hit.any():
+				raise KeyError(f"no fuselage at FS {station}, WL {height}")
+			t = (height - a_[hit, 1]) / (b_[hit, 1] - a_[hit, 1])
+			return float((a_[hit, 2] + (b_[hit, 2] - a_[hit, 2]) * t).max())
+
+		# the forward doors open, their tops where they hinge, at the marks' heights
+		fwd = doors["forward"]
+		q = jet.points(["gear_nose_door_right"], down)
+		for (station, _), height in zip(fwd["hinge"], fwd["height"]):
+			near = q[np.abs(q[:, 0] - station) < 2.0]
+			if not len(near):
+				raise KeyError(f"no gear_nose_door_right near FS {station}")
+			yield result("layout.gear", f"gear_nose_door_right open, its top at FS {station:g}", height, near[:, 1].max(), 1.0, "WL in")
+		# each nose door's free edge, open: the middle of its two ends (a rigid
+		# door hinged on the build's skin leans 2-2.5 in otherwise than the
+		# photos' at one end of the forward and long doors, the skin's slope at
+		# the bay's edges: #71)
+		for key, names in (("forward", ["gear_nose_door_right", "gear_nose_door_left"]), ("long", ["gear_nose_door_long"]), ("aft", ["gear_nose_door_aft"])):
+			for name in names:
+				q = jet.points([name], down)
+				ends = []
+				for fs, wl, bl in doors[key]["edge"]:
+					near = q[np.abs(q[:, 0] - fs) < 2.0]
+					if not len(near):
+						raise KeyError(f"no {name} near FS {fs}")
+					ends.append(near[np.argmin(near[:, 1])])
+				got, want = np.mean(ends, axis=0), np.mean(np.array(doors[key]["edge"], float), axis=0)
+				if "height" in doors[key]:
+					# the forward doors' marks are their open outer faces: their
+					# hinges stand on the skin at the marks' heights, and the free
+					# edge comes in by as much
+					want[2] -= float(np.mean([b - skin(f, h) for (f, b), h in zip(doors[key]["hinge"], doors[key]["height"])]))
+				yield result("layout.gear", f"{name} open, its free edge's middle", want[1], got[1], 1.5, "WL in")
+				yield result("layout.gear", f"{name} open, its free edge's middle", want[2], abs(got[2]), 1.5, "BL in")
+		# the main doors hang plumb under their hinges, the outer as tall as the
+		# photos show it (their hinges' height is the nacelle's: the build's
+		# skin there stands higher than the photos' doors, a finding)
+		for side in ("left", "right"):
+			q = jet.points([f"gear_door_inner_{side}"], down)
+			lowest = q[np.argmin(q[:, 1])]
+			yield result("layout.gear", f"{side} inner main door open, its lowest point", doors["inner"]["low"][0], lowest[0], 1.5, "FS in")
+			yield result("layout.gear", f"{side} inner main door open, hanging under its hinge", doors["inner"]["hinge"][2], abs(lowest[2]), 1.5, "BL in")
+			q = jet.points([f"gear_door_outer_{side}"], down)
+			front = q[q[:, 0] < q[:, 0].min() + 1.0]
+			yield result("layout.gear", f"{side} outer main door open, hanging under its hinge", doors["outer"]["hinge"][2], float(np.abs(front[np.argmin(front[:, 1])][2])), 1.5, "BL in")
+			yield result("layout.gear", f"{side} outer main door open, its front edge's height", doors["outer"]["front"][0][1] - doors["outer"]["front"][1][1],
+				float(front[:, 1].max() - front[:, 1].min()), 1.5, "in")
 		c = L["canopy"]
 		for k, (st, wl, bl) in enumerate(c["sill"]):
 			sill = jet.cut(["canopy"], [st, 100, 0], [1, 0, 0])

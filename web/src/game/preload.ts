@@ -10,6 +10,7 @@
 // length, or the compressed one, while the stream yields decoded bytes.
 import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
+import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the pilot's cockpit until ours is built
 import flight_wasm_url from '../assets/flight.wasm?url'
 import ford_model_url from '../assets/ford.glb?url'
 import stores_model_url from '../assets/stores.glb?url'
@@ -121,6 +122,7 @@ export function preload(): void {
   moved = performance.now()
   begin(ford_model_url)
   begin(fa18c_model_url)
+  begin(fa18c_old_url)
   begin(stores_model_url)
   begin(amraam_model_url)
   begin(flight_wasm_url)

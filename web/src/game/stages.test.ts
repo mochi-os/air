@@ -250,7 +250,7 @@ describe('distance stages in the engine', () => {
     expect(lift('stages_attach')).toMatch(
       /if\(g\.userData\.player\|\|!far\|\|far==="loading"\|\|!m\) return;/
     )
-    expect(source).toMatch(/fa18c:\{ url:fa18c_model_url, far:fa18c_far_url,/)
+    expect(source).toMatch(/fa18c:\{ url:fa18c_old_url, far:fa18c_far_url,/)   // the distant stages are cut from the old model, in its frame, until they are rebuilt from ours
   })
 
   it('retires the Distance LOD switch, dropping the value saved configs still carry', () => {

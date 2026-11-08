@@ -1,0 +1,2488 @@
+{
+	"frame": {
+		"origin": {
+			"station": 456,
+			"waterline": 105,
+			"buttline": 0
+		}
+	},
+	"joints": {
+		"aileron_left": {
+			"motion": "rotate",
+			"axis": [
+				0.11516,
+				0.0234,
+				0.99307
+			],
+			"drive": "flaperon.left",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			],
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"aileron_right": {
+			"motion": "rotate",
+			"axis": [
+				-0.11516,
+				-0.0234,
+				0.99307
+			],
+			"drive": "flaperon.right",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			],
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"canopy": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.0,
+				1.0
+			],
+			"drive": "canopy",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.08,
+					0
+				],
+				[
+					1,
+					0.7853981633974483
+				]
+			]
+		},
+		"canopy_slide": {
+			"motion": "slide",
+			"axis": [
+				-1.0,
+				-0.0,
+				0.0
+			],
+			"drive": "canopy",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.08,
+					0.038099999999999995
+				],
+				[
+					1,
+					0.038099999999999995
+				]
+			]
+		},
+		"fairing_aileron_left": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"fairing_aileron_right": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"fairing_wing_left": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"fairing_wing_right": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"flap_leading_inner_left": {
+			"motion": "rotate",
+			"axis": [
+				-0.35056,
+				-0.02206,
+				-0.93628
+			],
+			"drive": "slat",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			],
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"flap_leading_inner_right": {
+			"motion": "rotate",
+			"axis": [
+				0.35056,
+				0.02206,
+				-0.93628
+			],
+			"drive": "slat",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			],
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"flap_leading_outer_left": {
+			"motion": "rotate",
+			"axis": [
+				-0.34983,
+				-0.02207,
+				-0.93655
+			],
+			"drive": "slat",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			],
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"flap_leading_outer_right": {
+			"motion": "rotate",
+			"axis": [
+				0.34983,
+				0.02207,
+				-0.93655
+			],
+			"drive": "slat",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			],
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"flap_trailing_left": {
+			"motion": "rotate",
+			"axis": [
+				0.10865,
+				0.02342,
+				0.9938
+			],
+			"drive": "flaperon.left",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			],
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"flap_trailing_right": {
+			"motion": "rotate",
+			"axis": [
+				-0.10865,
+				-0.02342,
+				0.9938
+			],
+			"drive": "flaperon.right",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			],
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"flex_aileron_left": {
+			"motion": "bend",
+			"axis": [
+				1.0,
+				0.0,
+				-0.0
+			],
+			"direction": [
+				-0.0,
+				0.99972,
+				-0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0077188,
+					-0.0030345
+				],
+				[
+					7.5,
+					0.0192971,
+					0.0075862
+				]
+			]
+		},
+		"flex_aileron_right": {
+			"motion": "bend",
+			"axis": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"direction": [
+				0.0,
+				0.99972,
+				0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0077188,
+					-0.0030345
+				],
+				[
+					7.5,
+					0.0192971,
+					0.0075862
+				]
+			]
+		},
+		"flex_flap_leading_inner_left": {
+			"motion": "bend",
+			"axis": [
+				1.0,
+				0.0,
+				-0.0
+			],
+			"direction": [
+				-0.0,
+				0.99972,
+				-0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0248981,
+					-0.0166572
+				],
+				[
+					7.5,
+					0.0622453,
+					0.041643
+				]
+			]
+		},
+		"flex_flap_leading_inner_right": {
+			"motion": "bend",
+			"axis": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"direction": [
+				0.0,
+				0.99972,
+				0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0248981,
+					-0.0166572
+				],
+				[
+					7.5,
+					0.0622453,
+					0.041643
+				]
+			]
+		},
+		"flex_flap_leading_outer_left": {
+			"motion": "bend",
+			"axis": [
+				1.0,
+				0.0,
+				-0.0
+			],
+			"direction": [
+				-0.0,
+				0.99972,
+				-0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0082544,
+					-0.0036926
+				],
+				[
+					7.5,
+					0.0206361,
+					0.0092316
+				]
+			]
+		},
+		"flex_flap_leading_outer_right": {
+			"motion": "bend",
+			"axis": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"direction": [
+				0.0,
+				0.99972,
+				0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0082544,
+					-0.0036926
+				],
+				[
+					7.5,
+					0.0206361,
+					0.0092316
+				]
+			]
+		},
+		"flex_flap_trailing_left": {
+			"motion": "bend",
+			"axis": [
+				1.0,
+				0.0,
+				-0.0
+			],
+			"direction": [
+				-0.0,
+				0.99972,
+				-0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0214771,
+					-0.0125351
+				],
+				[
+					7.5,
+					0.0536927,
+					0.0313378
+				]
+			]
+		},
+		"flex_flap_trailing_right": {
+			"motion": "bend",
+			"axis": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"direction": [
+				0.0,
+				0.99972,
+				0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0214771,
+					-0.0125351
+				],
+				[
+					7.5,
+					0.0536927,
+					0.0313378
+				]
+			]
+		},
+		"flex_wing_left": {
+			"motion": "bend",
+			"axis": [
+				1.0,
+				0.0,
+				-0.0
+			],
+			"direction": [
+				-0.0,
+				0.99972,
+				-0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0506283,
+					-0.069031
+				],
+				[
+					7.5,
+					0.1265708,
+					0.1725774
+				]
+			]
+		},
+		"flex_wing_right": {
+			"motion": "bend",
+			"axis": [
+				-1.0,
+				0.0,
+				0.0
+			],
+			"direction": [
+				0.0,
+				0.99972,
+				0.02356
+			],
+			"drive": "load",
+			"keys": [
+				[
+					-3.0,
+					-0.0506283,
+					-0.069031
+				],
+				[
+					7.5,
+					0.1265708,
+					0.1725774
+				]
+			]
+		},
+		"gear_door_inner_left": {
+			"motion": "rotate",
+			"axis": [
+				-0.99975,
+				-0.02251,
+				-0.00047
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.15,
+					1.7671
+				],
+				[
+					1,
+					1.7671
+				]
+			]
+		},
+		"gear_door_inner_right": {
+			"motion": "rotate",
+			"axis": [
+				0.99975,
+				0.02251,
+				-0.00047
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.15,
+					1.7671
+				],
+				[
+					1,
+					1.7671
+				]
+			]
+		},
+		"gear_door_outer_left": {
+			"motion": "rotate",
+			"axis": [
+				0.99992,
+				-0.0129,
+				4e-05
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.15,
+					1.4748
+				],
+				[
+					1,
+					1.4748
+				]
+			]
+		},
+		"gear_door_outer_right": {
+			"motion": "rotate",
+			"axis": [
+				-0.99992,
+				0.0129,
+				4e-05
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.15,
+					1.4748
+				],
+				[
+					1,
+					1.4748
+				]
+			]
+		},
+		"gear_left_brace": {
+			"motion": "show",
+			"axis": [
+				0.0,
+				1.0,
+				-0.0
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.95,
+					0
+				],
+				[
+					1,
+					1
+				]
+			]
+		},
+		"gear_left_oleo": {
+			"motion": "rotate",
+			"axis": [
+				-0.19634,
+				0.98048,
+				-0.01059
+			],
+			"drive": "oleo.left",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.2663
+				]
+			]
+		},
+		"gear_left_shock": {
+			"motion": "show",
+			"axis": [
+				0.0,
+				1.0,
+				-0.0
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.95,
+					0
+				],
+				[
+					1,
+					1
+				]
+			]
+		},
+		"gear_left_strut": {
+			"motion": "rotate",
+			"axis": [
+				0.30207,
+				-0.25553,
+				0.9184
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.5949535181944925
+				]
+			]
+		},
+		"gear_left_twist": {
+			"motion": "rotate",
+			"axis": [
+				-0.94422,
+				0.05234,
+				0.32512
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.5707963267948966
+				]
+			]
+		},
+		"gear_left_wheel": {
+			"motion": "rotate",
+			"axis": [
+				0.19634,
+				-0.98048,
+				0.01059
+			],
+			"drive": "wheel.left",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			]
+		},
+		"gear_nose_brace": {
+			"motion": "show",
+			"axis": [
+				0.0,
+				1.0,
+				-0.0
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.95,
+					0
+				],
+				[
+					1,
+					1
+				]
+			]
+		},
+		"gear_nose_door_aft": {
+			"motion": "rotate",
+			"axis": [
+				-0.99981,
+				-0.00966,
+				-0.017
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.15,
+					1.8937
+				],
+				[
+					1,
+					1.8937
+				]
+			]
+		},
+		"gear_nose_door_left": {
+			"motion": "rotate",
+			"axis": [
+				0.99986,
+				0.01329,
+				-0.01
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.15,
+					1.1737
+				],
+				[
+					1,
+					1.1737
+				]
+			]
+		},
+		"gear_nose_door_long": {
+			"motion": "rotate",
+			"axis": [
+				-0.99686,
+				0.01169,
+				0.0783
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.15,
+					2.2558
+				],
+				[
+					1,
+					2.2558
+				]
+			]
+		},
+		"gear_nose_door_right": {
+			"motion": "rotate",
+			"axis": [
+				-0.99986,
+				-0.01329,
+				-0.01
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.15,
+					1.1737
+				],
+				[
+					1,
+					1.1737
+				]
+			]
+		},
+		"gear_nose_oleo": {
+			"motion": "slide",
+			"axis": [
+				0.99452,
+				0.10453,
+				0.0
+			],
+			"drive": "oleo.nose",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1
+				]
+			]
+		},
+		"gear_nose_steering": {
+			"motion": "rotate",
+			"axis": [
+				0.99452,
+				0.10453,
+				-0.0
+			],
+			"drive": "steering",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			]
+		},
+		"gear_nose_strut": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.6755160830299396
+				]
+			]
+		},
+		"gear_nose_wheel": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.0,
+				1.0
+			],
+			"drive": "wheel.nose",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			]
+		},
+		"gear_right_brace": {
+			"motion": "show",
+			"axis": [
+				0.0,
+				1.0,
+				-0.0
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.95,
+					0
+				],
+				[
+					1,
+					1
+				]
+			]
+		},
+		"gear_right_oleo": {
+			"motion": "rotate",
+			"axis": [
+				0.19634,
+				-0.98048,
+				-0.01059
+			],
+			"drive": "oleo.right",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.2663
+				]
+			]
+		},
+		"gear_right_shock": {
+			"motion": "show",
+			"axis": [
+				0.0,
+				1.0,
+				-0.0
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.95,
+					0
+				],
+				[
+					1,
+					1
+				]
+			]
+		},
+		"gear_right_strut": {
+			"motion": "rotate",
+			"axis": [
+				-0.30207,
+				0.25553,
+				0.9184
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.5949535181944925
+				]
+			]
+		},
+		"gear_right_twist": {
+			"motion": "rotate",
+			"axis": [
+				0.94422,
+				-0.05234,
+				0.32512
+			],
+			"drive": "gear",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.5707963267948966
+				]
+			]
+		},
+		"gear_right_wheel": {
+			"motion": "rotate",
+			"axis": [
+				-0.19634,
+				0.98048,
+				0.01059
+			],
+			"drive": "wheel.right",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			]
+		},
+		"hook": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.0,
+				1.0
+			],
+			"drive": "hook",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.2566
+				]
+			]
+		},
+		"hook_swing": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				1.0,
+				-0.0
+			],
+			"drive": "swing",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			]
+		},
+		"ladder": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.29629,
+				0.9551
+			],
+			"drive": "ladder",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.1868238913561442
+				]
+			]
+		},
+		"lamp_position_fold_left": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"lamp_position_fold_right": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"launch_bar": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"drive": "bar",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.1061
+				]
+			]
+		},
+		"nozzle_left_petal_1": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_10": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				1.0,
+				-0.0
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_11": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.86603,
+				-0.5
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_12": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.5,
+				-0.86603
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_2": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				-0.5,
+				-0.86603
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_3": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				-0.86603,
+				-0.5
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_4": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				-1.0,
+				-0.0
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_5": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				-0.86603,
+				0.5
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_6": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				-0.5,
+				0.86603
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_7": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_8": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.5,
+				0.86603
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_left_petal_9": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.86603,
+				0.5
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_1": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.0,
+				-1.0
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_10": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-1.0,
+				0.0
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_11": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.86603,
+				-0.5
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_12": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.5,
+				-0.86603
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_2": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				0.5,
+				-0.86603
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_3": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				0.86603,
+				-0.5
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_4": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				1.0,
+				0.0
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_5": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				0.86603,
+				0.5
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_6": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				0.5,
+				0.86603
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_7": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.0,
+				1.0
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_8": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.5,
+				0.86603
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"nozzle_right_petal_9": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.86603,
+				0.5
+			],
+			"drive": "nozzle",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					-0.20636560420258976
+				]
+			]
+		},
+		"probe": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				-0.92848,
+				0.37139
+			],
+			"drive": "probe",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.25,
+					0
+				],
+				[
+					1,
+					0.4886921905584123
+				]
+			]
+		},
+		"probe_door": {
+			"motion": "rotate",
+			"axis": [
+				0.98481,
+				-0.16627,
+				-0.0501
+			],
+			"drive": "probe",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					0.25,
+					1.3962634015954636
+				],
+				[
+					1,
+					1.3962634015954636
+				]
+			]
+		},
+		"rudder_left": {
+			"motion": "rotate",
+			"axis": [
+				0.34188,
+				-0.88033,
+				0.32882
+			],
+			"drive": "rudder",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			]
+		},
+		"rudder_right": {
+			"motion": "rotate",
+			"axis": [
+				0.34188,
+				-0.88033,
+				-0.32882
+			],
+			"drive": "rudder",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			]
+		},
+		"speedbrake": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"drive": "speedbrake",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.0471975511965976
+				]
+			]
+		},
+		"stabilator_left": {
+			"motion": "rotate",
+			"axis": [
+				-0.0,
+				0.0349,
+				0.99939
+			],
+			"drive": "stabilator.left",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			]
+		},
+		"stabilator_right": {
+			"motion": "rotate",
+			"axis": [
+				0.0,
+				-0.0349,
+				0.99939
+			],
+			"drive": "stabilator.right",
+			"keys": [
+				[
+					-3.141592653589793,
+					-3.141592653589793
+				],
+				[
+					3.141592653589793,
+					3.141592653589793
+				]
+			]
+		},
+		"wing_inner_left": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"wing_inner_right": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"wing_left": {
+			"motion": "rotate",
+			"axis": [
+				1.0,
+				-0.0,
+				0.0
+			],
+			"drive": "fold",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.7104
+				]
+			]
+		},
+		"wing_outer_left": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"wing_outer_right": {
+			"motion": "morph",
+			"morphs": {
+				"flex": {
+					"drive": "load",
+					"keys": [
+						[
+							-3.0,
+							-3.0
+						],
+						[
+							7.5,
+							7.5
+						]
+					]
+				}
+			}
+		},
+		"wing_right": {
+			"motion": "rotate",
+			"axis": [
+				-1.0,
+				0.0,
+				-0.0
+			],
+			"drive": "fold",
+			"keys": [
+				[
+					0,
+					0
+				],
+				[
+					1,
+					1.7104
+				]
+			]
+		}
+	},
+	"points": {
+		"eye": [
+			5.21462,
+			1.20904,
+			-0.0
+		],
+		"gun": {
+			"muzzle": [
+				8.4836,
+				0.46509,
+				0.0
+			],
+			"direction": [
+				1.0,
+				0.0,
+				-0.0
+			]
+		},
+		"nozzles": {
+			"left": {
+				"exit": [
+					-6.53542,
+					-0.0508,
+					-0.48423
+				],
+				"radius": 0.3937
+			},
+			"right": {
+				"exit": [
+					-6.53542,
+					-0.0508,
+					0.48423
+				],
+				"radius": 0.3937
+			}
+		},
+		"gear": {
+			"nose": {
+				"axle": [
+					4.47548,
+					-1.48844,
+					-0.0
+				],
+				"radius": 0.2731
+			},
+			"left": {
+				"axle": [
+					-0.9398,
+					-1.46812,
+					-1.58369
+				],
+				"radius": 0.3746
+			},
+			"right": {
+				"axle": [
+					-0.9398,
+					-1.46812,
+					1.58369
+				],
+				"radius": 0.3746
+			}
+		},
+		"ground": -1.8428,
+		"hook": {
+			"pivot": [
+				-4.92506,
+				-0.69596,
+				-0.0
+			],
+			"point": [
+				-6.5405,
+				-0.3048,
+				-0.0
+			]
+		},
+		"probe": [
+			7.82574,
+			0.48006,
+			0.19143
+		],
+		"belly": [
+			[
+				9.0424,
+				-0.36975,
+				-0.0
+			],
+			[
+				5.2324,
+				-0.45457,
+				-0.0
+			],
+			[
+				0.1524,
+				-0.54356,
+				-0.0
+			],
+			[
+				-3.6576,
+				-0.46115,
+				-0.0
+			]
+		],
+		"wingtips": {
+			"left": [
+				-1.69081,
+				0.10144,
+				-5.70235
+			],
+			"right": [
+				-1.69081,
+				0.10144,
+				5.70235
+			]
+		},
+		"speedbrake": {
+			"hinge": [
+				-3.45494,
+				0.65849,
+				6e-05
+			],
+			"area": 1.177
+		},
+		"hardpoints": {
+			"1": {
+				"mount": [
+					-1.60664,
+					0.10144,
+					-5.70235
+				],
+				"forward": [
+					1.0,
+					0.0,
+					-0.0
+				]
+			},
+			"2": {
+				"mount": [
+					-0.93806,
+					0.10114,
+					-3.41248
+				],
+				"forward": [
+					1.0,
+					0.0,
+					-0.0
+				]
+			},
+			"3": {
+				"mount": [
+					-0.61702,
+					0.10283,
+					-2.22314
+				],
+				"forward": [
+					1.0,
+					0.0,
+					-0.0
+				]
+			},
+			"4": {
+				"mount": [
+					-1.016,
+					-0.49009,
+					-1.0541
+				],
+				"forward": [
+					1.0,
+					0.0,
+					-0.0
+				]
+			},
+			"5": {
+				"mount": [
+					-0.3556,
+					-0.53786,
+					-0.0
+				],
+				"forward": [
+					1.0,
+					0.0,
+					-0.0
+				]
+			},
+			"6": {
+				"mount": [
+					-1.016,
+					-0.49009,
+					1.0541
+				],
+				"forward": [
+					1.0,
+					0.0,
+					-0.0
+				]
+			},
+			"7": {
+				"mount": [
+					-0.61702,
+					0.10283,
+					2.22314
+				],
+				"forward": [
+					1.0,
+					0.0,
+					-0.0
+				]
+			},
+			"8": {
+				"mount": [
+					-0.93806,
+					0.10114,
+					3.41248
+				],
+				"forward": [
+					1.0,
+					0.0,
+					-0.0
+				]
+			},
+			"9": {
+				"mount": [
+					-1.60664,
+					0.10144,
+					5.70235
+				],
+				"forward": [
+					1.0,
+					0.0,
+					-0.0
+				]
+			}
+		},
+		"lights": {
+			"position_lex_left": {
+				"position": [
+					1.82118,
+					0.32004,
+					-1.29032
+				],
+				"colour": "red",
+				"kind": "position"
+			},
+			"position_lex_right": {
+				"position": [
+					1.82118,
+					0.32004,
+					1.29032
+				],
+				"colour": "green",
+				"kind": "position"
+			},
+			"position_fold_left": {
+				"position": [
+					-0.86868,
+					0.0127,
+					-4.37134
+				],
+				"colour": "red",
+				"kind": "position",
+				"node": "wing_left"
+			},
+			"position_fold_right": {
+				"position": [
+					-0.86868,
+					0.0127,
+					4.37134
+				],
+				"colour": "green",
+				"kind": "position",
+				"node": "wing_right"
+			},
+			"position_tail": {
+				"position": [
+					-5.06984,
+					2.53746,
+					1.72974
+				],
+				"colour": "white",
+				"kind": "position"
+			},
+			"strobe_left": {
+				"position": [
+					-4.03352,
+					2.22504,
+					-1.6764
+				],
+				"colour": "red",
+				"kind": "strobe"
+			},
+			"strobe_right": {
+				"position": [
+					-4.03352,
+					2.22504,
+					1.6764
+				],
+				"colour": "red",
+				"kind": "strobe"
+			},
+			"formation_tip_left": {
+				"position": [
+					-1.31064,
+					0.08382,
+					-5.75564
+				],
+				"colour": "green",
+				"kind": "formation",
+				"node": "wing_left"
+			},
+			"formation_tip_right": {
+				"position": [
+					-1.31064,
+					0.08382,
+					5.75564
+				],
+				"colour": "green",
+				"kind": "formation",
+				"node": "wing_right"
+			},
+			"formation_undertip_left": {
+				"position": [
+					-1.35636,
+					-0.05588,
+					-5.66674
+				],
+				"colour": "green",
+				"kind": "formation",
+				"node": "wing_left"
+			},
+			"formation_undertip_right": {
+				"position": [
+					-1.35636,
+					-0.05588,
+					5.66674
+				],
+				"colour": "green",
+				"kind": "formation",
+				"node": "wing_right"
+			},
+			"formation_body_left": {
+				"position": [
+					-3.1369,
+					-0.03048,
+					-1.09982
+				],
+				"colour": "green",
+				"kind": "formation"
+			},
+			"formation_body_right": {
+				"position": [
+					-3.1369,
+					-0.03048,
+					1.09982
+				],
+				"colour": "green",
+				"kind": "formation"
+			},
+			"formation_fin_left": {
+				"position": [
+					-3.8735,
+					1.46812,
+					-1.40208
+				],
+				"colour": "green",
+				"kind": "formation"
+			},
+			"formation_fin_right": {
+				"position": [
+					-3.8735,
+					1.46812,
+					1.40208
+				],
+				"colour": "green",
+				"kind": "formation"
+			},
+			"landing": {
+				"position": [
+					5.03928,
+					0.14296,
+					0.00254
+				],
+				"colour": "white",
+				"kind": "landing",
+				"node": "gear_nose_strut"
+			},
+			"approach": {
+				"position": [
+					5.18526,
+					0.16341,
+					-0.09398
+				],
+				"colour": "amber",
+				"kind": "approach",
+				"node": "gear_nose_strut"
+			},
+			"hook": {
+				"position": [
+					-4.4196,
+					-0.7747,
+					-0.0
+				],
+				"colour": "white",
+				"kind": "hook"
+			},
+			"probe": {
+				"position": [
+					7.7724,
+					0.5842,
+					0.254
+				],
+				"colour": "white",
+				"kind": "probe"
+			}
+		},
+		"landmarks": {
+			"apex": [
+				10.04062,
+				-0.1212,
+				0.0
+			],
+			"fin_tip_leading_left": [
+				-3.94004,
+				2.75262,
+				-1.81335
+			],
+			"fin_tip_leading_right": [
+				-3.94004,
+				2.75262,
+				1.81335
+			],
+			"fin_tip_trailing_left": [
+				-5.08287,
+				2.75262,
+				-1.79341
+			],
+			"fin_tip_trailing_right": [
+				-5.08287,
+				2.75262,
+				1.79341
+			],
+			"stabilator_tip_leading_left": [
+				-5.99157,
+				-0.03235,
+				-3.29235
+			],
+			"stabilator_tip_leading_right": [
+				-5.99157,
+				-0.03235,
+				3.29235
+			],
+			"stabilator_tip_trailing_left": [
+				-7.146,
+				-0.03235,
+				-3.29235
+			],
+			"stabilator_tip_trailing_right": [
+				-7.146,
+				-0.03235,
+				3.29235
+			],
+			"wingtip_leading_left": [
+				-0.84906,
+				0.10144,
+				-5.70235
+			],
+			"wingtip_leading_right": [
+				-0.84906,
+				0.10144,
+				5.70235
+			],
+			"wingtip_trailing_left": [
+				-2.53257,
+				0.10144,
+				-5.70235
+			],
+			"wingtip_trailing_right": [
+				-2.53257,
+				0.10144,
+				5.70235
+			]
+		}
+	}
+}

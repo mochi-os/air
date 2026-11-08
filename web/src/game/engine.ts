@@ -50,6 +50,7 @@ import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, test as if
 import { reconcile as cautions_reconcile, restack as cautions_restack, lines as cautions_lines, host as cautions_host, dedicated as cautions_dedicated } from './cautions'
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
+import { rig as joints_rig, pose as joints_pose, roll as wheel_roll, schedule as joints_schedule } from './joints'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { Radar, boresight, notched as radar_notched, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL, FRAME as RADAR_FRAME } from './radar'
 import { Rwr, threats } from './rwr'
@@ -80,7 +81,9 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import ford_model_url from '../assets/ford.glb?url'
 import ford_ship from '../assets/ford.json'   // its ship file, written beside it by tools/ford/build.py: the deck layout and the points the engine draws
 import { layout as ship_layout } from './ship'
-import fa18c_model_url from '../assets/fa18c.glb?url'
+import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
+import fa18c_points from '../assets/fa18c.json'   // its points file, written beside it by tools/fa18c/build.py: the joints and their schedules, and the points the engine draws
+import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the model it replaces: the player's own jet in first person, whose cockpit the engine's cockpit tables are measured on, until our cockpit is built (claude/plans/air-fa18c.md, step 4)
 import stores_model_url from '../assets/stores.glb?url'
 import fa18c_far_url from '../assets/fa18c-far.glb?url'   // the distant stages (#3): tools/fa18c
 import amraam_model_url from '../assets/aim120c.glb?url'
@@ -1527,7 +1530,12 @@ function make_jet(){ const g=new THREE.Group();   // afterburner cones only — 
 // the state channel, min/max normalise a signed deflection (rad) onto the clip
 // span, flip reverses it.
 const AIRCRAFT_MODELS={
-	fa18c:{ url:fa18c_model_url, far:fa18c_far_url, length:17.07, yaw:90, pitch:0, roll:0,
+	fa18c:{ url:fa18c_old_url, far:fa18c_far_url, length:17.07, yaw:90, pitch:0, roll:0,
+		// Our own model, hung in the old one's frame until the cockpit, stores and distant stages that frame carries are
+		// rebuilt (claude/plans/air-fa18c.md, step 4): every jet's group keeps the old model's frame, and the new model sits
+		// at the place in it where its main wheels stand on the old one's (seat: the old mains' contact, as the spin
+		// table's attach and the flight model's gear give it).
+		exterior:{ url:fa18c_model_url, points:fa18c_points, seat:[-0.5,-2.63] },
 		muzzle:2.4,   // the M61 port: on the nose top, centreline, this far aft of the radome tip - gun_profile finds the skin there
 		shift:[{ node:"Column_Base_383", by:[-0.15,0,0] }],   // the stick's assembly, 15 cm aft: the model stands it with its grip flush with the AMPCD, where no forward stick fits, and the pilot figure's hand held it here
 		cockpitHide:/^(Pilot_Head_769|Object_1357|Object_1369)$/,   // first person: the pilot's head subtree (head, helmet, visor, mask), his arms and his body - a figure posed for another cockpit, whose right hand holds a stick of its own 15 cm behind the jet's
@@ -1998,6 +2006,8 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	const loaded=fleet[kind]; if(!loaded||g.userData.hasModel===kind) return; g.userData.hasModel=kind;
 	g.children.forEach(c=>{ if(c.userData.body||c.userData.glass) c.visible=false; });   // hide procedural shell, keep afterburner cones
 	const previous=g.children.find(c=>c.userData&&c.userData.model); if(previous) g.remove(previous);   // aircraft swap: drop the old airframe
+	const outside=g.children.find(c=>c.userData&&c.userData.exterior); if(outside) g.remove(outside);   // and our own model hung beside it
+	g.userData.exterior=null; g.userData.legacy=null; g.userData.pit=null;
 	g.userData.stages=null; g.userData.stage=undefined;   // its distant stages went with it
 	// No team tint on the airframe (#210): identification is the HUD box, locator
 	// line and map colours, not paint.
@@ -2024,6 +2034,26 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	g.add(m);
 	for(const s of spec.shift||[]){ const o=m.getObjectByName(s.node); if(o) shift_node(g,o,s.by); }
 	stages_attach(g,kind);
+	if(fleet_exterior[kind]){ const x=fleet_exterior[kind], e=x.proto.clone(true); e.userData.exterior=true;
+		e.traverse(o=>{ if(o.isMesh){ o.userData.modelmesh=true; o.castShadow=cfg.shadows; } });
+		g.add(e);
+		// The old airframe's own meshes, drawn only on the player's jet in first person. Its wingtip rounds stay (the
+		// stores hung in its frame, until ours are built), and so do the parts other code shows and hides: the pilot
+		// (cockpitHide), the flame discs, the distant stages hung in its scene, and the meshes spec.hide already put away.
+		const keep=new Set([TIP_NODES.tip1,TIP_NODES.tip9]), apart=new Set();
+		for(const o of [...(g.userData.cockpitHide||[]),...g.userData.flame.map(f=>f.object),...(g.userData.stages?[g.userData.stages.root]:[])]) o.traverse(c=>apart.add(c));
+		const legacy=[]; m.traverse(o=>{ if(o.isMesh&&o.visible&&!keep.has(o.name)&&!apart.has(o)) legacy.push(o); });
+		g.userData.legacy=legacy;
+		g.userData.exterior={ object:e, frame:x.frame, points:x.points, joints:joints_rig(e,x.joints), canopy:e.getObjectByName("canopy") };
+		g.userData.exterior.legs=exterior_legs(g.userData.exterior, spec); g.userData.exterior.deck=exterior_deck(g.userData.exterior);
+		if(g.userData.stages){ g.userData.stages.parts.push(e); e.visible=g.userData.stage===0; }   // another jet's stage shows our model as it showed the old one's parts
+		{ const glow=new Map(), burner=new Map();   // its formation strips and lenses (lights) glow with the FORMATION knob, its flames (burner) with the engine's reheat, as the old model's emissive maps did; neither carries an emissive map, so each takes its colour here
+			e.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
+				const pool=mm.name==="burner"?burner:mm.name==="lights"?glow:null; if(!pool) return;
+				if(!pool.has(mm)){ const c=mm.clone(); c.emissive=pool===burner?new THREE.Color(1,0.42,0.12):new THREE.Color(0.55,1,0.45); c.emissiveIntensity=0; c.userData.glowmax=pool===burner?1:4.0; pool.set(mm,c); }   // the strips' electroluminescent green; the flames' orange
+				if(Array.isArray(o.material)) o.material[ix]=pool.get(mm); else o.material=pool.get(mm); }); });
+			g.userData.glow=[...(g.userData.glow||[]),...glow.values()]; g.userData.burner=[...(g.userData.burner||[]),...burner.values()]; }
+		airframe_show(g,true); }
 	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); controls_round(g,m); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
 		g.userData.rig=loaded.rig.map(r=>{
@@ -2039,6 +2069,102 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 		g.userData.canopy=[]; m.traverse(o=>{ if(/^Canopy_ParentAction_AN_Parent/i.test(o.name)) for(const c of o.children) if(!/^Canopy_Arm/i.test(c.name)) g.userData.canopy.push(c); });   // the canopies the model carries (outside, cockpit and its low detail copy), less the actuator arm that stays with the jet, for the jettison (#113)
 		g.userData.grip=GRIP.map(p=>{ const o=m.getObjectByName(p.node); return o?{ ...p, object:o, rest:o.position.clone() }:null; }).filter(Boolean);
 		{ const o=m.getObjectByName(INS_KNOB.node); g.userData.insknob=o?{ object:o, rest:o.quaternion.clone() }:null; } } }
+// airframe_show draws one airframe per jet (claude/plans/air-fa18c.md, step 4): our own model on every jet and in
+// every external view, and the old one, with the cockpit the engine builds over it, on the player's own jet in
+// first person. Another jet's model shows at its full stage only (stage_show). The pilot's follows the view: the
+// joint drive calls this every frame, and it redraws only when the view has crossed into or out of the cockpit.
+function airframe_show(g,force){ const u=g.userData, x=u.exterior; if(!x) return;
+	const pit=!!u.player&&cfg.view==="cockpit";
+	if(!pit) for(const o of u.cockpitHide||[]) o.visible=false;   // the old pilot, whose model is not drawn: cockpit_hidden shows him in every other view
+	if(!force&&u.shown===pit) return; u.shown=pit;
+	if(u.player) x.object.visible=!pit;   // another jet's follows its distance stage (stage_show: it is among the stage's parts)
+	for(const o of u.legacy||[]) o.visible=pit;
+	for(const o of u.pit||[]) o.visible=pit; }
+// exterior_legs finds each leg's wheel on our own model and how far its oleo lifts the wheel per unit of travel,
+// measured on the model with the gear down: the per-leg seating (#203) turns the lift a wheel needs into its oleo's
+// drive. contact is the flight model's contact point in the group's frame (the spin table's attach, which mirrors
+// fa18c.go's gear), the depth of whose penetration is the strut's load.
+const EXTERIOR_LEGS={ nose:"c_tire_anim_AN_Wheels_132", left:"l_tire_anim_AN_Tire_35", right:"r_tire_anim_AN__287" };   // each leg's spin entry, for the flight model's contact and the tyre's load
+function exterior_legs(x, spec){ const legs=[], e=x.object, at=new THREE.Vector3();
+	const lift=(leg,travel)=>{ joints_pose(x.joints,(drive)=>drive==="gear"?1:drive===`oleo.${leg}`?travel:undefined); e.updateMatrixWorld(true);
+		const wheel=e.getObjectByName(`gear_${leg}_wheel`); return wheel?e.worldToLocal(wheel.getWorldPosition(at)).y:NaN; };
+	for(const [leg,tyre] of Object.entries(EXTERIOR_LEGS)){ const wheel=e.getObjectByName(`gear_${leg}_wheel`), oleo=x.joints.find(j=>j.name===`gear_${leg}_oleo`), point=x.points.gear[leg];
+		const spin=(spec.spin||[]).find(s=>s.node===tyre); if(!wheel||!oleo||!point) continue;
+		const rate=(lift(leg,0.1)-lift(leg,0))/0.1;   // metres the wheel rises per unit of oleo drive
+		legs.push({ leg, wheel, oleo, radius:point.radius, rate:rate>1e-3?rate:1, lift:0, contact:spin?spin.attach:null, strut:spin?spin.strut:0, tyre:spin?spin.tyre:0, travel:spin?spin.travel:0, limit:spin?spin.limit:0 }); }
+	joints_pose(x.joints,(drive)=>drive==="gear"||drive.startsWith("oleo.")?0:undefined);   // back to rest: stowed
+	return legs; }
+// exterior_deck is how far our own model's hook lowers before its point meets the ground the jet stands on
+// (points.ground, under the main wheels): the claw rests on a deck, not through it.
+function exterior_deck(x){ const p=x.points.hook, j=x.joints.find(q=>q.name==="hook"); if(!p||!j||!j.axis) return HOOK_DECK_CAP;
+	const arm=new THREE.Vector3(p.point[0]-p.pivot[0],p.point[1]-p.pivot[1],p.point[2]-p.pivot[2]), turn=new THREE.Quaternion(), at=new THREE.Vector3();
+	const low=(f)=>p.pivot[1]+at.copy(arm).applyQuaternion(turn.setFromAxisAngle(j.axis,joints_schedule(j.joint.keys,f))).y;
+	if(low(1)>=x.points.ground) return 1;
+	let a=0, b=1; for(let i=0;i<30;i++){ const f=(a+b)/2; if(low(f)>x.points.ground) a=f; else b=f; }
+	return a; }
+// exterior_load_factor is the lift's load factor that bends the wing (#27): 0 with the weight on the wheels, 1 in
+// level flight. The pilot's is the core's normal load less what the gear carries; another jet's is level flight
+// once it is clear of the surface under it.
+function exterior_load_factor(st){
+	if(st===ownship) return (ownship.gload??1)*(1-THREE.MathUtils.clamp(st.squish??0,0,1));
+	if(st===bandit&&bandit_words) return bandit_words[STATE.nz]??1;
+	const under=st.pos?ground_height(st.pos.x,st.pos.z):-1e9;
+	return under>-1e8&&st.pos.y<under+stance_of(st.group&&st.group.userData.hasModel)+0.5?0:1; }
+// exterior_pose drives our own model's joints from the jet's state (joints.ts; claude/plans/air-fa18c.md, Joints):
+// the flight controls from the core's surfaces, held where a jet sends none as the old rig held them (neutral
+// stabilators and rudders, the flaps and leading edges drooped with the gear down), the mechanisms from their 0..1
+// progress, the wheels' roll and the nosewheel's steering, each leg's oleo seated on the surface under its wheel
+// (#203), and the wing's bend from the lift's load factor.
+const _exterior_wheel=new THREE.Vector3(), _exterior_contact=new THREE.Vector3();
+function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
+	if(g.userData.player) airframe_show(g);   // the view picks the pilot's airframe
+	const s=st.surfaces, down=1-THREE.MathUtils.clamp(st.gear??1,0,1), toe=30*D2R*(st.squish??0), clamp=THREE.MathUtils.clamp;
+	let hook=clamp(st.hook??0,0,1);
+	if(hook>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8&&st.pos.y<=surf+stance_of(g.userData.hasModel)+0.6) hook=Math.min(hook,x.deck??HOOK_DECK_CAP); }   // the claw rests ON the deck, not through it
+	const own=st===ownship, spool=own?(ownship.spool??0.8):0.8, stage=own?(ownship.stage??0):Math.max(...burners(st));
+	const open=Math.max(clamp((0.7-spool)/0.55,0,1),clamp(stage,0,1));   // F404 exit area: open at idle, closed by military, opening with the reheat stage
+	const load=exterior_load_factor(st), legs=x.legs||[];
+	const wheel=(leg)=>{ const l=legs.find(q=>q.leg===leg); return wheel_roll((st.wheelDist??0)/(l?l.radius:0.3)); };
+	const oleo_of=(leg)=>{ const l=legs.find(q=>q.leg===leg); return l?Math.max(0,l.lift)/l.rate:0; };
+	const value=(drive,name)=>{ switch(drive){
+		case "stabilator.left": return s?s.stabL:0;
+		case "stabilator.right": return s?s.stabR:0;
+		case "flaperon.left": return s&&s.flapL!==undefined?s.flapL:DROOP*down;
+		case "flaperon.right": return s&&s.flapR!==undefined?s.flapR:DROOP*down;
+		case "slat": return s&&s.slat!==undefined?s.slat:SLAT_PA*down;
+		case "rudder": return clamp((s?s.rudder:0)+(name==="rudder_left"?-toe:toe),-30*D2R,30*D2R);   // toe-in with weight on the wheels: both trailing edges inboard
+		case "speedbrake": return clamp(st.speedbrake??0,0,1);
+		case "fold": return clamp(st.fold??0,0,1);
+		case "gear": return down;
+		case "hook": return hook;
+		case "swing": return 0;
+		case "probe": return clamp(st.probe??0,0,1);
+		case "canopy": return clamp(st.canopy??0,0,1);
+		case "bar": return clamp(st.bar??0,0,1);
+		case "nozzle": return 1-open;
+		case "ladder": return 0;
+		case "steering": return st.steer??0;
+		case "wheel.nose": return wheel("nose");
+		case "wheel.left": return wheel("left");
+		case "wheel.right": return wheel("right");
+		case "oleo.nose": return oleo_of("nose");
+		case "oleo.left": return oleo_of("left");
+		case "oleo.right": return oleo_of("right");
+		case "load": return load;
+		default: return undefined; } };
+	joints_pose(x.joints,value);
+	// Each loaded leg's wheel seated on the surface under it (#203): the strut's load from how deep the flight
+	// model's contact point presses below the surface, the tyre flattened by it, and the oleo lifting the wheel
+	// onto that plane. An unloaded wheel hangs at full extension.
+	const seated=(st.gear??1)<0.05;
+	if(legs.length){ g.updateMatrixWorld(true);
+		for(const l of legs){ l.wheel.getWorldPosition(_exterior_wheel);
+			let plane=-1e9;
+			if(seated&&l.contact){ const c=_exterior_contact.set(l.contact[0],l.contact[1],l.contact[2]).applyMatrix4(g.matrixWorld), under=ground_height(c.x,c.z), surface=ground_height(_exterior_wheel.x,_exterior_wheel.z);
+				const depth=under>-1e8?under-c.y:0;
+				if(depth>0&&surface>-1e8) plane=surface-flatten(depth,l.strut,l.tyre,l.travel,l.limit); }
+			l.lift=oleo(_exterior_wheel.y-l.radius,plane,l.lift,dt); }
+		joints_pose(legs.map(l=>l.oleo),value); } }
 // shift_node moves a node of the model by an offset in the group frame (forward x, up y, right z),
 // whatever frames the model's own nodes are in (spec.shift).
 function shift_node(g,o,by){ g.updateMatrixWorld(true); const at=o.getWorldPosition(new THREE.Vector3()), to=g.localToWorld(g.worldToLocal(at.clone()).add(new THREE.Vector3(...by)));
@@ -2063,6 +2189,7 @@ function model_of(g){ return g.children.find(c=>c.userData&&c.userData.model)||g
 const STAGES=["full","medium","far","dot"], STAGE_LIMITS=[80,8,2], STAGE_MARGIN=1.15;
 const DOT_SIZE=3, DOT_RANGE=25000, DOT_FADE=5000, DOT_GAIN=0.42, DOT_MAX=128;   // DOT_SIZE: POINT_HEIGHT pixels, 2 reference pixels
 const CARRIER_LIMIT=150, CARRIER_KEEP=/^deck(_baked|_underside|_skirt)?$/;
+const fleet_exterior={};   // aircraft kind -> our own model hung in the old one's frame (exterior_load), beside fleet's old model
 const fleet_far={};   // aircraft kind -> its distant stages (fa18c-far.glb: airframe, up, down, burner, far), or "loading"
 // carrier_depth draws the carrier into the sun's shadow map pushed back from the sun in proportion to how
 // slanted each face is to it, three texels' worth of its slope and never more than 4 m: the underside of her
@@ -2102,7 +2229,7 @@ function stages_attach(g,kind){ const far=fleet_far[kind], m=g.children.find(c=>
 	if(g.userData.player||!far||far==="loading"||!m) return;
 	const inner=m.children[0]&&m.children[0].children[0]; if(!inner) return;   // outer > proto (rotation, stance) > the glTF scene (scale, centring)
 	const root=far.clone(true); inner.add(root);
-	g.userData.stages={ root, parts:inner.children.filter(c=>c!==root), albedo:far.userData.albedo,
+	g.userData.stages={ root, parts:inner.children.filter(c=>c!==root).concat(g.userData.exterior?[g.userData.exterior.object]:[]), albedo:far.userData.albedo,
 		airframe:root.getObjectByName("airframe"), up:root.getObjectByName("up"), down:root.getObjectByName("down"), burner:root.getObjectByName("burner"), far:root.getObjectByName("far") };
 	g.userData.stage=-1; stage_show(g,0,1); }
 function stage_show(g,i,gear){ const s=g.userData.stages, down=gear<0.5;   // gear: 1 = up
@@ -5150,7 +5277,12 @@ function update_rails(st,count){ if(!st.group) return;
 	for(const [name,node] of Object.entries((st.racks&&st.racks.nodes)||{})){ if(name.startsWith("9m")) node.visible=live.has(name); }
 	{ const spent=departed(order.amraams,st.amraam);   // #27: expended AMRAAMs disappear port cheek first; a jet with no count (remote) keeps them all
 		order.amraams.forEach((name,i)=>{ const node=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(node) node.visible=i>=spent; }); } }
-function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights(); calibrate_eye();
+function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights();
+	{ const g=ownship.group, before=new Set(g.children);   // the eye's calibration casts at the old cockpit, drawn while it runs; the parts the cockpit build hangs on the group are the pit's, drawn with it
+		for(const o of g.userData.legacy||[]) o.visible=true;
+		calibrate_eye();
+		if(g.userData.exterior) g.userData.pit=[...new Set([...(g.userData.pit||[]),...g.children.filter(c=>!before.has(c))])].filter(c=>c.parent===g);
+		airframe_show(g,true); }
 	assign_loadout(ownship, loadout()); assign_loadout(bandit, bandit_fit());
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining()); }   // re-pin the ownship lights to the real airframe; rails reflect the loadout
 // own_mask: the core attach bitmask for the flown loadout with expended rounds
@@ -5282,6 +5414,19 @@ function carriage_update(dt){
 // texture refs so the loader never takes its blob-URL texture path;
 // solid-colour materials keep their baseColorFactor.
 const glb_split=model_split, glb_repack=model_repack;
+// exterior_load parses our own model for an aircraft and hangs it in the old model's frame (claude/plans/air-fa18c.md,
+// step 4): its origin, the true frame's (FS 456, WL 105), goes where its main wheels' contact meets the old
+// model's mains (spec.exterior.seat), so the cockpit, stores and distant stages measured in the old frame keep
+// their places. frame is that origin in the group's frame; every point of the points file is in the true frame.
+async function exterior_load(spec){ const e=spec.exterior, points=e.points.points;
+	const stocked=await model_stock(e.url, renderer), leg=points.gear.left;
+	const frame=new THREE.Vector3(e.seat[0]-leg.axle[0], e.seat[1]-(leg.axle[1]-leg.radius), 0);
+	const proto=new THREE.Group(); proto.name="exterior"; proto.position.copy(frame); proto.add(stocked.scene.clone(true)); proto.updateMatrixWorld(true);
+	return { proto, frame, joints:e.points.joints, points }; }
+// exterior_profile measures the gun's signature on our own model: the port at the points file's muzzle, the skin's
+// top line behind it for the gas streak (gun_profile, which takes the muzzle as its distance aft of the nose's tip).
+function exterior_profile(x){ const box=new THREE.Box3().setFromObject(x.proto), muzzle=x.points.gun.muzzle;
+	return gun_profile(x.proto,{ muzzle:box.max.x-(muzzle[0]+x.frame.x) }); }
 async function init_external_model(kind){
 	kind=kind||"fa18c"; const spec=AIRCRAFT_MODELS[kind]||AIRCRAFT_MODELS.fa18c;
 	if(fleet[kind]||fleet_loading[kind]) return fleet_loading[kind]; // one load per aircraft
@@ -5321,8 +5466,9 @@ async function init_external_model(kind){
 					if(/^EMISSIVE_LIGHTS$/.test(mm.name||"")) instrument_mats.push(mm);   // the main panel's own emissive placards follow the INST PNL knob too (#21)
 					if(mm.name==="Mirrors"){ const glass=mm.clone(); glass.metalness=1; glass.roughness=0.05; glass.color=new THREE.Color(0xd4d8dc); glass.envMap=mirror_env&&mirror_env.texture; mirror_mats.push(glass); if(Array.isArray(o.material)) o.material[ix]=glass; else o.material=glass; }   // the canopy bow's side mirrors: matte white plastic in the model, silvered glass here
 					if(mm.map&&/^Material_1[24]$/.test(mm.name||"")){ const lit=mm.clone(); lit.emissiveMap=mm.map; lit.emissive=new THREE.Color(0xffffff); lit.emissiveIntensity=0.32; instrument_mats.push(lit); if(Array.isArray(o.material)) o.material[ix]=lit; else o.material=lit; } }); } });   // instrument backlighting (#99) on this jet's own copy of the two cockpit gauge materials: the stock's are shared with the loadout preview
+				if(spec.exterior) fleet_exterior[kind]=await exterior_load(spec);   // our own model, before the loading gate opens: no jet is drawn with the old one outside
 				fleet[kind]={ proto, rig, profile:gun_profile(proto,AIRCRAFT_MODELS[kind]||{}) };
-				void init_far_model(kind);   // the distant stages follow; until they arrive every jet is drawn in full
+				void init_far_model(kind); if(fleet_exterior[kind]) fleet[kind].profile=exterior_profile(fleet_exterior[kind]);   // the distant stages follow; until they arrive every jet is drawn in full
 				if(kind===(cfg.aircraft||"fa18c")) model_active=true;   // the loading gate waits on the ownship's aircraft
 				apply_model_all(); finish();
 			}catch(e){ finish(); throw new Error("aircraft model: failed to process "+tag+": "+(e&&e.message||e)); } }
@@ -7285,6 +7431,9 @@ function seg_between(mesh,ax,az,bx,bz,y){ const dx=bx-ax, dz=bz-az, len=Math.hyp
 let hook_claw=null;   // {node, local}: the tailhook claw tip, resolved once as the furthest vertex from the hook pivot (attitude-invariant in the node's local frame). (Restored with _wireApex: the #166 sweep removed both while claw_world still used them — carrier traps would throw.)
 const _wireApex=new THREE.Vector3();
 function claw_world(out){   // world position of the actual rendered claw, or null if the hook model isn't resolved
+	const x=ownship.group.userData.exterior;
+	if(x&&(!hook_claw||hook_claw.exterior!==x)){ const hook=x.object.getObjectByName("hook"), p=x.points.hook;   // our own model's: the points file's hook point, riding the hook joint
+		if(hook&&p){ const origin=exterior_origin(x,hook); hook_claw={ node:hook, local:new THREE.Vector3(p.point[0]-origin.x,p.point[1]-origin.y,p.point[2]-origin.z), exterior:x }; } }
 	if(!hook_claw){ const base=ownship.group.getObjectByName("Hook_AN_base_20"); if(!base) return null;
 		const v=new THREE.Vector3(); let far=null, best=-1; base.updateWorldMatrix(true,true);
 		base.traverse(o=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position;
@@ -7323,6 +7472,7 @@ function build_aircraft_lights(){   // the position lights (red port, green star
 }
 function position_aircraft_lights(){   // pin the lights to the real airframe: cluster the loaded model's extreme vertices for the wingtips (full span) and the tail/nose (centreline only, so a swept stabilator tip or missile fin can't win). The hardcoded offsets are only a pre-load fallback.
 	if(!aircraft_lights) return; const m=ownship.group.children.find(c=>c.userData.model); if(!m) return;
+	if(ownship.group.userData.exterior) return exterior_lights(ownship.group.userData.exterior);
 	ownship.group.updateMatrixWorld(true);
 	const inv=new THREE.Matrix4().copy(ownship.group.matrixWorld).invert(), v=new THREE.Vector3();
 	const each=f=>m.traverse(o=>{ if(!o.isMesh) return; const p=o.geometry&&o.geometry.getAttribute("position"); if(!p) return;
@@ -7347,6 +7497,31 @@ function position_aircraft_lights(){   // pin the lights to the real airframe: c
 	else L.nose={x:xmax-3.5, y:-1.2};
 	set(L.landing[0], L.nose.x, L.nose.y, nose.z);   // landing light on the nose gear strut (as on the real Hornet), so it exists only with the gear down
 }
+// exterior_lights pins the pilot's lights to our own model's points file (NATOPS 2.6.1's lights, triangulated from the
+// photos): the position lights on the LEX edges, the fold fairings' tips and the right fin's tip pod, the strobes on
+// the fins, and the landing light on the nose strut. Each rides the part it sits on (its node: the outer wing
+// panels, which fold and bend, and the nose strut), carried each frame by exterior_lights_ride: the sprites stay in
+// the group, so they show in first person too, where the model itself is not drawn. The old airframe's wingtip pair
+// has no light on this jet and is spare.
+function exterior_lights(x){ const L=aircraft_lights, lights=x.points.lights||{};
+	L.ride=[];
+	const hang=(sprite,name)=>{ const l=lights[name]; sprite.userData.spare=!l; if(!l) return;
+		const node=(l.node&&x.object.getObjectByName(l.node))||x.object, origin=exterior_origin(x,node);
+		L.ride.push({ sprite, node, local:new THREE.Vector3(l.position[0]-origin.x,l.position[1]-origin.y,l.position[2]-origin.z), name }); };
+	hang(L.pos[0],"position_fold_left"); hang(L.pos[1],"position_fold_right"); hang(L.pos[2],"position_tail");
+	hang(L.pos[3],"position_lex_left"); hang(L.pos[4],"position_lex_right"); hang(L.pos[5],""); hang(L.pos[6],"");
+	hang(L.strobe[0],"strobe_left"); hang(L.strobe[1],"strobe_right"); hang(L.landing[0],"landing");
+	exterior_lights_ride(); }
+// exterior_origin is a node's origin at rest in our own model's frame: every joint rests at identity, so it is
+// the sum of the rest positions from the node up to the model's root.
+function exterior_origin(x,node){ const at=new THREE.Vector3();
+	for(let o=node;o&&o!==x.object;o=o.parent){ const j=x.joints.find(q=>q.object===o); at.add(j?j.position:o.position); }
+	return at; }
+const _ride=new THREE.Vector3();
+function exterior_lights_ride(){ const L=aircraft_lights; if(!L||!L.ride) return; const g=ownship.group; g.updateMatrixWorld(true);
+	for(const r of L.ride){ g.worldToLocal(_ride.copy(r.local).applyMatrix4(r.node.matrixWorld));
+		const a=r.sprite.geometry.getAttribute("position"); a.setXYZ(0,_ride.x,_ride.y,_ride.z); a.needsUpdate=true;
+		if(r.name==="landing") L.nose={ x:_ride.x, y:_ride.y }; } }
 // fins: the vertical tails from the airframe's vertices (aircraft-local, each(f) calls f on every one), or null.
 // Each side's tip is the top 0.3 m of everything outboard of the centreline: its centre, its trailing edge
 // (aft) and its top; face is the fin's outboard surface 0.35 to 0.55 m below the tip, the fins being canted.
@@ -7663,7 +7838,7 @@ function update_aircraft_lights(){
 	cockpit_flood.intensity=pit?0.12*lighting.flood:0;   // the instrument panel floods (2.6.2.5) on the FLOOD level
 	for(const l of console_lights) l.intensity=pit?0.06*Math.max(lighting.consoles,lighting.flood):0;
 	const geardown=(ownship.gear??0)<0.02, land=exterior.landing && (ownship.gearTarget??1)<0.5 && geardown;   // LDG/TAXI ON, the handle DN and the gear down (2.6.1.5): the light rides the nose gear strut, on when the extend animation finishes (down & locked, the HUD's green GEAR threshold), dark the moment retraction starts
-	for(const p of aircraft_lights.pos){ p.visible=position>0; p.material.opacity=position; }   // the POSITION knob's level
+	for(const p of aircraft_lights.pos){ p.visible=position>0&&!(p.userData&&p.userData.spare); p.material.opacity=position; }   // the POSITION knob's level
 	for(const p of aircraft_lights.landing) p.visible=land;
 	for(const p of aircraft_lights.strobe){ p.visible=strobe; p.material.opacity=exterior.strobe==="dim"?0.35:1; }
 	const spot=aircraft_lights.spot; spot.visible=land;   // the landing-light beam lights whatever it points at (kept in the scene so it works in first-person, where the aircraft group is hidden)
@@ -11527,6 +11702,8 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		HANDLE_TURN.setFromAxisAngle(HANDLE.axis,-Math.min(1,emergency_travel*2)*Math.PI/2);
 		for(const o of g.userData.handle){ o.quaternion.copy(HANDLE_TURN); o.position.copy(HANDLE.centre).sub(HANDLE_AT.copy(HANDLE.centre).applyQuaternion(HANDLE_TURN)).addScaledVector(HANDLE.axis,Math.max(0,emergency_travel*2-1)*HANDLE.pull); } }
 	if(st===ownship&&g.userData.canopy) for(const c of g.userData.canopy) c.visible=!canopy_gone;
+	if(st===ownship&&g.userData.legacy&&cfg.view!=="cockpit") for(const c of g.userData.canopy||[]) if(g.userData.legacy.includes(c)) c.visible=false;   // the old canopies are drawn only in first person
+	if(st===ownship&&g.userData.exterior&&g.userData.exterior.canopy) g.userData.exterior.canopy.visible=!canopy_gone;   // a jettisoned canopy leaves our own model too
 	if(g.userData.insknob){ const k=g.userData.insknob, at=st===ownship?navigate.KNOB.indexOf(nav.ins.knob):3;   // the INS knob at its position, every other jet's at NAV (24.1.6.1, #24)
 		k.object.quaternion.copy(k.rest).premultiply(INS_KNOB.turn.setFromAxisAngle(INS_KNOB.axis,at*INS_KNOB.step)); }
 	if(st===ownship&&g.userData.grip) for(const p of g.userData.grip){ const [forward,up,right]=p.move(); p.object.position.set(p.rest.x-right,p.rest.y+up,p.rest.z+forward); }   // the loose grip switches (GRIP)
@@ -11587,7 +11764,9 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 				oleo_up.set(w.x,w.y+1,w.z).applyMatrix4(oleo_inverse).sub(oleo_foot.set(w.x,w.y,w.z).applyMatrix4(oleo_inverse));
 				s.object.position.copy(s.rest).addScaledVector(oleo_up, s.lift); } } }
 	if(g.userData.flame&&g.userData.flame.length){ const Z=new THREE.Vector3(0,0,1), a=[st.flameA??0,st.flameB??0], on=st.flameOn||[false,false];
-		g.userData.flame.forEach((f2,i2)=>{ f2.object.visible=!!on[i2]; if(on[i2]) f2.object.quaternion.copy(f2.base).multiply(new THREE.Quaternion().setFromAxisAngle(Z,a[i2])); }); }
+		const drawn=!g.userData.exterior||(!!g.userData.player&&cfg.view==="cockpit");   // the old airframe's discs burn only where it is drawn
+		g.userData.flame.forEach((f2,i2)=>{ f2.object.visible=!!on[i2]&&drawn; if(on[i2]) f2.object.quaternion.copy(f2.base).multiply(new THREE.Quaternion().setFromAxisAngle(Z,a[i2])); }); }
+	exterior_pose(st,g,dt);
 	const sw=g.userData.swivel;   // nosewheel steering: the same law the core's strut applies (pedal x NWS throw, washing out with ground speed), gated on ground contact
 	if(sw){   // ABSOLUTE application from a captured base: the mixer only rewrites the strut pose when the gear-clip time changes, so post-multiplying every frame compounded and the wheel windmilled under alternating pedal
 		if(!sw.gear) sw.gear=(g.userData.rig||[]).find(r=>r.name==="gear"&&r.action)||null;
@@ -11665,7 +11844,7 @@ function visuals(dt){
 	if(!presenting) return;
 	_live_particles=flush_points(tracers,tr_pts)+flush_points(flares,fl_pts)+flush_points(smoke,sm_pts)+flush_points(strikes,strike_pts)+flush_points(debris,db_pts)+flush_points(vapour_pool,vp_pts);
 	tr_pts.visible=cfg.tracers; fl_pts.visible=true; strike_pts.visible=true;   // flares are no longer a mission setting (dispensing is always allowed); a strike flash is not a tracer, so it stays on with tracers switched off
-	update_stages(); update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); update_aircraft_lights(); update_shuttles(); update_jbds(framed);
+	update_stages(); update_papi(ownship.pos); update_ols(ownship.pos); update_wire_drag(); exterior_lights_ride(); update_aircraft_lights(); update_shuttles(); update_jbds(framed);
 }
 // debris_struck meets the pilot's jet against the bandit's wreckage (world
 // battle/debris.go) over the time the frame's flight stepped. A strike wounds

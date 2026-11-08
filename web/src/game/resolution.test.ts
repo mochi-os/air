@@ -169,7 +169,7 @@ describe('the annunciator lenses', () => {
 // The model's panel lettering is a few texels tall in 1024 px atlases. ETC1S codes them in 4x4 blocks that smear
 // it; UASTC keeps what the source has. tools/texswap.py encodes the cockpit's atlases so.
 describe('the cockpit\'s panel atlases', () => {
-  const glb = readFileSync(fileURLToPath(new URL('../assets/fa18c.glb', import.meta.url)))
+  const glb = readFileSync(fileURLToPath(new URL('../assets/fa18c-old.glb', import.meta.url)))   // the old model's cockpit, the pilot's in first person until ours is built
   const json = JSON.parse(glb.subarray(20, 20 + glb.readUInt32LE(12)).toString('utf8'))
   const bin = glb.subarray(28 + glb.readUInt32LE(12))
   // the KTX2 colour model of a texture's image: 163 ETC1S, 166 UASTC
