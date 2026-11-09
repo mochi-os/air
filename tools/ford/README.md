@@ -109,7 +109,11 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     every other face's UVs are gathered to one point, so only its own faces reach its images.
   - The weapons are kinds of parts in their own frame (`weapons.kinds`: the Mk 29, RAM, Phalanx and gun) and the
     mounts that place them (`weapons.mounts`): each at its foot, trained and elevated as photographed, on a
-    pedestal where it has one.
+    pedestal where it has one. Their launcher guides are `rounded` parts (a box with the edges along one axis
+    rounded off), the Phalanx's radome a turned profile with its flange rings.
+  - Every closed piece of a node is turned outward on its own when the node is tidied; an open piece keeps
+    the winding it was built with. The weathering bakes read each face's facing, so a piece wound inward
+    bakes as if it faced into the solid.
   - The bow's mast is square, with its fittings as parts on it; each port whip's hinge housing stays at the
     deck's edge as the whip lowers.
   - The hull is a loft of sections from the transom to the bow: keel, hull side to each side's knuckle, the

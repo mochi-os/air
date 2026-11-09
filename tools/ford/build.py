@@ -179,10 +179,29 @@ def tidy(data, smooth):
 	bm = bmesh.new()
 	bm.from_mesh(data)
 	bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
-	# only a closed mesh has an outside to turn to; an open one (the deck's
-	# top, its edge plate) keeps the winding it was built with
-	if all(len(e.link_faces) == 2 for e in bm.edges):
-		bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+	bm.faces.index_update()
+	# only a closed piece has an outside to turn to: each connected piece of
+	# the mesh that is closed is turned outward on its own, and an open one
+	# (the deck's top, its edge plate) keeps the winding it was built with.
+	# Turning only a mesh closed as a whole left every part of a node with one
+	# open part (a railing's bar, a plate) as built: shape()'s boxes inward,
+	# and the bakes read their faces as facing into the solid
+	seen = set()
+	for start in bm.faces:
+		if start.index in seen:
+			continue
+		piece, todo = [], [start]
+		seen.add(start.index)
+		while todo:
+			f = todo.pop()
+			piece.append(f)
+			for e in f.edges:
+				for g in e.link_faces:
+					if g.index not in seen:
+						seen.add(g.index)
+						todo.append(g)
+		if all(len(e.link_faces) == 2 for f in piece for e in f.edges):
+			bmesh.ops.recalc_face_normals(bm, faces=piece)
 	if isinstance(smooth, list):
 		for e in bm.edges:
 			e.smooth = e.calc_face_angle(0.0) <= math.radians(30)
@@ -641,11 +660,12 @@ def shape(p, frame=None):
 	# One part of the layout's (layout.island.details, a weapon kind's parts, a
 	# mast's fittings) as (vertices, faces, paints), its points in the ship's
 	# frame, or carried by `frame` (a matrix on Blender's points) from a
-	# kind's own: box {centre, size [x, y, z]}; cylinder {base, axis and
+	# kind's own: box {centre, size [x, y, z]}; rounded {centre, size, along
+	# (x, y or z), radius}: a box its edges along that axis rounded; cylinder {base, axis and
 	# length, or end; radius; segments}; prism {outline, bottom, top, upper:
 	# its plan at the top, corner for corner, where its faces slope}; railing
 	# {path, height, posts}: a top and a mid rail and posts; dish {centre,
-	# diameter, facing}: a disc; dome {centre, radius}: a sphere; lathe
+	# diameter, facing}: a disc; dome {centre, radius, segments round it}: a sphere; lathe
 	# {centre [x, z], profile, radome}: turned about an upright axis (lathe());
 	# path {path, size, round, closed}: bars along a line, round ones as
 	# cylinders; ladder {bottom, top, along [x, z], width, rungs}: two stiles
@@ -661,6 +681,18 @@ def shape(p, frame=None):
 		(cx, cy, cz), (sx, sy, sz) = p["centre"], p["size"]
 		corners = [at(cx + i * sx / 2, cy + j * sy / 2, cz + k * sz / 2) for j in (-1, 1) for i, k in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
 		piece = (corners, [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)], [paint] * 6)
+	elif kind == "rounded":
+		# a box whose four edges along `along` (x, y or z) are rounded off at
+		# `radius`: its section across that axis rounded, drawn the box's
+		# length along it
+		c, s = Vector(p["centre"]), Vector(p["size"])
+		k = "xyz".index(p["along"])
+		i, j = [n for n in range(3) if n != k]
+		u, w, a = Vector([0, 0, 0]), Vector([0, 0, 0]), Vector([0, 0, 0])
+		u[i], w[j], a[k] = s[i] / 2, s[j] / 2, s[k] / 2
+		foot = c - a
+		section = rounded([list(foot - u - w), list(foot + u - w), list(foot + u + w), list(foot - u + w)], p["radius"], p.get("steps", 3))
+		piece = sheet(section, list(a), s[k], paint)
 	elif kind in ("cylinder", "dish"):
 		if kind == "dish":
 			radius, length = p["diameter"] / 2, 0.12
@@ -720,7 +752,8 @@ def shape(p, frame=None):
 		piece = ring(p["centre"], p["facing"], p["outer"], p["inner"], p.get("thickness", 0.1), p.get("segments", 16), paint, p.get("sweep"))
 	elif kind == "dome":
 		c, r = at(*p["centre"]), p["radius"]
-		vertices, faces = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=32, v_segments=16, radius=r, matrix=Matrix.Translation(c)))
+		n = p.get("segments", 32)
+		vertices, faces = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=n, v_segments=n // 2, radius=r, matrix=Matrix.Translation(c)))
 		piece = (vertices, faces, [paint] * len(faces))
 	elif kind == "railing":
 		# rails along the path, posts evenly along each straight run from

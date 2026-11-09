@@ -100,13 +100,16 @@ LAYOUT = {
 		# a draught mark either side of the stem, half a metre up
 		"draught": {"height": 0.3, "width": 0.2, "aft": 1.0, "numerals": [{"cell": "number", "text": "8", "bottom": 0.5}]}},
 	# a sponson under the port quarter with a Phalanx on it, a house on its
-	# inboard forward corner and a skirt under it whose forward face slopes
-	# back (its plan at the top 2 m further forward than at its foot), an
-	# opening in the starboard side, a catwalk with its net and a rack of rafts
+	# inboard forward corner, a skirt under it whose forward face slopes back
+	# (its plan at the top 2 m further forward than at its foot) and a locker
+	# rounded along its length, an opening in the starboard side, a catwalk
+	# with its net and a rack of rafts
 	"sponsons": [{"name": "quarter", "outline": [[-90, -12], [-90, -20], [-80, -20], [-80, -12]], "bottom": 8.0, "top": 12.0,
 			"details": [{"name": "quarter_house", "kind": "box", "centre": [-82.5, 12.5, -13.5], "size": [2, 1, 2]},
 				{"name": "quarter_skirt", "kind": "prism", "outline": [[-88, -19], [-84, -19], [-84, -17], [-88, -17]],
-					"upper": [[-88, -19], [-82, -19], [-82, -17], [-88, -17]], "bottom": 7.0, "top": 8.0}]},
+					"upper": [[-88, -19], [-82, -19], [-82, -17], [-88, -17]], "bottom": 7.0, "top": 8.0},
+				{"name": "quarter_locker", "kind": "rounded", "centre": [-86.0, 12.5, -18.0], "size": [2.0, 1.0, 1.0], "along": "x", "radius": 0.2},
+				{"name": "quarter_knob", "kind": "dome", "centre": [-88.5, 12.3, -13.0], "radius": 0.3, "segments": 8}]},
 		# one whose top rises forward and whose bottom falls outboard
 		{"name": "sloped", "outline": [[-70, -30], [-70, -36], [-60, -36], [-60, -30]], "bottom": [9.5, 9.0, 9.0, 9.5], "top": [14.0, 14.0, 15.0, 15.0]}],
 	# a gun tub on the starboard edge: its floor at 16, its outline from the
@@ -799,6 +802,14 @@ class BuildTest(unittest.TestCase):
 			for y in (12.0, 13.0):
 				for z in (-14.5, -12.5):
 					self.assertTrue((np.abs(sponson - [x, y, z]) < 1e-3).all(1).any(), (x, y, z))
+		# and its faces wound outward, though the node it is merged into is not
+		# closed as a whole (the railings' and catwalks' open parts)
+		tri = self.model.parts()["sponsons"]
+		middle = tri.mean(1)
+		mine = (np.abs(middle[:, 0] + 82.5) < 1.001) & (np.abs(middle[:, 1] - 12.5) < 0.501) & (np.abs(middle[:, 2] + 13.5) < 1.001)
+		normal = np.cross(tri[mine, 1] - tri[mine, 0], tri[mine, 2] - tri[mine, 0])
+		self.assertEqual(mine.sum(), 12)
+		self.assertTrue((((middle[mine] - [-82.5, 12.5, -13.5]) * normal).sum(1) > 0).all())
 
 	def test_sponson_detail_slopes(self):
 		# a prism under a sponson with a plan of its own at the top: its top
@@ -810,6 +821,35 @@ class BuildTest(unittest.TestCase):
 			self.assertTrue(has([-82, 8, z]), z)
 			self.assertTrue(has([-84, 7, z]), z)
 			self.assertFalse(has([-82, 7, z]), z)
+
+	def test_rounded_box(self):
+		# a box rounded along x: its ends at -87 and -85, its section's corners
+		# drawn in 0.2 (the tangent points), the sharp corner gone
+		sponson = np.round(self.model.parts()["sponsons"].reshape(-1, 3), 4)
+		has = lambda q: (np.abs(sponson - q) < 1e-3).all(1).any()
+		for x in (-87, -85):
+			self.assertTrue(has([x, 13.0, -17.7]), x)
+			self.assertTrue(has([x, 12.8, -17.5]), x)
+			self.assertTrue(has([x, 12.0, -18.3]), x)
+			self.assertFalse(has([x, 13.0, -17.5]), x)
+		locker = sponson[(sponson[:, 0] > -87.01) & (sponson[:, 0] < -84.99) & (sponson[:, 2] < -17.4) & (sponson[:, 1] > 11.99)]
+		self.assertAlmostEqual(locker[:, 1].max(), 13.0, places=4)
+		self.assertAlmostEqual(locker[:, 2].min(), -18.5, places=4)
+		# and every face of it wound outward, its ends as well as its sides
+		tri = self.model.parts()["sponsons"]
+		middle = tri.mean(1)
+		mine = (middle[:, 0] > -87.01) & (middle[:, 0] < -84.99) & (middle[:, 2] < -17.49) & (middle[:, 2] > -18.51) & (middle[:, 1] > 11.99) & (middle[:, 1] < 13.01)
+		normal = np.cross(tri[mine, 1] - tri[mine, 0], tri[mine, 2] - tri[mine, 0])
+		self.assertGreater(mine.sum(), 20)
+		self.assertTrue((((middle[mine] - [-86.0, 12.5, -18.0]) * normal).sum(1) > 0).all())
+
+	def test_dome_segments(self):
+		# a dome of 8 segments round and 4 from pole to pole: 8 triangles at
+		# each pole and 16 quads between, 48 triangles
+		tri = self.model.parts()["sponsons"]
+		middle = tri.mean(1)
+		knob = np.linalg.norm(middle - [-88.5, 12.3, -13.0], axis=1) < 0.31
+		self.assertEqual(knob.sum(), 48)
 
 	def test_gun_tub_is_a_railed_floor(self):
 		# a floor 0.2 thick at 16, a railing 1.1 over it on its outboard sides
