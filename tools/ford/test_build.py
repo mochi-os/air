@@ -6,7 +6,7 @@
 # and the ship file, on a small deck built in Blender; and the provenance rule.
 #
 # usage: systemd-run --user --collect --wait --pipe --quiet --slice=probe.slice -p MemoryMax=6G -p MemorySwapMax=0 python3 -I /home/alistair/mochi/apps/air/tools/ford/test_build.py
-import io, json, math, re, subprocess, sys, tempfile, unittest
+import io, itertools, json, math, re, subprocess, sys, tempfile, unittest
 from pathlib import Path
 
 import numpy as np
@@ -1308,7 +1308,7 @@ class QuarterTest(unittest.TestCase):
 		# their points, under the wall and along the quarter on the last point
 		# before the foot
 		hull["stations"][-1]["points"] += [[10, 22], [14, 26]]
-		hull["shoulders"] = [52, 58]
+		hull["shoulders"] = {"start": 52, "full": 58}
 		build(cls, layout)
 
 	@classmethod
@@ -1578,8 +1578,9 @@ class BowTest(unittest.TestCase):
 
 
 class ShoulderTest(unittest.TestCase):
-	# the fixture with the bow's shoulders from x 52, in full from 58, and the
-	# station at x 60 carried on above the knuckles to (10, 22) and (14, 26):
+	# the fixture with the bow's shoulders from x 52, in full from 58, running
+	# ahead of the last station by the share squared, and the station at x 60
+	# carried on above the knuckles to (10, 22) and (14, 26):
 	# the deck's edge at z 30 to starboard (the gallery's foot 16.4), -40 to
 	# port (15.4); knuckles 5 to starboard, 6 to port. The shoulders' levels
 	# are the station's heights above the lower knuckle: 6, 10 and 14
@@ -1589,7 +1590,7 @@ class ShoulderTest(unittest.TestCase):
 		hull = layout["hull"]
 		assert hull["stations"][-1]["x"] == 60
 		hull["stations"][-1]["points"] += [[10, 22], [14, 26]]
-		hull["shoulders"] = [52, 58]
+		hull["shoulders"] = {"start": 52, "full": 58, "power": 2}
 		build(cls, layout)
 
 	@classmethod
@@ -1638,6 +1639,16 @@ class ShoulderTest(unittest.TestCase):
 				straight = knuckle + (30 - knuckle) * (y - 5) / (16.4 - 5)
 				self.assertTrue(self.has(ring, y, straight + share * (station - straight)), (x, y))
 
+	def test_shoulders_hold_out_ahead_of_the_last_station(self):
+		# near x 70 each level runs from the station at 60 toward the face's
+		# crease at the stem there (the stem leaning from (75, 0) to (95,
+		# 19.5); the face 2 wide at y 10, 10 at 18) by the share squared
+		x, ring = self.ring(70)
+		self.assertTrue(60 < x < 75)
+		for y, station, crease in ((10, 22, 2), (14, 26, 6)):
+			share = (x - 60) / (75 + y * 20 / 19.5 - 60)
+			self.assertTrue(self.has(ring, y, station + (crease - station) * share ** 2), y)
+
 	def test_flare_straight_aft_of_them(self):
 		# aft of x 52 nothing stands between the knuckle and the gallery's
 		# foot: the flare runs straight
@@ -1674,6 +1685,206 @@ class ShoulderTest(unittest.TestCase):
 		open_ = [e for e in edges if (e[1], e[0]) not in edges]
 		self.assertTrue(all((e[0][1] == 18.4 and e[1][1] == 18.4) or (e[0][0] == -90 and e[1][0] == -90 and min(e[0][1], e[1][1]) >= 5 - 1e-4)
 			for e in open_))
+
+
+class AnchorTest(unittest.TestCase):
+	# the fixture with its anchors: the starboard one's crown at (72, 4, 10),
+	# its stock 0.2 across from (71, 2, 8) to (73, 6, 12) with a knob 0.3
+	# across at each end, the crown's block 0.6 along the stock, 0.5 across and
+	# 0.4 deep, chamfered 0.02, a pin 0.1 across standing 0.08 out of it, its
+	# frame reaching 1.2 from the crown and 0.8 wide, a loop of bar 0.1 across
+	# and 0.2 deep (chamfered alike); the hawse pipe a rounded square (power 4) 1.6
+	# across and 1.2 high, rolled 0.3 rad, running up and aft (-0.6, 0.8, 0)
+	# from its mouth at (73, 4.6, 9.4), cut level (opening straight down),
+	# closed 3 m in by a dome 0.4 deep, its lip 0.1 round, its bore dark 1 m
+	# in; the port one its mirror image
+	SPEC = {"crown": [72, 4, 10], "stock": {"ends": [[71, 2, 8], [73, 6, 12]], "diameter": 0.2, "knob": 0.3},
+		"block": [0.6, 0.5, 0.4], "frame": {"reach": 1.2, "width": 0.8, "bar": 0.1, "depth": 0.2}, "shank": 0.3, "chamfer": 0.02,
+		"pin": {"diameter": 0.1, "length": 0.08},
+		"hawse": {"mouth": [73, 4.6, 9.4], "axis": [-0.6, 0.8, 0], "facing": [0, -1, 0], "width": 1.6, "height": 1.2, "power": 4,
+			"roll": 0.3, "lip": 0.1, "length": 3.0, "dome": 0.4, "depth": 1.0},
+		"colour": {"anchor": [190, 168, 131], "rust": [165, 115, 55], "umber": [115, 75, 30]}}
+
+	@classmethod
+	def setUpClass(cls):
+		layout = json.loads(json.dumps(LAYOUT))
+		layout["anchors"] = cls.SPEC
+		build(cls, layout)
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.folder.cleanup()
+
+	def points(self, paint):
+		tris, normals = corners(self.model, "anchors", [paint])
+		points = tris.reshape(-1, 3)
+		return points[points[:, 2] > 0], tris, normals
+
+	def crown(self):
+		# the crown's frame of reference: along the stock, away from the
+		# mouth across it, and through both
+		crown, mouth = np.array([72, 4, 10.0]), np.array([73, 4.6, 9.4])
+		along = np.array([2, 4, 4.0]) / 6
+		toward = mouth - crown
+		away = -(toward - along * (toward @ along))
+		away /= np.linalg.norm(away)
+		return crown, along, away, np.cross(along, away)
+
+	def test_landmarks(self):
+		marks = self.features["landmarks"]
+		for name, side in (("starboard", 1), ("port", -1)):
+			for mark, p in (("crown", [72, 4, 10]), ("stock_top", [73, 6, 12]), ("stock_bottom", [71, 2, 8])):
+				self.assertEqual(marks[f"anchor_{mark}_{name}"]["node"], "anchors")
+				np.testing.assert_allclose(marks[f"anchor_{mark}_{name}"]["at"], [p[0], p[1], side * p[2]], atol=1e-4)
+
+	def test_stock_round_with_a_knob_at_each_end(self):
+		# the stock's ends: its rim 0.1 from the end's centre, square to the
+		# stock, and its knob's surface 0.15 round the end
+		starboard, tris, normals = self.points("anchor")
+		far = starboard[np.linalg.norm(starboard - [72, 4, 10], axis=1) > 1.6]
+		along = np.array([2, 4, 4.0]) / 6
+		for end in ([71, 2, 8], [73, 6, 12]):
+			near = far[np.linalg.norm(far - end, axis=1) < 0.2]
+			found = set(np.round(np.linalg.norm(near - end, axis=1), 3))
+			self.assertEqual(found, {0.1, 0.15}, end)
+			rim = near[np.abs(np.linalg.norm(near - end, axis=1) - 0.1) < 1e-3]
+			self.assertTrue(np.allclose((rim - end) @ along, 0, atol=1e-3))
+		# the port anchor the starboard one's mirror image
+		every = tris.reshape(-1, 3)
+		port = np.unique(np.round(every[every[:, 2] < 0] * [1, 1, -1], 4), axis=0)
+		self.assertTrue(np.array_equal(port, np.unique(np.round(starboard, 4), axis=0)))
+		# the knobs smooth: their corners' normals turn across a face
+		knob = (np.linalg.norm(tris - [73, 6, 12], axis=2) > 0.149).all(1) & (np.linalg.norm(tris - [73, 6, 12], axis=2) < 0.151).all(1)
+		self.assertTrue(knob.any())
+		self.assertTrue((np.abs(normals[knob] - normals[knob][:, :1]).max(axis=(1, 2)) > 1e-3).any())
+
+	def test_crown_block_and_frame(self):
+		crown, along, away, through = self.crown()
+		local = lambda p: np.stack([(p - crown) @ along, (p - crown) @ away, (p - crown) @ through], -1)
+		anchor = np.round(local(self.points("anchor")[0]), 3)
+		def found(points, p):
+			return (np.abs(points - p) < 1e-3).all(1).any()
+		# the block: each corner cut back 0.02 on its three faces, the corner
+		# itself gone
+		for i, j, k in itertools.product((-1, 1), repeat=3):
+			for p in ((0.3, 0.23, 0.18), (0.28, 0.25, 0.18), (0.28, 0.23, 0.2)):
+				self.assertTrue(found(anchor, [i * p[0], j * p[1], k * p[2]]), (i, j, k, p))
+			self.assertFalse(found(anchor, [i * 0.3, j * 0.25, k * 0.2]))
+		# the pin: 0.1 across, out of the block's outer face (away from the
+		# pipe's run into the hull) to 0.08 past it
+		outward = 1 if through @ -np.array([-0.6, 0.8, 0]) > 0 else -1
+		rim = anchor[np.abs(anchor[:, 2] - outward * 0.28) < 1e-3]
+		self.assertGreaterEqual(len(rim), 12)
+		np.testing.assert_allclose(np.linalg.norm(rim[:, :2], axis=1), 0.05, atol=1e-3)
+		# the frame: from the block's edge out to 1.2, 0.8 wide, 0.2 deep
+		rust, tris, normals = self.points("rust")
+		umber, inner, _ = self.points("umber")
+		r = local(np.concatenate([rust, umber]))
+		np.testing.assert_allclose([r[:, 0].min(), r[:, 0].max(), r[:, 1].min(), r[:, 1].max(), r[:, 2].min(), r[:, 2].max()],
+			[-0.4, 0.4, 0.25, 1.2, -0.1, 0.1], atol=1e-3)
+		# open in its middle: no face of it across the slot's centre
+		middle = (0.25 + 1.2) / 2
+		every = np.concatenate([tris, inner])
+		t = local(every[every[:, :, 2].min(1) > 0].reshape(-1, 3)).reshape(-1, 3, 3)[:, :, :2] - [0, middle]
+		cross = lambda u, v: u[:, 0] * v[:, 1] - u[:, 1] * v[:, 0]
+		signs = np.stack([cross(t[:, (k + 1) % 3] - t[:, k], -t[:, k]) for k in range(3)], 1)
+		covered = (signs > 1e-9).all(1) | (signs < -1e-9).all(1)
+		self.assertFalse(covered.any())
+		# a loop of bar 0.1 across: umber on the faces that look into the slot,
+		# rust outside and on its flat faces
+		def on(faces, p):
+			# whether point p (crown-local) lies on one of the starboard triangles
+			faces = local(faces[faces[:, :, 2].min(1) > 0].reshape(-1, 3)).reshape(-1, 3, 3)
+			n = np.cross(faces[:, 1] - faces[:, 0], faces[:, 2] - faces[:, 0])
+			n /= np.linalg.norm(n, axis=1)[:, None]
+			flat = np.abs(((p - faces[:, 0]) * n).sum(1)) < 1e-4
+			sides = [((np.cross(faces[:, (k + 1) % 3] - faces[:, k], p - faces[:, k])) * n).sum(1) for k in range(3)]
+			return bool((flat & (np.stack(sides, 1) >= -1e-9).all(1)).any())
+		for p in ((-0.3, middle, 0), (0.3, middle, 0), (0, 0.35, 0), (0, 1.1, 0)):
+			self.assertTrue(on(inner, np.array(p)), p)
+			self.assertFalse(on(tris, np.array(p)), p)
+		for p in ((-0.4, middle, 0), (0.4, middle, 0), (0, 0.25, 0), (0, 1.2, 0), (-0.35, middle, 0.1), (0, 0.3, -0.1)):
+			self.assertTrue(on(tris, np.array(p)), p)
+			self.assertFalse(on(inner, np.array(p)), p)
+		# the shank, 0.3 square and chamfered, from the crown up into the bore,
+		# half its depth (1 m) in, on the crown's side of it as far as leaves the
+		# shank's half and 0.1 m inside the bore (0.6 high, its bore 5/7 of
+		# that): 0.179 off the axis toward the crown
+		mouth, axis = np.array([73, 4.6, 9.4]), np.array([-0.6, 0.8, 0])
+		offset = crown - mouth
+		offset -= axis * (offset @ axis)
+		end = mouth + axis * 0.5 + offset * ((0.6 * 5 / 7 - 0.15 - 0.1) / np.linalg.norm(offset))
+		run = (end - crown) / np.linalg.norm(end - crown)
+		anchor = np.unique(np.round(self.points("anchor")[0], 4), axis=0)
+		near = anchor[np.linalg.norm(anchor - end, axis=1) < 0.25]
+		self.assertEqual(len(near), 12)
+		self.assertEqual(set(np.round((near - end) @ run, 3)), {0.0, -0.02})
+		across = near - end - np.outer((near - end) @ run, run)
+		np.testing.assert_allclose(np.sort(np.round(np.linalg.norm(across, axis=1), 3)), [0.184] * 4 + [0.198] * 8, atol=1e-3)
+
+	def test_hawse_hood_cut_on_the_slant(self):
+		mouth, axis, facing = np.array([73, 4.6, 9.4]), np.array([-0.6, 0.8, 0.0]), np.array([0, -1.0, 0])
+		# the section's frame: across level (axis x up) turned 0.3 rad toward
+		# axis x level, the height square to both
+		level = np.cross(axis, [0, 1, 0])
+		level /= np.linalg.norm(level)
+		across = level * math.cos(0.3) + np.cross(axis, level) * math.sin(0.3)
+		high = np.cross(axis, across)
+		def radial(p):
+			# the superellipse's radius in metres of the mean half-size (0.7):
+			# 0.7 on the pipe's outside, 0.5 on the bore
+			v = p - mouth
+			return 0.7 * ((np.abs(v @ across) / 0.8) ** 4 + (np.abs(v @ high) / 0.6) ** 4) ** 0.25
+		grey = self.points("grey")[0]
+		self.assertGreater(len(grey), 0)
+		r = radial(grey)
+		# the pipe a rounded square outside, 1.6 across and 1.2 high, the lip
+		# rolling in to the bore
+		self.assertAlmostEqual(r.max(), 0.7, places=3)
+		self.assertTrue(np.isclose(r, 0.7, atol=1e-3).any() and np.isclose(r, 0.5, atol=1e-3).any())
+		outside = grey[np.isclose(r, 0.7, atol=1e-3)] - mouth
+		np.testing.assert_allclose([np.abs(outside @ across).max(), np.abs(outside @ high).max()], [0.8, 0.6], atol=1e-3)
+		# square-shouldered, not an ellipse: near 45 degrees round it stands
+		# well out past the ellipse through the same ends
+		ellipse = np.sqrt((outside @ across / 0.8) ** 2 + (outside @ high / 0.6) ** 2)
+		self.assertGreater(ellipse.max(), 1.15)
+		# the lip's crest (0.6 out) all on the level plane through the mouth:
+		# the mouth opens straight down, though the pipe leans
+		crest = grey[np.isclose(r, 0.6, atol=1e-3)]
+		self.assertGreaterEqual(len(crest), 32)
+		self.assertTrue(np.allclose((crest - mouth) @ facing, 0, atol=1e-3))
+		# the lip rolled: its crest 0.1 out of the mouth past the end of the
+		# pipe's outside and the bore's mouth on the same side
+		def direction(p):
+			v = p - mouth
+			v = v - np.outer(v @ axis, axis)
+			return v / np.linalg.norm(v, axis=1)[:, None]
+		for edge in (0.7, 0.5):
+			ring = grey[np.isclose(r, edge, atol=1e-3)]
+			same = direction(crest) @ direction(ring).T > 1 - 1e-6
+			out = (crest[:, None] - ring[None]) @ -axis
+			rise = np.where(same, np.abs(out), np.inf).min(1)
+			np.testing.assert_allclose(rise, 0.1, atol=1e-3)
+		# closed 3 m in by a dome 0.4 deep: each angle's line slid along the
+		# axis as the mouth's slant slides it, its section shrinking on a
+		# quarter ellipse to a tip on the axis 3.4 in
+		v = grey - mouth
+		radius = v - np.outer(v @ axis, axis)
+		slide = -0.6 * (radius @ facing) / np.maximum(r, 1e-9) / -(axis @ facing)
+		inward = v @ axis + slide
+		dome = (inward > 3 + 1e-6) & (r > 1e-3)
+		self.assertGreater(dome.sum(), 32)
+		np.testing.assert_allclose((r[dome] / 0.7) ** 2 + ((inward[dome] - 3) / 0.4) ** 2, 1, atol=1e-3)
+		self.assertTrue((np.linalg.norm(grey - (mouth + axis * 3.4), axis=1) < 1e-3).any())
+		# the bore dark, 0.5 round, to its bottom 1 m in along the pipe
+		dark = self.points("dark")[0]
+		self.assertEqual(set(np.round(radial(dark), 3)), {0.0, 0.5})
+		bottom = dark[radial(dark) < 1e-3]
+		np.testing.assert_allclose(bottom, [mouth + axis * 1.0] * len(bottom), atol=1e-3)
+		# the port hood the starboard one's mirror image
+		every = corners(self.model, "anchors", ["grey"])[0].reshape(-1, 3)
+		port = np.unique(np.round(every[every[:, 2] < 0] * [1, 1, -1], 4), axis=0)
+		self.assertTrue(np.array_equal(port, np.unique(np.round(grey, 4), axis=0)))
 
 
 class ProvenanceTest(unittest.TestCase):

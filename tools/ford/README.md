@@ -132,9 +132,20 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     (`hull.shoulders`, [start, full]) the flare between the knuckle and the gallery's foot follows the
     stations' points above the knuckle, at their heights: in full forward of `full`, straight aft of `start`,
     and between the two easing (smoothstep) from the straight line out to them; aft of `start` those points
-    sit on the knuckle, or on a quarter's last point, and weld away. Below the knuckles and over the shoulders
+    sit on the knuckle, or on a quarter's last point, and weld away; ahead of the last station they run to the
+    face's crease by the share of the way raised to `power`, holding their breadth and then turning in. Below the knuckles and over the shoulders
     the hull is shaded smooth, sharp where it turns more than 30 degrees; the rest of the flare flat. A face
     lying wholly on the centreline (where the stem stands upright with a knife edge) is left out.
+  - The anchors (`anchors`, the starboard one given, the port its mirror image) are housed. The hawse pipe's
+    end is a grey hood: a pipe of rounded-square section running aft, up and outboard into the plating, closed
+    at its far end by a dome, its mouth cut on the slant to open down, its lip rolled round into a dark bore.
+    Below the mouth hangs the
+    anchor: its shank (a chamfered square bar) from the block up into the near side of the bore, the crown's
+    block on the stock (its edges chamfered, a pin standing out of it), the crown's frame reaching away from the
+    mouth (one loop of chamfered bar round its slot, its corners mitred, rust, the faces into the slot a darker
+    umber), and the stock a round bar through the block with a knob at each end, in the anchors' tan. The hood,
+    the tan parts and the rust are weathered groups of their own (`hawse`, `tackle`, `corrosion`), so they carry
+    baked occlusion, wear and rust weeps like the hull. The crowns and the stocks' ends are landmarks for the photo match.
   - The bulb (`hull.bulb`, its own node) is a smooth loft: head on its measured outline, carried on above its
     top by the stem's front to the waterline; from the side its forward edge is the stem's profile below the
     waterline through a monotone cubic; in plan its nose a quarter ellipse `nose` long where it is widest,
@@ -196,7 +207,13 @@ python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR   
   tolerance, and fails outside it. Entries it does not measure are in `EXEMPT` with the reason; `shape.*`
   holds what no fact states (the hull under the deck, symmetric below its knuckles; the island on the deck; the
   deck's top on its round-down's curve). Where the bow's shoulders are in full, the hull's flare passes through
-  each station's points above the knuckle, each side. The landing centreline reaches the deck's aft edge, its yellow drawn
+  each station's points above the knuckle, each side; each hawse hood's outline seen from ahead reaches down to
+  its foot and out to its outboard side where the head-on photo measures them, no further (within 0.3 m), its
+  top corner from both head-on photos lies on the plating (within 0.3 m), and no plating hides the port hood's
+  lip and lit side where
+  dvids9688116 sees them past the stem (rays through five of its pixels, through research/bow's camera; the bow
+  as the crowns once set it hid all five). The landing centreline reaches the
+  deck's aft edge, its yellow drawn
   over the ramp's white, as DVIDS 7694418 shows it across the round-down; and the bow control station's band lies right
   outside its lid's rim on every side. The drop-light pole's yellow runs from its foot to its top with no face
   reaching into its gap, lines of sight aft from it past the walkway's height meet nothing, and the
@@ -263,8 +280,15 @@ the deck; a new sighting in the game becomes a ray here first.
 - a quarter's section under its wall and under its sponson, its square ends, its landmarks, and the hull
   still closed;
 - the bow's shoulders: the flare through the station's points in full, the eased share between the
-  straight line and them (none at their start, all at full), straight aft of them, smooth, and the hull
-  closed with their points under a wall and along a quarter;
+  straight line and them (none at their start, all at full), held out ahead of the last station by the
+  share squared, straight aft of them, smooth, and the hull closed with their points under a wall and along
+  a quarter;
+- the anchors: their landmarks; the stock's ends square to it with a knob round each, smooth; the crown's
+  block chamfered at every corner with its pin out of the outer face, its frame a loop of bar open in the
+  middle, umber only on the faces into the slot, and the shank, chamfered, into the bore on the crown's side; the hood a rounded square (not an
+  ellipse) round its leaning axis, rolled, its mouth cut level for the fixture whatever the lean, the lip
+  rolled from the pipe's outside to the bore, the far end a dome, the bore dark to its bottom; and the port
+  anchor and hood the starboard ones' mirror images;
 - the stem's front rounding into the sides where it leans and where it stands upright, the boot top's edge
   round it along a section, the hull smooth below its knuckles (one normal at each point, the keel's edge and
   the knuckles sharp, the flare flat), no fin on the centreline ahead of the upright stem, and the hull closed;

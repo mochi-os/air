@@ -19,6 +19,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "verify"))   # run with -I, which leaves the script's own folder off the path
 import model as verify  # noqa: E402
+import camera  # noqa: E402
 
 FACTS = json.loads((HERE / "facts.json").read_text())
 FT = 0.3048
@@ -184,6 +185,17 @@ class Ship:
 		return np.concatenate(found)
 
 
+def breadth(tris, x, y, side):
+	# The hull's outermost half-breadth at (x, y) on a side (1 starboard, -1
+	# port), from its section at x; None where nothing crosses that height
+	segments = verify.cut(tris, [x, 0, 0], [1, 0, 0])
+	a, b = segments[:, 0], segments[:, 1]
+	across = ((a[:, 1] - y) * (b[:, 1] - y) <= 0) & (np.abs(b[:, 1] - a[:, 1]) > 1e-9)
+	t = (y - a[across, 1]) / (b[across, 1] - a[across, 1])
+	reach = side * (a[across, 2] + (b[across, 2] - a[across, 2]) * t)
+	return float(reach.max()) if len(reach) else None
+
+
 def shoulders(ship):
 	# Over the bow's shoulders, where they are in full (hull.shoulders), the
 	# flare passes through each station's points between the knuckle and the
@@ -196,9 +208,8 @@ def shoulders(ship):
 	under = deck["height"] - deck["thickness"]
 	tris = ship.parts["hull"]
 	for s in sorted(h["stations"], key=lambda q: q["x"]):
-		if s["x"] < h["shoulders"][1]:
+		if s["x"] < h["shoulders"]["full"]:
 			continue
-		segments = verify.cut(tris, [s["x"], 0, 0], [1, 0, 0])
 		for name, side in (("starboard", 1), ("port", -1)):
 			knuckle = sorted(h["knuckle"][name])
 			gallery = sorted(h["gallery"][name])
@@ -206,16 +217,69 @@ def shoulders(ship):
 			foot = under - np.interp(s["x"], [p[0] for p in gallery], [p[1] for p in gallery])
 			misses = []
 			for y, z in s["points"]:
-				if not low < y < foot:
-					continue
-				a, b = segments[:, 0], segments[:, 1]
-				across = (a[:, 1] - y) * (b[:, 1] - y) <= 0
-				across &= np.abs(b[:, 1] - a[:, 1]) > 1e-9
-				t = (y - a[across, 1]) / (b[across, 1] - a[across, 1])
-				reach = side * (a[across, 2] + (b[across, 2] - a[across, 2]) * t)
-				misses.append(abs(reach.max() - z) if len(reach) else math.inf)
+				if low < y < foot:
+					reach = breadth(tris, s["x"], y, side)
+					misses.append(math.inf if reach is None else abs(reach - z))
 			if misses:
 				yield result("layout.hull", f"the bow's flare through station {s['x']:g}'s points above the knuckle, {name}", 0, max(misses), 0.01)
+
+
+# What the photos measure of the hawse hoods (layout.notes.anchors): the foot
+# of each one's outline seen from ahead and its outboard side (height and
+# breadth, from dvids3299641); its top corner, where it meets the plating
+# (both head-on photos, each side); and the port one's lip and lit side seen
+# past the stem against the sky in dvids9688116, through research/bow's camera
+HOOD = {"foot": (9.13, 7.3), "side": (10.0, 8.4), "corner": {"starboard": (151.8, 10.95, 8.17), "port": (152.7, 10.96, 8.32)},
+	"seen": {"photo": "dvids9688116", "pixels": [[4730, 2300], [4740, 2295], [4725, 2315], [4610, 2380], [4620, 2372]]}}
+CAMERAS = HERE / "references" / "research" / "bow" / "cameras.json"
+
+
+def anchors(ship):
+	# The anchors housed at the bow (layout.anchors): each hawse pipe's hood
+	# through the points the photos measure of it (HOOD), its top corner on
+	# the plating; and the bow ahead of the port one leaving it in view where
+	# dvids9688116 sees it, no plating on a ray through those pixels more
+	# than 2 m nearer the camera than the crown (a fuller bow hid them)
+	a = ship.layout.get("anchors")
+	if not a:
+		return
+	ship.points(["anchors"])
+	tris = ship.parts["hull"]
+	hood = ship.model.parts(materials=["grey", "hawse"])["anchors"]   # the hood's grey, weathered (layout.weathering)
+	for name, side in (("starboard", 1), ("port", -1)):
+		# its outline seen from ahead: how far it reaches past each point, down
+		# at the foot (its lowest), outboard at the side
+		ahead = hood[:, :, 1:] * [1, side]
+		for what, p, toward in (("foot", HOOD["foot"], (-1, 0)), ("outboard side", HOOD["side"], (0, 1))):
+			yield result("layout.anchors", f"the {name} hawse hood's outline seen from ahead past its {what}", 0, outline_reach(ahead, p, toward), 0.3)
+		x, y, z = HOOD["corner"][name]
+		reach = breadth(tris, x, y, side)
+		yield result("layout.anchors", f"the {name} hawse hood's top corner off the plating", 0, math.inf if reach is None else z - reach, 0.3)
+	seen = HOOD["seen"]
+	c = json.loads(CAMERAS.read_text())[seen["photo"]]
+	view, centre = np.array(c["camera"], float), np.array(c["centre"], float)
+	eye = camera.eye(view)
+	near = float(np.linalg.norm(np.array(a["crown"], float) * [1, 1, -1] - eye)) - 2
+	hidden = sum(hits(tris, eye, camera.ray(view, np.array(q, float), centre), near) for q in seen["pixels"])
+	yield result("layout.anchors", f"the port hawse hood's pixels in {seen['photo']} hidden by the bow", 0, hidden, 0.5, unit="pixels")
+
+
+def outline_reach(tris, point, toward):
+	# How far an outline in the plane (triangles (N, 3, 2), their union)
+	# reaches past a point along a direction: the furthest t, -2 to 2 m, at
+	# which point + t toward lies on a triangle; -inf when none of that line does
+	d = np.asarray(toward, float) / np.linalg.norm(toward)
+	tris = np.asarray(tris, float)
+	e1, e2 = tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0]
+	tris = tris[np.abs(e1[:, 0] * e2[:, 1] - e1[:, 1] * e2[:, 0]) > 1e-12]   # those seen edge on cover nothing
+	t = np.linspace(-2, 2, 801)
+	q = np.asarray(point, float) + t[:, None] * d
+	a, b, c = tris[:, 0], tris[:, 1], tris[:, 2]
+	def side(u, v):
+		return (v[None, :, 0] - u[None, :, 0]) * (q[:, None, 1] - u[None, :, 1]) - (v[None, :, 1] - u[None, :, 1]) * (q[:, None, 0] - u[None, :, 0])
+	s1, s2, s3 = side(a, b), side(b, c), side(c, a)
+	covered = (((s1 >= 0) & (s2 >= 0) & (s3 >= 0)) | ((s1 <= 0) & (s2 <= 0) & (s3 <= 0))).any(1)
+	return float(t[covered].max()) if covered.any() else -math.inf
 
 
 def guard(fact, what, make):
@@ -256,6 +320,7 @@ def checks(ship):
 		yield result("layout.hull", "the keel, as deep as its layout's deepest station", min(q["points"][0][0] for q in ship.layout["hull"]["stations"]), keel, 0.01)
 		yield from shoulders(ship)
 	yield from guard("hull", "the hull", hull)
+	yield from guard("anchors", "the anchors", lambda: anchors(ship))
 
 	def island():
 		base = [p for p in ship.ship["island"]["prisms"] if abs(p["bottom"] - height) < 1e-6]

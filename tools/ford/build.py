@@ -22,7 +22,7 @@
 # --draft leaves out the deck texture (paint.py's), for quick looks at the shape.
 #
 # usage: blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.json [FEATURES.json] [--facts PATH] [--draft]
-import json, math, subprocess, sys, tempfile
+import itertools, json, math, subprocess, sys, tempfile
 from pathlib import Path
 
 import bmesh
@@ -1060,6 +1060,22 @@ def bar(a, b, size, paint="grey"):
 	return corners, faces, [paint] * 6
 
 
+def tube(a, b, radius, paint="grey", segments=16, ends=True):
+	# A round bar from a to b (ship frame), `radius` across, or tapering from
+	# radius[0] at a to radius[1] at b: its sides, and a flat end at each end
+	# (ends=True), or at neither; (vertices, faces, paints, smooth), the sides
+	# smooth and the ends flat
+	a, b = at(*a), at(*b)
+	along = b - a
+	first, last = radius if isinstance(radius, (list, tuple)) else (radius, radius)
+	turn = Vector((0, 0, 1)).rotation_difference(along.normalized()).to_matrix().to_4x4()
+	shape = Matrix.Translation((a + b) / 2) @ turn
+	vertices, faces = primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=ends, segments=segments, radius1=first, radius2=last,
+		depth=along.length, matrix=shape))
+	smooth = [len(f) == 4 for f in faces]
+	return vertices, faces, [paint] * len(faces), smooth
+
+
 def cylinder(centre, radius, length, paint, across=False):
 	# A cylinder lying fore and aft, or across the ship (ship frame centre)
 	shape = Matrix.Translation(at(*centre)) @ Matrix.Rotation(math.pi / 2, 4, "X" if across else "Y")
@@ -1473,6 +1489,223 @@ def upper_transom(x0, section):
 	node("transom_fittings", mesh=merge(fittings))
 
 
+def turned(origin, axis, profile, paints, flat=(), segments=32, shift=None, section=None):
+	# A closed surface of revolution about the line through `origin` along
+	# `axis`, which may lean any way (Blender vectors; lathe() turns about an
+	# upright one): profile [(radius, along), ...], a radius of 0 a point on
+	# the axis; paints[k] the band's from profile point k to k + 1, its faces
+	# smooth unless k is in `flat`; (vertices, faces, paints, smooth).
+	# section(angle), given, is the outline a radius of 1 traces instead of a
+	# circle (a vector square to the axis at each angle round it); shift(offset),
+	# given, moves the whole profile at each angle that far along the axis, from
+	# that angle's offset at a radius of 1 (a pipe's end cut on the slant)
+	axis = axis.normalized()
+	u = axis.cross(UP if abs(axis.dot(UP)) < 0.9 else FORWARD).normalized()
+	w = axis.cross(u)
+	angles = [2 * math.pi * k / segments for k in range(segments)]
+	directions = [section(t) if section else u * math.cos(t) + w * math.sin(t) for t in angles]
+	moved = [shift(d) if shift else 0.0 for d in directions]
+	vertices, rings = [], []
+	for r, s in profile:
+		if r < 1e-9:
+			rings.append([len(vertices)] * segments)
+			vertices.append(origin + axis * (s + sum(moved) / segments))
+			continue
+		rings.append(list(range(len(vertices), len(vertices) + segments)))
+		vertices += [origin + axis * (s + m) + d * r for d, m in zip(directions, moved)]
+	faces, painted, smooth = [], [], []
+	for i in range(len(profile) - 1):
+		for k in range(segments):
+			ring = (rings[i][k], rings[i][(k + 1) % segments], rings[i + 1][(k + 1) % segments], rings[i + 1][k])
+			face = tuple(v for j, v in enumerate(ring) if v != ring[j - 1])
+			if len(face) < 3:
+				continue
+			faces.append(face)
+			painted.append(paints[i])
+			smooth.append(i not in flat)
+	return vertices, faces, painted, smooth
+
+
+def cuboid(centre, axes, sizes, paint="grey"):
+	# A box about `centre` (a Blender vector), sizes[i] along axes[i] (three
+	# perpendicular unit vectors)
+	h = [a * (s / 2) for a, s in zip(axes, sizes)]
+	corners = [centre + h[0] * i + h[1] * j + h[2] * k for k in (-1, 1) for i, j in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+	faces = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]
+	return corners, faces, [paint] * 6
+
+
+def loop(centre, axes, sizes, girth, deep, cut, outside="grey", inside="grey"):
+	# A rectangular loop of bar in one piece, sizes[0] by sizes[1] overall
+	# along axes[0] and axes[1], about `centre` (Blender vectors; axes
+	# right-handed): the bar `girth` across in the loop's plane and `deep`
+	# along axes[2], its four edges cut back `cut` at 45 degrees, swept round
+	# the loop with mitred corners. The faces that look into the loop's
+	# middle (the inner face and its two chamfers) are painted `inside`
+	assert 0 < cut < min(girth, deep) / 2, "a chamfer leaving each face some flat"
+	g, d = girth / 2, deep / 2
+	# the bar's section: (out from the bar's middle line in the loop's plane,
+	# along axes[2]), round it outward face first
+	section = [(g, d - cut), (g, -(d - cut)), (g - cut, -d), (-(g - cut), -d), (-g, -(d - cut)), (-g, d - cut), (-(g - cut), d), (g - cut, d)]
+	middle = [sizes[0] / 2 - g, sizes[1] / 2 - g]
+	corners = ((1, 1), (-1, 1), (-1, -1), (1, -1))   # round the loop, anticlockwise about axes[2]
+	vertices = [centre + axes[0] * (i * (middle[0] + r)) + axes[1] * (j * (middle[1] + r)) + axes[2] * t
+		for i, j in corners for r, t in section]
+	n = len(section)
+	faces, paints = [], []
+	for c in range(4):
+		for k in range(n):
+			a, b = c * n + k, c * n + (k + 1) % n
+			faces.append((a, b, ((c + 1) % 4) * n + (k + 1) % n, ((c + 1) % 4) * n + k))
+			# the section's edge from point k to k + 1: inward when both its ends
+			# lie on the loop's inner side
+			paints.append(inside if section[k][0] < 0 and section[(k + 1) % n][0] < 0 else outside)
+	return vertices, faces, paints
+
+
+def chamfered(centre, axes, sizes, cut, paint="grey"):
+	# A box as cuboid() makes it, each edge cut back `cut` on both its faces
+	# at 45 degrees and each corner a triangle: 24 corners, 26 faces. paint is
+	# a name, or a function naming each face's paint from its outward normal in
+	# the box's own axes (a tuple)
+	assert 0 < cut < min(sizes) / 2, "a chamfer leaving each face some flat"
+	half = [s / 2 for s in sizes]
+	keys = [(signs, k) for signs in itertools.product((-1, 1), repeat=3) for k in range(3)]
+	# each corner of the box is three points, one on each of its faces (the
+	# face square to axis k), drawn in `cut` along the other two axes
+	local = {(signs, k): Vector([signs[i] * (half[i] if i == k else half[i] - cut) for i in range(3)]) for signs, k in keys}
+	sets = [[(s, k) for s, k in keys if k == i and s[i] == sign] for i in range(3) for sign in (-1, 1)]
+	sets += [[(s, k) for s, k in keys if k in (i, j) and s[i] == si and s[j] == sj]
+		for i, j in ((0, 1), (0, 2), (1, 2)) for si in (-1, 1) for sj in (-1, 1)]
+	sets += [[(s, k) for k in range(3)] for s in itertools.product((-1, 1), repeat=3)]
+	index = {key: n for n, key in enumerate(keys)}
+	faces, paints = [], []
+	for face in sets:
+		# wound round its outward side (the box is convex about its centre)
+		middle = sum((local[key] for key in face), Vector()) / len(face)
+		u = (local[face[0]] - middle).normalized()
+		w = middle.normalized().cross(u)
+		face.sort(key=lambda key: math.atan2((local[key] - middle).dot(w), (local[key] - middle).dot(u)))
+		faces.append(tuple(index[key] for key in face))
+		normal = (local[face[1]] - local[face[0]]).cross(local[face[2]] - local[face[0]]).normalized()
+		paints.append(paint(tuple(normal)) if callable(paint) else paint)
+	corners = [centre + sum((axis * c for axis, c in zip(axes, local[key])), Vector()) for key in keys]
+	return corners, faces, paints
+
+
+def anchors():
+	# The bow's two anchors, housed (layout.anchors, the starboard one; the
+	# port one its mirror image). Each hawse pipe's end stands out of the
+	# plating as a grey hood: a pipe of rounded-square section along `axis`,
+	# from `length` inside its mouth (closed there by a dome `dome` deep, or
+	# flat) out to the mouth, which is cut on the slant to open toward
+	# `facing`, its lip rolling `lip` round into the bore, dark to `depth`
+	# inside. The anchor's crown sits below the mouth: its shank from the
+	# crown up into the bore, a block on the stock (its edges chamfered, a pin
+	# standing out of it), the frame (a loop of chamfered bar round a slot)
+	# reaching from the block away from the mouth, and the stock a round bar
+	# through the block, a knob at each end. The crown and the stock's ends
+	# are landmarks for the photo match
+	a = LAYOUT.get("anchors")
+	if not a:
+		return
+	for paint in ("anchor", "rust", "umber"):
+		COLOURS[paint] = tuple(linear(c) for c in a["colour"][paint]) + (1,)
+	vertices, faces, paints, smooth = [], [], [], []
+
+	def add(piece, flat=False):
+		offset = len(vertices)
+		vertices.extend(piece[0])
+		faces.extend(tuple(i + offset for i in f) for f in piece[1])
+		paints.extend(piece[2])
+		smooth.extend([False] * len(piece[1]) if flat else piece[3])
+
+	hawse, stock, block, frame = a["hawse"], a["stock"], a["block"], a["frame"]
+	lip, length, depth = hawse["lip"], hawse["length"], hawse["depth"]
+	wide, tall, power = hawse["width"], hawse["height"], hawse["power"]
+	# the pipe's section a rounded square (a superellipse of `power`, 2 a
+	# circle), `width` across (level and square to the axis, rolled `roll`
+	# round it) and `height`; its profile's radii in metres of the mean
+	# half-size R, the lip and the bore drawn in from it in proportion
+	R = (wide + tall) / 4
+	arc = [(R - lip + lip * math.cos(t), -lip + lip * math.sin(t)) for t in (math.pi * k / 8 for k in range(9))]
+	# along the pipe out of its mouth: its far end (a dome `dome` deep past
+	# `length`, or flat), its outside, the lip (from the outside round to the
+	# bore), the bore and its bottom
+	dome = hawse.get("dome", 0.0)
+	if dome > 0:
+		far = [(R * math.sin(t), -length - dome * math.cos(t)) for t in (math.pi / 2 * k / 8 for k in range(9))]
+	else:
+		far = [(0, -length), (R, -length)]
+	profile = far + arc + [(R - 2 * lip, -depth), (0, -depth)]
+	shades = ["grey"] * (len(far) + 8) + ["dark", "dark"]
+	flat = (len(profile) - 2,) if dome > 0 else (0, len(profile) - 2)
+	for side, name in ((1, "starboard"), (-1, "port")):
+		def mirrored(p):
+			return [p[0], p[1], side * p[2]]
+		mouth = at(*mirrored(hawse["mouth"]))
+		axis = at(*mirrored(hawse["axis"])).normalized()   # into the pipe from its mouth
+		facing = at(*mirrored(hawse["facing"])).normalized()   # the way the mouth opens
+		# the section's width runs level (axis x up) turned `roll` toward axis x
+		# level, its height square to both; the port one rolled the other way so
+		# it is the starboard one's mirror image, both wound as turned() winds a
+		# circle about -axis
+		level = axis.cross(UP).normalized()
+		roll = side * hawse.get("roll", 0.0)
+		across = level * math.cos(roll) + axis.cross(level) * math.sin(roll)
+		u, w = -across, axis.cross(across)
+		def section(t):
+			c, s = math.cos(t), math.sin(t)
+			return (u * (wide / 2 * math.copysign(abs(c) ** (2 / power), c)) + w * (tall / 2 * math.copysign(abs(s) ** (2 / power), s))) / R
+		# the mouth cut on the plane through its centre square to `facing`:
+		# the lip's crest on that plane all round, the pipe leaning past it
+		add(turned(mouth, -axis, profile, shades, flat=flat, section=section,
+			shift=lambda d: -(R - lip) * d.dot(facing) / -axis.dot(facing)))
+		crown = at(*mirrored(a["crown"]))
+		low, high = at(*mirrored(stock["ends"][0])), at(*mirrored(stock["ends"][1]))
+		along = (high - low).normalized()
+		add(tube(mirrored(stock["ends"][0]), mirrored(stock["ends"][1]), stock["diameter"] / 2, "anchor"))
+		for end in (low, high):
+			knob = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=stock["knob"] / 2,
+				matrix=Matrix.Translation(end)))
+			add((knob[0], knob[1], ["anchor"] * len(knob[1]), [True] * len(knob[1])))
+		# the crown's frame of reference: along the stock, away from the
+		# mouth across it, and through both (out of the plating or into it)
+		toward = mouth - crown
+		away = -(toward - along * toward.dot(along)).normalized()
+		through = along.cross(away)
+		# the block, its edges chamfered, and the pin through it standing out of
+		# its outer face (the one away from the pipe's run into the hull)
+		cut = a["chamfer"]
+		add(chamfered(crown, (along, away, through), block, cut, "anchor"), flat=True)
+		outward = through if through.dot(-axis) > 0 else -through
+		pin = crown + outward * (block[2] / 2)
+		add(tube(exported(pin), exported(pin + outward * a["pin"]["length"]), a["pin"]["diameter"] / 2, "anchor", segments=12))
+		# the frame: one loop of bar `girth` across (in the loop's plane) and
+		# `deep` through it, round a slot from the block's edge out to `reach`
+		# from the crown and `width` along the stock; its edges chamfered, its
+		# corners mitred, rust outside and umber on the faces that look into the
+		# slot (the photos' shadowed insides)
+		start, reach, width = block[1] / 2, frame["reach"], frame["width"]
+		add(loop(crown + away * ((start + reach) / 2), (along, away, through), (width, reach - start), frame["bar"], frame["depth"], cut,
+			"rust", "umber"), flat=True)
+		# the shank: a square bar, chamfered, from the crown up into the bore,
+		# to half its depth on the crown's side of it (no nearer its wall than
+		# its own half and 0.1 m)
+		offset = crown - mouth
+		offset -= axis * offset.dot(axis)
+		room = max(0.0, min(wide, tall) / 2 * (R - 2 * lip) / R - a["shank"] / 2 - 0.1)
+		inside = mouth + axis * (depth / 2) + offset * min(1.0, room / max(offset.length, 1e-9))
+		run = inside - crown
+		square = run.cross(UP if abs(run.normalized().dot(UP)) < 0.9 else FORWARD).normalized()
+		add(chamfered((crown + inside) / 2, (run.normalized(), square, run.normalized().cross(square)), (run.length, a["shank"], a["shank"]), cut,
+			"anchor"), flat=True)
+		MARKS[f"anchor_crown_{name}"] = (crown, "anchors")
+		MARKS[f"anchor_stock_top_{name}"] = (high, "anchors")
+		MARKS[f"anchor_stock_bottom_{name}"] = (low, "anchors")
+	node("anchors", mesh=(vertices, faces, paints), smooth=smooth)
+
+
 def sides():
 	# What the hull carries outside its loft: the weapon sponsons and the small
 	# deck-edge sponsons with their domes, the catwalks and the raft racks (one
@@ -1709,18 +1942,20 @@ def hull():
 		face = h.get("face")
 		return 0.0 if face and y >= face["bottom"][0] else min(fillet, crease(y))
 
-	def half(x, y):
+	def half(x, y, power=1.0):
 		values = [interpolate(y, [p[0] for p in s["points"]], [p[1] for p in s["points"]]) for s in stations]
 		value = interpolate(x, sx, values)
 		if x > sx[-1]:
 			# ahead of the last station each height runs straight to the bow's
 			# forward edge there: the stem, or the face's crease above it, whose
-			# sections take the face as their flat bottom. Below the face the
-			# stem's front turns into the sides round a quarter circle
+			# sections take the face as their flat bottom (or, with a power over
+			# 1, the share of the way raised to it: holding out, then turning
+			# in). Below the face the stem's front turns into the sides round a
+			# quarter circle
 			front, end, radius = ahead(y), crease(y), rounding(y)
 			start = front - radius
 			share = max(0.0, min(1.0, (x - sx[-1]) / (start - sx[-1]))) if start > sx[-1] else 1.0
-			value += (end - value) * share
+			value += (end - value) * share ** power
 			if radius > 0 and x > start:
 				u = min(1.0, (x - start) / radius)
 				value = end - radius + radius * math.sqrt(1 - u * u)
@@ -1748,17 +1983,18 @@ def hull():
 		creases = [p[0] for c in flare.get(name, []) for p in (c[0], c[-1])]
 		assert q[0]["x"] - 0.01 > transom, "a quarter ends forward of the transom"
 		assert not creases or q[-1]["x"] + 0.01 < min(creases) or q[0]["x"] - 0.01 > max(creases), "a quarter clear of the flare's creases"
-	# the bow's shoulders (hull.shoulders, [start, full]): forward of full the
-	# flare between the knuckle and the gallery's foot follows the stations'
-	# points above the knuckle, aft of start it runs straight, and between the
-	# two it goes its share of the way from the straight line out to them.
+	# the bow's shoulders (hull.shoulders): forward of full the flare between
+	# the knuckle and the gallery's foot follows the stations' points above the
+	# knuckle, aft of start it runs straight, and between the two it goes its
+	# share of the way from the straight line out to them. Ahead of the last
+	# station they run to the face's crease by the share raised to power.
 	# Every ring carries a point at each height those stations give above the
 	# knuckle (levels), after the quarter's; aft of start they sit on the
 	# point before, where tidy() welds them away
 	shoulders = h.get("shoulders")
 	levels = []
 	if shoulders:
-		start, full = shoulders
+		start, full, power = shoulders["start"], shoulders["full"], shoulders.get("power", 1.0)
 		lowest = min(min([interpolate(start, [p[0] for p in line], [p[1] for p in line])] + [p[1] for p in line if p[0] >= start])
 			for line in (sorted(h["knuckle"][name]) for name in ("port", "starboard")))
 		levels = sorted({y for s in stations if s["x"] >= start for y, z in s["points"] if lowest < y < under})
@@ -1785,7 +2021,7 @@ def hull():
 				points.append((foot, z))
 			else:
 				straight = kz + (z - kz) * (y - ky) / (foot - ky)
-				points.append((y, straight + (half(x, y) - straight) * share))
+				points.append((y, straight + (half(x, y, power) - straight) * share))
 		return points
 
 	def wall(x, side):
@@ -1844,7 +2080,7 @@ def hull():
 			turns |= {s["x"] for s in q} | {q[0]["x"] - 0.01, q[-1]["x"] + 0.01}
 	if shoulders:
 		# and where the shoulders start and come in full
-		turns |= set(shoulders)
+		turns |= {start, full}
 	if h.get("front"):
 		# and at each knot of the stem the front runs up, so its edges follow
 		# the stem's profile
@@ -2463,6 +2699,7 @@ def main():
 	island()
 	sides()
 	hulled = hull()
+	anchors()
 	regroup()
 	if "--draft" not in args:
 		deck_texture(facts)

@@ -312,17 +312,21 @@ describe("the carrier's ship file", () => {
         )
       )
     )
-    // the deck's paint, the lettering, the nets, the three weathered
-    // groups (the island, the hull, the island's radomes) with their normal
-    // maps, and the boot top's colour alone
+    // the deck's paint, the lettering, the nets, the weathered groups (the
+    // island, the hull, the island's radomes, and the anchors' hawse hoods,
+    // tan parts and rust) with their normal maps, and the boot top's colour
+    // alone
     expect(Object.keys(images).sort()).toEqual([
       'boot',
+      'corrosion',
       'deck',
       'domes',
+      'hawse',
       'hull',
       'island',
       'lettering',
       'net',
+      'tackle',
     ])
     const head = (src: { bytes: Uint8Array }) =>
       Array.from(src.bytes.slice(0, 8))
@@ -334,6 +338,9 @@ describe("the carrier's ship file", () => {
       'hull',
       'island',
       'boot',
+      'hawse',
+      'tackle',
+      'corrosion',
     ]) {
       expect(images[name].base.mime, name).toBe('image/ktx2')
       expect(head(images[name].base), name).toEqual(ktx2)
@@ -341,6 +348,11 @@ describe("the carrier's ship file", () => {
     for (const name of ['domes', 'hull', 'island']) {
       expect(images[name].normal.mime, name).toBe('image/ktx2')
       expect(head(images[name].normal), name).toEqual(ktx2)
+    }
+    // the anchors' groups carry normal maps too, small enough that the
+    // packing leaves them as they are (texswap.py encodes 50 kB and up)
+    for (const name of ['hawse', 'tackle', 'corrosion']) {
+      expect(images[name].normal?.bytes.length, name).toBeGreaterThan(0)
     }
     expect(images.boot.normal).toBeNull()
     expect(head(images.net.base)).toEqual([137, 80, 78, 71, 13, 10, 26, 10])

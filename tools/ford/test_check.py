@@ -6,7 +6,7 @@
 # entries it must account for are found.
 #
 # usage: python3 -I test_check.py
-import re, sys, unittest
+import math, re, sys, unittest
 from pathlib import Path
 
 import numpy as np
@@ -81,6 +81,21 @@ class EntriesTest(unittest.TestCase):
 			self.assertTrue(check.inside(outline, 3, 0.5))
 			self.assertFalse(check.inside(outline, 3, 3))
 			self.assertFalse(check.inside(outline, -1, 0.5))
+
+	def test_outline_reach(self):
+		# a unit square of two triangles: from its middle it reaches 0.5 on,
+		# from a point past it back to its far edge, whichever way it winds;
+		# a second square beside it carries the reach on; a triangle seen edge
+		# on, or shrunk to a point, covers nothing
+		square = np.array([[[0, 0], [1, 0], [1, 1]], [[0, 0], [1, 1], [0, 1]]], float)
+		for s in (square, square[:, ::-1]):
+			self.assertAlmostEqual(check.outline_reach(s, (0.5, 0.5), (1, 0)), 0.5)
+			self.assertAlmostEqual(check.outline_reach(s, (2, 0.5), (1, 0)), -1)
+			self.assertAlmostEqual(check.outline_reach(s, (0.5, 0.5), (-1, -1)), math.sqrt(2) / 2, places=2)
+		self.assertAlmostEqual(check.outline_reach(np.concatenate([square, square + [1, 0]]), (0.5, 0.5), (1, 0)), 1.5)
+		self.assertEqual(check.outline_reach(square, (5, 5), (1, 0)), -math.inf)
+		flat = np.array([[[0, 3], [4, 3], [8, 3]], [[0, 3], [0, 3], [0, 3]]], float)
+		self.assertAlmostEqual(check.outline_reach(np.concatenate([square, flat]), (0.5, 0.5), (1, 0)), 0.5)
 
 	def test_rounding_inward(self):
 		# toward the deck's middle, whichever way the edge runs
