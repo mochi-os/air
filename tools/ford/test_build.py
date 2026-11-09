@@ -99,9 +99,14 @@ LAYOUT = {
 			{"name": "lit", "on": "island", "cell": "square", "plane": "x=-4", "z": [21, 23], "y": [20, 22]}],
 		# a draught mark either side of the stem, half a metre up
 		"draught": {"height": 0.3, "width": 0.2, "aft": 1.0, "numerals": [{"cell": "number", "text": "8", "bottom": 0.5}]}},
-	# a sponson under the port quarter with a Phalanx on it, an opening in the
-	# starboard side, a catwalk with its net and a rack of rafts
-	"sponsons": [{"name": "quarter", "outline": [[-90, -12], [-90, -20], [-80, -20], [-80, -12]], "bottom": 8.0, "top": 12.0},
+	# a sponson under the port quarter with a Phalanx on it, a house on its
+	# inboard forward corner and a skirt under it whose forward face slopes
+	# back (its plan at the top 2 m further forward than at its foot), an
+	# opening in the starboard side, a catwalk with its net and a rack of rafts
+	"sponsons": [{"name": "quarter", "outline": [[-90, -12], [-90, -20], [-80, -20], [-80, -12]], "bottom": 8.0, "top": 12.0,
+			"details": [{"name": "quarter_house", "kind": "box", "centre": [-82.5, 12.5, -13.5], "size": [2, 1, 2]},
+				{"name": "quarter_skirt", "kind": "prism", "outline": [[-88, -19], [-84, -19], [-84, -17], [-88, -17]],
+					"upper": [[-88, -19], [-82, -19], [-82, -17], [-88, -17]], "bottom": 7.0, "top": 8.0}]},
 		# one whose top rises forward and whose bottom falls outboard
 		{"name": "sloped", "outline": [[-70, -30], [-70, -36], [-60, -36], [-60, -30]], "bottom": [9.5, 9.0, 9.0, 9.5], "top": [14.0, 14.0, 15.0, 15.0]}],
 	# a gun tub on the starboard edge: its floor at 16, its outline from the
@@ -786,6 +791,25 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(muzzle[0], -75 + 1.365, places=2)
 		self.assertGreater(muzzle[1], 11.9)
 		self.assertAlmostEqual(raised[:, 1].min(), 9.0, places=3)
+
+	def test_sponson_details(self):
+		# what stands on a sponson is built with it: the house's eight corners
+		sponson = np.round(self.model.parts()["sponsons"].reshape(-1, 3), 4)
+		for x in (-83.5, -81.5):
+			for y in (12.0, 13.0):
+				for z in (-14.5, -12.5):
+					self.assertTrue((np.abs(sponson - [x, y, z]) < 1e-3).all(1).any(), (x, y, z))
+
+	def test_sponson_detail_slopes(self):
+		# a prism under a sponson with a plan of its own at the top: its top
+		# corners on that plan, its foot on its outline, so its forward face
+		# slopes back from (-82, 8) to (-84, 7)
+		sponson = np.round(self.model.parts()["sponsons"].reshape(-1, 3), 4)
+		has = lambda q: (np.abs(sponson - q) < 1e-3).all(1).any()
+		for z in (-19, -17):
+			self.assertTrue(has([-82, 8, z]), z)
+			self.assertTrue(has([-84, 7, z]), z)
+			self.assertFalse(has([-82, 7, z]), z)
 
 	def test_gun_tub_is_a_railed_floor(self):
 		# a floor 0.2 thick at 16, a railing 1.1 over it on its outboard sides

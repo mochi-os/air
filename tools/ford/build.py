@@ -642,7 +642,8 @@ def shape(p, frame=None):
 	# mast's fittings) as (vertices, faces, paints), its points in the ship's
 	# frame, or carried by `frame` (a matrix on Blender's points) from a
 	# kind's own: box {centre, size [x, y, z]}; cylinder {base, axis and
-	# length, or end; radius; segments}; prism {outline, bottom, top}; railing
+	# length, or end; radius; segments}; prism {outline, bottom, top, upper:
+	# its plan at the top, corner for corner, where its faces slope}; railing
 	# {path, height, posts}: a top and a mid rail and posts; dish {centre,
 	# diameter, facing}: a disc; dome {centre, radius}: a sphere; lathe
 	# {centre [x, z], profile, radome}: turned about an upright axis (lathe());
@@ -714,7 +715,7 @@ def shape(p, frame=None):
 			pieces.append(shape({"kind": "railing", "path": [list(a + side * k), list(b + side * k)], "height": p.get("railing", 1.0)}))
 		piece = merge(pieces)
 	elif kind == "prism":
-		piece = prism(p["outline"], p["bottom"], p["top"], paint=paint)
+		piece = prism(p["outline"], p["bottom"], p["top"], upper=p.get("upper"), paint=paint)
 	elif kind == "ring":
 		piece = ring(p["centre"], p["facing"], p["outer"], p["inner"], p.get("thickness", 0.1), p.get("segments", 16), paint, p.get("sweep"))
 	elif kind == "dome":
@@ -1713,6 +1714,8 @@ def sides():
 	# sides and transom, drawn dark a few centimetres proud of them
 	top = LAYOUT["deck"]["height"]
 	pieces = [prism(s["outline"], s["bottom"], s["top"]) for s in LAYOUT.get("sponsons", [])]
+	# what stands on a sponson (shape()s: a deckhouse, its railings)
+	pieces += [shape(d) for s in LAYOUT.get("sponsons", []) for d in s.get("details", [])]
 	for s in LAYOUT.get("sponsons", []):
 		n = len(s["outline"])
 		for k, (x, z) in enumerate(s["outline"]):

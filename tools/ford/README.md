@@ -152,7 +152,7 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     shorter in proportion above and below; aft of `taper` it narrows smoothly to nothing in the forefoot.
     Every section has as many heights above the anti-fouling's top and as many below, so the paint's edge
     runs along them.
-  - The sponsons are prisms whose tops and bottoms may slope (a height per corner). Each corner is a landmark
+  - The sponsons are prisms whose tops and bottoms may slope (a height per corner), carrying what stands on and under them (`details`: a deckhouse, railings, slots, and prisms under the deck whose faces slope, given a plan of their own at the top). Each corner is a landmark
     for the photo match. The gun
     tubs (`tubs`) on the aft sponsons' faces are a floor, a railing round its outboard sides and a knee
     under its aft end; their guns are weapons' mounts.

@@ -563,7 +563,8 @@ def checks(ship):
 
 	def sponsons():
 		# every railing and deck circle (a ring facing up) standing on a
-		# sponson keeps to its top: the railing's line, and the circle's
+		# sponson, the transom's and the sponson's own (its details), keeps to
+		# its top: the railing's line, and the circle's
 		# underside all round, within 0.01 m of the top's plane (a flat circle
 		# on a sloping top sinks into it on one side) and inside its edges
 		# (one past them hangs in the air). A railing standing on another
@@ -590,7 +591,7 @@ def checks(ship):
 				return best
 
 			points = []
-			for d in details:
+			for d in details + s.get("details", []):
 				if d["kind"] == "railing" and inside(outline, d["path"][0][0], d["path"][0][2]) and not elsewhere(d["path"][0]):
 					for a, b in zip(d["path"], d["path"][1:]):
 						points += [(d["name"], *(np.array(a) + (np.array(b) - np.array(a)) * k / 10)) for k in range(11)]
