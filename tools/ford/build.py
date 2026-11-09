@@ -1475,17 +1475,6 @@ def sides():
 			for end in ("bottom", "top"):
 				y = s[end][k] if isinstance(s[end], list) else s[end]
 				MARKS[f"sponson_{s['name']}_{end}_{k + 1}"] = (at(x, y, z), "sponsons")
-	# wedges: a section across the ship ([z, y] corners) carried from x0 to x1
-	for w in LAYOUT.get("wedges", []):
-		(x0, x1), section = w["x"], w["section"]
-		n = len(section)
-		if area([[z, y] for z, y in section]) < 0:
-			section = section[::-1]
-		vertices = [at(x0, y, z) for z, y in section] + [at(x1, y, z) for z, y in section]
-		faces = [tuple(range(n)), tuple(range(2 * n - 1, n - 1, -1))] + [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
-		pieces.append((vertices, faces))
-		for k, (z, y) in enumerate(w["section"]):
-			MARKS[f"wedge_{w['name']}_{k + 1}"] = (at(x0, y, z), "sponsons")
 	pieces += domes_edge() + catwalks() + racks() + tubs()
 	if pieces:
 		node("sponsons", mesh=merge(pieces))
@@ -1549,6 +1538,10 @@ def hull():
 	# along the flare to the foot of the gallery wall, and up that wall to the
 	# deck's underside at the deck's edge; along a wall (hull.walls: the
 	# quarters' and the port midbody's), to the foot of that wall and up it.
+	# Along a quarter (hull.quarters) the section runs from the knuckle out
+	# through the quarter's points to its wall's foot, or under a sponson to
+	# the sponson's bottom at its inboard edge, and the quarter ends square at
+	# both ends.
 	# Below the knuckle the hull is symmetric: its half-breadth at a height is
 	# read off the stations either side (the transom the first of them), and
 	# ahead of the last it narrows to the stem. The flare is flat between its
@@ -1627,6 +1620,17 @@ def hull():
 
 	walls = h.get("walls", {})
 	flare = h.get("flare", {})
+	quarters = {name: sorted(q, key=lambda s: s["x"]) for name, q in h.get("quarters", {}).items()}
+	# every ring carries as many points between its knuckle and its foot as a
+	# quarter's section has; outside a quarter they sit on the knuckle, where
+	# tidy() welds them away
+	counts = {len(s["points"]) for q in quarters.values() for s in q}
+	assert len(counts) <= 1, "hull.quarters' sections differ in their number of points"
+	K = counts.pop() if counts else 0
+	for name, q in quarters.items():
+		creases = [p[0] for c in flare.get(name, []) for p in (c[0], c[-1])]
+		assert q[0]["x"] - 0.01 > transom, "a quarter ends forward of the transom"
+		assert not creases or q[-1]["x"] + 0.01 < min(creases) or q[0]["x"] - 0.01 > max(creases), "a quarter clear of the flare's creases"
 
 	def wall(x, side):
 		# where a wall stands under the deck's edge: its |z| and its foot's
@@ -1636,6 +1640,31 @@ def hull():
 			if line[0][0] <= x <= line[-1][0]:
 				return abs(interpolate(x, [p[0] for p in line], [p[1] for p in line])), w["foot"]
 		return None
+
+	def quarter(x, side):
+		# a quarter's section at x (hull.quarters: its points out from the
+		# knuckle to where it meets its wall's foot or its sponson's bottom, as
+		# [y, |z|]), straight between its measured sections; None outside it
+		q = quarters.get("starboard" if side > 0 else "port")
+		if not q or not q[0]["x"] <= x <= q[-1]["x"]:
+			return None
+		along = [s["x"] for s in q]
+		return [(interpolate(x, along, [s["points"][k][0] for s in q]), abs(interpolate(x, along, [s["points"][k][1] for s in q]))) for k in range(K)]
+
+	def inboard(x, side):
+		# the inboard edge of a sponson standing over x on a side, as the |z|
+		# and the height of its bottom there, or None where none does
+		best = None
+		for s in LAYOUT.get("sponsons", []):
+			o = s["outline"]
+			bottoms = s["bottom"] if isinstance(s["bottom"], list) else [s["bottom"]] * len(o)
+			for k, (a, b) in enumerate(zip(o, o[1:] + o[:1])):
+				if (a[0] - x) * (b[0] - x) <= 0 and a[0] != b[0] and a[1] * side > 0:
+					t = (x - a[0]) / (b[0] - a[0])
+					z = abs(a[1] + (b[1] - a[1]) * t)
+					if best is None or z < best[0]:
+						best = (z, bottoms[k] + (bottoms[(k + 1) % len(o)] - bottoms[k]) * t)
+		return best
 
 	# the sections: every STEP, and at every x where a line the flare runs
 	# between turns (the deck's and elevators' corners, the knuckle's and the
@@ -1651,6 +1680,12 @@ def hull():
 		turns |= {p[0] for p in h["knuckle"][name]} | {p[0] for p in h["gallery"][name]}
 		turns |= {w["wall"][e][0] for w in walls.get(name, []) for e in (0, -1)}
 		turns |= {c[e][0] for c in flare.get(name, []) for e in (0, -1)}
+		# and at each of a quarter's sections, with a section a centimetre past
+		# either end, so it ends square: a face across the ship from its section
+		# to the hull's either side of it
+		if quarters.get(name):
+			q = quarters[name]
+			turns |= {s["x"] for s in q} | {q[0]["x"] - 0.01, q[-1]["x"] + 0.01}
 	if h.get("front"):
 		# and at each knot of the stem the front runs up, so its edges follow
 		# the stem's profile
@@ -1688,14 +1723,24 @@ def hull():
 			ky, kz = knuckles[side]
 			points = [(y, half(x, y)) for y in heights] + [(ky, kz)]
 			standing = wall(x, side)
+			section = quarter(x, side)
 			if standing:
-				# a wall: out from the knuckle to its foot and up it to the deck's
-				# underside, the deck overhanging any inboard of its edge
+				# a wall: out from the knuckle (along a quarter's section) to its
+				# foot and up it to the deck's underside, the deck overhanging any
+				# inboard of its edge
 				z, foot = standing
-				points += [(max(foot, ky), z), (under, z)]
+				points += (section or [(ky, kz)] * K) + [(max(foot, ky), z), (under, z)]
+			elif section:
+				# a quarter under a sponson: along its section, then in or out to
+				# the sponson's bottom at its inboard edge (the deck's edge at the
+				# section's last point's height where none stands over it), and up
+				# to the deck's edge
+				z = abs(edge(outlines, x, side))
+				reach = inboard(x, side)
+				points += section + [(section[-1][0], z) if reach is None else (reach[1], reach[0]), (under, z)]
 			else:
 				z = abs(edge(outlines, x, side))
-				points += [(max(feet[side], ky), z), (under, z)]
+				points += [(ky, kz)] * K + [(max(feet[side], ky), z), (under, z)]
 			sides[side] = [at(x, y, side * z) for y, z in points]
 		rings.append(sides[-1][::-1] + [at(x, y0, 0)] + sides[1])
 	n = len(rings[0])
@@ -1709,7 +1754,9 @@ def hull():
 		return "antifouling" if top <= foul + 1e-6 else "boot" if top <= boot + 1e-6 else "grey"
 
 	# each side's knuckle and the gallery wall's foot above it, as indices in
-	# a ring: port first, reversed, then the keel, then starboard
+	# a ring: port first, reversed, then the keel, then starboard. Where they
+	# are used (the flare's facets, the transom) no quarter runs, so its K
+	# points sit on the knuckle and the index beside the foot stands for it
 	S = (n - 1) // 2
 	columns = {-1: (2, 1), 1: (2 * S - 2, 2 * S - 1)}
 	ring = {x: i for i, x in enumerate(xs)}
@@ -1858,6 +1905,14 @@ def hull():
 	CURVES["hull_waterline_starboard"] = ([at(x, 0, half(x, 0)) for x in waterline], "hull")
 	for side, name in ((-1, "port"), (1, "starboard")):
 		CURVES[f"hull_knuckle_{name}"] = ([at(x, knuckle(x, side)[0], side * knuckle(x, side)[1]) for x in [transom + (bow - transom) * k / 60 for k in range(61)]], "hull")
+		if quarters.get(name):
+			# a quarter's aft end, as the photos of the transom see it: its
+			# knuckle and its knee (its section's last point)
+			x = quarters[name][0]["x"]
+			ky, kz = knuckle(x, side)
+			y, z = quarter(x, side)[-1]
+			MARKS[f"hull_quarter_{name}_knuckle"] = (at(x, ky, side * kz), "hull")
+			MARKS[f"hull_quarter_{name}_knee"] = (at(x, y, side * z), "hull")
 	front = ahead(0)
 	entrance = math.degrees(math.atan2(half(front - 10, 0), 10))
 	return {"draught": round(-min(keels), 3), "entrance": round(entrance, 2), "waterline": {"stern": round(waterline[0], 3), "stem": round(front, 3),

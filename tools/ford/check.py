@@ -48,7 +48,6 @@ EXEMPT = {
 	"layout.antennas": "the antennas the build writes as given; their motion is tested in test_build.py",
 	"layout.parking": "a placed spot the build writes as given",
 	"layout.sponsons": "built as given (references/research/sides, stern); the photo match checks their corners",
-	"layout.wedges": "built as given (references/research/stern); the photo match checks their corners",
 	"layout.weapons": "built as given",
 	"layout.domes_edge": "built as given",
 	"layout.catwalks": "built as given",

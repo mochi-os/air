@@ -114,8 +114,11 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     deck's edge as the whip lowers.
   - The hull is a loft of sections from the transom to the bow: keel, hull side to each side's knuckle, the
     flare, and the gallery wall up to the deck's edge, or along a wall (`hull.walls`: the quarters', the port
-    midbody's) up the wall standing under it. A section stands at every corner of the deck's edge and every
-    knot of the knuckle and the gallery, so the flare is flat between them and creases only there, and either
+    midbody's) up the wall standing under it. Along a quarter (`hull.quarters`, from its wall's forward end to
+    the transom) the section runs from the knuckle out through the quarter's measured points, straight between
+    its sections, to the wall's foot, or under a sponson to the sponson's bottom at its inboard edge; it ends
+    square at both ends, and its aft end's knuckle and knee are landmarks. A section stands at every corner of
+    the deck's edge and every knot of the knuckle and the gallery, so the flare is flat between them and creases only there, and either
     side of a square step in the deck's edge (the starboard quarter's notch), so the hull steps square under
     it; where
     `hull.flare` gives creases that slant (the angled deck's), flat facets between them take the sections'
@@ -124,8 +127,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     flat front (`hull.front`, its half-width by height, rising into the face's bottom edge, a section at each
     knot of the stem it rises past), or above it the bow's flat face (`hull.face`); the sections ahead take
     the front or the face as their flat bottom.
-  - The sponsons are prisms whose tops and bottoms may slope (a height per corner); `wedges` are sections
-    carried along x, such as the transom's flare. Each corner is a landmark for the photo match. The gun
+  - The sponsons are prisms whose tops and bottoms may slope (a height per corner). Each corner is a landmark
+    for the photo match. The gun
     tubs (`tubs`) on the aft sponsons' faces are a floor, a railing round its outboard sides and a knee
     under its aft end; their guns are weapons' mounts.
   - The catwalks follow the deck's edge between their ends: a floor from inside the band out, a toe board,
@@ -242,7 +245,9 @@ the deck; a new sighting in the game becomes a ray here first.
 - the hull's depth, waterline, stem, transom and symmetry, and that every face points outward;
 - the bow's face and the stem's front below it as the flat bottom of the sections ahead of them, a section at
   each of the front's knots, and a quarter's wall inside the deck's edge;
-- a sloped sponson's corners and a wedge's section, and the draught marks beside the stem reading from outside;
+- a quarter's section under its wall and under its sponson, its square ends, its landmarks, and the hull
+  still closed;
+- a sloped sponson's corners, and the draught marks beside the stem reading from outside;
 - the deck's round-down: its surface on the curve at every vertex and between them, the edge plate's top and
   foot with it;
 - a glazed level: a sight line across the block through both openings, the panes in BLEND leaning out,

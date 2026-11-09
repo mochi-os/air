@@ -107,8 +107,6 @@ LAYOUT = {
 	# a gun tub on the starboard edge: its floor at 16, its outline from the
 	# inboard aft corner round to the inboard forward one, a knee down to 14
 	"tubs": [{"name": "tub", "outline": [[-70, 30], [-70, 33], [-66, 33], [-66, 30]], "floor": 16.0, "railing": 1.1, "knee": {"x": -69.9, "foot": 14.0}}],
-	# a flare below the quarter sponson, a metre deep
-	"wedges": [{"name": "flare", "x": [-89, -88], "section": [[-12, 6], [-16, 8], [-12, 8]]}],
 	# a Phalanx trained to starboard, its barrels along its line of fire
 	"weapons": {"kinds": {"phalanx": {"parts": [{"name": "base", "kind": "cylinder", "base": [0, 0, 0], "axis": [0, 1, 0], "length": 0.6, "radius": 0.8},
 		{"name": "radome", "kind": "cylinder", "base": [0, 1.68, 0], "axis": [0, 1, 0], "length": 1.4, "radius": 0.5, "paint": "radome"},
@@ -759,7 +757,7 @@ class BuildTest(unittest.TestCase):
 	def test_sponson_and_its_phalanx(self):
 		sponson = self.model.parts()["sponsons"].reshape(-1, 3)
 		self.assertTrue(((sponson[:, 0] >= -90 - 1e-6) & (sponson[:, 0] <= -30 + 0.03)).all())   # the railing's last post half its width past
-		quarter = sponson[np.isclose(sponson[:, 0], -90) | np.isclose(sponson[:, 0], -80)]   # its corners, not the flare below it
+		quarter = sponson[np.isclose(sponson[:, 0], -90) | np.isclose(sponson[:, 0], -80)]   # its corners
 		self.assertAlmostEqual(quarter[:, 1].min(), 8.0, places=4)
 		self.assertAlmostEqual(quarter[:, 1].max(), 12.0, places=4)
 		# the catwalk's floor at its height, its railing a metre above it
@@ -1087,7 +1085,7 @@ class BuildTest(unittest.TestCase):
 		self.assertEqual(len(triangles), (12 * 4 + 2) * 2)
 		self.assertEqual(int((np.ptp(angle, axis=1) < 1e-3).sum()), 4)
 
-	def test_sloped_sponson_and_wedge(self):
+	def test_sloped_sponson(self):
 		# each corner at its own heights, and named for the photo match
 		marks = self.features["landmarks"]
 		self.assertEqual(marks["sponson_sloped_top_3"], {"at": [-60, 15.0, -36], "node": "sponsons"})
@@ -1099,11 +1097,6 @@ class BuildTest(unittest.TestCase):
 			self.assertTrue((np.linalg.norm(sloped - [x, y, z], axis=1) < 1e-4).any(), (x, y, z))
 		self.assertAlmostEqual(sloped[:, 1].max(), 15.0, places=4)
 		self.assertAlmostEqual(sloped[:, 1].min(), 9.0, places=4)
-		# the wedge spans its x and its section
-		wedge = sponson[(sponson[:, 0] >= -89 - 1e-6) & (sponson[:, 0] <= -88 + 1e-6) & (sponson[:, 1] < 8 - 1e-6)]
-		self.assertGreater(len(wedge), 0)
-		self.assertEqual(marks["wedge_flare_2"], {"at": [-89, 8.0, -16], "node": "sponsons"})
-		self.assertTrue((np.linalg.norm(sponson - [-88, 6, -12], axis=1) < 1e-4).any())
 
 	def test_quarter_wall_stands_in_from_the_deck_edge(self):
 		# along the quarter the port side rises from the wall's foot straight
@@ -1285,6 +1278,99 @@ class SquareStepTest(unittest.TestCase):
 		self.assertGreater(wide[:, :, 0].min(), -80.0101)
 		narrow = hull[(hull[:, :, 0] < -80.02).all(axis=1)]
 		self.assertGreater(narrow[:, :, 2].min(), -36.0001)
+
+
+class QuarterTest(unittest.TestCase):
+	# the fixture with a port quarter from its wall's forward end at x -55 aft
+	# to -89, a metre short of the transom: the wall run aft to the quarter
+	# sponson's forward end at -80, and the deck notched over the sponson to
+	# its inboard edge (z -12) aft of -80. Its sections: knuckle, (7, -20),
+	# (8, -30) at -55, out to the wall's foot (8, -36); (7, -13), (7.5, -16) at
+	# -89, the knee outboard of the sponson's inboard edge and below its
+	# bottom (8)
+	@classmethod
+	def setUpClass(cls):
+		layout = json.loads(json.dumps(LAYOUT))
+		outline = layout["deck"]["outline"]
+		assert outline[0] == [-100, -40]
+		layout["deck"]["outline"] = [[-100, -12], [-80, -12], [-80, -40]] + outline[1:]
+		hull = layout["hull"]
+		hull["walls"]["port"] = [{"wall": [[-80, -36], [-55, -36]], "foot": 8.0}]
+		hull["quarters"] = {"port": [{"x": -55, "points": [[7, -20], [8, -30]]}, {"x": -89, "points": [[7, -13], [7.5, -16]]}]}
+		build(cls, layout)
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.folder.cleanup()
+
+	def ring(self, x):
+		# the port side of the hull's section nearest x, and its x
+		points = self.model.parts()["hull"].reshape(-1, 3)
+		x = points[np.argmin(np.abs(points[:, 0] - x))][0]
+		ring = np.unique(np.round(points[np.abs(points[:, 0] - x) < 1e-4], 4), axis=0)
+		return x, ring[ring[:, 2] < 1e-6]
+
+	def has(self, ring, y, z):
+		return bool((np.linalg.norm(ring[:, 1:] - [y, z], axis=1) < 1e-3).any())
+
+	def test_section_under_the_wall(self):
+		# near -65, some 10/34 of the way aft: the knuckle (6, about -15: the
+		# transom's 10 at -90 widening to 16 at -60), then the quarter's points
+		# straight between its sections, the wall's foot and up the wall
+		x, ring = self.ring(-65)
+		t = (-55 - x) / 34
+		for y, z in ((6, -(10 + 6 * (x + 90) / 30)), (7, -20 + 7 * t), (8 - 0.5 * t, -30 + 14 * t), (8, -36), (18.4, -36)):
+			self.assertTrue(self.has(ring, y, z), (y, z))
+		# and nothing else between the knuckle and the foot: no slope straight
+		# from one to the other
+		self.assertEqual(len(ring[(ring[:, 1] > 6 + 1e-3) & (ring[:, 1] < 8 - 1e-3)]), 2)
+
+	def test_section_under_the_sponson(self):
+		# near -85 the knee (about 7.56, -17.65) lies outboard of the
+		# sponson's inboard edge; the section runs back in to the sponson's
+		# bottom there and up to the notch's edge
+		x, ring = self.ring(-85)
+		self.assertLess(x, -80)
+		t = (-55 - x) / 34
+		half = 10 + 6 * (x + 90) / 30   # the transom's 10 at -90 widening to 16 at -60
+		for y, z in ((6, -half), (7, -20 + 7 * t), (8 - 0.5 * t, -30 + 14 * t), (8, -12), (18.4, -12)):
+			self.assertTrue(self.has(ring, y, z), (y, z))
+		self.assertAlmostEqual(ring[:, 2].min(), -30 + 14 * t, places=3)
+
+	def test_ends_square(self):
+		hull = self.model.parts()["hull"]
+		# forward: the flare out to the deck's edge (z -40) reaches no further
+		# aft than a centimetre past the wall's end
+		wide = hull[(hull[:, :, 2] < -36.5).any(axis=1)]
+		self.assertGreater(len(wide), 0)
+		self.assertGreater(wide[:, :, 0].min(), -55.0101)
+		# aft: behind the quarter's end nothing stands out past the notch's
+		# edge, and the step across the ship at its end reaches the knee
+		behind = hull[(hull[:, :, 0] < -89.005).all(axis=1)]
+		self.assertGreater(behind[:, :, 2].min(), -12.0001)
+		step = hull[(hull[:, :, 0] >= -89.0101).all(axis=1) & (hull[:, :, 0] <= -89 + 1e-4).all(axis=1)]
+		self.assertAlmostEqual(step[:, :, 2].min(), -16, places=3)
+
+	def test_landmarks(self):
+		marks = self.features["landmarks"]
+		half = 10 + 6 / 30
+		self.assertEqual(marks["hull_quarter_port_knee"], {"at": [-89, 7.5, -16], "node": "hull"})
+		self.assertEqual(marks["hull_quarter_port_knuckle"]["node"], "hull")
+		np.testing.assert_allclose(marks["hull_quarter_port_knuckle"]["at"], [-89, 6.0, -half], atol=1e-3)
+
+	def test_hull_stays_closed(self):
+		# every edge crossed once each way, but the deck underside's, which the
+		# deck closes, and the transom's section above its floor, which the
+		# upper transom closes
+		edges = {}
+		for t in np.round(self.model.parts()["hull"], 4):
+			for a, b in ((0, 1), (1, 2), (2, 0)):
+				key = (tuple(t[a]), tuple(t[b]))
+				edges[key] = edges.get(key, 0) + 1
+		self.assertEqual(set(edges.values()), {1})
+		open_ = [e for e in edges if (e[1], e[0]) not in edges]
+		self.assertTrue(open_ and all((e[0][1] == 18.4 and e[1][1] == 18.4) or (e[0][0] == -90 and e[1][0] == -90 and min(e[0][1], e[1][1]) >= 5 - 1e-4)
+			for e in open_))
 
 
 class ProvenanceTest(unittest.TestCase):
