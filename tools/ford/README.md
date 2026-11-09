@@ -124,9 +124,23 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     `hull.flare` gives creases that slant (the angled deck's), flat facets between them take the sections'
     place; the blisters on the hull side under the elevators (`hull.blisters`) stand out from it. It is symmetric below the knuckles, wears `antifouling` below the band's top, `boot` up to the
     boot top, and ahead of its last station runs each height straight to the bow's forward edge: the stem's
-    flat front (`hull.front`, its half-width by height, rising into the face's bottom edge, a section at each
-    knot of the stem it rises past), or above it the bow's flat face (`hull.face`); the sections ahead take
-    the front or the face as their flat bottom.
+    front (`hull.front`, its half-width by height, rising into the face's bottom edge, a section at each
+    knot of the stem it rises past and where it rises through the boot top), or above it the bow's flat face
+    (`hull.face`); the sections ahead take the front or the face as their flat bottom. In plan the front's
+    corners turn into the sides round a quarter circle (`hull.fillet`, or the front's whole half-width where
+    that is less), with sections behind the stem's upright foot to draw it. Over the bow's shoulders
+    (`hull.shoulders`, [start, full]) the flare between the knuckle and the gallery's foot follows the
+    stations' points above the knuckle, at their heights: in full forward of `full`, straight aft of `start`,
+    and between the two easing (smoothstep) from the straight line out to them; aft of `start` those points
+    sit on the knuckle, or on a quarter's last point, and weld away. Below the knuckles and over the shoulders
+    the hull is shaded smooth, sharp where it turns more than 30 degrees; the rest of the flare flat. A face
+    lying wholly on the centreline (where the stem stands upright with a knife edge) is left out.
+  - The bulb (`hull.bulb`, its own node) is a smooth loft: head on its measured outline, carried on above its
+    top by the stem's front to the waterline; from the side its forward edge is the stem's profile below the
+    waterline through a monotone cubic; in plan its nose a quarter ellipse `nose` long where it is widest,
+    shorter in proportion above and below; aft of `taper` it narrows smoothly to nothing in the forefoot.
+    Every section has as many heights above the anti-fouling's top and as many below, so the paint's edge
+    runs along them.
   - The sponsons are prisms whose tops and bottoms may slope (a height per corner). Each corner is a landmark
     for the photo match. The gun
     tubs (`tubs`) on the aft sponsons' faces are a floor, a railing round its outboard sides and a knee
@@ -181,7 +195,8 @@ python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR   
 - **`check.py`** - measures the build and its ship file against every `facts.json` entry, each within a stated
   tolerance, and fails outside it. Entries it does not measure are in `EXEMPT` with the reason; `shape.*`
   holds what no fact states (the hull under the deck, symmetric below its knuckles; the island on the deck; the
-  deck's top on its round-down's curve). The landing centreline reaches the deck's aft edge, its yellow drawn
+  deck's top on its round-down's curve). Where the bow's shoulders are in full, the hull's flare passes through
+  each station's points above the knuckle, each side. The landing centreline reaches the deck's aft edge, its yellow drawn
   over the ramp's white, as DVIDS 7694418 shows it across the round-down; and the bow control station's band lies right
   outside its lid's rim on every side. The drop-light pole's yellow runs from its foot to its top with no face
   reaching into its gap, lines of sight aft from it past the walkway's height meet nothing, and the
@@ -247,6 +262,15 @@ the deck; a new sighting in the game becomes a ray here first.
   each of the front's knots, and a quarter's wall inside the deck's edge;
 - a quarter's section under its wall and under its sponson, its square ends, its landmarks, and the hull
   still closed;
+- the bow's shoulders: the flare through the station's points in full, the eased share between the
+  straight line and them (none at their start, all at full), straight aft of them, smooth, and the hull
+  closed with their points under a wall and along a quarter;
+- the stem's front rounding into the sides where it leans and where it stands upright, the boot top's edge
+  round it along a section, the hull smooth below its knuckles (one normal at each point, the keel's edge and
+  the knuckles sharp, the flare flat), no fin on the centreline ahead of the upright stem, and the hull closed;
+- the bulb: its section the outline head on and the stem's front above it, its nose on the profile and a
+  quarter ellipse in plan, its profile without kinks at the knots, its taper, smooth and outward, and its
+  paint's edge along a height;
 - a sloped sponson's corners, and the draught marks beside the stem reading from outside;
 - the deck's round-down: its surface on the curve at every vertex and between them, the edge plate's top and
   foot with it;

@@ -125,6 +125,7 @@ def node(name, parent=None, hinge=None, mesh=None, paint="grey", smooth=False):
 	# An object at `hinge` (world space). Its mesh's vertices are given in
 	# world space and stored relative to the hinge. Every ancestor rests
 	# unrotated, so a child's location is its hinge less its parent's.
+	# `smooth` shades the whole mesh smooth, or with a list the faces it marks
 	if hinge is None:
 		hinge = HINGES[parent].copy() if parent else Vector()
 	data = None
@@ -139,6 +140,9 @@ def node(name, parent=None, hinge=None, mesh=None, paint="grey", smooth=False):
 			data.materials.append(material(n))
 		for polygon, n in zip(data.polygons, paints):
 			polygon.material_index = names.index(n)
+		if isinstance(smooth, list):
+			for polygon, s in zip(data.polygons, smooth):
+				polygon.use_smooth = s
 		data.validate()
 		tidy(data, smooth)
 		# a radome is smooth wherever it stands, its node's plating flat, and
@@ -169,7 +173,9 @@ SMOOTHED = {"radome"}   # paints drawn smooth in a flat node: turned and spheric
 
 def tidy(data, smooth):
 	# Welds coincident vertices and turns every face outward. A ship is mostly
-	# flat plate: smooth shading only where asked, and then sharp above 30 degrees
+	# flat plate: smooth shading only where asked, and then sharp above 30
+	# degrees. Asked per face (a list), the faces keep their marks (a flat
+	# face's normal is its own, whatever its neighbours)
 	bm = bmesh.new()
 	bm.from_mesh(data)
 	bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
@@ -177,8 +183,13 @@ def tidy(data, smooth):
 	# top, its edge plate) keeps the winding it was built with
 	if all(len(e.link_faces) == 2 for e in bm.edges):
 		bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+	if isinstance(smooth, list):
+		for e in bm.edges:
+			e.smooth = e.calc_face_angle(0.0) <= math.radians(30)
 	bm.to_mesh(data)
 	bm.free()
+	if isinstance(smooth, list):
+		return
 	if smooth:
 		data.shade_smooth()
 		data.set_sharp_from_angle(angle=math.radians(30))
@@ -1497,6 +1508,24 @@ def interpolate(x, xs, ys):
 	return ys[-1]
 
 
+def monotone(x, xs, ys):
+	# A monotone cubic through the knots (Fritsch-Carlson), held at the ends:
+	# it never overshoots between them, and turns level at a knot where the
+	# run changes direction
+	if x <= xs[0]:
+		return ys[0]
+	if x >= xs[-1]:
+		return ys[-1]
+	h = [b - a for a, b in zip(xs, xs[1:])]
+	d = [(b - a) / w for a, b, w in zip(ys, ys[1:], h)]
+	m = [d[0]] + [0.0 if d[k - 1] * d[k] <= 0 else 3 * (h[k - 1] + h[k]) / ((2 * h[k] + h[k - 1]) / d[k - 1] + (h[k] + 2 * h[k - 1]) / d[k])
+		for k in range(1, len(d))] + [d[-1]]
+	k = max(i for i in range(len(h)) if xs[i] <= x)
+	t = (x - xs[k]) / h[k]
+	return (ys[k] * (2 * t ** 3 - 3 * t ** 2 + 1) + h[k] * m[k] * (t ** 3 - 2 * t ** 2 + t)
+		+ ys[k + 1] * (-2 * t ** 3 + 3 * t ** 2) + h[k] * m[k + 1] * (t ** 3 - t ** 2))
+
+
 def zipped(vertices, top, bottom):
 	# Triangles between two runs of vertex indices, each forward to aft (from
 	# high x to low): a strip that advances along whichever run is behind in
@@ -1530,6 +1559,80 @@ def edge(outlines, x, side):
 				if best is None or z * side > best * side:
 					best = z
 	return best
+
+
+def bulb(b, stem, front, foul):
+	# The bulbous bow (hull.bulb): (vertices, faces, paints) of a loft of
+	# sections from its tail forward to its nose, drawn smooth. Head on its
+	# outline is b["outline"] ([y, half-breadth] from its foot up), carried on
+	# above its top by the stem's front (front(y)) to the waterline. From the
+	# side its forward edge is the stem's profile below the waterline (stem,
+	# [x, y]) through a monotone cubic. At each height it keeps the outline's
+	# half-breadth aft from where its nose begins, the nose a quarter ellipse
+	# in plan b["nose"] long where the bulb is widest and shorter in proportion
+	# above and below; aft of b["taper"][0] it narrows smoothly to nothing at
+	# b["taper"][1], within the forefoot. Anti-fouling below its top (foul),
+	# boot above.
+	outline = b["outline"]
+	oy, oh = [p[0] for p in outline], [p[1] for p in outline]
+	widest = max(oh)
+	profile = sorted((y, x) for x, y in stem if y <= 0)
+	py, px = [p[0] for p in profile], [p[1] for p in profile]
+	bottom, top = oy[0], py[-1]
+	tip = max(range(len(px)), key=lambda k: px[k])
+	ny, nx = py[tip], px[tip]
+	(full, tail) = b["taper"]
+
+	def nose(y):
+		# the bulb's forward edge at a height
+		return monotone(y, py, px)
+
+	def solve(x, lo, hi):
+		# the height between lo and hi where the forward edge reaches x
+		for _ in range(60):
+			middle = (lo + hi) / 2
+			if (nose(middle) - x) * (nose(lo) - x) <= 0:
+				hi = middle
+			else:
+				lo = middle
+		return (lo + hi) / 2
+
+	def width(y):
+		return monotone(y, oy, oh) if y <= oy[-1] else front(y)
+
+	def breadth(x, y):
+		w = width(y)
+		length = b["nose"] * w / widest
+		if length <= 0:
+			return 0.0
+		u = max(0.0, min(1.0, (x - (nose(y) - length)) / length))
+		t = max(0.0, min(1.0, (x - tail) / (full - tail)))
+		return w * math.sqrt(1 - u * u) * t * t * (3 - 2 * t)
+
+	# sections every metre along the taper and every third of a metre ahead
+	# of it, each sampled down from its top to its bottom about a third of a
+	# metre apart where the bulb is deepest: so many above the anti-fouling's
+	# top and so many below, the paint's edge running along them; where a
+	# section lies wholly to one side its share on the other side meets at
+	# its end
+	along = sorted(set([tail + (full - tail) * k / math.ceil(full - tail) for k in range(math.ceil(full - tail) + 1)]
+		+ [full + (nx - full) * k / math.ceil((nx - full) * 3) for k in range(math.ceil((nx - full) * 3) + 1)]))
+	split = min(max(foul, bottom), top)
+	upper, lower = max(1, math.ceil((top - split) * 3)), max(1, math.ceil((split - bottom) * 3))
+	vertices, rings = [], []
+	for x in along:
+		low = bottom if nose(bottom) >= x else solve(x, bottom, ny)
+		high = top if nose(top) >= x else solve(x, ny, top)
+		middle = min(max(split, low), high)
+		heights = [high + (middle - high) * k / upper for k in range(upper)] + [middle + (low - middle) * k / lower for k in range(lower + 1)]
+		side = [(y, breadth(x, y)) for y in heights]
+		# starboard from the top down, then port back up
+		rings.append(len(vertices))
+		vertices += [at(x, y, z) for y, z in side] + [at(x, y, -z) for y, z in side[::-1]]
+	n = 2 * (upper + lower + 1)
+	faces = [(r + j, r + (j + 1) % n, r + n + (j + 1) % n, r + n + j) for r in rings[:-1] for j in range(n)]
+	paints = ["antifouling" if max(vertices[q].z for q in f) <= foul + 1e-6 else "boot" for f in faces]
+	return vertices, faces, paints
 
 
 def hull():
@@ -1597,16 +1700,30 @@ def hull():
 		front = h.get("front", []) + ([face["bottom"]] if face and h.get("front") else [])
 		return interpolate(y, [p[0] for p in front], [p[1] for p in front]) if front else 0.0
 
+	fillet = h.get("fillet", 0.0)
+
+	def rounding(y):
+		# the radius the stem's front turns into the sides at a height (in
+		# plan, hull.fillet, or its whole half-width where that is less); the
+		# face above keeps its creases
+		face = h.get("face")
+		return 0.0 if face and y >= face["bottom"][0] else min(fillet, crease(y))
+
 	def half(x, y):
 		values = [interpolate(y, [p[0] for p in s["points"]], [p[1] for p in s["points"]]) for s in stations]
 		value = interpolate(x, sx, values)
 		if x > sx[-1]:
 			# ahead of the last station each height runs straight to the bow's
 			# forward edge there: the stem, or the face's crease above it, whose
-			# sections take the face as their flat bottom
-			front, end = ahead(y), crease(y)
-			share = max(0.0, min(1.0, (x - sx[-1]) / (front - sx[-1]))) if front > sx[-1] else 1.0
+			# sections take the face as their flat bottom. Below the face the
+			# stem's front turns into the sides round a quarter circle
+			front, end, radius = ahead(y), crease(y), rounding(y)
+			start = front - radius
+			share = max(0.0, min(1.0, (x - sx[-1]) / (start - sx[-1]))) if start > sx[-1] else 1.0
 			value += (end - value) * share
+			if radius > 0 and x > start:
+				u = min(1.0, (x - start) / radius)
+				value = end - radius + radius * math.sqrt(1 - u * u)
 		return value
 
 	def knuckle(x, side):
@@ -1631,6 +1748,45 @@ def hull():
 		creases = [p[0] for c in flare.get(name, []) for p in (c[0], c[-1])]
 		assert q[0]["x"] - 0.01 > transom, "a quarter ends forward of the transom"
 		assert not creases or q[-1]["x"] + 0.01 < min(creases) or q[0]["x"] - 0.01 > max(creases), "a quarter clear of the flare's creases"
+	# the bow's shoulders (hull.shoulders, [start, full]): forward of full the
+	# flare between the knuckle and the gallery's foot follows the stations'
+	# points above the knuckle, aft of start it runs straight, and between the
+	# two it goes its share of the way from the straight line out to them.
+	# Every ring carries a point at each height those stations give above the
+	# knuckle (levels), after the quarter's; aft of start they sit on the
+	# point before, where tidy() welds them away
+	shoulders = h.get("shoulders")
+	levels = []
+	if shoulders:
+		start, full = shoulders
+		lowest = min(min([interpolate(start, [p[0] for p in line], [p[1] for p in line])] + [p[1] for p in line if p[0] >= start])
+			for line in (sorted(h["knuckle"][name]) for name in ("port", "starboard")))
+		levels = sorted({y for s in stations if s["x"] >= start for y, z in s["points"] if lowest < y < under})
+		for name in ("port", "starboard"):
+			assert all(p[0] < start for c in flare.get(name, []) for p in c), "the shoulders clear of the flare's creases"
+			assert all(w["wall"][-1][0] < start for w in walls.get(name, [])), "the shoulders clear of the walls"
+			assert not quarters.get(name) or quarters[name][-1]["x"] < start, "the shoulders clear of the quarters"
+	J = len(levels)
+
+	def shoulder(x, ky, kz, foot, z):
+		# the points at the shoulders' levels on a ring forward of their start,
+		# between its knuckle (ky, kz) and its foot (foot, z): the straight
+		# line's share of the way out to the stations' half-breadth, the share
+		# easing in and out (smoothstep) so the shoulders leave the straight
+		# flare level; a level at or below the knuckle sits on it, one at or
+		# above the foot on that
+		t = max(0.0, min(1.0, (x - start) / (full - start)))
+		share = t * t * (3 - 2 * t)
+		points = []
+		for y in levels:
+			if y <= ky:
+				points.append((ky, kz))
+			elif y >= foot:
+				points.append((foot, z))
+			else:
+				straight = kz + (z - kz) * (y - ky) / (foot - ky)
+				points.append((y, straight + (half(x, y) - straight) * share))
+		return points
 
 	def wall(x, side):
 		# where a wall stands under the deck's edge: its |z| and its foot's
@@ -1686,11 +1842,23 @@ def hull():
 		if quarters.get(name):
 			q = quarters[name]
 			turns |= {s["x"] for s in q} | {q[0]["x"] - 0.01, q[-1]["x"] + 0.01}
+	if shoulders:
+		# and where the shoulders start and come in full
+		turns |= set(shoulders)
 	if h.get("front"):
 		# and at each knot of the stem the front runs up, so its edges follow
 		# the stem's profile
 		top = h["face"]["bottom"][0] if h.get("face") else h["front"][-1][0]
 		turns |= {ahead(p[0]) for p in h["front"]} | {x for x, y in stem if h["front"][0][0] <= y <= top}
+		# and where it rises through the boot top, so the band's edge runs
+		# round the stem along a section rather than through faces
+		if h["front"][0][0] <= boot <= top:
+			turns.add(ahead(boot))
+		if fillet:
+			# and behind its foot, where the stem stands upright, at the
+			# quarter-angles of the fillet, so its front rounds there too
+			foot = ahead(h["front"][0][0])
+			turns |= {foot - fillet * (1 - math.cos(math.pi / 8 * k)) for k in range(1, 5)}
 	turns = [x for x in turns if transom + 0.4 < x < bow - 0.4]
 	count = max(2, int((bow - transom) / STEP) + 1)
 	grid = [transom + (bow - transom) * k / (count - 1) for k in range(count)]
@@ -1729,7 +1897,8 @@ def hull():
 				# foot and up it to the deck's underside, the deck overhanging any
 				# inboard of its edge
 				z, foot = standing
-				points += (section or [(ky, kz)] * K) + [(max(foot, ky), z), (under, z)]
+				points += section or [(ky, kz)] * K
+				points += [points[-1]] * J + [(max(foot, ky), z), (under, z)]
 			elif section:
 				# a quarter under a sponson: along its section, then in or out to
 				# the sponson's bottom at its inboard edge (the deck's edge at the
@@ -1737,15 +1906,19 @@ def hull():
 				# to the deck's edge
 				z = abs(edge(outlines, x, side))
 				reach = inboard(x, side)
-				points += section + [(section[-1][0], z) if reach is None else (reach[1], reach[0]), (under, z)]
+				points += section + [section[-1]] * J + [(section[-1][0], z) if reach is None else (reach[1], reach[0]), (under, z)]
 			else:
+				# the flare: straight from the knuckle to the gallery's foot, or
+				# over the bow's shoulders
 				z = abs(edge(outlines, x, side))
-				points += [(ky, kz)] * K + [(max(feet[side], ky), z), (under, z)]
+				foot = max(feet[side], ky)
+				points += [(ky, kz)] * K + (shoulder(x, ky, kz, foot, z) if shoulders and x >= start - 1e-9 else [(ky, kz)] * J)
+				points += [(foot, z), (under, z)]
 			sides[side] = [at(x, y, side * z) for y, z in points]
 		rings.append(sides[-1][::-1] + [at(x, y0, 0)] + sides[1])
 	n = len(rings[0])
 	vertices = [v for ring in rings for v in ring]
-	faces, paints = [], []
+	faces, paints, smooth = [], [], []
 
 	def paint(face):
 		# red anti-fouling below its top, the black boot-topping up to the boot
@@ -1755,8 +1928,9 @@ def hull():
 
 	# each side's knuckle and the gallery wall's foot above it, as indices in
 	# a ring: port first, reversed, then the keel, then starboard. Where they
-	# are used (the flare's facets, the transom) no quarter runs, so its K
-	# points sit on the knuckle and the index beside the foot stands for it
+	# are used (the flare's facets, the transom) no quarter runs and the
+	# shoulders have not begun, so the K and J points sit on the knuckle and
+	# the index beside the foot stands for it
 	S = (n - 1) // 2
 	columns = {-1: (2, 1), 1: (2 * S - 2, 2 * S - 1)}
 	ring = {x: i for i, x in enumerate(xs)}
@@ -1774,11 +1948,19 @@ def hull():
 				knuckle_index, foot = columns[side]
 				if min(knuckle_index, foot) == j and xs[i] >= lo - 1e-6 and xs[i + 1] <= hi + 1e-6:
 					skip = True
-			if skip:
-				continue
 			a, b = i * n + j, i * n + j + 1
+			# nor a face lying wholly on the centreline: a fin of no thickness,
+			# from where the stem stands upright with a knife edge to the next
+			# section's foot ahead of it, built once from each side
+			if skip or all(abs(vertices[q].y) < 1e-4 for q in (a, a + n, b + n, b)):
+				continue
 			faces.append((a, a + n, b + n, b))
 			paints.append(paint(faces[-1]))
+			# smooth from the keel up to the knuckles, and over the shoulders
+			# up to the gallery's foot
+			lower = K + J + 2 <= j <= 2 * S - K - J - 3
+			flaring = bool(shoulders) and xs[i] >= start - 1e-9 and (1 <= j <= K + J + 1 or 2 * S - K - J - 2 <= j <= 2 * S - 2)
+			smooth.append(lower or flaring)
 	for side, (lo, hi) in covered.items():
 		# the facets between each crease and the next, forward to aft: each a
 		# polygon of the gallery's foot from one crease's top to the next's, the
@@ -1839,7 +2021,10 @@ def hull():
 	last = (len(rings) - 1) * n
 	faces.append(tuple(range(last + n - 1, last - 1, -1)))   # the bow's end, facing forward
 	paints.append("grey")
-	node("hull", mesh=(vertices, faces, paints))
+	# the faces from the keel up to the knuckles are smooth, the plating's
+	# flats, walls, facets and ends flat
+	smooth += [False] * (len(faces) - len(smooth))
+	node("hull", mesh=(vertices, faces, paints), smooth=smooth)
 	blisters = []
 	for b in h.get("blisters", []):
 		# a blister on the hull side (hull.blisters): its outline seen from
@@ -1861,11 +2046,7 @@ def hull():
 	if blisters:
 		node("hull_blisters", mesh=merge(blisters))
 	if h.get("bulb"):
-		b = h["bulb"]
-		centre = at(*b["centre"])
-		shape = Matrix.Translation(centre) @ Matrix.Diagonal((b["length"] / 2, b["width"] / 2, b["height"] / 2, 1))
-		bulb = primitive(lambda bm: bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=1.0, matrix=shape))
-		node("hull_bulb", parent="hull", mesh=(bulb[0], bulb[1], ["antifouling" if foul > -1e9 else "boot"] * len(bulb[1])))
+		node("hull_bulb", parent="hull", mesh=bulb(h["bulb"], h["stem"], crease, foul), smooth=True)
 	if h.get("face"):
 		# the face's corners, where its creases meet its bottom edge and the
 		# deck-edge band, for the photo match

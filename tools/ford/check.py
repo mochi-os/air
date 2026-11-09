@@ -184,6 +184,40 @@ class Ship:
 		return np.concatenate(found)
 
 
+def shoulders(ship):
+	# Over the bow's shoulders, where they are in full (hull.shoulders), the
+	# flare passes through each station's points between the knuckle and the
+	# gallery's foot, each side: the worst miss of the hull's outermost
+	# half-breadth at the point's height
+	h = ship.layout["hull"]
+	if not h.get("shoulders"):
+		return
+	deck = ship.layout["deck"]
+	under = deck["height"] - deck["thickness"]
+	tris = ship.parts["hull"]
+	for s in sorted(h["stations"], key=lambda q: q["x"]):
+		if s["x"] < h["shoulders"][1]:
+			continue
+		segments = verify.cut(tris, [s["x"], 0, 0], [1, 0, 0])
+		for name, side in (("starboard", 1), ("port", -1)):
+			knuckle = sorted(h["knuckle"][name])
+			gallery = sorted(h["gallery"][name])
+			low = np.interp(s["x"], [p[0] for p in knuckle], [p[1] for p in knuckle])
+			foot = under - np.interp(s["x"], [p[0] for p in gallery], [p[1] for p in gallery])
+			misses = []
+			for y, z in s["points"]:
+				if not low < y < foot:
+					continue
+				a, b = segments[:, 0], segments[:, 1]
+				across = (a[:, 1] - y) * (b[:, 1] - y) <= 0
+				across &= np.abs(b[:, 1] - a[:, 1]) > 1e-9
+				t = (y - a[across, 1]) / (b[across, 1] - a[across, 1])
+				reach = side * (a[across, 2] + (b[across, 2] - a[across, 2]) * t)
+				misses.append(abs(reach.max() - z) if len(reach) else math.inf)
+			if misses:
+				yield result("layout.hull", f"the bow's flare through station {s['x']:g}'s points above the knuckle, {name}", 0, max(misses), 0.01)
+
+
 def guard(fact, what, make):
 	# A check whose part is not built yet reports it as missing, not a crash
 	try:
@@ -220,6 +254,7 @@ def checks(ship):
 		yield result("layout.hull", "the stem on the waterline, where its layout puts it", on, water["stem"], 0.01)
 		keel = ship.points(["hull"])[:, 1].min()
 		yield result("layout.hull", "the keel, as deep as its layout's deepest station", min(q["points"][0][0] for q in ship.layout["hull"]["stations"]), keel, 0.01)
+		yield from shoulders(ship)
 	yield from guard("hull", "the hull", hull)
 
 	def island():

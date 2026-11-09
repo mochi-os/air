@@ -170,9 +170,10 @@ class Model:
 		materials = [m.get("name", f"material{i}") for i, m in enumerate(gltf.get("materials", []))]
 		self.meshes = []
 		self.uvs = []   # per mesh, per primitive: each triangle's corners' UVs (n, 3, 2), or None
+		self.normals = []   # per mesh, per primitive: each triangle's corners' normals (n, 3, 3) in the node's frame, or None
 		self.shapes = []   # per mesh, per primitive: {shape key: each triangle's corners' moves at full weight (n, 3, 3)}
 		for mesh in gltf.get("meshes", []):
-			parts, uvs, shapes = [], [], []
+			parts, uvs, normals, shapes = [], [], [], []
 			names = mesh.get("extras", {}).get("targetNames", [])
 			for p in mesh["primitives"]:
 				if p.get("mode", 4) != 4:
@@ -183,10 +184,13 @@ class Model:
 				parts.append((positions[indices.reshape(-1, 3)], material))
 				uv = p["attributes"].get("TEXCOORD_0")
 				uvs.append(accessor(uv).astype(float)[indices.reshape(-1, 3)] if uv is not None else None)
+				normal = p["attributes"].get("NORMAL")
+				normals.append(accessor(normal).astype(float)[indices.reshape(-1, 3)] if normal is not None else None)
 				shapes.append({names[k] if k < len(names) else f"target{k}": accessor(target["POSITION"]).astype(float)[indices.reshape(-1, 3)]
 					for k, target in enumerate(p.get("targets", [])) if "POSITION" in target})
 			self.meshes.append(parts)
 			self.uvs.append(uvs)
+			self.normals.append(normals)
 			self.shapes.append(shapes)
 		self.nodes = []
 		for i, n in enumerate(gltf.get("nodes", [])):

@@ -213,6 +213,13 @@ def build(cls, layout):
 	cls.features = json.loads(out[2].read_text())
 
 
+def corners(model, name, materials=None):
+	# a node's triangles and each one's corners' normals
+	mesh = model.nodes[model.index[name]]["mesh"]
+	pieces = [(t, n) for (t, m), n in zip(model.meshes[mesh], model.normals[mesh]) if materials is None or m in materials]
+	return np.concatenate([t for t, n in pieces]), np.concatenate([n for t, n in pieces])
+
+
 class BuildTest(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
@@ -1245,11 +1252,11 @@ class BuildTest(unittest.TestCase):
 		# the transom, from 2 m down (above the band's edge), black up to the boot top
 		transom = self.faces("hull", materials=["boot"])[0]
 		self.assertTrue((np.abs(transom[:, :, 0] + 90) < 1e-3).all(1).any())
-		# grey above it, but for the bow's end cap and the faces where the
-		# rising stem crosses the boot top
+		# grey above it, but for the bow's end cap: where the rising stem
+		# crosses the boot top a section carries the band's edge round it
 		grey = self.faces("hull", materials=["hull"])[0]
 		self.assertGreaterEqual(grey[(np.abs(grey[:, :, 0] + 90) < 1e-3).all(1)][:, :, 1].min(), 1.0 - 1e-4)   # the transom above the boot top
-		sides = grey[~((np.abs(grey[:, :, 0] + 90) < 1e-3).all(1) | (grey[:, :, 0] > 75).any(1))].reshape(-1, 3)
+		sides = grey[~((np.abs(grey[:, :, 0] + 90) < 1e-3).all(1) | (grey[:, :, 0] > 100 - 1e-3).all(1))].reshape(-1, 3)
 		self.assertGreaterEqual(sides[:, 1].min(), 1.0 - 1e-4)
 
 
@@ -1297,6 +1304,11 @@ class QuarterTest(unittest.TestCase):
 		hull = layout["hull"]
 		hull["walls"]["port"] = [{"wall": [[-80, -36], [-55, -36]], "foot": 8.0}]
 		hull["quarters"] = {"port": [{"x": -55, "points": [[7, -20], [8, -30]]}, {"x": -89, "points": [[7, -13], [7.5, -16]]}]}
+		# and the bow's shoulders (ShoulderTest's), so every section carries
+		# their points, under the wall and along the quarter on the last point
+		# before the foot
+		hull["stations"][-1]["points"] += [[10, 22], [14, 26]]
+		hull["shoulders"] = [52, 58]
 		build(cls, layout)
 
 	@classmethod
@@ -1370,6 +1382,297 @@ class QuarterTest(unittest.TestCase):
 		self.assertEqual(set(edges.values()), {1})
 		open_ = [e for e in edges if (e[1], e[0]) not in edges]
 		self.assertTrue(open_ and all((e[0][1] == 18.4 and e[1][1] == 18.4) or (e[0][0] == -90 and e[1][0] == -90 and min(e[0][1], e[1][1]) >= 5 - 1e-4)
+			for e in open_))
+
+
+class BowTest(unittest.TestCase):
+	# the fixture with its stem's front rounded at a half-metre fillet, the
+	# front 0.3 m in half-width at the waterline (from a knife edge 2 m down,
+	# to 1 at y 5), and a bulb: below the waterline the stem's profile runs
+	# from (75, 0) out to a nose at (76, -4) and back down to the keel at (60,
+	# -8); head on the bulb is 2 m in half-breadth from y -6 to -4, 1 at -8 and
+	# -2, 0.2 at -1; its nose 3 m long in plan where it is widest, its taper
+	# from x 66 to 60
+	@classmethod
+	def setUpClass(cls):
+		layout = json.loads(json.dumps(LAYOUT))
+		hull = layout["hull"]
+		hull["stem"] = [[60, -8], [70, -7.5], [74, -6], [76, -4], [75.5, -2], [75, 0], [95, 19.5]]
+		hull["front"] = [[-2, 0.0], [0, 0.3], [5, 1.0]]
+		hull["fillet"] = 0.5
+		hull["bulb"] = {"outline": [[-8, 1.0], [-6, 2.0], [-4, 2.0], [-2, 1.0], [-1, 0.2]], "nose": 3.0, "taper": [66, 60]}
+		build(cls, layout)
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.folder.cleanup()
+
+	def corners(self, name, materials=None):
+		return corners(self.model, name, materials)
+
+	def ring(self, name, x):
+		# a part's vertices in its section at x
+		points = self.model.parts()[name].reshape(-1, 3)
+		return points[np.abs(points[:, 0] - x) < 1e-4]
+
+	def test_stem_front_rounds_into_the_sides(self):
+		# the section near x 78.9 meets the stem at its foot's height (the
+		# stem leaning from (75, 0) to (95, 19.5)), where the front's half-width
+		# is y / 5: flat across to that less the fillet, then round a quarter
+		# circle of 0.5 into the side while the stem lies within 0.5 ahead
+		points = self.model.parts()["hull"].reshape(-1, 3)
+		x = points[np.argmin(np.abs(points[:, 0] - 78.9))][0]
+		ring = self.ring("hull", x)
+		ring = ring[(ring[:, 2] >= 0) & (ring[:, 1] < 5 - 1e-6)]
+		foot = (x - 75) * 19.5 / 20
+		self.assertAlmostEqual(ring[:, 1].min(), foot, places=3)
+		checked = 0
+		for y, z in ring[(ring[:, 2] > 1e-6) & (ring[:, 1] > foot + 1e-3)][:, 1:]:
+			ahead = 75 + y * 20 / 19.5
+			width = 0.3 + 0.14 * y
+			radius = min(0.5, width)
+			if x > ahead - radius - 1e-9:
+				u = (x - (ahead - radius)) / radius
+				self.assertAlmostEqual(z, width - radius + radius * math.sqrt(max(0.0, 1 - u * u)), places=3, msg=y)
+				checked += 1
+		self.assertGreaterEqual(checked, 3)
+		self.assertAlmostEqual(ring[np.abs(ring[:, 1] - foot) < 1e-4][:, 2].max(), 0.3 + 0.14 * foot - 0.5, places=3)
+
+	def test_stem_round_where_it_stands_upright(self):
+		# below the waterline the stem stands upright at x 75, its front 0.15
+		# in half-width at y -1 and so wholly round: sections behind it at the
+		# fillet's quarter-angles draw the round there
+		hull = self.model.parts()["hull"].reshape(-1, 3)
+		for k in (1, 2):
+			x = 75 - 0.5 * (1 - math.cos(math.pi / 8 * k))
+			ring = np.unique(np.round(hull[(np.abs(hull[:, 0] - x) < 1e-3) & (np.abs(hull[:, 1] + 1) < 1e-3) & (hull[:, 2] > 0)], 5), axis=0)
+			self.assertEqual(len(ring), 1, k)
+			u = (x - (75 - 0.15)) / 0.15
+			self.assertAlmostEqual(ring[0, 2], 0.15 * math.sqrt(1 - u * u), places=3, msg=k)
+
+	def test_bulb_section_is_its_outline(self):
+		# at x 68, ahead of the taper and behind the nose, the section is the
+		# outline head on: 2 m from y -6 to -4, from the forefoot's edge
+		# (about -7.6) up to the waterline
+		ring = self.ring("hull_bulb", 68)
+		self.assertGreater(len(ring), 0)
+		self.assertAlmostEqual(np.abs(ring[:, 2]).max(), 2.0, places=3)
+		flat = ring[(ring[:, 1] > -5.9) & (ring[:, 1] < -4.1)]
+		self.assertGreater(len(flat), 4)
+		self.assertTrue(np.allclose(np.abs(flat[:, 2]), 2.0, atol=1e-3))
+		self.assertAlmostEqual(ring[:, 1].max(), 0.0, places=4)
+		self.assertTrue(-7.7 < ring[:, 1].min() < -7.5)
+		# above the outline's top (y -1) the stem's front carries it up to the
+		# waterline: 0.3 m there, from its knife edge at -2
+		fin = ring[(ring[:, 1] > -0.9) & (np.abs(ring[:, 2]) > 1e-6)]
+		self.assertGreater(len(fin), 1)
+		self.assertTrue(np.allclose(np.abs(fin[:, 2]), 0.3 * (fin[:, 1] + 2) / 2, atol=1e-3))
+
+	def test_bulb_nose_on_the_profile(self):
+		# its forward edge is the stem's profile below the waterline, the nose
+		# at (76, -4) on the centreline, and nothing ahead of it
+		points = self.model.parts()["hull_bulb"].reshape(-1, 3)
+		tip = points[np.argmax(points[:, 0])]
+		np.testing.assert_allclose(tip, [76, -4, 0], atol=1e-3)
+		# in plan a quarter ellipse 3 m long at its widest, from x 73: a metre
+		# back from the nose, two thirds of the way along it
+		ring = self.ring("hull_bulb", 75)
+		self.assertGreater(len(ring), 0)
+		at = ring[np.abs(ring[:, 1] + 4) < 0.2]
+		self.assertGreater(len(at), 0)
+		self.assertLess(np.abs(np.abs(at[:, 2]).max() - 2.0 * math.sqrt(1 - (2 / 3) ** 2)), 0.05)
+
+	def test_bulb_profile_has_no_kinks(self):
+		# from the side its forward edge runs through the profile's knots
+		# without turning at them: its slope just below the knot at y -6 and
+		# just above it alike (straight between the knots it would run 2.67
+		# m/m below and 1 above)
+		points = self.model.parts()["hull_bulb"].reshape(-1, 3)
+		edge = points[(np.abs(points[:, 2]) < 1e-6) & (points[:, 1] > -7.2) & (points[:, 1] < -4.8) & (points[:, 0] > 70)]
+		edge = edge[np.argsort(edge[:, 1])]
+		below = edge[(edge[:, 1] > -6.8) & (edge[:, 1] < -6.0)]
+		above = edge[(edge[:, 1] > -6.0) & (edge[:, 1] < -5.2)]
+		self.assertGreater(len(below), 2)
+		self.assertGreater(len(above), 2)
+		slope = lambda p: np.polyfit(p[:, 1], p[:, 0], 1)[0]
+		self.assertLess(abs(slope(below) / slope(above) - 1), 0.3)
+
+	def test_bulb_tapers_into_the_forefoot(self):
+		# half its breadth halfway along the taper (smoothstep), none at its end
+		self.assertAlmostEqual(np.abs(self.ring("hull_bulb", 63)[:, 2]).max(), 1.0, places=3)
+		end = self.ring("hull_bulb", 60)
+		self.assertGreater(len(end), 0)
+		self.assertLess(np.abs(end[:, 2]).max(), 1e-6)
+		self.assertAlmostEqual(self.model.parts()["hull_bulb"][:, :, 0].min(), 60, places=4)
+
+	def test_bulb_smooth_and_painted(self):
+		tris, normals = self.corners("hull_bulb")
+		# smooth: most triangles' corners turn with the surface
+		turning = np.abs(normals - normals[:, :1]).max(axis=(1, 2)) > 1e-3
+		self.assertGreater(turning.mean(), 0.5)
+		# outward: on the starboard flank at its widest, the normals point to starboard
+		flank = (np.abs(tris[:, :, 0] - 68) < 0.5).all(1) & (np.abs(tris[:, :, 1] + 5) < 0.8).all(1) & (tris[:, :, 2] > 1.9).all(1)
+		self.assertTrue(flank.any() and (normals[flank][:, :, 2] > 0.9).all())
+		# anti-fouling below its top (-3), boot above, the edge along a height
+		# in every section that spans it (all behind the nose's last 0.5 m)
+		red = self.corners("hull_bulb", ["antifouling"])[0]
+		black = self.corners("hull_bulb", ["boot"])[0]
+		self.assertGreater(len(red), 0)
+		self.assertLessEqual(red[:, :, 1].max(), -3 + 1e-4)
+		black = black[(black[:, :, 0] <= 75.5).all(1)]
+		self.assertGreater(len(black), 0)
+		self.assertGreaterEqual(black[:, :, 1].min(), -3 - 1e-4)
+
+	def test_hull_smooth_below_its_knuckles(self):
+		tris, normals = self.corners("hull")
+		# below the knuckles, clear of the keel's edge: one normal at each point
+		below = (tris[:, :, 1] > -7.9).all(1) & (tris[:, :, 1] < 4.9).all(1) & (np.abs(tris[:, :, 0]) < 50).all(1)
+		self.assertGreater(below.sum(), 0)
+		seen = {}
+		for p, n in zip(np.round(tris[below].reshape(-1, 3), 4), normals[below].reshape(-1, 3)):
+			seen.setdefault(tuple(p), []).append(n)
+		self.assertTrue(all(np.abs(np.array(v) - v[0]).max() < 1e-3 for v in seen.values()))
+		self.assertTrue((np.abs(normals[below] - normals[below][:, :1]).max(axis=(1, 2)) > 1e-3).any())
+		# sharp where the plating turns more than 30 degrees: the flat keel's
+		# corners face straight down
+		keel = (np.abs(tris[:, :, 1] + 8) < 1e-4).all(1) & (np.abs(tris[:, :, 0]) < 50).all(1)
+		self.assertTrue(keel.any() and (normals[keel][:, :, 1] < -0.999).all())
+		# the port flare above its knuckle flat: each triangle's corners alike
+		flare = (tris[:, :, 1] > 6.1).all(1) & (tris[:, :, 2] < -16.5).all(1) & (tris[:, :, 0] > -50).all(1) & (tris[:, :, 0] < 0).all(1)
+		self.assertGreater(flare.sum(), 0)
+		self.assertTrue((np.abs(normals[flare] - normals[flare][:, :1]).max(axis=(1, 2)) < 1e-4).all())
+		# and the knuckle a crease: at its points the hull below and the flare
+		# above turn different ways
+		upper = (tris[:, :, 1] >= 6 - 1e-4).all(1) & (tris[:, :, 2] < -1).all(1) & (np.abs(tris[:, :, 0]) < 50).all(1)
+		lower = (tris[:, :, 1] <= 6 + 1e-4).all(1) & (tris[:, :, 2] < -1).all(1) & (np.abs(tris[:, :, 0]) < 50).all(1)
+		knuckle = lambda mask: {tuple(p): n for p, n in zip(np.round(tris[mask].reshape(-1, 3), 4), normals[mask].reshape(-1, 3)) if abs(p[1] - 6) < 1e-4}
+		above, beneath = knuckle(upper), knuckle(lower)
+		shared = set(above) & set(beneath)
+		self.assertGreater(len(shared), 0)
+		self.assertTrue(all(np.dot(above[p], beneath[p]) < math.cos(math.radians(10)) for p in shared))
+		# the hull below keeps its own normal there, none of the flare's: the
+		# midbody's side from (0, -15) up to the knuckle (6, -16)
+		side = np.array([0, -1, -6]) / math.sqrt(37)
+		middle = [p for p in shared if -50 < p[0] < 30]
+		self.assertGreater(len(middle), 0)
+		self.assertTrue(all(np.dot(beneath[p], side) > 0.9999 for p in middle))
+
+	def test_hull_stays_closed(self):
+		# the rounding's sections leave no gap, and no fin stands on the
+		# centreline ahead of the stem where it stands upright (x 75, a knife
+		# edge below the waterline), up to the first section where it leans
+		# with its front round to a point (x 76.03, at the boot top, the
+		# front's 0.44 within the fillet): every edge crossed once each way,
+		# but the deck underside's and the transom's above its floor
+		edges = {}
+		hull = np.round(self.model.parts()["hull"], 4)
+		self.assertFalse(((np.abs(hull[:, :, 2]) < 1e-4).all(1) & (hull[:, :, 0] > 75 + 1e-4).any(1)).any())
+		for t in hull:
+			for a, b in ((0, 1), (1, 2), (2, 0)):
+				key = (tuple(t[a]), tuple(t[b]))
+				edges[key] = edges.get(key, 0) + 1
+		self.assertEqual(set(edges.values()), {1})
+		open_ = [e for e in edges if (e[1], e[0]) not in edges]
+		self.assertTrue(all((e[0][1] == 18.4 and e[1][1] == 18.4) or (e[0][0] == -90 and e[1][0] == -90 and min(e[0][1], e[1][1]) >= 5 - 1e-4)
+			for e in open_))
+
+
+class ShoulderTest(unittest.TestCase):
+	# the fixture with the bow's shoulders from x 52, in full from 58, and the
+	# station at x 60 carried on above the knuckles to (10, 22) and (14, 26):
+	# the deck's edge at z 30 to starboard (the gallery's foot 16.4), -40 to
+	# port (15.4); knuckles 5 to starboard, 6 to port. The shoulders' levels
+	# are the station's heights above the lower knuckle: 6, 10 and 14
+	@classmethod
+	def setUpClass(cls):
+		layout = json.loads(json.dumps(LAYOUT))
+		hull = layout["hull"]
+		assert hull["stations"][-1]["x"] == 60
+		hull["stations"][-1]["points"] += [[10, 22], [14, 26]]
+		hull["shoulders"] = [52, 58]
+		build(cls, layout)
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.folder.cleanup()
+
+	def ring(self, x):
+		# the hull's section nearest x, and its x
+		points = self.model.parts()["hull"].reshape(-1, 3)
+		x = points[np.argmin(np.abs(points[:, 0] - x))][0]
+		return x, np.unique(np.round(points[np.abs(points[:, 0] - x) < 1e-4], 4), axis=0)
+
+	def has(self, ring, y, z):
+		return bool((np.linalg.norm(ring[:, 1:] - [y, z], axis=1) < 1e-3).any())
+
+	def test_shoulders_follow_the_station(self):
+		# at x 60 the flare runs from each knuckle through the station's
+		# points at the levels above it to the gallery's foot
+		x, ring = self.ring(60)
+		self.assertAlmostEqual(x, 60, places=3)
+		for y, z in ((5, 11.5), (6, 12), (10, 22), (14, 26), (16.4, 30), (6, -12), (10, -22), (14, -26), (15.4, -40)):
+			self.assertTrue(self.has(ring, y, z), (y, z))
+
+	def test_shoulders_ease_in(self):
+		# halfway along the shoulders' start (x 55) the starboard flare at
+		# each level lies the eased share (smoothstep) of the way from the
+		# straight line, knuckle to foot, out to the stations' half-breadth
+		x, ring = self.ring(55)
+		self.assertTrue(52.5 < x < 57.5)
+		t = (x - 52) / 6
+		share = t * t * (3 - 2 * t)
+		along = (x - 40) / 20   # between the stations at 40 and 60
+		knuckle = 15 + 5 / 6 + along * (11.5 - 15 - 5 / 6)
+		for y, station in ((10, 16 + along * 6), (14, 16 + along * 10)):
+			straight = knuckle + (30 - knuckle) * (y - 5) / (16.4 - 5)
+			self.assertTrue(self.has(ring, y, straight + share * (station - straight)), y)
+		self.assertTrue(self.has(ring, 5, knuckle))
+		# a section where they start, its levels on the straight line, and one
+		# where they come in full, its levels on the stations'
+		for x, share in ((52, 0.0), (58, 1.0)):
+			at, ring = self.ring(x)
+			self.assertAlmostEqual(at, x, places=3)
+			along = (x - 40) / 20
+			knuckle = 15 + 5 / 6 + along * (11.5 - 15 - 5 / 6)
+			for y, station in ((10, 16 + along * 6), (14, 16 + along * 10)):
+				straight = knuckle + (30 - knuckle) * (y - 5) / (16.4 - 5)
+				self.assertTrue(self.has(ring, y, straight + share * (station - straight)), (x, y))
+
+	def test_flare_straight_aft_of_them(self):
+		# aft of x 52 nothing stands between the knuckle and the gallery's
+		# foot: the flare runs straight
+		x, ring = self.ring(48)
+		self.assertLess(x, 52)
+		starboard = ring[ring[:, 2] > 1e-6]
+		self.assertEqual(len(starboard[(starboard[:, 1] > 5 + 1e-3) & (starboard[:, 1] < 16.4 - 1e-3)]), 0)
+
+	def test_shoulders_smooth(self):
+		# over the shoulders the flare is shaded smooth, one normal at each
+		# point; aft of them flat
+		tris, normals = corners(self.model, "hull")
+		forward = (tris[:, :, 0] >= 58 - 1e-4).all(1) & (tris[:, :, 0] <= 60 + 1e-4).all(1) & (tris[:, :, 1] > 6.5).all(1) & (tris[:, :, 1] < 15).all(1) & (tris[:, :, 2] > 0).all(1)
+		self.assertGreater(forward.sum(), 0)
+		seen = {}
+		for p, n in zip(np.round(tris[forward].reshape(-1, 3), 4), normals[forward].reshape(-1, 3)):
+			seen.setdefault(tuple(p), []).append(n)
+		shared = [v for v in seen.values() if len(v) > 1]
+		self.assertGreater(len(shared), 0)
+		self.assertTrue(all(np.abs(np.array(v) - v[0]).max() < 1e-3 for v in shared))
+		self.assertTrue((np.abs(normals[forward] - normals[forward][:, :1]).max(axis=(1, 2)) > 1e-3).any())
+		aft = ((tris[:, :, 0] > 42).all(1) & (tris[:, :, 0] < 50).all(1) & (tris[:, :, 1] >= 5 - 1e-4).all(1) & (tris[:, :, 1] <= 16.4 + 1e-4).all(1)
+			& (tris[:, :, 1] > 5.5).any(1) & (tris[:, :, 2] > 0).all(1))
+		self.assertGreater(aft.sum(), 0)
+		self.assertTrue((np.abs(normals[aft] - normals[aft][:, :1]).max(axis=(1, 2)) < 1e-4).all())
+
+	def test_hull_stays_closed(self):
+		edges = {}
+		for t in np.round(self.model.parts()["hull"], 4):
+			for a, b in ((0, 1), (1, 2), (2, 0)):
+				key = (tuple(t[a]), tuple(t[b]))
+				edges[key] = edges.get(key, 0) + 1
+		self.assertEqual(set(edges.values()), {1})
+		open_ = [e for e in edges if (e[1], e[0]) not in edges]
+		self.assertTrue(all((e[0][1] == 18.4 and e[1][1] == 18.4) or (e[0][0] == -90 and e[1][0] == -90 and min(e[0][1], e[1][1]) >= 5 - 1e-4)
 			for e in open_))
 
 

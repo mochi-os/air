@@ -46,6 +46,10 @@ def glb(path, nodes):
 			for data, kind, count, width in ((np.asarray(v, np.float32), 5126, len(v), "VEC3"), (np.asarray(f, np.uint32).ravel(), 5125, f.size, "SCALAR")):
 				accessors.append({"bufferView": view(data), "componentType": kind, "count": int(count), "type": width})
 			primitive = {"attributes": {"POSITION": len(accessors) - 2}, "indices": len(accessors) - 1, "material": 0}
+			if n.get("normals") is not None:
+				data = np.asarray(n["normals"], np.float32)
+				accessors.append({"bufferView": view(data), "componentType": 5126, "count": len(v), "type": "VEC3"})
+				primitive["attributes"]["NORMAL"] = len(accessors) - 1
 			mesh = {"primitives": [primitive]}
 			if n.get("targets"):
 				primitive["targets"] = []
@@ -120,6 +124,19 @@ class ModelTest(unittest.TestCase):
 		self.assertEqual(len(tris), 36)
 		self.assertAlmostEqual(tris[..., 0].min(), -1.6)
 		self.assertEqual(self.model.rotated(), [])
+
+	def test_normals(self):
+		# each triangle's corners' normals as written, None where a primitive
+		# has none
+		v, f = box((-1, -0.1, -0.5), (1, 0.1, 0.5))
+		normals = v / np.linalg.norm(v, axis=1)[:, None]
+		path = Path(self.dir.name) / "n.glb"
+		glb(path, [{"name": "body", "mesh": (v, f), "normals": normals}, {"name": "bare", "mesh": box((2, 0, 0), (3, 1, 1))}])
+		model = mod.Model(path)
+		corners = model.normals[model.nodes[model.index["body"]]["mesh"]][0]
+		self.assertEqual(corners.shape, (12, 3, 3))
+		self.assertTrue(np.allclose(corners, normals[f], atol=1e-6))
+		self.assertIsNone(model.normals[model.nodes[model.index["bare"]]["mesh"]][0])
 
 	def test_rotate_carries_children(self):
 		# the flap turns 90 degrees down about its hinge (z axis): its aft
