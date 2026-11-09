@@ -331,8 +331,8 @@ msgid "Add a bit more detail."
 msgstr "Thêm một chút chi tiết."
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
-msgid "Add a comment..."
-msgstr "Thêm bình luận..."
+msgid "Add a comment"
+msgstr "Thêm bình luận"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add a new account"
@@ -364,8 +364,8 @@ msgid "Add field"
 msgstr "Thêm trường"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Add item..."
-msgstr "Thêm mục..."
+msgid "Add item"
+msgstr "Thêm mục"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Add link"
@@ -380,8 +380,8 @@ msgid "Add option"
 msgstr "Thêm tùy chọn"
 
 #: ../../../lib/web/src/components/post-tags.tsx
-msgid "Add tag..."
-msgstr "Thêm thẻ..."
+msgid "Add tag"
+msgstr "Thêm thẻ"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add to existing notifications"
@@ -1756,16 +1756,8 @@ msgid "Engines at idle: INS knob to {mode} to align"
 msgstr "Hai động cơ ở ga nhỏ nhất: núm INS sang {mode} để căn chỉnh"
 
 #: ../../../lib/web/src/components/banner-section.tsx
-msgid "Enter banner text (markdown supported)..."
-msgstr "Nhập nội dung biểu ngữ (hỗ trợ markdown)..."
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter the code from your email"
-msgstr "Nhập mã từ email của bạn"
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter your authenticator code"
-msgstr "Nhập mã từ ứng dụng xác thực của bạn"
+msgid "Enter banner text (markdown supported)"
+msgstr "Nhập nội dung biểu ngữ (hỗ trợ markdown)"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -3731,8 +3723,8 @@ msgstr "Trả lời"
 
 #. placeholder {0}: comment.name || comment.author
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
-msgid "Reply to {0}..."
-msgstr "Trả lời {0}..."
+msgid "Reply to {0}"
+msgstr "Trả lời {0}"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Required"
@@ -3895,8 +3887,13 @@ msgid "Sea level from the <0>Earth Gravitational Model 2008</0> of the <1>Nation
 msgstr "Mực nước biển lấy từ <0>Earth Gravitational Model 2008</0> của <1>National Geospatial-Intelligence Agency</1> (tác phẩm của chính phủ Hoa Kỳ), theo bản do <2>GeographicLib</2> phân phối. Đã chỉnh sửa: lấy mẫu tại mỗi độ nguyên."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 #: ../../../lib/web/src/components/header-search.tsx
+#: ../../../lib/web/src/components/inline-entity-search.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/components/search.tsx
 msgid "Search"
 msgstr "Tìm kiếm"
@@ -3911,28 +3908,17 @@ msgid "Search for a command to run..."
 msgstr "Tìm lệnh để chạy..."
 
 #: ../../../lib/web/src/components/place-picker.tsx
+#: ../../../lib/web/src/components/place-picker.tsx
 msgid "Search for a place"
 msgstr "Tìm kiếm một địa điểm"
 
-#: ../../../lib/web/src/components/place-picker.tsx
-msgid "Search for a place..."
-msgstr "Tìm địa điểm..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for destination..."
-msgstr "Tìm kiếm điểm đến..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for origin..."
-msgstr "Tìm kiếm điểm xuất phát..."
-
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
-msgid "Search objects..."
-msgstr "Tìm kiếm đối tượng..."
+msgid "Search objects"
+msgstr "Tìm kiếm đối tượng"
 
 #: ../../../lib/web/src/components/timezone-select.tsx
-msgid "Search time zone..."
-msgstr "Tìm kiếm múi giờ..."
+msgid "Search time zone"
+msgstr "Tìm kiếm múi giờ"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Search users"
@@ -3941,14 +3927,6 @@ msgstr "Tìm kiếm người dùng"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Search, watch, and sort this view."
 msgstr "Tìm kiếm, theo dõi và sắp xếp chế độ xem này."
-
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/inline-entity-search.tsx
-#: ../../../lib/web/src/components/person-picker.tsx
-#: ../../../lib/web/src/components/search-entity-page.tsx
-msgid "Search..."
-msgstr "Tìm kiếm..."
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -3967,13 +3945,10 @@ msgstr "Tắt động cơ trái"
 msgid "Secure right engine"
 msgstr "Tắt động cơ phải"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Lựa chọn"
-
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-msgid "Select a field"
-msgstr "Chọn một trường"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Select a game"
@@ -3986,10 +3961,6 @@ msgstr "Chọn một người dùng, nhóm hoặc quy tắc khác để cấp qu
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select access rule"
 msgstr "Chọn quy tắc truy cập"
-
-#: ../../../lib/web/src/features/accounts/account-add.tsx
-msgid "Select account type"
-msgstr "Chọn loại tài khoản"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select group"
@@ -4004,8 +3975,8 @@ msgid "Select next card"
 msgstr "Chọn thẻ tiếp theo"
 
 #: ../../../lib/web/src/components/person-picker.tsx
-msgid "Select person..."
-msgstr "Chọn người..."
+msgid "Select person"
+msgstr "Chọn người"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4014,11 +3985,6 @@ msgstr "Chọn thẻ trước"
 #: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Chọn vũ khí"
-
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Select..."
-msgstr "Chọn..."
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4591,20 +4557,16 @@ msgid "Type"
 msgstr "Loại"
 
 #: ../../../lib/web/src/components/command-menu.tsx
-msgid "Type a command or search..."
-msgstr "Nhập lệnh hoặc tìm kiếm..."
+msgid "Type a command or search"
+msgstr "Nhập lệnh hoặc tìm kiếm"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
-msgid "Type a message…"
-msgstr "Nhập tin nhắn…"
+msgid "Type a message"
+msgstr "Nhập tin nhắn"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search users"
 msgstr "Nhập để tìm người dùng"
-
-#: ../../../lib/web/src/features/access/access-dialog.tsx
-msgid "Type to search..."
-msgstr "Nhập để tìm kiếm..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"

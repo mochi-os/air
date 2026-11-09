@@ -331,8 +331,8 @@ msgid "Add a bit more detail."
 msgstr "کەمێک ووردەکاری زیاتر زیاد بکە."
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
-msgid "Add a comment..."
-msgstr "لێدوانێک زیاد بکە..."
+msgid "Add a comment"
+msgstr "لێدوانێک زیاد بکە"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add a new account"
@@ -364,8 +364,8 @@ msgid "Add field"
 msgstr "زیادکردنی خانە"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Add item..."
-msgstr "بڕگە زیاد بکە..."
+msgid "Add item"
+msgstr "بڕگە زیاد بکە"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Add link"
@@ -380,8 +380,8 @@ msgid "Add option"
 msgstr "زیادکردنی هەڵبژاردە"
 
 #: ../../../lib/web/src/components/post-tags.tsx
-msgid "Add tag..."
-msgstr "زیادکردنی تاگ..."
+msgid "Add tag"
+msgstr "زیادکردنی تاگ"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add to existing notifications"
@@ -1756,16 +1756,8 @@ msgid "Engines at idle: INS knob to {mode} to align"
 msgstr "بزوێنەرەکان لە گازی کەمدا: دوگمەی INS بۆ {mode} بۆ ڕێکخستن"
 
 #: ../../../lib/web/src/components/banner-section.tsx
-msgid "Enter banner text (markdown supported)..."
-msgstr "دەقی پشتیوانی بنووسە (markdown پشتیوانی دەکرێت)..."
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter the code from your email"
-msgstr "ئەو کۆدە بنووسە کە لە ئیمەیڵەکەتدا هاتووە"
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter your authenticator code"
-msgstr "کۆدی ڕاستاندنەکەت بنووسە"
+msgid "Enter banner text (markdown supported)"
+msgstr "دەقی پشتیوانی بنووسە (markdown پشتیوانی دەکرێت)"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -3731,8 +3723,8 @@ msgstr "وەڵام"
 
 #. placeholder {0}: comment.name || comment.author
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
-msgid "Reply to {0}..."
-msgstr "وەڵامدانەوەی {0}..."
+msgid "Reply to {0}"
+msgstr "وەڵامدانەوەی {0}"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Required"
@@ -3895,8 +3887,13 @@ msgid "Sea level from the <0>Earth Gravitational Model 2008</0> of the <1>Nation
 msgstr "ئاستی دەریا لە <0>Earth Gravitational Model 2008</0>ی <1>National Geospatial-Intelligence Agency</1> (کارێکی حکوومەتی ئەمریکا)، وەک <2>GeographicLib</2> بڵاوی دەکاتەوە. دەستکاریکراو: لە هەر پلەیەکی تەواودا نموونە وەرگیراوە."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 #: ../../../lib/web/src/components/header-search.tsx
+#: ../../../lib/web/src/components/inline-entity-search.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/components/search.tsx
 msgid "Search"
 msgstr "گەڕان"
@@ -3911,28 +3908,17 @@ msgid "Search for a command to run..."
 msgstr "بەدوای فەرمانێکدا بگەڕێ بۆ جێبەجێکردن..."
 
 #: ../../../lib/web/src/components/place-picker.tsx
+#: ../../../lib/web/src/components/place-picker.tsx
 msgid "Search for a place"
 msgstr "گەڕان بۆ شوێنێک"
 
-#: ../../../lib/web/src/components/place-picker.tsx
-msgid "Search for a place..."
-msgstr "بەدوای شوێنێکدا بگەڕێ..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for destination..."
-msgstr "گەڕان بۆ گەیشتنگا..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for origin..."
-msgstr "گەڕان بۆ سەرچاوە..."
-
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
-msgid "Search objects..."
-msgstr "گەڕانی تەنەکان..."
+msgid "Search objects"
+msgstr "گەڕانی تەنەکان"
 
 #: ../../../lib/web/src/components/timezone-select.tsx
-msgid "Search time zone..."
-msgstr "گەڕانی کاتزۆن..."
+msgid "Search time zone"
+msgstr "گەڕانی کاتزۆن"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Search users"
@@ -3941,14 +3927,6 @@ msgstr "گەڕانی بەکارهێنەران"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Search, watch, and sort this view."
 msgstr "گەڕان، چاودێری و ڕیزکردنی ئەم بینینە."
-
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/inline-entity-search.tsx
-#: ../../../lib/web/src/components/person-picker.tsx
-#: ../../../lib/web/src/components/search-entity-page.tsx
-msgid "Search..."
-msgstr "گەڕان..."
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -3967,13 +3945,10 @@ msgstr "کوژاندنەوەی بزوێنەری چەپ"
 msgid "Secure right engine"
 msgstr "کوژاندنەوەی بزوێنەری ڕاست"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "هەڵبژاردن"
-
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-msgid "Select a field"
-msgstr "خانەیەک هەڵبژێرە"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Select a game"
@@ -3986,10 +3961,6 @@ msgstr "بەکارهێنەرێک، گرووپێک، یان ڕێسایەکی هی
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select access rule"
 msgstr "ڕێسای دەستڕاگەیشتن هەڵبژێرە"
-
-#: ../../../lib/web/src/features/accounts/account-add.tsx
-msgid "Select account type"
-msgstr "جۆری هەژمار هەڵبژێرە"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select group"
@@ -4004,8 +3975,8 @@ msgid "Select next card"
 msgstr "کارتی دواتر هەڵبژێرە"
 
 #: ../../../lib/web/src/components/person-picker.tsx
-msgid "Select person..."
-msgstr "کەسێک هەڵبژێرە..."
+msgid "Select person"
+msgstr "کەسێک هەڵبژێرە"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4014,11 +3985,6 @@ msgstr "کارتی پێشوو هەڵبژێرە"
 #: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "هەڵبژاردنی چەک"
-
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Select..."
-msgstr "هەڵبژێرە..."
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4591,20 +4557,16 @@ msgid "Type"
 msgstr "جۆر"
 
 #: ../../../lib/web/src/components/command-menu.tsx
-msgid "Type a command or search..."
-msgstr "فەرمانێک یان گەڕان بنووسە..."
+msgid "Type a command or search"
+msgstr "فەرمانێک یان گەڕان بنووسە"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
-msgid "Type a message…"
-msgstr "نامەیەک بنووسە…"
+msgid "Type a message"
+msgstr "نامەیەک بنووسە"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search users"
 msgstr "بنووسە بۆ گەڕان لە بەکارهێنەران"
-
-#: ../../../lib/web/src/features/access/access-dialog.tsx
-msgid "Type to search..."
-msgstr "بنووسە بۆ گەڕان..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"

@@ -331,8 +331,8 @@ msgid "Add a bit more detail."
 msgstr "Каме бештар тафсилот илова кунед."
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
-msgid "Add a comment..."
-msgstr "Иловаи шарҳ..."
+msgid "Add a comment"
+msgstr "Иловаи шарҳ"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add a new account"
@@ -364,8 +364,8 @@ msgid "Add field"
 msgstr "Иловаи майдон"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Add item..."
-msgstr "Иловаи нукта..."
+msgid "Add item"
+msgstr "Иловаи нукта"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Add link"
@@ -380,8 +380,8 @@ msgid "Add option"
 msgstr "Иловаи имкон"
 
 #: ../../../lib/web/src/components/post-tags.tsx
-msgid "Add tag..."
-msgstr "Иловаи барчасп..."
+msgid "Add tag"
+msgstr "Иловаи барчасп"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add to existing notifications"
@@ -1756,16 +1756,8 @@ msgid "Engines at idle: INS knob to {mode} to align"
 msgstr "Муҳаррикҳо дар ҳадди ақал: тугмаи INS ба {mode} барои танзим"
 
 #: ../../../lib/web/src/components/banner-section.tsx
-msgid "Enter banner text (markdown supported)..."
-msgstr "Матни баннерро ворид кунед (markdown дастгирӣ мешавад)..."
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter the code from your email"
-msgstr "Рамзро аз почтаи электронии худ ворид кунед"
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter your authenticator code"
-msgstr "Рамзи аутентификатори худро ворид кунед"
+msgid "Enter banner text (markdown supported)"
+msgstr "Матни баннерро ворид кунед (markdown дастгирӣ мешавад)"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -3731,8 +3723,8 @@ msgstr "Ҷавоб"
 
 #. placeholder {0}: comment.name || comment.author
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
-msgid "Reply to {0}..."
-msgstr "Ҷавоб ба {0}..."
+msgid "Reply to {0}"
+msgstr "Ҷавоб ба {0}"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Required"
@@ -3895,8 +3887,13 @@ msgid "Sea level from the <0>Earth Gravitational Model 2008</0> of the <1>Nation
 msgstr "Сатҳи баҳр аз <0>Earth Gravitational Model 2008</0>-и <1>National Geospatial-Intelligence Agency</1> (асари ҳукумати ИМА), ба тарзе ки <2>GeographicLib</2> паҳн мекунад. Тағйирёфта: дар ҳар як дараҷаи бутун намуна гирифта шудааст."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 #: ../../../lib/web/src/components/header-search.tsx
+#: ../../../lib/web/src/components/inline-entity-search.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/components/search.tsx
 msgid "Search"
 msgstr "Ҷустуҷӯ"
@@ -3911,28 +3908,17 @@ msgid "Search for a command to run..."
 msgstr "Ҷустуҷӯи фармон барои иҷро..."
 
 #: ../../../lib/web/src/components/place-picker.tsx
+#: ../../../lib/web/src/components/place-picker.tsx
 msgid "Search for a place"
 msgstr "Ҷустуҷӯи ҷой"
 
-#: ../../../lib/web/src/components/place-picker.tsx
-msgid "Search for a place..."
-msgstr "Ҷустуҷӯи ҷой..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for destination..."
-msgstr "Ҷустуҷӯи ҷои таъинот..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for origin..."
-msgstr "Ҷустуҷӯи манбаъ..."
-
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
-msgid "Search objects..."
-msgstr "Ҷустуҷӯи объектҳо..."
+msgid "Search objects"
+msgstr "Ҷустуҷӯи объектҳо"
 
 #: ../../../lib/web/src/components/timezone-select.tsx
-msgid "Search time zone..."
-msgstr "Ҷустуҷӯи минтақаи вақт..."
+msgid "Search time zone"
+msgstr "Ҷустуҷӯи минтақаи вақт"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Search users"
@@ -3941,14 +3927,6 @@ msgstr "Ҷустуҷӯи корбарон"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Search, watch, and sort this view."
 msgstr "Ҷустуҷӯ, тамошо ва ҷобаҷогузории ин намоиш."
-
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/inline-entity-search.tsx
-#: ../../../lib/web/src/components/person-picker.tsx
-#: ../../../lib/web/src/components/search-entity-page.tsx
-msgid "Search..."
-msgstr "Ҷустуҷӯ..."
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -3967,13 +3945,10 @@ msgstr "Хомӯш кардани муҳаррики чап"
 msgid "Secure right engine"
 msgstr "Хомӯш кардани муҳаррики рост"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Интихоб"
-
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-msgid "Select a field"
-msgstr "Як майдонро интихоб кунед"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Select a game"
@@ -3986,10 +3961,6 @@ msgstr "Як корбар, гурӯҳ, ё қоидаи дигарро барои
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select access rule"
 msgstr "Интихоби қоидаи дастрасӣ"
-
-#: ../../../lib/web/src/features/accounts/account-add.tsx
-msgid "Select account type"
-msgstr "Интихоби намуди ҳисоб"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select group"
@@ -4004,8 +3975,8 @@ msgid "Select next card"
 msgstr "Корти навбатиро интихоб кунед"
 
 #: ../../../lib/web/src/components/person-picker.tsx
-msgid "Select person..."
-msgstr "Шахсро интихоб кунед..."
+msgid "Select person"
+msgstr "Шахсро интихоб кунед"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4014,11 +3985,6 @@ msgstr "Корти қаблиро интихоб кунед"
 #: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Интихоби силоҳ"
-
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Select..."
-msgstr "Интихоб кунед..."
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4591,20 +4557,16 @@ msgid "Type"
 msgstr "Намуд"
 
 #: ../../../lib/web/src/components/command-menu.tsx
-msgid "Type a command or search..."
-msgstr "Фармонеро чоп кунед ё ҷустуҷӯ кунед..."
+msgid "Type a command or search"
+msgstr "Фармонеро чоп кунед ё ҷустуҷӯ кунед"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
-msgid "Type a message…"
-msgstr "Паёмеро чоп кунед…"
+msgid "Type a message"
+msgstr "Паёмеро чоп кунед"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search users"
 msgstr "Барои ҷустуҷӯи корбарон чоп кунед"
-
-#: ../../../lib/web/src/features/access/access-dialog.tsx
-msgid "Type to search..."
-msgstr "Барои ҷустуҷӯ чоп кунед..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"

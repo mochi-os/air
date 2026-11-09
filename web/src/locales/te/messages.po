@@ -331,8 +331,8 @@ msgid "Add a bit more detail."
 msgstr "మరికొంత వివరణ జోడించండి."
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
-msgid "Add a comment..."
-msgstr "ఒక వ్యాఖ్యను జోడించండి..."
+msgid "Add a comment"
+msgstr "ఒక వ్యాఖ్యను జోడించండి"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add a new account"
@@ -364,8 +364,8 @@ msgid "Add field"
 msgstr "ఫీల్డ్‌ను జోడించండి"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Add item..."
-msgstr "ఐటెమ్‌ను జోడించండి..."
+msgid "Add item"
+msgstr "ఐటెమ్‌ను జోడించండి"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Add link"
@@ -380,8 +380,8 @@ msgid "Add option"
 msgstr "ఎంపికను జోడించండి"
 
 #: ../../../lib/web/src/components/post-tags.tsx
-msgid "Add tag..."
-msgstr "ట్యాగ్‌ను జోడించండి..."
+msgid "Add tag"
+msgstr "ట్యాగ్‌ను జోడించండి"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add to existing notifications"
@@ -1756,16 +1756,8 @@ msgid "Engines at idle: INS knob to {mode} to align"
 msgstr "ఇంజిన్లు కనిష్ఠంలో: సమలేఖనం కోసం INS నాబ్‌ను {mode} కు"
 
 #: ../../../lib/web/src/components/banner-section.tsx
-msgid "Enter banner text (markdown supported)..."
-msgstr "బ్యానర్ టెక్స్ట్ నమోదు చేయండి (మార్క్‌డౌన్ మద్దతు ఉంది)..."
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter the code from your email"
-msgstr "మీ ఇమెయిల్‌లోని కోడ్‌ను నమోదు చేయండి"
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter your authenticator code"
-msgstr "మీ ప్రమాణీకరణ కోడ్‌ను నమోదు చేయండి"
+msgid "Enter banner text (markdown supported)"
+msgstr "బ్యానర్ టెక్స్ట్ నమోదు చేయండి (మార్క్‌డౌన్ మద్దతు ఉంది)"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -3731,8 +3723,8 @@ msgstr "రిప్లై"
 
 #. placeholder {0}: comment.name || comment.author
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
-msgid "Reply to {0}..."
-msgstr "{0} కి ప్రత్యుత్తరం..."
+msgid "Reply to {0}"
+msgstr "{0} కి ప్రత్యుత్తరం"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Required"
@@ -3895,8 +3887,13 @@ msgid "Sea level from the <0>Earth Gravitational Model 2008</0> of the <1>Nation
 msgstr "సముద్ర మట్టం <1>National Geospatial-Intelligence Agency</1> వారి <0>Earth Gravitational Model 2008</0> నుండి (అమెరికా ప్రభుత్వ రచన), <2>GeographicLib</2> పంపిణీ చేసే రూపంలో. సవరించబడింది: ప్రతి పూర్తి డిగ్రీ వద్ద నమూనా తీసుకోబడింది."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 #: ../../../lib/web/src/components/header-search.tsx
+#: ../../../lib/web/src/components/inline-entity-search.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/components/search.tsx
 msgid "Search"
 msgstr "శోధన"
@@ -3911,28 +3908,17 @@ msgid "Search for a command to run..."
 msgstr "అమలు చేయడానికి కమాండ్ కోసం వెతకండి..."
 
 #: ../../../lib/web/src/components/place-picker.tsx
+#: ../../../lib/web/src/components/place-picker.tsx
 msgid "Search for a place"
 msgstr "ఒక ప్రదేశాన్ని శోధించండి"
 
-#: ../../../lib/web/src/components/place-picker.tsx
-msgid "Search for a place..."
-msgstr "స్థలం కోసం వెతకండి..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for destination..."
-msgstr "గమ్యస్థానాన్ని శోధించండి..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for origin..."
-msgstr "మూలాన్ని శోధించండి..."
-
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
-msgid "Search objects..."
-msgstr "ఆబ్జెక్ట్‌లను శోధించండి..."
+msgid "Search objects"
+msgstr "ఆబ్జెక్ట్‌లను శోధించండి"
 
 #: ../../../lib/web/src/components/timezone-select.tsx
-msgid "Search time zone..."
-msgstr "టైమ్ జోన్‌ను శోధించండి..."
+msgid "Search time zone"
+msgstr "టైమ్ జోన్‌ను శోధించండి"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Search users"
@@ -3941,14 +3927,6 @@ msgstr "యూజర్లను శోధించండి"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Search, watch, and sort this view."
 msgstr "ఈ వ్యూను శోధించండి, వాచ్ చేయండి మరియు సార్ట్ చేయండి."
-
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/inline-entity-search.tsx
-#: ../../../lib/web/src/components/person-picker.tsx
-#: ../../../lib/web/src/components/search-entity-page.tsx
-msgid "Search..."
-msgstr "శోధించండి..."
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -3967,13 +3945,10 @@ msgstr "ఎడమ ఇంజిన్ ఆపు"
 msgid "Secure right engine"
 msgstr "కుడి ఇంజిన్ ఆపు"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "ఎంపిక"
-
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-msgid "Select a field"
-msgstr "ఒక ఫీల్డ్‌ను ఎంచుకోండి"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Select a game"
@@ -3986,10 +3961,6 @@ msgstr "యాక్సెస్ ఇవ్వడానికి ఒక యూజ
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select access rule"
 msgstr "యాక్సెస్ నియమాన్ని ఎంచుకోండి"
-
-#: ../../../lib/web/src/features/accounts/account-add.tsx
-msgid "Select account type"
-msgstr "ఖాతా రకాన్ని ఎంచుకోండి"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select group"
@@ -4004,8 +3975,8 @@ msgid "Select next card"
 msgstr "తదుపరి కార్డును ఎంచుకోండి"
 
 #: ../../../lib/web/src/components/person-picker.tsx
-msgid "Select person..."
-msgstr "వ్యక్తిని ఎంచుకోండి..."
+msgid "Select person"
+msgstr "వ్యక్తిని ఎంచుకోండి"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4014,11 +3985,6 @@ msgstr "మునుపటి కార్డును ఎంచుకోండ�
 #: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "ఆయుధం ఎంచుకోండి"
-
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Select..."
-msgstr "ఎంచుకోండి..."
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4591,20 +4557,16 @@ msgid "Type"
 msgstr "రకం"
 
 #: ../../../lib/web/src/components/command-menu.tsx
-msgid "Type a command or search..."
-msgstr "ఒక కమాండ్‌ను టైప్ చేయండి లేదా శోధించండి..."
+msgid "Type a command or search"
+msgstr "ఒక కమాండ్‌ను టైప్ చేయండి లేదా శోధించండి"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
-msgid "Type a message…"
-msgstr "ఒక సందేశాన్ని టైప్ చేయండి…"
+msgid "Type a message"
+msgstr "ఒక సందేశాన్ని టైప్ చేయండి"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search users"
 msgstr "యూజర్లను శోధించడానికి టైప్ చేయండి"
-
-#: ../../../lib/web/src/features/access/access-dialog.tsx
-msgid "Type to search..."
-msgstr "శోధించడానికి టైప్ చేయండి..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"

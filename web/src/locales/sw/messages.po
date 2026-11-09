@@ -331,8 +331,8 @@ msgid "Add a bit more detail."
 msgstr "Ongeza maelezo zaidi kidogo."
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
-msgid "Add a comment..."
-msgstr "Ongeza maoni..."
+msgid "Add a comment"
+msgstr "Ongeza maoni"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add a new account"
@@ -364,8 +364,8 @@ msgid "Add field"
 msgstr "Ongeza uga"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Add item..."
-msgstr "Ongeza kipengee..."
+msgid "Add item"
+msgstr "Ongeza kipengee"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Add link"
@@ -380,8 +380,8 @@ msgid "Add option"
 msgstr "Ongeza chaguo"
 
 #: ../../../lib/web/src/components/post-tags.tsx
-msgid "Add tag..."
-msgstr "Ongeza tagi..."
+msgid "Add tag"
+msgstr "Ongeza tagi"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add to existing notifications"
@@ -1756,16 +1756,8 @@ msgid "Engines at idle: INS knob to {mode} to align"
 msgstr "Injini ziko chini kabisa: kitufe cha INS hadi {mode} ili kusawazisha"
 
 #: ../../../lib/web/src/components/banner-section.tsx
-msgid "Enter banner text (markdown supported)..."
-msgstr "Ingiza maandishi ya bango (markdown inakubaliwa)..."
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter the code from your email"
-msgstr "Weka msimbo kutoka kwa barua pepe yako"
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter your authenticator code"
-msgstr "Weka msimbo wako wa kithibitishaji"
+msgid "Enter banner text (markdown supported)"
+msgstr "Ingiza maandishi ya bango (markdown inakubaliwa)"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -3731,8 +3723,8 @@ msgstr "Jibu"
 
 #. placeholder {0}: comment.name || comment.author
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
-msgid "Reply to {0}..."
-msgstr "Jibu kwa {0}..."
+msgid "Reply to {0}"
+msgstr "Jibu kwa {0}"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Required"
@@ -3895,8 +3887,13 @@ msgid "Sea level from the <0>Earth Gravitational Model 2008</0> of the <1>Nation
 msgstr "Usawa wa bahari kutoka <0>Earth Gravitational Model 2008</0> ya <1>National Geospatial-Intelligence Agency</1> (kazi ya serikali ya Marekani), kama inavyosambazwa na <2>GeographicLib</2>. Umerekebishwa: sampuli zimechukuliwa katika kila nyuzi kamili."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 #: ../../../lib/web/src/components/header-search.tsx
+#: ../../../lib/web/src/components/inline-entity-search.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/components/search.tsx
 msgid "Search"
 msgstr "Tafuta"
@@ -3911,28 +3908,17 @@ msgid "Search for a command to run..."
 msgstr "Tafuta amri ya kuendesha..."
 
 #: ../../../lib/web/src/components/place-picker.tsx
+#: ../../../lib/web/src/components/place-picker.tsx
 msgid "Search for a place"
 msgstr "Tafuta mahali"
 
-#: ../../../lib/web/src/components/place-picker.tsx
-msgid "Search for a place..."
-msgstr "Tafuta mahali..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for destination..."
-msgstr "Tafuta marudio..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for origin..."
-msgstr "Tafuta chanzo..."
-
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
-msgid "Search objects..."
-msgstr "Tafuta vitu..."
+msgid "Search objects"
+msgstr "Tafuta vitu"
 
 #: ../../../lib/web/src/components/timezone-select.tsx
-msgid "Search time zone..."
-msgstr "Tafuta saa za eneo..."
+msgid "Search time zone"
+msgstr "Tafuta saa za eneo"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Search users"
@@ -3941,14 +3927,6 @@ msgstr "Tafuta watumiaji"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Search, watch, and sort this view."
 msgstr "Tafuta, tazama, na panga mwonekano huu."
-
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/inline-entity-search.tsx
-#: ../../../lib/web/src/components/person-picker.tsx
-#: ../../../lib/web/src/components/search-entity-page.tsx
-msgid "Search..."
-msgstr "Tafuta..."
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -3967,13 +3945,10 @@ msgstr "Zima injini ya kushoto"
 msgid "Secure right engine"
 msgstr "Zima injini ya kulia"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Chaguo"
-
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-msgid "Select a field"
-msgstr "Chagua sehemu"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Select a game"
@@ -3986,10 +3961,6 @@ msgstr "Chagua mtumiaji, kikundi, au sheria nyingine kutoa ufikiaji."
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select access rule"
 msgstr "Chagua sheria ya ufikiaji"
-
-#: ../../../lib/web/src/features/accounts/account-add.tsx
-msgid "Select account type"
-msgstr "Chagua aina ya akaunti"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select group"
@@ -4004,8 +3975,8 @@ msgid "Select next card"
 msgstr "Chagua kadi inayofuata"
 
 #: ../../../lib/web/src/components/person-picker.tsx
-msgid "Select person..."
-msgstr "Chagua mtu..."
+msgid "Select person"
+msgstr "Chagua mtu"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4014,11 +3985,6 @@ msgstr "Chagua kadi iliyotangulia"
 #: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Chagua silaha"
-
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Select..."
-msgstr "Chagua..."
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4591,20 +4557,16 @@ msgid "Type"
 msgstr "Aina"
 
 #: ../../../lib/web/src/components/command-menu.tsx
-msgid "Type a command or search..."
-msgstr "Andika amri au tafuta..."
+msgid "Type a command or search"
+msgstr "Andika amri au tafuta"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
-msgid "Type a message…"
-msgstr "Andika ujumbe…"
+msgid "Type a message"
+msgstr "Andika ujumbe"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search users"
 msgstr "Andika kutafuta watumiaji"
-
-#: ../../../lib/web/src/features/access/access-dialog.tsx
-msgid "Type to search..."
-msgstr "Andika kutafuta..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"

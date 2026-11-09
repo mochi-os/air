@@ -331,8 +331,8 @@ msgid "Add a bit more detail."
 msgstr "තවත් ටිකක් විස්තර එක් කරන්න."
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
-msgid "Add a comment..."
-msgstr "අදහසක් එක් කරන්න..."
+msgid "Add a comment"
+msgstr "අදහසක් එක් කරන්න"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add a new account"
@@ -364,8 +364,8 @@ msgid "Add field"
 msgstr "ක්ෂේත්‍රයක් එක් කරන්න"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Add item..."
-msgstr "අයිතමයක් එක් කරන්න..."
+msgid "Add item"
+msgstr "අයිතමයක් එක් කරන්න"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Add link"
@@ -380,8 +380,8 @@ msgid "Add option"
 msgstr "විකල්පයක් එක් කරන්න"
 
 #: ../../../lib/web/src/components/post-tags.tsx
-msgid "Add tag..."
-msgstr "ටැගයක් එක් කරන්න..."
+msgid "Add tag"
+msgstr "ටැගයක් එක් කරන්න"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add to existing notifications"
@@ -1756,16 +1756,8 @@ msgid "Engines at idle: INS knob to {mode} to align"
 msgstr "එන්ජින් නිෂ්ක්‍රීයව: පෙළගැස්වීමට INS නොබය {mode} වෙත"
 
 #: ../../../lib/web/src/components/banner-section.tsx
-msgid "Enter banner text (markdown supported)..."
-msgstr "බැනර් පෙළ ඇතුළු කරන්න (markdown සහාය දක්වයි)..."
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter the code from your email"
-msgstr "ඔබේ විද්‍යුත් තැපෑලෙහි ඇති කේතය ඇතුළු කරන්න"
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter your authenticator code"
-msgstr "ඔබගේ සත්‍යාපන කේතය ඇතුළත් කරන්න"
+msgid "Enter banner text (markdown supported)"
+msgstr "බැනර් පෙළ ඇතුළු කරන්න (markdown සහාය දක්වයි)"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -3731,8 +3723,8 @@ msgstr "පිළිතුර"
 
 #. placeholder {0}: comment.name || comment.author
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
-msgid "Reply to {0}..."
-msgstr "{0} ට පිළිතුරු දෙන්න..."
+msgid "Reply to {0}"
+msgstr "{0} ට පිළිතුරු දෙන්න"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Required"
@@ -3895,8 +3887,13 @@ msgid "Sea level from the <0>Earth Gravitational Model 2008</0> of the <1>Nation
 msgstr "මුහුදු මට්ටම <1>National Geospatial-Intelligence Agency</1> හි <0>Earth Gravitational Model 2008</0> වෙතින් (එක්සත් ජනපද රජයේ කෘතියක්), <2>GeographicLib</2> බෙදාහරින පරිදි. සංශෝධිත: සෑම පූර්ණ අංශකයකම නියැදි ගන්නා ලදී."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 #: ../../../lib/web/src/components/header-search.tsx
+#: ../../../lib/web/src/components/inline-entity-search.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/components/search.tsx
 msgid "Search"
 msgstr "සොයන්න"
@@ -3911,28 +3908,17 @@ msgid "Search for a command to run..."
 msgstr "ධාවනය කිරීමට විධානයක් සොයන්න..."
 
 #: ../../../lib/web/src/components/place-picker.tsx
+#: ../../../lib/web/src/components/place-picker.tsx
 msgid "Search for a place"
 msgstr "ස්ථානයක් සොයන්න"
 
-#: ../../../lib/web/src/components/place-picker.tsx
-msgid "Search for a place..."
-msgstr "ස්ථානයක් සොයන්න..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for destination..."
-msgstr "ගමනාන්තය සොයන්න..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for origin..."
-msgstr "මූලාරම්භය සොයන්න..."
-
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
-msgid "Search objects..."
-msgstr "වස්තූන් සොයන්න..."
+msgid "Search objects"
+msgstr "වස්තූන් සොයන්න"
 
 #: ../../../lib/web/src/components/timezone-select.tsx
-msgid "Search time zone..."
-msgstr "කාල කලාපය සොයන්න..."
+msgid "Search time zone"
+msgstr "කාල කලාපය සොයන්න"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Search users"
@@ -3941,14 +3927,6 @@ msgstr "පරිශීලකයින් සොයන්න"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Search, watch, and sort this view."
 msgstr "මෙම දසුන සොයන්න, නරඹන්න, සහ වර්ග කරන්න."
-
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/inline-entity-search.tsx
-#: ../../../lib/web/src/components/person-picker.tsx
-#: ../../../lib/web/src/components/search-entity-page.tsx
-msgid "Search..."
-msgstr "සොයන්න..."
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -3967,13 +3945,10 @@ msgstr "වම් එන්ජිම නවත්වන්න"
 msgid "Secure right engine"
 msgstr "දකුණු එන්ජිම නවත්වන්න"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "තේරීම"
-
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-msgid "Select a field"
-msgstr "ක්ෂේත්‍රයක් තෝරන්න"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Select a game"
@@ -3986,10 +3961,6 @@ msgstr "ප්‍රවේශය ලබා දීමට පරිශීලකය
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select access rule"
 msgstr "ප්‍රවේශ රීතිය තෝරන්න"
-
-#: ../../../lib/web/src/features/accounts/account-add.tsx
-msgid "Select account type"
-msgstr "ගිණුම් වර්ගය තෝරන්න"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select group"
@@ -4004,8 +3975,8 @@ msgid "Select next card"
 msgstr "ඊළඟ කාඩ්පත තෝරන්න"
 
 #: ../../../lib/web/src/components/person-picker.tsx
-msgid "Select person..."
-msgstr "පුද්ගලයෙකු තෝරන්න..."
+msgid "Select person"
+msgstr "පුද්ගලයෙකු තෝරන්න"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4014,11 +3985,6 @@ msgstr "පෙර කාඩ්පත තෝරන්න"
 #: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "ආයුධය තෝරන්න"
-
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Select..."
-msgstr "තෝරන්න..."
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4591,20 +4557,16 @@ msgid "Type"
 msgstr "වර්ගය"
 
 #: ../../../lib/web/src/components/command-menu.tsx
-msgid "Type a command or search..."
-msgstr "විධානයක් ටයිප් කරන්න හෝ සොයන්න..."
+msgid "Type a command or search"
+msgstr "විධානයක් ටයිප් කරන්න හෝ සොයන්න"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
-msgid "Type a message…"
-msgstr "පණිවිඩයක් ටයිප් කරන්න…"
+msgid "Type a message"
+msgstr "පණිවිඩයක් ටයිප් කරන්න"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search users"
 msgstr "පරිශීලකයින් සෙවීමට ටයිප් කරන්න"
-
-#: ../../../lib/web/src/features/access/access-dialog.tsx
-msgid "Type to search..."
-msgstr "සෙවීමට ටයිප් කරන්න..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"

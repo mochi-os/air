@@ -331,8 +331,8 @@ msgid "Add a bit more detail."
 msgstr "Προσθέστε λίγες ακόμα λεπτομέρειες."
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
-msgid "Add a comment..."
-msgstr "Προσθήκη σχολίου..."
+msgid "Add a comment"
+msgstr "Προσθήκη σχολίου"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add a new account"
@@ -364,8 +364,8 @@ msgid "Add field"
 msgstr "Προσθήκη πεδίου"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Add item..."
-msgstr "Προσθήκη στοιχείου..."
+msgid "Add item"
+msgstr "Προσθήκη στοιχείου"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Add link"
@@ -380,8 +380,8 @@ msgid "Add option"
 msgstr "Προσθήκη επιλογής"
 
 #: ../../../lib/web/src/components/post-tags.tsx
-msgid "Add tag..."
-msgstr "Προσθήκη ετικέτας..."
+msgid "Add tag"
+msgstr "Προσθήκη ετικέτας"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add to existing notifications"
@@ -1756,16 +1756,8 @@ msgid "Engines at idle: INS knob to {mode} to align"
 msgstr "Κινητήρες στο ρελαντί: επιλογέας INS σε {mode} για ευθυγράμμιση"
 
 #: ../../../lib/web/src/components/banner-section.tsx
-msgid "Enter banner text (markdown supported)..."
-msgstr "Εισαγάγετε κείμενο μπάνερ (υποστηρίζεται markdown)..."
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter the code from your email"
-msgstr "Εισαγάγετε τον κωδικό από το email σας"
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter your authenticator code"
-msgstr "Εισαγάγετε τον κωδικό της εφαρμογής ελέγχου ταυτότητας"
+msgid "Enter banner text (markdown supported)"
+msgstr "Εισαγάγετε κείμενο μπάνερ (υποστηρίζεται markdown)"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -3731,8 +3723,8 @@ msgstr "Απάντηση"
 
 #. placeholder {0}: comment.name || comment.author
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
-msgid "Reply to {0}..."
-msgstr "Απάντηση σε {0}..."
+msgid "Reply to {0}"
+msgstr "Απάντηση σε {0}"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Required"
@@ -3895,8 +3887,13 @@ msgid "Sea level from the <0>Earth Gravitational Model 2008</0> of the <1>Nation
 msgstr "Στάθμη θάλασσας από το <0>Earth Gravitational Model 2008</0> της <1>National Geospatial-Intelligence Agency</1> (έργο της κυβέρνησης των ΗΠΑ), όπως το διανέμει το <2>GeographicLib</2>. Τροποποιημένη: δειγματοληψία σε κάθε ακέραιη μοίρα."
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 #: ../../../lib/web/src/components/header-search.tsx
+#: ../../../lib/web/src/components/inline-entity-search.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/components/search.tsx
 msgid "Search"
 msgstr "Αναζήτηση"
@@ -3911,28 +3908,17 @@ msgid "Search for a command to run..."
 msgstr "Αναζήτηση εντολής προς εκτέλεση..."
 
 #: ../../../lib/web/src/components/place-picker.tsx
+#: ../../../lib/web/src/components/place-picker.tsx
 msgid "Search for a place"
 msgstr "Αναζήτηση για τοποθεσία"
 
-#: ../../../lib/web/src/components/place-picker.tsx
-msgid "Search for a place..."
-msgstr "Αναζήτηση τοποθεσίας..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for destination..."
-msgstr "Αναζήτηση για προορισμό..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for origin..."
-msgstr "Αναζήτηση για αφετηρία..."
-
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
-msgid "Search objects..."
-msgstr "Αναζήτηση αντικειμένων..."
+msgid "Search objects"
+msgstr "Αναζήτηση αντικειμένων"
 
 #: ../../../lib/web/src/components/timezone-select.tsx
-msgid "Search time zone..."
-msgstr "Αναζήτηση ζώνης ώρας..."
+msgid "Search time zone"
+msgstr "Αναζήτηση ζώνης ώρας"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Search users"
@@ -3941,14 +3927,6 @@ msgstr "Αναζήτηση χρηστών"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Search, watch, and sort this view."
 msgstr "Αναζήτηση, παρακολούθηση και ταξινόμηση αυτής της προβολής."
-
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/inline-entity-search.tsx
-#: ../../../lib/web/src/components/person-picker.tsx
-#: ../../../lib/web/src/components/search-entity-page.tsx
-msgid "Search..."
-msgstr "Αναζήτηση..."
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -3967,13 +3945,10 @@ msgstr "Σβήσιμο αριστερού κινητήρα"
 msgid "Secure right engine"
 msgstr "Σβήσιμο δεξιού κινητήρα"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "Επιλογή"
-
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-msgid "Select a field"
-msgstr "Επιλέξτε ένα πεδίο"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Select a game"
@@ -3986,10 +3961,6 @@ msgstr "Επιλέξτε έναν χρήστη, ομάδα ή άλλον καν�
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select access rule"
 msgstr "Επιλέξτε κανόνα πρόσβασης"
-
-#: ../../../lib/web/src/features/accounts/account-add.tsx
-msgid "Select account type"
-msgstr "Επιλέξτε τύπο λογαριασμού"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select group"
@@ -4004,8 +3975,8 @@ msgid "Select next card"
 msgstr "Επιλογή επόμενης κάρτας"
 
 #: ../../../lib/web/src/components/person-picker.tsx
-msgid "Select person..."
-msgstr "Επιλέξτε άτομο..."
+msgid "Select person"
+msgstr "Επιλέξτε άτομο"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4014,11 +3985,6 @@ msgstr "Επιλογή προηγούμενης κάρτας"
 #: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "Επιλογή όπλου"
-
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Select..."
-msgstr "Επιλογή..."
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4591,20 +4557,16 @@ msgid "Type"
 msgstr "Τύπος"
 
 #: ../../../lib/web/src/components/command-menu.tsx
-msgid "Type a command or search..."
-msgstr "Πληκτρολογήστε μια εντολή ή αναζητήστε..."
+msgid "Type a command or search"
+msgstr "Πληκτρολογήστε μια εντολή ή αναζητήστε"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
-msgid "Type a message…"
-msgstr "Πληκτρολογήστε ένα μήνυμα…"
+msgid "Type a message"
+msgstr "Πληκτρολογήστε ένα μήνυμα"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search users"
 msgstr "Πληκτρολογήστε για αναζήτηση χρηστών"
-
-#: ../../../lib/web/src/features/access/access-dialog.tsx
-msgid "Type to search..."
-msgstr "Πληκτρολογήστε για αναζήτηση..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"

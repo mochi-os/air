@@ -331,8 +331,8 @@ msgid "Add a bit more detail."
 msgstr "အသေးစိတ်အချက်အလက် နည်းနည်းထပ်ထည့်ပါ။"
 
 #: ../../../lib/web/src/components/entity/entity-comment-list.tsx
-msgid "Add a comment..."
-msgstr "မှတ်ချက်ထည့်ရန်..."
+msgid "Add a comment"
+msgstr "မှတ်ချက်ထည့်ရန်"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add a new account"
@@ -364,8 +364,8 @@ msgid "Add field"
 msgstr "အကွက် ထည့်မည်"
 
 #: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Add item..."
-msgstr "အရာ ထည့်ရန်..."
+msgid "Add item"
+msgstr "အရာ ထည့်ရန်"
 
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Add link"
@@ -380,8 +380,8 @@ msgid "Add option"
 msgstr "ရွေးချယ်စရာ ထည့်မည်"
 
 #: ../../../lib/web/src/components/post-tags.tsx
-msgid "Add tag..."
-msgstr "တက်ဂ် ထည့်ရန်..."
+msgid "Add tag"
+msgstr "တက်ဂ် ထည့်ရန်"
 
 #: ../../../lib/web/src/features/accounts/account-add.tsx
 msgid "Add to existing notifications"
@@ -1756,16 +1756,8 @@ msgid "Engines at idle: INS knob to {mode} to align"
 msgstr "အင်ဂျင်များ အနိမ့်ဆုံးတွင်: ချိန်ညှိရန် INS လှည့်ခလုတ်ကို {mode} သို့"
 
 #: ../../../lib/web/src/components/banner-section.tsx
-msgid "Enter banner text (markdown supported)..."
-msgstr "ဘန်နာ စာသား ထည့်ပါ (markdown ပံ့ပိုးသည်)..."
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter the code from your email"
-msgstr "သင့်အီးမေးလ်မှ ကုဒ်ကို ထည့်ပါ"
-
-#: ../../../lib/web/src/components/step-up-dialog.tsx
-msgid "Enter your authenticator code"
-msgstr "သင့်အထောက်အထားစိစစ်ရေးကုဒ်ကို ထည့်ပါ"
+msgid "Enter banner text (markdown supported)"
+msgstr "ဘန်နာ စာသား ထည့်ပါ (markdown ပံ့ပိုးသည်)"
 
 #: ../../../lib/web/src/components/entity/entity-object-detail-panel.tsx
 msgid "Error"
@@ -3731,8 +3723,8 @@ msgstr "ပြန်ကြား"
 
 #. placeholder {0}: comment.name || comment.author
 #: ../../../lib/web/src/components/entity/entity-comment-thread.tsx
-msgid "Reply to {0}..."
-msgstr "{0} သို့ ပြန်ကြား..."
+msgid "Reply to {0}"
+msgstr "{0} သို့ ပြန်ကြား"
 
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 msgid "Required"
@@ -3895,8 +3887,13 @@ msgid "Sea level from the <0>Earth Gravitational Model 2008</0> of the <1>Nation
 msgstr "ပင်လယ်ရေမျက်နှာပြင်ကို <2>GeographicLib</2> ဖြန့်ဝေသည့်အတိုင်း <1>National Geospatial-Intelligence Agency</1> ၏ <0>Earth Gravitational Model 2008</0> မှ ရယူထားသည် (အမေရိကန်အစိုးရ၏ လက်ရာ)။ ပြင်ဆင်ထားသည်- ဒီဂရီပြည့် တစ်ခုစီတွင် နမူနာယူထားသည်။"
 
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
+#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 #: ../../../lib/web/src/components/filter-bar.tsx
 #: ../../../lib/web/src/components/header-search.tsx
+#: ../../../lib/web/src/components/inline-entity-search.tsx
+#: ../../../lib/web/src/components/person-picker.tsx
+#: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/components/search.tsx
 msgid "Search"
 msgstr "ရှာဖွေ"
@@ -3911,28 +3908,17 @@ msgid "Search for a command to run..."
 msgstr "လုပ်ဆောင်ရန် အမိန့်ရှာပါ..."
 
 #: ../../../lib/web/src/components/place-picker.tsx
+#: ../../../lib/web/src/components/place-picker.tsx
 msgid "Search for a place"
 msgstr "နေရာတစ်ခုကို ရှာဖွေ"
 
-#: ../../../lib/web/src/components/place-picker.tsx
-msgid "Search for a place..."
-msgstr "နေရာရှာပါ..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for destination..."
-msgstr "ဦးတည်ရာ ရှာဖွေ..."
-
-#: ../../../lib/web/src/components/travelling-picker.tsx
-msgid "Search for origin..."
-msgstr "မူလနေရာ ရှာဖွေ..."
-
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
-msgid "Search objects..."
-msgstr "Object များ ရှာဖွေ..."
+msgid "Search objects"
+msgstr "Object များ ရှာဖွေ"
 
 #: ../../../lib/web/src/components/timezone-select.tsx
-msgid "Search time zone..."
-msgstr "အချိန်ဇုန် ရှာဖွေ..."
+msgid "Search time zone"
+msgstr "အချိန်ဇုန် ရှာဖွေ"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Search users"
@@ -3941,14 +3927,6 @@ msgstr "သုံးစွဲသူများ ရှာဖွေ"
 #: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
 msgid "Search, watch, and sort this view."
 msgstr "ဤ ကြည့်ရှုမှု ကို ရှာဖွေ၊ စောင့်ကြည့်ပြီး စီပါ။"
-
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/entity/entity-view-options-bar.tsx
-#: ../../../lib/web/src/components/inline-entity-search.tsx
-#: ../../../lib/web/src/components/person-picker.tsx
-#: ../../../lib/web/src/components/search-entity-page.tsx
-msgid "Search..."
-msgstr "ရှာဖွေ..."
 
 #: ../../../lib/web/src/components/search-entity-page.tsx
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -3967,13 +3945,10 @@ msgstr "ဘယ်အင်ဂျင်ကို ပိတ်"
 msgid "Secure right engine"
 msgstr "ညာအင်ဂျင်ကို ပိတ်"
 
+#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Select"
 msgstr "ရွေးချယ်မှု"
-
-#: ../../../lib/web/src/components/entity/entity-view-sheet.tsx
-msgid "Select a field"
-msgstr "အကွက် တစ်ခုကို ရွေးချယ်ပါ"
 
 #: ../../../lib/web/src/components/game/game-empty-state.tsx
 msgid "Select a game"
@@ -3986,10 +3961,6 @@ msgstr "ဝင်ရောက်ခွင့်ပေးရန် သုံး�
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select access rule"
 msgstr "ဝင်ရောက်ခွင့် စည်းမျဉ်း ရွေးချယ်"
-
-#: ../../../lib/web/src/features/accounts/account-add.tsx
-msgid "Select account type"
-msgstr "အကောင့်အမျိုးအစား ရွေးချယ်"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Select group"
@@ -4004,8 +3975,8 @@ msgid "Select next card"
 msgstr "နောက်ကတ်ကို ရွေးပါ"
 
 #: ../../../lib/web/src/components/person-picker.tsx
-msgid "Select person..."
-msgstr "လူရွေးပါ..."
+msgid "Select person"
+msgstr "လူရွေးပါ"
 
 #: ../../../lib/web/src/components/entity/keyboard-shortcuts-help.tsx
 msgid "Select previous card"
@@ -4014,11 +3985,6 @@ msgstr "ယခင်ကတ်ကို ရွေးပါ"
 #: src/components/SettingsDialog.tsx
 msgid "Select weapon"
 msgstr "လက်နက် ရွေးချယ်"
-
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-#: ../../../lib/web/src/components/entity/entity-field-editor.tsx
-msgid "Select..."
-msgstr "ရွေးပါ..."
 
 #. placeholder {0}: getSelectedName()
 #: ../../../lib/web/src/features/access/access-dialog.tsx
@@ -4591,20 +4557,16 @@ msgid "Type"
 msgstr "အမျိုးအစား"
 
 #: ../../../lib/web/src/components/command-menu.tsx
-msgid "Type a command or search..."
-msgstr "အမိန့် တစ်ခု ရိုက်ပါ သို့မဟုတ် ရှာပါ..."
+msgid "Type a command or search"
+msgstr "အမိန့် တစ်ခု ရိုက်ပါ သို့မဟုတ် ရှာပါ"
 
 #: ../../../lib/web/src/components/game/game-chat-input.tsx
-msgid "Type a message…"
-msgstr "မက်ဆေ့ ရိုက်ပါ…"
+msgid "Type a message"
+msgstr "မက်ဆေ့ ရိုက်ပါ"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Type to search users"
 msgstr "သုံးစွဲသူရှာရန် ရိုက်ပါ"
-
-#: ../../../lib/web/src/features/access/access-dialog.tsx
-msgid "Type to search..."
-msgstr "ရှာရန် ရိုက်ပါ..."
 
 #: src/components/SettingsDialog.tsx
 msgid "Ultra"
