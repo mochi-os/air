@@ -36,6 +36,7 @@
 #   "share", "lift": [r, g, b]}}: each at full wear}]}
 #
 # usage: python3 -I weather.py MAPS.npz MATERIAL COLOUR.png HEIGHT.png [--facts PATH]
+#        python3 -I weather.py --inputs [--facts PATH]: the parts of the facts it reads, as JSON
 import json, sys
 from pathlib import Path
 
@@ -47,6 +48,11 @@ sys.path.insert(0, str(HERE))
 from plates import lamps  # noqa: E402
 
 UP = np.array([0.0, 1.0, 0.0])
+# Every part of the facts weather() reads, by its path: a build keys its cached
+# atlases on them (inputs()), so what the rules read is listed here too
+# (test_weather checks that nothing else is read)
+INPUTS = (("layout", "weathering"), ("layout", "island"), ("layout", "lettering"), ("layout", "sponsons"), ("layout", "deck"),
+	("layout", "hull", "boot"))
 NOISE = 0.371   # noise()'s own spread, which a dirt's spreads are given in units of
 
 
@@ -485,6 +491,17 @@ def texels(position, normal, ao, texel, group, facts, sources):
 	return np.clip(colour, 0, 1), np.clip(height, 0, 1)
 
 
+def inputs(facts):
+	# The facts weather() reads, each part by its path (INPUTS)
+	out = {}
+	for path in INPUTS:
+		value = facts
+		for key in path:
+			value = value.get(key) if isinstance(value, dict) else None
+		out["/".join(path)] = value
+	return out
+
+
 def srgb(c):
 	return np.where(c <= 0.0031308, 12.92 * c, 1.055 * np.power(np.clip(c, 0, 1), 1 / 2.4) - 0.055)
 
@@ -497,6 +514,9 @@ def main():
 		facts = Path(args[i + 1])
 		del args[i : i + 2]
 	facts = json.loads(facts.read_text())
+	if "--inputs" in args:
+		print(json.dumps(inputs(facts), sort_keys=True))
+		return
 	maps = np.load(args[0])
 	group = next(g for g in facts["layout"]["weathering"]["groups"] if g["material"] == args[1])
 	colour, height = weather(maps, group, facts)

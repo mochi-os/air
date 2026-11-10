@@ -45,7 +45,46 @@ def at(maps, x, y):
 	return int(round((DECK + 6.0 - y) / 6.0 * SIZE)), int(round(x / 6.0 * SIZE))
 
 
+class Recorded(dict):
+	# A dict that records the path of every key read from it or from the dicts in it
+	def __init__(self, value, path, reads):
+		super().__init__(value)
+		self.path, self.reads = path, reads
+
+	def __getitem__(self, key):
+		return self.wrap(key, super().__getitem__(key))
+
+	def get(self, key, default=None):
+		return self.wrap(key, super().get(key, default))
+
+	def wrap(self, key, value):
+		self.reads.add(self.path + (key,))
+		return Recorded(value, self.path + (key,), self.reads) if isinstance(value, dict) else value
+
+
 class WeatherTest(unittest.TestCase):
+	def test_reads_only_its_inputs(self):
+		# what the rules read is what a build keys its cached atlases on: each
+		# group's kind of fittings, with every part of the island, lettering,
+		# sponsons, deck and hull it can read
+		window = {"plane": "z=10", "x": [1.0, 2.0], "y": [DECK + 3.0, DECK + 3.5]}
+		layout = facts([window])["layout"]
+		layout["island"].update({"domes": [{"centre": [3, DECK + 5], "profile": [[DECK + 4, 1.0], [DECK + 5, 1.2]]}],
+			"panels": [window], "details": [{"kind": "box", "centre": [1, DECK + 2, 10], "size": [1, 1, 1]}],
+			"prisms": [{"outline": [[0, 9], [6, 9], [6, 11], [0, 11]], "top": DECK + 6}]})
+		layout["lettering"] = {"cells": {}, "plates": []}
+		layout["sponsons"] = [{"outline": [[0, 9], [6, 9], [6, 11], [0, 11]], "bottom": DECK + 1}]
+		for material in ("island", "domes", "hull"):
+			reads = set()
+			group = dict(GROUP, material=material)
+			weather.weather(wall(), group, Recorded({"layout": dict(layout, weathering={"grey": [0.3, 0.32, 0.33], "groups": [group]})}, (), reads))
+			for path in reads:
+				self.assertTrue(any(path[:len(q)] == q or q[:len(path)] == path for q in weather.INPUTS), (material, path))
+				# its own group it is given: another group's spec never reaches it
+				self.assertNotEqual(path[:3], ("layout", "weathering", "groups"), (material, path))
+		self.assertEqual(sorted(weather.inputs({"layout": {"deck": {"height": 1}, "hull": {"boot": 2, "sections": []}}}).items())[:2],
+			[("layout/deck", {"height": 1}), ("layout/hull/boot", 2)])
+
 	def test_seams_are_darker_and_grooved(self):
 		maps = wall()
 		colour, height = weather.weather(maps, GROUP, facts())

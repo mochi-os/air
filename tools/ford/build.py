@@ -788,18 +788,27 @@ def arresting():
 	(ax, az), (fx, fz) = landing.get("line", [[0, 0], [1, 0]])
 	along = (at(fx, top, fz) - at(ax, top, az)).normalized()
 	across = UP.cross(along).normalized()
-	# the sheaves in their own white where the facts give it
+	# the sheaves in their own white where the facts give it, their arms in theirs
 	paint = "grey"
 	if "colour" in fittings.get("sheave", {}):
 		COLOURS["sheave"] = tuple(linear(c) for c in fittings["sheave"]["colour"]) + (1,)
 		paint = "sheave"
+	arm = fittings.get("sheave", {}).get("arm")
+	if arm and "colour" in arm:
+		COLOURS["arm"] = tuple(linear(c) for c in arm["colour"]) + (1,)
 	for sheave in landing.get("sheaves", []):
 		k = fittings["sheave"]
 		base = plan(sheave["centre"])
 		name = sheave["name"].replace("_port", "_sheave_port").replace("_starboard", "_sheave_starboard")
-		node(name, hinge=base + UP * k["height"], paint=paint, mesh=primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=True,
+		vertices, faces = primitive(lambda bm: bmesh.ops.create_cone(bm, cap_ends=True,
 			segments=16, radius1=k["diameter"] / 2, radius2=k["diameter"] / 2, depth=k["height"],
-			matrix=Matrix.Translation(base + UP * (k["height"] / 2)))))
+			matrix=Matrix.Translation(base + UP * (k["height"] / 2))))
+		pieces = [(vertices, faces, [paint] * len(faces))]
+		# its arm rides on it, so sinks with it: the barricade's, flush and
+		# unrigged, have none
+		if arm and "arm" in sheave:
+			pieces += sheave_arm(sheave, arm)
+		node(name, hinge=base + UP * k["height"], mesh=merge(pieces))
 		joint(name, DOWN, Vector(), DOWN, "its wire's: sunk under the deck while the wire is not rigged", [[0, 0], [1, round(k["height"] + STOWED, 4)]], motion="slide")
 	for support in landing.get("supports", []):
 		k = fittings["support"]
@@ -815,6 +824,73 @@ def arresting():
 		# stowed: its top just under the deck's
 		node(name, hinge=hinge, mesh=box(hinge + run / 2 + DOWN * (k["thickness"] + STOWED), run, UP.cross(run), run.length, k["width"], k["thickness"]))
 		joint(name, UP.cross(run), run, UP, "none yet: rigged for a barricade arrestment", [[0, 0], [1, round(math.pi / 2, 4)]])
+
+
+def sheave_arm(sheave, k):
+	# The fitting forward of a rigged sheave (fittings.sheave.arm): a flat bar
+	# lying on the deck from a head on the housing's outboard side, a plate on
+	# a block round the housing's rim with a pin standing in it. Its line runs
+	# from the housing's centre, turned the sheave's arm.angle outboard of
+	# forward; the bar lies arm.offset outboard of that line, from k.root
+	# along it to its rounded tip at arm.length, narrowing from k.width[0] to
+	# k.width[1] by k.narrows and thinning from k.thickness[0] to [1] by
+	# k.thins. Positions in the fitting are [along, outboard] from the
+	# housing's centre, heights above the deck. Returns pieces for merge()
+	(cx, cz), turn = sheave["centre"], math.radians(sheave["arm"]["angle"])
+	offset = sheave["arm"]["offset"]
+	side = -1 if sheave["name"].endswith("_port") else 1   # outboard: port is -z
+	a = (math.cos(turn), side * math.sin(turn))
+	o = (-math.sin(turn), side * math.cos(turn))
+	deck = LAYOUT["deck"]["height"]
+	paint = "arm" if "colour" in k else "dark"
+
+	def place(u, v):
+		return [cx + u * a[0] + v * o[0], cz + u * a[1] + v * o[1]]
+
+	def ramp(u, ends, by):
+		# from ends[0] at the root to ends[1] at `by`, held after
+		t = min(max((u - k["root"]) / (by - k["root"]), 0.0), 1.0)
+		return ends[0] + (ends[1] - ends[0]) * t
+
+	# the head: its inboard edge an arc clear of the rim, then its corners
+	h = k["head"]
+	steps = 6
+	arc = [math.radians(h["to"] + (h["from"] - h["to"]) * i / steps) for i in range(steps + 1)]
+	outline = [place(h["inner"] * math.cos(b), h["inner"] * math.sin(b)) for b in arc] + [place(u, v) for u, v in h["outline"]]
+	underside = deck + h["top"] - h["thickness"]
+	pieces = [slab(outline, deck + h["top"], underside, (paint,) * 3),
+		# the block it stands on, sunk a little as the bar is
+		slab([place(u, v) for u, v in k["pedestal"]], underside, deck - STOWED / 2, (paint,) * 3)]
+	# the pin, and its nut on top
+	p = place(*k["pin"]["at"])
+	rise = deck + h["top"] + k["pin"]["height"]
+	nut, tall = k["pin"]["nut"]
+	pieces.append(tube([p[0], deck + h["top"], p[1]], [p[0], rise, p[1]], k["pin"]["diameter"] / 2, paint, segments=12))
+	pieces.append(tube([p[0], rise, p[1]], [p[0], rise + tall, p[1]], nut / 2, paint, segments=6))
+	# the bar: stations along its line, each its two top and two bottom
+	# corners, to its nose, a half disc ending in a point
+	length = sheave["arm"]["length"]
+	nose = ramp(length, k["width"], k["narrows"]) / 2
+	stations = sorted({k["root"], *(s for s in (k["thins"], k["narrows"]) if k["root"] < s < length - nose), length - nose})
+	sections = [(u, ramp(u, k["width"], k["narrows"]) / 2, ramp(u, k["thickness"], k["thins"])) for u in stations]
+	sections += [(length - nose + nose * math.sin(math.radians(f)), nose * math.cos(math.radians(f)), sections[-1][2]) for f in (30, 60)]
+	bottom = deck - STOWED / 2   # sunk a little: on the deck's top it fought it for the pixels
+	vertices = []
+	for u, half, thick in sections:
+		for v, y in ((offset - half, deck + thick), (offset + half, deck + thick), (offset - half, bottom), (offset + half, bottom)):
+			x, z = place(u, v)
+			vertices.append(at(x, y, z))
+	x, z = place(length, offset)
+	vertices += [at(x, deck + sections[-1][2], z), at(x, bottom, z)]
+	n = len(sections)
+	faces = [(0, 2, 3, 1)]   # the root's end
+	for i in range(n - 1):
+		t, s = 4 * i, 4 * (i + 1)
+		faces += [(t, t + 1, s + 1, s), (t + 2, s + 2, s + 3, t + 3), (t, s, s + 2, t + 2), (t + 1, t + 3, s + 3, s + 1)]
+	t, tip = 4 * (n - 1), 4 * n
+	faces += [(t, t + 1, tip), (t + 2, tip + 1, t + 3), (t, tip, tip + 1, t + 2), (t + 1, t + 3, tip + 1, tip)]
+	pieces.append((vertices, faces, [paint] * len(faces)))
+	return pieces
 
 
 def shape(p, frame=None):
@@ -2642,7 +2718,255 @@ def emitting(source):
 	return make
 
 
-def weathered(facts, out):
+# The cache's version: bump it to drop every cached atlas
+CACHE = "1"
+
+
+def placed(o):
+	# An object's vertices in the world (N, 3)
+	import numpy as np
+	co = np.empty(len(o.data.vertices) * 3, np.float32)
+	o.data.vertices.foreach_get("co", co)
+	matrix = np.array(o.matrix_world, np.float64)
+	return (co.reshape(-1, 3).astype(np.float64) @ matrix[:3, :3].T + matrix[:3, 3]).astype(np.float32)
+
+
+def cycles(o, target=None, turned=False):
+	# Each face of an object (in `target` only, when given) by its vertices
+	# in its own winding, turned to start at its least: the same face whatever
+	# order the faces were made in. Returns the faces' indices and their cycles
+	# (and with `turned`, how far each was turned)
+	import numpy as np
+	mesh = o.data
+	n = len(mesh.polygons)
+	starts, totals, slots = (np.empty(n, np.int32) for _ in range(3))
+	mesh.polygons.foreach_get("loop_start", starts)
+	mesh.polygons.foreach_get("loop_total", totals)
+	mesh.polygons.foreach_get("material_index", slots)
+	corners = np.empty(len(mesh.loops), np.int32)
+	mesh.loops.foreach_get("vertex_index", corners)
+	chosen = np.arange(n)
+	if target is not None:
+		mine = np.array([m == target for m in mesh.materials] + [False])
+		chosen = chosen[mine[np.minimum(slots, len(mesh.materials))]]
+	out, turns = [], []
+	for p in chosen:
+		cycle = corners[starts[p] : starts[p] + totals[p]].tolist()
+		k = cycle.index(min(cycle))
+		out.append(tuple(cycle[k:] + cycle[:k]))
+		turns.append(k)
+	return (chosen, out, turns) if turned else (chosen, out)
+
+
+def scene_faces():
+	# Every mesh's faces in the world: each one's bounding box (low, high) and
+	# a digest of it (its object, its vertices and their places, its
+	# material's alpha, which a see-through face's shadow could carry), the
+	# same whatever order the faces were made or cut into triangles in
+	import hashlib
+	import numpy as np
+	lows, highs, digests = [], [], []
+	for o in sorted(bpy.context.scene.objects, key=lambda o: o.name):
+		if o.type != "MESH" or not len(o.data.polygons):
+			continue
+		mesh = o.data
+		world = placed(o)
+		slots = np.empty(len(mesh.polygons), np.int32)
+		mesh.polygons.foreach_get("material_index", slots)
+		alpha = np.array([m.diffuse_color[3] if m else 1.0 for m in mesh.materials] + [1.0], np.float32)[np.minimum(slots, len(mesh.materials))]
+		_, faces = cycles(o)
+		name = o.name.encode()
+		for face, a in zip(faces, alpha):
+			at = world[list(face)]
+			lows.append(at.min(0))
+			highs.append(at.max(0))
+			digests.append(hashlib.blake2b(name + np.array(face, np.int32).tobytes() + at.tobytes() + a.tobytes(), digest_size=16).digest())
+	return np.array(lows), np.array(highs), digests
+
+
+def surface(tris, spacing):
+	# Points over triangles (N, 3, 3), none of whose edges they divide into
+	# pieces longer than `spacing`
+	import numpy as np
+	longest = np.linalg.norm(tris - np.roll(tris, 1, axis=1), axis=2).max(1)
+	steps = np.maximum(1, np.ceil(longest / spacing)).astype(int)
+	out = []
+	for n in np.unique(steps):
+		i, j = np.mgrid[0 : n + 1, 0 : n + 1]
+		keep = i + j <= n
+		weights = np.stack([i[keep], j[keep], n - i[keep] - j[keep]], 1) / n
+		out.append(np.einsum("pk,tkd->tpd", weights, tris[steps == n]).reshape(-1, 3))
+	return np.concatenate(out)
+
+
+def near(points, low, high, reach, cell=1.0):
+	# Which boxes (low, high: (N, 3)) come within `reach` of any of the points:
+	# space cut into cells `cell` across, a box kept when it meets a cell
+	# within reach of a point's cell (their nearest corners). It may keep a box
+	# up to a cell's diagonal further off, never drop a nearer one
+	import numpy as np
+
+	def code(c):
+		c = c.astype(np.int64) + (1 << 20)
+		return (c[..., 0] << 42) | (c[..., 1] << 21) | c[..., 2]
+
+	cells = np.unique(np.floor(points / cell).astype(np.int64), axis=0)
+	steps = int(math.ceil(reach / cell)) + 1
+	around = np.array(list(itertools.product(range(-steps, steps + 1), repeat=3)))
+	# a neighbour whose nearest point to the cell lies within reach
+	gap = np.maximum(np.abs(around) - 1, 0) * cell
+	around = around[(gap ** 2).sum(1) <= reach ** 2]
+	occupied = np.unique(code((cells[:, None, :] + around[None]).reshape(-1, 3)))
+
+	def member(codes):
+		at = np.minimum(np.searchsorted(occupied, codes), len(occupied) - 1)
+		return occupied[at] == codes
+
+	low, high = np.floor(low / cell).astype(np.int64), np.floor(high / cell).astype(np.int64)
+	# boxes up to 8 cells along each axis a cell at a time, all at once; the
+	# few larger ones each on its own
+	small = ((high - low) < 8).all(1)
+	hit = np.zeros(len(low), bool)
+	for step in itertools.product(range(8), repeat=3):
+		hit[small] |= member(code(np.minimum(low[small] + step, high[small])))
+	for t in np.nonzero(~small)[0]:
+		grid = np.stack(np.meshgrid(*[np.arange(low[t, d], high[t, d] + 1) for d in range(3)], indexing="ij"), -1)
+		hit[t] = member(code(grid.reshape(-1, 3))).any()
+	return hit
+
+
+def fingerprint(group, objs, target, spec, inputs, scene):
+	# A weathered group's cache key: everything its atlas comes from. Its own
+	# faces (their cycles, which carry their winding, their vertices' places,
+	# their shading and sharp edges, from which their normals follow), every
+	# face in the world within reach of its occlusion's rays, the group's and
+	# the shared weathering spec, the facts weather.py reads, and the code that
+	# bakes and draws it. None of it hangs on the order faces were made in
+	import hashlib, inspect
+	import numpy as np
+	h = hashlib.sha256()
+
+	def add(data):
+		data = data if isinstance(data, bytes) else json.dumps(data, sort_keys=True).encode()
+		h.update(len(data).to_bytes(8, "little"))
+		h.update(data)
+
+	# the weathering block the rules read is the shared spec and the group's
+	# own, never another group's (test_weather checks)
+	read = {k: v for k, v in inputs.items() if k != "layout/weathering"}
+	add([CACHE, bpy.app.version_string, group, {k: v for k, v in spec.items() if k != "groups"}, read, list(FRAME_LOW), list(FRAME_SPAN)])
+	for f in (weathered, baked, emitting, fingerprint, placed, cycles, scene_faces, surface, near, face_uvs, restored, stored):
+		add(inspect.getsource(f).encode())
+	for name in ("weather.py", "plates.py"):
+		add((HERE / name).read_bytes())
+	own = []
+	for o in objs:
+		mesh = o.data
+		world = placed(o)
+		chosen, faces = cycles(o, target)
+		smooth = np.empty(len(mesh.polygons), bool)
+		mesh.polygons.foreach_get("use_smooth", smooth)
+		add(o.name.encode())
+		add(repr(sorted(zip(faces, smooth[chosen].tolist()))).encode())
+		used = np.unique(np.concatenate([np.array(f, np.int64) for f in faces])) if faces else np.zeros(0, np.int64)
+		add(used.tobytes())
+		add(world[used].tobytes())
+		sharp = mesh.attributes.get("sharp_edge")
+		if sharp is not None and len(mesh.edges):
+			flags = np.empty(len(mesh.edges), bool)
+			sharp.data.foreach_get("value", flags)
+			ends = np.empty(len(mesh.edges) * 2, np.int32)
+			mesh.edges.foreach_get("vertices", ends)
+			pairs = np.sort(ends.reshape(-1, 2)[flags], 1)
+			pairs = pairs[np.isin(pairs, used).all(1)]
+			add(pairs[np.lexsort(pairs.T[::-1])].tobytes())
+		# its faces as triangles, any cut of them, for where its surface lies
+		for face in faces:
+			for k in range(1, len(face) - 1):
+				own.append(world[[face[0], face[k], face[k + 1]]])
+	low, high, digests = scene
+	# a texel's occlusion looks spec.occlusion metres; the points over the
+	# group's faces lie no more than 1 m apart along their edges
+	keep = near(surface(np.array(own), 1.0), low, high, spec.get("occlusion", 3.0) + 1.0)
+	add(b"".join(sorted(digests[i] for i in np.nonzero(keep)[0])))
+	return h.hexdigest()
+
+
+def face_uvs(o, target, uv=None):
+	# The object's faces in `target`, each by its cycle, with its corners' UVs
+	# from the layer's (N, 2) `uv` taken in the cycle's order: [(cycle, uvs)]
+	import numpy as np
+	starts = np.empty(len(o.data.polygons), np.int32)
+	o.data.polygons.foreach_get("loop_start", starts)
+	chosen, faces, turns = cycles(o, target, turned=True)
+	out = []
+	for p, face, k in zip(chosen, faces, turns):
+		loops = starts[p] + (np.arange(len(face)) + k) % len(face)
+		out.append((face, loops, None if uv is None else uv[loops]))
+	return out
+
+
+def stored(entry, objs, target, colour_png, normals):
+	# A group's atlas into the cache: its faces' UVs, each face by its cycle,
+	# its colour map's file and its normal map (8-bit, as baked); the three
+	# newest of its entries kept
+	import shutil
+	import numpy as np
+	partial = entry.with_name(entry.name + ".part")
+	shutil.rmtree(partial, ignore_errors=True)
+	partial.mkdir(parents=True)
+	uvs = {}
+	for o in objs:
+		layer = o.data.uv_layers["atlas"]
+		uv = np.empty(len(layer.data) * 2, np.float32)
+		layer.data.foreach_get("uv", uv)
+		faces = face_uvs(o, target, uv.reshape(-1, 2))
+		uvs[o.name + "/sizes"] = np.array([len(f) for f, _, _ in faces], np.int32)
+		uvs[o.name + "/cycles"] = np.array([v for f, _, _ in faces for v in f], np.int32)
+		uvs[o.name + "/uv"] = np.concatenate([u for _, _, u in faces]) if faces else np.zeros((0, 2), np.float32)
+	np.savez(partial / "uv.npz", **uvs)
+	shutil.copyfile(colour_png, partial / colour_png.name)
+	if normals is not None:
+		np.save(partial / "normal.npy", np.round(normals * 255).astype(np.uint8))
+	shutil.rmtree(entry, ignore_errors=True)
+	partial.rename(entry)
+	material = entry.name.rsplit("-", 1)[0]
+	kept = sorted((p for p in entry.parent.glob(material + "-*") if not p.name.endswith(".part")), key=lambda p: p.stat().st_mtime)
+	for p in kept[:-3]:
+		shutil.rmtree(p, ignore_errors=True)
+
+
+def restored(entry, objs, target):
+	# A cached atlas's UVs onto the group's faces, each face found by its
+	# cycle; a cycle twice over (a face doubled) takes the cached UVs of its
+	# twins in turn, which lie on the same place. False, changing nothing,
+	# when the faces and the cache's differ
+	import numpy as np
+	uvs = np.load(entry / "uv.npz")
+	found = []
+	for o in objs:
+		sizes, flat, values = uvs[o.name + "/sizes"], uvs[o.name + "/cycles"], uvs[o.name + "/uv"]
+		cached, at = {}, 0
+		for n in sizes:
+			cached.setdefault(tuple(flat[at : at + n].tolist()), []).append(values[at : at + n])
+			at += n
+		layer = o.data.uv_layers["atlas"]
+		uv = np.empty(len(layer.data) * 2, np.float32)
+		layer.data.foreach_get("uv", uv)
+		uv = uv.reshape(-1, 2)
+		for face, loops, _ in face_uvs(o, target):
+			if not cached.get(face):
+				return False
+			uv[loops] = cached[face].pop(0)
+		if any(cached.values()):
+			return False
+		found.append((o, uv))
+	for o, uv in found:
+		o.data.uv_layers["atlas"].data.foreach_set("uv", uv.ravel())
+	return True
+
+
+def weathered(facts, out, cache=None):
 	# Each weathered group's atlas (weather.py): its meshes' faces in the
 	# group's material unwrapped and packed into one, each texel's position,
 	# normal and ambient occlusion baked, weather.py's colour and height maps
@@ -2659,6 +2983,20 @@ def weathered(facts, out):
 		scene.world = bpy.data.worlds.new("world")
 	scene.world.light_settings.distance = spec.get("occlusion", 3.0)   # how far the occlusion looks, metres
 	folder = Path(tempfile.mkdtemp(dir=Path(out).parent))
+	if cache:
+		# a group whose inputs a build has seen takes its atlas from the cache,
+		# keyed (fingerprint()) on the facts weather.py reads and the faces round it
+		inputs = json.loads(subprocess.run(["python3", "-I", str(HERE / "weather.py"), "--inputs", "--facts", str(facts)],
+			check=True, capture_output=True, text=True).stdout)
+		bpy.context.view_layer.update()
+		scene = scene_faces()
+		# every group's key first, on the meshes as built: making one group's
+		# atlas leaves its meshes changed for the next group on them
+		keys = {}
+		for group in spec["groups"]:
+			objs = [NODES[n] for n in group["meshes"] if n in NODES and NODES[n].type == "MESH"]
+			if objs:
+				keys[group["material"]] = fingerprint(group, objs, MATERIALS[group["material"]], spec, inputs, scene)
 	for group in spec["groups"]:
 		target = MATERIALS[group["material"]]
 		objs = [NODES[n] for n in group["meshes"] if n in NODES and NODES[n].type == "MESH"]
@@ -2676,135 +3014,145 @@ def weathered(facts, out):
 				poly.select = o.data.materials[poly.material_index] == target
 				if poly.select:
 					area += poly.area
-		bpy.ops.object.select_all(action="DESELECT")
-		for o in objs:
-			o.select_set(True)
-		bpy.context.view_layer.objects.active = objs[0]
-		# the group's faces selected in edit mode, by face: in vertex mode the
-		# vertices an earlier pass left selected decide what the UV operators
-		# move, which packed faces outside the group into its atlas and
-		# repacked a group already baked on the same mesh
-		bpy.context.tool_settings.mesh_select_mode = (False, False, True)
-		bpy.ops.object.mode_set(mode="EDIT")
-		for o in objs:
-			mesh = bmesh.from_edit_mesh(o.data)
-			mine = {i for i, m in enumerate(o.data.materials) if m == target}
-			for f in mesh.faces:
-				f.select_set(False)
-			for f in mesh.faces:
-				f.select_set(f.material_index in mine)
-			bmesh.update_edit_mesh(o.data)
-		bpy.ops.uv.smart_project(angle_limit=1.15, island_margin=0.0, area_weight=0.0, scale_to_bounds=False)
-		bpy.ops.uv.average_islands_scale()
-		bpy.ops.uv.pack_islands(rotate=True, margin=4.0 / size)
-		bpy.ops.object.mode_set(mode="OBJECT")
-		# every other face's UVs gathered to one point while this group bakes (a
-		# new layer gives each face the whole square; another group's packing
-		# overlaps this one's), so only its own faces reach its images
-		others = {}
-		for o in objs:
-			layer = o.data.uv_layers["atlas"]
-			uv = np.empty(len(layer.data) * 2, np.float32)
-			layer.data.foreach_get("uv", uv)
-			mine = np.zeros(len(layer.data), bool)
-			for poly in o.data.polygons:
-				if o.data.materials[poly.material_index] == target:
-					mine[poly.loop_start : poly.loop_start + poly.loop_total] = True
-			others[o.name] = (~mine, uv.reshape(-1, 2)[~mine].copy())
-			uv.reshape(-1, 2)[~mine] = 0.0
-			layer.data.foreach_set("uv", uv)
+		entry = Path(cache) / f"{group['material']}-{keys[group['material']][:24]}" if cache else None
+		if entry is not None and (entry / "uv.npz").exists() and restored(entry, objs, target):
+			print(f"weathered {group['material']}: from the cache, {entry.name}", flush=True)
+			colour_png = entry / f"{group['material']}.png"   # the file's name the exported image's
+			normals = None if group.get("flat") else np.load(entry / "normal.npy").astype(np.float32) / np.float32(255)
+		else:
+			print(f"weathered {group['material']}: baked", flush=True)
+			bpy.ops.object.select_all(action="DESELECT")
+			for o in objs:
+				o.select_set(True)
+			bpy.context.view_layer.objects.active = objs[0]
+			# the group's faces selected in edit mode, by face: in vertex mode the
+			# vertices an earlier pass left selected decide what the UV operators
+			# move, which packed faces outside the group into its atlas and
+			# repacked a group already baked on the same mesh
+			bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+			bpy.ops.object.mode_set(mode="EDIT")
+			for o in objs:
+				mesh = bmesh.from_edit_mesh(o.data)
+				mine = {i for i, m in enumerate(o.data.materials) if m == target}
+				for f in mesh.faces:
+					f.select_set(False)
+				for f in mesh.faces:
+					f.select_set(f.material_index in mine)
+				bmesh.update_edit_mesh(o.data)
+			bpy.ops.uv.smart_project(angle_limit=1.15, island_margin=0.0, area_weight=0.0, scale_to_bounds=False)
+			bpy.ops.uv.average_islands_scale()
+			bpy.ops.uv.pack_islands(rotate=True, margin=4.0 / size)
+			bpy.ops.object.mode_set(mode="OBJECT")
+			# every other face's UVs gathered to one point while this group bakes (a
+			# new layer gives each face the whole square; another group's packing
+			# overlaps this one's), so only its own faces reach its images
+			others = {}
+			for o in objs:
+				layer = o.data.uv_layers["atlas"]
+				uv = np.empty(len(layer.data) * 2, np.float32)
+				layer.data.foreach_get("uv", uv)
+				mine = np.zeros(len(layer.data), bool)
+				for poly in o.data.polygons:
+					if o.data.materials[poly.material_index] == target:
+						mine[poly.loop_start : poly.loop_start + poly.loop_total] = True
+				others[o.name] = (~mine, uv.reshape(-1, 2)[~mine].copy())
+				uv.reshape(-1, 2)[~mine] = 0.0
+				layer.data.foreach_set("uv", uv)
 
-		def position(tree):
-			# the texel's place in the ship frame, scaled into the frame's box
-			geometry = tree.nodes.new("ShaderNodeNewGeometry")
-			low = tree.nodes.new("ShaderNodeVectorMath")
-			low.operation = "SUBTRACT"
-			low.inputs[1].default_value = FRAME_LOW
-			span = tree.nodes.new("ShaderNodeVectorMath")
-			span.operation = "DIVIDE"
-			span.inputs[1].default_value = FRAME_SPAN
-			tree.links.new(geometry.outputs["Position"], low.inputs[0])
-			tree.links.new(low.outputs["Vector"], span.inputs[0])
-			return span.outputs["Vector"]
+			def position(tree):
+				# the texel's place in the ship frame, scaled into the frame's box
+				geometry = tree.nodes.new("ShaderNodeNewGeometry")
+				low = tree.nodes.new("ShaderNodeVectorMath")
+				low.operation = "SUBTRACT"
+				low.inputs[1].default_value = FRAME_LOW
+				span = tree.nodes.new("ShaderNodeVectorMath")
+				span.operation = "DIVIDE"
+				span.inputs[1].default_value = FRAME_SPAN
+				tree.links.new(geometry.outputs["Position"], low.inputs[0])
+				tree.links.new(low.outputs["Vector"], span.inputs[0])
+				return span.outputs["Vector"]
 
-		def facing(tree):
-			geometry = tree.nodes.new("ShaderNodeNewGeometry")
-			half = tree.nodes.new("ShaderNodeVectorMath")
-			half.operation = "MULTIPLY_ADD"
-			half.inputs[1].default_value = (0.5, 0.5, 0.5)
-			half.inputs[2].default_value = (0.5, 0.5, 0.5)
-			tree.links.new(geometry.outputs["Normal"], half.inputs[0])
-			return half.outputs["Vector"]
+			def facing(tree):
+				geometry = tree.nodes.new("ShaderNodeNewGeometry")
+				half = tree.nodes.new("ShaderNodeVectorMath")
+				half.operation = "MULTIPLY_ADD"
+				half.inputs[1].default_value = (0.5, 0.5, 0.5)
+				half.inputs[2].default_value = (0.5, 0.5, 0.5)
+				tree.links.new(geometry.outputs["Normal"], half.inputs[0])
+				return half.outputs["Vector"]
 
-		def plain(image):
-			m = bpy.data.materials.new("bake")
-			m.use_nodes = True
-			target_node = m.node_tree.nodes.new("ShaderNodeTexImage")
-			target_node.image = image
-			m.node_tree.nodes.active = target_node
-			return m
+			def plain(image):
+				m = bpy.data.materials.new("bake")
+				m.use_nodes = True
+				target_node = m.node_tree.nodes.new("ShaderNodeTexImage")
+				target_node.image = image
+				m.node_tree.nodes.active = target_node
+				return m
 
-		# each map into the ship frame as it comes (Blender's (x, y, z) is the
-		# ship's (x, -z, y)), dropping what it no longer needs before the next
-		where = baked(objs, "EMIT", size, emitting(position))
-		valid = where[..., 3] > 0.5
-		low, span = np.array(FRAME_LOW[:], np.float32), np.array(FRAME_SPAN[:], np.float32)
-		ship = np.empty(where.shape[:2] + (3,), np.float32)
-		ship[..., 0] = low[0] + where[..., 0] * span[0]
-		ship[..., 1] = low[2] + where[..., 2] * span[2]
-		ship[..., 2] = -(low[1] + where[..., 1] * span[1])
-		del where
-		normal = baked(objs, "EMIT", size, emitting(facing), float_buffer=False)
-		facing_ship = np.empty(normal.shape[:2] + (3,), np.float16)
-		facing_ship[..., 0] = normal[..., 0] * 2 - 1
-		facing_ship[..., 1] = normal[..., 2] * 2 - 1
-		facing_ship[..., 2] = -(normal[..., 1] * 2 - 1)
-		del normal
-		ao = baked(objs, "AO", size, plain, float_buffer=False, samples=spec.get("samples", 32))[..., 0].astype(np.float16)
-		maps = folder / f"{group['material']}.npz"
-		np.savez(maps, position=ship, normal=facing_ship, ao=ao, valid=valid,
-			texel=np.float32(math.sqrt(area / max(int(valid.sum()), 1))))
-		del ship, facing_ship, ao, valid
-		colour_png, height_png = folder / f"{group['material']}.png", folder / f"{group['material']}_height.png"
-		subprocess.run(["python3", "-I", str(HERE / "weather.py"), str(maps), group["material"], str(colour_png), str(height_png),
-			"--facts", str(facts)], check=True)
-		maps.unlink()
-		height = bpy.data.images.load(str(height_png))
-		height.colorspace_settings.name = "Non-Color"
+			# each map into the ship frame as it comes (Blender's (x, y, z) is the
+			# ship's (x, -z, y)), dropping what it no longer needs before the next
+			where = baked(objs, "EMIT", size, emitting(position))
+			valid = where[..., 3] > 0.5
+			low, span = np.array(FRAME_LOW[:], np.float32), np.array(FRAME_SPAN[:], np.float32)
+			ship = np.empty(where.shape[:2] + (3,), np.float32)
+			ship[..., 0] = low[0] + where[..., 0] * span[0]
+			ship[..., 1] = low[2] + where[..., 2] * span[2]
+			ship[..., 2] = -(low[1] + where[..., 1] * span[1])
+			del where
+			normal = baked(objs, "EMIT", size, emitting(facing), float_buffer=False)
+			facing_ship = np.empty(normal.shape[:2] + (3,), np.float16)
+			facing_ship[..., 0] = normal[..., 0] * 2 - 1
+			facing_ship[..., 1] = normal[..., 2] * 2 - 1
+			facing_ship[..., 2] = -(normal[..., 1] * 2 - 1)
+			del normal
+			ao = baked(objs, "AO", size, plain, float_buffer=False, samples=spec.get("samples", 32))[..., 0].astype(np.float16)
+			maps = folder / f"{group['material']}.npz"
+			np.savez(maps, position=ship, normal=facing_ship, ao=ao, valid=valid,
+				texel=np.float32(math.sqrt(area / max(int(valid.sum()), 1))))
+			del ship, facing_ship, ao, valid
+			colour_png, height_png = folder / f"{group['material']}.png", folder / f"{group['material']}_height.png"
+			subprocess.run(["python3", "-I", str(HERE / "weather.py"), str(maps), group["material"], str(colour_png), str(height_png),
+				"--facts", str(facts)], check=True)
+			maps.unlink()
+			height = bpy.data.images.load(str(height_png))
+			height.colorspace_settings.name = "Non-Color"
 
-		def bumped(image):
-			# the height, as a bump on a plain surface, for the normal bake
-			m = bpy.data.materials.new("bake")
-			m.use_nodes = True
-			tree = m.node_tree
-			bsdf = tree.nodes["Principled BSDF"]
-			source = tree.nodes.new("ShaderNodeTexImage")
-			source.image = height
-			bump = tree.nodes.new("ShaderNodeBump")
-			bump.inputs["Distance"].default_value = spec.get("relief", 0.01)   # metres of relief across the height map's range
-			tree.links.new(source.outputs["Color"], bump.inputs["Height"])
-			tree.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
-			target_node = tree.nodes.new("ShaderNodeTexImage")
-			target_node.image = image
-			tree.nodes.active = target_node
-			return m
+			def bumped(image):
+				# the height, as a bump on a plain surface, for the normal bake
+				m = bpy.data.materials.new("bake")
+				m.use_nodes = True
+				tree = m.node_tree
+				bsdf = tree.nodes["Principled BSDF"]
+				source = tree.nodes.new("ShaderNodeTexImage")
+				source.image = height
+				bump = tree.nodes.new("ShaderNodeBump")
+				bump.inputs["Distance"].default_value = spec.get("relief", 0.01)   # metres of relief across the height map's range
+				tree.links.new(source.outputs["Color"], bump.inputs["Height"])
+				tree.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+				target_node = tree.nodes.new("ShaderNodeTexImage")
+				target_node.image = image
+				tree.nodes.active = target_node
+				return m
 
-		# a flat group (layout.weathering.groups[].flat) wears its colour alone,
-		# no normal map
-		normals = None if group.get("flat") else baked(objs, "NORMAL", size, bumped, float_buffer=False, samples=4)
-		for o in objs:
-			layer = o.data.uv_layers["atlas"]
-			uv = np.empty(len(layer.data) * 2, np.float32)
-			layer.data.foreach_get("uv", uv)
-			rest, kept = others[o.name]
-			uv.reshape(-1, 2)[rest] = kept
-			layer.data.foreach_set("uv", uv)
-		bpy.data.images.remove(height)
-		height_png.unlink()
+			# a flat group (layout.weathering.groups[].flat) wears its colour alone,
+			# no normal map
+			normals = None if group.get("flat") else baked(objs, "NORMAL", size, bumped, float_buffer=False, samples=4)
+			for o in objs:
+				layer = o.data.uv_layers["atlas"]
+				uv = np.empty(len(layer.data) * 2, np.float32)
+				layer.data.foreach_get("uv", uv)
+				rest, kept = others[o.name]
+				uv.reshape(-1, 2)[rest] = kept
+				layer.data.foreach_set("uv", uv)
+			bpy.data.images.remove(height)
+			height_png.unlink()
+			if entry is not None:
+				stored(entry, objs, target, colour_png, normals)
 		colour = bpy.data.images.load(str(colour_png))
 		colour.name = group["material"]
 		colour.pack()
-		colour_png.unlink()
+		if colour_png.parent == folder:
+			colour_png.unlink()
 		tree = target.node_tree
 		bsdf = tree.nodes["Principled BSDF"]
 		base = tree.nodes.new("ShaderNodeTexImage")
@@ -2883,6 +3231,12 @@ def main():
 		i = args.index("--facts")
 		facts = Path(args[i + 1])
 		del args[i : i + 2]
+	# --cache DIR: weathered atlases kept between builds (weathered())
+	cache = None
+	if "--cache" in args:
+		i = args.index("--cache")
+		cache = Path(args[i + 1])
+		del args[i : i + 2]
 	FACTS = json.loads(facts.read_text())
 	LAYOUT = FACTS["layout"]
 	out = [a for a in args if not a.startswith("--")]
@@ -2902,7 +3256,7 @@ def main():
 		deck_texture(facts)
 		if "lettering" in MATERIALS:
 			lettering_texture(facts)
-		weathered(facts, out[0])
+		weathered(facts, out[0], cache)
 	bpy.ops.export_scene.gltf(filepath=out[0], export_format="GLB", export_yup=True, use_selection=False,
 		export_apply=False, export_animations=False, export_extras=False)
 	Path(out[1]).write_text(json.dumps(ship_file(hulled), indent="\t") + "\n")

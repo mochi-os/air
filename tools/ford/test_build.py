@@ -39,7 +39,9 @@ LAYOUT = {
 	# a landing line angled to port, one wire with its sheaves and a support,
 	# a barricade stanchion lying aft from its head
 	"landing": {"line": [[-90, 0], [10, -10]], "wires": [{"number": 1, "x": 30, "ends": [[-62, 19.08, -16], [-58, 19.08, 12]]}], "target": 1,
-		"sheaves": [{"name": "wire_1_port", "centre": [-62, -16.5]}, {"name": "wire_1_starboard", "centre": [-58, 12.5]}],
+		# the port sheave's arm turned 27 degrees outboard, the starboard's straight forward
+		"sheaves": [{"name": "wire_1_port", "centre": [-62, -16.5], "arm": {"angle": 27, "offset": 0.25, "length": 3.8}},
+			{"name": "wire_1_starboard", "centre": [-58, 12.5], "arm": {"angle": 0, "offset": 0.48, "length": 4.75}}],
 		"supports": [{"wire": 1, "number": 1, "centre": [-61, -9]}],
 		"barricade": {"stanchions": [{"side": "port", "hinge": [-50, -30], "tip": [-58, -31]}]}},
 	# a whip that lowers aft and to port, and a fixed mast
@@ -56,7 +58,11 @@ LAYOUT = {
 			# a 2 s raise, fastest at the start
 			"motion": {"time": 2.0, "keys": [[0, 0], [0.25, 0.4], [0.5, 0.7], [0.75, 0.9], [1, 1]]}},
 		"console": {"lid": 0.1, "tier": 0.12, "skirt": 0.3, "frame": 0.1},
-		"sheave": {"diameter": 1.0, "height": 0.16, "colour": [242, 242, 236]},
+		"sheave": {"diameter": 1.0, "height": 0.16, "colour": [242, 242, 236],
+			"arm": {"colour": [148, 154, 161], "root": 0.8, "width": [0.36, 0.22], "narrows": 3.0, "thickness": [0.04, 0.02], "thins": 2.1,
+				"head": {"inner": 0.52, "from": 24, "to": 80, "outline": [[0.8, 0.34], [0.86, 0.5], [0.7, 0.62], [0.3, 0.58]], "top": 0.1, "thickness": 0.02},
+				"pedestal": [[0.45, 0.35], [0.85, 0.35], [0.85, 0.6], [0.45, 0.6]],
+				"pin": {"at": [0.64, 0.36], "diameter": 0.025, "height": 0.035, "nut": [0.04, 0.015]}}},
 		"support": {"length": 1.45, "pad": 0.28, "width": 0.1, "height": 0.08},
 		"stanchion": {"width": 1.0, "head": 1.8, "thickness": 0.15},
 		"antenna": {"radius": 0.06}},
@@ -449,7 +455,7 @@ class BuildTest(unittest.TestCase):
 			travel = self.ship["joints"][name]["keys"][-1][1]   # its joint's whole travel
 			sunk = self.posed(**{name: travel})[name].reshape(-1, 3)
 			self.assertAlmostEqual(sunk[:, 1].max(), 19.0 - 0.02, places=3, msg=name)
-		sheave = self.model.parts()["wire_1_sheave_port"].reshape(-1, 3)
+		sheave = self.model.parts(materials=["sheave"])["wire_1_sheave_port"].reshape(-1, 3)   # the housing, not its arm
 		np.testing.assert_allclose(sheave[:, [0, 2]].mean(0), [-62, -16.5], atol=0.05)
 		self.assertAlmostEqual(np.ptp(sheave[:, 0]), 1.0, places=2)
 		# in their own white, the support in the grey
@@ -460,6 +466,40 @@ class BuildTest(unittest.TestCase):
 		support = self.model.parts()["wire_1_support_1"].reshape(-1, 3)[:, [0, 2]]
 		line = np.array([100, -10]) / np.hypot(100, 10)
 		self.assertAlmostEqual(np.ptp((support - [-61, -9]) @ line), 1.45, places=3)
+
+	def test_sheave_arms(self):
+		# each rigged sheave's arm in its own paint, riding on the sheave
+		arms = self.model.parts(materials=["arm"])
+		for name, centre, side, angle, offset, length in (("wire_1_sheave_port", (-62, -16.5), -1, 27, 0.25, 3.8), ("wire_1_sheave_starboard", (-58, 12.5), 1, 0, 0.48, 4.75)):
+			arm = arms[name].reshape(-1, 3)
+			plan = arm[:, [0, 2]] - centre
+			turn = np.radians(angle)
+			along = plan @ [np.cos(turn), side * np.sin(turn)]
+			out = plan @ [-np.sin(turn), side * np.cos(turn)]
+			# its tip on its line turned outboard, the bar's middle its offset outboard of it
+			self.assertAlmostEqual(along.max(), length, places=3, msg=name)
+			tip = plan[np.argmax(along)]
+			self.assertAlmostEqual(float(tip @ [-np.sin(turn), side * np.cos(turn)]), offset, places=3, msg=name)
+			# the whole fitting outboard of the housing's centre and clear of its rim
+			self.assertGreater(out.min(), 0.0, name)
+			self.assertGreaterEqual(np.hypot(plan[:, 0], plan[:, 1]).min(), 0.52 - 1e-3, name)
+			# the bar 0.36 wide at its root and 0.22 from 3 m along, 0.04 thick there and 0.02 from 2.1 m
+			for u, width, thick in ((0.8, 0.36, 0.04), (3.0, 0.22, 0.02), (length - 0.11, 0.22, 0.02)):
+				section = np.abs(along - u) < 1e-3
+				bar = section & (np.abs(out - offset) < 0.2) & (arm[:, 1] < 19.05)
+				self.assertAlmostEqual(np.ptp(out[bar]), width, places=3, msg=(name, u))
+				self.assertAlmostEqual(arm[bar][:, 1].max(), 19.0 + thick, places=3, msg=(name, u))
+			# the head 0.1 up, the pin's nut 0.15, under the housing's top
+			self.assertAlmostEqual(arm[:, 1].max(), 19.15, places=3, msg=name)
+			head = arm[np.abs(arm[:, 1] - 19.1) < 1e-4]
+			self.assertTrue(len(head), name)
+		# turned 27 degrees, the port arm's tip lies 1.95 m outboard of the housing, the starboard's 0.48
+		port = arms["wire_1_sheave_port"].reshape(-1, 3)
+		self.assertAlmostEqual(-(port[np.argmax(port[:, 0]), 2] + 16.5), 3.8 * np.sin(np.radians(27)) + 0.25 * np.cos(np.radians(27)), delta=0.12)
+		# sunk with its sheave while the wire is not rigged, under the deck
+		travel = self.ship["joints"]["wire_1_sheave_port"]["keys"][-1][1]
+		sunk = self.model.parts(pose(self.ship["joints"], {"joints": {"wire_1_sheave_port": travel}}), materials=["arm"])
+		self.assertLess(sunk["wire_1_sheave_port"].reshape(-1, 3)[:, 1].max(), 19.0 - 0.02)
 
 	def test_barricade_stanchion_rises_about_its_head(self):
 		rest = self.model.parts()["barricade_port"].reshape(-1, 3)
@@ -2014,6 +2054,96 @@ class AnchorTest(unittest.TestCase):
 		every = corners(self.model, "anchors", ["grey"])[0].reshape(-1, 3)
 		port = np.unique(np.round(every[every[:, 2] < 0] * [1, 1, -1], 4), axis=0)
 		self.assertTrue(np.array_equal(port, np.unique(np.round(grey, 4), axis=0)))
+
+
+def alike(a, b):
+	# Two glbs the same but for what a build does not yet keep from run to run
+	# (#94): the order of their triangles (each primitive's indices compared as
+	# a set of triangles) and their normals to 2e-4
+	def parts(data):
+		n = int.from_bytes(data[12:16], "little")
+		gltf, start = json.loads(data[20 : 20 + n]), 20 + n
+		return gltf, data[start + 8 : start + 8 + int.from_bytes(data[start : start + 4], "little")]
+
+	(ga, ba), (gb, bb) = parts(a), parts(b)
+	views = lambda g: {k: v for k, v in g.items() if k not in ("bufferViews", "buffers")}
+	if views(ga) != views(gb):
+		return False
+	indices = {p["indices"] for m in ga["meshes"] for p in m["primitives"] if "indices" in p}
+	normals = {p["attributes"]["NORMAL"] for m in ga["meshes"] for p in m["primitives"] if "NORMAL" in p["attributes"]}
+	kinds = {5126: np.float32, 5125: np.uint32, 5123: np.uint16, 5121: np.uint8}
+	for i, (x, y) in enumerate(zip(ga["accessors"], gb["accessors"])):
+		if "bufferView" not in x:
+			continue
+		def values(g, d, a):
+			v = g["bufferViews"][a["bufferView"]]
+			return np.frombuffer(d, kinds[a["componentType"]], v["byteLength"] // np.dtype(kinds[a["componentType"]]).itemsize, v.get("byteOffset", 0))
+		u, w = values(ga, ba, x), values(gb, bb, y)
+		if i in indices:
+			u, w = np.sort(np.sort(u.reshape(-1, 3), 1), 0), np.sort(np.sort(w.reshape(-1, 3), 1), 0)
+		if u.shape != w.shape or not (np.allclose(u, w, atol=2e-4, rtol=0) if i in normals else np.array_equal(u, w)):
+			return False
+	for x, y in zip(ga.get("images", []), gb.get("images", [])):
+		v, w = ga["bufferViews"][x["bufferView"]], gb["bufferViews"][y["bufferView"]]
+		if ba[v.get("byteOffset", 0) : v.get("byteOffset", 0) + v["byteLength"]] != bb[w.get("byteOffset", 0) : w.get("byteOffset", 0) + w["byteLength"]]:
+			return False
+	return True
+
+
+class CacheTest(unittest.TestCase):
+	# The weathered atlases kept between builds (build.py --cache): a build
+	# whose groups' inputs are unchanged takes them from the cache and makes the
+	# same model, byte for byte; a change re-bakes the groups it reaches, and
+	# only those
+	@classmethod
+	def setUpClass(cls):
+		cls.folder = tempfile.TemporaryDirectory()
+		cls.cache = Path(cls.folder.name) / "cache"
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.folder.cleanup()
+
+	def build(self, layout, name):
+		where = Path(self.folder.name) / name
+		where.mkdir()
+		(where / "facts.json").write_text(json.dumps({"layout": layout}))
+		run = subprocess.run(["blender", "-b", "--factory-startup", "--python-use-system-env", "-P", str(HERE / "build.py"), "--",
+			str(where / "ford.glb"), str(where / "ford.json"), "--facts", str(where / "facts.json"), "--cache", str(self.cache)],
+			capture_output=True, text=True)
+		if run.returncode or "Traceback" in run.stdout + run.stderr:
+			raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+		said = dict(re.findall(r"^weathered (\w+): (baked|from the cache)", run.stdout, re.M))
+		return (where / "ford.glb").read_bytes(), {group: way == "baked" for group, way in said.items()}
+
+	def test_cached_atlases(self):
+		# the island's box doubled, its faces twice over, as a model's can be
+		base = json.loads(json.dumps(LAYOUT))
+		base["island"]["details"].append(dict(base["island"]["details"][3]))
+		first, baked = self.build(base, "first")
+		self.assertEqual(baked, {"island": True, "domes": True, "hull": True, "boot": True})
+		# again: every group from the cache, the same model
+		again, baked = self.build(base, "again")
+		self.assertEqual(baked, {"island": False, "domes": False, "hull": False, "boot": False})
+		self.assertTrue(alike(again, first))
+		# the port sheave's arm turned, 20 m from any weathered face: still all cached
+		turned = json.loads(json.dumps(base))
+		turned["landing"]["sheaves"][0]["arm"]["angle"] = 20
+		model, baked = self.build(turned, "turned")
+		self.assertEqual(baked, {"island": False, "domes": False, "hull": False, "boot": False})
+		self.assertNotEqual(model, first)
+		# the port whip moved from the port deck edge to the island's forward
+		# face: the faces it left and the faces it came to re-bake, the radomes
+		# on the roof and the boot top at the waterline do not
+		moved = json.loads(json.dumps(base))
+		moved["antennas"][0]["base"] = [-4.5, 24]
+		_, baked = self.build(moved, "moved")
+		self.assertEqual(baked, {"island": True, "domes": False, "hull": True, "boot": False})
+		# the hull's own spec changed: the hull alone
+		framed = json.loads(json.dumps(base))
+		framed["weathering"]["groups"][2]["frames"] = 0.8
+		_, baked = self.build(framed, "framed")
+		self.assertEqual(baked, {"island": False, "domes": False, "hull": True, "boot": False})
 
 
 class ProvenanceTest(unittest.TestCase):
