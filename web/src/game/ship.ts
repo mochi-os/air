@@ -134,23 +134,31 @@ export function followers(joints: Record<string, Joint>): Record<string, string[
   return out
 }
 
-// TRAVEL is how much of its travel a blast deflector moves a second: about
-// 1.1 s up and 1.8 s settling down (not sourced: NAVAIR's JBD manual gives no
-// times we can reach)
-export const TRAVEL = { rise: 0.9, fall: 0.55 }
+// A blast deflector's joint: its keys are seconds into its raise against its
+// angle, and a lowering runs back along them
+const DEFLECTOR = /^catapult_\d+_deflector$/
 
-// deflectors gives every blast deflector's joint value at a share of its
-// travel's time, through its keys, and each of its followers' through their
+// deflectors gives every blast deflector's joint value a number of seconds
+// into its raise, through its keys, and each of its followers' through their
 // own keys on that value: the pose the engine moves a deflector through
-export function deflectors(ship: Layout, share: number): Record<string, number> {
+export function deflectors(ship: Layout, seconds: number): Record<string, number> {
   const out: Record<string, number> = {}
   for (const name of Object.keys(ship.joints).sort()) {
-    if (!/^catapult_\d+_deflector$/.test(name)) continue
-    const angle = schedule(ship.joints[name].keys, share)
+    if (!DEFLECTOR.test(name)) continue
+    const angle = schedule(ship.joints[name].keys, seconds)
     out[name] = angle
     for (const follower of ship.followers[name] ?? []) out[follower] = schedule(ship.joints[follower].keys, angle)
   }
   return out
+}
+
+// raising is how many seconds the slowest blast deflector takes to rise: its
+// keys' last input (0 on a ship without any)
+export function raising(ship: Layout): number {
+  let most = 0
+  for (const [name, joint] of Object.entries(ship.joints))
+    if (DEFLECTOR.test(name) && joint.keys.length) most = Math.max(most, joint.keys[joint.keys.length - 1][0])
+  return most
 }
 
 // STATIONS is how many stations the waterline is given at, stern to stem: the

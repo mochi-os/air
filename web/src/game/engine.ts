@@ -81,7 +81,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 // regen. The dev readout shows the hash.
 import ford_model_url from '../assets/ford.glb?url'
 import ford_ship from '../assets/ford.json'   // its ship file, written beside it by tools/ford/build.py: the deck layout and the points the engine draws
-import { layout as ship_layout, TRAVEL } from './ship'
+import { layout as ship_layout } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
 import fa18c_points from '../assets/fa18c.json'   // its points file, written beside it by tools/fa18c/build.py: the joints and their schedules, and the points the engine draws
 import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the model it replaces: the player's own jet in first person, whose cockpit the engine's cockpit tables are measured on, until our cockpit is built (claude/plans/air-fa18c.md, step 4)
@@ -7267,7 +7267,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	// Jet blast deflectors: the model's own panels (the contract's joints), each
 	// raised through its keys (eased into and out of its stops) and its struts
 	// following it (the ship file's followers)
-	carrier_jbds=rigged?SHIP.catapults.map((cat,i)=>({ joint:`catapult_${i+1}_deflector`, followers:SHIP.followers[`catapult_${i+1}_deflector`]??[], frac:0 })):null;
+	carrier_jbds=rigged?SHIP.catapults.map((cat,i)=>({ joint:`catapult_${i+1}_deflector`, followers:SHIP.followers[`catapult_${i+1}_deflector`]??[], time:0 })):null;
 	// --- OLS (meatball) on the port bracket of the carrier (measured); glideslope stays referenced to the touchdown, not this housing ---
 	const aim=SHIP.landing.target?SHIP.landing.target-1:SHIP.landing.wires.length>3?2:1, ofa=SHIP.ols.x, olat=SHIP.ols.z;   // OLS bracket position on the carrier's port side; the target wire is the ship file's (the Ford's 2), or the 3-wire on a four-wire deck
 	const twfa=aim>0?(SHIP.landing.wires[aim-1]+SHIP.landing.wires[aim])/2:SHIP.landing.wires[aim];   // the hook's touchdown halfway between the wire before the target and the target, so it drags into the target: NATOPS's rule for a four-wire deck (halfway between the 2 and 3), carried to the Ford's three (between the 1 and 2)
@@ -7731,13 +7731,13 @@ function update_shuttles(){   // the hooked cat's shuttle rides with the jet's l
 		if(i===active){ s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), 0, ownship.pos.z+ownship.fwd.z*(nose+0.28)); rig_local(s.mesh.position).y=s.home.y; }   // found in the world, placed on the rig the shuttles hang from
 		else s.mesh.position.copy(s.home); }
 }
-function update_jbds(dt){   // the hooked cat's deflector rises through run-up and the stroke, drops after
+function update_jbds(dt){   // the hooked cat's deflector rises through run-up and the stroke, drops once the jet is away (matches are air-start: only our own jet stands on a catapult)
 	if(!carrier_jbds) return;
 	const active=ownship.launching?cat_idx:on_cat_spot();
 	for(let i=0;i<carrier_jbds.length;i++){ const j=carrier_jbds[i];
-		const tgt=i===active?1:0, rate=tgt>j.frac?TRAVEL.rise:TRAVEL.fall;
-		j.frac=THREE.MathUtils.clamp(j.frac+THREE.MathUtils.clamp(tgt-j.frac,-rate*dt,rate*dt),0,1);
-		const angle=joints_schedule(SHIP.joints[j.joint].keys,j.frac);   // its keys ease it into and out of its stops
+		const keys=SHIP.joints[j.joint].keys, up=keys[keys.length-1][0], tgt=i===active?up:0;   // its keys are seconds into its raise (measured); a lowering runs back along them
+		j.time=THREE.MathUtils.clamp(j.time+THREE.MathUtils.clamp(tgt-j.time,-dt,dt),0,up);
+		const angle=joints_schedule(keys,j.time);
 		ship_joint(j.joint,angle);
 		for(const f of j.followers) ship_joint(f,joints_schedule(SHIP.joints[f].keys,angle));   // its struts, through their own keys on its angle
 	}
@@ -10271,7 +10271,8 @@ if(DEV_MODE){ const frame=(x,z)=>({ fa:carrier_fore_aft(x,z), lat:carrier_latera
 		cat:frame(cat_spot(0).x,cat_spot(0).z), shuttle:carrier_shuttles?(v=>frame(v.x,v.z))(carrier_shuttles[Math.max(0,on_cat_spot())].mesh.getWorldPosition(new THREE.Vector3())):null,
 		touchdown:carrier_ols?frame(carrier_ols.tdx,carrier_ols.tdz):null, model:carrier_model?(v=>frame(v.x,v.z))(carrier_model.getWorldPosition(new THREE.Vector3())):null,
 		lens:carrier_ols?(v=>frame(v.x,v.z))(carrier_ols.datumPts.localToWorld(new THREE.Vector3().fromBufferAttribute(carrier_ols.datumPts.geometry.attributes.position,0))):null,
-		catapult:on_cat_spot(), waving:!!ownship.waving, grade:ownship.grade||"" }; };
+		catapult:on_cat_spot(), waving:!!ownship.waving, grade:ownship.grade||"",
+		deflectors:carrier_jbds?carrier_jbds.map(j=>{ const o=carrier_model.getObjectByName(j.joint); return { time:+j.time.toFixed(3), angle:o?+(2*Math.acos(Math.min(1,Math.abs(o.quaternion.w)))).toFixed(4):null }; }):null, launching:!!ownship.launching }; };   // each deflector's time into its raise and the angle its node stands at; i18n-format-ok: developer probe values
 	(globalThis as any).dev_voyage=(ship)=>{ flight_voyage(ship); carrier_pose(carrier_time); }; }   // a track as a match's server sends it: { into, track:[[start, x, z, heading, speed, turn, change], ...] }
 if(DEV_MODE) (globalThis as any).dev_ship=function(){ const O=carrier_world(0,0), F=carrier_world(100,0), l=Math.hypot(F.x-O.x,F.z-O.z)||1; return {x:O.x,z:O.z,dx:(F.x-O.x)/l,dz:(F.z-O.z)/l}; };   // probe: the ship frame the Case I hints fly against - the hull's centre and its course
 let paint_force=-1;   // #102: -1 = the brain's own radar; 0/1/2 force the SP bandit's emitter, so RWR/jammer cockpit-truth probes stop depending on when the doctrine chooses to lock

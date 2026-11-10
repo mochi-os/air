@@ -52,7 +52,9 @@ LAYOUT = {
 		# the Ford's search's for a 2.92 m panel, 0.2 thick, every length times 0.829
 		"deflector": {"thickness": 0.166, "face": 0.1, "angle": 50, "modules": 6, "rows": 7, "cells": 3, "groove": 0.03, "rib": 0.04,
 			"clearance": 0.02, "lug": [0.1, 0.06, 0.04], "stripe": 0.21, "pit": 0.55,
-			"linkage": {"attach": 0.686, "bend": 1, "spread": 0.026, "sizes": [0.06, 0.04], "keys": 25}},
+			"linkage": {"attach": 0.686, "bend": 1, "spread": 0.026, "sizes": [0.06, 0.04], "keys": 25},
+			# a 2 s raise, fastest at the start
+			"motion": {"time": 2.0, "keys": [[0, 0], [0.25, 0.4], [0.5, 0.7], [0.75, 0.9], [1, 1]]}},
 		"console": {"lid": 0.1, "tier": 0.12, "skirt": 0.3, "frame": 0.1},
 		"sheave": {"diameter": 1.0, "height": 0.16, "colour": [242, 242, 236]},
 		"support": {"length": 1.45, "pad": 0.28, "width": 0.1, "height": 0.08},
@@ -366,16 +368,14 @@ class BuildTest(unittest.TestCase):
 		self.assertTrue(np.allclose(tops[:, :, 1], 19.0, atol=1e-4))
 		self.assertGreater(len(self.model.parts(materials=["recess"])["catapult_1_deflector"]), 0)
 
-	def test_deflector_eases_into_its_stops(self):
-		# raised through its travel's time, its angle moving least at either end
-		keys = np.array(self.ship["joints"]["catapult_1_deflector"]["keys"])
-		steps = np.diff(keys[:, 1])
-		self.assertAlmostEqual(keys[-1, 1], np.radians(50), places=3)
-		self.assertLess(steps[0], steps[len(steps) // 2] / 3)
-		self.assertLess(steps[-1], steps[len(steps) // 2] / 3)
+	def test_deflector_rises_as_measured(self):
+		# its keys seconds into its raise against its angle: the layout's
+		# motion, its shares carried to its time and its angle
+		keys = self.ship["joints"]["catapult_1_deflector"]["keys"]
+		np.testing.assert_allclose(keys, [[0, 0], [0.5, 0.4 * np.radians(50)], [1.0, 0.7 * np.radians(50)], [1.5, 0.9 * np.radians(50)], [2.0, np.radians(50)]], atol=1e-4)
 
 	def test_deflector_struts_follow_it(self):
-		# at every share of its travel each strut's rod meets the panel's back
+		# at every point of its raise each strut's rod meets the panel's back
 		# where its fitting is: the crank and the rod posed through their own
 		# keys on the panel's angle, as the engine poses them
 		joints = self.ship["joints"]
@@ -387,14 +387,14 @@ class BuildTest(unittest.TestCase):
 		attach = 0.686 * D
 		w = 0.5 * W / 6 - 0.026 * W + 0.02   # the first strut, along the edge from the opening's first end
 		up = np.array([0.0, 1.0, 0.0])
-		for share in (0.0, 0.3, 0.6, 1.0):
-			angle = np.interp(share, *np.array(joints["catapult_1_deflector"]["keys"]).T)
+		for seconds in (0.0, 0.6, 1.2, 2.0):
+			angle = np.interp(seconds, *np.array(joints["catapult_1_deflector"]["keys"]).T)
 			values = {name: np.interp(angle, *np.array(joints[name]["keys"]).T) for name in ("catapult_1_deflector_crank", "catapult_1_deflector_rod")}
 			rod = self.posed(catapult_1_deflector=angle, **values)["catapult_1_deflector_rod"].reshape(-1, 3)
 			u, v = attach * np.cos(angle) + 0.166 * np.sin(angle), attach * np.sin(angle) - 0.166 * np.cos(angle)
 			plan = hinge + aft * u + edge * w
 			target = np.array([plan[0], 19.0 + v, plan[1]])
-			self.assertLess(np.linalg.norm(rod - target, axis=1).min(), 0.03, share)   # the rod's end, 0.04 across
+			self.assertLess(np.linalg.norm(rod - target, axis=1).min(), 0.03, seconds)   # the rod's end, 0.04 across
 
 	def test_elevator_goes_down_and_console_comes_up(self):
 		elevator = self.posed(elevator_1=8)["elevator_1"].reshape(-1, 3)

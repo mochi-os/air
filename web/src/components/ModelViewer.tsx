@@ -29,7 +29,7 @@ import aim9m_model_url from '../assets/aim9m.glb?url'
 import fa18c_points from '../assets/fa18c.json'
 import { model } from '../game/library'
 import { posed } from '../game/model'
-import { deflectors, layout, stations, TRAVEL } from '../game/ship'
+import { deflectors, layout, raising, stations } from '../game/ship'
 
 interface Entry {
   name: string // the asset's file name: the bundle serves it under a content-hashed one
@@ -82,11 +82,11 @@ const MODELS: Entry[] = [
 const FORD = layout(ford_ship as unknown as Parameters<typeof layout>[0])
 const RESTS = new WeakMap<THREE.Object3D, THREE.Quaternion>()
 
-// lift poses the Ford's blast deflectors at a share of their travel and their
-// struts with them, each joint turned about its axis from where it rests, as
-// the engine turns them.
-function lift(ship: THREE.Object3D, share: number): void {
-  for (const [name, value] of Object.entries(deflectors(FORD, share))) {
+// lift poses the Ford's blast deflectors a number of seconds into their raise
+// and their struts with them, each joint turned about its axis from where it
+// rests, as the engine turns them.
+function lift(ship: THREE.Object3D, seconds: number): void {
+  for (const [name, value] of Object.entries(deflectors(FORD, seconds))) {
     const part = ship.getObjectByName(name)
     const joint = FORD.joints[name]
     if (!part || !joint) continue
@@ -177,7 +177,7 @@ export function ModelViewer({
   const [status, setStatus] = useState('Loading…') // empty once the model is drawn
   const [count, setCount] = useState<number | null>(null) // the shown model's polygons
   const [raised, setRaised] = useState(false) // the Ford's blast deflectors asked up
-  const share = useRef(0) // how far through their travel they stand
+  const time = useRef(0) // how many seconds into their raise they stand
   const { formatNumber } = useFormat()
 
   useEffect(() => {
@@ -261,7 +261,7 @@ export function ModelViewer({
         if (!wanted || view.current !== current) return
         if (current.shown) current.scene.remove(current.shown)
         current.shown = entry.prepare(gltf)
-        share.current = 0 // a fresh model stands at rest
+        time.current = 0 // a fresh model stands at rest
         current.scene.add(current.shown)
         frame(current, current.shown)
         current.draw()
@@ -280,23 +280,24 @@ export function ModelViewer({
     }
   }, [chosen])
 
-  // The Ford's blast deflectors move toward up or down at the engine's rates,
-  // redrawn each frame until they stand there.
+  // The Ford's blast deflectors move toward up or down in real time, along
+  // their measured raise (backwards to lower), redrawn each frame until they
+  // stand there.
   useEffect(() => {
     const current = view.current
     if (!current?.shown || chosen !== 'ford.glb' || count === null) return
     const shown = current.shown
-    const target = raised ? 1 : 0
+    const up = raising(FORD)
+    const target = raised ? up : 0
     let frame = 0
     let last = performance.now()
     const step = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.1)
       last = now
-      const rate = target > share.current ? TRAVEL.rise : TRAVEL.fall
-      share.current = THREE.MathUtils.clamp(share.current + THREE.MathUtils.clamp(target - share.current, -rate * dt, rate * dt), 0, 1)
-      lift(shown, share.current)
+      time.current = THREE.MathUtils.clamp(time.current + THREE.MathUtils.clamp(target - time.current, -dt, dt), 0, up)
+      lift(shown, time.current)
       current.draw()
-      if (share.current !== target) frame = requestAnimationFrame(step)
+      if (time.current !== target) frame = requestAnimationFrame(step)
     }
     frame = requestAnimationFrame(step)
     return () => cancelAnimationFrame(frame)

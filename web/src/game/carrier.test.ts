@@ -143,9 +143,14 @@ describe("the carrier's ship file", () => {
 
   it("raises each catapult's own blast deflector through its keys, its struts following it", () => {
     expect(source).toMatch(
-      /carrier_jbds=rigged\?SHIP\.catapults\.map\(\(cat,i\)=>\(\{ joint:`catapult_\$\{i\+1\}_deflector`, followers:SHIP\.followers\[`catapult_\$\{i\+1\}_deflector`\]\?\?\[\], frac:0 \}\)\):null;/
+      /carrier_jbds=rigged\?SHIP\.catapults\.map\(\(cat,i\)=>\(\{ joint:`catapult_\$\{i\+1\}_deflector`, followers:SHIP\.followers\[`catapult_\$\{i\+1\}_deflector`\]\?\?\[\], time:0 \}\)\):null;/
     )
-    expect(source).toMatch(/const angle=joints_schedule\(SHIP\.joints\[j\.joint\]\.keys,j\.frac\);/)
+    // in real time along its keys, seconds into its raise, and back along them to lower
+    // the catapult our jet is hooked to: spotted, or in its stroke
+    expect(source).toMatch(/const active=ownship\.launching\?cat_idx:on_cat_spot\(\);\n\tfor\(let i=0;i<carrier_jbds\.length;i\+\+\)\{ const j=carrier_jbds\[i\];\n\t\tconst keys=SHIP\.joints\[j\.joint\]\.keys, up=keys\[keys\.length-1\]\[0\], tgt=i===active\?up:0;/)
+    expect(source).toMatch(/j\.time=THREE\.MathUtils\.clamp\(j\.time\+THREE\.MathUtils\.clamp\(tgt-j\.time,-dt,dt\),0,up\);/)
+    expect(source).toMatch(/const angle=joints_schedule\(keys,j\.time\);/)
+    expect(source).not.toMatch(/import \{[^}]*TRAVEL[^}]*\} from '\.\/ship'/)
     expect(source).toMatch(
       /for\(const f of j\.followers\) ship_joint\(f,joints_schedule\(SHIP\.joints\[f\]\.keys,angle\)\);/
     )
@@ -153,6 +158,8 @@ describe("the carrier's ship file", () => {
       const name = `catapult_${i + 1}_deflector`
       expect(ship.joints[name], name).toBeDefined()
       expect(ship.followers[name], name).toEqual([`${name}_crank`, `${name}_rod`])
+      const keys = ship.joints[name].keys
+      expect(keys[keys.length - 1][0], name).toBeCloseTo(3.7)   // the measured raise, in seconds
     }
   })
 

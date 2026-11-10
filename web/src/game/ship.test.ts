@@ -3,7 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, expect, it } from 'vitest'
-import { type Contract, deflectors, followers, layout, STATIONS, stations } from './ship'
+import { type Contract, deflectors, followers, layout, raising, STATIONS, stations } from './ship'
 
 // A small deck: a landing line angled to port, one wire whose pendant runs
 // between sheaves 16 m to port and 18 to starboard of where it crosses the
@@ -188,9 +188,9 @@ describe('layout', () => {
     expect(layout(contract).followers).toEqual({})
   })
 
-  it("poses every blast deflector at a share of its travel, its struts through their keys on its angle, and nothing else", () => {
+  it("poses every blast deflector seconds into its raise, its struts through their keys on its angle, and nothing else", () => {
     const joints = {
-      catapult_1_deflector: { motion: 'rotate', axis: [0, 0, 1], drive: '', keys: [[0, 0], [0.5, 0.2], [1, 0.8]] },
+      catapult_1_deflector: { motion: 'rotate', axis: [0, 0, 1], drive: '', keys: [[0, 0], [0.5, 0.2], [1.5, 0.8]] },
       catapult_1_deflector_crank: { motion: 'rotate', axis: [0, 0, 1], drive: '', keys: [[0, 0], [0.8, 1.6]], follows: 'catapult_1_deflector' },
       catapult_2_deflector: { motion: 'rotate', axis: [0, 0, 1], drive: '', keys: [[0, 0], [1, 0.8]] },
       catapult_1_shuttle: { motion: 'slide', axis: [1, 0, 0], drive: '', keys: [[0, 0], [1, 90]] },
@@ -202,6 +202,8 @@ describe('layout', () => {
     expect(half.catapult_1_deflector).toBeCloseTo(0.2)
     expect(half.catapult_1_deflector_crank).toBeCloseTo(0.4)   // its keys at the panel's 0.2
     expect(half.catapult_2_deflector).toBeCloseTo(0.4)
-    expect(deflectors(ship, 1)).toEqual({ catapult_1_deflector: 0.8, catapult_1_deflector_crank: 1.6, catapult_2_deflector: 0.8 })
+    expect(deflectors(ship, 1.5)).toEqual({ catapult_1_deflector: 0.8, catapult_1_deflector_crank: 1.6, catapult_2_deflector: 0.8 })
+    expect(raising(ship)).toBe(1.5)   // the slowest deflector's raise, not the shuttle's or the console's travel
+    expect(raising(layout(contract))).toBe(0)
   })
 })

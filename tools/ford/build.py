@@ -666,11 +666,14 @@ def deflector(c, number, top):
 		pieces.append(cuboid(p(a, -thick - 0.04, w), axes, (0.22, 0.18, 0.08)))
 	node(name, hinge=p(0, 0, W / 2), mesh=merge(pieces))
 	painted(name)
-	# its angle at each tenth of its travel's time, eased into and out of its
-	# stops as its cylinders' cushions slow it
+	# its angle through its raise, as measured (fittings.deflector.motion: the
+	# raise's time, and each share of that time's share of the angle): keys in
+	# seconds into it, which a lowering runs back along, as the same orifice
+	# meters the cylinders both ways
 	angle = math.radians(k["angle"])
-	eased = [[i / 10, round(angle * (i / 10) ** 2 * (3 - 2 * i / 10), 4)] for i in range(11)]
-	joint(name, edge, aft, UP, "raised behind a jet on the catapult: the share of its travel's time", eased)
+	motion = k["motion"]
+	keys = [[round(s * motion["time"], 3), round(angle * a, 4)] for s, a in motion["keys"]]
+	joint(name, edge, aft, UP, "raised behind a jet on the catapult: seconds into its raise, lowered back along them", keys)
 
 	# the linkage through the panel's travel: where its back's fitting is,
 	# and where the crank and the rod meet
