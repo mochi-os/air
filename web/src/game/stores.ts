@@ -335,33 +335,6 @@ export function rounds(loadout: Loadout): { station: number; name: string }[] {
   return out
 }
 
-// Visual node names shared by the in-game jet and the setup preview. TIPS maps
-// the airframe GLB's wingtip AIM-9 nodes (Object_145 is the PORT tip). ANCHORS
-// is in stores.glb/model.glb space, where POSITIVE x is PORT; a mesh translates
-// by (anchor - its own centre).
-export const TIPS: Record<string, string> = {
-  tip9: 'Object_542',
-  tip1: 'Object_145',
-}
-export const ANCHORS: Record<string, [number, number, number]> = {
-  '9m2': [3.61, -0.38, -1.28],
-  '9m2a': [3.76, -0.42, -1.28],
-  '9m2b': [3.46, -0.42, -1.28],
-  '9m8': [-3.61, -0.38, -1.28],
-  '9m8a': [-3.76, -0.42, -1.28],
-  '9m8b': [-3.46, -0.42, -1.28],
-  // Inboard heaters (#27 follow-up): buttline from the art's station-3 tank
-  // (2.40 — the mesh flies ~7% wide of the real 2.24, same ratio as the
-  // outboard stations), hang heights matching the outboard rounds, and the
-  // station's longitudinal shift taken from the AMRAAM anchors' art delta.
-  '9m3': [2.4, -0.38, -1.57],
-  '9m3a': [2.55, -0.42, -1.57],
-  '9m3b': [2.25, -0.42, -1.57],
-  '9m7': [-2.4, -0.38, -1.57],
-  '9m7a': [-2.55, -0.42, -1.57],
-  '9m7b': [-2.25, -0.42, -1.57],
-}
-
 // The setup presents each station as ONE dropdown of end states with the
 // fixture derived underneath: players choose outcomes, never fixture
 // vocabulary. A hidden entry renders only when it is the current value, keeping

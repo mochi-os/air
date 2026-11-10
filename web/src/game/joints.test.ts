@@ -184,17 +184,19 @@ function lift(name: string): string {
 describe('the airframe each view draws', () => {
   const jet = (player: boolean) => {
     const node = () => ({ visible: true })
-    return { userData: { player, exterior: { object: node() }, legacy: [node(), node()], pit: [node()], cockpitHide: [node()] } }
+    return { userData: { player, exterior: { object: node(), airframe: [node(), node()] }, legacy: [node(), node()], pit: [node()], cockpitHide: [node()] } }
   }
   const run = new Function(`const cfg={ view:"chase" };
     ${lift('airframe_show')}
-    return (g,view,force)=>{ cfg.view=view; airframe_show(g,force); const u=g.userData; return { ours:u.exterior.object.visible, old:u.legacy.map((o)=>o.visible), pit:u.pit[0].visible, pilot:u.cockpitHide[0].visible }; };`)() as (
-    g: ReturnType<typeof jet>, view: string, force?: boolean) => { ours: boolean; old: boolean[]; pit: boolean; pilot: boolean }
-  it('draws our model outside and the old cockpit in first person on the pilot\'s jet', () => {
+    return (g,view,force)=>{ cfg.view=view; airframe_show(g,force); const u=g.userData; return { ours:u.exterior.object.visible, frame:u.exterior.airframe.map((o)=>o.visible), old:u.legacy.map((o)=>o.visible), pit:u.pit[0].visible, pilot:u.cockpitHide[0].visible }; };`)() as (
+    g: ReturnType<typeof jet>, view: string, force?: boolean) => { ours: boolean; frame: boolean[]; old: boolean[]; pit: boolean; pilot: boolean }
+  it('draws our model outside and the old cockpit in first person on the pilot\'s jet, our stores in both', () => {
     const g = jet(true)
-    expect(run(g, 'chase', true)).toEqual({ ours: true, old: [false, false], pit: false, pilot: false })
-    expect(run(g, 'cockpit')).toEqual({ ours: false, old: [true, true], pit: true, pilot: false })   // the figure is cockpit_hidden's to hide in first person
-    expect(run(g, 'hud')).toEqual({ ours: true, old: [false, false], pit: false, pilot: false })
+    expect(run(g, 'chase', true)).toEqual({ ours: true, frame: [true, true], old: [false, false], pit: false, pilot: false })
+    // in first person our airframe's meshes hide behind the old one, our model (its stores and rounds) still drawn;
+    // the figure is cockpit_hidden's to hide
+    expect(run(g, 'cockpit')).toEqual({ ours: true, frame: [false, false], old: [true, true], pit: true, pilot: false })
+    expect(run(g, 'hud')).toEqual({ ours: true, frame: [true, true], old: [false, false], pit: false, pilot: false })
   })
   it('hides the old pilot every frame outside, whoever showed him', () => {
     const g = jet(true)
@@ -205,7 +207,7 @@ describe('the airframe each view draws', () => {
   it('never draws the old airframe on another jet, and leaves its model to the distance stages', () => {
     const g = jet(false)
     g.userData.exterior.object.visible = false   // a distant stage has it hidden
-    expect(run(g, 'cockpit', true)).toEqual({ ours: false, old: [false, false], pit: false, pilot: false })
+    expect(run(g, 'cockpit', true)).toEqual({ ours: false, frame: [true, true], old: [false, false], pit: false, pilot: false })
   })
 })
 

@@ -216,14 +216,17 @@ def tidy(data, smooth):
 		data.shade_flat()
 
 
-def joint(name, axis, arm, want, drive, keys, motion="rotate"):
+def joint(name, axis, arm, want, drive, keys, motion="rotate", follows=None):
 	# Records a joint. The axis is turned so that a positive angle moves `arm`
 	# (from the hinge toward the moving part) toward `want`, or a positive
-	# slide moves along `want`.
+	# slide moves along `want`. A joint that `follows` another takes that
+	# joint's value as its keys' input
 	axis = axis.normalized()
 	if (axis.cross(arm).dot(want) if motion == "rotate" else axis.dot(want)) < 0:
 		axis = -axis
 	JOINTS[name] = {"motion": motion, "axis": exported(axis), "drive": drive, "keys": keys}
+	if follows:
+		JOINTS[name]["follows"] = follows
 
 
 def area(outline):
@@ -461,6 +464,21 @@ def flight_deck():
 	bm = bmesh.new()
 	bm.from_mesh(data)
 	bmesh.ops.triangulate(bm, faces=bm.faces, quad_method="BEAUTY", ngon_method="BEAUTY")
+	# the blast deflectors' openings: the top cut along each one's four sides
+	# and the faces inside left out, so a raised panel shows its pit; before
+	# the round-down, which lowers the cuts' new points to its curve with the rest
+	cut = HINGES["deck"]
+	for c in LAYOUT.get("catapults", []):
+		if not c.get("deflector"):
+			continue
+		corner, edge, aft, width, depth = opening(c, top)
+		quad = [corner, corner + edge * width, corner + edge * width + aft * depth, corner + aft * depth]
+		for a, b in zip(quad, quad[1:] + quad[:1]):
+			bmesh.ops.bisect_plane(bm, geom=list(bm.verts) + list(bm.edges) + list(bm.faces), plane_co=a - cut, plane_no=(b - a).cross(UP).normalized())
+		bmesh.ops.remove_doubles(bm, verts=list(bm.verts), dist=1e-4)
+		middle = lambda f: f.calc_center_median() + cut - corner
+		inside = [f for f in bm.faces if 0 < middle(f).dot(edge) < width and 0 < middle(f).dot(aft) < depth]
+		bmesh.ops.delete(bm, geom=inside, context="FACES")
 	if shape:
 		# cut along the edge at each step, then each vertex to the curve
 		(ax, az), (nx, nz) = shape["edge"], shape["inward"]
@@ -474,6 +492,7 @@ def flight_deck():
 			p = v.co + hinge
 			x, z = p.x, -p.y
 			v.co.z = shape["height"](x, z) - hinge.z
+	bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3], quad_method="BEAUTY", ngon_method="BEAUTY")
 	bm.to_mesh(data)
 	bm.free()
 	painted("deck")
@@ -529,6 +548,7 @@ def catapults():
 	# deck plan's.
 	fittings = LAYOUT["fittings"]
 	top = LAYOUT["deck"]["height"]
+	pits = []
 	for c in LAYOUT.get("catapults", []):
 		number = c["number"]
 		(ax, az), (fx, fz) = c["track"]
@@ -540,26 +560,164 @@ def catapults():
 		node(name, hinge=battery, mesh=box(battery, along, across, s["length"], s["width"], s["height"], top=s.get("top", 1.0)))
 		joint(name, along, Vector(), along, "the flight core's launch", [[0, 0], [1, c["stroke"]]], motion="slide")
 		MARKS[f"{name}_top"] = (battery + UP * s["height"], name)
-		f = c.get("deflector")
-		if f:
-			# its hinge is its forward edge, given by its two ends: the Ford's
-			# lie square to the ship, not to their tracks
-			ends = [at(p[0], top, p[1]) for p in f["hinge"]]
-			hinge = (ends[0] + ends[1]) / 2
-			width = (ends[1] - ends[0]).length
-			edge = (ends[1] - ends[0]).normalized()
-			aft = UP.cross(edge).normalized()
-			if aft.dot(FORWARD) > 0:
-				aft = -aft
-			name = f"catapult_{number}_deflector"
-			# flush, its top is the deck's paint (the engine's taxi face)
-			t = fittings["deflector"]["thickness"]
-			vertices, faces, paints = box(hinge + aft * (f["depth"] / 2) + DOWN * t, -aft, edge, f["depth"], width, t)
+		if c.get("deflector"):
+			pits += deflector(c, number, top)
+	if pits:
+		node("pits", mesh=merge(pits))
+
+
+def opening(c, top):
+	# The opening a catapult's blast deflector lies flush in (layout.catapults
+	# .deflector: its forward edge's two ends, square to the ship rather than
+	# to the track, and its depth aft of it), inside the deck's yellow band:
+	# its forward corner at the first end, unit vectors along the edge and
+	# aft, its width and its depth
+	f = c["deflector"]
+	ends = [at(p[0], top, p[1]) for p in f["hinge"]]
+	edge = (ends[1] - ends[0]).normalized()
+	aft = UP.cross(edge).normalized()
+	if aft.dot(FORWARD) > 0:
+		aft = -aft
+	return ends[0], edge, aft, (ends[1] - ends[0]).length, f["depth"]
+
+
+def knee(b, a, crank, rod, side):
+	# Where a crank from b and a rod to a meet, (u, v) in a deflector's
+	# section, on the side of the line b-a that `side` (1 or -1) names
+	d = math.dist(b, a)
+	assert abs(crank - rod) <= d <= crank + rod, "the deflector's linkage reaches its panel"
+	e = ((a[0] - b[0]) / d, (a[1] - b[1]) / d)
+	x = (crank * crank - rod * rod + d * d) / (2 * d)
+	h = math.sqrt(max(crank * crank - x * x, 0.0))
+	return (b[0] + x * e[0] - side * h * e[1], b[1] + x * e[1] + side * h * e[0])
+
+
+def deflector(c, number, top):
+	# A catapult's blast deflector (layout.fittings.deflector): a panel hinged
+	# at the forward edge of its opening, inside the deck's yellow band, lying
+	# flush in it and rising behind a jet on the catapult. Its face (the top
+	# lowered, the jet's side raised) is `modules` modules across and `rows`
+	# rows of tiles in the deck's paint, `groove` apart over a darker plate
+	# `face` thick; its back a grid of ribs, `cells` cells across each module,
+	# to its `thickness`; its free edge striped red and white, a lug at each
+	# module's middle. Two struts a module, each a crank from a bearing in the
+	# pit and a rod to the panel's back (the catapult's deflector.linkage: the
+	# crank's pivot in the panel's section, the two lengths), follow its angle
+	# through their keys: all the cranks one node, all the rods another, hung
+	# from it. Returns the pit's pieces: its walls, its floor and the bearings
+	k = LAYOUT["fittings"]["deflector"]
+	corner, edge, aft, width, depth = opening(c, top)
+	gap = k["clearance"]
+	across, high, out = k["lug"]
+	thick, face, groove = k["thickness"], k["face"], k["groove"]
+	W, D = width - 2 * gap, depth - 2 * gap - out
+	origin = corner + edge * gap + aft * gap
+	axes = (aft, edge, UP)
+
+	def p(u, v, w):
+		# a point in the panel's section, at rest: u aft of the hinge, v up
+		# from the deck, w along the hinge from its first end
+		return origin + aft * u + UP * v + edge * w
+
+	name = f"catapult_{number}_deflector"
+	modules, rows, cells = k["modules"], k["rows"], k["cells"]
+	pieces = []
+	# the face's tiles in the deck's paint, sunk `sink` into the plate
+	sink = 0.05
+	for m in range(modules):
+		for r in range(rows):
+			u0, u1 = r * D / rows + groove / 2, (r + 1) * D / rows - groove / 2
+			w0, w1 = m * W / modules + groove / 2, (m + 1) * W / modules - groove / 2
+			vertices, faces, paints = cuboid(p((u0 + u1) / 2, -sink / 2, (w0 + w1) / 2), axes, (u1 - u0, w1 - w0, sink))
 			paints[1] = "deck"
-			node(name, hinge=hinge, mesh=(vertices, faces, paints))
-			painted(name)
-			angle = math.radians(fittings["deflector"]["angle"])
-			joint(name, edge, aft, UP, "raised behind a jet on the catapult", [[0, 0], [1, round(angle, 4)]])
+			pieces.append((vertices, faces, paints))
+	# the plate, dark in the grooves, and the back's ribs
+	vertices, faces, paints = cuboid(p(D / 2, -(face + sink) / 2, W / 2), axes, (D, W, face - sink))
+	paints[0], paints[1] = "recess", "recess"   # the grooves' floors, and the back's cells between its ribs
+	pieces.append((vertices, faces, paints))
+	rib = k["rib"]
+	for j in range(modules * cells + 1):
+		w = min(max(j * W / (modules * cells), rib / 2), W - rib / 2)
+		pieces.append(cuboid(p(D / 2, -(face + thick) / 2, w), axes, (D, rib, thick - face)))
+	for i in range(rows + 1):
+		u = min(max(i * D / rows, rib / 2), D - rib / 2)
+		pieces.append(cuboid(p(u, -(face + thick) / 2, W / 2), axes, (rib, W, thick - face)))
+	# the free edge's stripes, leaning 45 degrees across the plate's edge, a
+	# little under the face so that lowered they stay in the gap's shadow
+	pitch, band = k["stripe"], face - sink
+	for i in range(int(W / pitch) + 2):
+		w0 = i * pitch - band
+		quad = [(-face, w0), (-face, w0 + pitch), (-sink, w0 + pitch + band), (-sink, w0 + band)]
+		quad = [p(D, v, min(max(w, 0.0), W)) for v, w in quad]
+		if (quad[1] - quad[0]).length < 1e-3 and (quad[2] - quad[3]).length < 1e-3:
+			continue
+		slab = quad + [q + aft * 0.006 for q in quad]
+		pieces.append((slab, [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)], ["red" if i % 2 else "white"] * 6))
+	# a lug at each module's middle, standing out of the free edge
+	for m in range(modules):
+		pieces.append(cuboid(p(D + out / 2, -high / 2 - 0.01, (m + 0.5) * W / modules), axes, (out, across, high), "brown"))
+	# the struts: a pair a module, each side of its middle, and the fitting
+	# on the back each rod pins to
+	lk, own = k["linkage"], c["deflector"]["linkage"]
+	a, (bu, bv) = lk["attach"] * D, own["pivot"]
+	crank, rod, side = own["crank"], own["rod"], lk["bend"]
+	struts = [(m + 0.5) * W / modules + sign * lk["spread"] * W for m in range(modules) for sign in (-1, 1)]
+	for w in struts:
+		pieces.append(cuboid(p(a, -thick - 0.04, w), axes, (0.22, 0.18, 0.08)))
+	node(name, hinge=p(0, 0, W / 2), mesh=merge(pieces))
+	painted(name)
+	# its angle at each tenth of its travel's time, eased into and out of its
+	# stops as its cylinders' cushions slow it
+	angle = math.radians(k["angle"])
+	eased = [[i / 10, round(angle * (i / 10) ** 2 * (3 - 2 * i / 10), 4)] for i in range(11)]
+	joint(name, edge, aft, UP, "raised behind a jet on the catapult: the share of its travel's time", eased)
+
+	# the linkage through the panel's travel: where its back's fitting is,
+	# and where the crank and the rod meet
+	def attach(th):
+		return (a * math.cos(th) + thick * math.sin(th), a * math.sin(th) - thick * math.cos(th))
+
+	steps = [angle * i / lk["keys"] for i in range(lk["keys"] + 1)]
+	knees = [knee((bu, bv), attach(th), crank, rod, side) for th in steps]
+	turn = lambda q, o: math.atan2(q[1] - o[1], q[0] - o[0])
+	first = (turn(knees[0], (bu, bv)), turn(attach(0), knees[0]))
+	keys = {"crank": [], "rod": []}
+	lowest = bv
+	for th, kn in zip(steps, knees):
+		phi = turn(kn, (bu, bv)) - first[0]
+		psi = turn(attach(th), kn) - first[1]
+		keys["crank"].append([round(th, 4), round(phi, 4)])
+		keys["rod"].append([round(th, 4), round(psi - phi, 4)])
+		lowest = min(lowest, kn[1])
+	size_crank, size_rod = lk["sizes"]
+	pit = k["pit"]
+	assert -lowest + size_crank < pit < LAYOUT["deck"]["thickness"], "the linkage clears the pit's floor, the pit inside the deck"
+	k0, a0 = knees[0], attach(0)
+	assert max(k0[1], bv) + size_crank * 0.7 < -thick, "lowered, the linkage (its bearing's boss too) lies under the panel"
+	cranks, rods = [], []
+	for w in struts:
+		cranks.append(bar(exported(p(bu, bv, w)), exported(p(k0[0], k0[1], w)), size_crank, "white"))
+		cranks.append(cuboid(p(bu, bv, w), axes, (size_crank * 1.4, size_crank * 1.4, size_crank * 1.4), "white"))
+		rods.append(bar(exported(p(k0[0], k0[1], w)), exported(p(a0[0], a0[1], w)), size_rod, "white"))
+		rods.append(cuboid(p(k0[0], k0[1], w), axes, (size_crank * 1.5, size_crank * 1.5, size_crank * 1.5), "white"))
+	for part, mesh, pivot, parent in (("crank", cranks, p(bu, bv, W / 2), None), ("rod", rods, p(k0[0], k0[1], W / 2), f"{name}_crank")):
+		node(f"{name}_{part}", parent=parent, hinge=pivot, mesh=merge(mesh))
+		joint(f"{name}_{part}", edge, aft, UP, f"follows {name}", keys[part], follows=name)
+
+	# the pit: its walls from the deck down, its floor, and a bearing under
+	# each crank's pivot
+	def q(u, v, w):
+		return corner + aft * u + UP * v + edge * w
+
+	walls = [[q(0, 0, 0), q(0, 0, width), q(0, -pit, width), q(0, -pit, 0)],
+		[q(0, 0, width), q(depth, 0, width), q(depth, -pit, width), q(0, -pit, width)],
+		[q(depth, 0, width), q(depth, 0, 0), q(depth, -pit, 0), q(depth, -pit, width)],
+		[q(depth, 0, 0), q(0, 0, 0), q(0, -pit, 0), q(depth, -pit, 0)]]
+	found = [(quad, [(0, 1, 2, 3)], ["recess"]) for quad in walls]
+	found.append(([q(0, -pit, 0), q(0, -pit, width), q(depth, -pit, width), q(depth, -pit, 0)], [(0, 1, 2, 3)], ["dark"]))
+	for w in struts:
+		found.append(cuboid(p(bu, (bv - pit) / 2, w), axes, (size_crank * 1.2, size_crank * 1.6, bv + pit)))
+	return found
 
 
 def consoles():

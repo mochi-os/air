@@ -71,11 +71,17 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     (`deck.round`): the deck is cut along lines parallel to that edge and each vertex dropped on a parabola
     over the last `length` metres, its edge plate's top and foot with it.
   - Each moving part is a node on its hinge or slide line, resting unrotated:
-    - the catapult shuttles, the blast deflectors (hinged on their measured forward edges) and the two
+    - the catapult shuttles, the blast deflectors and the two
       integrated catapult control stations (`consoles`): each a cab sliding up `rise` out of the surface it
       sits in, its lid the layout's outline with its top in the deck's paint, a darker tier under it, its
       faces leaning in from its foot to its head with `panes` windows in each, and a skirt that stays under
       the surface; the waist's stands in a well outboard of the deck's edge (`sponsons`);
+    - each blast deflector a panel hinged at the forward edge of its opening, inside the deck's yellow
+      band, the opening cut from the deck over a pit (`pits`): its face tiles in the deck's paint, its back's
+      ribs, its striped free edge and lugs; its keys ease it into and out of its stops. Its struts, a crank
+      from a bearing in the pit and a rod to the panel's back (each panel's own lengths, solved to fold flat
+      under it lowered), are two joints that `follow` it: their keys' input is its angle, and the ship file
+      lists them as its followers;
     - the arresting gear's deck sheaves (in their own white) and wire supports, and the barricade's
       stanchions, hinged at their heads; a part stowed in the deck sits 2 cm under its top (`STOWED`), which
       hides it, where level with it the two surfaces tore;

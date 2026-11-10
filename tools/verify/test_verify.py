@@ -169,6 +169,12 @@ class ModelTest(unittest.TestCase):
 		self.assertNotIn("tab", parts)
 		self.assertIn("tab", self.model.parts(mod.pose(joints, {"s": 1})))
 
+	def test_show_needs_no_axis(self):
+		# a store part shown or hidden by the loadout has no axis to turn about
+		joints = {"tab": {"motion": "show", "drive": "stores", "keys": [[0, 0], [1, 1]]}}
+		self.assertNotIn("tab", self.model.parts(mod.pose(joints, {})))
+		self.assertIn("tab", self.model.parts(mod.pose(joints, {"joints": {"tab": 1}})))
+
 	def test_include_exclude(self):
 		self.assertEqual(len(self.model.triangles(include=["fl*"])), 12)
 		self.assertEqual(len(self.model.triangles(exclude=["flap", "tab"])), 12)

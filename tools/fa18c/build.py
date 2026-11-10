@@ -268,9 +268,17 @@ MATERIALS = {}
 # Linear base colours. The paint bake replaces paint's and team's with the atlas
 # (layout.paint); lights is the unlit formation strips' pale grey, sRGB 154-163
 # in dvids9820808 (the engine lights them at night); burner the afterburner
-# duct's soot, sRGB about 28 (the engine sets its glow)
+# duct's soot, sRGB about 28 (the engine sets its glow); stores the pylons',
+# tanks' and launchers' grey, the airframe's lower grey (layout.paint lower:
+# the real ones carry the airframe's paint), plain: they stay out of the atlas
+def linear(srgb):
+	c = np.asarray(srgb, float) / 255
+	return tuple(float(v) for v in np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)) + (1,)
+
+
 COLOURS = {"paint": (0.42, 0.45, 0.48, 1), "team": (0.42, 0.45, 0.48, 1), "glass": (0.1, 0.12, 0.14, 0.4),
-	"lights": (0.34, 0.35, 0.32, 1), "burner": (0.012, 0.011, 0.010, 1), "display": (0.05, 0.08, 0.05, 1)}
+	"lights": (0.34, 0.35, 0.32, 1), "burner": (0.012, 0.011, 0.010, 1), "display": (0.05, 0.08, 0.05, 1),
+	"stores": linear(LAYOUT["paint"]["lower"])}
 
 
 def material(name):
@@ -293,6 +301,7 @@ MARKS, CURVES = {}, {}
 RESTED = {}   # {node: matrix taking a point as the part stands extended to where it rests}
 PROBE = []   # the stowed probe's tip
 SURFACES = {}
+BENDING = {}   # each wing's bend under load, for the stores hung under it
 TOPLINE, KEELLINE = [], []
 
 
@@ -486,6 +495,7 @@ def wing(side):
 	hinged(f"flap_leading_outer_{name}", spans["lef"]["outer"], outer_lef, (0, outer_lef), FORWARD, DOWN, "slat", parent=f"wing_{name}")
 	hinged(f"aileron_{name}", spans["aileron"], 1 - aileron, (1 - aileron, 1), AFT, DOWN, f"flaperon.{name}", parent=f"wing_{name}")
 	SURFACES[f"wing_{name}"] = surface
+	BENDING[name] = bend
 	LANDMARKS[f"wingtip_leading_{name}"] = surface.point(semispan, 0)
 	LANDMARKS[f"wingtip_trailing_{name}"] = surface.point(semispan, 1)
 	MARKS[f"wingtip_leading_{name}"] = (surface.point(semispan, 0), f"flap_leading_outer_{name}")
@@ -2907,12 +2917,13 @@ def gear():
 	node("gear_nose_lamps", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(housing), undo))
 	node("lamp_gear_nose", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(lenses), undo), paint="lights")
 
-	def door(node_name, outline, hinge, targets, below=True):
+	def door(node_name, outline, hinge, targets, below=True, curve=None):
 		# A door cut from the skin inside its plan outline ([FS, BL]), hinged
 		# on the skin along `hinge` (two [FS, BL] ends), opened with the gear
 		# by the angle that brings its far edge's ends nearest the photos'
 		# (targets, [FS, WL, BL] each: an open edge's ends, or its one marked
-		# corner)
+		# corner). `curve` names its free edge in the features file, an inch
+		# apart along the hinge, for the photos' traces of it
 		mesh = merge([cut(None, None, below=below, outline=piece) for piece in outline])
 		h0, h1 = (draped(belly, f, b, below=below, out=0.15) for f, b in hinge)
 		axis = (h1 - h0).normalized()
@@ -2936,6 +2947,11 @@ def gear():
 		opened = Matrix.Rotation(turn, 3, axis) @ closed
 		node(node_name, hinge=h0, mesh=mesh)
 		joint(node_name, axis, closed, opened, "gear", [[0, 0], [0.15, round(abs(turn), 4)], [1, round(abs(turn), 4)]])
+		if curve:
+			bins = {}
+			for v in edge:
+				bins.setdefault(round((v - h0).dot(axis) / INCH), []).append(v)
+			CURVES[curve] = ([sum(vs, Vector()) / len(vs) for _, vs in sorted(bins.items())], node_name)
 
 	def across(station, hinge, length, toward):
 		# The buttline a closed door's far edge reaches, `length` inches along
@@ -2976,7 +2992,7 @@ def gear():
 		reach0 = across(f0, side * b0, opened([f0, side * b0], [0, edges[0][1], edges[0][2]]), 0.0)
 		reach1 = across(f1, side * b1, opened([f1, side * b1], [0, edges[1][1], edges[1][2]]), 0.0)
 		door(f"gear_nose_door_{side_name(side)}", [[[f0, side * b0], [f1, side * b1], [f1, reach1], [f0, reach0]]],
-			[[f0, side * b0], [f1, side * b1]], edges)
+			[[f0, side * b0], [f1, side * b1]], edges, curve=f"door_nose_forward_edge_{side_name(side)}")
 	for key in ("long", "aft"):
 		d = doors[key]
 		(f0, b0), (f1, b1) = d["hinge"]
@@ -3561,7 +3577,12 @@ def paint(directory):
 	# Unique UVs for every part in one atlas, then the paint: ambient
 	# occlusion baked in Cycles as the shading every skin is laid over (#8),
 	# times the paint's grey. Writes the atlas beside the model.
-	parts = [o for o in bpy.data.objects if o.type == "MESH"]
+	# the stores stay out: plain grey, no atlas, and hidden from the bake, so
+	# a pylon or a tank the loadout leaves off casts no shadow on the wing
+	stored = [o for o in bpy.data.objects if o.type == "MESH" and o.material_slots and all(s.material and s.material.name == "stores" for s in o.material_slots)]
+	for o in stored:
+		o.hide_render = True
+	parts = [o for o in bpy.data.objects if o.type == "MESH" and o not in stored]
 	bpy.ops.object.select_all(action="DESELECT")
 	for o in parts:
 		o.select_set(True)
@@ -3707,6 +3728,8 @@ def paint(directory):
 			m.node_tree.links.new(texture.outputs["Color"], nodes["Principled BSDF"].inputs["Base Color"])
 		else:
 			m.node_tree.nodes.remove(next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE"))
+	for o in stored:
+		o.hide_render = False
 
 
 def texel_size(where, covered):
@@ -4094,6 +4117,265 @@ def stencils(where, covered, size):
 	return factor
 
 
+# The F/A-18C's own stores (claude/plans/air-fa18c.md #9 and the contract's
+# Stores): the wing pylons, racks, rails and launchers, the cheek launchers,
+# the centreline pylon and the tanks, each its own node hidden until the
+# loadout shows it (a "show" joint on the "stores" drive, which the engine
+# answers part by part), but the wingtip rails, always fitted. Every place
+# is the photos' (layout.stores), every size the sources' (stores). A part
+# under the wing hangs rigid from a bend joint at its pylon's root, as the
+# real store does, and the tip rail from one under the outer panel, folding
+# with it. Where each part carries its missile goes in the points file's
+# hardpoints (ROUNDS).
+STORE_PARTS = []   # every hidden store part's node
+ROUNDS = {}   # station number to {part: the round it carries: mount, forward, up}
+MISSILES = json.loads((HERE.parent / "missiles" / "facts.json").read_text())
+SHOW = [[0, 0], [1, 1]]
+
+
+def fwb(p, side):
+	# a [FS, WL, BL] the layout gives on the right, on `side`
+	return at(p[0], p[1], abs(p[2]) * side)
+
+
+def interp(knots, x):
+	# piecewise linear through [(x, y)], held at the ends
+	if x <= knots[0][0]:
+		return knots[0][1]
+	for (x0, y0), (x1, y1) in zip(knots, knots[1:]):
+		if x <= x1:
+			return y0 + (y1 - y0) * (x - x0) / ((x1 - x0) or 1)
+	return knots[-1][1]
+
+
+def square(forward, up):
+	# forward, and up made square to it
+	f = forward.normalized()
+	return f, (up - f * up.dot(f)).normalized()
+
+
+def rounded_ring(centre, f, u, width, height, rounding=1.0, n=4):
+	# A rounded rectangle across f: `height` inches along u, `width` across
+	# both, its corners rounded by `rounding` of the smaller half
+	s = f.cross(u)
+	hw, hh = max(width, 0.05) * INCH / 2, max(height, 0.05) * INCH / 2
+	r = min(hw, hh) * rounding
+	ring = []
+	for cx, cy, start in ((hw - r, hh - r, 0), (-(hw - r), hh - r, 90), (-(hw - r), -(hh - r), 180), (hw - r, -(hh - r), 270)):
+		for k in range(n + 1):
+			a = math.radians(start + 90 * k / n)
+			ring.append(centre + s * (cx + r * math.cos(a)) + u * (cy + r * math.sin(a)))
+	return ring
+
+
+def round_ring(centre, f, u, radius, sides=24):
+	s = f.cross(u)
+	r = max(radius, 0.03) * INCH
+	return [centre + (u * math.cos(2 * math.pi * i / sides) + s * math.sin(2 * math.pi * i / sides)) * r for i in range(sides)]
+
+
+def store(name, mesh, parent=None, hinge=None, shown=False):
+	# a store part: its node, hidden by its show joint unless always fitted
+	node(name, parent=parent, hinge=hinge, mesh=mesh, paint="stores")
+	if not shown:
+		JOINTS[name] = {"motion": "show", "drive": "stores", "keys": SHOW}
+		STORE_PARTS.append(name)
+
+
+def tank_mesh(nose, tail):
+	# The 330-gallon tank: a body of revolution on the photos' profile
+	# (layout.stores.tank), stretched to the length nose to tail
+	profile = STORES["tank"]["profile"]
+	axis = tail - nose
+	scale = axis.length / INCH / profile[-1][0]
+	f, u = square(-axis, UP)
+	knots = sorted({s for s, _ in profile} | {float(s) for s in range(0, int(profile[-1][0]) + 1, 5)})
+	return loft([round_ring(nose + axis.normalized() * (s * scale * INCH), f, u, interp(profile, s)) for s in knots])
+
+
+def wing_low(side, station, buttline):
+	# the wing's lower surface's waterline at a station and buttline, None
+	# off its chord
+	surface = SURFACES[f"wing_{side_name(side)}"]
+	leading, chord, _ = surface.station(abs(buttline))
+	x = (station - (ORIGIN["station"] - leading.x / INCH)) / chord
+	if not 0.0 <= x <= 1.0:
+		return None
+	return surface.point(abs(buttline), x, -1).z / INCH + ORIGIN["waterline"]
+
+
+def pylon_mesh(side, nose, tail, front, bottom, width, top=None):
+	# A pylon from its nose to its tail ([FS, WL, BL], the BL line between
+	# them): its leading edge (front, [FS, WL]) up from the nose, its bottom
+	# along `bottom`, its top 1.5 in inside the wing (or `top(FS)`), its
+	# width rounding in over its first 6 in and thinning to a trailing edge
+	# over its last 24
+	start, end = nose[0], tail[0]
+	stations = [start + d for d in (0.15, 0.6, 1.5, 3, 5, 8, 12, 17)]
+	stations += [s for s in range(int(start) + 24, int(end) - 24, 8)] + [end - 16, end - 8, end - 2, end]
+	rings = []
+	for s in stations:
+		bl = nose[2] + (tail[2] - nose[2]) * (s - start) / (end - start)
+		low = interp(bottom, s)
+		roof = top(s) if top else wing_low(side, s, bl)
+		high = roof + 1.5 if roof is not None else 200.0
+		if s <= front[-1][0]:
+			high = min(high, interp(front, s))
+		half = width / 2 * min(1.0, ((s - start) / 6) ** 0.5) * min(1.0, max(0.12, (end - s) / 24))
+		centre = at(s, (low + high) / 2, bl * side)
+		rings.append(rounded_ring(centre, FORWARD, UP, 2 * half, max(high - low, 0.1)))
+	return loft(rings)
+
+
+def box_mesh(front, f, u, length, width, height, fairing, tail=4.0, tip=0.3):
+	# A launcher or rack: a rounded box `length` aft from its front, its
+	# forward fairing growing from `tip` of its section over `fairing` inches,
+	# its aft end closing to 0.7 over `tail`
+	stations = sorted({0.0, 0.5, 1.5} | {fairing * k / 6 for k in range(7)} | {float(t) for t in range(int(fairing) + 6, int(length - tail), 12)} | {length - tail, length})
+	rings = []
+	for t in stations:
+		grow = tip + (1 - tip) * math.sin(min(t / fairing, 1.0) * math.pi / 2) if fairing else 1.0
+		shrink = 1.0 - 0.3 * max(0.0, (t - (length - tail)) / tail) if tail else 1.0
+		k = grow * shrink
+		rings.append(rounded_ring(front - f * (t * INCH), f, u, width * k, height * k, rounding=0.45))
+	return loft(rings)
+
+
+def missile_mount(kind):
+	# where a missile's own points file puts its mount: inches aft of its
+	# nose, on top of its body
+	layout, facts = MISSILES["layout"][kind], MISSILES[kind]
+	return value(layout["mount"]), value(facts["diameter"]) / 2
+
+
+def round_at(nose, f, up, kind):
+	# a round on its part: the missile's mount, where its forward and its
+	# lug side (up) point, in the engine's frame
+	station, radius = missile_mount(kind)
+	f, up = square(f, up)
+	mount = nose - f * (station * INCH) + up * (radius * INCH)
+	return {"kind": kind, "mount": exported(mount), "forward": exported(f), "up": exported(up)}
+
+
+def stores():
+	global STORES
+	STORES = LAYOUT["stores"]
+	lau7, lau127 = FACTS["stores"]["lau7"], FACTS["stores"]["lau127"]
+	lau115, lau116 = FACTS["stores"]["lau115"], FACTS["stores"]["lau116"]
+	py, rails, rounds = STORES["pylon"], STORES["rails"], STORES["rounds"]
+	for side in (-1, 1):
+		name = side_name(side)
+		bend = BENDING[name]
+		surface = SURFACES[f"wing_{name}"]
+		tip, outboard, inboard, cheek = (1, 2, 3, 4) if side < 0 else (9, 8, 7, 6)
+		# The wingtip LAU-7, turned on its side with its round outboard of it,
+		# riding the outer panel's bend and fold
+		front, aft = fwb(rails["tip"]["front"], side), fwb(rails["tip"]["aft"], side)
+		f, u = square(front - aft, Vector((0, side, 0)))   # u away from the round: inboard
+		flex_joint(f"flex_rail_{name}", bend, surface.point(surface.length, 0.5), parent=f"wing_{name}")
+		rail = box_mesh(front, f, u, (front - aft).length / INCH, value(lau7["width"]), value(lau7["height"]), 16.0)
+		# the fittings bolting it to the wingtip: a strip across the gap from
+		# the tip's edge to the rail's inboard face, along the rail's middle
+		reach = abs(front.y) / INCH - value(lau7["height"]) / 2 - surface.length
+		middle = front - f * (40 * INCH)
+		strip = box_mesh(middle + u * ((value(lau7["height"]) / 2 + reach / 2) * INCH), f, u, 50.0, 2.5, reach + 1.0, 4.0, tail=4.0, tip=0.6)
+		store(f"rail_{tip}", merge([rail, strip]), parent=f"flex_rail_{name}", hinge=front, shown=True)
+		MARKS[f"rail_tip_front_{name}"] = (front, f"rail_{tip}")
+		MARKS[f"rail_tip_aft_{name}"] = (aft, f"rail_{tip}")
+		# its AIM-9M on the photos' round axis, the nose 8.9 in ahead of the
+		# rail's front (missiles layout.aim9m.mount)
+		n9x, t9x = fwb(rounds["tip"]["nose"], side), fwb(rounds["tip"]["tail"], side)
+		back = (t9x - n9x).normalized()
+		nose = n9x + back * ((front - n9x).dot(back) - 8.9 * INCH)
+		ROUNDS.setdefault(tip, {})[f"rail_{tip}"] = round_at(nose, -back, u, "aim9m")
+		# The wing pylons: the outboard as the photos measure it, the inboard
+		# the same pylon moved to its own nose
+		shift = Vector(py["inboard"]) - Vector(py["nose"])
+		for station, delta in ((outboard, Vector()), (inboard, shift)):
+			moved = lambda p: [p[0] + delta.x, p[1] + delta.y, abs(p[2]) + delta.z]
+			nose_, tail_ = moved(py["nose"]), moved(py["tail"])
+			front_ = [(s + delta.x, w + delta.y) for s, w in py["front"]]
+			bottom_ = [(s + delta.x, w + delta.y) for s, w in py["bottom"]]
+			root = surface.point(abs(nose_[2]), 0.5)
+			flex = f"flex_pylon_{station}"
+			flex_joint(flex, bend, root)
+			store(f"pylon_{station}", pylon_mesh(side, nose_, tail_, front_, bottom_, py["width"]), parent=flex)
+			position = "outboard" if station == outboard else "inboard"
+			MARKS[f"pylon_{position}_nose_{name}"] = (fwb(nose_, side), f"pylon_{station}")
+			if station == outboard:
+				MARKS[f"pylon_{position}_tail_{name}"] = (fwb(tail_, side), f"pylon_{station}")
+			# the pylon's line, along its bottom
+			axis_f, _ = square(fwb(nose_, side) - fwb(tail_, side), UP)
+			# the twin rounds' noses and the LAU-127s' fronts, outer (a) and inner (b)
+			twin = {"a": moved(rounds["twin"]["outer"]), "b": moved(rounds["twin"]["inner"])}
+			fronts = {"a": moved(rails["launcher"]["outer"]), "b": moved(rails["launcher"]["inner"])}
+			middle = fronts["a"][0] + value(lau127["length"]) / 2
+			# the LAU-115 under the pylon, its middle under the LAU-127s'
+			bl = lambda s: nose_[2] + (tail_[2] - nose_[2]) * (s - nose_[0]) / (tail_[0] - nose_[0])
+			length = value(lau115["length"])
+			start = middle - length / 2
+			top = interp(bottom_, start)
+			rack_front = at(start, top - value(lau115["height"]) / 2, bl(start) * side)
+			store(f"rack_{station}", box_mesh(rack_front, axis_f, UP, length, value(lau115["width"]), value(lau115["height"]), 9.0, tip=0.45),
+				parent=flex, hinge=rack_front)
+			# a single AIM-120 on the LAU-115's own rail, centred under it
+			below = interp(bottom_, middle) - value(lau115["height"]) - 0.6 - value(MISSILES["aim120c"]["diameter"]) / 2
+			under = at(middle, below, bl(middle) * side)
+			nose = under + axis_f * ((middle - twin["a"][0]) * INCH)
+			ROUNDS.setdefault(station, {})[f"rack_{station}"] = round_at(nose, axis_f, UP, "aim120c")
+			for point in ("a", "b"):
+				tip_ = fwb(fronts[point], side)
+				n120 = fwb(twin[point], side)
+				# toward the round's axis from the launcher's front: the launcher's down
+				on_axis = n120 - axis_f * (tip_ - n120).dot(-axis_f)
+				down = on_axis - tip_
+				_, toward = square(axis_f, down)
+				store(f"launcher_{station}{point}", box_mesh(tip_, axis_f, -toward, value(lau127["length"]), value(lau127["width"]), value(lau127["height"]), 14.0),
+					parent=flex, hinge=tip_)
+				store(f"rail_{station}{point}", box_mesh(tip_, axis_f, -toward, value(lau7["length"]), value(lau7["width"]), value(lau7["height"]), 14.0),
+					parent=flex, hinge=tip_)
+				ROUNDS[station][f"launcher_{station}{point}"] = round_at(n120, axis_f, -toward, "aim120c")
+				# an AIM-9M on the LAU-7 there: its axis 5.0 in from the rail's,
+				# toward the round, as on the wingtip; its nose 8.9 in ahead
+				n9 = tip_ + toward * (5.0 * INCH) + axis_f * (8.9 * INCH)
+				ROUNDS[station][f"rail_{station}{point}"] = round_at(n9, axis_f, -toward, "aim9m")
+				if station == outboard:
+					MARKS[f"rail_outboard_{'outer' if point == 'a' else 'inner'}_front_{name}"] = (tip_, f"launcher_{station}{point}")
+			if station == inboard:
+				# the 330-gallon tank, from the photos' nose and tail
+				n, t = fwb(STORES["tank"]["nose"], side), fwb(STORES["tank"]["tail"], side)
+				store(f"tank_{station}", tank_mesh(n, t), parent=flex)
+				MARKS[f"tank_inboard_nose_{name}"] = (n, f"tank_{station}")
+				MARKS[f"tank_inboard_tail_{name}"] = (t, f"tank_{station}")
+		# The cheek station's LAU-116 and its AIM-120, canted 45 deg toward the
+		# fuselage on it (dvids9380790)
+		nose = fwb(rounds["cheek"]["nose"], side)
+		up = (UP + Vector((0, side, 0))).normalized()   # up and inboard
+		f, u = square(FORWARD, up)
+		round_ = round_at(nose, f, u, "aim120c")
+		ROUNDS[cheek] = {f"ejector_{cheek}": round_}
+		station, radius = missile_mount("aim120c")
+		# the LAU-116 between the round's forward and aft hooks
+		lugs = value(MISSILES["layout"]["aim120c"]["lugs"])
+		middle = (min(lugs) + max(lugs)) / 2
+		hooks = nose - f * (middle * INCH) + u * ((radius + value(lau116["height"]) / 2) * INCH)
+		front = hooks + f * (value(lau116["length"]) / 2 * INCH)
+		store(f"ejector_{cheek}", box_mesh(front, f, u, value(lau116["length"]), value(lau116["width"]), value(lau116["height"]), 4.0, tip=0.8), hinge=front)
+	# The centreline: the SUU-62 on the belly and its tank, level
+	centre = STORES["centre"]
+	n = at(*centre["nose"])
+	length = (Vector(STORES["tank"]["tail"]) - Vector(STORES["tank"]["nose"])).length
+	t = n + AFT * (length * INCH)
+	store("tank_5", tank_mesh(n, t))
+	MARKS["tank_centre_nose"] = (n, "tank_5")
+	profile = STORES["tank"]["profile"]
+	line = STORES["centreline"]
+	tank_top = lambda s: centre["nose"][1] + interp(profile, s - centre["nose"][0])
+	store("pylon_5", pylon_mesh(1, [line["front"], tank_top(line["front"]) - 1.0, 0.0], [line["back"], tank_top(line["back"]) - 1.0, 0.0],
+		[(line["front"], tank_top(line["front"]) - 1.0), (line["front"] + 6, keel_at(line["front"] + 6) + 1.5)],
+		[(s, tank_top(s) - 1.0) for s in range(int(line["front"]), int(line["back"]) + 1, 4)], py["width"], top=lambda s: keel_at(s)))
+
+
 def points():
 	# The points file's points (the plan's Contract, fa18c.json), at rest in
 	# the model frame. Provisional placements say so in their facts.
@@ -4134,8 +4416,12 @@ def points():
 		else:
 			# on the nacelle or the keel: the skin straight below the station and buttline
 			mount = draped(belly, station["station"], buttline, below=True)
-		hard[str(number)] = {"mount": e(mount), "forward": e(FORWARD)}
+		# the parts the station can show and where each carries its round
+		# (stores(), the contract's Stores)
+		hard[str(number)] = {"mount": e(mount), "forward": e(FORWARD), "parts": sorted(n for n in STORE_PARTS + ["rail_1", "rail_9"] if n.rsplit("_", 1)[1].rstrip("ab") == str(number)),
+			"rounds": ROUNDS.get(number, {})}
 	out["hardpoints"] = hard
+	out["stores"] = sorted(STORE_PARTS)
 	lights = {}
 	for name, spec in LAYOUT["lights"]["points"].items():
 		# a light on a moving part names it, the engine carrying the light with the part: on a gear part given as
@@ -4182,6 +4468,7 @@ def main():
 		lex(side, widths)
 	ladder()
 	lamps()
+	stores()
 	print("chord fractions:", json.dumps(fractions, default=lambda x: round(x, 3)))
 	located = points()
 	if "--draft" not in args:

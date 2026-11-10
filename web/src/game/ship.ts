@@ -9,7 +9,8 @@
 // deck texture's extent and the waterline the bow wave and wake draw from.
 // The contract's frame is the engine's deck frame: x forward, y up from the
 // waterline, z to starboard, metres; headings in degrees, positive to port.
-// Dependency-free, so the reading is testable.
+// Free of the engine and the page, so the reading is testable.
+import { schedule } from './joints'
 
 type Plan = [number, number]
 type Point = [number, number, number]
@@ -70,12 +71,15 @@ export interface Lights {
 
 // A rigged part of the model (the plan's contract): it slides along its axis or
 // turns about it, by what its drive sets through its keys, [input, output]
-// pairs read piecewise linearly; at rest it stands as the model is built
+// pairs read piecewise linearly; at rest it stands as the model is built. One
+// that follows another joint takes that joint's value as its input (a blast
+// deflector's struts follow its panel)
 export interface Joint {
   motion: string
   axis: Point
   drive: string
   keys: [number, number][]
+  follows?: string
 }
 
 export interface Layout {
@@ -109,12 +113,44 @@ export interface Layout {
   lights: Record<string, Lights>
   parking?: { x: number; z: number; heading: number }
   joints: Record<string, Joint>
+  // followers: each joint some others follow, and those joints, by name
+  followers: Record<string, string[]>
   elevators: { aft: number; forward: number; side: number }[]
   texture: { x: [number, number]; z: [number, number] }
   waterline?: { stern: number; stem: number; sides: number[][] }
   draught?: number
   entrance?: number
   screws?: { lateral: number[]; diameter: number }
+}
+
+// followers groups the joints that follow another by the joint they follow,
+// each group in name order
+export function followers(joints: Record<string, Joint>): Record<string, string[]> {
+  const out: Record<string, string[]> = {}
+  for (const name of Object.keys(joints).sort()) {
+    const leader = joints[name].follows
+    if (leader) (out[leader] ??= []).push(name)
+  }
+  return out
+}
+
+// TRAVEL is how much of its travel a blast deflector moves a second: about
+// 1.1 s up and 1.8 s settling down (not sourced: NAVAIR's JBD manual gives no
+// times we can reach)
+export const TRAVEL = { rise: 0.9, fall: 0.55 }
+
+// deflectors gives every blast deflector's joint value at a share of its
+// travel's time, through its keys, and each of its followers' through their
+// own keys on that value: the pose the engine moves a deflector through
+export function deflectors(ship: Layout, share: number): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const name of Object.keys(ship.joints).sort()) {
+    if (!/^catapult_\d+_deflector$/.test(name)) continue
+    const angle = schedule(ship.joints[name].keys, share)
+    out[name] = angle
+    for (const follower of ship.followers[name] ?? []) out[follower] = schedule(ship.joints[follower].keys, angle)
+  }
+  return out
 }
 
 // STATIONS is how many stations the waterline is given at, stern to stem: the
@@ -192,6 +228,7 @@ export function layout(c: Contract): Layout {
     lights: c.lights ?? {},
     ...(c.parking ? { parking: c.parking } : {}),
     joints: c.joints ?? {},
+    followers: followers(c.joints ?? {}),
   }
   if (c.hull) {
     const w = c.hull.waterline

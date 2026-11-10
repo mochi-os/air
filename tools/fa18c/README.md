@@ -33,7 +33,7 @@ python3 -I views.py    # true-scale top, side and front silhouettes from the HAT
   each inch of station, registered on the nose apex (FS 60.5, WL 100) and moved in by half the drawn line.
 
 ```
-blender -b --factory-startup -P build.py -- OUT.glb OUT.json FEATURES.json [--draft]   # under the probe.slice memory cap
+blender -b --factory-startup --python-exit-code 1 -P build.py -- OUT.glb OUT.json FEATURES.json [--draft]   # under the probe.slice memory cap
 python3 -I check.py OUT.glb OUT.json
 python3 -I outline.py OUT.glb [OVERLAY.png] [--threshold INCHES]
 ```
@@ -174,10 +174,10 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
 ```
 python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --check --overlays DIR --cameras CAMERAS.json
 python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json SKY
-blender -b --factory-startup -P ../verify/view.py -- OUT.glb OUT.json CAMERAS.json RENDERS
+blender -b --factory-startup --python-exit-code 1 -P ../verify/view.py -- OUT.glb OUT.json CAMERAS.json RENDERS
 python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --sheets RENDERS SHEETS
 python3 -I ../verify/page.py photos.json CAMERAS.json SKY SHEETS GATE.txt PAGE --kicker "F/A-18C · Air" --name "Hornet shape review"
-blender -b --factory-startup -P render.py -- OUT.glb OUT.json DIR gear=1 canopy=1
+blender -b --factory-startup --python-exit-code 1 -P render.py -- OUT.glb OUT.json DIR gear=1 canopy=1
 python3 -I tips.py photos.json CAMERAS.json OUT.glb OUT.json FEATURES.json --photos ID,... [--drop ID:MARK,...] [--neutral] [--rotate]
 python3 -I test_check.py
 ```
@@ -198,7 +198,7 @@ deleted. These scripts stay for then, building from the painted model (the old m
 
 ```
 python3 -I stages.py OUT.glb OUT.json PARTS.glb POSE.json   # coloured parts and the posed jet, gear up and down
-blender -b --factory-startup -P decimate.py -- PARTS.glb FAR.glb
+blender -b --factory-startup --python-exit-code 1 -P decimate.py -- PARTS.glb FAR.glb
 python3 -I farcheck.py [-v] FAR.glb POSE.json                 # -v writes views.png here: move it out
 cp FAR.glb far-unpacked.glb                                  # gltfpack runs sandboxed, seeing only this repository
 ~/bin/bwrap-build ../gltfpack-native -i far-unpacked.glb -o ../../web/src/assets/fa18c-far-new.glb -cc -kn
@@ -231,8 +231,16 @@ middle (the fold's at its leading end, on the fold line's axis). Each wing mesh 
 The game flies this model (claude/plans/air-fa18c.md, step 4). After a painted build that passes its checks,
 copy the model and its points file in together, `cp OUT.glb ../../web/src/assets/fa18c.glb` and
 `cp OUT.json ../../web/src/assets/fa18c.json`, then `/build air`: the engine reads its joints and points from the
-JSON, so the two must come from one build. Until the cockpit, stores and distant stages are rebuilt, the old model
-stays as `fa18c-old.glb`: the pilot's jet in first person, the setup's preview and the frame those are measured in.
+JSON, so the two must come from one build. Until the cockpit and distant stages are rebuilt, the old model stays
+as `fa18c-old.glb`: the pilot's jet in first person and the frame its cockpit is measured in.
+
+The model carries its own stores (claude/plans/air-fa18c.md #9; `stores()` in `build.py`): the SUU-63 and SUU-62
+pylons, the LAU-115C/As with a LAU-7 and a LAU-127 on each side, the LAU-116s, the 330-gallon tanks and the wingtip
+LAU-7s, each a node named for its station (`pylon_2`, `rail_8a`, `launcher_8b`, `tank_7`). Each but the wingtip rails
+is a `show` joint on the drive `stores`, hidden at rest; a photo's pose shows the ones it carries (`"joints":
+{"tank_7": 1}`), and the engine those its loadout carries (`web/src/game/hang.ts`). The points file's `stores` lists
+them and each hardpoint's `rounds` where its missiles hang. Their places are the photos' (`facts.json`
+`layout.stores`), their sizes the sources' (`stores`). The missiles are built apart (`../missiles`).
 
 ## Factory-fresh paint
 

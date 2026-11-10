@@ -328,9 +328,12 @@ class Match:
 				out["locate"][f"{photo['id']}:{name}"] = {n: round(float(x), 1) for n, x in zip(f.names, f.source(hit))}
 		return out
 
-	def silhouette(self, k, scale):
+	def silhouette(self, k, scale, parts=None):
+		# the posed model's silhouette through camera k, or only the named
+		# parts' (an edge seen in front of the rest of the model: a store's
+		# outline against the fuselage behind it)
 		photo = self.photos[k]
-		tris = self.model.triangles(mod.pose(self.joints, photo["entry"].get("pose", {})))
+		tris = self.model.triangles(mod.pose(self.joints, photo["entry"].get("pose", {})), include=parts)
 		flat, depth = cam.project(self.cameras[k], tris.reshape(-1, 3), photo["centre"])
 		size = (int(photo["size"][0] * scale), int(photo["size"][1] * scale))
 		return mod.silhouette(flat.reshape(-1, 3, 2) * scale, size, depth.reshape(-1, 3)), tris
@@ -349,7 +352,7 @@ class Match:
 		drives = photo["entry"].get("pose", {})
 		if edge["against"] == "outline":
 			scale = min(1.0, 4000 / max(photo["size"]))
-			mask, tris = self.silhouette(k, scale)
+			mask, tris = self.silhouette(k, scale, edge.get("parts"))
 			rim = mod.boundary(mask)[:, ::-1] / scale   # (x, y) pixels
 			d, i = mod.nearest(points, rim)
 			inside = mask[np.clip((points[:, 1] * scale).astype(int), 0, mask.shape[0] - 1), np.clip((points[:, 0] * scale).astype(int), 0, mask.shape[1] - 1)]

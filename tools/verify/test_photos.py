@@ -235,6 +235,21 @@ class MatchTest(unittest.TestCase):
 		self.assertLess(result["worst"], -1.0)
 		self.assertGreater(result["worst"], -3.0)
 
+	def test_an_outline_of_named_parts(self):
+		# an edge seen in front of the rest of the model (a store before the
+		# fuselage) is judged against its own parts' silhouette alone: a trace
+		# 2 in below the fuselage's lower right edge reads 2 in against the
+		# whole model, and far off against the flap's alone
+		r = self.root
+		match = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None)
+		photo, c = match.photos[0], match.cameras[0]
+		down = np.array([0, -2 * 0.0254, 0])
+		line = cam.project(c, np.array([[4 - 8 * t, -0.5, 0.6] for t in (0.3, 0.5, 0.7)]) + down, photo["centre"])[0]
+		whole = match.edge(0, {"against": "outline", "points": line.tolist()})
+		flap = match.edge(0, {"against": "outline", "points": line.tolist(), "parts": ["flap"]})
+		self.assertAlmostEqual(abs(whole["median"]), 2.0, delta=0.8)
+		self.assertGreater(abs(flap["median"]), 10.0)
+
 	def test_gate(self):
 		report = {
 			"photos": {"good": {"solved": True, "field": 30.0, "rms": 4.0}, "far": {"solved": True, "field": 1.0, "rms": 4.0}, "loose": {"solved": True, "field": 30.0, "rms": 25.0}},

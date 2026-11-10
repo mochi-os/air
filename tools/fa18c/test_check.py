@@ -16,6 +16,22 @@ import check  # noqa: E402
 from test_verify import box, glb  # noqa: E402
 
 
+class StoresTest(unittest.TestCase):
+	def test_a_station_names_its_twin(self):
+		self.assertEqual(check.STATION.match("rail_2a").groups(), ("rail", "2", "a"))
+		self.assertEqual(check.STATION.match("tank_7").groups(), ("tank", "7", ""))
+		for name in ("flex_rail_left", "rail_tip", "wing_left", "gear_nose_door_left", "flex_pylon_2"):
+			self.assertIsNone(check.STATION.match(name), name)
+
+	def test_slope_at_the_tip(self):
+		# a wing rising 0.02 in per inch out to its tip at BL 225: the slope at
+		# the tip itself reads the same, not half of it
+		buttlines = np.arange(40.0, 225.5, 0.5)
+		rises = 0.02 * (buttlines - 40.0)
+		self.assertAlmostEqual(check.slope_at(buttlines, rises, 225.0), 0.02, places=6)
+		self.assertAlmostEqual(check.slope_at(buttlines, rises, 130.0), 0.02, places=6)
+
+
 class EntriesTest(unittest.TestCase):
 	def test_entries(self):
 		facts = {"about": "x", "overall": {"length": {"value": 1, "source": "a"}, "span": {"spread": {"value": 2, "source": "a"}}},

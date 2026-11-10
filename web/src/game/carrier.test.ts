@@ -141,17 +141,19 @@ describe("the carrier's ship file", () => {
     expect(ship.landing.target).toBe(2)
   })
 
-  it('stands a blast deflector on every catapult, from the file', () => {
+  it("raises each catapult's own blast deflector through its keys, its struts following it", () => {
     expect(source).toMatch(
-      /carrier_jbds=rigged\?[^\n]*:SHIP\.catapults\.map\(cat=>\{\n\t\tconst box=cat\.deflector, L=box\.depth-2\*JBD_INSET\.end, bw=box\.width-2\*JBD_INSET\.side;/
+      /carrier_jbds=rigged\?SHIP\.catapults\.map\(\(cat,i\)=>\(\{ joint:`catapult_\$\{i\+1\}_deflector`, followers:SHIP\.followers\[`catapult_\$\{i\+1\}_deflector`\]\?\?\[\], frac:0 \}\)\):null;/
     )
+    expect(source).toMatch(/const angle=joints_schedule\(SHIP\.joints\[j\.joint\]\.keys,j\.frac\);/)
     expect(source).toMatch(
-      /const w=carrier_world\(box\.x,box\.z\), hd=cat\.heading\*D2R,/
+      /for\(const f of j\.followers\) ship_joint\(f,joints_schedule\(SHIP\.joints\[f\]\.keys,angle\)\);/
     )
-    expect(source).toMatch(
-      /uv\.setXY\(i,\(f2-tx\[0\]\)\/\(tx\[1\]-tx\[0\]\),\(l2-tz\[0\]\)\/\(tz\[1\]-tz\[0\]\)\);/
-    )
-    expect(source).toMatch(/const tx=SHIP\.texture\.x, tz=SHIP\.texture\.z;/)
+    for (const [i] of ship.catapults.entries()) {
+      const name = `catapult_${i + 1}_deflector`
+      expect(ship.joints[name], name).toBeDefined()
+      expect(ship.followers[name], name).toEqual([`${name}_crank`, `${name}_rod`])
+    }
   })
 
   it('draws every group of the lights the file gives, in a colour and a group the engine knows', () => {

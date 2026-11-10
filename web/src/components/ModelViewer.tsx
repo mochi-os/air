@@ -18,17 +18,18 @@ import {
 } from '@mochi/web'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { Button } from '@mochi/web/components/ui/button'
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import amraam_model_url from '../assets/aim120c.glb?url'
 import fa18c_model_url from '../assets/fa18c.glb?url'
 import fa18c_old_url from '../assets/fa18c-old.glb?url'
 import ford_model_url from '../assets/ford.glb?url'
 import ford_ship from '../assets/ford.json'
-import stores_model_url from '../assets/stores.glb?url'
+import aim9m_model_url from '../assets/aim9m.glb?url'
+import fa18c_points from '../assets/fa18c.json'
 import { model } from '../game/library'
 import { posed } from '../game/model'
-import { layout, stations } from '../game/ship'
-import { normalize_round } from '../game/weapons'
+import { deflectors, layout, stations, TRAVEL } from '../game/ship'
 
 interface Entry {
   name: string // the asset's file name: the bundle serves it under a content-hashed one
@@ -37,23 +38,27 @@ interface Entry {
 }
 
 const MODELS: Entry[] = [
-  {
-    name: 'aim120c.glb',
-    url: amraam_model_url,
-    prepare: (gltf: GLTF) => normalize_round(gltf.scene.clone(true)),
-  },
+  // Our own missiles as tools/missiles/build.py builds them, at rest.
+  { name: 'aim120c.glb', url: amraam_model_url, prepare: (gltf: GLTF) => gltf.scene.clone(true) },
+  { name: 'aim9m.glb', url: aim9m_model_url, prepare: (gltf: GLTF) => gltf.scene.clone(true) },
   // Our own F/A-18C as tools/fa18c/build.py builds it, at rest: gear up, every
-  // surface neutral.
-  { name: 'fa18c.glb', url: fa18c_model_url, prepare: (gltf: GLTF) => gltf.scene.clone(true) },
-  // The model it replaces, still the pilot's cockpit in first person and the
-  // setup's preview under the old stores until ours are built
-  // (claude/plans/air-fa18c.md, step 4).
-  { name: 'fa18c-old.glb', url: fa18c_old_url, prepare: posed },
+  // surface neutral, its stores hidden but the wingtip rails, as the loadout
+  // leaves a clean jet.
   {
-    name: 'stores.glb',
-    url: stores_model_url,
-    prepare: (gltf: GLTF) => gltf.scene.clone(true),
+    name: 'fa18c.glb',
+    url: fa18c_model_url,
+    prepare: (gltf: GLTF) => {
+      const jet = gltf.scene.clone(true)
+      for (const name of (fa18c_points as unknown as { points: { stores: string[] } }).points.stores) {
+        const part = jet.getObjectByName(name)
+        if (part) part.visible = false
+      }
+      return jet
+    },
   },
+  // The model it replaces, still the pilot's cockpit in first person until
+  // ours is built (claude/plans/air-fa18c.md, step 6).
+  { name: 'fa18c-old.glb', url: fa18c_old_url, prepare: posed },
   // Our own Gerald R. Ford, the carrier the game flies from, as
   // tools/ford/build.py builds it, at rest: elevators up, deflectors flush,
   // the port whips upright; but its catapult control stations raised, which
@@ -71,6 +76,27 @@ const MODELS: Entry[] = [
     },
   },
 ].sort((a, b) => naturalCompare(a.name, b.name))
+
+// The Ford's ship file read, for posing its blast deflectors (the JSON's points
+// are number[], the contract's tuples)
+const FORD = layout(ford_ship as unknown as Parameters<typeof layout>[0])
+const RESTS = new WeakMap<THREE.Object3D, THREE.Quaternion>()
+
+// lift poses the Ford's blast deflectors at a share of their travel and their
+// struts with them, each joint turned about its axis from where it rests, as
+// the engine turns them.
+function lift(ship: THREE.Object3D, share: number): void {
+  for (const [name, value] of Object.entries(deflectors(FORD, share))) {
+    const part = ship.getObjectByName(name)
+    const joint = FORD.joints[name]
+    if (!part || !joint) continue
+    let rest = RESTS.get(part)
+    if (!rest) RESTS.set(part, (rest = part.quaternion.clone()))
+    part.quaternion
+      .copy(rest)
+      .multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(...joint.axis).normalize(), value))
+  }
+}
 
 interface View {
   renderer: THREE.WebGLRenderer
@@ -150,6 +176,8 @@ export function ModelViewer({
   const chosen = (MODELS.find((m) => m.name === file) ?? MODELS[0]).name
   const [status, setStatus] = useState('Loading…') // empty once the model is drawn
   const [count, setCount] = useState<number | null>(null) // the shown model's polygons
+  const [raised, setRaised] = useState(false) // the Ford's blast deflectors asked up
+  const share = useRef(0) // how far through their travel they stand
   const { formatNumber } = useFormat()
 
   useEffect(() => {
@@ -233,6 +261,7 @@ export function ModelViewer({
         if (!wanted || view.current !== current) return
         if (current.shown) current.scene.remove(current.shown)
         current.shown = entry.prepare(gltf)
+        share.current = 0 // a fresh model stands at rest
         current.scene.add(current.shown)
         frame(current, current.shown)
         current.draw()
@@ -251,6 +280,28 @@ export function ModelViewer({
     }
   }, [chosen])
 
+  // The Ford's blast deflectors move toward up or down at the engine's rates,
+  // redrawn each frame until they stand there.
+  useEffect(() => {
+    const current = view.current
+    if (!current?.shown || chosen !== 'ford.glb' || count === null) return
+    const shown = current.shown
+    const target = raised ? 1 : 0
+    let frame = 0
+    let last = performance.now()
+    const step = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.1)
+      last = now
+      const rate = target > share.current ? TRAVEL.rise : TRAVEL.fall
+      share.current = THREE.MathUtils.clamp(share.current + THREE.MathUtils.clamp(target - share.current, -rate * dt, rate * dt), 0, 1)
+      lift(shown, share.current)
+      current.draw()
+      if (share.current !== target) frame = requestAnimationFrame(step)
+    }
+    frame = requestAnimationFrame(step)
+    return () => cancelAnimationFrame(frame)
+  }, [raised, count, chosen])
+
   return (
     <div className='bg-background fixed inset-0'>
       <div ref={mount} className='absolute inset-0' />
@@ -268,6 +319,12 @@ export function ModelViewer({
             ))}
           </SelectContent>
         </Select>
+        {chosen === 'ford.glb' && count !== null && (
+          <Button variant='outline' size='sm' onClick={() => setRaised((up) => !up)}>
+            {/* jsx-text-ok: developer page, English only by decision */}
+            {raised ? 'Lower JBDs' : 'Raise JBDs'}
+          </Button>
+        )}
         {count !== null && (
           <div className='font-mono text-sm text-white'>
             {/* jsx-text-ok: developer page, English only by decision */}

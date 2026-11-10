@@ -5,7 +5,7 @@
 import { statSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import stores_model_url from '../assets/stores.glb?url'
+import aim9m_model_url from '../assets/aim9m.glb?url'
 
 // Outside the shell, as a test runs: an asset is fetched directly.
 vi.mock('@mochi/web', () => ({
@@ -43,7 +43,7 @@ describe('the loading percentage', () => {
 
   it('counts a compressed model against its size as built', async () => {
     const size = statSync(
-      fileURLToPath(new URL('../assets/stores.glb', import.meta.url))
+      fileURLToPath(new URL('../assets/aim9m.glb', import.meta.url))
     ).size
     const download = feed({
       'Content-Encoding': 'br',
@@ -54,7 +54,7 @@ describe('the loading percentage', () => {
       vi.fn(async () => download.response)
     )
 
-    const done = preload.asset(stores_model_url)
+    const done = preload.asset(aim9m_model_url)
     await settle()
     const half = Math.floor(size / 2)
     download.push(half)
@@ -99,7 +99,7 @@ describe('through the shell', () => {
 
   it('takes a model the shell carried, counting its progress, and fetches nothing', async () => {
     const size = statSync(
-      fileURLToPath(new URL('../assets/stores.glb', import.meta.url))
+      fileURLToPath(new URL('../assets/aim9m.glb', import.meta.url))
     ).size
     let report: (received: number) => void = () => {}
     let land: (bytes: ArrayBuffer) => void = () => {}
@@ -114,7 +114,7 @@ describe('through the shell', () => {
     vi.stubGlobal('fetch', fetch)
     const preload = await import('./preload')
 
-    const done = preload.asset(stores_model_url)
+    const done = preload.asset(aim9m_model_url)
     await settle()
     const half = Math.floor(size / 2)
     report(half)

@@ -30,7 +30,7 @@ LAYOUT = {
 	# a catapult on the bow, angled 5 degrees to port
 	"catapults": [{"number": 1, "track": [[0, -10], [90, -10 - 90 * np.tan(np.radians(5))]], "battery": [10, -10.875], "stroke": 90.0,
 		# its hinge skewed 0.5 m forward at the starboard end, square to neither track nor ship
-		"deflector": {"hinge": [[5, -15.44], [5.5, -5.44]], "depth": 5}}],
+		"deflector": {"hinge": [[5, -15.44], [5.5, -5.44]], "depth": 2.5, "linkage": {"pivot": [1.575, -0.4725], "crank": 0.778, "rod": 0.914}}}],
 	# a bow station, an elongated hexagon in the deck rising 1 m, and a waist
 	# one at a deck edge in a surface 2 cm under it, no tier, windows on three faces
 	"consoles": [{"name": "bow", "outline": [[10.4, -2], [11.0, -3.2], [13.0, -3.2], [13.6, -2], [13.0, -0.8], [11.0, -0.8]], "rise": 1.0, "inset": [0.15, 0.45]},
@@ -48,7 +48,11 @@ LAYOUT = {
 		{"name": "starboard_forward", "base": [80, 25], "length": 12, "width": 0.6,
 			"details": [{"name": "box", "kind": "box", "centre": [80, 28, 25.5], "size": [0.4, 0.4, 0.4]}]}],
 	"fittings": {"shuttle": {"length": 1.2, "width": 0.4, "height": 0.25, "top": 0.5},
-		"deflector": {"thickness": 0.3, "angle": 50},
+		# a deflector scaled down to fit the fixture's thin deck: its linkage
+		# the Ford's search's for a 2.92 m panel, 0.2 thick, every length times 0.829
+		"deflector": {"thickness": 0.166, "face": 0.1, "angle": 50, "modules": 6, "rows": 7, "cells": 3, "groove": 0.03, "rib": 0.04,
+			"clearance": 0.02, "lug": [0.1, 0.06, 0.04], "stripe": 0.21, "pit": 0.55,
+			"linkage": {"attach": 0.686, "bend": 1, "spread": 0.026, "sizes": [0.06, 0.04], "keys": 25}},
 		"console": {"lid": 0.1, "tier": 0.12, "skirt": 0.3, "frame": 0.1},
 		"sheave": {"diameter": 1.0, "height": 0.16, "colour": [242, 242, 236]},
 		"support": {"length": 1.45, "pad": 0.28, "width": 0.1, "height": 0.08},
@@ -288,7 +292,8 @@ class BuildTest(unittest.TestCase):
 	def test_deck_area_leaves_out_the_elevator(self):
 		tris = self.model.parts()["deck"]
 		a = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
-		self.assertAlmostEqual(0.5 * np.abs(a[:, 1]).sum(), 200 * 70 - 20 * 10, places=1)   # in plan, the round-down's curve aside
+		opening = 2.5 * np.hypot(0.5, 10)   # the deflector's
+		self.assertAlmostEqual(0.5 * np.abs(a[:, 1]).sum(), 200 * 70 - 20 * 10 - opening, places=1)   # in plan, the round-down's curve aside
 		# and every face of the top faces up
 		self.assertTrue((a[:, 1] > 0).all())
 
@@ -313,23 +318,83 @@ class BuildTest(unittest.TestCase):
 		rest = self.model.parts()["catapult_1_deflector"].reshape(-1, 3)
 		self.assertAlmostEqual(rest[:, 1].max(), 19.0, places=3)   # flush
 		raised = self.posed(catapult_1_deflector=np.radians(50))["catapult_1_deflector"].reshape(-1, 3)
-		self.assertGreater(raised[:, 1].max(), 19.0 + 5 * np.sin(np.radians(50)) - 0.05)
+		self.assertGreater(raised[:, 1].max(), 19.0 + 2.5 * np.sin(np.radians(50)) - 0.05)
 		# the raised top lies aft of the hinge
 		self.assertLess(raised[raised[:, 1].argmax(), 0], 5)
 
-	def test_deflector_lies_square_to_its_hinge(self):
-		# at rest the panel reaches its depth aft of the hinge line, square to
-		# it, and no further
-		rest = self.model.parts()["catapult_1_deflector"].reshape(-1, 3)[:, [0, 2]]
+	def opening(self):
+		# the fixture's deflector opening: its first end, unit vectors along
+		# its edge and aft, its width and depth
 		a, b = np.array([5, -15.44]), np.array([5.5, -5.44])
 		edge = (b - a) / np.linalg.norm(b - a)
 		aft = np.array([-edge[1], edge[0]])
 		if aft[0] > 0:
 			aft = -aft
-		reach = (rest - a) @ aft
-		self.assertAlmostEqual(reach.min(), 0, places=3)
-		self.assertAlmostEqual(reach.max(), 5, places=3)
-		self.assertAlmostEqual(((rest - a) @ edge).max() - ((rest - a) @ edge).min(), np.linalg.norm(b - a), places=3)
+		return a, edge, aft, np.linalg.norm(b - a), 2.5
+
+	def test_deflector_lies_square_to_its_hinge(self):
+		# at rest the panel fills its opening, square to the hinge line, less
+		# the clearance all round (its lugs standing into the aft one)
+		rest = self.model.parts()["catapult_1_deflector"].reshape(-1, 3)[:, [0, 2]]
+		a, edge, aft, width, depth = self.opening()
+		reach, along = (rest - a) @ aft, (rest - a) @ edge
+		self.assertAlmostEqual(reach.min(), 0.02, places=3)
+		self.assertAlmostEqual(reach.max(), depth - 0.02, places=3)
+		self.assertAlmostEqual(along.min(), 0.02, places=3)
+		self.assertAlmostEqual(along.max(), width - 0.02, places=3)
+
+	def test_deflector_opening_is_cut_from_the_deck(self):
+		# no deck under the panel, the deck right up to the opening's sides,
+		# and a pit under it, its floor `pit` down
+		a, edge, aft, width, depth = self.opening()
+		deck = self.model.parts()["deck"]
+		middle = deck.mean(1)[:, [0, 2]]
+		reach, along = (middle - a) @ aft, (middle - a) @ edge
+		self.assertFalse(((reach > 1e-3) & (reach < depth - 1e-3) & (along > 1e-3) & (along < width - 1e-3)).any())
+		corners = np.round(deck.reshape(-1, 3)[:, [0, 2]], 3)
+		for c in (a, a + edge * width, a + edge * width + aft * depth, a + aft * depth):
+			self.assertTrue((np.abs(corners - c) < 2e-3).all(1).any(), c)
+		pit = self.model.parts()["pits"].reshape(-1, 3)
+		self.assertAlmostEqual(pit[:, 1].min(), 19.0 - 0.55, places=3)
+		self.assertAlmostEqual(pit[:, 1].max(), 19.0, places=3)
+
+	def test_deflector_face_is_tiled_in_the_decks_paint(self):
+		# 6 modules by 7 rows of tiles, each tile's top two triangles in the
+		# deck's paint, the grooves between them dark
+		tops = self.model.parts(materials=["deck"])["catapult_1_deflector"]
+		self.assertEqual(len(tops), 6 * 7 * 2)
+		self.assertTrue(np.allclose(tops[:, :, 1], 19.0, atol=1e-4))
+		self.assertGreater(len(self.model.parts(materials=["recess"])["catapult_1_deflector"]), 0)
+
+	def test_deflector_eases_into_its_stops(self):
+		# raised through its travel's time, its angle moving least at either end
+		keys = np.array(self.ship["joints"]["catapult_1_deflector"]["keys"])
+		steps = np.diff(keys[:, 1])
+		self.assertAlmostEqual(keys[-1, 1], np.radians(50), places=3)
+		self.assertLess(steps[0], steps[len(steps) // 2] / 3)
+		self.assertLess(steps[-1], steps[len(steps) // 2] / 3)
+
+	def test_deflector_struts_follow_it(self):
+		# at every share of its travel each strut's rod meets the panel's back
+		# where its fitting is: the crank and the rod posed through their own
+		# keys on the panel's angle, as the engine poses them
+		joints = self.ship["joints"]
+		self.assertEqual(joints["catapult_1_deflector_crank"]["follows"], "catapult_1_deflector")
+		self.assertEqual(joints["catapult_1_deflector_rod"]["follows"], "catapult_1_deflector")
+		a, edge, aft, width, depth = self.opening()
+		hinge = a + aft * 0.02
+		D, W = depth - 2 * 0.02 - 0.04, width - 2 * 0.02
+		attach = 0.686 * D
+		w = 0.5 * W / 6 - 0.026 * W + 0.02   # the first strut, along the edge from the opening's first end
+		up = np.array([0.0, 1.0, 0.0])
+		for share in (0.0, 0.3, 0.6, 1.0):
+			angle = np.interp(share, *np.array(joints["catapult_1_deflector"]["keys"]).T)
+			values = {name: np.interp(angle, *np.array(joints[name]["keys"]).T) for name in ("catapult_1_deflector_crank", "catapult_1_deflector_rod")}
+			rod = self.posed(catapult_1_deflector=angle, **values)["catapult_1_deflector_rod"].reshape(-1, 3)
+			u, v = attach * np.cos(angle) + 0.166 * np.sin(angle), attach * np.sin(angle) - 0.166 * np.cos(angle)
+			plan = hinge + aft * u + edge * w
+			target = np.array([plan[0], 19.0 + v, plan[1]])
+			self.assertLess(np.linalg.norm(rod - target, axis=1).min(), 0.03, share)   # the rod's end, 0.04 across
 
 	def test_elevator_goes_down_and_console_comes_up(self):
 		elevator = self.posed(elevator_1=8)["elevator_1"].reshape(-1, 3)
@@ -507,7 +572,7 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(cat["heading"], 5, places=2)   # positive to port
 		self.assertEqual(cat["stroke"], 90.0)
 		self.assertEqual(self.ship["deck"]["outline"], DECK["outline"])
-		self.assertEqual(sorted(self.ship["joints"]), ["antenna_port_aft", "barricade_port", "catapult_1_deflector", "catapult_1_shuttle",
+		self.assertEqual(sorted(self.ship["joints"]), ["antenna_port_aft", "barricade_port", "catapult_1_deflector", "catapult_1_deflector_crank", "catapult_1_deflector_rod", "catapult_1_shuttle",
 			"catapult_console_bow", "catapult_console_waist", "elevator_1", "wire_1_sheave_port", "wire_1_sheave_starboard", "wire_1_support_1"])
 		self.assertEqual(self.ship["consoles"], LAYOUT["consoles"])
 		self.assertEqual(self.ship["antennas"], LAYOUT["antennas"])

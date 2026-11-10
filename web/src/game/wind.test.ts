@@ -311,9 +311,11 @@ describe('the weapons fly through the air', () => {
       expect(a.speed).toBeCloseTo(250, 9)
       expect(a.wind).toEqual(wind)
       const missiles = [{ active: false, mesh: { visible: false } } as Record<string, number | object | boolean>]
-      const launch = new Function('THREE', 'missiles', 'local_offset', 'launch_puff', 'wrap_axis', 'airflow', `${lift('launch_missile')}\nreturn launch_missile;`)(
-        THREE, missiles, () => ({ x: 0, y: 3000, z: 0 }), () => {}, (v: number) => v, airflow(wind))
+      const dressed: unknown[][] = []
+      const launch = new Function('THREE', 'missiles', 'local_offset', 'launch_puff', 'wrap_axis', 'airflow', 'dress_round', `${lift('launch_missile')}\nreturn launch_missile;`)(
+        THREE, missiles, () => ({ x: 0, y: 3000, z: 0 }), () => {}, (v: number) => v, airflow(wind), (...a: unknown[]) => dressed.push(a))
       expect(launch(jet(wind), null)).toBe(true)
+      expect(dressed).toEqual([[missiles[0].mesh, '9m']]) // drawn as the 9M's own model
       const m = missiles[0] as unknown as { vx: number; vy: number; vz: number }
       expect(m.vx - wind.x).toBeCloseTo(280, 9)
       expect(m.vz - wind.z).toBeCloseTo(0, 9)
@@ -353,12 +355,14 @@ describe('the weapons fly through the air', () => {
   it("leave the bandit's rail the same way", () => {
     const missiles = [{ active: false, mesh: { visible: false } } as Record<string, unknown>]
     let launched: W | null = null
+    const dressed: unknown[][] = []
     const bandit = { ...jet(gale), amraam: 2, msl: 2 }
-    new Function('missiles', 'has_enemy', 'MULTIPLAYER', 'local_offset', 'launch_puff', 'airflow', 'round_launch', 'update_rails', 'bandit_remaining', 'bandit', 'ownship', 'WORLD_WRAP',
+    new Function('missiles', 'has_enemy', 'MULTIPLAYER', 'local_offset', 'launch_puff', 'airflow', 'round_launch', 'update_rails', 'bandit_remaining', 'bandit', 'ownship', 'WORLD_WRAP', 'dress_round',
       `${lift('launch_bandit_round')}\nlaunch_bandit_round();`)(
       missiles, true, false, () => ({ x: 0, y: 3000, z: 0 }), () => {}, airflow(gale), (_slot: number, _at: W, velocity: W) => { launched = velocity }, () => {}, () => 2, bandit,
-      { pos: { x: 30000, y: 3000, z: 0 }, velx: -250, vely: 0, velz: 0 }, 0)
+      { pos: { x: 30000, y: 3000, z: 0 }, velx: -250, vely: 0, velz: 0 }, 0, (...a: unknown[]) => dressed.push(a))
     expect(size(minus(minus(launched!, gale), { x: 280, y: 0, z: 0 }))).toBeLessThan(1e-9)
+    expect(dressed).toEqual([[missiles[0].mesh, '120c']]) // drawn as the AIM-120's own model
   })
 
   it("judge the BVR start's separation in still air, as the server does", () => {

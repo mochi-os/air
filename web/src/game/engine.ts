@@ -42,8 +42,8 @@ import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
 import { decoy_aspect, decoy_chance, decoy_lure } from './decoy'
-import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, TIPS as stores_tips, ANCHORS as stores_anchors, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject, order as stores_order, sequence, departed, ignite, adopt, burning as burning_stores, rearm as rearm_order, retain as stores_retain, masked as stores_masked, revised as stores_revised } from './stores'
-import { normalize_round, amraam_anchor, amraam_aim } from './weapons'
+import { normalize as stores_normalize, migrate as stores_migrate, granted as stores_granted, rounds as stores_rounds, entries as stores_entries, mask as stores_mask, weight as stores_weight, missiles_loaded, resolve as stores_resolve, PRESETS as stores_presets, jettison as stores_jettison, LIMITS as stores_limits, RELEASE as stores_release, amraams as stores_amraams, eject as stores_eject, order as stores_order, sequence, departed, ignite, adopt, burning as burning_stores, rearm as rearm_order, retain as stores_retain, masked as stores_masked, revised as stores_revised } from './stores'
+import { dress, holder } from './weapons'
 import { split as model_split, repack as model_repack, POSE as model_pose, GEAR as model_gear } from './model'
 import { model as model_stock } from './library'
 import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, test as ifei_test, reset as ifei_reset, settle as ifei_settle, zulu as ifei_zulu, BUTTONS as ifei_buttons } from './ifei'
@@ -51,6 +51,7 @@ import { reconcile as cautions_reconcile, restack as cautions_restack, lines as 
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten } from './oleo'
 import { rig as joints_rig, pose as joints_pose, roll as wheel_roll, schedule as joints_schedule } from './joints'
+import { rounds as hang_rounds, parts as hang_parts, place as hang_place, KINDS as round_kinds } from './hang'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { Radar, boresight, notched as radar_notched, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL, FRAME as RADAR_FRAME } from './radar'
 import { Rwr, threats } from './rwr'
@@ -80,13 +81,15 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 // regen. The dev readout shows the hash.
 import ford_model_url from '../assets/ford.glb?url'
 import ford_ship from '../assets/ford.json'   // its ship file, written beside it by tools/ford/build.py: the deck layout and the points the engine draws
-import { layout as ship_layout } from './ship'
+import { layout as ship_layout, TRAVEL } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
 import fa18c_points from '../assets/fa18c.json'   // its points file, written beside it by tools/fa18c/build.py: the joints and their schedules, and the points the engine draws
 import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the model it replaces: the player's own jet in first person, whose cockpit the engine's cockpit tables are measured on, until our cockpit is built (claude/plans/air-fa18c.md, step 4)
-import stores_model_url from '../assets/stores.glb?url'
 import fa18c_far_url from '../assets/fa18c-far.glb?url'   // the distant stages (#3): tools/fa18c
-import amraam_model_url from '../assets/aim120c.glb?url'
+import amraam_model_url from '../assets/aim120c.glb?url'   // our own missiles (tools/missiles), each with its points file: the mount its launcher seats
+import aim120c_points from '../assets/aim120c.json'
+import aim9m_model_url from '../assets/aim9m.glb?url'
+import aim9m_points from '../assets/aim9m.json'
 import hornet_font_url from '../assets/hornet.woff2?url'
 import moon_day_url from '../assets/moon-day.png?url'
 import moon_night_url from '../assets/moon-night.png?url'
@@ -2037,14 +2040,19 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	if(fleet_exterior[kind]){ const x=fleet_exterior[kind], e=x.proto.clone(true); e.userData.exterior=true;
 		e.traverse(o=>{ if(o.isMesh){ o.userData.modelmesh=true; o.castShadow=cfg.shadows; } });
 		g.add(e);
-		// The old airframe's own meshes, drawn only on the player's jet in first person. Its wingtip rounds stay (the
-		// stores hung in its frame, until ours are built), and so do the parts other code shows and hides: the pilot
-		// (cockpitHide), the flame discs, the distant stages hung in its scene, and the meshes spec.hide already put away.
-		const keep=new Set([TIP_NODES.tip1,TIP_NODES.tip9]), apart=new Set();
+		// The old airframe's own meshes, drawn only on the player's jet in first person, but its wingtip rounds, which
+		// retire: our own stores are drawn in every view (airframe_show). So are the parts other code shows and hides:
+		// the pilot (cockpitHide), the flame discs, the distant stages hung in its scene, and the meshes spec.hide put away.
+		for(const n of OLD_TIPS){ const o=m.getObjectByName(n); if(o) o.visible=false; }
+		const apart=new Set();
 		for(const o of [...(g.userData.cockpitHide||[]),...g.userData.flame.map(f=>f.object),...(g.userData.stages?[g.userData.stages.root]:[])]) o.traverse(c=>apart.add(c));
-		const legacy=[]; m.traverse(o=>{ if(o.isMesh&&o.visible&&!keep.has(o.name)&&!apart.has(o)) legacy.push(o); });
+		const legacy=[]; m.traverse(o=>{ if(o.isMesh&&o.visible&&!apart.has(o)) legacy.push(o); });
 		g.userData.legacy=legacy;
 		g.userData.exterior={ object:e, frame:x.frame, points:x.points, joints:joints_rig(e,x.joints), canopy:e.getObjectByName("canopy") };
+		{ // its airframe: every mesh but the store parts under the wings and on the fuselage, which the old airframe in
+			// first person lacks; the wingtip rails are the airframe's, the old one has its own (claude/plans/air-fa18c.md, step 5)
+			const stored=new Set(); for(const n of x.points.stores||[]){ const o=e.getObjectByName(n); if(o) o.traverse(c=>stored.add(c)); }
+			g.userData.exterior.airframe=[]; e.traverse(o=>{ if(o.isMesh&&!stored.has(o)) g.userData.exterior.airframe.push(o); }); }
 		g.userData.exterior.legs=exterior_legs(g.userData.exterior, spec); g.userData.exterior.deck=exterior_deck(g.userData.exterior);
 		if(g.userData.stages){ g.userData.stages.parts.push(e); e.visible=g.userData.stage===0; }   // another jet's stage shows our model as it showed the old one's parts
 		{ const glow=new Map(), burner=new Map();   // its formation strips and lenses (lights) glow with the FORMATION knob, its flames (burner) with the engine's reheat, as the old model's emissive maps did; neither carries an emissive map, so each takes its colour here
@@ -2077,7 +2085,7 @@ function airframe_show(g,force){ const u=g.userData, x=u.exterior; if(!x) return
 	const pit=!!u.player&&cfg.view==="cockpit";
 	if(!pit) for(const o of u.cockpitHide||[]) o.visible=false;   // the old pilot, whose model is not drawn: cockpit_hidden shows him in every other view
 	if(!force&&u.shown===pit) return; u.shown=pit;
-	if(u.player) x.object.visible=!pit;   // another jet's follows its distance stage (stage_show: it is among the stage's parts)
+	if(u.player){ x.object.visible=true; for(const o of x.airframe||[]) o.visible=!pit; }   // in first person the old airframe stands in for ours, its stores and rounds still ours; another jet's follows its distance stage (stage_show: it is among the stage's parts)
 	for(const o of u.legacy||[]) o.visible=pit;
 	for(const o of u.pit||[]) o.visible=pit; }
 // exterior_legs finds each leg's wheel on our own model and how far its oleo lifts the wheel per unit of travel,
@@ -2151,6 +2159,7 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 		case "oleo.left": return oleo_of("left");
 		case "oleo.right": return oleo_of("right");
 		case "load": return load;
+		case "stores": return x.shown&&x.shown.has(name)?1:0;   // each store part the loadout shows (apply_stores)
 		default: return undefined; } };
 	joints_pose(x.joints,value);
 	// Each loaded leg's wheel seated on the surface under it (#203): the strut's load from how deep the flight
@@ -5177,9 +5186,9 @@ function ddi_fcs(x,display){ const o=last_out||[], gz=ownship.gauges||{};
 		x.font="18px monospace"; x.textAlign="left"; x.fillText("L "+a,90,456); x.fillText("R "+a,360,456);
 		const text="AOA "+a, w=x.measureText(text).width; x.textAlign="center"; x.fillText(text,236,456); x.strokeRect(236-w/2-6,456-12,w+12,24); } }
 // ============================================================================ stores (#17): per-station loadout, visuals, firing order
-const TIP_NODES=stores_tips;   // the two wingtip AIM-9 NODES in the fa18c GLB, sides probe-verified — SHARED with the setup preview via stores.ts so the two can never disagree
-const MISSILE_NODES=[TIP_NODES.tip9, TIP_NODES.tip1];   // legacy tip pair for jets with no known loadout (remotes before the roster carries theirs)
-const ROUND_ANCHORS=stores_anchors;   // model-space anchors for AIM-9 rounds cloned onto the outboard stations — also shared with the preview
+const OLD_TIPS=["Object_145","Object_542"];   // the old model's wingtip AIM-9s, hidden for good: our own rounds hang on every jet (until step 6 retires that model)
+const TIP_PAIR=["tip9","tip1"];   // the wingtip pair a jet with no known loadout carries (a remote before the roster carries its own), departing in turn
+const TIPS_ONLY=stores_normalize({ 1:{fixture:"rail",stores:["9m"]}, 9:{fixture:"rail",stores:["9m"]} });   // and how it is drawn: the pair the server grants a join that asks for none
 const BOT_ARMED=stores_normalize({ 1:{fixture:"rail",stores:["9m"]}, 2:{fixture:"twin",stores:["9m","9m"]}, 8:{fixture:"twin",stores:["9m","9m"]}, 9:{fixture:"rail",stores:["9m"]} });   // the bot's armed standard (decided 2026-08-06): six AIM-9Ms on tips and outboard twins, PINNED to match the server's bots_loadout — the calibrated doctrine flies this fit regardless of how the player presets are shaped; the brain's two-round discipline fires from it in SMS order (opening it is #25's re-sweep)
 const BOT_CLEAN=stores_normalize({});
 const BOT_OPEN=stores_normalize(stores_presets.fox3);   // the BVR fit, the Fox 3 preset with its centreline tank, PINNED to the server's bots_loadout("open") (decided 2026-10-12)
@@ -5195,9 +5204,8 @@ const DEMONSTRATION={ stores:"fox2", fuel:4500 };   // preset name; pounds, as t
 function demonstrating(){ return !MULTIPLAYER&&!!cfg.demonstration&&cfg.start==="case1"; }
 function loadout(){ return stores_granted(demonstrating()?stores_normalize(stores_presets[DEMONSTRATION.stores]):cfg.stores, weapons_rule); }   // the FLOWN loadout: the match rule clamps the spawn, never the persisted choice — the same clamp the server applies at Join (stores_grant)
 function missiles_on(){ return missiles_loaded(loadout()); }   // the derived flag that replaced cfg.missiles: joust rule (bandit arms when the player does), SHOOT cue, dev probe. Read off the FLOWN loadout, so a class that strips every round reads cold without a second rule
-function loadout_racked(lo){ for(let s=2;s<=8;s++){ const slot=lo&&lo[String(s)]; if(slot&&slot.fixture) return true; } return false; }
 function bandit_remaining(){ return stores_rounds(bandit_fit()).length; }   // the heaters the SP bandit spawns with; launch_bandit_heater counts them down from here, and server bots decrement their own masks
-function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; rearm_order(st); if(loadout_racked(lo)) void init_stores_model(); if(stores_amraams(lo).length){ void init_amraam_model(); st.amraam=stores_amraams(lo).length; } apply_stores(st); }   // #27: the round's model fetches lazily like the racks; a fresh loadout's AMRAAM count seeds full
+function assign_loadout(st,lo){ st.loadout=lo; loadout_rev++; rearm_order(st); if(stores_amraams(lo).length) st.amraam=stores_amraams(lo).length; apply_stores(st); }   // #27: a fresh loadout's AMRAAM count seeds full; apply_stores fetches the missiles it hangs
 // cooked adopts the stores the battle core reports burning on a jet's rails
 // (single player's battle output words 62 and 63): each new one jumps the
 // jet's launch order (stores.ts sequence), and its fire is drawn.
@@ -5205,78 +5213,45 @@ function cooked(st,mask){ const book=stores_catalog(); if(book) adopt(st,stores_
 // store_fires draws a burning round's motor at its station: flame and smoke,
 // the only cue (a real Hornet has no light or voice for it).
 function store_fires(st,dt){ for(const name of burning_stores(st)){ const p=store_position(st,name); if(p) burn_trail(p,0.6,st.velx??st.fwd.x*st.speed,st.vely,st.velz??st.fwd.z*st.speed,dt); } }
-// store_position is where a round hangs in the world: a tip's rail node, or
-// the drawn centre of a rack round, whose node carries baked geometry offset
-// by a delta, so the node origin is NOT the round.
-function store_position(st,name){ if(!st.group) return null;
-	if(name.startsWith("tip")){ const rail=st.group.getObjectByName(TIP_NODES[name]); if(!rail) return null; rail.getWorldPosition(_v); return {x:_v.x,y:_v.y,z:_v.z}; }
-	const piece=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(!piece) return null;
-	piece.updateWorldMatrix(true,false); _launch_box.setFromObject(piece); _launch_box.getCenter(_v); return {x:_v.x,y:_v.y,z:_v.z}; }   // the jet's pose of this world step, not of the last frame drawn: a frame of 64x moves it a kilometre
-// apply_stores rebuilds a jet's store visuals from its loadout: fixtures and
-// tanks from the split stores.glb (per-station nodes in the airframe's model
-// space), pylon AIM-9s as translated clones of the tip missile mesh. Tips stay
-// airframe nodes, toggled by update_rails.
-function apply_stores(st){ if(!st.group) return;
-	const model=st.group.children.find(c=>c.userData&&c.userData.model);
-	const scene=model&&model.children[0]&&model.children[0].children[0];
-	if(!scene) return;
-	if(st.racks&&st.racks.holder&&st.racks.holder.parent) st.racks.holder.parent.remove(st.racks.holder);
-	st.racks=null;
-	const lo=st.loadout;
-	if(!lo||!stores_proto) return;   // no loadout known (remote before its roster) or the stores model is still loading — tips alone carry the legacy look
-	const holder=new THREE.Group(); holder.name="stores";
-	const nodes={};
-	for(let station=1;station<=9;station++){
-		const slot=lo[String(station)]; if(!slot) continue;
+// store_position is where a round hangs in the world: its own model's origin, its centre of gravity.
+function store_position(st,name){ const piece=st.group&&st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(!piece) return null;
+	piece.updateWorldMatrix(true,false); piece.getWorldPosition(_v); return {x:_v.x,y:_v.y,z:_v.z}; }   // the jet's pose of this world step, not of the last frame drawn: a frame of 64x moves it a kilometre
+// apply_stores hangs a jet's loadout on our own model (hang.ts; claude/plans/air-fa18c.md #9): the store parts its
+// stations show, which the "stores" drive answers part by part (x.shown), and each round's missile, its own model laid
+// on its seat from the points file's hardpoints. A round hangs beside its part, under the bend joint carrying both,
+// so it rides the wing's bend and fold and stays drawn in first person, where the part's airframe may not be. The
+// parts are kept by the catalog's names too (st.racks.parts: a fixture's hardware, a tank) for the jettison's falling
+// copies. A jet whose loadout is not known yet carries the wingtip pair.
+function apply_stores(st){ const x=st.group&&st.group.userData.exterior; if(!x) return;
+	for(const node of Object.values((st.racks&&st.racks.nodes)||{})) if(node.parent) node.parent.remove(node);
+	const lo=st.loadout||TIPS_ONLY, shown=new Set(), nodes={}, parts={};
+	for(let station=1;station<=9;station++){ const slot=lo[String(station)]; if(!slot) continue;
+		const hung=hang_parts(station,slot); for(const p of hung) shown.add(p);
 		for(const name of stores_entries(station,slot)){
-			if(name.startsWith("tip")) continue;   // airframe nodes, not clones
-			let piece=null;
-			if(name.startsWith("rail")||name.startsWith("twin")||name.startsWith("pylon")){ piece=stores_clone("Pylon_"+station); }   // no Pylon_4/6 exists: the cheek LAU-116 shows nothing, the round sits flush (#27)
-			else if(name.startsWith("tank")){ piece=stores_clone("Tank_"+station); }
-			else if(name.startsWith("120c")){ piece=amraam_clone(name,station); }
-			else if(ROUND_ANCHORS[name]){ piece=round_clone(model, name, station); }
-			if(piece){ holder.add(piece); nodes[name]=piece; }
-		}
-	}
-	scene.add(holder);
-	st.racks={ holder, nodes };
+			const own=name.startsWith("tank")?hung.filter(p=>p.startsWith("tank")):/^(rail|twin|pylon)\d/.test(name)?hung.filter(p=>!p.startsWith("tank")):[];
+			if(own.length) parts[name]=own.map(p=>x.object.getObjectByName(p)).filter(Boolean); }
+		const seats=((x.points.hardpoints||{})[String(station)]||{}).rounds||{};
+		for(const r of hang_rounds(station,slot)){ const proto=missile_protos[r.kind], seat=seats[r.part], part=x.object.getObjectByName(r.part);
+			if(!proto){ void init_missile_model(r.kind); continue; }   // hung when it lands
+			if(!seat||!part||!part.parent) continue;
+			const piece=proto.clone(true), at=hang_place(seat,MISSILE_POINTS[r.kind].points.mount), origin=exterior_origin(x,part.parent);
+			piece.position.copy(at.position).sub(origin); piece.quaternion.copy(at.quaternion); piece.name=`round_${r.name}`;
+			piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } });
+			part.parent.add(piece); nodes[r.name]=piece; } }
+	x.shown=shown; st.racks={ nodes, parts };
 	if(st.group.userData.player){ layer_own_group(st.group); }   // fresh children need the cockpit-pass layer
 	update_rails(st, Math.max(0, st.msl|0)); }
-function stores_clone(name){ if(!stores_proto) return null; const source=stores_proto.getObjectByName(name); if(!source) return null;
-	const piece=source.clone(true); piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } }); return piece; }
-// amraam_clone (#27): the round at its anchor, position and lean derived by
-// weapons.ts from the source art so placement never needs hand measurement.
-function amraam_clone(name,station){ if(!amraam_proto||!stores_proto) return null;
-	const anchor=amraam_anchor(stores_proto,station,name.endsWith("a")?"a":name.endsWith("b")?"b":""); if(!anchor) return null;
-	const piece=amraam_proto.clone(true);
-	piece.traverse(o=>{ if(o.isMesh){ o.castShadow=cfg.shadows; o.userData.modelmesh=true; } });
-	piece.position.copy(anchor);
-	piece.quaternion.copy(amraam_aim(stores_proto,station));
-	return piece; }
-// round_clone borrows the jet's own tip missile mesh for a pylon round: same
-// geometry, material, and heading — only translated to the station anchor.
-function round_clone(model, name, station){
-	const source=model.getObjectByName(station<5?TIP_NODES.tip1:TIP_NODES.tip9);   // clone the same side's tip so any livery asymmetry stays honest
-	if(!source||!source.isMesh) return null;
-	if(!source.geometry.boundingBox) source.geometry.computeBoundingBox();
-	const centre=source.geometry.boundingBox.getCenter(new THREE.Vector3());
-	const piece=new THREE.Mesh(source.geometry, source.material);
-	piece.castShadow=cfg.shadows; piece.userData.modelmesh=true;
-	const anchor=ROUND_ANCHORS[name];
-	piece.position.set(anchor[0]-centre.x, anchor[1]-centre.y, anchor[2]-centre.z);
-	return piece; }
 // update_rails shows the jet's remaining rounds: expended missiles disappear
 // in the SMS firing order (rounds()), tips included. A jet with no known
-// loadout falls back to the legacy tip pair per count.
-function update_rails(st,count){ if(!st.group) return;
+// loadout carries the wingtip pair, emptying per count.
+function update_rails(st,count){ if(!st.group) return; const nodes=(st.racks&&st.racks.nodes)||{};
 	const lo=st.loadout;
-	if(!lo){ for(let i=0;i<MISSILE_NODES.length;i++){ const node=st.group.getObjectByName(MISSILE_NODES[i]); if(node) node.visible=i<count; } return; }
+	if(!lo){ TIP_PAIR.forEach((name,i)=>{ if(nodes[name]) nodes[name].visible=i<count; }); return; }
 	const order=sequence(st);
 	const live=new Set(order.heaters.slice(departed(order.heaters,count|0)));
-	for(const key of ["tip1","tip9"]){ const node=st.group.getObjectByName(TIP_NODES[key]); if(node) node.visible=live.has(key); }
-	for(const [name,node] of Object.entries((st.racks&&st.racks.nodes)||{})){ if(name.startsWith("9m")) node.visible=live.has(name); }
+	for(const [name,node] of Object.entries(nodes)){ if(name.startsWith("tip")||name.startsWith("9m")) node.visible=live.has(name); }
 	{ const spent=departed(order.amraams,st.amraam);   // #27: expended AMRAAMs disappear port cheek first; a jet with no count (remote) keeps them all
-		order.amraams.forEach((name,i)=>{ const node=st.racks&&st.racks.nodes&&st.racks.nodes[name]; if(node) node.visible=i>=spent; }); } }
+		order.amraams.forEach((name,i)=>{ const node=nodes[name]; if(node) node.visible=i>=spent; }); } }
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights();
 	{ const g=ownship.group, before=new Set(g.children);   // the eye's calibration casts at the old cockpit, drawn while it runs; the parts the cockpit build hangs on the group are the pit's, drawn with it
 		for(const o of g.userData.legacy||[]) o.visible=true;
@@ -5309,8 +5284,8 @@ function external_fill(b){ const c=external_capacity(); b[STATE.wing]=c.wing; b[
 // learns through the jettison wire event.
 const falling=[];   // free-falling jettisoned pieces: {piece, vel, spin, age}
 function separate_debris(st, names){
-	const nodes=(st.racks&&st.racks.nodes)||{};
-	for(const name of names){ const node=nodes[name]; if(!node||!node.visible||!node.parent) continue;
+	const nodes=(st.racks&&st.racks.nodes)||{}, parts=(st.racks&&st.racks.parts)||{};
+	for(const node of names.flatMap(name=>nodes[name]?[nodes[name]]:parts[name]||[])){ if(!node.visible||!node.parent) continue;   // a round, or the parts its catalog name drops (a fixture's hardware, a tank): each falls as a copy of itself (claude/plans/air-fa18c.md #9)
 		const piece=node.clone(true);
 		node.parent.updateWorldMatrix(true,false);
 		piece.applyMatrix4(node.parent.matrixWorld);   // keep the world pose after reparenting to the scene
@@ -5476,35 +5451,26 @@ async function init_external_model(kind){
 }
 
 // ============================================================================
-// stores model (#17) The split stores.glb: per-station pylon, tank and missile
-// nodes in the airframe's model space, fetched lazily the first time a loadout
-// carries anything beyond the wingtips.
-let stores_proto=null, stores_pending=null;
-// load_split: a split model (the stores, the AIM-120C) from the library, cloned:
-// the stock is shared with the loadout preview and never dressed in place.
+// The missiles (#27; claude/plans/air-fa18c.md #9): one designation per file with its points file, fetched the
+// first time a jet hangs one; a jet that spawned before the fetch finished gets its rounds when it lands. A round in
+// flight, ours, the bandit's or another player's, is drawn as its own model too (dress_round).
+const MISSILE_URLS={ aim9m:aim9m_model_url, aim120c:amraam_model_url }, MISSILE_POINTS={ aim9m:aim9m_points, aim120c:aim120c_points };
+const missile_protos={}, missile_pending={};
+// load_split: a model from the library, cloned: the stock is shared with the loadout preview and never dressed in place.
 async function load_split(url){ return (await model_stock(url, renderer)).scene.clone(true); }
-async function init_stores_model(){
-	if(stores_proto) return; if(stores_pending) return stores_pending;
-	stores_pending=(async()=>{ try{
-		stores_proto=await load_split(stores_model_url);
-		apply_stores(ownship); apply_stores(bandit);   // jets that spawned before the fetch finished get their racks now
-		for(const st of remotes.values()) apply_stores(st);
-	}catch(e){ console.warn("[stores] model failed",e&&e.message||e); stores_pending=null; } })();
-	return stores_pending;
-}
-// The AIM-120C round (#27): one designation per GLB, like the airframe —
-// normalised to the placement convention (z longitudinal nose-forward,
-// metres, centred) at load, fetched only when a loadout carries one.
-let amraam_proto=null, amraam_pending=null;
-async function init_amraam_model(){
-	if(amraam_proto) return; if(amraam_pending) return amraam_pending;
-	amraam_pending=(async()=>{ try{
-		amraam_proto=normalize_round(await load_split(amraam_model_url));
+function init_missile_model(kind){
+	if(missile_protos[kind]||missile_pending[kind]) return missile_pending[kind];
+	missile_pending[kind]=(async()=>{ try{
+		missile_protos[kind]=await load_split(MISSILE_URLS[kind]);
 		apply_stores(ownship); apply_stores(bandit);
 		for(const st of remotes.values()) apply_stores(st);
-	}catch(e){ console.warn("[aim120c] model failed",e&&e.message||e); amraam_pending=null; } })();
-	return amraam_pending;
-}
+		for(const m of missiles) if(m.active&&m.kind) dress_round(m.mesh,m.kind);   // a round fired before its model landed
+	}catch(e){ console.warn(`[${kind}] model failed`,e&&e.message||e); missile_pending[kind]=null; } })();
+	return missile_pending[kind]; }
+// dress_round draws a flying round (a holder from the in-flight pools) as its own model, in the model's frame: x along
+// the flight, the origin at its centre of gravity. Until the model has landed the round flies as the dart, and the
+// model is fetched.
+function dress_round(group,kind){ if(!dress(group,kind,missile_protos,model=>model.traverse(o=>{ if(o.isMesh) o.castShadow=cfg.shadows; }))) void init_missile_model(round_kinds[kind]); }
 
 // ============================================================================ optional external carrier model
 // Placed so bow -> +X (yaw 90; flip to -90 or +180 if reversed) and the waterline sits at y=0.
@@ -6339,7 +6305,7 @@ function launch_puff(x,y,z){ for(let i=0;i<6;i++){ const k=pool_spawn(smoke); if
 	smoke.vx[k]=(Math.random()-0.5)*3; smoke.vy[k]=(Math.random()-0.5)*3+1; smoke.vz[k]=(Math.random()-0.5)*3;
 	smoke.ttl[k]=smoke.life[k]=1.8+Math.random()*0.8; smoke.sz[k]=0.5+Math.random()*0.35; smoke.gr[k]=1.3;
 	smoke.r[k]=0.84; smoke.g[k]=0.84; smoke.b[k]=0.85; } }
-const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=new THREE.Mesh(missile_geo,missile_mat); m.visible=false; scene.add(m);
+const missiles=[]; for(let i=0;i<MSL_MAX;i++){ const m=holder(new THREE.Mesh(missile_geo,missile_mat)); m.visible=false; scene.add(m);
 	missiles.push({mesh:m,active:false,px:0,py:0,pz:0,vx:0,vy:0,vz:0,life:0,target:null,smoke_acc:0,
 		burn:0,flew:0,loose:false,blind:0,lx:0,ly:0,lz:0,window:false}); }   // AIM-9M state (#126): boost, arming, broken lock, and a swallowed flare's fall point (the sight line carries no memory: seeker.ts)
 // airflow is a jet's speed through the air and the wind it flies in: a round leaves the rail at the
@@ -6351,19 +6317,17 @@ function launch_missile(st,target){ const m=missiles.find(x=>!x.active); if(!m) 
 	if(st.group&&st.msl>0){
 		if(st.loadout){ const order=sequence(st).heaters; const next=order[departed(order,st.msl)];   // the round about to depart, in the jet's launch order: the SMS priority order (#17), a burning round first
 			const at=next&&store_position(st,next); if(at) sp=at; }
-		else { const rail=st.group.getObjectByName(MISSILE_NODES[(st.msl-1)%MISSILE_NODES.length]);   // no known loadout (remote before its roster): the legacy alternating tips
-			if(rail){ rail.getWorldPosition(_v); sp={x:_v.x,y:_v.y,z:_v.z}; } } }
+		else { const at=store_position(st,TIP_PAIR[(st.msl-1)%TIP_PAIR.length]); if(at) sp=at; } }   // no known loadout (remote before its roster): the wingtip pair in turn
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
 	{ const a=airflow(st); m.vx=a.wind.x+st.fwd.x*(a.speed+30); m.vy=a.wind.y+st.fwd.y*(a.speed+30); m.vz=a.wind.z+st.fwd.z*(a.speed+30); }   // off the rail at the jet's airspeed, in the air it flies; the Mk 36 does the rest
-	m.life=20; m.kind="9m"; m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.rate=undefined; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
+	m.life=20; m.kind="9m"; dress_round(m.mesh,m.kind); m.target=target; m.enemy=false; m.smoke_acc=0; m.burn=3.0; m.flew=0; m.loose=false; m.blind=0; m.window=false; m.rejected=0; m.least=1e9; m.why=""; m.at=-1; m.rate=undefined; m.mask=-1; m.killed=false; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st;   // enemy=false HERE, every launch: the pool slot may last have carried the bandit's heater, and a player's 9M that inherited enemy=true fused on the bandit and blasted the OWNSHIP's hulk instead — four fused shots in the 2026-08-19 joust, recorded as the bandit's, harming nobody. launch_bandit_heater sets it true again for its own rounds
 	if(target){ const dx=(target.pos.x-st.pos.x), dy=target.pos.y-st.pos.y, dz=(target.pos.z-st.pos.z); const d=Math.hypot(dx,dy,dz)||1;
 		const tail=target.fwd?Math.max(0,(dx*target.fwd.x+dy*target.fwd.y+dz*target.fwd.z)/d):0;
 		const floor=0.15+0.35*THREE.MathUtils.clamp(target.reheat??0,0,1);   // the target's achieved plume, the ownship's included: the bandit's brain fired on it, so the round judges the same flame and not the lever, which sent pairs fired as the pilot left burner off the rail cold
 		if(d>5000*(floor+(1-floor)*tail)){ m.loose=true; m.why="cold"; } }   // launched without acquisition (#255): the round departs ballistic — the seeker never had him, exactly as the lock tone warned
 	return true; }
 const _v=new THREE.Vector3();
-const _launch_box=new THREE.Box3();
 // trigger_missile: the 9M edge of the fire trigger, shared by the keyboard and
 // the pad trigger. The pad path calls this directly: a synthetic Space keydown
 // with no keyup wedges Space into the held-keys set and both paths then skip
@@ -6422,12 +6386,11 @@ function amraam_departure(st){ const order=sequence(st).amraams, name=order[depa
 function launch_amraam(st,target,track){ const m=missiles.find(x=>!x.active); if(!m) return false;
 	let sp=local_offset(st,1,-0.9,0);
 	const { name, velocity }=amraam_departure(st);
-	const piece=name&&st.racks&&st.racks.nodes&&st.racks.nodes[name];
-	if(piece){ piece.updateWorldMatrix(true,false); _launch_box.setFromObject(piece); _launch_box.getCenter(_v); sp={x:_v.x,y:_v.y,z:_v.z}; }   // this world step's pose, as store_position
+	const at=name&&store_position(st,name); if(at) sp=at;   // this world step's pose
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
 	m.vx=velocity.x; m.vy=velocity.y; m.vz=velocity.z;
-	m.kind="120c"; m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st; m.supported=undefined;
+	m.kind="120c"; dress_round(m.mesh,m.kind); m.target=target; m.track=track??null; m.enemy=false; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=st; m.supported=undefined;
 	m.slot=missiles.indexOf(m);
 	const estimate=(track!=null&&target)?{ position:{x:target.pos.x,y:target.pos.y,z:target.pos.z},
 		velocity:{x:target.velx??target.fwd.x*target.speed,y:target.vely??target.fwd.y*target.speed,z:target.velz??target.fwd.z*target.speed} }:null;
@@ -6452,7 +6415,7 @@ function launch_bandit_round(){ const m=missiles.find(x=>!x.active); if(!m||!has
 	m.active=true; m.mesh.visible=true; m.px=sp.x;m.py=sp.y;m.pz=sp.z;
 	launch_puff(sp.x,sp.y,sp.z);
 	{ const a=airflow(bandit); m.vx=a.wind.x+bandit.fwd.x*(a.speed+30); m.vy=a.wind.y+bandit.fwd.y*(a.speed+30); m.vz=a.wind.z+bandit.fwd.z*(a.speed+30); }   // its rail, at its airspeed in the air it flies
-	m.kind="120c"; m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=bandit; m.supported=undefined;
+	m.kind="120c"; dress_round(m.mesh,m.kind); m.target=null; m.track=null; m.enemy=true; m.smoke_acc=0; m.flew=0; m.mask=-1; m.killed=false; m.phase=0; m.stale=0; m.mach=0; m.took=0; m.fate=undefined; m.fated=0; m.burst=undefined; m.closure=undefined; m.off=undefined; m.judged=undefined; m.spot=undefined; m.neared=undefined; m.heard=false; m.shot=(m.shot||0)+1; m.launcher=bandit; m.supported=undefined;
 	m.slot=missiles.indexOf(m);
 	round_launch(m.slot,{x:m.px,y:m.py,z:m.pz},{x:m.vx,y:m.vy,z:m.vz},
 		{ position:{x:ownship.pos.x,y:ownship.pos.y,z:ownship.pos.z}, velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz} },true);
@@ -7266,7 +7229,6 @@ function update_papi(p){ const flash=(sim_time*1000%520)<90;   // REIL: ~2 Hz sy
 let carrier_ols=null;
 let carrier_shuttles=null;   // one catapult shuttle (towing spreader) per cat spot; the active one rides the stroke with the jet
 let carrier_jbds=null;       // one Mk 7 jet blast deflector per cat spot; rises behind the hooked jet
-const JBD_T=0.28, JBD_ANG=50*Math.PI/180, JBD_INSET={ side:0.125, end:0.1 };   // the panel fills its painted box (each catapult's deflector in the ship file) inside the border; real Mk 7 raises to ~50°
 function ols_points(pts,color,size){   // like glow_points but SCREEN-SPACE (constant pixels) so the meatball reads small up close and far, not a 9 m blob
 	const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(pts),3));
 	const p=new THREE.Points(g,screen_point(new THREE.PointsMaterial({map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:false}),size)); p.frustumCulled=false; scene.add(p); return p;
@@ -7302,36 +7264,10 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		m.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); m.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(m);
 		return { mesh:m, home:m.position.clone() };
 	});
-	// Jet blast deflectors: a Mk 7 panel filling each painted JBD box, hinged at
-	// its forward edge, 1.5 cm above deck while moving (never coplanar), rising to
-	// 50° behind a hooked jet. Fully down the mesh is hidden and the painted deck
-	// is the flush panel - any rendered plate reads raised at grazing angles.
-	// Raised, a pit quad and three rams fill the footprint.
-	const jbdSteel=new THREE.MeshStandardMaterial({color:0x7a8087,metalness:0.35,roughness:0.62});
-	const jbdDeck=new THREE.MeshStandardMaterial({color:0x5e605c,metalness:0.05,roughness:0.95});   // fallback only: a carrier without a deck_baked material
-	const jbdPitM=new THREE.MeshStandardMaterial({color:0x0c0d0f,metalness:0.1,roughness:1.0});
-	const jbdRamM=new THREE.MeshStandardMaterial({color:0xb9bec4,metalness:0.85,roughness:0.3});
-	let jbdTop:THREE.Material|null=null; carrier_model.traverse(o=>{ const m=(o as THREE.Mesh & {material?:THREE.Material}).material; if(!jbdTop && (m?.name==='deck_baked'||m?.name==='deck')) jbdTop=m; });   // the deck strip's own material: same texture, same light response
-	const tx=SHIP.texture.x, tz=SHIP.texture.z;   // the deck texture's extent: the deck's paint maps u across tx and v across tz (tools/ford/paint.py)
-	carrier_jbds=rigged?SHIP.catapults.map((cat,i)=>({ joint:`catapult_${i+1}_deflector`, frac:0 })):SHIP.catapults.map(cat=>{
-		const box=cat.deflector, L=box.depth-2*JBD_INSET.end, bw=box.width-2*JBD_INSET.side;   // the box the bake paints, on the catapult's heading
-		const w=carrier_world(box.x,box.z), hd=cat.heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd);
-		const fwdx=fx*CARRIER_C+fz*CARRIER_S, fwdz=-fx*CARRIER_S+fz*CARRIER_C;
-		const g=new THREE.Group(); g.visible=false;   // shown only while animating/raised (update_jbds)
-		g.position.set(w.x, deck_y_at(carrier_model,w.x,w.z,dy), w.z); g.rotation.y=Math.atan2(-fwdz,fwdx); scene.add(g);
-		const pivot=new THREE.Group(); pivot.position.set(L/2,0.015,0); g.add(pivot);   // hinge line = the box's forward edge, 1.5 cm above deck
-		const pg=new THREE.BoxGeometry(L,JBD_T,bw); pg.translate(-L/2,-JBD_T/2,0);   // TOP face at hinge level: flat = flush plate, body sunk in the notional recess
-		{ const pp=pg.attributes.position, uv=pg.attributes.uv;   // taxi-face UVs = the panel footprint in the bake frame, so flat = the deck's own paint
-			for(let i=0;i<pp.count;i++){ const gx=pp.getX(i)+L/2, gz=pp.getZ(i);
-				const f2=box.x+gx*fx-gz*fz, l2=box.z+gx*fz+gz*fx;
-				uv.setXY(i,(f2-tx[0])/(tx[1]-tx[0]),(l2-tz[0])/(tz[1]-tz[0])); } }
-		const panel=new THREE.Mesh(pg,[jbdSteel,jbdSteel,jbdTop||jbdDeck,jbdSteel,jbdSteel,jbdSteel]);   // +y (taxi face) deck paint, all other faces steel
-		panel.castShadow=true; pivot.add(panel);
-		for(let r=0;r<4;r++){ const rib=new THREE.Mesh(new THREE.BoxGeometry(0.14,0.10,bw-0.5),jbdSteel); rib.position.set(-0.55-r*1.02,-JBD_T-0.05,0); rib.castShadow=true; pivot.add(rib); }   // underside stiffeners (buried when flat, shown when raised)
-		const pit=new THREE.Mesh(new THREE.PlaneGeometry(L+0.2,bw+0.2),jbdPitM); pit.rotation.x=-Math.PI/2; pit.position.set(0,0.012,0); pit.visible=false; g.add(pit);
-		const rams=[-1,0,1].map(k=>{ const m=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.11,1,8),jbdRamM); m.castShadow=true; m.visible=false; g.add(m); m.userData.kz=k*3.1; return m; });
-		return { g, pivot, pit, rams, frac:0, length:L };
-	});
+	// Jet blast deflectors: the model's own panels (the contract's joints), each
+	// raised through its keys (eased into and out of its stops) and its struts
+	// following it (the ship file's followers)
+	carrier_jbds=rigged?SHIP.catapults.map((cat,i)=>({ joint:`catapult_${i+1}_deflector`, followers:SHIP.followers[`catapult_${i+1}_deflector`]??[], frac:0 })):null;
 	// --- OLS (meatball) on the port bracket of the carrier (measured); glideslope stays referenced to the touchdown, not this housing ---
 	const aim=SHIP.landing.target?SHIP.landing.target-1:SHIP.landing.wires.length>3?2:1, ofa=SHIP.ols.x, olat=SHIP.ols.z;   // OLS bracket position on the carrier's port side; the target wire is the ship file's (the Ford's 2), or the 3-wire on a four-wire deck
 	const twfa=aim>0?(SHIP.landing.wires[aim-1]+SHIP.landing.wires[aim])/2:SHIP.landing.wires[aim];   // the hook's touchdown halfway between the wire before the target and the target, so it drags into the target: NATOPS's rule for a four-wire deck (halfway between the 2 and 3), carried to the Ford's three (between the 1 and 2)
@@ -7795,28 +7731,15 @@ function update_shuttles(){   // the hooked cat's shuttle rides with the jet's l
 		if(i===active){ s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), 0, ownship.pos.z+ownship.fwd.z*(nose+0.28)); rig_local(s.mesh.position).y=s.home.y; }   // found in the world, placed on the rig the shuttles hang from
 		else s.mesh.position.copy(s.home); }
 }
-const _ramDir=new THREE.Vector3(), _ramUp=new THREE.Vector3(0,1,0);
 function update_jbds(dt){   // the hooked cat's deflector rises through run-up and the stroke, drops after
 	if(!carrier_jbds) return;
 	const active=ownship.launching?cat_idx:on_cat_spot();
 	for(let i=0;i<carrier_jbds.length;i++){ const j=carrier_jbds[i];
-		const tgt=i===active?1:0, rate=tgt>j.frac?0.9:0.55;   // ~1.1 s up (hydraulic), ~1.8 s settle down
+		const tgt=i===active?1:0, rate=tgt>j.frac?TRAVEL.rise:TRAVEL.fall;
 		j.frac=THREE.MathUtils.clamp(j.frac+THREE.MathUtils.clamp(tgt-j.frac,-rate*dt,rate*dt),0,1);
-		if(j.joint){ ship_joint(j.joint,j.frac*ship_joint_max(j.joint)); continue; }   // the model's own deflector, to its joint's travel
-		const th=j.frac*JBD_ANG;
-		j.pivot.rotation.z=-th;   // -z rotation lifts the aft (free) edge
-		j.g.visible=j.frac>0.002;   // fully down = the painted deck IS the flush panel: even deck-textured, a 1.5 cm plate reads raised at grazing angles (its edge halves the border dashes and the parallax doubles them, with the steel side face drawing a dark outline)
-		const show=j.frac>0.06; j.pit.visible=show;
-		// rams: fixed base in the pit to an attachment on the panel underside (pivot-local
-		// x -2.5), which sweeps with the hinge angle — position/orient/stretch each frame
-		const ax=-2.5*Math.cos(th)-JBD_T*Math.sin(th), ay=2.5*Math.sin(th)-JBD_T*Math.cos(th);   // attachment on the panel UNDERSIDE (pivot-local -2.5,-T), swept by the hinge angle
-		const hx=j.length/2, tipx=hx+ax, tipy=0.015+ay, bx=hx-2.9, by=0.04;
-		for(const m of j.rams){ m.visible=show; if(!show) continue;
-			const len=Math.hypot(tipx-bx,tipy-by);
-			m.scale.set(1,Math.max(len,0.05),1);
-			m.position.set((bx+tipx)/2,(by+tipy)/2,m.userData.kz);
-			_ramDir.set(tipx-bx,tipy-by,0).normalize();
-			m.quaternion.setFromUnitVectors(_ramUp,_ramDir); }
+		const angle=joints_schedule(SHIP.joints[j.joint].keys,j.frac);   // its keys ease it into and out of its stops
+		ship_joint(j.joint,angle);
+		for(const f of j.followers) ship_joint(f,joints_schedule(SHIP.joints[f].keys,angle));   // its struts, through their own keys on its angle
 	}
 }
 // A Case I, II or III start is a carrier recovery from spawn to trap, and the Hornet flies
@@ -10646,24 +10569,9 @@ if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, fuel:ownship.fuel
 	aoa:+(ownship.aoa??0).toFixed(2), zoom:+view_zoom.toFixed(2), view:cfg.view, sparks:_spark_count,   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	stores:{ msl:ownship.msl, mask:own_mask().toString(2), external:+(((ownship.gauges||{}).externalRaw)||0).toFixed(0), rounds:stores_rounds(ownship.loadout||{}).map(r=>r.name), carriage:{...(ownship.carriage||{})}, cas:+(((ownship.cas||0))*1.9438).toFixed(0), debris:falling.length, dpos:falling[0]?falling[0].piece.position.toArray().map(n=>+n.toFixed(1)):null, dinfo:(()=>{ const f=falling[0]; if(!f) return null; let mesh=null; f.piece.traverse(o=>{ if(!mesh&&o.isMesh) mesh=o; }); return { vis:f.piece.visible, parent:f.piece.parent===scene, scale:+f.piece.scale.x.toFixed(4), mask:mesh?mesh.layers.mask:-1, mvis:mesh?mesh.visible:false, geo:!!(mesh&&mesh.geometry&&mesh.geometry.attributes.position), ndc:(()=>{ const v=new THREE.Vector3().copy(f.piece.position).project(camera); return [+v.x.toFixed(2),+v.y.toFixed(2),+v.z.toFixed(3)]; })(), opos:ownship.group.position.toArray().map(n=>+n.toFixed(1)) }; })(),   // #17/#18 diagnostics: the flown loadout, the live core mask, carriage harm, knots CAS (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
 		racks:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>[n,o.visible])),
-		lateral:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>{ let mesh=null; o.traverse(x=>{ if(!mesh&&x.isMesh) mesh=x; });
-			if(!mesh||!mesh.geometry||!mesh.geometry.attributes.position) return [n,null];
-			// INDEX-AWARE mean: the split stores.glb shares one vertex buffer
-			// across every station's primitive, so a bounding box over the
-			// position attribute spans all stations — only the index selects
-			// this piece's triangles.
-			const g=mesh.geometry, pos=g.attributes.position, idx=g.index;
-			const c=new THREE.Vector3(); let count=0;
-			if(idx){ for(let k=0;k<idx.count;k+=9){ const i=idx.getX(k); c.x+=pos.getX(i); c.y+=pos.getY(i); c.z+=pos.getZ(i); count++; } }
-			else { for(let i=0;i<pos.count;i+=3){ c.x+=pos.getX(i); c.y+=pos.getY(i); c.z+=pos.getZ(i); count++; } }
-			if(!count) return [n,null];
-			c.multiplyScalar(1/count); mesh.localToWorld(c); ownship.group.worldToLocal(c);
-			return [n,+c.z.toFixed(2)]; })),   // group-frame lateral: positive z = starboard (the cockpit panel-click convention) — the port/starboard placement truth for each rack (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
-		tips:Object.fromEntries(Object.entries(TIP_NODES).map(([k,n])=>{ const o=ownship.group.getObjectByName(n); return [k,o?o.visible:null]; })),
-		tiplateral:Object.fromEntries(Object.entries(TIP_NODES).map(([k,n])=>{ const o=ownship.group.getObjectByName(n); if(!o||!o.isMesh||!o.geometry.attributes.position) return [k,null];
-			const pos=o.geometry.attributes.position, c=new THREE.Vector3(); let count=0;
-			for(let i=0;i<pos.count;i+=7){ c.x+=pos.getX(i); c.y+=pos.getY(i); c.z+=pos.getZ(i); count++; }
-			c.multiplyScalar(1/count); o.localToWorld(c); ownship.group.worldToLocal(c); return [k,+c.z.toFixed(2)]; })) },   // the airframe tip nodes' true sides, same convention as lateral   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
+		lateral:Object.fromEntries(Object.entries((ownship.racks&&ownship.racks.nodes)||{}).map(([n,o])=>{ o.getWorldPosition(_v); ownship.group.worldToLocal(_v); return [n,+_v.z.toFixed(2)]; })),   // group-frame lateral: positive z = starboard (the cockpit panel-click convention) — the port/starboard placement truth for each round (i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop)
+		tips:Object.fromEntries(TIP_PAIR.map(k=>{ const o=ownship.racks&&ownship.racks.nodes&&ownship.racks.nodes[k]; return [k,o?o.visible:null]; })),
+		tiplateral:Object.fromEntries(TIP_PAIR.map(k=>{ const o=ownship.racks&&ownship.racks.nodes&&ownship.racks.nodes[k]; if(!o) return [k,null]; o.getWorldPosition(_v); ownship.group.worldToLocal(_v); return [k,+_v.z.toFixed(2)]; })) },   // the wingtip rounds' true sides, same convention as lateral   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 	record:(()=>{ const r=recording_file(); if(!r) return null; const lines=r.text.split(String.fromCharCode(10));
 		return {lines:lines.length, session:r.session, kind:r.kind, bot:/Doctrine=/.test(r.text),
 			// The ownship's last data line: proves a channel actually plumbs
@@ -14141,23 +14049,23 @@ function update_darts(dt){
 // draw_darts draws missiles given as position and velocity, dead-reckoned
 // `age` seconds on: the server's darts, and a replay's recorded rounds.
 function draw_darts(darts,age,dt){
-	while(darts_pool.length<6){ const mesh=new THREE.Mesh(missile_geo,missile_mat); mesh.visible=false; scene.add(mesh); darts_pool.push({mesh,acc:0}); }
+	while(darts_pool.length<6){ const mesh=holder(new THREE.Mesh(missile_geo,missile_mat)); mesh.visible=false; scene.add(mesh); darts_pool.push({mesh,acc:0}); }
 	let used=0, fox3=0;
 	for(const d of darts){
-		// The round's KIND rides the wire (#27): an AIM-120 draws as the real
-		// model, three and a half metres of it, not as a heater's dart — the
+		// The round's KIND rides the wire (#27): each draws as its own model, an
+		// AIM-120 three and a half metres of it, a 9M under three — the
 		// difference a defender can see coming.
-		if(d.radar&&amraam_proto){
-			while(fox3_pool.length<=fox3){ const piece=amraam_proto.clone(true); piece.visible=false; scene.add(piece); fox3_pool.push({mesh:piece,acc:0}); }
-			if(fox3<fox3_pool.length){ const p=fox3_pool[fox3++]; p.mesh.visible=age<1.0;
+		if(d.radar){
+			while(fox3_pool.length<=fox3){ const piece=holder(new THREE.Mesh(missile_geo,missile_mat)); piece.visible=false; scene.add(piece); fox3_pool.push({mesh:piece,acc:0}); }
+			if(fox3<fox3_pool.length){ const p=fox3_pool[fox3++]; p.mesh.visible=age<1.0; dress_round(p.mesh,"120c");
 				const x=d.position[0]+d.velocity[0]*age, y=d.position[1]+d.velocity[1]*age, z=d.position[2]+d.velocity[2]*age;
 				p.mesh.position.set(x,y,z);
 				{ const w=flight_wind(x,y,z); _v.set(d.velocity[0]-w.x,d.velocity[1]-w.y,d.velocity[2]-w.z); }   // it points into the air it flies through
-				if(_v.lengthSq()>1){ p.mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),_v.normalize()); }   // the round model lies along +z (normalize_round's convention)
+				if(_v.lengthSq()>1){ p.mesh.quaternion.setFromUnitVectors(_dart_axis,_v.normalize()); }   // the model lies along its x axis
 				if(p.mesh.visible){ p.acc+=dt; while(p.acc>0.02){ p.acc-=0.02; if(!trail_puff(x,y,z)) break; } }   // continuous: the wire carries no burn state (#83)
 				continue; } }
 		if(used>=darts_pool.length) break;
-		const p=darts_pool[used++]; p.mesh.visible=age<1.0;   // a stale set (detonated, or out of the top six) disappears rather than flying on forever
+		const p=darts_pool[used++]; p.mesh.visible=age<1.0; dress_round(p.mesh,"9m");   // a stale set (detonated, or out of the top six) disappears rather than flying on forever
 		const x=d.position[0]+d.velocity[0]*age, y=d.position[1]+d.velocity[1]*age, z=d.position[2]+d.velocity[2]*age;
 		p.mesh.position.set(x,y,z);
 		{ const w=flight_wind(x,y,z); _v.set(d.velocity[0]-w.x,d.velocity[1]-w.y,d.velocity[2]-w.z); }   // it points into the air it flies through
@@ -14166,7 +14074,6 @@ function draw_darts(darts,age,dt){
 		p.acc+=dt; while(p.acc>0.02){ p.acc-=0.02; if(!trail_puff(x,y,z)) break; } }   // continuous: the wire carries no burn state (#83)
 	for(let i=used;i<darts_pool.length;i++) darts_pool[i].mesh.visible=false;
 	for(let i=fox3;i<fox3_pool.length;i++) fox3_pool[i].mesh.visible=false;
-	if(fox3&&!amraam_proto) void init_amraam_model();   // a remote AIM-120 is inbound and the model is not loaded yet: fetch it
 }
 // The server-wide lobby chat in flight: the ring beside the match list,
 // polled as the server page polls it, so a Shift+` line and its replies reach

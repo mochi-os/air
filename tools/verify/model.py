@@ -107,7 +107,8 @@ def pose(joints, drives):
 		if joint["motion"] == "bend":
 			out[name] = ("bend", np.array([joint["axis"], joint["direction"]], float), tuple(setting(joint, name, drives)))
 		elif joint["motion"] != "morph":
-			out[name] = (joint["motion"], np.array(joint["axis"], float), setting(joint, name, drives))
+			# a "show" joint shows or hides its part and has no axis
+			out[name] = (joint["motion"], np.array(joint.get("axis", (0.0, 0.0, 0.0)), float), setting(joint, name, drives))
 		for key, morph in joint.get("morphs", {}).items():
 			out.weights.setdefault(name, {})[key] = lookup(morph["keys"], float(drives.get(morph["drive"], 0.0)))
 	return out

@@ -16,7 +16,7 @@ export interface Parts {
   bin: Uint8Array | null
 }
 
-interface Source {
+export interface Source {
   bytes: Uint8Array
   mime: string
 }
@@ -68,7 +68,7 @@ export function repack(json: any, bin: Uint8Array | null): ArrayBuffer {
 
 // textures maps each material's baseColor/emissive image bytes by material
 // name, following KTX2 sources into the basisu extension.
-function textures(
+export function textures(
   parts: Parts
 ): Record<
   string,
@@ -81,6 +81,7 @@ function textures(
   const images = parts.json.images || []
   const texturelist = parts.json.textures || []
   const views = parts.json.bufferViews || []
+  const sources = new Map<number, Source>() // one per image, however many materials share it
   const image = (ref: any): Source | null => {
     if (!ref || !texturelist[ref.index]) return null
     const t = texturelist[ref.index]
@@ -92,14 +93,17 @@ function textures(
           : null
     const im = si != null ? images[si] : null
     if (!im || im.bufferView == null || !parts.bin) return null
+    if (sources.has(si)) return sources.get(si)!
     const bv = views[im.bufferView]
-    return {
+    const source = {
       bytes: parts.bin.slice(
         bv.byteOffset || 0,
         (bv.byteOffset || 0) + bv.byteLength
       ),
       mime: im.mimeType || 'image/jpeg',
     }
+    sources.set(si, source)
+    return source
   }
   for (const m of parts.json.materials || []) {
     if (!m.name) continue
@@ -236,6 +240,19 @@ export function posed(jet: GLTF): THREE.Group {
 // decode turns captured image bytes into a texture: KTX2 through the transcoder
 // (self-hosted under basis/), everything else through createImageBitmap. glTF
 // UVs are NOT flipped - a flipped decode scrambles the livery atlas.
+// once wraps a decoder so each image is decoded once, however many materials
+// name it: the missiles' every material shares one atlas, and the jet's paint
+// and team share theirs. Every material showing it gets the one texture.
+export function once<T>(
+  decoder: (source: Source) => Promise<T>
+): (source: Source) => Promise<T> {
+  const done = new Map<Source, Promise<T>>()
+  return (source) => {
+    if (!done.has(source)) done.set(source, decoder(source))
+    return done.get(source)!
+  }
+}
+
 async function decode(
   ktx2: KTX2Loader,
   src: Source,
@@ -275,6 +292,26 @@ async function decode(
   return texture
 }
 
+// The finishes whose build gives them a sheen: the missiles' bare metal (their
+// hooks, the AIM-9M's rolleron flaps, bearing brackets, wheels and hanger). They
+// keep the metalness and roughness their model authors, partly metallic and
+// smoother, so they catch the sun; there is no environment map in the viewer or
+// the setup preview, so none is fully metallic.
+export const SHEEN = new Set(['metal', 'bare', 'bracket', 'wheel'])
+
+// finish lays a loaded material matte, as every model's paint is, unless it is
+// glass, a screen, an oleo, gear, or one of the SHEEN finishes.
+export function finish(m: THREE.MeshStandardMaterial): void {
+  if (
+    m.metalness === undefined ||
+    SHEEN.has(m.name) ||
+    /glass|screen|oleo|gear/i.test(m.name || '')
+  )
+    return
+  m.metalness = 0.0
+  m.roughness = 0.88
+}
+
 // load runs the whole pipeline: bytes to a textured scene. The model library
 // (library.ts) runs it once per model for the loadout preview and the flight
 // alike; the flight adds its per-jet extras on a clone.
@@ -290,6 +327,9 @@ export async function load(
     .setTranscoderPath('basis/')
     .detectSupport(renderer)
   const anisotropy = renderer.capabilities.getMaxAnisotropy()
+  const decoding = once((source: Source) =>
+    decode(ktx2, source, true, anisotropy)
+  )
   const decoded: Record<
     string,
     {
@@ -303,10 +343,10 @@ export async function load(
       try {
         decoded[name] = {
           base: captured[name].base
-            ? await decode(ktx2, captured[name].base!, true, anisotropy)
+            ? await decoding(captured[name].base!)
             : null,
           emissive: captured[name].emissive
-            ? await decode(ktx2, captured[name].emissive!, true, anisotropy)
+            ? await decoding(captured[name].emissive!)
             : null,
           hadEmissive: captured[name].hadEmissive,
         }
@@ -338,13 +378,7 @@ export async function load(
       } else if (d && d.hadEmissive && m.emissive) {
         m.emissive.setRGB(0, 0, 0) // emissive texture stripped and unrestorable: black it out rather than glow flat white — the untextured-white-fuselage failure
       }
-      if (
-        m.metalness !== undefined &&
-        !/glass|screen|oleo|gear/i.test(m.name || '')
-      ) {
-        m.metalness = 0.0
-        m.roughness = 0.88
-      }
+      finish(m)
       m.needsUpdate = true
     }
   })

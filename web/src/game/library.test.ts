@@ -193,7 +193,7 @@ describe('the wiring', () => {
   it('is warmed by the menu after the downloads start, and the downloads include what hangs on the jet', () => {
     expect(index).toMatch(/preload\(\)\n[\s\S]{0,600}?void warm\(\)/)
     expect(preload).toMatch(
-      /begin\(stores_model_url\)\n\s+begin\(amraam_model_url\)/
+      /begin\(aim9m_model_url\)\n\s+begin\(amraam_model_url\)/
     )
   })
 
@@ -213,15 +213,11 @@ describe('the wiring', () => {
 
   it('is where the loadout preview takes its models from, cloning before posing, with a loading line until the first render', () => {
     expect(preview).toMatch(
-      /model\(fa18c_model_url, renderer\),\n\s+model\(stores_model_url, renderer\),\n\s+model\(amraam_model_url, renderer\),/
+      /model\(fa18c_model_url, renderer\),\n\s+model\(aim9m_model_url, renderer\),\n\s+model\(aim120c_model_url, renderer\),/
     )
-    expect(preview).toMatch(/airframe = posed\(jet\)/)
-    expect(loader).toMatch(
-      /export function posed\(jet: GLTF\): THREE\.Group \{\n\s+const airframe = jet\.scene\.clone\(true\)/
-    )
-    expect(preview).toMatch(/racks = stores\.scene\.clone\(true\)/)
+    expect(preview).toMatch(/airframe = jet\.scene\.clone\(true\)/)
     expect(preview).toMatch(
-      /amraam = normalize_round\(round\.scene\.clone\(true\)\)/
+      /missiles = \{ aim9m: nine\.scene\.clone\(true\), aim120c: amraam\.scene\.clone\(true\) \}/
     )
     expect(preview).toMatch(/\{!ready && \(/)
     expect(preview).toMatch(/<Trans>Loading aircraft<\/Trans>/)

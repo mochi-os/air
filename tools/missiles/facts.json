@@ -1,0 +1,2050 @@
+{
+	"about": "Every number the missile builds use (claude/plans/air-fa18c.md #9), with its source (references.json) and where in it. Inches unless given. A missile's own frame: x forward along its axis, y up, z to its right, metres in the build; stations here are inches aft of the nose's tip. layout holds what no source states, each saying what it was measured on.",
+	"aim9m": {
+		"length": {
+			"value": 113,
+			"unit": "in",
+			"source": "navedtra14313ch3",
+			"where": "p 3-11",
+			"also": "navairaim9m: 9 ft 5 in (2.87 m); weaponsfile2003 p 1-4: 113 in"
+		},
+		"diameter": {
+			"value": 5,
+			"unit": "in",
+			"source": "navedtra14313ch3",
+			"where": "p 3-11",
+			"also": "navairaim9m; weaponsfile2003 p 1-4"
+		},
+		"span": {
+			"value": 24.75,
+			"unit": "in",
+			"source": "navairaim9m",
+			"where": "Specifications: wingspan 2 feet, 3/4 inches (0.63 meter)"
+		},
+		"weight": {
+			"value": 190,
+			"unit": "lb",
+			"source": "navedtra14313ch3",
+			"where": "p 3-11, approximately",
+			"also": "navairaim9m 190 lb; weaponsfile2003 p 1-4 191.7 lb"
+		},
+		"surfaces": {
+			"value": "four movable canards forward; four fixed wings at the tail, each with a rolleron",
+			"source": "weaponsfile2003",
+			"where": "p 1-4 (Control)"
+		}
+	},
+	"aim120c": {
+		"length": {
+			"value": 144,
+			"unit": "in",
+			"source": "navedtra14313ch3",
+			"where": "figure 3-10 (p 3-13)",
+			"also": "weaponsfile2003 p 1-9: about 144 in; navairamraam: 12 ft"
+		},
+		"diameter": {
+			"value": 7,
+			"unit": "in",
+			"source": "navedtra14313ch3",
+			"where": "figure 3-10",
+			"also": "weaponsfile2003 p 1-9; navairamraam"
+		},
+		"span": {
+			"value": 19,
+			"unit": "in",
+			"source": "navairamraam",
+			"where": "Specifications: wingspan AIM-120A/B 21 inches; AIM-120C/D 19 inches",
+			"note": "the C's wings and fins are clipped for the F-22's bays (weaponsfile2003 p 1-8). The Weapons File's own C spans (p 1-9) carry a '(C)' portion mark and are not used; navedtra14313ch3's 21 in wing and 25 in fin spans are the A/B's"
+		},
+		"gravity": {
+			"value": 79.6,
+			"unit": "in",
+			"source": "weaponsfile2003",
+			"where": "p 1-9: CG (Nom) about 79.6 inches",
+			"note": "read as aft of the nose's tip"
+		},
+		"weight": {
+			"value": 356,
+			"unit": "lb",
+			"source": "navairamraam",
+			"where": "Specifications: AIM-120C5/6/7"
+		},
+		"sections": {
+			"value": "the C-5 and later carry a 5 in longer rocket motor and a 5 in shorter control section",
+			"source": "weaponsfile2003",
+			"where": "p 1-8"
+		},
+		"hooks": {
+			"value": "forward, centre and aft launch hooks on top",
+			"source": "navedtra14313ch3",
+			"where": "figure 3-10"
+		}
+	},
+	"layout": {
+		"about": "Placements no source states, measured on the photos (photos.json beside this file): each entry says which photos and how.",
+		"aim9m": {
+			"about": "Measured on photos.json's AIM-9M photos with measure.py: usn070528 (on a wingtip LAU-7, long lens, about 20 deg ahead of the beam and below, scaled along the axis by the LAU-7's cited 110 in and anchored by the wing's root trailing corner, which dvids6456802 puts 1.9 in ahead of the tail) for the stations, and the fins' heights against the wing's cited span. The fins there lean about 35 deg out of the picture's plane, fitted so the wing tips reach the cited 12.4 in; leaning toward that camera, their tips read aft of where they are, by 2.3 in at the tip (the wing's raw tip trailing corner 113.4 against its straight trailing edge's 111.1) and in proportion inboard: the stations below are taken back by that much. The canard tips read 1.01 times the wing tips there and 0.95 times in usmc080317 (another round, level and oblique), so the canards span about as wide as the wings. The canard's outline is read row by row where it stands dark against the sky in usn070528.",
+			"profile": {
+				"value": [
+					[
+						0,
+						0
+					],
+					[
+						0.5,
+						0.95
+					],
+					[
+						1.0,
+						1.3
+					],
+					[
+						1.75,
+						1.75
+					],
+					[
+						5.0,
+						2.1
+					],
+					[
+						10.0,
+						2.35
+					],
+					[
+						14.0,
+						2.5
+					],
+					[
+						113,
+						2.5
+					]
+				],
+				"measured": "the body 5 in across aft of station 14 (usn070528's widths run straight to 0.44 px over the body); ahead of it the guidance section narrows to about 4.7 in at station 10 (usn070528, where the seeker's cover ends) and the glass dome is about 3.5 in across (dvids9021997, beside the canard root's width); the dome's own curve by eye"
+			},
+			"dome": {
+				"value": 1.75,
+				"measured": "the glass ahead of here (dvids9021997)"
+			},
+			"canards": {
+				"value": {
+					"outline": [
+						[
+							14.3,
+							2.5
+						],
+						[
+							19.1,
+							8.7
+						],
+						[
+							20.7,
+							12.4
+						],
+						[
+							21.3,
+							12.2
+						],
+						[
+							22.1,
+							2.5
+						]
+					],
+					"hinge": 18.2,
+					"thickness": 0.3
+				},
+				"measured": "usn070528, the upper canard against the sky: root leading edge 14.3 (pixel 375), its leading edge 1.25 px aft per px up to a kink 6.2 in out (pixel 538, 186), then 0.83 to the tip at 12.4 (pixels 603-620, 105); its trailing edge leans 0.19 px aft per px up from the root's 22.1; the tip's and kink's stations taken back 2.3 and 1.4 in; hinge at the root's middle; thickness by eye"
+			},
+			"wings": {
+				"value": {
+					"outline": [
+						[
+							88.0,
+							2.5
+						],
+						[
+							95.7,
+							12.4
+						],
+						[
+							111.1,
+							12.4
+						],
+						[
+							111.1,
+							2.5
+						]
+					],
+					"thickness": 0.25
+				},
+				"measured": "usn070528: root leading edge 88.0 (where its root fillet's corner fits), tip leading corner 95.7 at the cited 12.4 in semi-span, the trailing edge straight across at 111.1 (dvids6456802); thickness by eye. dvids1038285 (a wing square to the camera, its face mapped to the planform through its corners, the root corners placed from the flap's round bearing plate since the root is hidden): the straight leading edge reads swept about 43 deg near the root against the planform's 37.9, its marks up to 0.75 in off the planform's line, the planform's root corner (88.0) where the root fillet meets the wing's root fitting; under the 2 in rule, recorded and not changed"
+			},
+			"rollerons": {
+				"value": {
+					"centre": [
+						109.28,
+						11.57
+					],
+					"radius": 1.445,
+					"root": 1.302,
+					"teeth": 22,
+					"width": 0.35,
+					"flap": {
+						"outline": [
+							[
+								104.95,
+								10.39
+							],
+							[
+								105.75,
+								9.45
+							],
+							[
+								110.99,
+								9.34
+							],
+							[
+								110.98,
+								12.4
+							],
+							[
+								107.44,
+								12.43
+							],
+							[
+								107.41,
+								11.72
+							],
+							[
+								106.85,
+								12.37
+							]
+						],
+						"thickness": 0.51
+					},
+					"bracket": {
+						"outline": [
+							[
+								107.59,
+								12.45
+							],
+							[
+								107.62,
+								12.03
+							],
+							[
+								108.22,
+								12.02
+							],
+							[
+								108.4,
+								11.99
+							],
+							[
+								108.52,
+								11.89
+							],
+							[
+								108.6,
+								11.24
+							],
+							[
+								108.67,
+								11.09
+							],
+							[
+								108.87,
+								10.89
+							],
+							[
+								109.08,
+								10.8
+							],
+							[
+								109.37,
+								10.79
+							],
+							[
+								109.55,
+								10.87
+							],
+							[
+								109.77,
+								11.12
+							],
+							[
+								109.86,
+								11.38
+							],
+							[
+								109.87,
+								12.42
+							]
+						],
+						"thickness": 0.12,
+						"face": 1
+					},
+					"block": {
+						"outline": [
+							[
+								107.61,
+								12.03
+							],
+							[
+								107.65,
+								13.31
+							],
+							[
+								108.1,
+								13.27
+							],
+							[
+								108.16,
+								13.11
+							],
+							[
+								108.18,
+								12.56
+							]
+						],
+						"thickness": 0.35
+					}
+				},
+				"measured": "dvids6456802, the far-lower (lower right) wing's tip trailing corner, sharp at full resolution; read against that wing's own edges, its trailing edge (111.1) and tip edge (12.4) fitted through their marks, the spanwise scale (120.5 px/in) from the flap's 3.1 in span (usn070528) and the chordwise (166 px/in) the one at which the wheel's tooth tips are round (sd 0.02 in) and centred on the bearing bracket's arc (within 0.1 in): the wheel's centre 109.28, 11.57 out, its teeth' tips 1.445 and roots 1.30 in from it, about 22 ratchet teeth (5 over 65 deg), standing 0.62 in beyond the tip edge (0.56-0.61 by the helper's own scale). The rolleron is the wing's hinged trailing tip flap enclosing the gyro wheel, its spin axis normal to the wing (NACA RM SL55C22 p 4, fig 2): the bare-metal flap, pointed forward at 104.95, its aft edge 0.1 in short of the trailing edge, 3.1 in deep, its faces 0.13 in proud of the wing's (so 0.51 thick); the D-shaped bearing bracket on the face toward the camera (the wing's port-facing face; usn070528's near-lower wing shows none on its face, unresolved); a block 0.9 in beyond the tip at 107.6-108.2 (usn070528: about 1.2). The wheel's width, the bracket's and the block's thickness by eye; usn070528 reads the flap's inboard edge 5.1 in long against 4.7 here and the wheel 0.9-1.0 beyond the tip, from an oblique view. Confirmed on dvids1038285 (that wing's face mapped to the planform): the wheel's centre 109.30, 11.55, its tooth tips 1.42 (1.37-1.47) and roots 1.31 in from it, 22 teeth (21-23), 0.57 in beyond the tip (so not the oblique side view's 0.9-1.0); the flap's straight inboard edge 4.7 in at about 9.4 out, its aft edge flush with the trailing edge within error, the block 0.7 in beyond the tip; that face's D plate sits 0.35 in further aft and 0.4 in lower than this face's bracket and is not built"
+			},
+			"mount": {
+				"value": 63.9,
+				"measured": "usn070528: the station of the LAU-7's middle, its front at 8.9 and aft end at 118.9 (110 in): where the launcher's points file hangs the round"
+			},
+			"gravity": {
+				"value": 55.0,
+				"measured": "no source gives the AIM-9M's: the build's body taken as the centre, rounded"
+			},
+			"lugs": {
+				"value": [],
+				"measured": "the hangers face the launcher in every photo: not drawn"
+			},
+			"lug": {
+				"value": {
+					"length": 1.5,
+					"width": 1.0,
+					"height": 0.8
+				}
+			},
+			"paint": {
+				"value": [
+					101,
+					114,
+					127
+				],
+				"unit": "sRGB, 0-255",
+				"source": "photo match",
+				"measured": "as the AIM-120 (layout.aim120c paint): no photo shows an AIM-9M beside a surface of known grey in one light"
+			},
+			"nozzle": {
+				"value": {
+					"exit": 2.075,
+					"throat": 0.6,
+					"depth": 4.0
+				},
+				"measured": "navy040709N4565G004 (live AIM-9L rounds end-on, the right nozzle sharp): the exit 0.83 of the body's 5 in (311 against 376 px, ellipse rms 0.7 px), the throat about 0.24 (soft, deep inside); dvids1038287, a training round, reads 0.89 and may not carry the motor's nozzle. The depth is by eye; the nozzle bare metal"
+			},
+			"fittings": {
+				"value": [
+					{
+						"name": "hanger_aft",
+						"profile": [
+							[
+								96.5,
+								2.5
+							],
+							[
+								96.61,
+								2.527
+							],
+							[
+								96.72,
+								2.59
+							],
+							[
+								96.8,
+								2.68
+							],
+							[
+								96.83,
+								2.779
+							],
+							[
+								96.86,
+								2.878
+							],
+							[
+								96.89,
+								2.977
+							],
+							[
+								96.91,
+								3.076
+							],
+							[
+								96.92,
+								3.175
+							],
+							[
+								96.84,
+								3.22
+							],
+							[
+								96.81,
+								3.256
+							],
+							[
+								96.84,
+								3.337
+							],
+							[
+								96.93,
+								3.373
+							],
+							[
+								97.24,
+								3.382
+							],
+							[
+								97.85,
+								3.4
+							],
+							[
+								98.46,
+								3.4
+							],
+							[
+								99.07,
+								3.391
+							],
+							[
+								99.31,
+								3.373
+							],
+							[
+								99.44,
+								3.355
+							],
+							[
+								99.49,
+								3.31
+							],
+							[
+								99.51,
+								3.265
+							],
+							[
+								99.51,
+								3.166
+							],
+							[
+								99.64,
+								3.139
+							],
+							[
+								99.82,
+								3.139
+							],
+							[
+								100.19,
+								3.13
+							],
+							[
+								100.55,
+								3.121
+							],
+							[
+								100.66,
+								3.112
+							],
+							[
+								100.72,
+								3.076
+							],
+							[
+								100.74,
+								3.04
+							],
+							[
+								100.74,
+								2.995
+							],
+							[
+								100.62,
+								2.941
+							],
+							[
+								100.61,
+								2.842
+							],
+							[
+								100.6,
+								2.743
+							],
+							[
+								100.6,
+								2.653
+							],
+							[
+								100.59,
+								2.5
+							]
+						],
+						"width": 1.6,
+						"paint": "bare"
+					},
+					{
+						"name": "hanger_aft_cap",
+						"box": [
+							[
+								96.84,
+								99.49
+							],
+							[
+								-1.05,
+								1.05
+							],
+							[
+								3.175,
+								3.4
+							]
+						],
+						"paint": "bare"
+					}
+				],
+				"measured": "dvids6456808 (an AIM-9M motor's aft section side-on, wings off): the aft hanger's profile, a concave fillet to its front face, a block 2.65 long under a cap overhanging the front by 0.1, a lower aft step to 4.1 in overall with an overhanging lip; its heights scaled by 0.9 for the camera's 17 deg elevation (the block's top 0.9 above the body, the step's 0.63). Its station from dvids1038285 and dvids6457087, roughly: the front at 96.5 (96-101 for the whole). No photo shows its width: it takes the AIM-120 aft shoe's measured stem (1.6) and flange (2.1), both rounds riding the LAU-127's rail, which grips the hook's flange. The forward and middle hangers are not built: no public photo found shows them off the launcher"
+			},
+			"finishes": {
+				"value": {
+					"bare": [
+						95,
+						84,
+						77
+					],
+					"bracket": [
+						75,
+						59,
+						46
+					],
+					"wheel": [
+						35,
+						25,
+						20
+					],
+					"metal": [
+						37,
+						35,
+						33
+					],
+					"sheen": {
+						"metallic": 0.3,
+						"roughness": 0.45
+					}
+				},
+				"measured": "each as photographed (converted to sRGB through the photo's own profile), its linear colour scaled by our paint's luminance over that photo's paint's, so it keeps its brightness against the paint and its own tint: bare, the rolleron flap's chromate-tan aluminium and the aft hanger's, the mean of dvids1038285's flap (0.59 of its wing's paint, tinted 1.30, 0.94, 0.79 against it, the flap and the paint in one plane in daylight) and dvids6456808's hanger (0.55, tinted 1.27, 0.94, 0.80); bracket, the rolleron's bearing bracket (dvids1038285, 0.29, a darker bronze); wheel, its exposed rim (dvids1038285, 0.07, nearly black, 399 px by the tip edge: possibly in the slot's shade); metal, the tip block and the nozzle (dvids1038285's block, 0.10, neutral). The sheen (partly metallic and smoother than the paint, so the bare metal catches the sun) is by eye: no environment map lights a fully metallic finish in the viewer or the setup preview"
+			},
+			"markings": {
+				"value": {
+					"seams": [
+						27.5,
+						33.6,
+						45.2,
+						95.9,
+						97.7
+					],
+					"windows": [
+						{
+							"station": 28.9,
+							"count": 4,
+							"phase": 45,
+							"radius": 0.6
+						},
+						{
+							"station": 31.9,
+							"count": 4,
+							"phase": 45,
+							"radius": 0.6
+						}
+					],
+					"stencils": [
+						{
+							"station": [
+								16.49,
+								20.01
+							],
+							"arc": [
+								-0.55,
+								0.55
+							],
+							"text": [
+								"9M-8"
+							],
+							"stretch": true,
+							"colour": [
+								225,
+								225,
+								220
+							],
+							"height": 0.9
+						},
+						{
+							"station": [
+								34.71,
+								39.89
+							],
+							"arc": [
+								-1.6,
+								1.8
+							],
+							"kind": "label",
+							"line": 0.03,
+							"fill": [
+								200,
+								200,
+								196
+							],
+							"inset": 0.12,
+							"text": [
+								"WARHEAD",
+								"EMPTY WT",
+								"MANUFACTURER",
+								"CONTRACT NO",
+								"LOADED LOT",
+								"FILLED WITH",
+								"LOADING ACTIVITY",
+								"DATE LOADED"
+							]
+						},
+						{
+							"station": [
+								46.47,
+								49.38
+							],
+							"arc": [
+								0.9,
+								2.2
+							],
+							"kind": "label",
+							"line": 0.0,
+							"fill": [
+								178,
+								34,
+								34
+							]
+						},
+						{
+							"station": [
+								62.15,
+								65.55
+							],
+							"arc": [
+								-1.5,
+								1.5
+							],
+							"kind": "label",
+							"line": 0.0,
+							"fill": [
+								215,
+								215,
+								210
+							]
+						},
+						{
+							"station": [
+								68.84,
+								74.8
+							],
+							"arc": [
+								-0.75,
+								0.75
+							],
+							"kind": "label",
+							"line": 0.04,
+							"fill": [
+								220,
+								220,
+								216
+							],
+							"inset": 0.1,
+							"text": [
+								"WARNING",
+								"DO NOT ROLL, TUMBLE, OR DROP"
+							],
+							"align": "centre"
+						},
+						{
+							"station": [
+								88.9,
+								93.71
+							],
+							"arc": [
+								-0.19,
+								0.68
+							],
+							"text": [
+								"BD04855"
+							],
+							"stretch": true,
+							"height": 0.9
+						},
+						{
+							"station": [
+								99.21,
+								105.03
+							],
+							"arc": [
+								-1.09,
+								1.75
+							],
+							"kind": "label",
+							"line": 0.04,
+							"fill": [
+								220,
+								220,
+								216
+							],
+							"inset": 0.14,
+							"align": "centre",
+							"text": [
+								"WARNING",
+								"DO NOT REMOVE, ADJUST, OR OTHERWISE",
+								"TAMPER WITH HANGERS"
+							]
+						},
+						{
+							"station": [
+								107.1,
+								108.77
+							],
+							"arc": [
+								-1.5,
+								2.31
+							],
+							"kind": "box",
+							"line": 0.03,
+							"inset": 0.1,
+							"upward": true,
+							"text": [
+								"TIGHTEN",
+								"WING SCREWS",
+								"TO",
+								"100 ± 5 INCH POUNDS"
+							]
+						}
+					]
+				},
+				"measured": "usn070528 (a live round, stations absolute through the LAU-7's cited 110 in) for the joints (27.5, 33.6, 45.2), the target detector's two rings of windows (28.9, 31.9; four each, at the fins' rolls, about 1.2 in across, by eye), 9M-8 in light letters on the guidance section, the warhead's label, the red decal at the motor's front, the white label and the boxed WARNING DO NOT ROLL, TUMBLE, OR DROP; that photo is from below, so each is set on the side's middle with its height by eye, and the warhead label's lines are its fields, its entries too small to read. dvids6456808 (the motor's aft section, stations anchored on the aft hanger's front at 96.5; its back then reads 100.7 against layout's 96-101) for the joints at 95.9 and 97.7, the boxed WARNING DO NOT REMOVE, ADJUST, OR OTHERWISE TAMPER WITH HANGERS (99.2-105.0), the TIGHTEN WING SCREWS box (107.1-108.8, read upward) and the serial (its forward end out of frame: its text BD04855 is the round beside it in the same photo). Lettering upright with the hangers up on both sides (usmc080317's left side, dvids6456808's right); usn070528's round, inverted to the camera, is on a wingtip rail. Not drawn: the wings' stencil blocks, too small to read at the atlas's size"
+			},
+			"bands": {
+				"value": [
+					[
+						42.16,
+						44.91,
+						"explosive"
+					],
+					[
+						56.11,
+						58.91,
+						"propellant"
+					]
+				],
+				"measured": "usn070528 (absolute): the yellow band over the warhead 42.2-44.9 and the brown band over the motor 56.1-58.9, each edge where it meets the outline (+-0.2); usmc080317 shows the same pair on a live round"
+			},
+			"atlas": {
+				"value": 1024,
+				"measured": "texels per side of its paint atlas: about 20 to the inch on the body; saved as JPEG at quality 90 with full colour resolution: a quarter of the PNG's size (the paint's mottle and grain are what lossless PNG compresses worst) for a mean error of one level in 255"
+			}
+		},
+		"aim120c": {
+			"about": "Measured on photos.json's AIM-120C photos with measure.py. dvids9380793: three AIM-120C-7 bodies square side-on, without wings or fins, read level (2026-11-09): the bodies are not yawed, so the armament section's 2% greater width is a step, not perspective; read so, bodies A, B and C agree within 0.1-0.3 in at every joint, where the earlier fitted slope put B and C 2-4.3 in aft of A mid-body (the stations before this pass carried that skew). The wings and fins: usmc190306, its perspective pinned by the radome joint (18.45) on each round (layout.aim120c wings, fins).",
+			"profile": {
+				"value": [
+					[
+						0,
+						0
+					],
+					[
+						0.05,
+						0.18
+					],
+					[
+						0.12,
+						0.27
+					],
+					[
+						0.27,
+						0.355
+					],
+					[
+						0.52,
+						0.435
+					],
+					[
+						1.0,
+						0.575
+					],
+					[
+						1.5,
+						0.725
+					],
+					[
+						2.5,
+						1.0
+					],
+					[
+						4.0,
+						1.4
+					],
+					[
+						5.5,
+						1.76
+					],
+					[
+						8.0,
+						2.375
+					],
+					[
+						11.0,
+						2.755
+					],
+					[
+						14.5,
+						3.185
+					],
+					[
+						17.0,
+						3.41
+					],
+					[
+						18.45,
+						3.5
+					],
+					[
+						141.2,
+						3.5
+					],
+					[
+						141.7,
+						3.45
+					],
+					[
+						142.2,
+						3.35
+					],
+					[
+						142.7,
+						3.22
+					],
+					[
+						143.1,
+						3.08
+					],
+					[
+						143.5,
+						2.88
+					],
+					[
+						143.7,
+						2.6
+					],
+					[
+						143.8,
+						2.35
+					],
+					[
+						143.87,
+						1.95
+					],
+					[
+						144,
+						1.92
+					]
+				],
+				"measured": "dvids9380793 B and C, level: the radome's outline (61 marks, each station's top and bottom averaged, which cancels the axis's 0.07 in offset at the tip): a blunt cap 0.36 in in radius, then the curve to the joint at 18.45 (A, B, C 18.3-18.6); the cylinder; the aft end's rounding (21 marks on B's top outline, taken against the outline at 141.2 since the axis extrapolated aft of the pairs runs 0.16 in low there) to the aft face, 1.92 in in radius at 144"
+			},
+			"joints": {
+				"value": [
+					18.45,
+					35.1,
+					58.9,
+					69.2,
+					134.0
+				],
+				"measured": "dvids9380793 A, B, C, level: the radome (18.3-18.6), a joint inside the guidance section (35.0-35.2), guidance/armament (58.8-59.0), armament/propulsion (69.1-69.3), propulsion/control (B 134.0)"
+			},
+			"bands": {
+				"value": [
+					[
+						64.4,
+						66.4,
+						"explosive"
+					],
+					[
+						86.5,
+						88.5,
+						"propellant"
+					]
+				],
+				"measured": "dvids9380793 B and C, level: the yellow band 64.3-66.4 and the brown 86.5-88.6, each edge marked where it meets the top outline (B and C within 0.2 in)"
+			},
+			"lugs": {
+				"value": [
+					67.4,
+					93.0,
+					125.7
+				],
+				"measured": "dvids9380793 B and C, level: the front edges of the forward hook's base block (67.4-67.5), the centre hook (93.0-93.1) and the aft shoe (125.7); their shapes are layout.aim120c fittings"
+			},
+			"lug": {
+				"value": {
+					"length": 2.0,
+					"width": 1.2,
+					"height": 0.8
+				},
+				"measured": "by eye against the body's width"
+			},
+			"mount": {
+				"value": 67.4,
+				"measured": "the forward hook's front edge: where the launcher's points file hangs the round"
+			},
+			"paint": {
+				"value": [
+					101,
+					114,
+					127
+				],
+				"unit": "sRGB, 0-255",
+				"source": "photo match",
+				"measured": "dvids7487366 (in flight, sunlit from above): the AIM-120's upper body reads 1.22 times as bright as the wing's clean light grey in linear light, the LAU-115 beside it 1.26 times, so the round carries the same grey as the airframe's stores: the F/A-18C's lower grey (../fa18c/facts.json layout.paint lower, measured in overcast)"
+			},
+			"radome": {
+				"value": {
+					"end": 18.45,
+					"colour": [
+						230,
+						230,
+						230
+					]
+				},
+				"unit": "station in; sRGB, 0-255",
+				"source": "photo match",
+				"measured": "dvids7487366: the radome ahead of the radome joint (layout.aim120c joints, 18.45) clips at 0.96 linear in every channel, at least 2.4 times the body's grey: white, taken as a white paint's 230"
+			},
+			"wings": {
+				"value": {
+					"outline": [
+						[
+							66.0,
+							3.5
+						],
+						[
+							74.65,
+							9.5
+						],
+						[
+							77.55,
+							9.5
+						],
+						[
+							77.9,
+							3.5
+						]
+					],
+					"thickness": 0.3
+				},
+				"measured": "usmc190306 (from below, 44 deg off the rounds' axes), each round's perspective pinned by its radome joint ring at 18.45 (the mean of its aft point and the front point mirrored through the ring fitted to its visible half), nose to tail scaling; rounds a, c and e, whose wings span nearly square to the line of sight, each corner the mean of the round's opposite pair (they read 3-5 in apart along the axis in opposite senses, the pair rolled about 25 deg from square), then the median over the rounds: root leading 66.0 (65.3-66.2), tip leading 74.65 (72.8-75.1), tip trailing 77.55 (76.3-78.0), root trailing 77.9 (77.4-78.1), the trailing edge straight across. The wing fittings' aft ends sit at 75.5 (dvids9380793, level), under the root chord. The tips read 8.3-8.5 off the axis at that roll; the tip is put at the cited span (aim120c span). Thickness by eye. Read with the widths' fitted slope instead, as before this pass, every corner sat 3.3-4 in further aft"
+			},
+			"fins": {
+				"value": {
+					"outline": [
+						[
+							133.0,
+							3.5
+						],
+						[
+							133.3,
+							4.6
+						],
+						[
+							137.7,
+							9.15
+						],
+						[
+							145.05,
+							9.15
+						],
+						[
+							144.9,
+							3.5
+						]
+					],
+					"hinge": 138.35,
+					"thickness": 0.3
+				},
+				"measured": "usmc190306, pinned as the wings: root leading 133.0 (132.2-133.0), the leading edge turning spanwise for its last inch to the root (the kink 133.3, 4.6 off the axis), tip leading 137.7 (a's pair; c's and e's single fins read further aft by their own wings' split), tip trailing 145.05 and root trailing 144.9 (a and c pairs), about flush with the body's end. The tips read 0.963 of the wings' in the same rounds (0.947-0.988), so 9.15 off the axis. The hinge: the fin-shaft sockets' centres, dvids9380793 B and C, level (138.3-138.4)"
+			},
+			"fittings": {
+				"value": [
+					{
+						"name": "fitting_wing_upper",
+						"outline": [
+							[
+								70.61,
+								-40.1
+							],
+							[
+								71.4,
+								-37.5
+							],
+							[
+								73.89,
+								-34.0
+							],
+							[
+								75.08,
+								-34.1
+							],
+							[
+								75.53,
+								-41.6
+							],
+							[
+								75.54,
+								-50.5
+							],
+							[
+								75.03,
+								-57.0
+							],
+							[
+								74.39,
+								-61.5
+							],
+							[
+								73.89,
+								-63.9
+							],
+							[
+								72.9,
+								-65.6
+							],
+							[
+								70.91,
+								-65.6
+							],
+							[
+								69.97,
+								-62.2
+							]
+						],
+						"height": 0.1,
+						"mirror": true,
+						"paint": "paint"
+					},
+					{
+						"name": "fitting_wing_lower",
+						"outline": [
+							[
+								70.08,
+								-121.7
+							],
+							[
+								70.93,
+								-119.1
+							],
+							[
+								72.92,
+								-119.2
+							],
+							[
+								73.66,
+								-120.3
+							],
+							[
+								74.16,
+								-122.5
+							],
+							[
+								75.05,
+								-128.8
+							],
+							[
+								75.45,
+								-133.1
+							],
+							[
+								75.57,
+								-135.4
+							],
+							[
+								75.56,
+								-137.8
+							],
+							[
+								75.35,
+								-139.0
+							],
+							[
+								75.2,
+								-141.3
+							],
+							[
+								75.06,
+								-144.3
+							],
+							[
+								74.97,
+								-150.3
+							],
+							[
+								74.66,
+								-152.0
+							],
+							[
+								73.17,
+								-150.2
+							],
+							[
+								70.93,
+								-149.7
+							],
+							[
+								70.69,
+								-148.7
+							]
+						],
+						"height": 0.1,
+						"mirror": true,
+						"paint": "paint"
+					},
+					{
+						"name": "fin_socket_upper",
+						"outline": [
+							[
+								139.19,
+								-48.6
+							],
+							[
+								139.11,
+								-54.3
+							],
+							[
+								138.92,
+								-58.6
+							],
+							[
+								138.62,
+								-60.8
+							],
+							[
+								138.04,
+								-59.3
+							],
+							[
+								137.85,
+								-56.4
+							],
+							[
+								137.5,
+								-48.7
+							],
+							[
+								137.55,
+								-43.0
+							],
+							[
+								137.71,
+								-37.2
+							],
+							[
+								138.0,
+								-33.8
+							],
+							[
+								138.3,
+								-33.9
+							],
+							[
+								138.58,
+								-35.3
+							],
+							[
+								139.11,
+								-42.4
+							]
+						],
+						"height": 0.03,
+						"mirror": true,
+						"paint": "metal"
+					},
+					{
+						"name": "fin_socket_lower",
+						"outline": [
+							[
+								139.11,
+								-134.3
+							],
+							[
+								139.06,
+								-139.4
+							],
+							[
+								138.86,
+								-143.5
+							],
+							[
+								138.59,
+								-146.4
+							],
+							[
+								137.99,
+								-147.2
+							],
+							[
+								137.67,
+								-144.9
+							],
+							[
+								137.52,
+								-139.5
+							],
+							[
+								137.47,
+								-134.5
+							],
+							[
+								137.75,
+								-126.7
+							],
+							[
+								137.98,
+								-124.1
+							],
+							[
+								138.29,
+								-122.8
+							],
+							[
+								138.65,
+								-122.4
+							],
+							[
+								139.13,
+								-129.3
+							]
+						],
+						"height": 0.03,
+						"mirror": true,
+						"paint": "metal"
+					},
+					{
+						"name": "harness",
+						"profile": [
+							[
+								53.9,
+								3.5
+							],
+							[
+								53.95,
+								3.55
+							],
+							[
+								55.54,
+								3.89
+							],
+							[
+								56.04,
+								3.93
+							],
+							[
+								100.74,
+								3.85
+							],
+							[
+								105.71,
+								3.88
+							],
+							[
+								135.51,
+								3.85
+							],
+							[
+								137.99,
+								4.03
+							],
+							[
+								143.08,
+								4.05
+							],
+							[
+								143.26,
+								3.93
+							],
+							[
+								143.38,
+								3.61
+							],
+							[
+								143.42,
+								3.0
+							],
+							[
+								144.0,
+								2.32
+							],
+							[
+								144.0,
+								1.87
+							],
+							[
+								143.8,
+								2.3
+							],
+							[
+								143.5,
+								2.83
+							],
+							[
+								143.1,
+								3.03
+							],
+							[
+								142.2,
+								3.3
+							],
+							[
+								141.2,
+								3.45
+							],
+							[
+								141.0,
+								3.5
+							]
+						],
+						"width": 1.3,
+						"roll": 180,
+						"paint": "paint"
+					},
+					{
+						"name": "hook_forward_stem",
+						"profile": [
+							[
+								67.4,
+								3.5
+							],
+							[
+								67.4,
+								3.73
+							],
+							[
+								69.08,
+								3.73
+							],
+							[
+								69.08,
+								3.5
+							]
+						],
+						"width": 1.75,
+						"paint": "metal",
+						"bevel": 0.03
+					},
+					{
+						"name": "hook_forward_flange",
+						"section": [
+							[
+								-1.075,
+								3.73
+							],
+							[
+								1.075,
+								3.73
+							],
+							[
+								1.075,
+								3.97
+							],
+							[
+								0.645,
+								3.97
+							],
+							[
+								0.645,
+								3.85
+							],
+							[
+								-0.645,
+								3.85
+							],
+							[
+								-0.645,
+								3.97
+							],
+							[
+								-1.075,
+								3.97
+							]
+						],
+						"stations": [
+							67.53,
+							69.21
+						],
+						"paint": "metal",
+						"bevel": 0.03
+					},
+					{
+						"name": "hook_forward_pad",
+						"box": [
+							[
+								68.27,
+								69.03
+							],
+							[
+								-0.38,
+								0.38
+							],
+							[
+								3.85,
+								3.97
+							]
+						],
+						"paint": "metal",
+						"bevel": 0.03
+					},
+					{
+						"name": "hook_forward_post",
+						"post": {
+							"centre": 68.65,
+							"radius": 0.25,
+							"bottom": 0.47,
+							"top": 0.87
+						},
+						"paint": "metal"
+					},
+					{
+						"name": "hook_forward_cap",
+						"post": {
+							"centre": 68.67,
+							"radius": 0.43,
+							"bottom": 0.87,
+							"top": 1.07
+						},
+						"paint": "metal",
+						"bevel": 0.03
+					},
+					{
+						"name": "hook_centre_web",
+						"box": [
+							[
+								93.0,
+								94.6
+							],
+							[
+								1.955,
+								2.445
+							],
+							[
+								2.4,
+								4.55
+							]
+						],
+						"round": [
+							0.0,
+							0.12
+						],
+						"mirror": true,
+						"paint": "paint",
+						"bevel": 0.03
+					},
+					{
+						"name": "hook_centre_lip",
+						"box": [
+							[
+								93.0,
+								94.6
+							],
+							[
+								1.655,
+								1.955
+							],
+							[
+								4.19,
+								4.55
+							]
+						],
+						"round": [
+							0.0,
+							0.12
+						],
+						"mirror": true,
+						"paint": "paint",
+						"bevel": 0.03
+					},
+					{
+						"name": "hook_centre_jaw",
+						"box": [
+							[
+								93.0,
+								94.6
+							],
+							[
+								1.655,
+								1.955
+							],
+							[
+								3.5,
+								3.8
+							]
+						],
+						"mirror": true,
+						"paint": "paint",
+						"bevel": 0.03
+					},
+					{
+						"name": "hook_aft_front",
+						"profile": [
+							[
+								125.22,
+								3.5
+							],
+							[
+								125.22,
+								3.86
+							],
+							[
+								125.66,
+								3.86
+							],
+							[
+								125.66,
+								3.5
+							]
+						],
+						"width": 1.6,
+						"paint": "paint",
+						"bevel": 0.03
+					},
+					{
+						"name": "hook_aft_stem",
+						"profile": [
+							[
+								125.66,
+								3.5
+							],
+							[
+								125.66,
+								3.88
+							],
+							[
+								129.08,
+								3.88
+							],
+							[
+								129.08,
+								3.5
+							]
+						],
+						"width": 1.6,
+						"paint": "metal",
+						"bevel": 0.03
+					},
+					{
+						"name": "hook_aft_flange",
+						"plate": {
+							"stations": [
+								125.66,
+								129.19
+							],
+							"across": [
+								-1.05,
+								1.05
+							],
+							"heights": [
+								3.88,
+								4.1
+							],
+							"round": 0.2,
+							"holes": [
+								[
+									125.99,
+									-0.35,
+									0.22
+								],
+								[
+									125.99,
+									0.35,
+									0.22
+								],
+								[
+									127.36,
+									-0.35,
+									0.22
+								],
+								[
+									127.36,
+									0.35,
+									0.22
+								],
+								[
+									128.45,
+									0.0,
+									0.22
+								],
+								[
+									126.65,
+									0.0,
+									0.05
+								]
+							]
+						},
+						"paint": "metal",
+						"bevel": 0.05
+					}
+				],
+				"measured": "dvids9380793 B, level. Wing fittings: the hinged clip plates' outlines lifted onto the body (a point seen side-on at height v off the axis lies at roll arccos(v/R)): beside each wing root at 34-66 and 119-152 deg roll, 70.0-75.6 (their forward ends too soft to place), mirrored to the right side; 0.1 in proud by eye. Fin-shaft sockets: the rims the same way, 137.5-139.2 round the hinge at 138.35, at 34-61 and 122-147 deg; a dark ring the fin's root covers in its middle. Heights aft of the outline pairs are taken against the axis corrected for its drift (0 at 70 rising to 0.16 at 141). Harness cover: along the bottom from 53.9, its underside from 52 marks (0.42 in deep forward, 0.36-0.38 over the motor, deepening to 0.5 on the control section), its end rounding to the aft face, where it stands 0.4 in beyond the face's edge (usn110520's end view); 1.3 in wide, from its end pocket's 0.93 in (dvids9380790, against the nozzle liner's rim) and its end lobe, open below, at least 1.1 in wide (usn110520). The hooks are not yet here: their widths are unmeasured. Hooks (dvids9380793 B, level, with the widths from dvids9245725, an AIM-120A seen along each round from behind and scaled by four band rings, dvids9829721, dvids669077 and dvids8460384): the forward hook a round post (0.50 in across, from 0.6 to 0.91 in above the top line) under a round cap (0.86 across, to 1.11) on a block 67.4-69.2, 0.6 tall and 2.15 wide (dvids9829721's side view reads the cap's top 1.07 and the block 1.68 long in two layers); the centre hook a pair of vertical J-plates either side of the top line, 93.0-94.6, each web 0.49 thick with its outer face 2.44 from the middle (the C-7's 2.34), its top 4.55 above the axis and its lip 0.30 inward and 0.36 deep (in the side-on photo the near plate is what read as a side box and the far plate as the hook over it: equal lengths offset as the perspective predicts, the far top 0.18 higher by the camera's 2.5 deg elevation); the aft shoe a T, 125.66-129.19, 0.6 tall (B 0.54 once its foot is taken off, dvids669077 0.63-0.67), its flange 2.1 wide over a 1.6 stem (dvids8460384's four-hole flange, 0.78 of it), a light block 0.44 long and 0.36 tall at its front (dvids669077); the flange's 0.22 thickness by eye. REVISED 2026-11-09 for each hook's form (US 5,497,691: AMRAAM hangers are forward and aft TEE hangers, a pair of CEE hangers and a forward button that only an eject launcher uses). Forward T-hanger, from dvids9829721 (square side-on, 228 px/in by its 0.88 in cap): a stem under a flange, each 1.68 long, the flange 0.13 further aft (stem 67.40-69.08, flange 67.53-69.21), the flange's underside 0.23 and its top 0.47 above the top line, the cap's underside 0.87 and top 1.07 (dvids9380793 B read the block's top 0.56-0.6 and the cap's 1.11: the close-up is used). Its cross-section from dvids9245725 (both rounds, from behind, by eye on blurred edges, +-0.1): the stem about 1.75 wide under the 2.15 flange, the flange's top a rail along each side about 0.43 wide, notches about 0.27 wide inside them down to 0.35 above the top line, and a square pad about 0.76 across under the button. Centre C-hangers: each web's lower jaw (dvids9245725: 3.5-3.8 above the axis, reaching inward as far as its lip, by eye) closes the slot under the lip into a channel facing inward; the near web's top aft corner rounded to about 0.12 (dvids9380793 B), its lip with it. Aft shoe: the flange's top from dvids8460384, its four corners fitted by a projective map onto the 2.1 by 3.53 rectangle: five holes about 0.45 across, a pair 1.83 and a pair 3.2 forward of its aft edge, 0.7 apart, one on the centreline 0.74 forward of it, and a small centre hole (0.1) at 2.54; the pattern read 0.15 to the left, within the corner marks' error, so it is centred. Its corners rounded to about 0.2 by eye. Every hook's sharp edges bevelled 0.03 (the flange's 0.05, which stands for its measured aft chamfer, 0.27 long by 0.07 deep)"
+			},
+			"nozzle": {
+				"value": {
+					"exit": 1.73,
+					"liner": [
+						142,
+						44,
+						12
+					]
+				},
+				"measured": "usn110520, the aft face's edge (1.92 in, layout.aim120c profile) 536 px from the liner's centre against the liner rim's 484, so the liner's rim 1.73 in in radius; the throat plug in the photos is a ground cover and is not built; the liner sRGB (142, 44, 12), the median of its ring in usn110520 (0.80-0.95 of the rim, away from the plug), in that photo's warm light"
+			},
+			"finishes": {
+				"value": {
+					"metal": [
+						60,
+						65,
+						70
+					],
+					"sheen": {
+						"metallic": 0.3,
+						"roughness": 0.45
+					}
+				},
+				"measured": "each as photographed (converted to sRGB through the photo's own profile), its linear colour scaled by our paint's luminance over that photo's paint's, so it keeps its brightness against the paint and its own tint: metal, the hooks (dvids9380793 B, the forward hook and the aft shoe each 0.31 of the body's paint at mid-height nearby, where it faces the camera as their sides do), used too for the fin-shaft sockets and the nozzle's throat; the J-plates read brighter than the body beside them (1.35 of it, where the body's own lighting varies by 1.23 along its length), not dark as the hooks, and are painted. The sheen by eye, as the AIM-9M's"
+			},
+			"markings": {
+				"value": {
+					"seams": [
+						18.45,
+						35.1,
+						58.9,
+						69.2,
+						134.0
+					],
+					"screws": [
+						{
+							"station": 34.49,
+							"count": 20
+						},
+						{
+							"station": 58.38,
+							"count": 24
+						},
+						{
+							"station": 69.6,
+							"count": 24
+						},
+						{
+							"station": 134.07,
+							"count": 12
+						}
+					],
+					"stencils": [
+						{
+							"station": [
+								18.89,
+								19.39
+							],
+							"arc": [
+								0.11,
+								1.76
+							],
+							"text": [
+								"LIFT"
+							],
+							"upward": true
+						},
+						{
+							"station": [
+								18.98,
+								19.4
+							],
+							"arc": [
+								-3.26,
+								-1.74
+							],
+							"text": [
+								"NO"
+							],
+							"upward": true
+						},
+						{
+							"station": [
+								21.5,
+								31.93
+							],
+							"arc": [
+								-0.2,
+								0.6
+							],
+							"text": [
+								"15090-3819550-103"
+							],
+							"stretch": true
+						},
+						{
+							"station": [
+								21.01,
+								23.87
+							],
+							"arc": [
+								-1.18,
+								-0.49
+							],
+							"text": [
+								"MFR 15090",
+								"SERNO 1161155"
+							]
+						},
+						{
+							"station": [
+								21.06,
+								26.11
+							],
+							"arc": [
+								-2.51,
+								-1.73
+							],
+							"text": [
+								"GUIDANCE SECTION,",
+								"GUIDED MISSILE, WGU-44/B"
+							]
+						},
+						{
+							"station": [
+								35.03,
+								35.41
+							],
+							"arc": [
+								-1.44,
+								1.44
+							],
+							"text": [
+								"LIFT HERE"
+							],
+							"upward": true
+						},
+						{
+							"station": [
+								54.64,
+								57.38
+							],
+							"arc": [
+								0.53,
+								2.92
+							],
+							"kind": "box",
+							"line": 0.03,
+							"opacity": 0.45
+						},
+						{
+							"station": [
+								54.78,
+								57.52
+							],
+							"arc": [
+								-3.18,
+								-0.7
+							],
+							"kind": "box",
+							"line": 0.03,
+							"opacity": 0.45
+						},
+						{
+							"station": [
+								57.58,
+								57.97
+							],
+							"arc": [
+								-1.73,
+								1.29
+							],
+							"text": [
+								"LIFT HERE"
+							],
+							"upward": true
+						},
+						{
+							"station": [
+								71.04,
+								71.54
+							],
+							"arc": [
+								-0.38,
+								0.11
+							],
+							"kind": "port"
+						},
+						{
+							"station": [
+								73.28,
+								75.57
+							],
+							"arc": [
+								-0.31,
+								0.04
+							],
+							"text": [
+								"LIFT HERE"
+							],
+							"stretch": true
+						},
+						{
+							"station": [
+								82.34,
+								83.33
+							],
+							"arc": [
+								0.65,
+								1.02
+							],
+							"text": [
+								"C/G"
+							],
+							"stretch": true
+						},
+						{
+							"station": [
+								82.34,
+								83.44
+							],
+							"arc": [
+								-0.62,
+								0.45
+							],
+							"kind": "centre"
+						},
+						{
+							"station": [
+								81.68,
+								84.04
+							],
+							"arc": [
+								-1.35,
+								-0.9
+							],
+							"text": [
+								"MISSILE"
+							],
+							"stretch": true
+						},
+						{
+							"station": [
+								80.79,
+								85.28
+							],
+							"arc": [
+								-2.07,
+								-1.47
+							],
+							"text": [
+								"PART NO. 49956-C672798-1",
+								"SERNO 1170181"
+							]
+						},
+						{
+							"station": [
+								80.79,
+								85.04
+							],
+							"arc": [
+								-3.36,
+								-2.69
+							],
+							"text": [
+								"PROPULSION SECTION",
+								"GUIDED MISSILE: WPU-16/B"
+							]
+						},
+						{
+							"station": [
+								100.04,
+								107.9
+							],
+							"arc": [
+								1.1,
+								2.06
+							],
+							"text": [
+								"AIM-120C-7"
+							],
+							"stretch": true,
+							"height": 0.9
+						},
+						{
+							"station": [
+								107.95,
+								108.79
+							],
+							"arc": [
+								1.1,
+								2.06
+							],
+							"kind": "disc"
+						},
+						{
+							"station": [
+								100.02,
+								108.47
+							],
+							"arc": [
+								0.04,
+								0.81
+							],
+							"text": [
+								"SERNO CC21094"
+							],
+							"stretch": true,
+							"height": 0.9
+						},
+						{
+							"station": [
+								100.03,
+								105.45
+							],
+							"arc": [
+								-1.51,
+								-0.08
+							],
+							"text": [
+								"82577-381",
+								"MFR 1509",
+								"CONTRACT          -0001",
+								"GUIDED"
+							]
+						},
+						{
+							"station": [
+								129.85,
+								132.21
+							],
+							"arc": [
+								-0.22,
+								0.18
+							],
+							"text": [
+								"LIFT HERE"
+							],
+							"stretch": true
+						},
+						{
+							"station": [
+								135.23,
+								135.62
+							],
+							"arc": [
+								-0.69,
+								0.9
+							],
+							"text": [
+								"PRESSURE",
+								"PORT"
+							],
+							"upward": true
+						},
+						{
+							"station": [
+								136.06,
+								136.66
+							],
+							"arc": [
+								-1.05,
+								-0.44
+							],
+							"kind": "port"
+						},
+						{
+							"station": [
+								136.85,
+								141.08
+							],
+							"arc": [
+								-0.8,
+								1.43
+							],
+							"text": [
+								"49956-C772898",
+								"MFR 49956",
+								"SERNO 9016685",
+								"",
+								"CONTROL SECTION",
+								"GUIDED MISSILE: WCU-28/B"
+							]
+						},
+						{
+							"station": [
+								136.47,
+								141.46
+							],
+							"arc": [
+								-2.28,
+								3.79
+							],
+							"kind": "box",
+							"line": 0.03,
+							"opacity": 0.45
+						},
+						{
+							"station": [
+								141.82,
+								142.27
+							],
+							"arc": [
+								-1.04,
+								0.93
+							],
+							"text": [
+								"NO LIFT"
+							],
+							"upward": true
+						}
+					]
+				},
+				"measured": "dvids9380793 B (level, its left side), each marking's corners read off the photo at full size (+-5 px, about +-0.12 in) and put through measure.py's level map as marks: stations as measured, a height h off the axis taken as the arc R asin(h/R) round the surface from the side's middle. The screw rows sit beside the recorded joints (34.5 by 35.1, 58.4 by 58.9, 69.6 by 69.2, 134.1 by 134.0), which checks the map; each row's count by its visible screws' spacing over the visible arc, by eye (20, 24, 24, 12). The lettering as it reads, the small lines' digits uncertain and the fragments under the photo's strap left as fragments; Pillow's own font made bold, fitted to each box (not the stencil face), and without the arrows beside LIFT and NO (no such glyph). The right side (usmc090528: C/G MISSILE, LIFT HERE, the designation aft, LIFT by the radome) carries the same set mirrored, upright with the lugs up, reading forward; its own places are not measured"
+			},
+			"atlas": {
+				"value": 2048,
+				"measured": "texels per side of its paint atlas: about 28 to the inch on the body, so its stencils (0.35-1 in tall) read; saved as JPEG at quality 90 with full colour resolution: a quarter of the PNG's size (the paint's mottle and grain are what lossless PNG compresses worst) for a mean error of one level in 255"
+			}
+		},
+		"wear": {
+			"value": {
+				"sections": 0.04,
+				"mottle": 0.03,
+				"grain": 0.012,
+				"seams": 0.08,
+				"smudges": 0.06,
+				"scuffs": 0.06,
+				"edges": 0.5,
+				"edge": 0.3,
+				"fade": 0.2,
+				"bare": [
+					150,
+					152,
+					156
+				]
+			},
+			"measured": "good but not perfect condition (user, 2026-11-09). Measured on dvids9380793 (the AIM-120C-7s side-on, linear light, clean patches clear of the stencils, hardware and hands): the plain paint's spread about 2.5% (standard deviation) over 0.5-6 in once the cylinder's shading and the light's fall along the body are taken out (the armament section 2.4-2.5%, the propulsion's aft end 1.5%), and 1.4-2.2% finer than half an inch, part of it the camera's noise, so a grain of 1%. The mottle (features 1.5 and 0.6 in across, inside the measured band) and the grain are given as their whole spreads (0.03, 0.012), which measured the photo's way (test_paint) read 2.4% and 1.0%; neighbouring sections 4% apart in tone across the joints at 35.1 and 58.9 (0.962, 1.041; 69.2 read 0.871, its aft patch maybe in the wing fitting's shade), so each section its own shade within 4%. By eye on the same photos and dvids9021997's and dvids6456808's AIM-9Ms: up to 8% darker within 0.8 in of a joint and round the lugs on top, faint darker smudges within 3 in of the lifting points (up to 6%), scuffs up to 6% lighter in short streaks along the body, more on its lower half; the wings' and fins' leading edges and tips worn toward bare aluminium within 0.3 in, in patches; stencils faded up to 20%. No soot (a round on the rail has never fired) and no large chips"
+		}
+	}
+}

@@ -2,17 +2,17 @@
 # This file is part of Mochi, licensed under the GNU AGPL v3 with the
 # Mochi Application Interface Exception - see license.txt and license-exception.md.
 #
-# Fetches the F/A-18C build's reference files (references.json) into
-# references/, which git ignores, and checks each against its recorded hash.
-# A file already present with the right hash is kept. Entries without a url
-# (NATOPS) are local-only and skipped.
+# Fetches a build's reference files (references.json) into references/ beside
+# it, which git ignores, and checks each against its recorded hash. A file
+# already present with the right hash is kept. Entries without a url (NATOPS,
+# live web pages) are local-only and skipped. The F/A-18C's manifest is the
+# default; --catalogue names another (../missiles/references.json).
 #
-# usage: python3 -I fetch.py [ID ...]   (no IDs: every entry)
+# usage: python3 -I fetch.py [--catalogue PATH] [ID ...]   (no IDs: every entry)
 import hashlib, json, sys, urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-CACHE = HERE / "references"
 AGENT = "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
 
 
@@ -24,8 +24,8 @@ def digest(path):
 	return h.hexdigest()
 
 
-def fetch(entry):
-	target = CACHE / entry["file"]
+def fetch(entry, cache):
+	target = cache / entry["file"]
 	target.parent.mkdir(parents=True, exist_ok=True)
 	if target.exists() and digest(target) == entry["sha256"]:
 		return "kept"
@@ -43,16 +43,22 @@ def fetch(entry):
 
 
 def main():
-	wanted = set(sys.argv[1:])
-	references = json.loads((HERE / "references.json").read_text())["references"]
-	CACHE.mkdir(exist_ok=True)
+	args = sys.argv[1:]
+	catalogue = HERE / "references.json"
+	if args[:1] == ["--catalogue"]:
+		catalogue = Path(args[1]).resolve()
+		args = args[2:]
+	wanted = set(args)
+	cache = catalogue.parent / "references"
+	references = json.loads(catalogue.read_text())["references"]
+	cache.mkdir(exist_ok=True)
 	for entry in references:
 		if wanted and entry["id"] not in wanted:
 			continue
 		if not entry.get("url"):
 			print(f"{entry['id']}: local only, skipped")
 			continue
-		print(f"{entry['id']}: {fetch(entry)}")
+		print(f"{entry['id']}: {fetch(entry, cache)}")
 
 
 if __name__ == "__main__":

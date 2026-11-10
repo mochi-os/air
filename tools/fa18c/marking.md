@@ -78,6 +78,24 @@ nose from the front, the aircraft's right is on the photo's left. Get this right
 - `blade_nose_bottom_front` / `blade_nose_bottom_aft`: the lower corners of the blade antenna hanging under
   the nose on the centreline (stencilled DO NOT PAINT).
 
+Stores (stations 1-9 port to starboard; `inboard` 3 and 7, `outboard` 2 and 8, `tip` 1 and 9, `cheek` 4 and 6,
+no side on the centreline, 5). These are triangulated on the solved cameras apart from the solve: file them under the
+photo's `aside`, never its `marks` (a tank's tip is a silhouette end, and in the solve it pulls the cameras):
+
+- `pylon_<pos>_nose_<side>`, `pylon_<pos>_tail_<side>`: a pylon's foremost point (its rounded nose, low down) and
+  its aft lower corner; `pylon_<pos>_root_front_<side>`, `_root_aft_<side>` where its edges meet the wing.
+- `tank_inboard_nose_<side>`, `tank_inboard_tail_<side>`, `tank_centre_nose`, `tank_centre_tail`: the tank's tips.
+- `rail_tip_front_<side>`, `rail_tip_aft_<side>`: the wingtip LAU-7's forward fairing's tip and its aft end (an
+  empty rail looks like a slim finless store: check its ends against the rail's before calling it a pod);
+  `rail_outboard_outer_front_<side>`, `rail_outboard_inner_front_<side>`: a twin's LAU-127 or LAU-7 fronts.
+- `missile_<where>_nose_<side>`, `missile_<where>_tail_<side>`: a round's nose tip and the middle of its aft end, only
+  where they end the silhouette (seen from the side, above or below), never in a view along the round; say which
+  missile it is (an AIM-9X's small fins, a 9M's large canards, a finless training round).
+
+A store's outline is an edge with `"against": "outline"` and `"parts"` naming its part (`["tank_7"]`, `["pylon_8"]`):
+seen in front of the fuselage it is no edge of the whole model's outline. The photo's pose shows the stores it carries
+(`"joints": {"pylon_8": 1, "tank_7": 1}`).
+
 You may add other crisp, unambiguous points (panel corners, light fittings) that a second photo of yours
 also shows, with a descriptive snake_case name and a note: they help tie the cameras together.
 

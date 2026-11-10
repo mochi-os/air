@@ -11,31 +11,38 @@ import { useEffect, useRef, useState } from 'react'
 import { Trans } from '@lingui/react/macro'
 import { flushSync } from 'react-dom'
 import * as THREE from 'three'
-import amraam_model_url from '../assets/aim120c.glb?url'
-// The old jet, under the stores cut from it in its own frame, until ours are built (claude/plans/air-fa18c.md, step 5)
-import fa18c_model_url from '../assets/fa18c-old.glb?url'
-import stores_model_url from '../assets/stores.glb?url'
+import fa18c_points from '../assets/fa18c.json'
+import fa18c_model_url from '../assets/fa18c.glb?url'
+import aim120c_points from '../assets/aim120c.json'
+import aim120c_model_url from '../assets/aim120c.glb?url'
+import aim9m_points from '../assets/aim9m.json'
+import aim9m_model_url from '../assets/aim9m.glb?url'
+import { parts, place, rounds, type Kind, type Seat } from '../game/hang'
 import { model } from '../game/library'
-import { posed } from '../game/model'
-import { ANCHORS, TIPS, entries, normalize } from '../game/stores'
-import { normalize_round, amraam_anchor, amraam_aim } from '../game/weapons'
+import { normalize } from '../game/stores'
 import type { StationSlot } from '../lib/config'
 
+// Our own jet and missiles (claude/plans/air-fa18c.md #9), with their points
+// files: the store parts the jet carries and where each round hangs.
+const JET = fa18c_points as unknown as { points: { stores: string[]; hardpoints: Record<string, { rounds: Record<string, Seat> }> } }
+const MOUNTS: Record<Kind, number[]> = {
+  aim9m: (aim9m_points as unknown as { points: { mount: number[] } }).points.mount,
+  aim120c: (aim120c_points as unknown as { points: { mount: number[] } }).points.mount,
+}
+
 let airframe: THREE.Group | null = null
-let racks: THREE.Group | null = null
-let amraam: THREE.Group | null = null
+let missiles: Record<Kind, THREE.Group> | null = null
 let loading: Promise<void> | null = null
 
 function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
   loading ??= (async () => {
-    const [jet, stores, round] = await Promise.all([
+    const [jet, nine, amraam] = await Promise.all([
       model(fa18c_model_url, renderer),
-      model(stores_model_url, renderer),
-      model(amraam_model_url, renderer),
+      model(aim9m_model_url, renderer),
+      model(aim120c_model_url, renderer),
     ])
-    airframe = posed(jet)
-    racks = stores.scene.clone(true)
-    amraam = normalize_round(round.scene.clone(true))
+    airframe = jet.scene.clone(true)
+    missiles = { aim9m: nine.scene.clone(true), aim120c: amraam.scene.clone(true) }
   })().catch((error) => {
     // A failed download must not be kept. preload.ts already drops its own
     // entry so the next open refetches; holding the rejected promise here
@@ -46,72 +53,43 @@ function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
   return loading
 }
 
-// dress hangs the loadout on the jet: per-station clones from the split
-// stores.glb, tip visibility, and AIM-9 rounds as translated clones of the
-// jet's own tip missile mesh — the same node names and anchors the engine
-// uses (stores.ts), so the preview and the flown jet cannot disagree.
+// origin is a node's origin at rest in the jet's frame: every part rests
+// unturned, so it is the sum of the rest positions up to the jet's root.
+function origin(node: THREE.Object3D, root: THREE.Object3D): THREE.Vector3 {
+  const at = new THREE.Vector3()
+  for (let o: THREE.Object3D | null = node; o && o !== root; o = o.parent) at.add(o.position)
+  return at
+}
+
+// dress hangs the loadout on the jet as the flight does (hang.ts): the store
+// parts its stations show, the rest hidden, and each round's missile laid on
+// its seat beside its part.
 function dress(jet: THREE.Group, stores: Record<string, StationSlot>): void {
-  const previous = jet.getObjectByName('loadout')
-  if (previous) jet.remove(previous)
-  const holder = new THREE.Group()
-  holder.name = 'loadout'
+  for (const old of (jet.userData.rounds as THREE.Object3D[] | undefined) ?? []) old.parent?.remove(old)
+  const hung: THREE.Object3D[] = []
   const loadout = normalize(stores)
-  const tips: Record<string, boolean> = { tip1: false, tip9: false }
+  const shown = new Set<string>()
   for (let station = 1; station <= 9; station++) {
-    for (const name of entries(station, loadout[String(station)])) {
-      if (name.startsWith('tip')) {
-        tips[name] = true
-        continue
-      }
-      if (
-        name.startsWith('rail') ||
-        name.startsWith('twin') ||
-        name.startsWith('pylon')
-      ) {
-        const piece = racks?.getObjectByName('Pylon_' + station)
-        if (piece) holder.add(piece.clone(true))
-      } else if (name.startsWith('tank')) {
-        const piece = racks?.getObjectByName('Tank_' + station)
-        if (piece) holder.add(piece.clone(true))
-      } else if (name.startsWith('120c')) {
-        // The AMRAAM (#27) at its anchor and the art's own lean — position
-        // inherited from the source art's rounds, derived for the inboard
-        // pylons, twin points spread off the single anchor, orientation from
-        // the source round's long axis (weapons.ts).
-        const point = name.endsWith('a') ? 'a' : name.endsWith('b') ? 'b' : ''
-        const anchor = racks ? amraam_anchor(racks, station, point) : null
-        if (amraam && anchor && racks) {
-          const piece = amraam.clone(true)
-          piece.position.copy(anchor)
-          piece.quaternion.copy(amraam_aim(racks, station))
-          holder.add(piece)
-        }
-      } else if (ANCHORS[name]) {
-        const source = jet.getObjectByName(
-          station < 5 ? TIPS.tip1 : TIPS.tip9
-        ) as THREE.Mesh | null
-        if (source && source.isMesh) {
-          if (!source.geometry.boundingBox) source.geometry.computeBoundingBox()
-          const centre = source.geometry.boundingBox!.getCenter(
-            new THREE.Vector3()
-          )
-          const round = new THREE.Mesh(source.geometry, source.material)
-          const anchor = ANCHORS[name]
-          round.position.set(
-            anchor[0] - centre.x,
-            anchor[1] - centre.y,
-            anchor[2] - centre.z
-          )
-          holder.add(round)
-        }
-      }
+    const slot = loadout[String(station)]
+    for (const part of parts(station, slot)) shown.add(part)
+    const seats = JET.points.hardpoints[String(station)]?.rounds ?? {}
+    for (const r of rounds(station, slot)) {
+      const part = jet.getObjectByName(r.part)
+      const seat = seats[r.part]
+      if (!part?.parent || !seat || !missiles) continue
+      const piece = missiles[r.kind].clone(true)
+      const at = place(seat, MOUNTS[r.kind])
+      piece.position.copy(at.position).sub(origin(part.parent, jet))
+      piece.quaternion.copy(at.quaternion)
+      part.parent.add(piece)
+      hung.push(piece)
     }
   }
-  for (const [tip, node] of Object.entries(TIPS)) {
-    const mesh = jet.getObjectByName(node)
-    if (mesh) mesh.visible = tips[tip]
+  for (const name of JET.points.stores) {
+    const part = jet.getObjectByName(name)
+    if (part) part.visible = shown.has(name)
   }
-  jet.add(holder)
+  jet.userData.rounds = hung
 }
 
 // extent projects the visible meshes' vertices through the camera and reports
@@ -260,25 +238,24 @@ export function LoadoutPreview({
         // not touch the extension registry, so this still reaches it.
         if (gone) return void renderer.forceContextLoss()
         // All three, not the airframe alone: a run that parsed the jet and
-        // then failed on the stores would otherwise draw a bare jet and frame
+        // then failed on a missile would otherwise draw a bare jet and frame
         // the camera against it, which reads as an empty loadout rather than a
         // preview that could not be built.
-        if (!airframe || !racks || !amraam) return
+        if (!airframe || !missiles) return
         const scene = new THREE.Scene()
         scene.add(new THREE.HemisphereLight(0xdfe8f2, 0x54595e, 2.4))
         const sun = new THREE.DirectionalLight(0xffffff, 2.2)
         sun.position.set(3, 4, 2)
         scene.add(sun)
         const jet = airframe.clone(true)
-        // Normalize head-on: centre the model and face the nose at the camera
-        // (the raw scene needs the same +90 yaw the engine applies).
+        // Normalize head-on: centre the model, its nose along +x toward the
+        // camera as it is built.
         const box = new THREE.Box3().setFromObject(jet)
         const size = box.getSize(new THREE.Vector3())
         const centre = box.getCenter(new THREE.Vector3())
         jet.position.set(-centre.x, -centre.y, -centre.z)
         const wrap = new THREE.Group()
         wrap.add(jet)
-        wrap.rotation.y = Math.PI / 2
         wrap.scale.setScalar(10 / Math.max(size.x, size.y, size.z, 1e-3))
         scene.add(wrap)
         const camera = new THREE.PerspectiveCamera(18, width / height, 0.1, 100)

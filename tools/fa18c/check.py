@@ -12,7 +12,7 @@
 # go unchecked.
 #
 # usage: python3 -I check.py MODEL.glb MODEL.json [--json]
-import json, math, sys
+import json, math, re, sys
 from pathlib import Path
 
 import numpy as np
@@ -64,6 +64,23 @@ EXEMPT = {
 	"layout.eye": "the design eye is a point the build writes as given",
 	"layout.hardpoints": "store mounts the build writes as given, the fuselage ones draped onto the skin (shape.mount); step 5 checks them against the stores",
 	"layout.paint": "colours the paint bake writes into the atlas, not a shape (looked at on the comparison sheets)",
+	"layout.stores": "the stores the build hangs where the photos put them; step 5c measures them against their facts",
+	"stores.bru32.length": "the rack inside the pylon: not built",
+	"stores.bru32.hooks": "where the rack hangs the LAU-115: the build places it on them (step 5c)",
+	"stores.lau115.length": "not built yet (step 5c)",
+	"stores.lau115.width": "not built yet (step 5c)",
+	"stores.lau115.height": "not built yet (step 5c)",
+	"stores.lau115.rails": "which rail carries which missile, not a shape",
+	"stores.lau127.length": "not built yet (step 5c)",
+	"stores.lau127.width": "not built yet (step 5c)",
+	"stores.lau127.height": "not built yet (step 5c)",
+	"stores.lau7.length": "not built yet (step 5c)",
+	"stores.lau7.width": "not built yet (step 5c)",
+	"stores.lau7.height": "not built yet (step 5c)",
+	"stores.lau116.length": "not built yet (step 5c)",
+	"stores.lau116.width": "not built yet (step 5c)",
+	"stores.lau116.height": "not built yet (step 5c)",
+	"stores.tank.capacity": "not built yet (step 5c)",
 }
 
 
@@ -233,6 +250,8 @@ FLUSH = [("speedbrake", False), ("gear_nose_door_left", True), ("gear_nose_door_
 	("gear_door_inner_left", True), ("gear_door_inner_right", True), ("gear_door_outer_left", True), ("gear_door_outer_right", True), ("probe_door", False)]
 # The parts with no twin that stand to one side; every other one is
 # symmetric about the centreline
+# a store part's name, its station and its side of a twin (the contract's Stores)
+STATION = re.compile(r"^((?:pylon|rack|rail|launcher|ejector|tank))_([1-9])([ab]?)$")
 ONE_SIDED = {"antenna_dome", "antenna_ventral", "gear_nose_door_aft", "gear_nose_door_long", "gear_nose_lamps", "lamp_gear_nose", "lamp_position_tail", "ladder", "pilot", "probe", "probe_door"}
 
 
@@ -616,6 +635,14 @@ def coverage(uvs, size):
 			inside &= (x >= 0) & (x < size) & (y >= 0) & (y < size)
 			np.add.at(count, (y[inside], x[inside]), 1)
 	return count
+
+
+def slope_at(buttlines, rises, bl):
+	# The bent wing's slope at a buttline (rises by sorted buttlines, in), over
+	# 4 in about it kept on the wing: past the tip the rise holds, and a span
+	# reaching there would read half the slope
+	low, high = max(bl - 2, buttlines[0]), min(bl + 2, buttlines[-1])
+	return (np.interp(high, buttlines, rises) - np.interp(low, buttlines, rises)) / (high - low)
 
 
 def mirrored(left, right):
@@ -1033,7 +1060,7 @@ def checks(jet):
 			# within 1 mrad of the bend's; a turn left out misses by all of it
 			# (7.5 mrad and up, 2.6 for one riding the fold's)
 			def slope(bl):
-				return (np.interp(bl + 2, buttlines[order], rises[order]) - np.interp(bl - 2, buttlines[order], rises[order])) / 4
+				return slope_at(buttlines[order], rises[order], bl)
 
 			posed = verify.pose(jet.joints, {"load": 1})
 			carriers = sorted(n for n in jet.joints if n.startswith("flex_") and n.endswith(f"_{side}"))
@@ -2093,11 +2120,18 @@ def checks(jet):
 				mirror = np.array([1.0, 1.0, -1.0 if side == "left" else 1.0])
 				worst = max(((seam(a * mirror, b * mirror, every * mirror, view), view) for view in ("above", "below", "outboard")))
 				yield result("shape.seam", f"{first}_{side} and {second} crossing back and forth, worst seen from {worst[1]}", 0, worst[0], 3.0, "sq in")
-		for drives, pose in (({}, "at rest"), (down, "gear down")):
+		for drives, pose in (({}, "at rest"), (down, "gear down"), ({"stores": 1}, "every store shown")):
 			parts = jet.parts(drives)
 			# the side is a segment of the name, last (aileron_left) or not (gear_left_wheel)
 			for left in sorted(n for n in parts if "left" in n.split("_") and not n.startswith("nozzle_")):
 				right = "_".join("right" if s == "left" else s for s in left.split("_"))
+				if right in parts:
+					yield result("shape.mirror", f"{left} against {right}, {pose}", 0, mirrored(jet.points([left], drives), jet.points([right], drives)), 0.1)
+			# a store's station is its side (the contract's Stores): station 2 is
+			# station 8's mirror, an "a" side the other "a"
+			for left in sorted(n for n in parts if STATION.match(n) and int(STATION.match(n)[2]) < 5):
+				base, number, point = STATION.match(left).groups()
+				right = f"{base}_{10 - int(number)}{point}"
 				if right in parts:
 					yield result("shape.mirror", f"{left} against {right}, {pose}", 0, mirrored(jet.points([left], drives), jet.points([right], drives)), 0.1)
 			# the nozzles whole: their flaps' stepped tabs turn the same way on
@@ -2108,7 +2142,8 @@ def checks(jet):
 			flaps = {side: sorted(n for n in parts if n.startswith(f"nozzle_{side}_petal_")) for side in ("left", "right")}
 			if flaps["left"] and flaps["right"]:
 				yield result("shape.mirror", f"left nozzle's flaps against the right's, {pose}", 0, mirrored(jet.points(flaps["left"], drives), jet.points(flaps["right"], drives)), 0.3)
-			for name in sorted(n for n in parts if not {"left", "right"} & set(n.split("_")) and n not in ONE_SIDED):
+			for name in sorted(n for n in parts if not {"left", "right"} & set(n.split("_")) and n not in ONE_SIDED
+					and not (STATION.match(n) and STATION.match(n)[2] != "5")):
 				p = jet.points([name], drives)
 				yield result("shape.mirror", f"{name} about the centreline, {pose}", 0, mirrored(p, p), 0.1)
 

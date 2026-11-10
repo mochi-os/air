@@ -406,7 +406,8 @@ def checks(ship):
 
 	def plan():
 		# the deck's top at its height but for its round-down, and its outline
-		# covered in plan (the round-down's curve adds a little surface)
+		# covered in plan but for the blast deflectors' openings, cut from it
+		# (the round-down's curve adds a little surface)
 		top = ship.points(["deck"])
 		r = deck.get("round")
 		if r:
@@ -414,7 +415,8 @@ def checks(ship):
 		yield result("layout.deck", "the deck's top at its layout height", height, top[:, 1].mean(), 0.001)
 		tris = ship.parts["deck"]
 		cross = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
-		yield result("layout.deck", "the deck's top covers its layout outline", area(deck["outline"]), 0.5 * np.abs(cross[:, 1]).sum(), 1.0, "m2")
+		openings = sum(math.dist(*c["deflector"]["hinge"]) * c["deflector"]["depth"] for c in ship.layout.get("catapults", []) if c.get("deflector"))
+		yield result("layout.deck", "the deck's top covers its layout outline but the deflectors' openings", area(deck["outline"]) - openings, 0.5 * np.abs(cross[:, 1]).sum(), 1.0, "m2")
 	yield from plan()
 
 	def shapes():
