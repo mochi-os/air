@@ -182,6 +182,13 @@ python3 -I tips.py photos.json CAMERAS.json OUT.glb OUT.json FEATURES.json --pho
 python3 -I test_check.py
 ```
 
+Before it paints, the build removes the faces no view can see (`../hidden.py`): each mesh cut into the triangles
+it is drawn as, then every triangle lying inside or against another part that moves with it, judged part by part
+on what each rides (a surface, a door, a store the loadout shows, a mesh with shape keys each its own). They are
+the skin under the windscreen's and canopy sill's fittings and under the fins' root fairings, the fairings' caps
+inside the fins, the pilot inside the seat and the like: about 2,100 triangles, drawn and painted for nothing.
+`check.py`'s `shape.hidden` holds the build to none.
+
 The build also unwraps every part into one atlas and bakes its ambient occlusion in Cycles (`paint.png`
 beside OUT.glb), the shading the paint is laid over. Faces of more than four corners are triangulated first (a
 long bent cap laid flat in one piece overlapped itself); faces the islands lay over others get islands of their
@@ -241,6 +248,15 @@ is a `show` joint on the drive `stores`, hidden at rest; a photo's pose shows th
 {"tank_7": 1}`), and the engine those its loadout carries (`web/src/game/hang.ts`). The points file's `stores` lists
 them and each hardpoint's `rounds` where its missiles hang. Their places are the photos' (`facts.json`
 `layout.stores`), their sizes the sources' (`stores`). The missiles are built apart (`../missiles`).
+
+The stores carry an atlas of their own (`layout.stores.paint`, `paint_stores()` in `build.py`, painted by
+`finish.py`, a JPEG): unwrapped apart from the airframe's, its ambient occlusion baked in layers, each part with
+only the parts it is always shown with (the pylons alone, a rack or a tank under its pylon, a rail or a LAU-127
+beside its rack), so no part carries the shadow of one the loadout can leave off; then the airframe's lower grey
+under that shading, the missiles' calibrated wear, and the 330-gallon tanks' joint rings and filler cap as the
+photos show them. `check.py` reads it back through the station 7 tank's UVs (`paint.stores`). Every store part touches what it
+hangs from and every round its rail (`shape.attached`: a pylon on the wing, a rack or a tank on its pylon, a side rail
+on its rack, each round hung from its seat as the engine hangs it, by the shipped missiles), within 0.1 in.
 
 ## Factory-fresh paint
 

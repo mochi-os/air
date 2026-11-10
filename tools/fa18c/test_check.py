@@ -137,6 +137,20 @@ def triangles(lo, hi):
 class ShapeTest(unittest.TestCase):
 	HULL = triangles((400, 100, -10), (500, 120, 10))
 
+	def test_hidden_finds_a_part_inside_another_that_moves_with_it(self):
+		# a box inside the fuselage, both in the jet's rigid frame, is hidden
+		# whole; on a joint of its own (a gear leg), it is not judged against
+		# the fuselage at all
+		with tempfile.TemporaryDirectory() as d:
+			path, points = Path(d) / "m.glb", Path(d) / "m.json"
+			i = 0.0254
+			glb(path, [{"name": "fuselage", "mesh": box(((456 - 500) * i, -5 * i, -10 * i), ((456 - 400) * i, 15 * i, 10 * i))},
+				{"name": "gear", "mesh": box(((456 - 460) * i, 0, -2 * i), ((456 - 440) * i, 5 * i, 2 * i))}])
+			points.write_text(json.dumps({"joints": {}, "points": {}}))
+			self.assertEqual(check.hidden(path, points)["gear"][0], 12)
+			points.write_text(json.dumps({"joints": {"gear": {"motion": "rotate"}}, "points": {}}))
+			self.assertEqual(check.hidden(path, points), {})
+
 	def test_enclosed(self):
 		inside = np.array([[450, 110, 0], [401, 101, 9.5]], float)
 		self.assertTrue(check.enclosed(inside, self.HULL).all())
@@ -245,6 +259,59 @@ class ShapeTest(unittest.TestCase):
 		found = check.bends(wide, 1.5, masks)
 		self.assertTrue(any(j == 2 and abs(c) > 0.1 for j, _, _, c in found))
 		self.assertFalse(any(j == 1 and abs(stations[i] - 300) < 8 and abs(c) > 0.1 for j, i, _, c in check.bends(np.stack([kink[0]] * 3), 1.5, np.stack([free, edge, free]))))
+
+	def test_apart(self):
+		# boxes half an inch apart stand half an inch apart; touching or
+		# crossing, not at all; a corner off an edge by its diagonal
+		tris = lambda lo, hi: (lambda v, f: v[f])(*box(lo, hi))
+		one = tris((0.0, 0.0, 0.0), (10.0, 2.0, 2.0))
+		self.assertAlmostEqual(check.apart(one, tris((0.0, 2.5, 0.0), (10.0, 4.0, 2.0))), 0.5, places=6)
+		self.assertAlmostEqual(check.apart(one, tris((0.0, 2.0, 0.0), (10.0, 4.0, 2.0))), 0.0, places=6)
+		self.assertAlmostEqual(check.apart(one, tris((2.0, 1.0, 1.0), (8.0, 4.0, 3.0))), 0.0, places=6)
+		self.assertAlmostEqual(check.apart(one, tris((11.0, 3.0, 0.0), (12.0, 4.0, 2.0))), math.sqrt(2), places=6)
+		self.assertEqual(check.apart(one, tris((50.0, 0.0, 0.0), (60.0, 2.0, 2.0))), float("inf"))
+		# a long part whose face passes close while all its corners lie far off
+		long = tris((-100.0, -1.0, -1.0), (100.0, 0.0, 1.0))
+		self.assertAlmostEqual(check.apart(tris((0.0, 0.5, 0.0), (1.0, 1.5, 0.5)), long), 0.5, places=6)
+		# further apart than the search's reach, with a sliver of one reaching
+		# toward the other: the box's own corners, whose faces lie beyond the
+		# reach, are still the nearest
+		sliver = np.array([[[11.0, 0.0, 1.0], [11.9, 2.6, 1.0], [11.5, 0.0, 1.0]]])
+		self.assertAlmostEqual(check.apart(np.concatenate([one, sliver]), tris((0.0, 4.5, 0.0), (10.0, 6.0, 2.0))), 2.5, places=6)
+
+	def test_each_store_part_hangs_from_its_carrier(self):
+		self.assertEqual(check.carrier("rail_9"), "wing_outer_right")
+		self.assertEqual(check.carrier("rail_2a"), "rack_2")
+		self.assertEqual(check.carrier("launcher_8b"), "rack_8")
+		self.assertEqual(check.carrier("tank_7"), "pylon_7")
+		self.assertEqual(check.carrier("tank_5"), "pylon_5")
+		self.assertEqual(check.carrier("pylon_5"), "fuselage")
+		self.assertEqual(check.carrier("pylon_3"), "wing_inner_left")
+		self.assertEqual(check.carrier("ejector_6"), "fuselage")
+
+	def test_seated_over_a_hole_in_the_skin(self):
+		# the skin a fin's root encloses is not built (hidden.py): a foot over
+		# the hole stands in it and is passed over, not read against the floor
+		# seen through it; the feet beside the hole are read as ever
+		tris = lambda lo, hi: (lambda v, f: v[f])(*box(lo, hi))
+		tiles = []
+		for s0 in range(0, 100, 10):
+			for b0 in range(-48, 52, 4):
+				if 40 <= s0 < 60 and 36 <= b0 < 44:
+					continue   # the hole under the fin, FS 40-60, BL 36-44
+				c = np.array([[s0, 100.0, b0], [s0 + 10, 100.0, b0], [s0 + 10, 100.0, b0 + 4], [s0, 100.0, b0 + 4]])
+				tiles += [c[[0, 1, 2]], c[[0, 2, 3]]]
+		floor = tris((0.0, 89.0, -50.0), (100.0, 90.0, 50.0))
+		skin = np.concatenate([np.array(tiles), floor])
+		stations = np.arange(10.0, 90.0, 5.0)
+		self.assertTrue(check.holed(skin, 50.0, 38.0))
+		self.assertFalse(check.holed(skin, 30.0, 38.0))
+		self.assertAlmostEqual(check.seated(tris((5.0, 99.5, 38.0), (95.0, 160.0, 42.0)), skin, stations), -0.5, places=6)
+		# a fin lifted off the skin is still seen to stand off it
+		self.assertAlmostEqual(check.seated(tris((5.0, 102.0, 38.0), (95.0, 160.0, 42.0)), skin, stations), 2.0, places=6)
+		# a step in the skin's own shape is no hole
+		step = np.concatenate([np.array(tiles), tris((40.0, 89.0, 36.0), (60.0, 99.0, 44.0))])
+		self.assertFalse(check.holed(step, 50.0, 40.0))
 
 	def test_seated(self):
 		tris = lambda lo, hi: (lambda v, f: v[f])(*box(lo, hi))

@@ -26,10 +26,14 @@ import fa18c_old_url from '../assets/fa18c-old.glb?url'
 import ford_model_url from '../assets/ford.glb?url'
 import ford_ship from '../assets/ford.json'
 import aim9m_model_url from '../assets/aim9m.glb?url'
+import aim9m_points from '../assets/aim9m.json'
+import aim120c_points from '../assets/aim120c.json'
 import fa18c_points from '../assets/fa18c.json'
+import { outfit, type Fittings, type Kind, type Seat } from '../game/hang'
 import { model } from '../game/library'
 import { posed } from '../game/model'
 import { deflectors, layout, raising, stations } from '../game/ship'
+import { PRESETS, SHOWCASE, type Loadout } from '../game/stores'
 
 interface Entry {
   name: string // the asset's file name: the bundle serves it under a content-hashed one
@@ -37,13 +41,29 @@ interface Entry {
   prepare: (gltf: GLTF) => THREE.Object3D // a clone: the library's stock is shared and never changed in place
 }
 
+// The jet's points for hanging its loadout (hang.ts), and the loadouts its
+// button steps through: the setup's presets, and one of each kind of store.
+const FITTINGS: Fittings = {
+  ...(fa18c_points as unknown as { points: { stores: string[]; hardpoints: Record<string, { rounds: Record<string, Seat> }> } }).points,
+  mounts: {
+    aim9m: (aim9m_points as unknown as { points: { mount: number[] } }).points.mount,
+    aim120c: (aim120c_points as unknown as { points: { mount: number[] } }).points.mount,
+  },
+}
+const LOADOUTS: { name: string; stores: Loadout }[] = [
+  { name: 'clean', stores: PRESETS.gun },
+  { name: 'Fox 2', stores: PRESETS.fox2 },
+  { name: 'Fox 3', stores: PRESETS.fox3 },
+  { name: 'showcase', stores: SHOWCASE },
+]
+
 const MODELS: Entry[] = [
   // Our own missiles as tools/missiles/build.py builds them, at rest.
   { name: 'aim120c.glb', url: amraam_model_url, prepare: (gltf: GLTF) => gltf.scene.clone(true) },
   { name: 'aim9m.glb', url: aim9m_model_url, prepare: (gltf: GLTF) => gltf.scene.clone(true) },
   // Our own F/A-18C as tools/fa18c/build.py builds it, at rest: gear up, every
-  // surface neutral, its stores hidden but the wingtip rails, as the loadout
-  // leaves a clean jet.
+  // surface neutral, clean (its stores hidden but the wingtip rails) until its
+  // button hangs a loadout.
   {
     name: 'fa18c.glb',
     url: fa18c_model_url,
@@ -177,6 +197,8 @@ export function ModelViewer({
   const [status, setStatus] = useState('Loading…') // empty once the model is drawn
   const [count, setCount] = useState<number | null>(null) // the shown model's polygons
   const [raised, setRaised] = useState(false) // the Ford's blast deflectors asked up
+  const [worn, setWorn] = useState(0) // the F/A-18C's loadout, from LOADOUTS
+  const [loaded, setLoaded] = useState<THREE.Object3D | null>(null) // the shown model, once drawn
   const time = useRef(0) // how many seconds into their raise they stand
   const { formatNumber } = useFormat()
 
@@ -256,6 +278,7 @@ export function ModelViewer({
     let wanted = true
     setStatus('Loading…')
     setCount(null)
+    setLoaded(null)
     model(entry.url, current.renderer).then(
       (gltf) => {
         if (!wanted || view.current !== current) return
@@ -266,6 +289,7 @@ export function ModelViewer({
         frame(current, current.shown)
         current.draw()
         setCount(polygons(current.shown))
+        setLoaded(current.shown)
         setStatus('')
       },
       (error) => {
@@ -303,6 +327,30 @@ export function ModelViewer({
     return () => cancelAnimationFrame(frame)
   }, [raised, count, chosen])
 
+  // The F/A-18C wears the loadout asked for, its rounds our own missiles hung as
+  // the flight hangs them.
+  useEffect(() => {
+    const current = view.current
+    if (!current || !loaded || chosen !== 'fa18c.glb') return
+    const jet = loaded
+    let wanted = true
+    Promise.all([model(aim9m_model_url, current.renderer), model(amraam_model_url, current.renderer)]).then(
+      ([nine, amraam]) => {
+        if (!wanted || current.shown !== jet) return
+        const missiles: Record<Kind, THREE.Object3D> = { aim9m: nine.scene, aim120c: amraam.scene }
+        outfit(jet, LOADOUTS[worn].stores, missiles, FITTINGS)
+        current.draw()
+        setCount(polygons(jet))
+      },
+      (error) => {
+        if (wanted) setStatus(`Could not load the missiles: ${(error as Error)?.message || error}`)
+      }
+    )
+    return () => {
+      wanted = false
+    }
+  }, [worn, loaded, chosen])
+
   return (
     <div className='bg-background fixed inset-0'>
       <div ref={mount} className='absolute inset-0' />
@@ -324,6 +372,12 @@ export function ModelViewer({
           <Button variant='outline' size='sm' onClick={() => setRaised((up) => !up)}>
             {/* jsx-text-ok: developer page, English only by decision */}
             {raised ? 'Lower JBDs' : 'Raise JBDs'}
+          </Button>
+        )}
+        {chosen === 'fa18c.glb' && loaded && (
+          <Button variant='outline' size='sm' onClick={() => setWorn((i) => (i + 1) % LOADOUTS.length)}>
+            {/* jsx-text-ok: developer page, English only by decision */}
+            Stores: {LOADOUTS[worn].name}
           </Button>
         )}
         {count !== null && (

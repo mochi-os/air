@@ -87,7 +87,16 @@ photo's `aside`, never its `marks` (a tank's tip is a silhouette end, and in the
 - `tank_inboard_nose_<side>`, `tank_inboard_tail_<side>`, `tank_centre_nose`, `tank_centre_tail`: the tank's tips.
 - `rail_tip_front_<side>`, `rail_tip_aft_<side>`: the wingtip LAU-7's forward fairing's tip and its aft end (an
   empty rail looks like a slim finless store: check its ends against the rail's before calling it a pod);
-  `rail_outboard_outer_front_<side>`, `rail_outboard_inner_front_<side>`: a twin's LAU-127 or LAU-7 fronts.
+  `rail_outboard_outer_front_<side>`, `rail_outboard_inner_front_<side>`: a twin's LAU-127 or LAU-7 fronts;
+  `rail_outboard_outer_aft_<side>`, `rail_outboard_inner_aft_<side>`: the middle of a LAU-7's aft end there,
+  `launcher_outboard_outer_aft_<side>`, `launcher_outboard_inner_aft_<side>` a LAU-127's (longer, its front fairing
+  long and tapered). Say in the notes which rail each is, and whether a round is on it.
+- `rack_outboard_front_<side>`, `rack_outboard_aft_<side>`: the LAU-115's forward and aft lower corners, where its
+  front and aft faces meet its bottom; `rack_outboard_root_front_<side>`: where its front face meets the pylon.
+- `pylon_centre_nose`, `pylon_centre_tail`: the SUU-62's foremost point low down (where its front meets the tank)
+  and its aft lower corner; `pylon_centre_root_front`, `pylon_centre_root_aft`: where its edges meet the belly.
+- `ejector_front_<side>`, `ejector_aft_<side>`: the LAU-116's exposed lower face's front and aft ends, on its
+  middle line (`left` for station 4, `right` for 6).
 - `missile_<where>_nose_<side>`, `missile_<where>_tail_<side>`: a round's nose tip and the middle of its aft end, only
   where they end the silhouette (seen from the side, above or below), never in a view along the round; say which
   missile it is (an AIM-9X's small fins, a 9M's large canards, a finless training round).

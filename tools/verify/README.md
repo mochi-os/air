@@ -134,6 +134,10 @@ only start the solve. It reports:
   point, so it is measured at the line's nearest point to the model's and its miss is the part the photo
   sees, across the line;
 - how far the photos pull each anchor: a large pull means the citation or the marks are wrong;
+- each point a photo files under `aside` (a store's silhouette ends: Pitfalls), triangulated on the solved
+  cameras apart from the solve, each mark carried from its photo's pose, a left and right pair as one point,
+  each photo weighed by its sigma or its fit, whichever is looser; reported as the points are, `loose` where one
+  photo sees it. The gate does not judge them;
 - each traced edge's distance from the posed model's silhouette (signed: + where the model stands outside the
   photo's edge), or from only the parts its `"parts"` names (an edge seen in front of the rest of the model), or
   from one of the build's curves.
@@ -302,8 +306,8 @@ What went wrong on the F/A-18C, each a rule now:
 - **Keep a store's marks out of the shared solve.** A tank's tips and a pylon's nose are silhouette ends, not
   fixed corners, and a mark on one ties the cameras that see it as firmly as a mark on a seam. On the F/A-18C
   (2026-11-08) 103 store marks over 17 photos pulled the main axles 2.2 in low and the wingtip corners 1.5 in off,
-  past the gate. File them under the photo's `aside`, triangulate them on the solved cameras apart, and judge
-  each store by its outline (below).
+  past the gate. File them under the photo's `aside` (the match triangulates them on the solved cameras apart and
+  reports each beside the model's), and judge each store by its outline (below).
 - **Judge a part seen in front of the rest by its own outline.** An edge traced where a store stands before the
   fuselage is no edge of the whole model's silhouette: against it the F/A-18C's pylons and tanks read 9-40 in off,
   against their own parts' (an edge's `"parts"`) 0.2-1.4 in. A photo's pose shows the stores it carries

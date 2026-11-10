@@ -25,7 +25,9 @@ from mathutils import Vector
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent))
 import paint as painting  # noqa: E402
+import hidden  # noqa: E402
 FACTS = json.loads((HERE / "facts.json").read_text())
 INCH = 0.0254
 SIDES = 24
@@ -151,15 +153,41 @@ def paint_at(station):
 	return "paint"
 
 
+# How far inside a cut fitting's edges the body's skin is cut, inches: far
+# enough that the skin's edge is inside the fitting, not on its side
+INSET = 0.05
+
+
+def covered():
+	# The body's skin a fitting laid along it covers (a harness cover: its
+	# layout entry `"cut": true`), as the rolls just inside its sides and the
+	# stations just inside its ends, where the body is cut so that the skin
+	# under it is whole faces, which cull() then removes
+	rolls, stations = set(), set()
+	for spec in LAYOUT.get("fittings", []):
+		if not spec.get("cut"):
+			continue
+		half = math.degrees(math.asin((spec["width"] / 2 - INSET) / RADIUS))
+		rolls |= {(spec.get("roll", 0.0) + side * half) % 360 for side in (-1, 1)}
+		feet = [s for s, r in spec["profile"] if abs(r - RADIUS) < 1e-6]
+		stations |= {min(feet) + INSET, max(feet) - INSET}
+	return rolls, stations
+
+
 def body():
 	# The body of revolution: the profile's (station, radius) knots, a ring at
 	# each, closed at the nose by its point and at the tail by a flat end;
 	# the glass ahead of layout.dome, a radome's white ahead of its end, the
 	# bands where layout.bands puts them
 	profile = [tuple(k) for k in LAYOUT["profile"]]
-	# rings at the bands' edges too, so a band ends on a ring
+	# SIDES meridians round, and one inside each side of a cut fitting
+	extra, under = covered()
+	rolls = sorted({360 * i / SIDES for i in range(SIDES)} | extra)
+	n = len(rolls)
+	# rings at the bands' edges too, so a band ends on a ring, and inside a
+	# cut fitting's ends
 	cuts = sorted({s for band in LAYOUT.get("bands", []) for s in band[:2]} | ({LAYOUT["dome"]} if "dome" in LAYOUT else set())
-		| ({LAYOUT["radome"]["end"]} if "radome" in LAYOUT else set()))
+		| ({LAYOUT["radome"]["end"]} if "radome" in LAYOUT else set()) | under)
 	knots = sorted(set(profile) | {(s, radius_at(profile, s)) for s in cuts if profile[0][0] < s < profile[-1][0]})
 	vertices, faces, paints = [], [], []
 	rings = []
@@ -169,9 +197,9 @@ def body():
 			vertices.append(point(s))
 			continue
 		ring = []
-		for i in range(SIDES):
+		for roll in rolls:
 			ring.append(len(vertices))
-			vertices.append(point(s, r, 360 * i / SIDES))
+			vertices.append(point(s, r, roll))
 		rings.append(ring)
 	for (s0, _), (s1, _), a, b in zip(knots, knots[1:], rings, rings[1:]):
 		if "dome" in LAYOUT and s1 <= LAYOUT["dome"] + 1e-6:
@@ -180,8 +208,8 @@ def body():
 			paint = "radome"
 		else:
 			paint = paint_at((s0 + s1) / 2)
-		for i in range(SIDES):
-			j = (i + 1) % SIDES
+		for i in range(n):
+			j = (i + 1) % n
 			if len(a) == 1:
 				faces.append((a[0], b[j], b[i]))
 			elif len(b) == 1:
@@ -199,11 +227,11 @@ def body():
 		nozzle = LAYOUT["nozzle"]
 		inner = []
 		for s, r in ((end, nozzle["exit"]), (end - nozzle.get("depth", 3.0), nozzle.get("throat", nozzle["exit"] * 0.6))):
-			inner.append([len(vertices) + i for i in range(SIDES)])
-			vertices.extend(point(s, r, 360 * i / SIDES) for i in range(SIDES))
+			inner.append([len(vertices) + i for i in range(n)])
+			vertices.extend(point(s, r, roll) for roll in rolls)
 		for a, b, paint in ((last, inner[0], "paint"), (inner[0], inner[1], "liner" if "liner" in nozzle else "metal")):
-			for i in range(SIDES):
-				j = (i + 1) % SIDES
+			for i in range(n):
+				j = (i + 1) % n
 				faces.append((a[i], a[j], b[j], b[i]))
 				paints.append(paint)
 		faces.append(tuple(reversed(inner[1])))
@@ -475,6 +503,23 @@ def lugs():
 	node("lugs", mesh=(vertices, faces), paint="metal")
 
 
+def rider(obj):
+	# The joint a part moves with (its own or its nearest moving ancestor's),
+	# or None for the missile's rigid frame: hidden.py's group
+	while obj is not None:
+		if obj.name in JOINTS:
+			return obj.name
+		obj = obj.parent
+	return None
+
+
+def cull():
+	# Removes the faces no view can see: inside another part or against one
+	# that moves with it (hidden.py), such as the fittings' feet sunk in the
+	# body, the wings' roots and the skin under the harness cover
+	hidden.remove([o for o in bpy.data.objects if o.type == "MESH"], rider)
+
+
 # The longest piece of the body's skin one island of the atlas holds, inches
 PIECE = 36.0
 
@@ -510,8 +555,10 @@ def unwrap(parts):
 		stations = [CG - (v.co.x + origin.x) / INCH for v in face.verts]
 		if max(stations) - min(stations) < 1e-4:
 			continue
-		middle = CG - centre.x / INCH
-		start = next((a for a, b in pieces if a <= middle <= b), 0.0)
+		# the piece its forward edge lies in, so the triangles of a face cut
+		# across a piece's end stay in one island
+		front = min(stations) + 1e-6
+		start = next((a for a, b in pieces if a <= front < b), pieces[-1][0])
 		turn = math.degrees(math.atan2(-centre.y, centre.z)) % 360
 		quarter = (math.floor((turn + 45) / 90) * 90 - 45) % 360
 		for loop in face.loops:
@@ -630,6 +677,8 @@ def main():
 				rolleron(which, LAYOUT["rollerons"])
 	lugs()
 	fittings()
+	if "--whole" not in sys.argv:   # --whole keeps them: every part a closed solid, for test_build's probes
+		cull()
 	if "--draft" not in sys.argv:
 		paint()
 	bpy.ops.export_scene.gltf(filepath=out[0], export_format="GLB", export_yup=True, use_selection=False,

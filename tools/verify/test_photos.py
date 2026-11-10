@@ -50,6 +50,10 @@ class HelpersTest(unittest.TestCase):
 		with self.assertRaises(ValueError):
 			crop.size(500, 200, 100, 400, 1400, photo)
 
+	def test_a_photo_scaled_to_the_overlays_width_is_that_wide(self):
+		# 4231 px at 2400/4231 is 2400 px, not the 2399 truncation gives
+		self.assertEqual(photos.scaled((4231, 2821), 2400 / 4231), (2400, 1600))
+
 	def test_segment_distance(self):
 		segments = photos.to_segments(np.array([[0.0, 0.0], [10.0, 0.0], [10.0, 10.0]]))
 		d, i = photos.segment_distance([[5, 3], [12, 5], [-4, 0]], segments)
@@ -167,6 +171,64 @@ class MatchTest(unittest.TestCase):
 
 	def tearDown(self):
 		self.dir.cleanup()
+
+	def test_measures_the_aside_points_apart(self):
+		# a point filed under "aside" (a store's end, kept out of the shared
+		# solve) is triangulated on the solved cameras: marked on the right in
+		# two photos and as its mirror image on the left in the third, it is
+		# measured as one point, and the model's 2 in error shows as the miss
+		r = self.root
+		catalogue = json.loads((r / "photos.json").read_text())
+		features = json.loads((r / "features.json").read_text())
+		truth = np.array([2.0, -0.5, 0.9])
+		features["landmarks"]["pod_right"] = {"at": list(truth + [2 * 0.0254, 0, 0]), "node": "fuselage"}
+		features["landmarks"]["pod_left"] = {"at": list((truth + [2 * 0.0254, 0, 0]) * [1, 1, -1]), "node": "fuselage"}
+		(r / "features.json").write_text(json.dumps(features))
+		size = (3000, 2000)
+		for k, position in enumerate(((10.0, 3.0, 14.0), (-12.0, 4.0, 9.0), (3.0, 6.0, -15.0))):
+			c = cam.looking(np.array(position), np.zeros(3), 3200.0)
+			name, point = ("pod_left", truth * [1, 1, -1]) if k == 2 else ("pod_right", truth)
+			pixel = cam.project(c, point[None], (size[0] / 2, size[1] / 2))[0][0]
+			catalogue["photos"][f"p{k}"]["aside"] = {name: list(map(float, pixel))}
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		match = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None)
+		report = match.report()
+		self.assertNotIn("pod_right", report["points"])   # kept out of the shared solve
+		pod = report["aside"]["pod_right"]
+		frame = mod.Frame(JET)
+		self.assertEqual(pod["photos"], 3)
+		np.testing.assert_allclose(pod["measured"], frame.source(truth), atol=0.15)
+		self.assertAlmostEqual(pod["miss"][0], -2.0, delta=0.15)   # x forward is FS's minus
+		self.assertNotIn("loose", pod)
+		self.assertIn("aside pod_right", photos.text(report))
+
+	def test_an_aside_point_one_photo_sees_is_loose_along_its_sight(self):
+		r = self.root
+		catalogue = json.loads((r / "photos.json").read_text())
+		features = json.loads((r / "features.json").read_text())
+		truth = np.array([2.0, -0.5, 0.9])
+		features["landmarks"]["pod_right"] = {"at": list(truth + [0, 0.1, 0]), "node": "fuselage"}
+		(r / "features.json").write_text(json.dumps(features))
+		c = cam.looking(np.array((10.0, 3.0, 14.0)), np.zeros(3), 3200.0)
+		catalogue["photos"]["p0"]["aside"] = {"pod_right": list(map(float, cam.project(c, truth[None], (1500, 1000))[0][0]))}
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		report = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None).report()
+		pod = report["aside"]["pod_right"]
+		self.assertEqual(pod["photos"], 1)
+		self.assertEqual(len(pod["loose"]), 1)
+
+	def test_an_aside_point_with_no_landmark_is_measured_from_the_photos(self):
+		r = self.root
+		catalogue = json.loads((r / "photos.json").read_text())
+		truth = np.array([1.0, 0.7, -0.3])
+		for k, position in enumerate(((10.0, 3.0, 14.0), (-12.0, 4.0, 9.0), (3.0, 6.0, -15.0))):
+			c = cam.looking(np.array(position), np.zeros(3), 3200.0)
+			catalogue["photos"][f"p{k}"]["aside"] = {"tail": list(map(float, cam.project(c, truth[None], (1500, 1000))[0][0]))}
+		(r / "photos.json").write_text(json.dumps(catalogue))
+		report = photos.Match(r / "photos.json", r / "m.glb", r / "m.json", r / "features.json").solve(log=lambda *_: None).report()
+		tail = report["aside"]["tail"]
+		np.testing.assert_allclose(tail["measured"], mod.Frame(JET).source(truth), atol=0.15)
+		self.assertNotIn("miss", tail)
 
 	def test_measures_the_real_points(self):
 		r = self.root

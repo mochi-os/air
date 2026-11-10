@@ -1,6 +1,6 @@
 {
 	"about": "Every visible shape on the F/A-18C, region by region, with the reference photos that show it and whether the model matches (../verify/README.md, step 7). status: matches, wrong (with what is wrong), recorded (a miss within the plan's tolerance, claude/plans/air-fa18c.md decision 16, left as built with what the photos read), or unchecked. Numbers are the photo match's (photos.json) or the facts check's (check.py) as of the date; a shape inside the outline is only ever verified here.",
-	"date": "2026-10-30",
+	"date": "2026-11-10",
 	"regions": {
 		"nose": [
 			{
@@ -551,21 +551,26 @@
 					"dvids9820801",
 					"dvids9820810",
 					"dvids7243901",
-					"dvids9820799"
+					"dvids9820799",
+					"dvids7847398",
+					"dvids7847408",
+					"dvids2130535"
 				],
-				"note": "noses and the outboard tails from 13-15 photos; leading edges and bottoms traced against the pylon's own silhouette within 0.3-0.6 in (dvids9820810, nearest end-on, 2.5 in); the width (9.5 in) and the trailing edge unseen, by eye"
+				"note": "noses and the outboard tails from 13-15 photos; leading edges and bottoms traced against the pylon's own silhouette within 0.3-0.6 in (dvids9820810, nearest end-on, 2.5 in); the width (9.5 in) and the trailing edge unseen, by eye. 2026-11-09, with three more photos (two of an F/A-18D): the outboard nose within 0.1 in in FS and BL, 0.75 in high (15 photos); the tail 0.3-0.7 in off (9)"
 			},
 			{
 				"shape": "SUU-62 centreline pylon (5)",
-				"status": "unchecked",
+				"status": "matches",
 				"photos": [
+					"dvids8025511",
+					"dvids3071258",
 					"c8203275"
 				],
-				"note": "only its front seen, where the tank's top outline stops; its aft end and height by eye"
+				"note": "its leading edge, narrow and rounded, from two photos 29 deg apart (2026-11-09: lower end FS 359.1, WL 78.8; top at the belly FS 357.3, WL 84.8; +-0.9 in FS, 0.2 WL), built to them: the lower end within 0.05 in, the top 1.2 in high where it follows the airframe's own belly line. Its aft end and root aft are hidden in every public-domain photo found: placed by eye"
 			},
 			{
 				"shape": "wingtip LAU-7s (1, 9)",
-				"status": "matches",
+				"status": "wrong",
 				"photos": [
 					"dvids9820808",
 					"dvids9820801",
@@ -576,25 +581,30 @@
 					"dvids7243901",
 					"c114498618"
 				],
-				"note": "front and aft ends from 8 and 5 photos, 110.3 in apart against the cited 110; turned on its side, the round 5 in outboard of it; the fittings across the 2.6 in to the wingtip by eye"
+				"note": "front and aft ends from 8 and 5 photos, 110.3 in apart against the cited 110; turned on its side, the round 5 in outboard of it; the fittings across the 2.6 in to the wingtip by eye. 2026-11-09: today's photo match reads the front 2.0 in forward and 1.8 in low (7 photos, +-0.2-0.4), the ends 113 in apart: task \"wingtip LAU-7's front\" settles which reading holds"
 			},
 			{
 				"shape": "LAU-115C/A, LAU-127s, LAU-7s on the wing pylons",
-				"status": "unchecked",
+				"status": "matches",
 				"photos": [
 					"dvids7487366",
-					"dvids7487368"
+					"dvids7487368",
+					"dvids7847398",
+					"dvids7847408",
+					"dvids2130535"
 				],
-				"note": "the twin LAU-127s' fronts from two photos; the LAU-115 hidden under the wing in every photo, hung by eye; the LAU-7s on the shoulders where the LAU-127s are (no photo shows them)"
+				"note": "the LAU-127s' fronts from four photos within 0.3 in; an empty LAU-7's aft end (dvids7847398, 7847408) within 0.6 in of the build's, 110.3 in behind its front against the cited 110 (loose across, +-4 in BL); the LAU-115's front meeting the pylon (dvids2130535, one photo) within its uncertainty once its sections hang from its top line. Its lower corners and aft end are hidden in every public-domain photo found: its depth and length are the source's"
 			},
 			{
 				"shape": "LAU-116 cheek launchers (4, 6)",
-				"status": "unchecked",
+				"status": "matches",
 				"photos": [
 					"dvids9380790",
-					"dvids9390273"
+					"dvids9390273",
+					"dvids8842278",
+					"dvids9393266"
 				],
-				"note": "inside the fuselage but its lower face; placed by its round, by eye"
+				"note": "placed by its round, whose line the photos now fix at both ends: the nose from three photos, the tail from two (2026-11-09), 145.1 in apart against the AIM-120C's 144, the round 1.2 deg nose up, the LAU-116 with it. The launcher itself stands inside the fuselage; the aft-most edge seen above the round's tail (FS 565) is the missile well's fairing, 25 in aft of where the 44 in launcher, holding the round's forward hook, can end"
 			}
 		]
 	}

@@ -12,7 +12,7 @@
 # go unchecked.
 #
 # usage: python3 -I check.py MODEL.glb MODEL.json [--json]
-import json, math, re, sys
+import json, math, re, subprocess, sys
 from pathlib import Path
 
 import numpy as np
@@ -114,9 +114,22 @@ def leading_sweep(quarter, aspect, taper):
 	return math.degrees(math.atan(math.tan(math.radians(quarter)) + (4 / aspect) * 0.25 * (1 - taper) / (1 + taper)))
 
 
+def hidden(glb, points):
+	# The model's triangles no view can see, per part, [triangles, square
+	# inches]: inside or against another part that moves with it, as
+	# ../hidden.py judges them in Blender (the build removes them with it)
+	run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(HERE.parent / "hidden.py"), "--", str(glb), str(points)],
+		capture_output=True, text=True)
+	line = next((l for l in run.stdout.splitlines() if l.startswith("hidden ")), None)
+	if run.returncode or line is None:
+		raise RuntimeError(run.stdout[-2000:] + run.stderr[-2000:])
+	return json.loads(line[len("hidden ") :])
+
+
 class Jet:
 	def __init__(self, glb, points):
 		self.path = glb
+		self.file = points
 		self.model = verify.Model(glb)
 		self.document = json.loads(Path(points).read_text())
 		self.joints = self.document["joints"]
@@ -140,13 +153,14 @@ class Jet:
 			raise KeyError(f"not built: {sorted(set(names) - set(parts))}")
 		return np.concatenate(chosen)
 
-	def textured(self, materials=("paint", "team")):
+	def textured(self, materials=("paint", "team"), names=None):
 		# The painted triangles at rest, in stations, waterlines and buttlines,
-		# with their corners' UVs: (triangles (N, 3, 3), UVs (N, 3, 2))
+		# with their corners' UVs: (triangles (N, 3, 3), UVs (N, 3, 2)); of the
+		# named parts alone if names are given
 		worlds = self.model.worlds({})
 		tris, uvs = [], []
 		for i, n in enumerate(self.model.nodes):
-			if n["mesh"] is None or i not in worlds:
+			if n["mesh"] is None or i not in worlds or (names is not None and n["name"] not in names):
 				continue
 			W = worlds[i]
 			for (t, material), uv in zip(self.model.meshes[n["mesh"]], self.model.uvs[n["mesh"]]):
@@ -444,7 +458,99 @@ def turns(h, noise=0.05):
 	return out
 
 
-def seated(part, skin, stations):
+def closest(points, tris, chunk=256):
+	# Each point's distance (N) to the nearest of the triangles (M, 3, 3): the
+	# closest point on each triangle by Ericson's regions, taken in his order,
+	# each point and triangle keeping the first region it falls in
+	a, b, c = tris[:, 0], tris[:, 1], tris[:, 2]
+	ab, ac, bc = b - a, c - a, c - b
+	safe = lambda v: np.where(v == 0, 1e-20, v)
+	out = np.full(len(points), np.inf)
+	for start in range(0, len(points), chunk):
+		q = points[start : start + chunk, None, :]
+		ap, bp, cp = q - a, q - b, q - c
+		d1, d2 = (ab * ap).sum(-1), (ac * ap).sum(-1)
+		d3, d4 = (ab * bp).sum(-1), (ac * bp).sum(-1)
+		d5, d6 = (ab * cp).sum(-1), (ac * cp).sum(-1)
+		va, vb, vc = d3 * d6 - d5 * d4, d5 * d2 - d1 * d6, d1 * d4 - d3 * d2
+		total = safe(va + vb + vc)
+		regions = [
+			((d1 <= 0) & (d2 <= 0), lambda: a + 0 * q),
+			((d3 >= 0) & (d4 <= d3), lambda: b + 0 * q),
+			((vc <= 0) & (d1 >= 0) & (d3 <= 0), lambda: a + ab * (d1 / safe(d1 - d3))[..., None]),
+			((d6 >= 0) & (d5 <= d6), lambda: c + 0 * q),
+			((vb <= 0) & (d2 >= 0) & (d6 <= 0), lambda: a + ac * (d2 / safe(d2 - d6))[..., None]),
+			((va <= 0) & (d4 - d3 >= 0) & (d5 - d6 >= 0), lambda: b + bc * ((d4 - d3) / safe((d4 - d3) + (d5 - d6)))[..., None]),
+		]
+		x = a + ab * (vb / total)[..., None] + ac * (vc / total)[..., None]
+		done = np.zeros(x.shape[:2], bool)
+		for inside, point in regions:
+			take = inside & ~done
+			if take.any():
+				x = np.where(take[..., None], point(), x)
+			done |= take
+		out[start : start + chunk] = np.linalg.norm(x - q, axis=-1).min(1)
+	return out
+
+
+def apart(one, other):
+	# How far two parts (triangles, (N, 3, 3)) stand apart at their nearest:
+	# 0 where a corner of either lies inside the other (they cross), else every
+	# corner of each against the other's triangles near it (a triangle near by
+	# its own bounds: a long face's corners can lie far off while it passes
+	# close)
+	def near(tris, other_tris):
+		low, high = other_tris.reshape(-1, 3).min(0) - 2.0, other_tris.reshape(-1, 3).max(0) + 2.0
+		return tris[(tris.max(1) >= low).all(-1) & (tris.min(1) <= high).all(-1)]
+
+	a, b = near(one, other), near(other, one)
+	if not len(a) or not len(b):
+		return float("inf")
+	corners = lambda tris: np.unique(tris.reshape(-1, 3), axis=0)
+	if enclosed(corners(one), other).any() or enclosed(corners(other), one).any():
+		return 0.0
+	return float(min(closest(corners(one), b).min(), closest(corners(other), a).min()))
+
+
+# The missiles the loadout hangs on the jet (our own builds, ../missiles), as
+# the game ships them
+ROUNDS = HERE.parent.parent / "web" / "src" / "assets"
+
+
+def hung(seat):
+	# A round laid on its seat as the engine lays it (web/src/game/hang.ts
+	# place): the missile's own mount on the seat's, its nose along the
+	# seat's forward, its lugs toward its up. Its triangles in the model frame
+	model = verify.Model(str(ROUNDS / f"{seat['kind']}.glb"))
+	mount = np.array(json.loads((ROUNDS / f"{seat['kind']}.json").read_text())["points"]["mount"], float)
+	f = np.array(seat["forward"], float)
+	f /= np.linalg.norm(f)
+	u = np.array(seat["up"], float)
+	u -= f * (u @ f)
+	u /= np.linalg.norm(u)
+	R = np.stack([f, u, np.cross(f, u)], 1)
+	return model.triangles() @ R.T + (np.array(seat["mount"], float) - R @ mount)
+
+
+def carrier(part):
+	# What a store part hangs from: a pylon from the wing (the centreline's
+	# from the fuselage), a rack or a tank from its pylon, a side rail from its
+	# rack, a LAU-116 from the fuselage, a wingtip rail from the outer wing
+	kind, station, point = STATION.match(part).groups()
+	station = int(station)
+	side = "left" if station < 5 else "right"
+	if kind == "rail" and station in (1, 9):
+		return f"wing_outer_{side}"
+	if kind in ("rack", "tank"):
+		return f"pylon_{station}"
+	if kind in ("rail", "launcher"):
+		return f"rack_{station}"
+	if kind == "pylon":
+		return "fuselage" if station == 5 else f"wing_inner_{side}"
+	return "fuselage"
+
+
+def seated(part, skin, stations, plane=None):
 	# How far a thin part standing on the skin (a fin; triangles, source
 	# coordinates) stands off it at its foot, the furthest over the stations:
 	# at each, on each side of the part's own mid-plane (through its middle,
@@ -454,8 +560,10 @@ def seated(part, skin, stations):
 	# where no station cuts the part. Lowest by waterline instead, a face
 	# slanting down into the skin was judged halfway up, and a face meeting
 	# another part (a fin's root on a fairing under it) was judged at the
-	# closing face between them
-	points = part.reshape(-1, 3)
+	# closing face between them. plane: the triangles whose own mid-plane is
+	# the part's (the fin alone, whose shape the build's culling of the
+	# fairing's hidden faces leaves as it was); the part's by default
+	points = (part if plane is None else plane).reshape(-1, 3)
 	centre = points.mean(0)
 	normal = np.linalg.svd(points - centre, full_matrices=False)[2][-1]
 	span = np.cross(normal, [1.0, 0.0, 0.0])
@@ -471,9 +579,43 @@ def seated(part, skin, stations):
 			if not on.any():
 				continue
 			for foot in ends[on & (along <= along[on].min() + 0.1)]:
+				# a foot over a hole in the skin stands in it: the hole is skin
+				# the part encloses, which a part lifted off the skin would not
+				if holed(skin, station, foot[2]):
+					continue
 				top = heights(skin, np.array([station - 0.01, station, station + 0.01]), np.array([foot[2], foot[2] + 0.01]))[0][1]
 				worst = foot[1] - top if np.isnan(worst) else max(worst, foot[1] - top)
 	return worst
+
+
+# How far the skin's top drops at the edge of a hole in it, inches: more than
+# any step its own shape takes over a quarter inch
+DROP = 2.0
+
+
+def holed(skin, station, buttline, reach=8.0, step=0.25):
+	# Whether the skin has a hole at a station and buttline: the build leaves
+	# none of the skin a closed part encloses (a fin's root fairing:
+	# ../hidden.py), and through the hole the top read is whatever lies below
+	# (the far skin, a duct). A quadratic across the buttlines within reach is
+	# fitted to the skin's tops, those lying no more than DROP under it; a hole
+	# is a top further under the fit, with skin on both sides of it
+	buttlines = buttline + np.arange(-reach, reach + step / 2, step)
+	tops = heights(skin, np.array([station - 0.01, station, station + 0.01]), buttlines)[:, 1]
+	k = len(buttlines) // 2
+	found = np.isfinite(tops)
+	if found.sum() < 3:
+		return False
+	# from the upper half of the tops (a fit to them all bends down into the
+	# hole), then every top within DROP of the fit, until that settles
+	keep = found & (tops >= np.median(tops[found]))
+	for _ in range(6):
+		fit = np.polyval(np.polyfit(buttlines[keep] - buttline, tops[keep], 2), buttlines - buttline)
+		settled = found & (tops >= fit - DROP)
+		if (settled == keep).all():
+			break
+		keep = settled
+	return bool(keep[:k].any() and keep[k + 1 :].any() and (not np.isfinite(tops[k]) or tops[k] < fit[k] - DROP))
 
 
 def waves(H, stations, free, span=40.0, jump=0.6, step=None):
@@ -585,9 +727,9 @@ def hits(tris, origins, direction):
 	return out, bary
 
 
-def atlas(path):
-	# The paint's atlas a GLB carries, as brightness 0..1 (H, W), or None (a
-	# draft, unpainted)
+def atlas(path, material="paint"):
+	# A material's atlas a GLB carries (the paint's, or the stores' own), as
+	# brightness 0..1 (H, W), or None (a draft, unpainted)
 	import io
 	from PIL import Image
 	data = Path(path).read_bytes()
@@ -596,7 +738,7 @@ def atlas(path):
 	start = 20 + length
 	binary = data[start + 8:]
 	materials = {m.get("name"): m for m in gltf.get("materials", [])}
-	texture = materials.get("paint", {}).get("pbrMetallicRoughness", {}).get("baseColorTexture")
+	texture = materials.get(material, {}).get("pbrMetallicRoughness", {}).get("baseColorTexture")
 	if texture is None:
 		return None
 	image = gltf["images"][gltf["textures"][texture["index"]]["source"]]
@@ -1973,6 +2115,25 @@ def checks(jet):
 	# right twin's mirror image, and every other part but the one-sided is
 	# symmetric about the centreline
 	def shapes():
+		# no triangle is built that no view can see, inside or against another
+		# part: drawn and painted for nothing
+		found = hidden(jet.path, jet.file)
+		worst = max(found, key=lambda name: found[name][0], default=None)
+		yield result("shape.hidden", f"triangles no view can see{f', most on {worst}' if worst else ''}", 0, sum(n for n, _ in found.values()), 0, "triangles")
+		# every store part hangs from what carries it, touching it: no daylight
+		# between a side rail and its LAU-115, a tank and its pylon (the user
+		# saw both)
+		shown = {"stores": 1}
+		parts = jet.parts(shown)
+		for name in sorted(n for n in parts if STATION.match(n)):
+			gap = apart(jet.points([name], shown).reshape(-1, 3, 3), jet.points([carrier(name)], shown).reshape(-1, 3, 3))
+			yield result("shape.attached", f"{name} off {carrier(name)}, at its nearest", 0.0, gap, 0.1)
+		# and every round on its seat touches the part it hangs from: its
+		# hooks on its rail
+		for station, hardpoint in sorted(jet.document["points"]["hardpoints"].items(), key=lambda kv: int(kv[0])):
+			for name, seat in sorted(hardpoint.get("rounds", {}).items()):
+				round_ = FRAME.source(hung(seat).reshape(-1, 3)).reshape(-1, 3, 3)
+				yield result("shape.attached", f"{seat['kind']} off {name}, at its nearest", 0.0, apart(round_, jet.points([name], shown).reshape(-1, 3, 3)), 0.1)
 		hull = jet.points(HULL).reshape(-1, 3, 3)
 		for name in STOWED:
 			corners = np.unique(jet.points([name]), axis=0)
@@ -1984,7 +2145,7 @@ def checks(jet):
 		place, chord = F["layout"]["fin"]["root"], value(F["fin"]["root"])
 		for side in ("left", "right"):
 			part = jet.points([f"fin_{side}", f"rudder_{side}", f"fin_root_{side}"]).reshape(-1, 3, 3)
-			gap = seated(part, skin, np.arange(place["station"] + 1.0, place["station"] + chord - 1.0, 2.0))
+			gap = seated(part, skin, np.arange(place["station"] + 1.0, place["station"] + chord - 1.0, 2.0), jet.points([f"fin_{side}"]).reshape(-1, 3, 3))
 			yield result("shape.seated", f"fin_{side}'s root standing off the skin beneath it, its furthest", 0.0, float(np.maximum(gap, 0.0)), 0.05)
 		for name, below in FLUSH:
 			s = standoff(jet.points([name]).reshape(-1, 3, 3), skin, below)
@@ -2148,6 +2309,66 @@ def checks(jet):
 				yield result("shape.mirror", f"{name} about the centreline, {pose}", 0, mirrored(p, p), 0.1)
 
 	yield from guard("shape", "shapes", shapes)
+
+	# The stores' own atlas (layout.stores.paint, finish.py), read through the
+	# station 7 tank's UVs: its joint rings darker than the paint beside them
+	# all round, and its filler cap in the lid's colour on its right and not on
+	# its left
+	stores = atlas(jet.path, "stores")
+
+	def stores_paint():
+		if stores is None:
+			return
+		spec, tank = F["layout"]["stores"]["paint"], F["layout"]["stores"]["tank"]
+		tris, uvs = jet.textured(("stores",), ["tank_7"])
+		nose, tail = np.array(tank["nose"], float), np.array(tank["tail"], float)
+		axis = (tail - nose) / np.linalg.norm(tail - nose)
+		# the tank's right (+BL) and up (+WL), square to its axis (the source
+		# frame's FS, WL, BL is left-handed: no cross products)
+		right = np.array([0.0, 0.0, 1.0]) - axis * axis[2]
+		right /= np.linalg.norm(right)
+		up = np.array([0.0, 1.0, 0.0]) - axis * axis[1] - right * right[1]
+		up /= np.linalg.norm(up)
+		profile = np.array(tank["profile"], float)
+		scale = np.linalg.norm(tail - nose) / profile[-1, 0]
+
+		def read(station, turns):
+			# the stores' atlas where the tank's skin is at a station (inches
+			# from its nose) and turns (degrees from its top toward its right)
+			t = np.radians(np.asarray(turns, float))
+			out = np.outer(np.cos(t), up) + np.outer(np.sin(t), right)
+			radius = np.interp(station / scale, profile[:, 0], profile[:, 1])
+			points = nose + axis * station + out * radius
+			values = []
+			for p, n in zip(points, out):
+				k, b = hits(tris, (p + 2.0 * n)[None], -n)
+				if k[0] < 0:
+					values.append(np.nan)
+					continue
+				u, v = b[0]
+				uv = uvs[k[0], 0] * (1 - u - v) + uvs[k[0], 1] * u + uvs[k[0], 2] * v
+				values.append(float(sample(stores, uv[None])[0]))
+			return np.array(values)
+
+		# a ring darkens the texels it crosses by its depth times the share of
+		# them its width covers: the tank's texels' size from its triangles'
+		# UVs, the ring read at its darkest across a texel either side
+		e1, e2 = uvs[:, 1] - uvs[:, 0], uvs[:, 2] - uvs[:, 0]
+		area = np.linalg.norm(np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0]), axis=1) / 2
+		texel = float(np.median(np.sqrt(area / np.maximum(np.abs(e1[:, 0] * e2[:, 1] - e1[:, 1] * e2[:, 0]) / 2 * stores.shape[0] ** 2, 1e-12))))
+		darker = spec["line"]["depth"] * min(1.0, spec["line"]["width"] / texel)
+		turns = np.linspace(-150, 150, 13)
+		for joint, step in zip(spec["tank"]["joints"], (2.0, -2.0)):
+			ring = np.nanmin([read(joint + d, turns) for d in np.arange(-texel, texel + 1e-9, texel / 4)], axis=0)
+			ratio = float(np.nanmedian(ring / read(joint + step, turns)))
+			yield result("paint.stores", f"tank's joint ring at {joint} in against the paint beside, {texel:.2f} in texels", round(1 - darker, 3), ratio, round(darker / 2, 3), "share")
+		cap = spec["tank"]["cap"]
+		lid = np.array(cap["colour"], float) @ [0.299, 0.587, 0.114]
+		paint = np.array(F["layout"]["paint"]["lower"], float) @ [0.299, 0.587, 0.114]
+		on, off = read(cap["station"], [cap["turn"]])[0], read(cap["station"], [-cap["turn"]])[0]
+		yield result("paint.stores", "tank's filler cap on its right against its left", lid / paint, on / off, 0.15, "share")
+
+	yield from guard("paint", "stores' paint", stores_paint)
 
 	# The paint, on a painted build (a draft carries no atlas: main() says so)
 	image = atlas(jet.path)

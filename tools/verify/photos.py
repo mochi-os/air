@@ -198,6 +198,13 @@ def snap(gray, points, radius):
 	return out
 
 
+def scaled(size, scale):
+	# A photo's size drawn at a scale, in whole pixels: rounded, as the overlay's
+	# resized photo is (truncated, 4231 px at 2400/4231 came to 2399 against
+	# the photo's 2400, and the overlay failed)
+	return round(size[0] * scale), round(size[1] * scale)
+
+
 def to_segments(flat):
 	return np.stack([flat[:-1], flat[1:]], 1)
 
@@ -268,8 +275,78 @@ class Match:
 		self.cameras, self.points = self.bundle.solve()
 		return self
 
+	def aside(self):
+		# The points each photo files under "aside" (a store's silhouette ends,
+		# kept out of the shared solve: README, Pitfalls), each triangulated on
+		# the solved cameras apart: every mark carried from its photo's pose to
+		# the measuring pose, a left and right pair as one point and its mirror
+		# image (the right one's), each photo's rows weighed by its sigma or its
+		# fit, whichever is looser. {name: {"photos", "measured", "sigma",
+		# "model", "miss", "loose"}} in the project's frame; one photo fixes a
+		# line, measured at its point nearest the model's, the miss across it. A
+		# point the model has no landmark for (a round's end) starts from the
+		# photos' own triangulation and has no miss
+		f = self.frame
+		left, right = self.catalogue.get("mirror") or (None, None)
+		misses = self.bundle.misses()
+		fit = {k: float(np.sqrt(np.mean([du * du + dv * dv for du, dv, _ in m.values()]))) for k, m in misses.items() if m}
+		rows = {}
+		for k, photo in enumerate(self.photos):
+			if k not in self.cameras:
+				continue
+			for name, pixel in photo["entry"].get("aside", {}).items():
+				mirrored = bool(left) and name.endswith(left) and right
+				key = name[: -len(left)] + right if mirrored else name
+				move = self.features.between(self.pose, photo["entry"].get("pose", {}), name) if name in self.features.landmarks else None
+				rows.setdefault(key, []).append((k, np.asarray(pixel, float), mirrored, move, max(photo["sigma"], fit.get(k, 0.0))))
+		reflect = f.reflection() if left else np.eye(3)
+		out = {}
+		for name, seen in sorted(rows.items()):
+			def predicted(p):
+				q = []
+				for k, pixel, mirrored, move, sigma in seen:
+					x = reflect @ p if mirrored else p
+					if move is not None:
+						x = move[0] @ x + move[1]
+					q.append((cam.project(self.cameras[k], x[None], self.photos[k]["centre"])[0][0] - pixel) / sigma)
+				return np.concatenate(q)
+
+			ours = self.features.landmark(name, self.pose) if name in self.features.landmarks else None
+			p = ours
+			if p is None:
+				# no model counterpart (a round's end): start from the photos'
+				# own linear triangulation, which needs two of them
+				direct = [(cam.carried(self.cameras[k], move), pixel, self.photos[k]["centre"]) for k, pixel, mirrored, move, _ in seen if not mirrored]
+				if len(direct) < 2:
+					continue
+				p = cam.triangulate(*zip(*direct))
+			for _ in range(20):
+				r = predicted(p)
+				J = np.stack([(predicted(p + e) - r) / 1e-5 for e in np.eye(3) * 1e-5], 1)
+				step = np.linalg.lstsq(J, -r, rcond=None)[0]
+				p = p + step
+				if np.linalg.norm(step) < 1e-7:
+					break
+			J = np.stack([(predicted(p + e) - predicted(p)) / 1e-5 for e in np.eye(3) * 1e-5], 1)
+			values, vectors = np.linalg.eigh(J.T @ J)
+			fixed = values > values.max() * 1e-4
+			covariance = (vectors[:, fixed] / values[fixed]) @ vectors[:, fixed].T
+			loose = vectors[:, ~fixed].T
+			if len(loose) and ours is not None:
+				p = p + loose.T @ (loose @ (ours - p))
+			sigma = np.sqrt(np.abs(np.diag(f.axes.T @ covariance @ f.axes))) / f.unit
+			row = {"photos": len({k for k, *_ in seen}), "measured": [round(float(v), 2) for v in f.source(p)], "sigma": [round(float(v), 2) for v in sigma]}
+			if ours is not None:
+				row["model"] = [round(float(v), 2) for v in f.source(ours)]
+				row["miss"] = [round(float(v), 2) for v in f.source(ours) - f.source(p)]
+			if len(loose):
+				row["loose"] = [[round(float(v), 3) for v in r] for r in loose @ f.axes]
+			out[name] = row
+		return out
+
 	def report(self):
 		out = {"photos": {}, "points": {}, "anchors": {}, "edges": {}, "locate": {}}
+		out["aside"] = self.aside()
 		misses = self.bundle.misses()
 		horizons = self.bundle.horizons()
 		f = self.frame
@@ -335,7 +412,7 @@ class Match:
 		photo = self.photos[k]
 		tris = self.model.triangles(mod.pose(self.joints, photo["entry"].get("pose", {})), include=parts)
 		flat, depth = cam.project(self.cameras[k], tris.reshape(-1, 3), photo["centre"])
-		size = (int(photo["size"][0] * scale), int(photo["size"][1] * scale))
+		size = scaled(photo["size"], scale)
 		return mod.silhouette(flat.reshape(-1, 3, 2) * scale, size, depth.reshape(-1, 3)), tris
 
 	def edge(self, k, edge):
@@ -380,7 +457,7 @@ class Match:
 			c = self.cameras[k]
 			scale = width / photo["size"][0]
 			with Image.open(self.root / "references" / photo["entry"]["file"]) as image:
-				base = np.asarray(image.convert("RGB").resize((width, int(photo["size"][1] * scale))), np.uint8).copy()
+				base = np.asarray(image.convert("RGB").resize(scaled(photo["size"], scale)), np.uint8).copy()
 			mask, _ = self.silhouette(k, scale)
 			rim = mod.boundary(mask)
 			base[mask] = (base[mask] * 0.7 + np.array([40, 80, 220]) * 0.3).astype(np.uint8)
@@ -475,6 +552,14 @@ def text(report, symbol=mod.SYMBOL):
 			row += f"  model {p['model']}  miss {p['miss']}"
 		if "loose" in p:
 			row += f"  loose along {p['loose']}" + (" (miss across it only)" if "miss" in p else "")
+		lines.append(row)
+	lines.append("")
+	for name, p in sorted(report.get("aside", {}).items()):
+		row = f"aside {name:28s} {p['photos']} photos  measured {p['measured']} +- {p['sigma']}"
+		if "model" in p:
+			row += f"  model {p['model']}  miss {p['miss']}"
+		if "loose" in p:
+			row += f"  loose along {p['loose']} (miss across it only)"
 		lines.append(row)
 	lines.append("")
 	for name, a in report["anchors"].items():

@@ -35,15 +35,23 @@ def winding(triangles, point):
 BUILT = {}
 
 
-def setUpModule():
-	# one build for every test here: the AIM-120C, painted
-	BUILT["dir"] = tempfile.TemporaryDirectory()
-	glb, points = Path(BUILT["dir"].name) / "m.glb", Path(BUILT["dir"].name) / "m.json"
-	run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(HERE / "build.py"), "--", "aim120c", str(glb), str(points)],
+def build(name, *options):
+	glb, points = Path(BUILT["dir"].name) / f"{name}.glb", Path(BUILT["dir"].name) / f"{name}.json"
+	run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(HERE / "build.py"), "--", "aim120c", str(glb), str(points), *options],
 		capture_output=True, text=True)
 	if run.returncode:
 		raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
-	BUILT["glb"], BUILT["document"] = glb, json.loads(points.read_text())
+	return glb, points
+
+
+def setUpModule():
+	# two builds for every test here: the AIM-120C as it ships, painted, and
+	# its shape alone with every part a closed solid (a draft that keeps the
+	# faces no view can see, where the parts meet), for the probes
+	BUILT["dir"] = tempfile.TemporaryDirectory()
+	BUILT["glb"], BUILT["points"] = build("m")
+	BUILT["document"] = json.loads(BUILT["points"].read_text())
+	BUILT["whole"], _ = build("whole", "--draft", "--whole")
 
 
 def tearDownModule():
@@ -54,7 +62,7 @@ class HooksTest(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
 		document = BUILT["document"]
-		cls.parts = verify.Model(str(BUILT["glb"])).parts(verify.pose(document["joints"], {}))
+		cls.parts = verify.Model(str(BUILT["whole"])).parts(verify.pose(document["joints"], {}))
 		cls.centre = document["points"]["nose"][0] / INCH   # the gravity's station: the nose's x is its distance aft of the nose
 		layout = json.loads((HERE / "facts.json").read_text())["layout"]["aim120c"]
 		cls.specs = {s["name"]: s for s in layout["fittings"]["value"]}
@@ -121,6 +129,35 @@ class HooksTest(unittest.TestCase):
 		self.assertEmpty(127.0, 1.03, 4.08)    # the flange's top edge
 		self.assertEmpty(68.3, 1.065, 3.96)    # the forward flange's rail's top edge
 
+
+
+def hidden(glb):
+	# the triangles no view can see that a model keeps (../hidden.py), per
+	# part: [triangles, square inches]
+	run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(HERE.parent / "hidden.py"), "--", str(glb), str(BUILT["points"])],
+		capture_output=True, text=True)
+	line = next((l for l in run.stdout.splitlines() if l.startswith("hidden ")), None)
+	if run.returncode or line is None:
+		raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+	return json.loads(line[len("hidden ") :])
+
+
+class HiddenTest(unittest.TestCase):
+	def test_no_face_lies_inside_or_against_another_part(self):
+		# the hooks' feet sunk in the body, the wings' roots against it, the
+		# skin under the harness cover: none is built, so none takes triangles
+		# or atlas texels
+		self.assertEqual(hidden(BUILT["glb"]), {})
+
+	def test_the_parts_whole_hide_what_the_build_leaves_out(self):
+		# the same model with every face kept shows what the check finds, so
+		# that an empty finding above is the build's doing: the fittings' feet,
+		# the wings' roots, and the body's skin under the harness cover, which
+		# the body's cuts at the cover's sides and ends leave as whole faces
+		found = hidden(BUILT["whole"])
+		for part in ("fittings", "body", "wing_upper_left"):
+			self.assertIn(part, found)
+		self.assertGreater(found["body"][1], 100)   # square inches: the harness cover's 1.3 by 87 in, inside its cuts
 
 
 def glb_parts(path):
@@ -208,8 +245,13 @@ class PaintTest(unittest.TestCase):
 		self.assertLess(self.share([(s, d - 30) for s, d in grid]), 0.02)       # the top, clear of it
 
 	def test_a_joint_rings_the_body(self):
-		# a line about a texel wide: darker all round than the paint beside it
-		lum = lambda station: np.array([np.dot(self.texel(station, roll), [0.2126, 0.7152, 0.0722]) for roll in np.arange(1, 360, 7)])
+		# a line about a texel wide: darker all round than the paint beside it,
+		# but under the harness cover, where no skin is built
+		layout = json.loads((HERE / "facts.json").read_text())["layout"]["aim120c"]
+		harness = next(s for s in layout["fittings"]["value"] if s["name"] == "harness")
+		under = math.degrees(math.asin(harness["width"] / 2 / (json.loads((HERE / "facts.json").read_text())["aim120c"]["diameter"]["value"] / 2))) + 1
+		rolls = [r for r in np.arange(1, 360, 7) if abs((r - harness["roll"] + 180) % 360 - 180) > under]
+		lum = lambda station: np.array([np.dot(self.texel(station, roll), [0.2126, 0.7152, 0.0722]) for roll in rolls])
 		ring, beside = lum(134.0), lum(132.5)
 		self.assertLess(ring.mean(), 0.85 * beside.mean())
 		self.assertGreater(np.mean(ring < 0.95 * beside), 0.8)

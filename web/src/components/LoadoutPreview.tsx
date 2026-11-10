@@ -17,7 +17,7 @@ import aim120c_points from '../assets/aim120c.json'
 import aim120c_model_url from '../assets/aim120c.glb?url'
 import aim9m_points from '../assets/aim9m.json'
 import aim9m_model_url from '../assets/aim9m.glb?url'
-import { parts, place, rounds, type Kind, type Seat } from '../game/hang'
+import { outfit, type Fittings, type Kind, type Seat } from '../game/hang'
 import { model } from '../game/library'
 import { normalize } from '../game/stores'
 import type { StationSlot } from '../lib/config'
@@ -29,6 +29,7 @@ const MOUNTS: Record<Kind, number[]> = {
   aim9m: (aim9m_points as unknown as { points: { mount: number[] } }).points.mount,
   aim120c: (aim120c_points as unknown as { points: { mount: number[] } }).points.mount,
 }
+const FITTINGS: Fittings = { ...JET.points, mounts: MOUNTS }
 
 let airframe: THREE.Group | null = null
 let missiles: Record<Kind, THREE.Group> | null = null
@@ -51,45 +52,6 @@ function fetch_models(renderer: THREE.WebGLRenderer): Promise<void> {
     throw error
   })
   return loading
-}
-
-// origin is a node's origin at rest in the jet's frame: every part rests
-// unturned, so it is the sum of the rest positions up to the jet's root.
-function origin(node: THREE.Object3D, root: THREE.Object3D): THREE.Vector3 {
-  const at = new THREE.Vector3()
-  for (let o: THREE.Object3D | null = node; o && o !== root; o = o.parent) at.add(o.position)
-  return at
-}
-
-// dress hangs the loadout on the jet as the flight does (hang.ts): the store
-// parts its stations show, the rest hidden, and each round's missile laid on
-// its seat beside its part.
-function dress(jet: THREE.Group, stores: Record<string, StationSlot>): void {
-  for (const old of (jet.userData.rounds as THREE.Object3D[] | undefined) ?? []) old.parent?.remove(old)
-  const hung: THREE.Object3D[] = []
-  const loadout = normalize(stores)
-  const shown = new Set<string>()
-  for (let station = 1; station <= 9; station++) {
-    const slot = loadout[String(station)]
-    for (const part of parts(station, slot)) shown.add(part)
-    const seats = JET.points.hardpoints[String(station)]?.rounds ?? {}
-    for (const r of rounds(station, slot)) {
-      const part = jet.getObjectByName(r.part)
-      const seat = seats[r.part]
-      if (!part?.parent || !seat || !missiles) continue
-      const piece = missiles[r.kind].clone(true)
-      const at = place(seat, MOUNTS[r.kind])
-      piece.position.copy(at.position).sub(origin(part.parent, jet))
-      piece.quaternion.copy(at.quaternion)
-      part.parent.add(piece)
-      hung.push(piece)
-    }
-  }
-  for (const name of JET.points.stores) {
-    const part = jet.getObjectByName(name)
-    if (part) part.visible = shown.has(name)
-  }
-  jet.userData.rounds = hung
 }
 
 // extent projects the visible meshes' vertices through the camera and reports
@@ -260,9 +222,9 @@ export function LoadoutPreview({
         scene.add(wrap)
         const camera = new THREE.PerspectiveCamera(18, width / height, 0.1, 100)
         state.current = { renderer, scene, camera, jet, wrap }
-        dress(jet, FULLEST)
+        outfit(jet, FULLEST, missiles, FITTINGS)
         frame(camera, wrap, width / height)
-        dress(jet, wanted.current)
+        outfit(jet, wanted.current, missiles, FITTINGS)
         renderer.render(scene, camera)
       })
     return () => {
@@ -281,7 +243,7 @@ export function LoadoutPreview({
   useEffect(() => {
     const s = state.current
     if (!s) return
-    dress(s.jet, wanted.current)
+    outfit(s.jet, wanted.current, missiles, FITTINGS)
     s.renderer.render(s.scene, s.camera) // the camera stays where FULLEST framed it — the jet never moves
   }, [shape])
 
