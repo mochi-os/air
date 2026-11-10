@@ -24,6 +24,16 @@ def at(image, x, z):
 	return list(image.getpixel((int((x + 10) / 20 * 200), int((z + 5) / 10 * 100))))
 
 
+def inside(point, outline):
+	# a plan point in a polygon (even-odd)
+	x, z = point
+	result = False
+	for (ax, az), (bx, bz) in zip(outline, outline[1:] + outline[:1]):
+		if (az > z) != (bz > z) and x < ax + (z - az) * (bx - ax) / (bz - az):
+			result = not result
+	return result
+
+
 class Paint(unittest.TestCase):
 	def render(self, *markings):
 		return paint.render({**LAYOUT, "markings": list(markings)})
@@ -277,6 +287,45 @@ class Paint(unittest.TestCase):
 		self.assertGreater(lin[int(1 / 10 * 100) :, int(14.6 / 20 * 200) : int(18.4 / 20 * 200)].min(), 0.98)   # none on the panel
 		self.assertGreater(lin[int(8.7 / 10 * 100) :, int(10.5 / 20 * 200) :].min(), 0.98)   # none off the deck, past z 3.5
 		self.assertLess(self.at_lin(lin, -4.0, 4.0), 0.7)     # on the elevator
+
+	def test_deck_covers_are_filled(self):
+		# the barricade's trays and hatches and the bow's hatch (facts.json): each a filled cover, its rim, its frame
+		# where it has one and its centre nested in turn, none drawn as a bare outline, no tie-down fitting on it
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		marks = {m["name"]: m for m in layout["markings"]}
+		covers = [n[: -len("_cover")] for n in marks if n.endswith("_cover")]
+		self.assertEqual(len(covers), 6, covers)
+		self.assertFalse([n for n in covers if n in marks], "a cover's old outline is still drawn")
+		self.assertIn("_cover", layout["wear"]["tiedowns"]["clear_suffixes"])
+		texture = layout["deck"]["texture"]
+		canvas = paint.Canvas(texture, 1)
+		image = np.asarray(paint.render(layout), np.float32)
+		for name in covers:
+			rings = [marks[name + "_cover"]] + [marks[name + s] for s in ("_cover_frame", "_cover_centre") if name + s in marks]
+			for outer, inner in zip(rings, rings[1:]):
+				for x, z in inner["outline"]:
+					self.assertTrue(inside((x, z), outer["outline"]), (name, inner["name"]))
+			# the centre's middle wears the centre's colour, worn but not dotted: within the wear's spread of it, and no
+			# texel of the centre darker than a tie-down fitting leaves one
+			centre = rings[-1]
+			o = np.array(centre["outline"])
+			points = [(x, z) for x in np.linspace(o[:, 0].min(), o[:, 0].max(), 40) for z in np.linspace(o[:, 1].min(), o[:, 1].max(), 20)
+				if inside((x, z), centre["outline"])]
+			self.assertGreater(len(points), 5, name)
+			got = np.median([paint.linear(image[int(canvas.pixel(p)[1]), int(canvas.pixel(p)[0])]) for p in points], axis=0)
+			want = paint.linear(np.array(centre["colour"], np.float32))
+			np.testing.assert_allclose(got / want, 1.0, atol=0.35, err_msg=name)
+		# no fitting on a cover: the darkest texel inside each cover against its centre's colour, with the lattice and
+		# without it (the same layout less its tie-downs), differ by less than a fitting's darkening
+		plain = np.asarray(paint.render({**layout, "wear": {k: w for k, w in layout["wear"].items() if k != "tiedowns"}}), np.float32)
+		ratio = paint.linear(image[..., 1] + 0.5) / paint.linear(plain[..., 1] + 0.5)
+		from PIL import Image, ImageDraw
+		for name in covers:
+			mask = Image.new("L", (ratio.shape[1], ratio.shape[0]), 0)
+			ImageDraw.Draw(mask).polygon([canvas.pixel(p) for p in marks[name + "_cover"]["outline"]], fill=255)
+			inner = np.asarray(mask.filter(__import__("PIL.ImageFilter", fromlist=["MinFilter"]).MinFilter(7))) > 0   # a fitting's width in from its edge, where one beside it still reaches
+			self.assertGreater(inner.sum(), 4, name)
+			self.assertGreater(ratio[inner].min(), 0.9, name)
 
 	def test_scorch_forward_of_the_hinge(self):
 		# darkest just forward of the hinge on the track's line, none aft of it,

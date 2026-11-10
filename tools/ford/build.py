@@ -826,62 +826,94 @@ def arresting():
 		joint(name, UP.cross(run), run, UP, "none yet: rigged for a barricade arrestment", [[0, 0], [1, round(math.pi / 2, 4)]])
 
 
+def hull2d(points):
+	# The convex hull of plan points [(u, v), ...], anticlockwise (Andrew's
+	# monotone chain)
+	points = sorted(set(points))
+
+	def turn(o, a, b):
+		return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+	lower, upper = [], []
+	for q in points:
+		while len(lower) >= 2 and turn(lower[-2], lower[-1], q) <= 0:
+			lower.pop()
+		lower.append(q)
+	for q in reversed(points):
+		while len(upper) >= 2 and turn(upper[-2], upper[-1], q) <= 0:
+			upper.pop()
+		upper.append(q)
+	return lower[:-1] + upper[:-1]
+
+
 def sheave_arm(sheave, k):
-	# The fitting forward of a rigged sheave (fittings.sheave.arm): a flat bar
-	# lying on the deck from a head on the housing's outboard side, a plate on
-	# a block round the housing's rim with a pin standing in it. Its line runs
-	# from the housing's centre, turned the sheave's arm.angle outboard of
-	# forward; the bar lies arm.offset outboard of that line, from k.root
-	# along it to its rounded tip at arm.length, narrowing from k.width[0] to
-	# k.width[1] by k.narrows and thinning from k.thickness[0] to [1] by
-	# k.thins. Positions in the fitting are [along, outboard] from the
+	# The fitting forward of a rigged sheave (fittings.sheave.arm, each
+	# sheave's arm): a steel bar, a wedge whose top falls from under its head
+	# to a thin end on the deck, and its head beside the housing's outboard
+	# side, a plate lying on the bar's root over a block, a pin through both.
+	# Its line runs from the housing's centre, turned arm.angle outboard of
+	# forward; the bar's middle lies arm.offset outboard of that line, from
+	# k.root along it to its rounded end at arm.length, its top at the heights
+	# arm.profile gives along it, its width k.width's; the plate's top at
+	# arm.top. Positions in the fitting are [along, outboard] from the
 	# housing's centre, heights above the deck. Returns pieces for merge()
-	(cx, cz), turn = sheave["centre"], math.radians(sheave["arm"]["angle"])
-	offset = sheave["arm"]["offset"]
+	arm = sheave["arm"]
+	(cx, cz), turn = sheave["centre"], math.radians(arm["angle"])
+	offset, length = arm["offset"], arm["length"]
 	side = -1 if sheave["name"].endswith("_port") else 1   # outboard: port is -z
 	a = (math.cos(turn), side * math.sin(turn))
 	o = (-math.sin(turn), side * math.cos(turn))
 	deck = LAYOUT["deck"]["height"]
 	paint = "arm" if "colour" in k else "dark"
+	bottom = deck - STOWED / 2   # sunk a little: on the deck's top it fought it for the pixels
 
 	def place(u, v):
 		return [cx + u * a[0] + v * o[0], cz + u * a[1] + v * o[1]]
 
-	def ramp(u, ends, by):
-		# from ends[0] at the root to ends[1] at `by`, held after
-		t = min(max((u - k["root"]) / (by - k["root"]), 0.0), 1.0)
-		return ends[0] + (ends[1] - ends[0]) * t
+	def along(u, keys):
+		# keys [[along, value], ...] read piecewise linearly, held at the ends
+		if u <= keys[0][0]:
+			return keys[0][1]
+		for (u0, v0), (u1, v1) in zip(keys, keys[1:]):
+			if u <= u1:
+				return v0 + (v1 - v0) * (u - u0) / (u1 - u0)
+		return keys[-1][1]
 
-	# the head: its inboard edge an arc clear of the rim, then its corners
+	# the head: a plate, its inboard edge an arc clear of the rim, then its
+	# corners (moved by the arm's own head.shift, [along, outboard], where its
+	# photo puts its head elsewhere), lying on the bar's root; under it a dark
+	# block to the deck, set in from the plate's edges, all the photos show
+	# there being shadow
 	h = k["head"]
+	du, dv = arm.get("head", {}).get("shift", [0.0, 0.0])
 	steps = 6
 	arc = [math.radians(h["to"] + (h["from"] - h["to"]) * i / steps) for i in range(steps + 1)]
-	outline = [place(h["inner"] * math.cos(b), h["inner"] * math.sin(b)) for b in arc] + [place(u, v) for u, v in h["outline"]]
-	underside = deck + h["top"] - h["thickness"]
-	pieces = [slab(outline, deck + h["top"], underside, (paint,) * 3),
-		# the block it stands on, sunk a little as the bar is
-		slab([place(u, v) for u, v in k["pedestal"]], underside, deck - STOWED / 2, (paint,) * 3)]
+	plan = [(h["inner"] * math.cos(b), h["inner"] * math.sin(b)) for b in arc] + [(u + du, v + dv) for u, v in h["outline"]]
+	underside = deck + arm["top"] - h["thickness"]
+	pieces = [slab([place(u, v) for u, v in plan], deck + arm["top"], underside, (paint,) * 3),
+		slab([place(u, v) for u, v in inset(hull2d(plan), h["inset"])], underside, bottom, ("dark",) * 3)]
 	# the pin, and its nut on top
-	p = place(*k["pin"]["at"])
-	rise = deck + h["top"] + k["pin"]["height"]
+	p = place(k["pin"]["at"][0] + du, k["pin"]["at"][1] + dv)
+	rise = deck + arm["top"] + k["pin"]["height"]
 	nut, tall = k["pin"]["nut"]
-	pieces.append(tube([p[0], deck + h["top"], p[1]], [p[0], rise, p[1]], k["pin"]["diameter"] / 2, paint, segments=12))
+	pieces.append(tube([p[0], deck + arm["top"], p[1]], [p[0], rise, p[1]], k["pin"]["diameter"] / 2, paint, segments=12))
 	pieces.append(tube([p[0], rise, p[1]], [p[0], rise + tall, p[1]], nut / 2, paint, segments=6))
-	# the bar: stations along its line, each its two top and two bottom
-	# corners, to its nose, a half disc ending in a point
-	length = sheave["arm"]["length"]
-	nose = ramp(length, k["width"], k["narrows"]) / 2
-	stations = sorted({k["root"], *(s for s in (k["thins"], k["narrows"]) if k["root"] < s < length - nose), length - nose})
-	sections = [(u, ramp(u, k["width"], k["narrows"]) / 2, ramp(u, k["thickness"], k["thins"])) for u in stations]
-	sections += [(length - nose + nose * math.sin(math.radians(f)), nose * math.cos(math.radians(f)), sections[-1][2]) for f in (30, 60)]
-	bottom = deck - STOWED / 2   # sunk a little: on the deck's top it fought it for the pixels
+	# the bar: a section at its root, at each of its profile's and its width's
+	# knots and where its end's half disc begins, each its two top and two
+	# bottom corners; then the half disc to a point
+	nose = along(length, k["width"]) / 2
+	knots = [u for u, _ in arm["profile"]] + [u for u, _ in k["width"]]
+	stations = sorted({k["root"], *(u for u in knots if k["root"] < u < length - nose), length - nose})
+	sections = [(u, along(u, k["width"]) / 2) for u in stations]
+	sections += [(length - nose + nose * math.sin(math.radians(f)), nose * math.cos(math.radians(f))) for f in (30, 60)]
 	vertices = []
-	for u, half, thick in sections:
-		for v, y in ((offset - half, deck + thick), (offset + half, deck + thick), (offset - half, bottom), (offset + half, bottom)):
+	for u, half in sections:
+		top = deck + along(u, arm["profile"])
+		for v, y in ((offset - half, top), (offset + half, top), (offset - half, bottom), (offset + half, bottom)):
 			x, z = place(u, v)
 			vertices.append(at(x, y, z))
 	x, z = place(length, offset)
-	vertices += [at(x, deck + sections[-1][2], z), at(x, bottom, z)]
+	vertices += [at(x, deck + along(length, arm["profile"]), z), at(x, bottom, z)]
 	n = len(sections)
 	faces = [(0, 2, 3, 1)]   # the root's end
 	for i in range(n - 1):

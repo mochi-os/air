@@ -39,9 +39,12 @@ LAYOUT = {
 	# a landing line angled to port, one wire with its sheaves and a support,
 	# a barricade stanchion lying aft from its head
 	"landing": {"line": [[-90, 0], [10, -10]], "wires": [{"number": 1, "x": 30, "ends": [[-62, 19.08, -16], [-58, 19.08, 12]]}], "target": 1,
-		# the port sheave's arm turned 27 degrees outboard, the starboard's straight forward
-		"sheaves": [{"name": "wire_1_port", "centre": [-62, -16.5], "arm": {"angle": 27, "offset": 0.25, "length": 3.8}},
-			{"name": "wire_1_starboard", "centre": [-58, 12.5], "arm": {"angle": 0, "offset": 0.48, "length": 4.75}}],
+		# the port sheave's arm turned 20.6 degrees outboard, the starboard's straight forward
+		"sheaves": [{"name": "wire_1_port", "centre": [-62, -16.5], "arm": {"angle": 20.6, "offset": 0.52, "length": 3.8, "top": 0.1,
+				"profile": [[0.6, 0.08], [1.8, 0.06], [3.3, 0.005], [3.8, 0.004]]}},
+			# its head where its own photo puts it, 0.12 m aft and 0.05 out
+			{"name": "wire_1_starboard", "centre": [-58, 12.5], "arm": {"angle": 0, "offset": 0.5, "length": 5.1, "top": 0.09,
+				"profile": [[0.6, 0.07], [2.3, 0.06], [4.4, 0.005], [5.1, 0.004]], "head": {"shift": [-0.12, 0.05]}}}],
 		"supports": [{"wire": 1, "number": 1, "centre": [-61, -9]}],
 		"barricade": {"stanchions": [{"side": "port", "hinge": [-50, -30], "tip": [-58, -31]}]}},
 	# a whip that lowers aft and to port, and a fixed mast
@@ -59,10 +62,9 @@ LAYOUT = {
 			"motion": {"time": 2.0, "keys": [[0, 0], [0.25, 0.4], [0.5, 0.7], [0.75, 0.9], [1, 1]]}},
 		"console": {"lid": 0.1, "tier": 0.12, "skirt": 0.3, "frame": 0.1},
 		"sheave": {"diameter": 1.0, "height": 0.16, "colour": [242, 242, 236],
-			"arm": {"colour": [148, 154, 161], "root": 0.8, "width": [0.36, 0.22], "narrows": 3.0, "thickness": [0.04, 0.02], "thins": 2.1,
-				"head": {"inner": 0.52, "from": 24, "to": 80, "outline": [[0.8, 0.34], [0.86, 0.5], [0.7, 0.62], [0.3, 0.58]], "top": 0.1, "thickness": 0.02},
-				"pedestal": [[0.45, 0.35], [0.85, 0.35], [0.85, 0.6], [0.45, 0.6]],
-				"pin": {"at": [0.64, 0.36], "diameter": 0.025, "height": 0.035, "nut": [0.04, 0.015]}}},
+			"arm": {"colour": [148, 154, 161], "root": 0.45, "width": [[0.6, 0.24], [1.8, 0.24], [2.4, 0.2]],
+				"head": {"inner": 0.52, "from": 25, "to": 62, "outline": [[0.65, 0.36], [0.66, 0.54], [0.58, 0.64], [0.3, 0.6]], "thickness": 0.02, "inset": 0.06},
+				"pin": {"at": [0.58, 0.42], "diameter": 0.025, "height": 0.04, "nut": [0.04, 0.017]}}},
 		"support": {"length": 1.45, "pad": 0.28, "width": 0.1, "height": 0.08},
 		"stanchion": {"width": 1.0, "head": 1.8, "thickness": 0.15},
 		"antenna": {"radius": 0.06}},
@@ -468,34 +470,51 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(np.ptp((support - [-61, -9]) @ line), 1.45, places=3)
 
 	def test_sheave_arms(self):
-		# each rigged sheave's arm in its own paint, riding on the sheave
+		# each rigged sheave's arm in its own paint, riding on the sheave: a
+		# wedge falling from under its head plate to its end on the deck
 		arms = self.model.parts(materials=["arm"])
-		for name, centre, side, angle, offset, length in (("wire_1_sheave_port", (-62, -16.5), -1, 27, 0.25, 3.8), ("wire_1_sheave_starboard", (-58, 12.5), 1, 0, 0.48, 4.75)):
-			arm = arms[name].reshape(-1, 3)
-			plan = arm[:, [0, 2]] - centre
-			turn = np.radians(angle)
+		for name, centre, side, arm in (("wire_1_sheave_port", (-62, -16.5), -1, LAYOUT["landing"]["sheaves"][0]["arm"]),
+				("wire_1_sheave_starboard", (-58, 12.5), 1, LAYOUT["landing"]["sheaves"][1]["arm"])):
+			points = arms[name].reshape(-1, 3)
+			plan = points[:, [0, 2]] - centre
+			turn = np.radians(arm["angle"])
 			along = plan @ [np.cos(turn), side * np.sin(turn)]
 			out = plan @ [-np.sin(turn), side * np.cos(turn)]
-			# its tip on its line turned outboard, the bar's middle its offset outboard of it
-			self.assertAlmostEqual(along.max(), length, places=3, msg=name)
-			tip = plan[np.argmax(along)]
-			self.assertAlmostEqual(float(tip @ [-np.sin(turn), side * np.cos(turn)]), offset, places=3, msg=name)
+			height = points[:, 1] - 19.0
+			# its end on its line turned outboard, the bar's middle its offset outboard of it
+			self.assertAlmostEqual(along.max(), arm["length"], places=3, msg=name)
+			self.assertAlmostEqual(float(out[np.argmax(along)]), arm["offset"], places=3, msg=name)
 			# the whole fitting outboard of the housing's centre and clear of its rim
 			self.assertGreater(out.min(), 0.0, name)
 			self.assertGreaterEqual(np.hypot(plan[:, 0], plan[:, 1]).min(), 0.52 - 1e-3, name)
-			# the bar 0.36 wide at its root and 0.22 from 3 m along, 0.04 thick there and 0.02 from 2.1 m
-			for u, width, thick in ((0.8, 0.36, 0.04), (3.0, 0.22, 0.02), (length - 0.11, 0.22, 0.02)):
-				section = np.abs(along - u) < 1e-3
-				bar = section & (np.abs(out - offset) < 0.2) & (arm[:, 1] < 19.05)
-				self.assertAlmostEqual(np.ptp(out[bar]), width, places=3, msg=(name, u))
-				self.assertAlmostEqual(arm[bar][:, 1].max(), 19.0 + thick, places=3, msg=(name, u))
-			# the head 0.1 up, the pin's nut 0.15, under the housing's top
-			self.assertAlmostEqual(arm[:, 1].max(), 19.15, places=3, msg=name)
-			head = arm[np.abs(arm[:, 1] - 19.1) < 1e-4]
-			self.assertTrue(len(head), name)
-		# turned 27 degrees, the port arm's tip lies 1.95 m outboard of the housing, the starboard's 0.48
-		port = arms["wire_1_sheave_port"].reshape(-1, 3)
-		self.assertAlmostEqual(-(port[np.argmax(port[:, 0]), 2] + 16.5), 3.8 * np.sin(np.radians(27)) + 0.25 * np.cos(np.radians(27)), delta=0.12)
+			# the bar's top at its profile's heights, 0.24 wide to 1.8 m along and 0.2 from 2.4
+			bar = np.abs(out - arm["offset"]) < 0.125
+			below = height <= arm["top"] - 0.02 + 1e-4   # the bar, not the plate or pin over its root
+			for u, top in arm["profile"][:-1]:
+				section = bar & below & (np.abs(along - u) < 1e-3)
+				self.assertAlmostEqual(height[section].max(), top, places=3, msg=(name, u))
+			for u, width in ((0.6, 0.24), (1.8, 0.24), (2.4, 0.2)):
+				section = bar & (np.abs(along - u) < 1e-3) & (height < 0.085)
+				self.assertAlmostEqual(np.ptp(out[section]), width, places=3, msg=(name, u))
+			# no gap between the bar's root and the plate lying on it
+			root = bar & below & (np.abs(along - 0.6) < 1e-3) & (height > 0)
+			self.assertAlmostEqual(height[root].max(), arm["top"] - 0.02, places=3, msg=name)
+			# the plate 2 cm thick at its outer corner, its underside on the bar's
+			# root; the corner and the pin moved by the arm's own head shift
+			du, dv = arm.get("head", {}).get("shift", [0, 0])
+			corner = (np.abs(along - 0.58 - du) < 1e-3) & (np.abs(out - 0.64 - dv) < 1e-3)
+			self.assertEqual(sorted(set(np.round(height[corner], 3))), [round(arm["top"] - 0.02, 3), round(arm["top"], 3)], name)
+			# the pin's nut its height and the nut's above the plate, under the housing's top, at the pin's place
+			self.assertAlmostEqual(height.max(), arm["top"] + 0.057, places=3, msg=name)
+			nut = height > arm["top"] + 0.05
+			np.testing.assert_allclose([along[nut].mean(), out[nut].mean()], [0.58 + du, 0.42 + dv], atol=0.002, err_msg=name)
+			# the bar starts under the plate, its root end hidden: no deck between them
+			self.assertLess(along[bar & below & (height > 0)].min(), 0.45 + 1e-3, name)
+			self.assertLess(height.max(), 0.16, name)
+		# the dark block under each plate clear of the housing's rim and under the plate
+		for name, centre in (("wire_1_sheave_port", (-62, -16.5)), ("wire_1_sheave_starboard", (-58, 12.5))):
+			block = self.model.parts(materials=["dark"])[name].reshape(-1, 3)
+			self.assertGreater(np.hypot(*(block[:, [0, 2]] - centre).T).min(), 0.52, name)
 		# sunk with its sheave while the wire is not rigged, under the deck
 		travel = self.ship["joints"]["wire_1_sheave_port"]["keys"][-1][1]
 		sunk = self.model.parts(pose(self.ship["joints"], {"joints": {"wire_1_sheave_port": travel}}), materials=["arm"])
