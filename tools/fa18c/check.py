@@ -532,6 +532,19 @@ def hung(seat):
 	return model.triangles() @ R.T + (np.array(seat["mount"], float) - R @ mount)
 
 
+def vertical(tris, x, z):
+	# The heights (y) where a vertical line at (x, z) crosses the triangles
+	# (N, 3, 3), each in the frame's [x, y, z]
+	a, b, c = tris[:, 0], tris[:, 1], tris[:, 2]
+	d = (b[:, 0] - a[:, 0]) * (c[:, 2] - a[:, 2]) - (c[:, 0] - a[:, 0]) * (b[:, 2] - a[:, 2])
+	ok = np.abs(d) > 1e-12
+	a, b, c, d = a[ok], b[ok], c[ok], d[ok]
+	s = ((x - a[:, 0]) * (c[:, 2] - a[:, 2]) - (c[:, 0] - a[:, 0]) * (z - a[:, 2])) / d
+	t = ((b[:, 0] - a[:, 0]) * (z - a[:, 2]) - (x - a[:, 0]) * (b[:, 2] - a[:, 2])) / d
+	inside = (s >= 0) & (t >= 0) & (s + t <= 1)
+	return (a[:, 1] + s * (b[:, 1] - a[:, 1]) + t * (c[:, 1] - a[:, 1]))[inside]
+
+
 def carrier(part):
 	# What a store part hangs from: a pylon from the wing (the centreline's
 	# from the fuselage), a rack or a tank from its pylon, a side rail from its
@@ -1738,13 +1751,15 @@ def checks(jet):
 				f = (wl - b[1]) / ((a[1] - b[1]) or 1)
 				inside = max(inside, abs(bl) - abs(b[2] + (a[2] - b[2]) * f))
 		yield result("layout.cockpit", "cockpit standing outside the fuselage and canopy", 0.0, max(0.0, inside), 0.05)
-		# the formation strips on the fins' and nacelles' faces (layout.strips)
-		# and the lenses on the fins, the LEX's edges and the right fin's pod
-		# (layout.lights): each flush on the built face where the photos put it,
-		# so a buttline off the photos' is the face's, not the strip's
+		# the formation strips on the fins' and nacelles' faces and on the
+		# wingtip launchers' adapters, above the rail and below it
+		# (layout.strips), and the lenses on the fins, the LEX's edges and the
+		# right fin's pod (layout.lights): each flush on the built face where
+		# the photos put it, so a buttline off the photos' is the face's, not
+		# the strip's
 		st, lamps = F["layout"]["strips"], F["layout"]["lights"]["points"]
 		for side, sign in (("left", -1), ("right", 1)):
-			for key in ("fin", "body"):
+			for key in ("fin", "body", "tip", "undertip"):
 				p = jet.points([f"formation_{key}_{side}"])
 				ends = np.array(st[key], float) * [1, 1, sign]
 				middle = ends.mean(axis=0)
@@ -1756,6 +1771,18 @@ def checks(jet):
 					yield result("layout.strips", f"{key} strip's middle on the {side}" + (", the face it stands on" if word == "BL" else ""), middle[i], centre[i], tolerance, f"{word} in")
 				along = (p - middle) @ axis
 				yield result("layout.strips", f"{key} strip's length on the {side}", float(np.linalg.norm(ends[1] - ends[0])), float(along.max() - along.min()), 0.8, "in")
+				if key in st["gap"]:
+					# a tip strip's edge against the LAU-7's nearer edge, at the
+					# strip's middle: the gap the photos show within themselves
+					# the rail's edge where a vertical line through its middle
+					# meets it at the strip's middle station (the rail
+					# outboard of the adapter's faces); the strip's own edge
+					rail = jet.points([f"rail_{1 if sign < 0 else 9}"]).reshape(-1, 3, 3)
+					body = rail[(np.abs(rail[..., 2]) > 227.5).all(-1)].reshape(-1, 3)
+					column = vertical(rail, middle[0], (body[:, 2].min() + body[:, 2].max()) / 2)
+					near = p[np.abs(p[:, 0] - middle[0]) < 1.0]
+					gap = near[:, 1].min() - column.max() if key == "tip" else column.min() - near[:, 1].max()
+					yield result("layout.strips", f"{key} strip's gap to the wingtip rail's {'top' if key == 'tip' else 'bottom'} edge on the {side}", st["gap"][key], float(gap), 0.3, "in")
 			# the strobes on the fins' faces (the buttline the face's), the position
 			# lights under the LEX's edges (the waterline the face's)
 			# and the position lights on the underwing fairings' noses, cast aft

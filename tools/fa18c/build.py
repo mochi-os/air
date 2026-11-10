@@ -2351,9 +2351,8 @@ def lamps():
 	# lights): the strips on the fins' and the nacelles' outboard faces, the
 	# strobes' lenses on the fins' faces, the position lights' on the LEX's
 	# edges and the white one closing the right fin's upper pod, each flush
-	# on what it stands on. The tip launchers' strips stand on the launchers
-	# (stores, step 5) and the lights at the wing's fold on a fairing the
-	# build does not carry: those stay points. Lenses' sizes are estimated
+	# on what it stands on. The tip launchers' strips are built with the
+	# launchers (stores()). Lenses' sizes are estimated
 	strips, points = LAYOUT["strips"], LAYOUT["lights"]["points"]
 	lens = 2.0   # in across a lens, estimated
 	for side in (-1, 1):
@@ -4379,6 +4378,21 @@ def box_mesh(front, f, u, length, width, height, fairing, tail=4.0, tip=0.3, han
 	return loft(rings)
 
 
+def casing(side, stations, waterlines, buttlines, keep="low", ends=0.3):
+	# A box at a wingtip along the jet's axis: stations [FS] front and back,
+	# waterlines low and high, buttlines inboard and outboard (on the right;
+	# mirrored on `side`), its fore and aft ends chamfered down to `ends` of
+	# its height, keeping the edge on the `keep` side (low or high) whole
+	(s0, s1), (w0, w1), (b0, b1) = stations, waterlines, buttlines
+	inward = Vector((0, side, 0))
+	t = min(2.0, (s1 - s0) / 4)
+	rings = []
+	for station, k in ((s0, ends), (s0 + t, 1.0), (s1 - t, 1.0), (s1, ends)):
+		low, high = (w0, w0 + (w1 - w0) * k) if keep == "low" else (w1 - (w1 - w0) * k, w1)
+		rings.append(rounded_ring(at(station, (low + high) / 2, side * (b0 + b1) / 2), FORWARD, inward, high - low, b1 - b0, rounding=0.25))
+	return loft(rings)
+
+
 def missile_mount(kind):
 	# where a missile's own points file puts its mount: inches aft of its
 	# nose, on top of its body
@@ -4418,7 +4432,25 @@ def stores():
 		middle = front - f * (40 * INCH)
 		reach = abs((middle - f * (25 * INCH)).y) / INCH - value(lau7["height"]) / 2 - surface.length
 		strip = box_mesh(middle + u * ((value(lau7["height"]) / 2 + reach / 2) * INCH), f, u, 50.0, 2.5, reach + 1.0, 4.0, tail=4.0, tip=0.6)
-		store(f"rail_{tip}", merge([rail, strip]), parent=f"flex_rail_{name}", hinge=front, shown=True, frame=(front, aft, u))
+		# the launcher adapter's housings, one above the rail and one below it,
+		# each carrying a formation strip on its outboard face where the photos
+		# put it (layout.strips tip and undertip), their sizes by eye round the
+		# strips: the upper over the tip's edge up to the wing's top and down
+		# onto the fitting, the lower under the fitting, joined to it by a
+		# bridge the rail hides
+		strips = LAYOUT["strips"]
+		upper_, lower_ = strips["tip"], strips["undertip"]
+		station = (upper_[0][0] + upper_[1][0] + lower_[0][0] + lower_[1][0]) / 4
+		axis = (front + (aft - front) * ((ORIGIN["station"] - station) * INCH - front.x) / (aft.x - front.x)).z / INCH + ORIGIN["waterline"]
+		face = lambda ends: sum(abs(e[2]) for e in ends) / len(ends)
+		half = strips["width"] / 2
+		upper = casing(side, (upper_[0][0] - 3.0, upper_[1][0] + 3.0), (axis + 0.6, max(e[1] for e in upper_) + half + 0.4), (223.0, face(upper_)), keep="low")
+		lower = casing(side, (lower_[0][0] - 3.0, lower_[1][0] + 3.0), (min(e[1] for e in lower_) - half - 0.35, axis - 0.6), (220.5, face(lower_)), keep="high")
+		bridge = casing(side, (lower_[0][0] - 2.0, lower_[1][0] + 2.0), (axis - 1.6, axis - 0.6), (face(lower_) - 0.6, 225.5), keep="high", ends=1.0)
+		store(f"rail_{tip}", merge([rail, strip, upper, lower, bridge]), parent=f"flex_rail_{name}", hinge=front, shown=True, frame=(front, aft, u))
+		inward = Vector((0, side, 0))
+		for key, housing in (("tip", upper), ("undertip", lower)):
+			node(f"formation_{key}_{name}", parent=f"flex_rail_{name}", mesh=flush(BVHTree.FromPolygons(*housing), strips[key], side, strips["width"], inward), paint="lights")
 		MARKS[f"rail_tip_front_{name}"] = (front, f"rail_{tip}")
 		MARKS[f"rail_tip_aft_{name}"] = (aft, f"rail_{tip}")
 		# its AIM-9M on the photos' round axis, the nose 8.9 in ahead of the

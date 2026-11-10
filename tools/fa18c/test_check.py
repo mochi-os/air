@@ -279,6 +279,12 @@ class ShapeTest(unittest.TestCase):
 		sliver = np.array([[[11.0, 0.0, 1.0], [11.9, 2.6, 1.0], [11.5, 0.0, 1.0]]])
 		self.assertAlmostEqual(check.apart(np.concatenate([one, sliver]), tris((0.0, 4.5, 0.0), (10.0, 6.0, 2.0))), 2.5, places=6)
 
+	def test_vertical(self):
+		# a vertical line through a box crosses its top and bottom; beside it, nothing
+		tris = (lambda v, f: v[f])(*box((0.0, 1.0, 0.0), (10.0, 3.0, 2.0)))
+		self.assertEqual(sorted(set(np.round(check.vertical(tris, 4.3, 0.7), 9))), [1.0, 3.0])
+		self.assertEqual(len(check.vertical(tris, 12.0, 0.7)), 0)
+
 	def test_each_store_part_hangs_from_its_carrier(self):
 		self.assertEqual(check.carrier("rail_9"), "wing_outer_right")
 		self.assertEqual(check.carrier("rail_2a"), "rack_2")

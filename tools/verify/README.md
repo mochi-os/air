@@ -297,6 +297,15 @@ sketch to several inches. Say which in the facts table.
 
 What went wrong on the F/A-18C, each a rule now:
 
+- **Cut each photo's ray at the part before trusting a triangulated end.** The F/A-18C's wingtip LAU-7 read
+  113 in long against its cited 110 because one camera, at its frame's edge, put the front 6 in forward of six
+  others and pulled the solution with it; the leave-one-out spread showed it, and so did each photo's ray cut at
+  the rail's known buttline (the coordinate side views fix worst), which put six within 2 in and the two outliers
+  well clear. Leave such a mark out in the catalogue with its reason in the photo's notes, not by widening a sigma.
+- **A relation read within one photo beats two triangulated points.** The F/A-18C's upper wingtip formation
+  strip triangulated 0.8 in low, within its rays' misses, which hid half of it behind the rail every photo shows it
+  clear of; its lower edge lies on the rail's top edge in each photo, a reading no camera solve enters. Place a
+  part by such an edge-to-edge gap to the part it abuts, record the gap as a fact, and check it on the build.
 - **Judge the outline against sky only, not any even background.** Taking any background even enough beyond
   the edge (trees, hillsides, tarmac), with the walk's evenness, contrast and sharpness the only tests, was
   tried on the F/A-18C's 29 photos (2026-11-04): those places missed by a median of 1.89 in against 0.71 on sky,

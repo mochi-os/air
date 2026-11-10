@@ -247,7 +247,11 @@ LAU-7s, each a node named for its station (`pylon_2`, `rail_8a`, `launcher_8b`, 
 is a `show` joint on the drive `stores`, hidden at rest; a photo's pose shows the ones it carries (`"joints":
 {"tank_7": 1}`), and the engine those its loadout carries (`web/src/game/hang.ts`). The points file's `stores` lists
 them and each hardpoint's `rounds` where its missiles hang. Their places are the photos' (`facts.json`
-`layout.stores`), their sizes the sources' (`stores`). The missiles are built apart (`../missiles`).
+`layout.stores`), their sizes the sources' (`stores`). The missiles are built apart (`../missiles`). The wingtip
+rails carry the launcher adapter's two housings, one above the rail and one below, each with a formation strip
+flush on its outboard face where the photos put it (`layout.strips` `tip` and `undertip`, `formation_tip_left`,
+`formation_undertip_right`), parallel to the rail at the gaps the photos show to its edges (`gap`, checked); the
+housings' sizes are by eye.
 
 The stores carry an atlas of their own (`layout.stores.paint`, `paint_stores()` in `build.py`, painted by
 `finish.py`, a JPEG): unwrapped apart from the airframe's, its ambient occlusion baked in layers, each part with

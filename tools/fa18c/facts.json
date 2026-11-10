@@ -1700,32 +1700,37 @@
 			"tip": [
 				[
 					502.4,
-					108.0,
+					108.72,
 					226.7
 				],
 				[
 					512.7,
-					108.5,
+					109.41,
 					226.5
 				]
 			],
 			"undertip": [
 				[
 					504.0,
-					102.8,
+					102.43,
 					223.5
 				],
 				[
 					514.7,
-					102.8,
+					103.15,
 					222.7
 				]
 			],
 			"width": 1.7,
 			"unit": "[FS, WL, BL] in, each strip's ends on the right, mirrored on the left; width: in, across each strip",
 			"source": "photo match",
-			"where": "the ends' middles marked in the solved photos and triangulated (layout.lights where): the fins' strips from 16 and 18 rays over 90 deg, within 0.2-2.1 in; the nacelles' from 7 and 9 over 90 deg; the tip launchers' from the four ground photos (4 rays over 76 deg), the strip under the rail from 2 rays over 31 deg",
-			"note": "the formation light strips other than the nose's (layout.formation), flush with what they stand on. Their width is not measured: the nose strip's 1.7 in. The tip launchers' strips stand on the launchers, which are stores (step 5): the build places the fins' and the nacelles'"
+			"where": "the ends' middles marked in the solved photos and triangulated (layout.lights where): the fins' strips from 16 and 18 rays over 90 deg, within 0.2-2.1 in; the nacelles' from 7 and 9 over 90 deg; the tip launchers' from the four ground photos (4 rays over 76 deg), the strip under the rail from 2 rays over 31 deg; the tip strips' waterlines from their gaps to the rail (gap)",
+			"note": "the formation light strips other than the nose's (layout.formation), flush with what they stand on. Their width is not measured: the nose strip's 1.7 in. The tip strips stand on the wingtip launcher adapter's outboard face, one above the LAU-7 and one below it (dvids9820808, 9820801, 7243901 show both); the build gives the adapter a housing round each, sized by eye. Their rays are from ground photos only (in flight the wing bends), the lower strip's from two rays over 31 deg, so its buttline is the least sure (the rays run nearly along it)",
+			"gap": {
+				"tip": 0.0,
+				"undertip": 0.5,
+				"note": "in, between each strip's edge and the LAU-7's nearer edge, read within single photos so no camera solve enters: the upper strip's lower edge on the rail's top edge in dvids9820808 and 9820801 (its height 23 px at 13.4 px/in and 21 px at 12.4 px/in, the strip's 1.7 in), the lower strip's top edge 0.6 and 0.4 in under the rail's bottom edge. Both strips' ends are placed by these gaps, parallel to the rail as the photos show them (2026-11-10). The lower strip's middle stays at its triangulated 102.8; the upper strip's triangulated middle read 0.8 in lower, within its rays' misses, which would hide half the strip behind the rail the photos show it clear of"
+			}
 		},
 		"lights": {
 			"source": "natops; photo match",
@@ -1799,8 +1804,8 @@
 				},
 				"formation_tip_left": {
 					"at": [
-						507.6,
-						108.3,
+						507.55,
+						109.06,
 						-226.6
 					],
 					"colour": "green",
@@ -1809,8 +1814,8 @@
 				},
 				"formation_tip_right": {
 					"at": [
-						507.6,
-						108.3,
+						507.55,
+						109.06,
 						226.6
 					],
 					"colour": "green",
@@ -1819,8 +1824,8 @@
 				},
 				"formation_undertip_left": {
 					"at": [
-						509.4,
-						102.8,
+						509.35,
+						102.79,
 						-223.1
 					],
 					"colour": "green",
@@ -1829,8 +1834,8 @@
 				},
 				"formation_undertip_right": {
 					"at": [
-						509.4,
-						102.8,
+						509.35,
+						102.79,
 						223.1
 					],
 					"colour": "green",
@@ -7170,16 +7175,16 @@
 			"rails": {
 				"tip": {
 					"front": [
-						444.96,
-						103.19,
-						230.3
+						445.52,
+						101.94,
+						230.09
 					],
 					"aft": [
-						555.06,
-						110.48,
-						232.78
+						555.26,
+						109.33,
+						231.86
 					],
-					"note": "the wingtip LAU-7's forward fairing's tip and aft end, from 8 and 5 photos (+-0.6, +-0.7 in), 110.3 in apart; turned on its side, the round outboard of it (rounds.tip)"
+					"note": "the wingtip LAU-7's forward fairing's tip and aft end. Settled 2026-11-10: the front from six marks (dvids9820808, 9820801, 7487366 on both sides, 7487368, 7243901; +-0.4 in), the aft end along the line they and four marks give (dvids9820808, 9820799, 9820801, 7243901) at the LAU-7's cited 110 in, where the aft end's own reading lies 1.0 in further aft (its photos spread 3 in). Two front marks are left out: dvids9820810's camera reads the tip 6 in forward of the others at its frame's edge (the camera that reads the forward fuselage's stations 2 in aft), and c114498618's 3.5 in forward and 3 in low; with them the ends read 113 in apart. Turned on its side, the round outboard of it (rounds.tip)"
 				},
 				"launcher": {
 					"outer": [
@@ -7199,15 +7204,15 @@
 				"tip": {
 					"nose": [
 						436.94,
-						103.8,
-						235.28
+						102.5,
+						235.11
 					],
 					"tail": [
 						556.69,
-						111.54,
-						235.54
+						110.38,
+						234.61
 					],
-					"note": "the AIM-9X on the wingtip rails, from dvids7487366 and 7487368 (+-0.7 to 1.2 in), 120 in long: the round's axis 5.0 in outboard of the LAU-7's and 1.1 in above it. The AIM-9M on the same rail has its nose 8.9 in ahead of the rail's front (missiles facts, layout.aim9m.mount's note), on that axis"
+					"note": "the AIM-9X on the wingtip rails, from dvids7487366 and 7487368 (+-0.7 to 1.2 in), 120 in long: the round's axis 5.0 in outboard of the LAU-7's and 1.1 in above it. The AIM-9M on the same rail has its nose 8.9 in ahead of the rail's front (missiles facts, layout.aim9m.mount's note), on that axis. Moved 2026-11-10 with the rail (1.2-1.3 in down, up to 0.9 in inboard at its tail), keeping that offset: the rail's ends were settled from more photos than the round's"
 				},
 				"twin": {
 					"outer": [
