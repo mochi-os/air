@@ -128,6 +128,24 @@ class CastTest(unittest.TestCase):
 		np.testing.assert_allclose(at, frame.source(tip), atol=1e-4)
 
 
+# Where noted() records the work it wraps, and what it wraps
+NOTED = {}
+
+
+def noted_start(task):
+	# camera.solved, noting the process it runs in
+	import os
+	(NOTED["folder"] / f"start-{len(task[0])}-{os.getpid()}-{os.urandom(4).hex()}").touch()
+	return NOTED["solved"](task)
+
+
+def noted_edge(task):
+	# photos.edged, noting the process it runs in
+	import os
+	(NOTED["folder"] / f"edge-{task[0]}-{os.getpid()}").touch()
+	return NOTED["edged"](task)
+
+
 class MatchTest(unittest.TestCase):
 	# A box "airframe" with a flap, photographed from three sides: the match
 	# recovers where its corners really are, reports the model's misses, and
@@ -171,6 +189,38 @@ class MatchTest(unittest.TestCase):
 
 	def tearDown(self):
 		self.dir.cleanup()
+
+	def test_jobs_give_the_same_cameras_and_report(self):
+		# --jobs starts the cameras and measures the traced edges in other
+		# processes, and prints and writes what one process does
+		import os
+		r = self.root
+
+		def run(name, *more):
+			argv, stdout = sys.argv, sys.stdout
+			sys.argv = ["photos.py", *more, str(r / "photos.json"), str(r / "m.glb"), str(r / "m.json"), str(r / "features.json"), "--cameras", str(r / f"{name}.json")]
+			sys.stdout = io.StringIO()
+			try:
+				photos.main()
+				return sys.stdout.getvalue(), (r / f"{name}.json").read_bytes()
+			finally:
+				sys.argv, sys.stdout = argv, stdout
+
+		one = run("one")
+		folder = r / "ran"
+		folder.mkdir()
+		NOTED.update(folder=folder, solved=cam.solved, edged=photos.edged)
+		cam.solved, photos.edged = noted_start, noted_edge
+		try:
+			three = run("three", "--jobs", "3")
+		finally:
+			cam.solved, photos.edged = NOTED["solved"], NOTED["edged"]
+		self.assertEqual(three, one)
+		self.assertEqual(len(json.loads(one[1])), 3)
+		self.assertIn("top_right", one[0])   # the traced edges measured
+		ran = [p.name.split("-") for p in folder.iterdir()]
+		self.assertEqual(sorted(kind for kind, *_ in ran), ["edge"] * 3 + ["start"] * 3)
+		self.assertNotIn(str(os.getpid()), {p[2] for p in ran})   # in workers, not here
 
 	def test_measures_the_aside_points_apart(self):
 		# a point filed under "aside" (a store's end, kept out of the shared

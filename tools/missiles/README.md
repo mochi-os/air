@@ -50,7 +50,7 @@ own launchers, racks and pylons are part of `fa18c.glb` (../fa18c), not these.
 
 ## Build
 
-    blender -b --factory-startup --python-exit-code 1 -P build.py -- aim9m OUT.glb OUT.json [--draft] [--bakes BAKES.npz]
+    blender -b --factory-startup --python-exit-code 1 -P build.py -- aim9m OUT.glb OUT.json [--draft] [--bakes BAKES.npz] [--cache DIR]
     python3 -I check.py aim9m OUT.glb OUT.json
 
 The build paints an atlas (`layout.atlas` texels a side, the base colour of every material but the glass): the
@@ -58,7 +58,10 @@ body's skin unrolled in pieces between its joints and the fins' rolls, every oth
 Cycles' bakes of ambient occlusion, normals, and by emission each material's colour, each texel's place and the part
 it lies on, and `paint.py` over them, saved as JPEG (quality 90, full colour resolution: a quarter of PNG's size,
 the mottle and grain being what PNG compresses worst). That takes one to two minutes; `--draft` leaves it out, and `--bakes` keeps the
-bakes for a look at the paint without Blender. `--whole` keeps the hidden faces, every part a closed solid, for
+bakes for a look at the paint without Blender. `--cache DIR` keeps the atlas's UVs and bakes between builds (`../cache.py`),
+under a key of every part's faces, what the unwrap lays the body's skin by, the colours and part indices baked, and the code:
+a build whose parts are unchanged takes them from there (the AIM-9M in 4 s instead of 26, the AIM-120C in 45 instead of 150, most
+of it `paint.py`'s), and makes the model a cold build makes, byte for byte. `--facts FILE` builds from another facts file. `--whole` keeps the hidden faces, every part a closed solid, for
 `test_build.py`'s probes.
 
 Run Blender under `systemd-run --user --scope --slice=probe.slice -p MemoryMax=6G -p MemorySwapMax=0`. The frame:

@@ -9,7 +9,7 @@
 # paint, by the atlas the body's own UVs show at points the markings cover.
 #
 # usage: systemd-run --user --scope --slice=probe.slice -p MemoryMax=6G -p MemorySwapMax=0 python3 -I test_build.py
-import io, json, math, struct, subprocess, sys, tempfile, unittest
+import io, json, math, os, re, shutil, struct, subprocess, sys, tempfile, unittest
 from pathlib import Path
 
 import numpy as np
@@ -262,6 +262,110 @@ class PaintTest(unittest.TestCase):
 		top = np.array([self.texel(s, 0.0) for s in np.linspace(40, 55, 30)])
 		np.testing.assert_allclose(top.mean(0), self.paint, atol=0.12)
 		self.assertLess(np.abs(top - top.mean(0)).max(), 0.08)
+
+
+def changed(change):
+	# A copy of the facts, changed in place by `change`
+	facts = json.loads((HERE / "facts.json").read_text())
+	change(facts)
+	return facts
+
+
+class CacheTest(unittest.TestCase):
+	# The atlas kept between builds (build.py --cache), on the AIM-9M, the
+	# quicker build: the cache changes nothing about the model; a build whose
+	# parts, unwrap and colours are unchanged takes its UVs and bakes from the
+	# cache and makes the same model, byte for byte; a change to the paint
+	# alone bakes nothing again; a change to anything the bakes come from (the
+	# shape, a colour they lay, the unwrap's seams, length and pieces, the
+	# atlas's size, the parts' indices, the code) bakes again. Each case
+	# builds against its own copy of the cache the first build left, so none
+	# hangs on what another kept or let go
+	@classmethod
+	def setUpClass(cls):
+		cls.plain = cls.build("plain", cache=False)
+		cls.first = cls.build("first", cache=False, into=Path(BUILT["dir"].name) / "cache")
+
+	@classmethod
+	def build(cls, name, facts=None, cache=True, edit=None, into=None):
+		# cache: whether to build against a copy of the first build's cache;
+		# into: a cache folder of its own. edit: (old, new), built from a copy
+		# of build.py beside it with the line changed, so it finds the facts and
+		# the shared modules as it does
+		folder = Path(BUILT["dir"].name)
+		glb, points = folder / f"{name}.glb", folder / f"{name}.json"
+		if cache:
+			into = folder / f"{name}-cache"
+			shutil.copytree(folder / "cache", into)
+		options = ["--cache", str(into)] if into else []
+		if facts is not None:
+			(folder / f"{name}-facts.json").write_text(json.dumps(facts))
+			options += ["--facts", str(folder / f"{name}-facts.json")]
+		script = HERE / "build.py"
+		if edit:
+			source = script.read_text()
+			if source.count(edit[0]) != 1:
+				raise RuntimeError(f"{name}: the line to change is not in build.py once")
+			script = HERE / f".cache-{os.getpid()}-{name}.py"
+			script.write_text(source.replace(*edit))
+		try:
+			run = subprocess.run(["blender", "-b", "--factory-startup", "--python-use-system-env", "--python-exit-code", "1", "-P", str(script), "--",
+				"aim9m", str(glb), str(points), *options], capture_output=True, text=True)
+		finally:
+			if edit:
+				script.unlink()
+		if run.returncode or "Traceback" in run.stdout + run.stderr:
+			raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+		return glb.read_bytes(), re.findall(r"^bakes aim9m: (baked|from the cache)", run.stdout, re.M)
+
+	def bakes(self, name, change=None, edit=None):
+		_, said = self.build(name, changed(change) if change else None, edit=edit)
+		self.assertEqual(said, ["baked"])
+
+	def test_the_cache_changes_nothing(self):
+		self.assertEqual(self.plain[1], ["baked"])
+		self.assertEqual(self.first[1], ["baked"])
+		self.assertEqual(self.first[0], self.plain[0])
+
+	def test_an_unchanged_build_takes_the_bakes_from_the_cache(self):
+		again, said = self.build("again")
+		self.assertEqual(said, ["from the cache"])
+		self.assertEqual(again, self.first[0])
+
+	def test_the_paint_alone_bakes_nothing_again(self):
+		# a window of the markings wider
+		model, said = self.build("painted", changed(lambda f: f["layout"]["aim9m"]["markings"]["value"]["windows"][0].update(radius=0.8)))
+		self.assertEqual(said, ["from the cache"])
+		self.assertNotEqual(model, self.first[0])
+
+	def test_the_shape_bakes_again(self):
+		# the wings' tip chord moved aft an inch
+		self.bakes("shaped", lambda f: f["layout"]["aim9m"]["wings"]["value"]["outline"][1].__setitem__(0, 96.7))
+
+	def test_a_colour_the_bakes_lay_bakes_again(self):
+		# the body's grey lighter: the albedo bake lays it
+		self.bakes("coloured", lambda f: f["layout"]["aim9m"]["paint"].update(value=[110, 114, 127]))
+
+	def test_the_unwraps_seams_bake_again(self):
+		self.bakes("seamed", lambda f: f["layout"]["aim9m"]["markings"]["value"]["seams"].__setitem__(0, 28.0))
+
+	def test_the_unwraps_length_bakes_again(self):
+		# the length the body's last piece ends at, which the profile does not reach
+		self.bakes("lengthened", lambda f: f["aim9m"]["length"].update(value=f["aim9m"]["length"]["value"] + 0.5))
+
+	def test_the_atlas_size_bakes_again(self):
+		self.bakes("sized", lambda f: f["layout"]["aim9m"]["atlas"].update(value=512))
+
+	def test_the_unwraps_pieces_bake_again(self):
+		self.bakes("pieced", edit=("PIECE = 36.0\n", "PIECE = 30.0\n"))
+
+	def test_the_parts_indices_bake_again(self):
+		# the fittings baked as the fins' part
+		self.bakes("indexed", edit=('else painting.PARTS["fittings"] if o.name == "fittings"', 'else painting.PARTS["fin"] if o.name == "fittings"'))
+
+	def test_the_code_bakes_again(self):
+		self.bakes("unwrapped", edit=('	bpy.ops.uv.pack_islands(rotate=True, rotate_method="AXIS_ALIGNED", margin=0.006)\n',
+			'	bpy.ops.uv.pack_islands(rotate=True, rotate_method="AXIS_ALIGNED", margin=0.006)   # changed\n'))
 
 
 if __name__ == "__main__":

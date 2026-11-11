@@ -120,7 +120,7 @@ weights a mesh's glTF morph targets by its joint's `morphs`, sparse accessors in
 joints (a turn about the axis, then a slide along `direction`, keys `[input, turn, slide]`), so the outlines,
 the sky check, the bundle's carried marks and `view.py`'s renders all follow a bent wing. Then:
 
-    python3 -I photos.py CATALOGUE MODEL.glb POINTS.json FEATURES.json --overlays DIR --cameras CAMERAS.json
+    python3 -I photos.py CATALOGUE MODEL.glb POINTS.json FEATURES.json --overlays DIR --cameras CAMERAS.json [--jobs N]
 
 solves every photo's camera (focal length, pose, one radial distortion term) and every marked point at once
 (`camera.Bundle`), with the anchors as priors and a robust loss for stray marks. The model's own positions
@@ -156,7 +156,12 @@ outline for weeks, and the user found the shape wrong before any check did.
 
 ### 5a. The outline against the sky: every photo, no tracing
 
-    python3 -I skyline.py CATALOGUE MODEL.glb POINTS.json CAMERAS.json OUT_DIR
+    python3 -I skyline.py CATALOGUE MODEL.glb POINTS.json CAMERAS.json OUT_DIR [--jobs N]
+
+`--jobs N` (here and in `photos.py`) runs the work that is each photo's alone in N processes: the sky check's
+photos, the photo gate's starting cameras and traced edges (the shared solve stays one). The files and the
+report are the same as one process writes, byte for byte (`test_skyline.py`, `test_photos.py`); on the
+F/A-18C's 22 photos four jobs take the sky check from 269 s to 128 s and the gate from 196 s to 160 s.
 
 Through each camera `photos.py --cameras` solved, it walks the posed model's whole silhouette and, wherever
 the photo shows sky beyond it, finds the jet's own edge: walking in from the sky (fitted as a line, since it

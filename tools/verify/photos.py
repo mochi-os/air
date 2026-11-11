@@ -61,8 +61,11 @@
 #   subject  for page.py: what the photos show ("aircraft")
 #
 # usage: python3 -I photos.py CATALOGUE.json MODEL.glb POINTS.json FEATURES.json [--json] [--check]
-#        [--overlays DIR] [--cameras FILE] [--sheets RENDERS DIR] [--only ID,ID]
-import json, math, sys
+#        [--overlays DIR] [--cameras FILE] [--sheets RENDERS DIR] [--only ID,ID] [--jobs N]
+#
+# --jobs N starts the cameras and measures the traced edges in N processes,
+# each as one alone does: the same report and files.
+import json, math, multiprocessing, sys
 from pathlib import Path
 
 import numpy as np
@@ -74,6 +77,15 @@ import camera as cam  # noqa: E402
 import model as mod  # noqa: E402
 
 Image.MAX_IMAGE_PIXELS = None
+
+
+# The solved match edged() measures in, set by Match.report before its workers fork
+EDGES = {}
+
+
+def edged(task):
+	# Match.edge on one (photo index, traced edge), for report's workers
+	return EDGES["match"].edge(*task)
 
 
 def options(argv):
@@ -247,7 +259,7 @@ class Match:
 			moves = {n: self.features.between(self.pose, entry.get("pose", {}), n) for n in entry.get("marks", {})}
 			self.photos[-1]["moves"] = {n: m for n, m in moves.items() if m is not None}
 
-	def solve(self, log=print):
+	def solve(self, log=print, jobs=1):
 		points = {}
 		for name, spec in self.catalogue.get("points", {}).items():
 			points[name] = {"priors": priors(self.frame, spec)}
@@ -269,7 +281,7 @@ class Match:
 					pairs.append((name, name[: -len(left)] + right))
 		sea = self.frame.plane(self.catalogue["sea"]) if "sea" in self.catalogue else None
 		self.bundle = cam.Bundle(self.photos, points, mirror=(self.frame.reflection(), pairs) if pairs else None, sea=sea)
-		missing = self.bundle.initialise(log=log)
+		missing = self.bundle.initialise(log=log, jobs=jobs)
 		for k in missing:
 			log(f"photo {self.photos[k]['id']}: too few known points to start its camera; left out")
 		self.cameras, self.points = self.bundle.solve()
@@ -344,7 +356,7 @@ class Match:
 			out[name] = row
 		return out
 
-	def report(self):
+	def report(self, jobs=1):
 		out = {"photos": {}, "points": {}, "anchors": {}, "edges": {}, "locate": {}}
 		out["aside"] = self.aside()
 		misses = self.bundle.misses()
@@ -394,11 +406,19 @@ class Match:
 				row["miss"] = [round(float(v), 2) for v in ours - at]
 			row["measured"] = [round(float(v), 2) for v in at]
 			out["points"][name] = row
+		traced = [(f"{photo['id']}:{name}", (k, edge)) for k, photo in enumerate(self.photos) if k in self.cameras
+			for name, edge in photo["entry"].get("edges", {}).items()]
+		if jobs > 1 and len(traced) > 1:
+			# forked, so each worker has this match as solved here; back in the edges' order
+			EDGES["match"] = self
+			with multiprocessing.get_context("fork").Pool(jobs) as pool:
+				measured = pool.map(edged, [task for _, task in traced], chunksize=1)
+		else:
+			measured = [self.edge(k, edge) for _, (k, edge) in traced]
+		out["edges"] = dict(zip([name for name, _ in traced], measured))
 		for k, photo in enumerate(self.photos):
 			if k not in self.cameras:
 				continue
-			for name, edge in photo["entry"].get("edges", {}).items():
-				out["edges"][f"{photo['id']}:{name}"] = self.edge(k, edge)
 			for name, (u, v, plane) in photo["entry"].get("locate", {}).items():
 				normal, offset = f.plane(plane)
 				hit = cam.cast(self.cameras[k], (u, v), photo["centre"], normal, offset)
@@ -622,8 +642,9 @@ def gate(report, spec, symbol=mod.SYMBOL):
 def main():
 	args, flags = options(sys.argv[1:])
 	only = flags["only"].split(",") if "only" in flags else None
-	match = Match(*args[:4], only=only).solve(log=lambda m: print(m, file=sys.stderr))
-	report = match.report()
+	jobs = int(flags.get("jobs", 1))
+	match = Match(*args[:4], only=only).solve(log=lambda m: print(m, file=sys.stderr), jobs=jobs)
+	report = match.report(jobs)
 	print(json.dumps(report, indent="\t") if flags.get("json") else text(report, match.frame.symbol))
 	failures = []
 	if flags.get("check"):

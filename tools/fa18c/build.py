@@ -17,9 +17,13 @@
 # (verify/photos.py) and the facts check compare.
 #
 # --draft leaves out the paint (the atlas and its ambient-occlusion bake), for
-# quick looks at the shape.
+# quick looks at the shape. --cache DIR keeps the atlases' UVs and bakes there
+# between builds, each under a key of everything it comes from (../cache.py),
+# and takes them from there when nothing they come from has changed: the jet's
+# and the stores' each on its own. --facts FILE builds from another facts file.
+# --keys FILE writes the keys the atlases would bake under, and stops.
 #
-# usage: blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.json [FEATURES.json] [--draft]
+# usage: blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.json [FEATURES.json] [--draft] [--cache DIR] [--facts FILE] [--keys FILE]
 import json, math, re, sys
 from pathlib import Path
 
@@ -32,9 +36,23 @@ from mathutils.bvhtree import BVHTree
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(HERE))
+import cache  # noqa: E402
 import finish  # noqa: E402
 import hidden  # noqa: E402
-FACTS = json.loads((HERE / "facts.json").read_text())
+ARGS = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
+
+
+def option(name):
+	# An option's value (--name VALUE), taken out of ARGS; None if not given
+	if name not in ARGS:
+		return None
+	i = ARGS.index(name)
+	value = ARGS[i + 1]
+	del ARGS[i : i + 2]
+	return value
+
+
+FACTS = json.loads(Path(option("--facts") or HERE / "facts.json").read_text())
 LAYOUT = FACTS["layout"]
 # Traced by views.py from the NASA figures (run fetch.py and views.py first)
 TRACED = json.loads((HERE / "references" / "sections.json").read_text())["sections"]
@@ -403,6 +421,7 @@ def bent(name, bend):
 	hinge = HINGES[name]
 	obj.shape_key_add(name="Basis", from_mix=False)
 	key = obj.shape_key_add(name="flex", from_mix=False)
+	key.value = 0.0   # at rest: Blender 5 weights a new key 1, which bent every view and bake to 1 g
 	for i, v in enumerate(obj.data.vertices):
 		p = v.co + hinge
 		key.data[i].co = v.co + R.transposed() @ (bend.moved(p) - (R @ p + t))
@@ -1717,22 +1736,21 @@ AFT_STATIONS = [412, 420, 435, 450, 470, 490, 510, 530, 550, 570, 590, 610, 630,
 
 def polar(points, centre, angles):
 	# A half-outline (top to keel) resampled at the angles round centre: along
-	# each ray, its farthest crossing
+	# each ray, its farthest crossing (every segment at once, the same sums on
+	# each as one at a time)
 	out = []
-	segments = list(zip(points, points[1:]))
+	ends = np.asarray(points, float)
+	ex, ey = ends[1:, 0] - ends[:-1, 0], ends[1:, 1] - ends[:-1, 1]
+	ox, oy = ends[:-1, 0] - centre[0], ends[:-1, 1] - centre[1]
 	for theta in angles:
 		d = (math.sin(theta), math.cos(theta))
-		best = 0.0
-		for (x0, y0), (x1, y1) in segments:
-			ex, ey = x1 - x0, y1 - y0
-			den = d[0] * ey - d[1] * ex
-			if abs(den) < 1e-12:
-				continue
-			ox, oy = x0 - centre[0], y0 - centre[1]
+		den = d[0] * ey - d[1] * ex
+		crossed = np.abs(den) >= 1e-12
+		with np.errstate(divide="ignore", invalid="ignore"):
 			t = (ox * ey - oy * ex) / den
 			u = (ox * d[1] - oy * d[0]) / den
-			if -1e-9 <= u <= 1 + 1e-9 and t > best:
-				best = t
+		hit = crossed & (u >= -1e-9) & (u <= 1 + 1e-9) & (t > 0.0)
+		best = float(t[hit].max()) if hit.any() else 0.0
 		if theta in (0.0, math.pi) or best == 0.0:
 			# the centreline: the outline's own end, which the ray may graze
 			end = points[0] if theta < 1 else points[-1]
@@ -1963,9 +1981,16 @@ def exit_distance(centre, half, exponent, origin, direction, reach=120.0):
 	# centre, below it), or {"in", "out", "sign"}, the half-widths inboard and
 	# outboard (outboard where dx has the sign), with the exponent then
 	# {"in", "out"} too
+	return exit_distances(centre, half, exponent, origin, [direction], reach)[0]
+
+
+def exit_distances(centre, half, exponent, origin, directions, reach=120.0):
+	# exit_distance() along each of the rays from origin in `directions` at
+	# once (the same sums on each sample, so the same distances)
 	t = np.linspace(0.0, reach, 961)
-	x = origin[0] + direction[0] * t - centre[0]
-	y = origin[1] + direction[1] * t - centre[1]
+	d = np.asarray(directions, float).reshape(-1, 2)
+	x = origin[0] + d[:, :1] * t - centre[0]
+	y = origin[1] + d[:, 1:] * t - centre[1]
 	b = np.where(y > 0, half[1], half[-1])
 	if isinstance(half[0], dict):
 		out = x * half[0]["sign"] > 0
@@ -1974,9 +1999,8 @@ def exit_distance(centre, half, exponent, origin, direction, reach=120.0):
 	else:
 		a = np.where(y > 0, half[0][0], half[0][1]) if isinstance(half[0], tuple) else half[0]
 	inside = np.abs(x / a) ** exponent + np.abs(y / b) ** exponent <= 1.0
-	if not inside.any():
-		return 0.0
-	return float(t[np.nonzero(inside)[0][-1]])
+	last = len(t) - 1 - np.argmax(inside[:, ::-1], axis=1)
+	return [float(t[k]) if hit else 0.0 for k, hit in zip(last.tolist(), inside.any(axis=1).tolist())]
 
 
 def engine_buttline(station):
@@ -2132,11 +2156,11 @@ def union_ring(station, angles=None, sided=True):
 					# deck's own taper with no kink
 					wide = -math.log(math.exp(-wide) + math.exp(-DECK_SIDE))
 				parts.append(((0.0, w), (wide, deck - w, DECK_BELOW), DECK_EXPONENT))
+		directions = [(math.sin(theta), math.cos(theta)) for theta in turns]
+		reaches = list(zip(*(exit_distances(c, h, n, centre, directions) for c, h, n in parts)))
 		ring = []
-		for theta in turns:
-			direction = (math.sin(theta), math.cos(theta))
-			reaches = [exit_distance(c, h, n, centre, direction) for c, h, n in parts]
-			r = sum(x ** 10 for x in reaches) ** 0.1
+		for direction, each in zip(directions, reaches):
+			r = sum(x ** 10 for x in each) ** 0.1
 			ring.append((centre[0] + direction[0] * r, centre[1] + direction[1] * r))
 		return ring
 
@@ -3576,25 +3600,15 @@ ATLAS = 2048
 STRIP = 0.03   # the atlas's share, along its right side, left free for faces unfolded after packing
 
 
-def paint(directory):
-	# Unique UVs for every part in one atlas, then the paint: ambient
-	# occlusion baked in Cycles as the shading every skin is laid over (#8),
-	# times the paint's grey. Writes the atlas beside the model.
-	# the stores stay out: plain grey, no atlas, and hidden from the bake, so
-	# a pylon or a tank the loadout leaves off casts no shadow on the wing
+def painted_parts():
+	# The meshes the paint covers, as the bakes see them: the stores, which
+	# take an atlas of their own, and the rest. In the rest, faces of more
+	# than four corners in triangles (as the export writes them): a long,
+	# bent cap (a loft's end, fin_root's over the fin's root chord) laid flat
+	# in one piece overlapped itself, wherever it was put. No vertex is
+	# added, so a mesh's shape keys (the wing's flex) stand as they were
 	stored = [o for o in bpy.data.objects if o.type == "MESH" and o.material_slots and all(s.material and s.material.name == "stores" for s in o.material_slots)]
-	for o in stored:
-		o.hide_render = True
 	parts = [o for o in bpy.data.objects if o.type == "MESH" and o not in stored]
-	bpy.ops.object.select_all(action="DESELECT")
-	for o in parts:
-		o.select_set(True)
-	bpy.context.view_layer.objects.active = parts[0]
-	# faces of more than four corners in triangles (as the export writes them):
-	# a long, bent cap (a loft's end, fin_root's over the fin's root chord)
-	# laid flat in one piece overlapped itself, wherever it was put. No vertex
-	# is added, so a mesh's shape keys (the wing's flex) stand as they were
-	import bmesh
 	for o in parts:
 		if any(len(f.vertices) > 4 for f in o.data.polygons):
 			mesh = bmesh.new()
@@ -3602,85 +3616,64 @@ def paint(directory):
 			bmesh.ops.triangulate(mesh, faces=[f for f in mesh.faces if len(f.verts) > 4])
 			mesh.to_mesh(o.data)
 			mesh.free()
-	bpy.ops.object.mode_set(mode="EDIT")
-	bpy.ops.mesh.select_all(action="SELECT")
-	bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.002, scale_to_bounds=False)
-	bpy.ops.object.mode_set(mode="OBJECT")
-	stencil_islands(parts)
-	unfolded(parts)
-	bpy.ops.object.mode_set(mode="EDIT")
-	bpy.ops.mesh.select_all(action="SELECT")
-	bpy.ops.uv.pack_islands(rotate=True, margin=0.002)
-	bpy.ops.object.mode_set(mode="OBJECT")
-	# faces the packed atlas lays over others at a texel's centre (a sliver at
-	# FS 436-440, two vertices 0.4 in apart within 0.1 texel, which no edge
-	# test sees): laid into a strip the packed islands leave free (packed
-	# again instead, each pass found new ones: 9, 8, 6, 6 faces)
-	for o in parts:
-		for loop in o.data.uv_layers.active.data:
-			loop.uv = loop.uv * (1 - STRIP)
-	strip = {"left": 1 - STRIP, "right": 1.0, "x": 0.0, "y": 0.0, "row": 0.0}
-	for _ in range(8):
-		if not unfolded(parts, ATLAS, strip):
-			break
-	else:
-		raise SystemExit("faces still lie over others on the packed atlas")
+	return stored, parts
+
+
+def jet_key(parts, frames):
+	# The jet's bakes' key: every part's faces (each lies within the
+	# occlusion's reach of the rest), the stencils' frames on the built skin,
+	# the atlas's layout, the nozzles' parts and the code that unwraps and bakes
+	key = cache.Key("paint")
+	key.meshes(parts)
+	key.add([[spec, list(c), list(a), list(u), list(n)] for spec, c, a, u, n in frames], [ATLAS, STRIP, STENCIL_DENSITY, STENCIL_MARGIN], sorted(NOZZLE_PARTS))
+	key.code(bakes, texels, stencil_islands, flattened, unfolded)
+	return key
+
+
+def store_key(stored, parts):
+	# The stores' bakes' key: their own faces, the airframe's within the
+	# occlusion's reach of them (the wing over a pylon, not the nose) and the
+	# reach, the atlas's size and the code that unwraps and bakes
+	key = cache.Key("stores")
+	key.meshes(stored)
+	key.surroundings(stored, parts, STORE_REACH * INCH, INCH)
+	key.add(LAYOUT["stores"]["paint"]["atlas"])
+	key.code(store_bakes, store_kind, texels)
+	return key
+
+
+def paint(directory, folder=None):
+	# Unique UVs for every part in one atlas, then the paint: ambient
+	# occlusion baked in Cycles as the shading every skin is laid over (#8),
+	# times the paint's grey. Writes the atlas beside the model. With a cache
+	# folder, the UVs and bakes come from there when a build has seen
+	# everything they come from (bakes(), ../cache.py); both keys are taken
+	# first, on the meshes as built, since baking leaves them changed.
+	# the stores stay out: plain grey, no atlas, and hidden from the bake, so
+	# a pylon or a tank the loadout leaves off casts no shadow on the wing
+	stored, parts = painted_parts()
+	for o in stored:
+		o.hide_render = True
+	frames = stencil_frames()
+	keys = jet_key(parts, frames), store_key(stored, parts)
 	image = bpy.data.images.new("paint", ATLAS, ATLAS, alpha=False)
 	for m in MATERIALS.values():
 		nodes = m.node_tree.nodes
 		texture = nodes.new("ShaderNodeTexImage")
 		texture.image = image
 		nodes.active = texture
-	scene = bpy.context.scene
-	scene.render.engine = "CYCLES"
-	scene.cycles.samples = 48
-	scene.cycles.device = "CPU"
-	scene.render.bake.margin = 6
-	bpy.ops.object.bake(type="AO", use_clear=True)
-	shade = np.array(image.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., 0]
+	baked = cache.fetch(folder, "paint", keys[0], parts, lambda: bakes(parts, frames))
+	for m in MATERIALS.values():
+		next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE").image = image
+	shade = baked["shade"].astype(np.float64)
 	# The two greys (layout.paint): each texel's surface normal, baked in the
 	# objects' own axes (every node rests unrotated, so they are the jet's),
 	# picks the upper grey or, facing down, the lower
-	normals = bpy.data.images.new("normals", ATLAS, ATLAS, alpha=False, float_buffer=True)
-	normals.colorspace_settings.name = "Non-Color"
-	for m in MATERIALS.values():
-		next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE").image = normals
-	bpy.ops.object.bake(type="NORMAL", normal_space="OBJECT", use_clear=True)
-	normal = np.array(normals.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., :3] * 2 - 1
+	normal = baked["normal"].astype(np.float64) * 2 - 1
 	up = normal[..., 2]
 	covered = np.abs(np.linalg.norm(normal, axis=-1) - 1) < 0.1   # texels the bake reached: a unit normal
-	# Each texel's place on the jet: a temporary shader emits its position
-	positions = bpy.data.images.new("positions", ATLAS, ATLAS, alpha=False, float_buffer=True)
-	positions.colorspace_settings.name = "Non-Color"
-	scene.cycles.samples = 1
-	temporary = []
-	for m in MATERIALS.values():
-		nodes, links = m.node_tree.nodes, m.node_tree.links
-		next(n for n in nodes if n.type == "TEX_IMAGE").image = positions
-		geometry, emission = nodes.new("ShaderNodeNewGeometry"), nodes.new("ShaderNodeEmission")
-		links.new(geometry.outputs["Position"], emission.inputs["Color"])
-		links.new(emission.outputs["Emission"], nodes["Material Output"].inputs["Surface"])
-		temporary.append((m, geometry, emission))
-	bpy.ops.object.bake(type="EMIT", use_clear=True)
-	where = np.array(positions.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., :3]
-	# and which texels are the nozzles' flaps: their objects' index emitted
-	for o in parts:
-		o.pass_index = 1 if o.name in NOZZLE_PARTS else 0
-	indices = []
-	for m, geometry, emission in temporary:
-		index = m.node_tree.nodes.new("ShaderNodeObjectInfo")
-		m.node_tree.links.new(index.outputs["Object Index"], emission.inputs["Color"])
-		indices.append((m, index))
-	bpy.ops.object.bake(type="EMIT", use_clear=True)
-	nozzle = np.array(positions.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., 0] > 0.5
-	for m, index in indices:
-		m.node_tree.nodes.remove(index)
-	for m, geometry, emission in temporary:
-		nodes = m.node_tree.nodes
-		nodes.remove(geometry)
-		nodes.remove(emission)
-		m.node_tree.links.new(nodes["Principled BSDF"].outputs["BSDF"], nodes["Material Output"].inputs["Surface"])
-		next(n for n in nodes if n.type == "TEX_IMAGE").image = image
+	where = baked["where"].astype(np.float64)
+	nozzle = baked["nozzle"]
 	p = LAYOUT["paint"]
 	upper, lower = np.array(p["upper"]) / 255, np.array(p["lower"]) / 255
 	start, end = p["turn"]
@@ -3731,7 +3724,103 @@ def paint(directory):
 			m.node_tree.links.new(texture.outputs["Color"], nodes["Principled BSDF"].inputs["Base Color"])
 		else:
 			m.node_tree.nodes.remove(next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE"))
-	paint_stores(stored)
+	paint_stores(stored, keys[1], folder)
+
+
+def texels(image):
+	# An image's pixels as Blender keeps them (rows from its bottom, RGBA)
+	out = np.empty(len(image.pixels), np.float32)
+	image.pixels.foreach_get(out)
+	return out.reshape(image.size[1], image.size[0], 4)
+
+
+def bakes(parts, frames):
+	# The atlas's UVs and what Cycles bakes on them, each material's texture
+	# node the target: every part unwrapped, the skin under the stencils (at
+	# their frames) on islands of its own, faces folding over others on
+	# theirs, all packed; then the ambient occlusion, the normals in the
+	# objects' axes, each texel's place on the jet and which texels are the
+	# nozzles' flaps, as the bakes' pixels (rows from the atlas's bottom)
+	bpy.ops.object.select_all(action="DESELECT")
+	for o in parts:
+		o.select_set(True)
+	bpy.context.view_layer.objects.active = parts[0]
+	bpy.ops.object.mode_set(mode="EDIT")
+	bpy.ops.mesh.select_all(action="SELECT")
+	bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.002, scale_to_bounds=False)
+	bpy.ops.object.mode_set(mode="OBJECT")
+	stencil_islands(parts, frames)
+	unfolded(parts)
+	bpy.ops.object.mode_set(mode="EDIT")
+	bpy.ops.mesh.select_all(action="SELECT")
+	bpy.ops.uv.pack_islands(rotate=True, margin=0.002)
+	bpy.ops.object.mode_set(mode="OBJECT")
+	# faces the packed atlas lays over others at a texel's centre (a sliver at
+	# FS 436-440, two vertices 0.4 in apart within 0.1 texel, which no edge
+	# test sees): laid into a strip the packed islands leave free (packed
+	# again instead, each pass found new ones: 9, 8, 6, 6 faces)
+	for o in parts:
+		for loop in o.data.uv_layers.active.data:
+			loop.uv = loop.uv * (1 - STRIP)
+	strip = {"left": 1 - STRIP, "right": 1.0, "x": 0.0, "y": 0.0, "row": 0.0}
+	for _ in range(8):
+		if not unfolded(parts, ATLAS, strip):
+			break
+	else:
+		raise SystemExit("faces still lie over others on the packed atlas")
+	targets = [next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE") for m in MATERIALS.values()]
+	occlusion = bpy.data.images.new("occlusion", ATLAS, ATLAS, alpha=False)
+	for target in targets:
+		target.image = occlusion
+	scene = bpy.context.scene
+	scene.render.engine = "CYCLES"
+	scene.cycles.samples = 48
+	scene.cycles.device = "CPU"
+	scene.render.bake.margin = 6
+	bpy.ops.object.bake(type="AO", use_clear=True)
+	shade = texels(occlusion)[..., 0]
+	normals = bpy.data.images.new("normals", ATLAS, ATLAS, alpha=False, float_buffer=True)
+	normals.colorspace_settings.name = "Non-Color"
+	for target in targets:
+		target.image = normals
+	bpy.ops.object.bake(type="NORMAL", normal_space="OBJECT", use_clear=True)
+	normal = texels(normals)[..., :3]
+	# Each texel's place on the jet: a temporary shader emits its position
+	positions = bpy.data.images.new("positions", ATLAS, ATLAS, alpha=False, float_buffer=True)
+	positions.colorspace_settings.name = "Non-Color"
+	scene.cycles.samples = 1
+	temporary = []
+	for m, target in zip(MATERIALS.values(), targets):
+		nodes, links = m.node_tree.nodes, m.node_tree.links
+		target.image = positions
+		geometry, emission = nodes.new("ShaderNodeNewGeometry"), nodes.new("ShaderNodeEmission")
+		links.new(geometry.outputs["Position"], emission.inputs["Color"])
+		links.new(emission.outputs["Emission"], nodes["Material Output"].inputs["Surface"])
+		temporary.append((m, geometry, emission))
+	bpy.ops.object.bake(type="EMIT", use_clear=True)
+	where = texels(positions)[..., :3]
+	# and which texels are the nozzles' flaps: their objects' index emitted
+	for o in parts:
+		o.pass_index = 1 if o.name in NOZZLE_PARTS else 0
+	indices = []
+	for m, geometry, emission in temporary:
+		index = m.node_tree.nodes.new("ShaderNodeObjectInfo")
+		m.node_tree.links.new(index.outputs["Object Index"], emission.inputs["Color"])
+		indices.append((m, index))
+	bpy.ops.object.bake(type="EMIT", use_clear=True)
+	nozzle = texels(positions)[..., 0] > 0.5
+	for m, index in indices:
+		m.node_tree.nodes.remove(index)
+	for m, geometry, emission in temporary:
+		nodes = m.node_tree.nodes
+		nodes.remove(geometry)
+		nodes.remove(emission)
+		m.node_tree.links.new(nodes["Principled BSDF"].outputs["BSDF"], nodes["Material Output"].inputs["Surface"])
+	for target in targets:
+		target.image = None
+	for made in (occlusion, normals, positions):
+		bpy.data.images.remove(made)
+	return {"shade": shade, "normal": normal, "where": where, "nozzle": nozzle}
 
 
 # The ambient occlusion's reach on the stores, inches: a rack shaded by its
@@ -3739,22 +3828,62 @@ def paint(directory):
 STORE_REACH = 12.0
 
 
-def paint_stores(stored):
+def store_kind(o):
+	# A store part's kind, from its name: the wingtip rails are tips
+	return "tip" if re.fullmatch(r"rail_[19]", o.name) else o.name.split("_")[0]
+
+
+def paint_stores(stored, key, folder=None):
 	# The stores' own atlas (layout.stores.paint): every part's UVs unique,
-	# the ambient occlusion baked in layers, each part with only the parts it
-	# is always shown with (a rack under its pylon, a rail beside its rack:
-	# never a tank's shadow on a pylon the loadout may show bare, nor a
-	# LAU-127's on the LAU-7 that takes its place), then finish.py's paint, as
-	# JPEG. The airframe stands in every layer, so the wing shades its pylons
+	# the ambient occlusion baked in layers (store_bakes()), then finish.py's
+	# paint, as JPEG; the UVs and bakes from the cache folder when it holds an
+	# entry under the key (store_key())
 	spec = LAYOUT["stores"]["paint"]
 	size = spec["atlas"]
 	scene = bpy.context.scene
-	scene.render.engine = "CYCLES"
-	scene.cycles.device = "CPU"
 	scene.world = scene.world or bpy.data.worlds.new("world")
-	bpy.ops.object.select_all(action="DESELECT")
 	for o in stored:
 		o.hide_render = False
+	material = MATERIALS["stores"]
+	nodes, links = material.node_tree.nodes, material.node_tree.links
+	target = nodes.new("ShaderNodeTexImage")
+	nodes.active = target
+	baked = cache.fetch(folder, "stores", key, stored, lambda: store_bakes(stored, size, target))
+	for o in stored:
+		o.hide_render = False
+	part = baked["part"].astype(int)
+	where = baked["where"].astype(np.float64)
+	occlusion = baked["occlusion"].astype(np.float64)
+	covered = part > 0
+	inches = texel_size(where, covered) / INCH
+	frames = [FRAMES.get(o.name, {"kind": store_kind(o), "nose": [0, 0, 0], "axis": [-1, 0, 0], "up": [0, 0, 1]}) for o in stored]
+	grey = np.array(LAYOUT["paint"]["lower"]) / 255
+	out = finish.colour(spec, grey, occlusion, where, part, frames, inches)
+	out[~covered] = grey
+	from PIL import Image
+	import tempfile
+	path = Path(tempfile.mkdtemp()) / "stores.jpg"
+	Image.fromarray((out[::-1] * 255 + 0.5).astype(np.uint8)).save(path, "JPEG", quality=90, subsampling=0)
+	image = bpy.data.images.load(str(path))
+	image.pack()
+	image.name = "stores"
+	target.image = image
+	links.new(target.outputs["Color"], nodes["Principled BSDF"].inputs["Base Color"])
+
+
+def store_bakes(stored, size, target):
+	# The stores' UVs and what Cycles bakes on them into `target` (the stores
+	# material's texture node): the part each texel lies on (its index in
+	# `stored`, from 1), its place, and the ambient occlusion in layers, each
+	# part with only the parts it is always shown with (a rack under its
+	# pylon, a rail beside its rack: never a tank's shadow on a pylon the
+	# loadout may show bare, nor a LAU-127's on the LAU-7 that takes its
+	# place). The airframe stands in every layer, so the wing shades its pylons
+	scene = bpy.context.scene
+	scene.render.engine = "CYCLES"
+	scene.cycles.device = "CPU"
+	bpy.ops.object.select_all(action="DESELECT")
+	for o in stored:
 		o.select_set(True)
 	bpy.context.view_layer.objects.active = stored[0]
 	bpy.ops.object.mode_set(mode="EDIT")
@@ -3762,10 +3891,7 @@ def paint_stores(stored):
 	bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.002, scale_to_bounds=False)
 	bpy.ops.uv.pack_islands(rotate=True, rotate_method="AXIS_ALIGNED", margin=0.006)
 	bpy.ops.object.mode_set(mode="OBJECT")
-	material = MATERIALS["stores"]
-	nodes, links = material.node_tree.nodes, material.node_tree.links
-	target = nodes.new("ShaderNodeTexImage")
-	nodes.active = target
+	nodes, links = MATERIALS["stores"].node_tree.nodes, MATERIALS["stores"].node_tree.links
 
 	def bake(kind, shown, baked, emit=None, **options):
 		image = bpy.data.images.new(kind, size, size, alpha=False, float_buffer=True)
@@ -3786,28 +3912,27 @@ def paint_stores(stored):
 			links.new(emission.outputs["Emission"], nodes["Material Output"].inputs["Surface"])
 			made = [emission, source.node]
 		bpy.ops.object.bake(type="EMIT" if emit else kind, use_clear=True, margin=0, **options)
-		pixels = np.array(image.pixels[:]).reshape(size, size, 4)
+		out = texels(image)
 		for n in made:
 			nodes.remove(n)
 		links.new(nodes["Principled BSDF"].outputs["BSDF"], nodes["Material Output"].inputs["Surface"])
 		bpy.data.images.remove(image)
-		return pixels
+		return out
 
 	for i, o in enumerate(stored):
 		o.pass_index = i + 1
 	scene.cycles.samples = 1
-	part = np.rint(bake("part", stored, stored, emit=lambda n: n.new("ShaderNodeObjectInfo").outputs["Object Index"])[..., 0]).astype(int)
+	part = np.rint(bake("part", stored, stored, emit=lambda n: n.new("ShaderNodeObjectInfo").outputs["Object Index"])[..., 0]).astype(np.int32)
 	where = bake("where", stored, stored, emit=lambda n: n.new("ShaderNodeNewGeometry").outputs["Position"])[..., :3]
 	# the layers, each baked with the parts it is always shown with
-	kind = lambda o: "tip" if re.fullmatch(r"rail_[19]", o.name) else o.name.split("_")[0]
-	first = [o for o in stored if kind(o) in ("pylon", "ejector", "tip")]
-	racks = [o for o in stored if kind(o) == "rack"]
-	layers = [(first, first), (racks, first), ([o for o in stored if kind(o) == "tank"], first),
-		([o for o in stored if kind(o) == "rail"], first + racks), ([o for o in stored if kind(o) == "launcher"], first + racks)]
+	first = [o for o in stored if store_kind(o) in ("pylon", "ejector", "tip")]
+	racks = [o for o in stored if store_kind(o) == "rack"]
+	layers = [(first, first), (racks, first), ([o for o in stored if store_kind(o) == "tank"], first),
+		([o for o in stored if store_kind(o) == "rail"], first + racks), ([o for o in stored if store_kind(o) == "launcher"], first + racks)]
 	reach = scene.world.light_settings.distance
 	scene.world.light_settings.distance = STORE_REACH * INCH
 	scene.cycles.samples = 48
-	occlusion = np.ones((size, size))
+	occlusion = np.ones((size, size), np.float32)
 	for baked, shown in layers:
 		if not baked:
 			continue
@@ -3815,23 +3940,7 @@ def paint_stores(stored):
 		mine = np.isin(part, [stored.index(o) + 1 for o in baked])
 		occlusion[mine] = shade[mine]
 	scene.world.light_settings.distance = reach
-	for o in stored:
-		o.hide_render = False
-	covered = part > 0
-	inches = texel_size(where, covered) / INCH
-	frames = [FRAMES.get(o.name, {"kind": kind(o), "nose": [0, 0, 0], "axis": [-1, 0, 0], "up": [0, 0, 1]}) for o in stored]
-	grey = np.array(LAYOUT["paint"]["lower"]) / 255
-	out = finish.colour(spec, grey, occlusion, where, part, frames, inches)
-	out[~covered] = grey
-	from PIL import Image
-	import tempfile
-	path = Path(tempfile.mkdtemp()) / "stores.jpg"
-	Image.fromarray((out[::-1] * 255 + 0.5).astype(np.uint8)).save(path, "JPEG", quality=90, subsampling=0)
-	image = bpy.data.images.load(str(path))
-	image.pack()
-	image.name = "stores"
-	target.image = image
-	links.new(target.outputs["Color"], nodes["Principled BSDF"].inputs["Base Color"])
+	return {"part": part, "where": where, "occlusion": occlusion}
 
 
 def texel_size(where, covered):
@@ -3963,12 +4072,13 @@ def stencil_frames():
 	return out
 
 
-def stencil_islands(parts):
-	# The skin under each stencil on its own UV island, STENCIL_DENSITY times
-	# as dense as smart_project left the rest and laid flat in the stencil's
-	# plane, before the islands are packed: at the atlas's own texel (about 6
-	# mm) lettering half an inch high read as speckle. A face joins a
-	# stencil's island with a corner within STENCIL_MARGIN of it, facing its
+def stencil_islands(parts, frames):
+	# The skin under each stencil (frames: stencil_frames()) on its own UV
+	# island, STENCIL_DENSITY times as dense as smart_project left the rest
+	# and laid flat in the stencil's plane, before the islands are packed: at
+	# the atlas's own texel (about 6 mm) lettering half an inch high read as
+	# speckle. A face joins a stencil's island with a corner within
+	# STENCIL_MARGIN of it, facing its
 	# way and within 2 in of its plane: the LEX's root, lying under the warning
 	# box's margin, took the same place on the island and the bake wrote it
 	# over the box's corner
@@ -3980,7 +4090,7 @@ def stencil_islands(parts):
 			mapped += abs(sum(a.x * b.y - b.x * a.y for a, b in zip(q, q[1:] + q[:1]))) / 2
 			area += f.area
 	scale = math.sqrt(mapped / area) * STENCIL_DENSITY   # UV units per metre on the islands
-	for k, (spec, centre, across, up, normal) in enumerate(stencil_frames()):
+	for k, (spec, centre, across, up, normal) in enumerate(frames):
 		reach = [(s / 2 + STENCIL_MARGIN) * INCH for s in spec["size"]]
 		joined = 0
 		for o in parts:
@@ -4688,7 +4798,8 @@ def cull():
 
 
 def main():
-	args = sys.argv[sys.argv.index("--") + 1 :]
+	folder, keys = option("--cache"), option("--keys")
+	args = ARGS
 	out = [a for a in args if not a.startswith("--")]
 	bpy.ops.wm.read_factory_settings(use_empty=True)
 	widths = fuselage()
@@ -4713,8 +4824,13 @@ def main():
 	print("chord fractions:", json.dumps(fractions, default=lambda x: round(x, 3)))
 	located = points()
 	cull()
+	if keys:
+		# the keys the atlases would bake under, and nothing more (test_build.py)
+		stored, parts = painted_parts()
+		Path(keys).write_text(json.dumps({"paint": jet_key(parts, stencil_frames()).hex(), "stores": store_key(stored, parts).hex()}))
+		return
 	if "--draft" not in args:
-		paint(Path(out[0]).parent)
+		paint(Path(out[0]).parent, folder)
 	bpy.ops.export_scene.gltf(filepath=out[0], export_format="GLB", export_yup=True, use_selection=False,
 		export_apply=False, export_animations=False, export_extras=False)
 	document = {"frame": {"origin": {"station": ORIGIN["station"], "waterline": ORIGIN["waterline"], "buttline": 0}},

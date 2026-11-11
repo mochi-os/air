@@ -780,5 +780,73 @@ class SkylineTest(unittest.TestCase):
 		self.assertFalse(skyline.finding({"a": 8.1}))
 
 
+# Where noted() records each photo's measure, and the measure it wraps
+NOTED = {}
+
+
+def noted(entry):
+	# skyline.measured, first noting the photo and the process it runs in
+	import os
+	(NOTED["folder"] / f"{entry['photo']}-{os.getpid()}").touch()
+	return NOTED["measure"](entry)
+
+
+class JobsTest(unittest.TestCase):
+	# --jobs N measures the photos in N processes and writes what one process
+	# does: three photos of the plate from either side and above
+	def test_jobs_write_the_same_files(self):
+		import json, subprocess, tempfile
+		import camera as cam
+		import model as mod
+		from test_verify import JET, box, glb
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			glb(root / "m.glb", [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))}])
+			model = mod.Model(root / "m.glb")
+			(root / "references").mkdir()
+			size, entries, photos = [1200, 600], [], {}
+			for name, eye in (("a", [0.0, 6.0, 0.0]), ("b", [0.0, -6.0, 0.5]), ("c", [1.0, 4.0, 4.0])):
+				camera = cam.looking(np.array(eye), np.array([0.0, 0.0, 0.0]), 2400.0)
+				flat, depth = cam.project(camera, model.triangles(mod.pose({}, {})).reshape(-1, 3), (size[0] / 2, size[1] / 2))
+				mask = skyline.frontmost(flat.reshape(-1, 3, 2), depth.reshape(-1, 3), tuple(size)) >= 0
+				Image.fromarray(np.where(mask, 60, 200).astype(np.uint8)[..., None].repeat(3, -1)).save(root / "references" / f"{name}.png")
+				entries.append({"photo": name, "file": f"{name}.png", "size": size, "camera": list(camera), "pose": {}})
+				photos[name] = {}
+			(root / "catalogue.json").write_text(json.dumps({"frame": JET, "photos": photos}))
+			(root / "points.json").write_text(json.dumps({"joints": {}}))
+			(root / "cameras.json").write_text(json.dumps(entries))
+			files = [str(root / "catalogue.json"), str(root / "m.glb"), str(root / "points.json"), str(root / "cameras.json")]
+			printed = {}
+			run = subprocess.run([sys.executable, "-I", str(Path(skyline.__file__)), *files, str(root / "out1")], capture_output=True, text=True)
+			self.assertEqual(run.returncode, 0, run.stderr[-2000:])
+			printed["1"] = run.stdout
+			# in this process, the option ahead of the paths, each photo's measure
+			# noting the process it ran in
+			import contextlib, io, os
+			(root / "ran").mkdir()
+			measure = skyline.measured
+			NOTED.update(folder=root / "ran", measure=measure)
+			argv, skyline.measured = sys.argv, noted
+			sys.argv = ["skyline.py", "--jobs", "3", *files, str(root / "out3")]
+			try:
+				with contextlib.redirect_stdout(io.StringIO()) as out:
+					skyline.main()
+			finally:
+				sys.argv, skyline.measured = argv, measure
+			printed["3"] = out.getvalue()
+			ran = {p.name.split("-")[1] for p in (root / "ran").iterdir()}
+			self.assertEqual(len(list((root / "ran").iterdir())), 3)
+			self.assertNotIn(str(os.getpid()), ran)   # in workers, not here
+			one, three = (sorted(p.relative_to(root / f"out{j}") for p in (root / f"out{j}").rglob("*") if p.is_file()) for j in ("1", "3"))
+			self.assertEqual(one, three)
+			self.assertIn(Path("skyline.json"), one)
+			measured = json.loads((root / "out1" / "skyline.json").read_text())
+			self.assertEqual(list(measured), ["a", "b", "c"])
+			self.assertTrue(all(measured[p]["places"] for p in measured))   # each photo found the plate's edge
+			for name in one:
+				self.assertEqual((root / "out1" / name).read_bytes(), (root / "out3" / name).read_bytes(), name)
+			self.assertEqual(printed["1"], printed["3"])
+
+
 if __name__ == "__main__":
 	unittest.main()

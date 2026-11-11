@@ -33,7 +33,7 @@ python3 -I views.py    # true-scale top, side and front silhouettes from the HAT
   each inch of station, registered on the nose apex (FS 60.5, WL 100) and moved in by half the drawn line.
 
 ```
-blender -b --factory-startup --python-exit-code 1 -P build.py -- OUT.glb OUT.json FEATURES.json [--draft]   # under the probe.slice memory cap
+blender -b --factory-startup --python-exit-code 1 -P build.py -- OUT.glb OUT.json FEATURES.json [--draft] [--cache DIR]   # under the probe.slice memory cap
 python3 -I check.py OUT.glb OUT.json
 python3 -I outline.py OUT.glb [OVERLAY.png] [--threshold INCHES]
 ```
@@ -124,7 +124,17 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   skin, opens by the angle that brings its free edge's ends nearest the photos', and closes as long along the
   skin as the photos show it open. The third
   output, the features file, names points and curves on the model with the node each rides on, for the photo
-  match. `--draft` leaves out the paint bake (seconds instead of minutes).
+  match. `--draft` leaves out the paint bake (seconds instead of minutes). `--cache DIR` keeps the atlases'
+  UVs and bakes between builds (`../cache.py`): the jet's under a key of every part's faces, the stencils'
+  frames, the atlas's layout, the nozzles' flaps and the code that unwraps and bakes; the stores' under their
+  own faces, the airframe's within 13 in of them and that reach, their atlas's size and their code. Both keys
+  are taken before either bakes. A build whose key an entry holds takes the UVs and bakes from it and makes
+  the model a cold build makes, byte for byte: a painted build of 11 min takes 51 s when nothing the bakes
+  come from changed (the paint's colours, panels and stencils' lettering, the points), and a change to the
+  stores alone bakes only theirs (40 s). An entry is about 50 MB; the three latest made or used of each
+  atlas are kept. `--facts FILE` builds from another facts file, and `--keys FILE` writes the two keys from a
+  draft and stops. `test_build.py` holds each key to what it comes from on drafts (`KeyTest`, about 8 min)
+  and the cache to the cold build (`CacheTest`, about 15 min), and the wing's flex morph at rest unweighted.
 - **`check.py`** - the facts check: measures the built model back against every `facts.json` entry, posed
   where the entry needs it, and fails outside each tolerance; entries it does not measure are listed in
   `EXEMPT` with the reason, and `test_check.py` fails on an entry that is neither. Shape checks (`shape.*`)
@@ -172,8 +182,8 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   ...), in Workbench: the rig contract's check that every joint turns, slides or shows as its keys say.
 
 ```
-python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --check --overlays DIR --cameras CAMERAS.json
-python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json SKY
+python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --check --overlays DIR --cameras CAMERAS.json --jobs 4
+python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json SKY --jobs 4
 blender -b --factory-startup --python-exit-code 1 -P ../verify/view.py -- OUT.glb OUT.json CAMERAS.json RENDERS
 python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --sheets RENDERS SHEETS
 python3 -I ../verify/page.py photos.json CAMERAS.json SKY SHEETS GATE.txt PAGE --kicker "F/A-18C · Air" --name "Hornet shape review"
@@ -181,6 +191,9 @@ blender -b --factory-startup --python-exit-code 1 -P render.py -- OUT.glb OUT.js
 python3 -I tips.py photos.json CAMERAS.json OUT.glb OUT.json FEATURES.json --photos ID,... [--drop ID:MARK,...] [--neutral] [--rotate]
 python3 -I test_check.py
 ```
+
+The facts check, the outline check, `test_check.py` and the photo gate run side by side, the sky check after
+the gate whose cameras it reads: 335 s for them all on this machine, against 500 s one after another.
 
 Before it paints, the build removes the faces no view can see (`../hidden.py`): each mesh cut into the triangles
 it is drawn as, then every triangle lying inside or against another part that moves with it, judged part by part

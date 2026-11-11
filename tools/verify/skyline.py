@@ -35,9 +35,11 @@
 # no outline from any direction no photo can judge (the catalogue's
 # skyline "unseen" records what measures it instead).
 #
-# usage: python3 -I skyline.py CATALOGUE.json MODEL.glb POINTS.json CAMERAS.json OUT_DIR [--only ID,ID]
+# usage: python3 -I skyline.py CATALOGUE.json MODEL.glb POINTS.json CAMERAS.json OUT_DIR [--only ID,ID] [--jobs N]
+#
+# --jobs N measures the photos in N processes, each photo as one alone does: the same files.
 #        python3 -I skyline.py CATALOGUE.json MODEL.glb POINTS.json OUT.json --reach [--count N]
-import json, sys
+import json, multiprocessing, sys
 from pathlib import Path
 
 import numpy as np
@@ -870,13 +872,29 @@ def reaching(argv):
 	print(f"on no outline from any of {count} directions at 1.6, 2.5 and 6 radii, flown, gear down, the canopy open or every stance let down ({len(never)}): " + ", ".join(never))
 
 
+# What every photo's measure reads, set by main() before its workers fork
+SHARED = {}
+
+
+def measured(entry):
+	# One solved photo measured on the model's outline, its overlay written:
+	# (photo, its results)
+	photo = entry["photo"]
+	scene = Scene(SHARED["catalogue"], SHARED["root"], SHARED["frame"], SHARED["hardpoints"], entry)
+	places, mask = scene.places(SHARED["model"], SHARED["joints"], entry.get("pose", {}))
+	overlay(scene.gray, mask, places, scene.scale, SHARED["out"] / f"{photo}.png", SHARED["settings"])
+	print(f"photo {photo}: {len(places)} places", file=sys.stderr)
+	return photo, {"tried": len(rim(mask)), "places": places, "scale": scene.scale}
+
+
 def main():
 	if "--reach" in sys.argv:
 		return reaching([a for a in sys.argv[1:] if a not in ("--reach",)])
-	args = [a for a in sys.argv[1:] if not a.startswith("--")]
-	only = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else None
-	if only:
-		args = [a for a in args if a != ",".join(only)]
+	argv = sys.argv[1:]
+	valued = ("--only", "--jobs")
+	args = [a for i, a in enumerate(argv) if not a.startswith("--") and (i == 0 or argv[i - 1] not in valued)]
+	only = argv[argv.index("--only") + 1].split(",") if "--only" in argv else None
+	jobs = int(argv[argv.index("--jobs") + 1]) if "--jobs" in argv else 1
 	catalogue_path, glb, points_path, cameras_path, out = args[:5]
 	root = Path(catalogue_path).resolve().parent
 	catalogue = json.loads(Path(catalogue_path).read_text())
@@ -890,18 +908,15 @@ def main():
 	spec = catalogue.get("gate")
 	# every region of the skin, at rest and in each stance, for the coverage
 	skin = universe(model, joints, frame, settings)
-	results, weaks = {}, set()
-	for entry in json.loads(Path(cameras_path).read_text()):
-		photo = entry["photo"]
-		if only and photo not in only:
-			continue
-		if spec and "rms" in entry and weak(entry["field"], entry["rms"], spec):
-			weaks.add(photo)
-		scene = Scene(catalogue, root, frame, hardpoints, entry)
-		places, mask = scene.places(model, joints, entry.get("pose", {}))
-		results[photo] = {"tried": len(rim(mask)), "places": places, "scale": scene.scale}
-		overlay(scene.gray, mask, places, scene.scale, out / f"{photo}.png", settings)
-		print(f"photo {photo}: {len(places)} places", file=sys.stderr)
+	entries = [e for e in json.loads(Path(cameras_path).read_text()) if not only or e["photo"] in only]
+	weaks = {e["photo"] for e in entries if spec and "rms" in e and weak(e["field"], e["rms"], spec)}
+	SHARED.update(catalogue=catalogue, root=root, frame=frame, hardpoints=hardpoints, model=model, joints=joints, settings=settings, out=out)
+	if jobs > 1:
+		# forked, so each worker has the model as read here; the results come back in the cameras file's order
+		with multiprocessing.get_context("fork").Pool(jobs) as pool:
+			results = dict(pool.map(measured, entries, chunksize=1))
+	else:
+		results = dict(measured(e) for e in entries)
 	(out / "skyline.json").write_text(json.dumps(results) + "\n")
 	print(summary(results, skin, weaks, settings))
 	(out / "summary.json").write_text(json.dumps(digest(results, skin, weaks, settings), indent="\t") + "\n")
