@@ -348,6 +348,16 @@ class Paint(unittest.TestCase):
 		wears(edge(-10) + 1.0, -10, light, "the port strip")
 		wears(edge(-6) + 2.5, -6, deck, "forward of the port strip")
 		wears(edge(20.5) + 1.5, 20.5, light, "the starboard end")
+		# the outline traced on the 2023 overhead: the white out to z -5.2 and 19.9 a metre in from the edge, the
+		# starboard grey 4.55 deep and the plain deck beyond it
+		wears(edge(-5.1) + 1.0, -5.1, white, "the white's port end")
+		wears(edge(19.75) + 1.0, 19.75, white, "the white's starboard end")
+		wears(edge(21) + 4.0, 21, light, "the starboard grey, 4 m in")
+		wears(edge(21) + 5.2, 21, deck, "forward of the starboard grey")
+		# the gutters' grates at the edge, the light grey either side of the starboard one
+		wears(edge(20.6) + 0.05, 20.6, marks["grate_starboard"]["colour"], "the starboard grate")
+		wears(edge(-14.0) + 0.05, -14.0, marks["grate_port"]["colour"], "the port grate")
+		wears(edge(21.5) + 0.05, 21.5, light, "outboard of the starboard grate")
 		(cx, cz), (dx, dz) = marks["centreline"]["points"]
 		x = edge(cz) + 0.4
 		wears(x, cz + (x - cx) / (dx - cx) * (dz - cz), marks["centreline_yellow_1"]["colour"], "the centreline over the white")
@@ -419,13 +429,14 @@ class Paint(unittest.TestCase):
 		self.assertLess(faded, grid[start].sum() * 0.5)
 
 	def test_round_down_white_from_where_photographed(self):
-		# the facts' ramp: the stripe white from z -5.0 to starboard, the round-down aft of it white from its aft
-		# corners, and light grey to either side, each strip meeting the stripe on the stripe's own end, square to it
+		# the facts' ramp: the stripe white from z -5.293 to starboard (its ends where the 2022-23 photos' white ends),
+		# the round-down aft of it white from its aft corners, and light grey to either side, each strip meeting the
+		# stripe on the stripe's own end, square to it
 		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
 		ramps = {m["name"]: m for m in layout["markings"] if m["name"].startswith("ramp")}
 		self.assertEqual(set(ramps), {"ramp", "ramp_port", "ramp_aft", "ramp_starboard"})
 		(px, pz), (qx, qz) = ramps["ramp"]["points"]
-		self.assertAlmostEqual(pz, -5.0)
+		self.assertAlmostEqual(pz, -5.293)
 		self.assertEqual(ramps["ramp"]["colour"], layout["paint"]["white"])
 		self.assertEqual(ramps["ramp_aft"]["colour"], layout["paint"]["white"])
 		length = np.hypot(qx - px, qz - pz); u = np.array([qx - px, qz - pz]) / length
@@ -436,6 +447,27 @@ class Paint(unittest.TestCase):
 		# the white over the round-down starts at the stripe's aft corners
 		w = np.array([u[1], -u[0]]) * ramps["ramp"]["width"] / 2; w = w if w[0] > 0 else -w
 		np.testing.assert_allclose(ramps["ramp_aft"]["outline"][:2], [np.array([px, pz]) - w, np.array([qx, qz]) - w], atol=0.002)
+
+	def test_edge_stripes_meet_the_ramp(self):
+		# the landing area's four edge stripes start on the ramp stripe's centre line, so each runs into it as the 2022-23
+		# photos show; the port two had all started at x -159.8 with the others, 2.4-2.9 m short of the angled stripe, and
+		# the deck there, 1.5 m aft of that old start along each, is now their white
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		marks = {m["name"]: m for m in layout["markings"]}
+		(px, pz), (qx, qz) = marks["ramp"]["points"]
+		u = np.array([qx - px, qz - pz]) / np.hypot(qx - px, qz - pz)
+		for name in ("edge_port_inner", "edge_port_outer", "edge_starboard_inner", "edge_starboard_outer"):
+			off = np.array(marks[name]["points"][0]) - np.array([px, pz])
+			self.assertAlmostEqual(float(off[0] * u[1] - off[1] * u[0]), 0.0, delta=0.002, msg=name)
+		canvas = paint.Canvas(layout["deck"]["texture"], 1)
+		image = np.asarray(paint.render(layout), np.float32)
+		for name in ("edge_port_inner", "edge_port_outer"):
+			start, end = (np.array(p, float) for p in marks[name]["points"][:2])
+			v = (end - start) / np.linalg.norm(end - start)
+			x, z = start + v * (-161.3 - start[0]) / v[0]
+			c, r = canvas.pixel((x, z)); patch = image[int(r) - 1:int(r) + 2, int(c) - 1:int(c) + 2].reshape(-1, 3)
+			got = np.median(paint.linear(patch), axis=0)
+			np.testing.assert_allclose(got / paint.linear(np.array(marks[name]["colour"], np.float32)), 1.0, atol=0.3, err_msg=name)
 
 	def test_unknown_kind(self):
 		with self.assertRaises(ValueError):
