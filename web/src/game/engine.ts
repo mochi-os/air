@@ -81,7 +81,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 // regen. The dev readout shows the hash.
 import ford_model_url from '../assets/ford.glb?url'
 import ford_ship from '../assets/ford.json'   // its ship file, written beside it by tools/ford/build.py: the deck layout and the points the engine draws
-import { layout as ship_layout } from './ship'
+import { layout as ship_layout, lit as ship_lit } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
 import fa18c_points from '../assets/fa18c.json'   // its points file, written beside it by tools/fa18c/build.py: the joints and their schedules, and the points the engine draws
 import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the model it replaces: the player's own jet in first person, whose cockpit the engine's cockpit tables are measured on, until our cockpit is built (claude/plans/air-fa18c.md, step 4)
@@ -7126,7 +7126,7 @@ function glow_points(pts, color, size){   // additive glowing point-lights (runw
 	const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); p.frustumCulled=false; scene.add(p); return p;
 }
 const night_lights=[];   // runway lights that are lit only when it's dark (edge lights; bidirectional)
-const ops_lights=[]; const flood_lights=[]; const deck_floods=[];   // carrier night lighting, split per real procedure: ops_lights = recovery aids (centreline/drop/datum/deck-edge), up for an inbound gear-down approach; deck_floods + flood_lights = the island floodlights, WORK lights only — on when on deck, doused during launch/recovery so they never wreck night vision on the ball
+const ship_lights=[];   // the carrier's lights: each group of the ship file's, with what draws it in each colour it shows, lit as ship.ts lit says for the deck (update_papi)
 const beacon_lights=[];  // aerodrome beacon on the tower: alternating white/green flash at night (userData.phase 0/1)
 const dir_lights=[];     // directional + night-only lights (green threshold / red end / REIL) — shown only from their facing side
 function dir_glow(pts,color,size,x,z,fx,fz,flash){ const p=glow_points(pts,color,size); dir_lights.push({mesh:p,x,z,fx,fz,flash}); return p; }
@@ -7202,12 +7202,11 @@ function runway_use(ap){ const e=ap.ends[cfg.end==="24"?"24":"06"]; ap.start.x=e
 function update_papi(p){ const flash=(sim_time*1000%520)<90;   // REIL: ~2 Hz synchronized white flash, on the world's clock as fast as it runs
 	const dark=cfg.tod!=="day";                                     // edge/threshold/REIL lit only when dark; PAPI is always on
 	for(const m of night_lights) m.visible=dark;
-	{ const dx=p.x-CARRIER.x, dz=p.z-CARRIER.z, d2=dx*dx+dz*dz;   // carrier flight-ops gate: deck working = lights up; otherwise the ship stays darkened
-		const ops=dark && ((d2<400*400 && (ownship.squish??0)>0.1) || (d2<6000*6000 && (ownship.gear??1)<0.5));   // 6 km: the landing start spawns at 3 NM (5.6 km) — the recovery aids light up as you settle onto the approach, comfortably before the ball call
-		const work=dark && d2<400*400 && (ownship.squish??0)>0.1;   // floods are WORK lights: real carriers douse them for night launch/recovery (black-hole deck); they come up only with weight on wheels
-		for(const m of ops_lights) m.visible=ops;
-		for(const m of deck_floods) m.visible=work;
-		for(const s2 of flood_lights) s2.visible=work; }
+	if(ship_lights.length){ const under=deck_grid?deck_y_at(carrier_model,p.x,p.z,-1e9):-1e9, on=under>-1e8 && p.y-under<4;   // the jet aboard: standing on her deck, its origin within 4 m of the deck under it (2.6 on its gear), so from a deck start's first frame, where the smoothed weight-on-wheels signal begins at 0
+		const deck={ dark, closed:deck_closed, aboard:on?[carrier_fore_aft(p.x,p.z),carrier_lateral(p.x,p.z)]:null };   // the deck as her lights show it (ship.ts Deck)
+		// a light joining or leaving the scene recompiles every lit material's shader (a stall of most of a second): the floods'
+		// spotlights stay in it all night and switch by their intensity
+		for(const l of ship_lights){ const c=ship_lit(l.group,SHIP,deck); for(const k in l.sets) for(const m of l.sets[k]){ if(m.isLight){ m.visible=dark; m.intensity=k===c?m.userData.intensity:0; } else m.visible=k===c; } } }
 	const bph=(sim_time*1000%3000)<1500;                        // aerodrome beacon: white / green alternating ~1.5 s each
 	for(const m of beacon_lights) m.visible=dark && ((m.userData.phase===0)===bph);
 	for(const m of window_mats) m.emissiveIntensity=dark?1.15:0;    // building windows light up after dark
@@ -7278,7 +7277,6 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const at=(d,h)=>{ const q=carrier_world(ofa-STRIP_ULAT*d,olat+STRIP_UFA*d); return [q.x,h,q.z]; };   // flank the ball perpendicular to the strip (square to the approach)
 	const dspread=SHIP.ols.model?[-1.65,-1.2,-0.75,-0.3, 0.3,0.75,1.2,1.65]:[-3.3,-2.5,-1.7,-0.9, 0.9,1.7,2.5,3.3];
 	const dpos=lens?placed(lens.lights.datum):[]; if(!lens) for(const d of dspread) dpos.push(...at(d,datumY)); const datumPts=ols_points(dpos,0x35e06a,7);   // green datum row (flanks the ball; spread matches the model's arm bar, TRIMMED to ±1.8 m in v54 — the authored 8.5 m bar overhung the flight deck by 2.2 m, under the cat-4 wingtip path)
-	const cpos=lens?placed(lens.lights.cut):[]; if(!lens) for(const d of [-1.5,-0.5,0.5,1.5]) cpos.push(...at(d,dy+1.6)); const cutPts=ols_points(cpos,0x35e06a,4);   // cut lights
 	const wpos=lens?placed(lens.lights.waveoff):[]; if(!lens) for(const d of (SHIP.ols.model?[-1.5,-1.5,1.5,1.5]:[-2.0,-0.7,0.7,2.0])) wpos.push(...at(d, wpos.length<6&&SHIP.ols.model?dy+0.9:dy+(SHIP.ols.model?1.5:2.0))); const wavePts=ols_points(wpos,0xff2a1e,7); wavePts.visible=false;   // waveoff (flashes on a low approach) — on the model's red columns when present (two heights per side)
 	// structure: horizontal arms carrying the datum / cut / waveoff light rows, on a mast up from the housing (so the lights aren't floating)
 	if(!SHIP.ols.model){   // procedural bracket structure — only when the ship model doesn't carry its own OLS
@@ -7298,52 +7296,33 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const td=carrier_world(twfa,strip_lat(twfa));   // touchdown reference — the glideslope references the wires, NOT the OLS housing on the bracket
 	const ramp=Math.hypot(twfa-SHIP.landing.line[0][0],strip_lat(twfa)-SHIP.landing.line[0][1]);   // the round-down's distance short of the touchdown, along the landing line (its aft end)
 	const sdx=STRIP_UFA*CARRIER_C+STRIP_ULAT*CARRIER_S, sdz=-STRIP_UFA*CARRIER_S+STRIP_ULAT*CARRIER_C, sl=Math.hypot(sdx,sdz);
-	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, cutPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, ramp }; carrier_ols.chart={ x:o.x, z:o.z, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, dy, deck:CARRIER.deckY };   // approach comes from the −fa (aft) side, opposite the rollout
-	// --- night lighting (darken-ship, night-only); heights + edges sampled off the REAL deck (which isn't flat), not a rectangle at deckY ---
+	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, ramp }; carrier_ols.chart={ x:o.x, z:o.z, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, dy, deck:CARRIER.deckY };   // approach comes from the −fa (aft) side, opposite the rollout
+	// --- the ship's lights: the ship file's (tools/ford: measured, or placed by rule where no photo shows the fittings), each group drawn in
+	// every colour it shows and lit as ship.ts lit says for the deck (update_papi); heights over the waterline carried to the deck's height
+	// here, the deck's own a touch proud ---
 	const dh=(f,l)=>{ const w=carrier_world(f,l); return { x:w.x, z:w.z, y:deck_y_at(carrier_model,w.x,w.z,-1e9) }; };   // world pos + deck height at a carrier-local point (−1e9 = off the deck)
 	const edge_lat=(f,dir)=>{ let e=null; for(let l=0;Math.abs(l)<42;l+=dir*4){ const d=dh(f,l); if(d.y>dy-0.6 && d.y<dy+4) e=l; else if(e!==null) break; } return e; };   // scan out from the centre to the outermost still-DECK-LEVEL lat: the catwalks outboard sit ~1-2 m BELOW the lip and used to qualify, hanging edge lights off the ship (measured: dots at -0.84 and -2.2 m)
-	if(Object.keys(SHIP.lights||{}).length){   // the ship file's lights (tools/ford: measured, or placed by rule where no photo shows the fittings), each group in its colour
-		// recovery aids join the flight-ops group, the outline and the mast's lights burn all night, and the floods are
-		// work lights; heights are over the waterline, carried to the deck's height here, the deck's own a touch proud
-		const COLOURS={ white:0xfff6e8, blue:0x4f7dff, amber:0xffb060, green:0x9affd8, red:0xff2418 };
-		const placed=(list,lift)=>list.flatMap(q=>{ const w=carrier_world(q[0],q[2]); return [w.x,dy+(q[1]-SHIP.deck)+lift,w.z]; });
-		for(const [name,g] of Object.entries(SHIP.lights)){
-			const colour=COLOURS[g.colour]??0xffffff;
-			if(g.kind==="flood"){
-				const fixtures=placed(g.positions,0);
-				const mkpts=(size,color)=>{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(fixtures),3));
-					const lp=new THREE.Points(lg,screen_point(new THREE.PointsMaterial({map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}),size*POINT_HEIGHT/720));
-					lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); deck_floods.push(lp); };
-				mkpts(46,0x203c34); mkpts(13,0xe0fff2);   // the glare and the lamp's core: constant pixels and no depth test, since the island's superstructure hides every depth-tested placement near the mast
-				// two spotlights wash the deck from the floods' banks: the highest aimed at the landing area, the lowest at the bow
-				const sorted=[...g.positions].sort((a,b)=>b[1]-a[1]), ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
-				for(const [q,t] of [[sorted[0],ld],[sorted[sorted.length-1],bw]]){ const w=carrier_world(q[0],q[2]); const s2=new THREE.SpotLight(0xd8fff0,320,260,0.62,0.65,1); s2.castShadow=false;
-					s2.position.set(w.x,dy+(q[1]-SHIP.deck),w.z); s2.target.position.set(t.x,dy,t.z); scene.add(s2); scene.add(s2.target); s2.visible=false; flood_lights.push(s2); }
-				continue; }
-			const deck=g.kind==="recovery"||g.kind==="outline";
-			(g.kind==="recovery"?ops_lights:night_lights).push(glow_points(placed(g.positions,deck?0.25:0),colour,name==="drop"||g.kind==="navigation"?5:3)); }
-		// no photo shows the side and stern lights lit: on the beam edges and the fantail, by rule
-		for(const [dir,col] of [[-1,0xff2418],[1,0x24ff2a]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); night_lights.push(glow_points([d.x,d.y+1.2,d.z],col,5)); } }
-		{ const st2=dh(-160,0); if(st2.y>-1e8) night_lights.push(glow_points([st2.x,st2.y+1.5,st2.z],0xffffff,5)); }
-		return; }
-	const edge=[];
-	for(let f=-145;f<=150;f+=18){ for(const dir of [1,-1]){ const e=edge_lat(f,dir); if(e!==null){ const d=dh(f,e); edge.push(d.x,d.y+0.3,d.z); } } }
-	night_lights.push(glow_points(edge,0xf0d18a,3));                                      // warm-white deck-edge outline, on the real edge + deck height — stays up all night as the find-the-boat watch lighting
-	// RECOVERY AIDS join the flight-ops group: a darkened carrier brings its deck lighting up for launch/recovery, not all night
-	const line=[]; for(let f=-118;f<=48;f+=9){ const d=dh(f,strip_lat(f)); line.push(d.x,(d.y>-1e8?d.y:dy)+0.25,d.z); }   // angled-deck centreline / lineup
-	ops_lights.push(glow_points(line,0xbfe6cf,3));
-	const dd=dh(-140,strip_lat(-140)), db=dd.y>-1e8?dd.y:dy; const drop=[]; for(let h=0;h>=-16;h-=2.2) drop.push(dd.x,db+h,dd.z);   // red drop line down the round-down
-	ops_lights.push(glow_points(drop,0xff3222,5));
-	const datum=[]; for(const d2 of [-6,-4,4,6]){ const q=carrier_world(-140,strip_lat(-140)+d2); datum.push(q.x,db+0.3,q.z); }   // green ramp datum bar flanking the drop line — the LSO's ramp reference
-	ops_lights.push(glow_points(datum,0x35e06a,5));
-	for(const el of SHIP.elevators){ const pts=[], n=Math.max(1,Math.ceil((el.forward-el.aft)/6));   // amber dots along each elevator platform's deck edge, at most 6 m apart, both ends lit
-		for(let k=0;k<=n;k++){ const f=el.aft+(el.forward-el.aft)*k/n, e=edge_lat(f,el.side); if(e!==null){ const d=dh(f,e); pts.push(d.x,d.y+0.25,d.z); } }
-		if(pts.length) ops_lights.push(glow_points(pts,0xffb060,3)); }
-	for(const [dir,col] of [[-1,0xff2418],[1,0x24ff2a]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); night_lights.push(glow_points([d.x,d.y+1.2,d.z],col,5)); } }   // red (port) / green (starboard) nav lights on the beam edges
-	{ const st2=dh(-160,0); if(st2.y>-1e8) night_lights.push(glow_points([st2.x,st2.y+1.5,st2.z],0xffffff,5)); }   // white sternlight on the fantail — completes the COLREGS steaming set
-	const mt=(deck_grid&&deck_grid.mast)||{x:0,y:-1e9,z:0}; const my=mt.y,mx=mt.x,mz=mt.z;   // the island mast top, recorded during the grid build (the deck grid itself excludes the island, so a deck_y_at scan can never find the mast)
-	if(my>dy+3){ night_lights.push(glow_points([mx,my+1.2,mz],0xffffff,6));               // white masthead just above the mast top
-		night_lights.push(glow_points([mx,my+0.4,mz],0xff2418,5)); }                       // red obstruction light just below it
+	const COLOURS={ white:0xfff6e8, blue:0x4f7dff, amber:0xffb060, green:0x24ff2a, red:0xff2418 };
+	const laid=(list,lift)=>list.flatMap(q=>{ const w=carrier_world(q[0],q[2]); return [w.x,dy+(q[1]-SHIP.deck)+lift,w.z]; });   // a group's lights in the world
+	for(const [name,g] of Object.entries(SHIP.lights||{})){
+		if(g.kind==="flood"){
+			const fixtures=laid(g.positions,0), drawn=[];
+			const mkpts=(size,color)=>{ const lg=new THREE.BufferGeometry(); lg.setAttribute("position",new THREE.BufferAttribute(new Float32Array(fixtures),3));
+				const lp=new THREE.Points(lg,screen_point(new THREE.PointsMaterial({map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,depthTest:false,sizeAttenuation:false}),size*POINT_HEIGHT/720));
+				lp.frustumCulled=false; lp.renderOrder=998; scene.add(lp); drawn.push(lp); };
+			mkpts(46,0x203c34); mkpts(13,0xe0fff2);   // the glare and the lamp's core (the floods' measured green-white): constant pixels and no depth test, since the island's superstructure hides every depth-tested placement near the mast
+			// two spotlights wash the deck from the floods' banks: the highest aimed at the landing area, the lowest at the bow
+			const sorted=[...g.positions].sort((a,b)=>b[1]-a[1]), ld=carrier_world(-80,strip_lat(-80)), bw=carrier_world(30,2);
+			for(const [q,t] of [[sorted[0],ld],[sorted[sorted.length-1],bw]]){ const w=carrier_world(q[0],q[2]); const s2=new THREE.SpotLight(0xd8fff0,320,260,0.62,0.65,1); s2.castShadow=false;
+				s2.position.set(w.x,dy+(q[1]-SHIP.deck),w.z); s2.target.position.set(t.x,dy,t.z); s2.userData.intensity=s2.intensity; s2.intensity=0; scene.add(s2); scene.add(s2.target); s2.visible=false; drawn.push(s2); }   // in the scene from the first night frame, lit by its intensity (update_papi)
+			ship_lights.push({ group:g, sets:{ [g.colour]:drawn } }); continue; }
+		const flush=g.kind==="recovery"||g.kind==="outline", signal=g.kind==="beacon"||g.kind==="status", size=name==="drop"||g.kind==="navigation"||signal?5:3;
+		const sets={ [g.colour]:[glow_points(laid(g.positions,flush?0.25:0),COLOURS[g.colour]??0xffffff,size)] };
+		if(signal) sets.green=[glow_points(laid(g.green??g.positions,0),COLOURS.green,size)];   // a beacon or status light's green lamps, beside its red ones or with them: one colour lit at a time
+		ship_lights.push({ group:g, sets }); }
+	// no photo shows the side and stern lights lit: on the beam edges and the fantail, by rule
+	for(const [dir,colour] of [[-1,"red"],[1,"green"]]){ const e=edge_lat(-5,dir); if(e!==null){ const d=dh(-5,e); ship_lights.push({ group:{ kind:"navigation", colour }, sets:{ [colour]:[glow_points([d.x,d.y+1.2,d.z],COLOURS[colour],5)] } }); } }
+	{ const st2=dh(-160,0); if(st2.y>-1e8) ship_lights.push({ group:{ kind:"navigation", colour:"white" }, sets:{ white:[glow_points([st2.x,st2.y+1.5,st2.z],0xffffff,5)] } }); }
 }
 const HOOK_DROP=4, HOOK_AFT=9;   // the tailhook rides ~4 m below and ~9 m aft of the pilot's eye; the meatball flies the HOOK onto the wire, so the eye rides well above the 3.5° glideslope
 function ols_dev(p,o){   // hook's deviation off the 3.5° glideslope to the touchdown: along/lateral/distance + dev (+ high, − low)
@@ -7352,10 +7331,11 @@ function ols_dev(p,o){   // hook's deviation off the 3.5° glideslope to the tou
 }
 function update_ols(p){   // 3D ball on the bracket, driven by the hook's deviation off the glideslope to the touchdown
 	if(!carrier_ols) return; const o=carrier_ols, s=ols_dev(p,o);
-	// the IFLOLS is DIRECTIONAL: lens, datum, cut, and wave-off all project aft along
+	// the IFLOLS is DIRECTIONAL: lens, datum and wave-off all project aft along
 	// the final bearing into a ~±40° wedge — from the bow (or anywhere off-wedge) the
-	// bracket shows no lights. tan 40° = 0.84.
-	o.datumPts.visible=o.cutPts.visible = s.along>10 && s.dist<7000 && Math.abs(s.lat)<s.along*0.84;
+	// bracket shows no lights. tan 40° = 0.84. Its cut lights stay dark: the LSO
+	// lights them only for signals given without the radio (ship.ts meatball)
+	o.datumPts.visible = s.along>10 && s.dist<7000 && Math.abs(s.lat)<s.along*0.84;
 	const approach = s.dist>40 && s.dist<5000 && s.along>40 && ownship.vely<3 && p.y>o.dy;
 	o.ballPts.visible=approach; if(!approach){ o.wavePts.visible=false; return; }
 	const low=s.dev<-0.7;

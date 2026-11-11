@@ -3,7 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, expect, it } from 'vitest'
-import { type Contract, deflectors, followers, layout, meatball, raising, STATIONS, stations } from './ship'
+import { type Contract, type Deck, deflectors, followers, foul, layout, lit, meatball, raising, STATIONS, stations } from './ship'
 
 // A small deck: a landing line angled to port, one wire whose pendant runs
 // between sheaves 16 m to port and 18 to starboard of where it crosses the
@@ -276,5 +276,80 @@ describe('meatball', () => {
     expect(meatball(ship, eye(30, 0, 25)).ball).toBeNull() // within 40 m
     expect(meatball(ship, eye(6000, 0, 400))).toEqual({ lit: true, ball: null }) // past 5 km, inside 7
     expect(meatball(ship, eye(800, 0, ship.deck - 1)).ball).toBeNull() // under the deck
+  })
+})
+
+describe('lit', () => {
+  // The fixture's landing line runs from (-90, 0) to (10, -10): a point a
+  // distance along it and across it, to starboard
+  const ship = layout(contract)
+  const [[ax, az], [bx, bz]] = ship.landing.line
+  const length = Math.hypot(bx - ax, bz - az)
+  const [ux, uz] = [(bx - ax) / length, (bz - az) / length]
+  const at = (along: number, across: number): [number, number] => [
+    ax + ux * along - uz * across,
+    az + uz * along + ux * across,
+  ]
+  const deck = (d: Partial<Deck>): Deck => ({
+    dark: true,
+    closed: false,
+    aboard: null,
+    ...d,
+  })
+  const group = (kind: string, colour: string) => ({
+    positions: [],
+    colour,
+    kind,
+  })
+
+  it('lights the recovery aids at night while the deck is open, and puts them out when it closes', () => {
+    const recovery = group('recovery', 'white')
+    expect(lit(recovery, ship, deck({}))).toBe('white')
+    expect(lit(recovery, ship, deck({ closed: true }))).toBeNull()
+    expect(lit(recovery, ship, deck({ aboard: at(50, 0) }))).toBe('white') // foul only: lit
+    expect(lit(recovery, ship, deck({ dark: false }))).toBeNull()
+  })
+
+  it('burns the outline and the navigation lights all night, open or closed', () => {
+    for (const kind of ['outline', 'navigation']) {
+      expect(lit(group(kind, 'blue'), ship, deck({ closed: true }))).toBe(
+        'blue'
+      )
+      expect(lit(group(kind, 'blue'), ship, deck({ dark: false }))).toBeNull()
+    }
+  })
+
+  it('lights the floods only at night with the jet aboard', () => {
+    const flood = group('flood', 'green')
+    expect(lit(flood, ship, deck({ aboard: [60, 20] }))).toBe('green')
+    expect(lit(flood, ship, deck({}))).toBeNull()
+    expect(lit(flood, ship, deck({ dark: false, aboard: [60, 20] }))).toBeNull()
+  })
+
+  it('shows the beacons and the status lights green on a clear deck and red on a foul one, by day too', () => {
+    for (const kind of ['beacon', 'status']) {
+      const signal = group(kind, 'red')
+      expect(lit(signal, ship, deck({ dark: false }))).toBe('green')
+      expect(lit(signal, ship, deck({ closed: true }))).toBe('red')
+      expect(lit(signal, ship, deck({ dark: false, aboard: at(50, 0) }))).toBe(
+        'red'
+      )
+      expect(lit(signal, ship, deck({ aboard: [60, 20] }))).toBe('green') // aboard, off the landing area
+    }
+  })
+
+  it("fouls the deck with the jet within the landing area's 40 ft of the line, between its ends", () => {
+    expect(foul(ship, deck({ aboard: at(50, 12.1) }))).toBe(true)
+    expect(foul(ship, deck({ aboard: at(50, -12.1) }))).toBe(true)
+    expect(foul(ship, deck({ aboard: at(50, 12.3) }))).toBe(false)
+    expect(foul(ship, deck({ aboard: at(1, 0) }))).toBe(true)
+    expect(foul(ship, deck({ aboard: at(-1, 0) }))).toBe(false) // aft of the ramp
+    expect(foul(ship, deck({ aboard: at(length + 1, 0) }))).toBe(false) // past the line's forward end
+    expect(foul(ship, deck({ closed: true }))).toBe(true)
+    expect(foul(ship, deck({}))).toBe(false)
+  })
+
+  it('lights no group of a kind it does not know', () => {
+    expect(lit(group('parking', 'white'), ship, deck({}))).toBeNull()
   })
 })

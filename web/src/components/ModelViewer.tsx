@@ -178,8 +178,7 @@ function lens(): Lens | null {
     return shown
   }
   const group = new THREE.Group()
-  const datum = points(l.lights.datum, 7, 0x35e06a, THREE.AdditiveBlending)
-  datum.add(points(l.lights.cut, 4, 0x35e06a, THREE.AdditiveBlending))
+  const datum = points(l.lights.datum, 7, 0x35e06a, THREE.AdditiveBlending) // the cut lights stay dark (ship.ts meatball)
   const waveoff = points(l.lights.waveoff, 7, 0xff2a1e, THREE.AdditiveBlending)
   const ball = points([l.position], 11, null, THREE.NormalBlending)
   group.add(datum, waveoff, ball)

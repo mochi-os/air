@@ -64,11 +64,14 @@ export interface Lens {
 
 // A group of the ship's lights: where each stands, its colour's name and
 // which of the engine's groups lights it (recovery, outline, navigation,
-// flood)
+// flood, beacon, status: see lit). A beacon's or status light's colour is the
+// red its lamps at positions show, and green where its green lamps stand,
+// beside them, or with them when not given
 export interface Lights {
   positions: Point[]
   colour: string
   kind: string
+  green?: Point[]
 }
 
 // A rigged part of the model (the plan's contract): it slides along its axis or
@@ -164,14 +167,17 @@ export function raising(ship: Layout): number {
 }
 
 // meatball is what the lens shows an eye at a point in the ship's frame, as
-// the game draws it for the pilot's (engine.ts update_ols): its datum and cut
-// lights lit to an eye astern of the touchdown, within 7 km and 40° either
-// side of the approach; and on an approach (40 m to 5 km out, above the
-// deck) the ball's height on the cell column, from the hook's deviation off
-// the 3.5° glideslope to the touchdown (the hook 4 m under the eye and 9 m
-// aft): 0.8° takes it to the column's end, and it turns red 0.7° low. The
-// touchdown is halfway between the wire before the target and the target, on
-// the landing line
+// the game draws it for the pilot's (engine.ts update_ols): its datum lights
+// lit to an eye astern of the touchdown, within 7 km and 40° either side of
+// the approach; and on an approach (40 m to 5 km out, above the deck) the
+// ball's height on the cell column, from the hook's deviation off the 3.5°
+// glideslope to the touchdown (the hook 4 m under the eye and 9 m aft): 0.8°
+// takes it to the column's end, and it turns red 0.7° low. The touchdown is
+// halfway between the wire before the target and the target, on the landing
+// line. Its cut lights stay dark: the LSO lights them only for signals given
+// without the radio (LSO NATOPS 4.2.4 and 6.4: under EMCON or to a jet without
+// one, his control at the ball call and power; the bingo with the wave-off
+// lights), and the game's LSO talks
 export function meatball(
   ship: Layout,
   eye: Point
@@ -210,6 +216,64 @@ export function meatball(
       low: deviation < -0.7,
     },
   }
+}
+
+// The deck as the ship's lights show it: dark from dusk to dawn (the game's
+// night); closed while she turns, or steams away from the wind, and takes no
+// one; and aboard, where the player's jet stands on her deck in her frame
+// (x, z), or null
+export interface Deck {
+  dark: boolean
+  closed: boolean
+  aboard: Plan | null
+}
+
+// LANDING is the landing area's half-width: its outer edge stripes' outer
+// edges, 40 ft either side of the centreline (NAVAIR 51-50AAA-2 WP 006 04,
+// which the Ford's measured stripes match within 3 cm)
+const LANDING = 12.192
+
+// foul is whether the deck is foul (CV NATOPS 00-80T-105, 2004, 5.5): closed,
+// or the player's jet in the landing area, within its half-width of the
+// landing line and between the line's ends
+export function foul(ship: Layout, deck: Deck): boolean {
+  if (deck.closed) return true
+  if (!deck.aboard) return false
+  const [[ax, az], [bx, bz]] = ship.landing.line
+  const length = Math.hypot(bx - ax, bz - az)
+  const [ux, uz] = [(bx - ax) / length, (bz - az) / length]
+  const [rx, rz] = [deck.aboard[0] - ax, deck.aboard[1] - az]
+  const along = rx * ux + rz * uz
+  return along >= 0 && along <= length && Math.abs(rz * ux - rx * uz) <= LANDING
+}
+
+// lit is the colour a group of the ship's lights shows for the deck, or null
+// while it is out (CV NATOPS 00-80T-105, 2004, and LSO NATOPS 00-80T-104):
+// - recovery, the landing area's lights, the drop line and the elevators'
+//   edges: at night while the deck is open, out while it is closed (the
+//   closed-deck signal, Figure 5-9), lit while it is only foul (5.5)
+// - outline, the blue deck-edge lights, and navigation: all night
+// - flood, the island's floods: at night while the player's jet is aboard,
+//   work lights doused for the flight operations around it
+// - beacon, the island's rotating beacons, and status, the deck status
+//   lights: day and night, green for a clear deck and red for a foul one.
+//   PriFly turns the beacons green to clear a launch (4.2) and the deck is
+//   foul while they are red (5.5); the arresting gear officer sets the status
+//   lights (LSO NATOPS 6.4.1)
+export function lit(lights: Lights, ship: Layout, deck: Deck): string | null {
+  switch (lights.kind) {
+    case 'recovery':
+      return deck.dark && !deck.closed ? lights.colour : null
+    case 'outline':
+    case 'navigation':
+      return deck.dark ? lights.colour : null
+    case 'flood':
+      return deck.dark && deck.aboard ? lights.colour : null
+    case 'beacon':
+    case 'status':
+      return foul(ship, deck) ? lights.colour : 'green'
+  }
+  return null
 }
 
 // STATIONS is how many stations the waterline is given at, stern to stem: the

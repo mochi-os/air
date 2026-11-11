@@ -165,22 +165,110 @@ describe("the carrier's ship file", () => {
 
   it('draws every group of the lights the file gives, in a colour and a group the engine knows', () => {
     expect(source).toMatch(
-      /for\(const \[name,g\] of Object\.entries\(SHIP\.lights\)\)\{/
+      /for\(const \[name,g\] of Object\.entries\(SHIP\.lights\|\|\{\}\)\)\{/
     )
     const colours = /const COLOURS=\{ ([^}]*) \};/.exec(source)?.[1] ?? ''
     expect(Object.keys(ford.lights).length).toBeGreaterThan(5)
     for (const [name, g] of Object.entries(ford.lights)) {
       expect(colours, name).toContain(`${g.colour}:`)
-      expect(['recovery', 'outline', 'navigation', 'flood'], name).toContain(
-        g.kind
-      )
+      expect(
+        ['recovery', 'outline', 'navigation', 'flood', 'beacon', 'status'],
+        name
+      ).toContain(g.kind)
       expect(g.positions.length, name).toBeGreaterThan(0)
     }
+    // a beacon or status light turns green too
+    expect(colours).toContain('green:')
     // the lens's own lights where the file measures them
     expect(ford.lens.lights.datum.length).toBe(20)
     expect(source).toMatch(
       /const dpos=lens\?placed\(lens\.lights\.datum\):\[\];/
     )
+  })
+
+  it('draws a beacon or status light green where its green lamps stand, or at its red ones', () => {
+    expect(source).toMatch(
+      /if\(signal\) sets\.green=\[glow_points\(laid\(g\.green\?\?g\.positions,0\),COLOURS\.green,size\)\];/
+    )
+  })
+
+  it('lays the drop line on its pole, none in its gap, and the beacons and status lights where the facts put them', () => {
+    // the pole (tools/ford facts.json layout.transom.drop): x -165.3, z 7.45,
+    // 16.4 down to 11.65 and 9.0 down to 2.2; the lamps 0.15 m aft of its face
+    const drop = ford.lights.drop.positions
+    expect(drop.length).toBe(9)
+    for (const [x, y, z] of drop) {
+      expect(x).toBeCloseTo(-165.6, 6)
+      expect(z).toBeCloseTo(7.45, 6)
+      expect((y >= 11.65 && y <= 16.4) || (y >= 2.2 && y <= 9.0), `${y}`).toBe(
+        true
+      )
+    }
+    // a red and a green globe on each of the island's forward, port and aft
+    // faces, within its footprint
+    const beacon = ford.lights.beacon as {
+      positions: number[][]
+      green: number[][]
+      colour: string
+      kind: string
+    }
+    expect([beacon.kind, beacon.colour]).toEqual(['beacon', 'red'])
+    expect(beacon.green.length).toBe(beacon.positions.length)
+    expect(beacon.positions.length).toBe(3)
+    beacon.positions.forEach(([x, y, z], i) => {
+      const [gx, gy, gz] = beacon.green[i]
+      expect(Math.hypot(gx - x, gy - y, gz - z)).toBeLessThan(0.9)
+      expect(
+        x > -103 && x < -80 && z > 19 && z < 34 && y > ford.deck.height
+      ).toBe(true)
+    })
+    // the status lights, placed by rule: the LSO's windscreen and the port
+    // deck edge abeam the lens, lit red and green where they stand
+    const status = ford.lights.status as {
+      positions: number[][]
+      green?: number[][]
+      colour: string
+      kind: string
+    }
+    expect([status.kind, status.colour, status.green]).toEqual([
+      'status',
+      'red',
+      undefined,
+    ])
+    expect(status.positions.length).toBe(2)
+    for (const [, , z] of status.positions) expect(z).toBeLessThan(-35)
+  })
+
+  it('lights each group as ship.ts lit says for the deck, every frame', () => {
+    const papi = lift('update_papi')
+    expect(papi).toMatch(
+      /const deck=\{ dark, closed:deck_closed, aboard:on\?\[carrier_fore_aft\(p\.x,p\.z\),carrier_lateral\(p\.x,p\.z\)\]:null \};/
+    )
+    expect(papi).toMatch(
+      /for\(const l of ship_lights\)\{ const c=ship_lit\(l\.group,SHIP,deck\); for\(const k in l\.sets\) for\(const m of l\.sets\[k\]\)\{ if\(m\.isLight\)\{ m\.visible=dark; m\.intensity=k===c\?m\.userData\.intensity:0; \} else m\.visible=k===c; \} \}/
+    )
+  })
+
+  it("has the jet aboard from where it stands, so a deck start's first frame is lit, and switches the floods' spotlights by intensity", () => {
+    // the smoothed weight-on-wheels signal begins at 0 at a deck start: the
+    // floods lit a few frames late, and a spotlight joining the scene then
+    // recompiled every lit material, a stall of most of a second
+    const papi = lift('update_papi')
+    expect(papi).toMatch(/on=under>-1e8 && p\.y-under<4;/)
+    expect(papi).not.toMatch(/squish/)
+    expect(source).toMatch(
+      /s2\.userData\.intensity=s2\.intensity; s2\.intensity=0; scene\.add\(s2\);/
+    )
+  })
+
+  it("never draws the lens's cut lights, which the LSO lights only without the radio", () => {
+    expect(source).not.toMatch(/placed\(lens\.lights\.cut\)|cutPts/)
+    const viewer = readFileSync(
+      fileURLToPath(new URL('../components/ModelViewer.tsx', import.meta.url)),
+      'utf8'
+    )
+    expect(viewer).toMatch(/points\(l\.lights\.datum,/)
+    expect(viewer).not.toMatch(/l\.lights\.cut/)
   })
 
   it('lays its deflectors across their tracks and its elevators along the deck edge', () => {
