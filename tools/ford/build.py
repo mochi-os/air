@@ -84,6 +84,14 @@ COLOURS = {"deck": (0.16, 0.16, 0.16, 1), "grey": (0.30, 0.32, 0.33, 1), "boot":
 	# electrical box brown (references/research/island4)
 	"white": (0.62, 0.62, 0.6, 1), "red": (0.4, 0.03, 0.02, 1), "amber": (0.6, 0.3, 0.02, 1), "violet": (0.2, 0.06, 0.35, 1),
 	"brown": (0.15, 0.08, 0.04, 1),
+	# the deck edge's coaming a weathered tan: in dvids9478807 its sunlit face
+	# reads (0.84, 0.68, 0.47) of the deck's white lines in the same light,
+	# here of the white above
+	"coaming": (0.52, 0.42, 0.28, 1),
+	# the lens's unlit cells, their faces' brighter half in dvids9478807 against
+	# the sunlit white plate beside them (facing aft as they do), of the white
+	# above: a dark violet-blue
+	"cell": (0.01, 0.028, 0.097, 1),
 	# the railings and the nets' frames, grey as the ship's, their own so the
 	# photo checks can leave them out: bars thinner than any photo resolves,
 	# which the photos show the sky through
@@ -1604,6 +1612,110 @@ def domes_edge():
 	return pieces
 
 
+def coamings():
+	# The low coamings on the deck at its edge (layout.coaming): each a wall
+	# `height` tall and `width` deep along the edge from x to x, and at its
+	# foot its scuppers, `height` tall and `width` wide, dark, one every
+	# `pitch` from the one centred at `at`, none where a pillar stands (the
+	# pitch nearest each of `pillars`). The foot is built as pillars and
+	# scuppers side by side, flush, so neither fights the other
+	pieces = []
+	deck = LAYOUT["deck"]["height"]
+	for c in LAYOUT.get("coaming", []):
+		side = 1 if c["side"] == "starboard" else -1
+		(x0, x1), paint, s = c["x"], c.get("paint", "coaming"), c.get("scuppers")
+		def wall(a, b, bottom, top, paint):
+			outer = edge_line(side, a, b)
+			inner, _ = offset(outer, side, -c["width"])
+			return prism(outer + inner[::-1], deck + bottom, deck + top, paint=paint)
+		foot = s["height"] if s else 0.0
+		pieces.append(wall(x0, x1, foot, c["height"], paint))
+		if not s:
+			continue
+		cuts = []
+		for k in range(math.ceil((x0 - s["at"]) / s["pitch"]), math.floor((x1 - s["at"]) / s["pitch"]) + 1):
+			centre = s["at"] + k * s["pitch"]
+			if centre - s["width"] / 2 < x0 or centre + s["width"] / 2 > x1:
+				continue
+			if any(abs(centre - p) < s["pitch"] / 2 for p in s.get("pillars", [])):
+				continue
+			cuts.append((centre - s["width"] / 2, centre + s["width"] / 2))
+		x = x0
+		for a, b in cuts:
+			pieces += [wall(x, a, 0.0, foot, paint), wall(a, b, 0.0, foot, "dark")]
+			x = b
+		pieces.append(wall(x, x1, 0.0, foot, paint))
+	return pieces
+
+
+def lens_housing():
+	# The landing lens's housing (layout.lens.housing), its parts in the lens's
+	# own frame: t along its face, positive inboard; h above its datum; d
+	# behind its face, forward. box {t, h, d: [from, to], face}: a block square
+	# to the face, its side toward the face's front painted `face` where it is
+	# given (the boards: black in front, grey at their sides and backs); drum
+	# {t: [from, to], h, d, radius}: a cylinder along the face; bar {from, to:
+	# [t, h, d], size}: a strut; chain {posts: [[t, d], ...], h, height,
+	# courses, sag}: posts on a floor at h, a chain from each post's top to the
+	# next's and one more for each course (that far below the tops), sagging
+	# `sag` times its span at mid-span. Each of the lens's lights gets a
+	# lamp (lamps.<name> {radius, depth, paint, lens}): a housing behind it
+	# with its glass in front, and the cell column its cells (cells {radius,
+	# depth, paint}) at the lens's pitch. The engine draws the lights
+	# themselves, and no housing of its own for a lens the ship file says is
+	# housed
+	lens = LAYOUT.get("lens")
+	spec = (lens or {}).get("housing")
+	if not spec:
+		return []
+	origin, facing = Vector(lens["position"]), Vector(lens["facing"]).normalized()
+	across = Vector((-facing.z, 0.0, facing.x))
+	if across.z * origin.z > 0:
+		across = -across          # inboard: toward the centreline
+	def point(t, h, d):
+		return list(origin + across * t + Vector((0.0, h, 0.0)) - facing * d)
+	pieces = []
+	for p in spec.get("parts", []):
+		kind, paint = p["kind"], p.get("paint", "grey")
+		if kind == "box":
+			(t0, t1), (h0, h1), (d0, d1) = p["t"], p["h"], p["d"]
+			outline = [[q[0], q[2]] for q in (point(t0, 0, d0), point(t1, 0, d0), point(t1, 0, d1), point(t0, 0, d1))]
+			vertices, faces, paints = prism(outline, origin.y + h0, origin.y + h1, paint=paint)
+			if p.get("face"):
+				front = at(*point((t0 + t1) / 2, (h0 + h1) / 2, d0))
+				k = min(range(len(faces)), key=lambda i: (sum((vertices[j] for j in faces[i]), Vector()) / len(faces[i]) - front).length)
+				paints[k] = p["face"]
+			pieces.append((vertices, faces, paints))
+		elif kind == "drum":
+			(t0, t1), h, d = p["t"], p["h"], p["d"]
+			pieces.append(shape({"kind": "cylinder", "base": point(t0, h, d), "end": point(t1, h, d), "radius": p["radius"], "segments": 16, "paint": paint}))
+		elif kind == "bar":
+			pieces.append(shape({"kind": "path", "path": [point(*p["from"]), point(*p["to"])], "size": p["size"], "paint": paint}))
+		elif kind == "chain":
+			posts, floor, top, steps = p["posts"], p["h"], p["h"] + p["height"], 8
+			for t, d in posts:
+				pieces.append(bar(point(t, floor, d), point(t, top, d), p.get("post", 0.05), paint))
+			for height in [top] + [top - c for c in p.get("courses", [])]:
+				for (ta, da), (tb, db) in zip(posts, posts[1:]):
+					sag = p["sag"] * math.hypot(tb - ta, db - da)
+					line = [point(ta + (tb - ta) * k / steps, height - sag * 4 * k / steps * (1 - k / steps), da + (db - da) * k / steps) for k in range(steps + 1)]
+					pieces.append(shape({"kind": "path", "path": line, "size": p.get("size", 0.03), "round": True, "paint": paint}))
+		else:
+			raise ValueError(f"lens housing part {p.get('name')}: unknown kind {kind}")
+	glass = 0.02
+	for name, lamp in spec.get("lamps", {}).items():
+		for q in lens["lights"].get(name, []):
+			front = Vector(q)
+			pieces.append(shape({"kind": "cylinder", "base": list(front), "end": list(front - facing * glass), "radius": lamp["radius"], "segments": 16, "paint": lamp["lens"]}))
+			pieces.append(shape({"kind": "cylinder", "base": list(front - facing * glass), "end": list(front - facing * lamp["depth"]), "radius": lamp["radius"], "segments": 16, "paint": lamp["paint"]}))
+	cells = spec.get("cells")
+	if cells:
+		for k in range(lens["cells"]):
+			h = (k - (lens["cells"] - 1) / 2) * lens["pitch"]
+			pieces.append(shape({"kind": "cylinder", "base": point(0, h, 0), "end": point(0, h, cells["depth"]), "radius": cells["radius"], "segments": 16, "paint": cells["paint"]}))
+	return pieces
+
+
 def tubs():
 	# The gun tubs on the sponsons' outboard faces (layout.tubs): a floor, a
 	# railing round its outboard sides (the outline's open path, from the
@@ -2076,7 +2188,7 @@ def sides():
 			for end in ("bottom", "top"):
 				y = s[end][k] if isinstance(s[end], list) else s[end]
 				MARKS[f"sponson_{s['name']}_{end}_{k + 1}"] = (at(x, y, z), "sponsons")
-	pieces += domes_edge() + catwalks() + racks() + tubs()
+	pieces += domes_edge() + catwalks() + racks() + tubs() + lens_housing() + coamings()
 	if pieces:
 		node("sponsons", mesh=merge(pieces))
 	nets()
@@ -3288,6 +3400,9 @@ def ship_file(hulled):
 	for key in ("landing", "lens", "parking", "lights", "consoles", "antennas"):
 		if key in LAYOUT:
 			out[key] = LAYOUT[key]
+	if LAYOUT.get("lens", {}).get("housing"):
+		# the model carries the lens's housing: the engine draws only its lights
+		out["lens"] = {**{k: v for k, v in LAYOUT["lens"].items() if k != "housing"}, "housed": True}
 	if LAYOUT.get("island"):
 		# the island as the server collides with it (decision 20): its prisms'
 		# plans and heights, and the mast's top

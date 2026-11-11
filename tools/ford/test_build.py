@@ -2223,6 +2223,120 @@ class CoincidentTest(unittest.TestCase):
 		self.assertTrue(crosses(tris, [-11, 21.0, 19.0], [-11, 21.0, 29.0]))
 
 
+class LensTest(unittest.TestCase):
+	# The landing lens's housing (layout.lens.housing) in the model: its parts
+	# in the lens's frame (t inboard, h above the datum, d behind the face), a
+	# lamp at each of its lights and the cell column's cells; the ship file
+	# says the lens is housed, so the engine draws only its lights
+	@classmethod
+	def setUpClass(cls):
+		layout = json.loads(json.dumps(LAYOUT))
+		layout["lens"]["housing"] = {
+			"parts": [{"name": "board", "kind": "box", "t": [-1.0, 1.5], "h": [-0.5, 0.5], "d": [0.3, 0.4], "paint": "grey", "face": "dark"},
+				{"name": "railing", "kind": "chain", "posts": [[1.5, -0.5], [-1.0, -0.5]], "h": -0.6, "height": 0.7, "courses": [0.35], "sag": 0.1,
+					"paint": "rail"}],
+			"cells": {"radius": 0.06, "depth": 0.05, "paint": "cell"},
+			"lamps": {"waveoff": {"radius": 0.11, "depth": 0.3, "paint": "grey", "lens": "red"}, "cut": {"radius": 0.1, "depth": 0.3, "paint": "grey", "lens": "blue"}}}
+		cls.layout = layout
+		build(cls, layout)
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.folder.cleanup()
+
+	def test_ship_file_says_housed(self):
+		lens = {k: v for k, v in self.layout["lens"].items() if k != "housing"}
+		self.assertEqual(self.ship["lens"], {**lens, "housed": True})
+
+	def test_board_behind_the_face(self):
+		# the lens faces aft (x -), at z -38 to port: inboard is +z, behind the face +x; the board from t -1 to 1.5
+		tris = self.model.parts()["sponsons"]
+		self.assertTrue(crosses(tris, [-40, 19.8, -37.0], [-29.0, 19.8, -37.0]))     # t 1.0, h 0.2
+		self.assertTrue(crosses(tris, [-40, 19.8, -38.9], [-29.0, 19.8, -38.9]))     # t -0.9
+		self.assertFalse(crosses(tris, [-40, 19.8, -39.2], [-29.0, 19.8, -39.2]))    # t -1.2, outboard of it
+		self.assertFalse(crosses(tris, [-40, 19.8, -37.0], [-29.75, 19.8, -37.0]))   # nothing before d 0.25
+		self.assertTrue(crosses(tris, [-40, 19.8, -37.0], [-29.65, 19.8, -37.0]))    # the board's face at d 0.3
+
+	def test_board_black_in_front_only(self):
+		# the board's face toward the lens's front alone takes its face paint, all of it (z -39 to -36.5, y 19.1 to 20.1); its sides and back the grey
+		dark = self.model.parts(materials=["dark"])["sponsons"]
+		board = dark[(np.abs(dark[:, :, 0] + 29.7) < 1e-4).all(1)].reshape(-1, 3)
+		np.testing.assert_allclose([board[:, 2].min(), board[:, 2].max(), board[:, 1].min(), board[:, 1].max()], [-39, -36.5, 19.1, 20.1], atol=1e-4)
+		behind = dark.reshape(-1, 3)
+		self.assertFalse(((behind[:, 0] > -29.69) & (behind[:, 0] < -29.5) & (behind[:, 2] > -39.01) & (behind[:, 2] < -36.49)).any())
+		tris = self.model.parts()["sponsons"]
+		self.assertTrue(crosses(tris, [-29.65, 19.6, -37.5], [-29.0, 19.6, -37.5]))  # its back, at d 0.4, is there in grey
+
+	def test_chain_posts_and_sag(self):
+		# posts at t 1.5 and -1 (z -36.5 and -39) on the aft edge (d -0.5, x -30.5), 0.7 m from the floor at 19.0; a chain from top to top
+		# and one 0.35 below, each sagging 0.1 of the 2.5 m span (0.25) at mid-span (z -37.75), and nothing straight across at the tops
+		rail = self.model.parts(materials=["rail"])["sponsons"].reshape(-1, 3)
+		for z in (-36.5, -39.0):
+			post = rail[(np.abs(rail[:, 2] - z) < 0.026) & (np.abs(rail[:, 0] + 30.5) < 0.026)]
+			self.assertAlmostEqual(post[:, 1].min(), 19.0, places=3)
+			self.assertTrue(19.7 - 1e-4 < post[:, 1].max() < 19.7 + 0.016)   # the chains 0.03 thick from its top
+		middle = rail[np.abs(rail[:, 2] + 37.75) < 0.02]
+		top, low = middle[middle[:, 1] > 19.3], middle[middle[:, 1] < 19.3]
+		self.assertTrue(len(top) and len(low))
+		self.assertLess(np.abs(top[:, 1] - 19.45).max(), 0.016)    # the chain 0.03 thick round its line
+		self.assertLess(np.abs(low[:, 1] - 19.10).max(), 0.016)
+		self.assertTrue((np.abs(middle[:, 0] + 30.5) < 0.016).all())
+
+	def test_a_lamp_at_each_light_and_the_cells(self):
+		# each light's lamp a ring of its radius round it; each cell a ring of the cells' radius, in the cells' paint
+		def ring(centre, radius, materials=None):
+			points = self.model.parts(materials=materials).get("sponsons", np.zeros((0, 3, 3))).reshape(-1, 3)
+			c = np.array(centre)
+			near = points[np.abs(points[:, 0] - c[0]) < 1e-3]
+			return bool(len(near)) and np.isclose(np.hypot(near[:, 1] - c[1], near[:, 2] - c[2]), radius, atol=2e-3).sum() >= 8
+		for name, radius in (("waveoff", 0.11), ("cut", 0.1)):
+			for q in self.layout["lens"]["lights"][name]:
+				self.assertTrue(ring(q, radius), (name, q))
+		lens = self.layout["lens"]
+		for k in range(lens["cells"]):
+			h = (k - (lens["cells"] - 1) / 2) * lens["pitch"]
+			self.assertTrue(ring([lens["position"][0], lens["position"][1] + h, lens["position"][2]], 0.06, ["cell"]), k)
+
+
+class CoamingTest(unittest.TestCase):
+	# A coaming on the deck at its port edge (layout.coaming): a wall from the
+	# edge (z -40) 0.3 inboard and 0.4 up from the deck (19.0), x -20 to 10;
+	# at its foot dark scuppers 0.6 wide and 0.15 tall every metre from one at
+	# -15, none at the pillar at -13, the coaming's own paint between them
+	@classmethod
+	def setUpClass(cls):
+		layout = json.loads(json.dumps(LAYOUT))
+		layout["coaming"] = [{"side": "port", "x": [-20, 10], "height": 0.4, "width": 0.3,
+			"scuppers": {"width": 0.6, "height": 0.15, "pitch": 1.0, "at": -15, "pillars": [-13]}}]
+		build(cls, layout)
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.folder.cleanup()
+
+	def test_wall(self):
+		tris = self.model.parts()["sponsons"]
+		self.assertTrue(crosses(tris, [0, 19.5, -39.85], [0, 19.35, -39.85]))      # its top at 19.4
+		self.assertFalse(crosses(tris, [0, 19.5, -39.6], [0, 19.05, -39.6]))      # inboard of it, the deck bare
+		self.assertTrue(crosses(tris, [0, 19.3, -39.5], [0, 19.3, -39.75]))       # its inboard face at -39.7
+		self.assertFalse(crosses(tris, [-21, 19.3, -39.5], [-21, 19.3, -39.95]))  # aft of its run, nothing
+		self.assertFalse(crosses(tris, [11, 19.3, -39.5], [11, 19.3, -39.95]))    # forward of it, nothing
+
+	def test_scuppers(self):
+		# the inboard face at its foot (y 19.07): dark across a scupper, the coaming's paint across a pillar and between two scuppers
+		def face(x, materials):
+			tris = self.model.parts(materials=materials).get("sponsons", np.zeros((0, 3, 3)))
+			return crosses(tris, [x, 19.07, -39.5], [x, 19.07, -39.75])
+		for x in (-19, -15, -14.75, 9):
+			self.assertTrue(face(x, ["dark"]), x)
+			self.assertFalse(face(x, ["coaming"]), x)
+		for x in (-13, -14.5, -19.5):
+			self.assertTrue(face(x, ["coaming"]), x)
+			self.assertFalse(face(x, ["dark"]), x)
+		self.assertTrue(face(-15, ["coaming"]) is False and crosses(self.model.parts(materials=["coaming"])["sponsons"],
+			[-15, 19.3, -39.5], [-15, 19.3, -39.75]))                                # above the scupper, the wall
+
+
 class CacheTest(unittest.TestCase):
 	# The weathered atlases kept between builds (build.py --cache): a build
 	# whose groups' inputs are unchanged takes them from the cache and makes the

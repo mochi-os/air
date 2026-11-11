@@ -32,7 +32,7 @@ import fa18c_points from '../assets/fa18c.json'
 import { outfit, type Fittings, type Kind, type Seat } from '../game/hang'
 import { model } from '../game/library'
 import { posed } from '../game/model'
-import { deflectors, layout, raising, stations } from '../game/ship'
+import { deflectors, layout, meatball, raising, stations } from '../game/ship'
 import { PRESETS, SHOWCASE, type Loadout } from '../game/stores'
 
 interface Entry {
@@ -118,6 +118,87 @@ function lift(ship: THREE.Object3D, seconds: number): void {
   }
 }
 
+// The Ford's lens lights as the game draws them (engine.ts,
+// build_carrier_deck_aids and update_ols): dots a fixed size on the screen in
+// the game's colours, what they show (ship.ts meatball) for the camera as the
+// pilot's eye; the wave-off lights flashing when asked.
+type Lighting = 'off' | 'on' | 'waveoff'
+const LIGHTINGS: Lighting[] = ['off', 'on', 'waveoff']
+const POINT_HEIGHT = 1620 // the drawing height at which a dot is its size in pixels
+
+interface Lens {
+  group: THREE.Group
+  waveoff: THREE.Points
+  update: (eye: THREE.Vector3, height: number) => void
+}
+
+function lens(): Lens | null {
+  const l = FORD.lens
+  if (!l) return null
+  const canvas = document.createElement('canvas')
+  canvas.width = canvas.height = 64
+  const context = canvas.getContext('2d')!
+  const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32)
+  gradient.addColorStop(0, 'rgba(255,255,255,1)')
+  gradient.addColorStop(0.36, 'rgba(255,255,255,1)')
+  gradient.addColorStop(0.6, 'rgba(255,255,255,0.3)')
+  gradient.addColorStop(1, 'rgba(255,255,255,0)')
+  context.fillStyle = gradient
+  context.fillRect(0, 0, 64, 64)
+  const dot = new THREE.CanvasTexture(canvas)
+  const dots: { material: THREE.PointsMaterial; size: number }[] = [] // each dot's material, its size at POINT_HEIGHT
+  const points = (
+    positions: number[][],
+    size: number,
+    color: number | null,
+    blending: THREE.Blending
+  ) => {
+    const geometry = new THREE.BufferGeometry()
+    geometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(new Float32Array(positions.flat()), 3)
+    )
+    const material = new THREE.PointsMaterial({
+      map: dot,
+      transparent: true,
+      blending,
+      depthWrite: false,
+      sizeAttenuation: false,
+    })
+    if (color === null) {
+      material.vertexColors = true
+      geometry.setAttribute(
+        'color',
+        new THREE.BufferAttribute(new Float32Array([1, 0.62, 0]), 3)
+      )
+    } else material.color.set(color)
+    dots.push({ material, size })
+    const shown = new THREE.Points(geometry, material)
+    shown.frustumCulled = false
+    return shown
+  }
+  const group = new THREE.Group()
+  const datum = points(l.lights.datum, 7, 0x35e06a, THREE.AdditiveBlending)
+  datum.add(points(l.lights.cut, 4, 0x35e06a, THREE.AdditiveBlending))
+  const waveoff = points(l.lights.waveoff, 7, 0xff2a1e, THREE.AdditiveBlending)
+  const ball = points([l.position], 11, null, THREE.NormalBlending)
+  group.add(datum, waveoff, ball)
+  const update = (eye: THREE.Vector3, height: number) => {
+    for (const d of dots) d.material.size = (d.size * height) / POINT_HEIGHT
+    const seen = meatball(FORD, [eye.x, eye.y, eye.z])
+    datum.visible = seen.lit
+    ball.visible = !!seen.ball
+    if (!seen.ball) return
+    const position = ball.geometry.attributes.position as THREE.BufferAttribute
+    position.setY(0, seen.ball.height)
+    position.needsUpdate = true
+    const color = ball.geometry.attributes.color as THREE.BufferAttribute
+    color.setXYZ(0, 1, seen.ball.low ? 0.1 : 0.62, 0)
+    color.needsUpdate = true
+  }
+  return { group, waveoff, update }
+}
+
 interface View {
   renderer: THREE.WebGLRenderer
   scene: THREE.Scene
@@ -125,6 +206,7 @@ interface View {
   controls: OrbitControls
   shown: THREE.Object3D | null
   radius: number
+  lens: Lens | null // the Ford's lens lights while they are shown
   draw: () => void
 }
 
@@ -197,6 +279,7 @@ export function ModelViewer({
   const [status, setStatus] = useState('Loading…') // empty once the model is drawn
   const [count, setCount] = useState<number | null>(null) // the shown model's polygons
   const [raised, setRaised] = useState(false) // the Ford's blast deflectors asked up
+  const [lighting, setLighting] = useState<Lighting>('off') // the Ford's lens lights
   const [worn, setWorn] = useState(0) // the F/A-18C's loadout, from LOADOUTS
   const [loaded, setLoaded] = useState<THREE.Object3D | null>(null) // the shown model, once drawn
   const time = useRef(0) // how many seconds into their raise they stand
@@ -235,6 +318,7 @@ export function ModelViewer({
       controls,
       shown: null,
       radius: 1,
+      lens: null,
       draw: () => {
         // The clip planes follow the zoom, so a detail a metre away and the
         // far end of the ship both keep their depth precision.
@@ -242,6 +326,7 @@ export function ModelViewer({
         camera.near = Math.max(current.radius / 1e5, distance / 1000)
         camera.far = distance + current.radius * 4
         camera.updateProjectionMatrix()
+        current.lens?.update(camera.position, renderer.domElement.height)
         renderer.render(scene, camera)
       },
     }
@@ -327,6 +412,43 @@ export function ModelViewer({
     return () => cancelAnimationFrame(frame)
   }, [raised, count, chosen])
 
+  // The Ford's lens lights, shown as asked, the wave-off lights flashing at
+  // the game's rate (lit 200 ms in each 400) while they are asked for.
+  useEffect(() => {
+    const current = view.current
+    if (!current || !loaded || chosen !== 'ford.glb' || lighting === 'off')
+      return
+    const shown = lens()
+    if (!shown) return
+    current.lens = shown
+    current.scene.add(shown.group)
+    shown.waveoff.visible = false
+    current.draw()
+    let frame = 0
+    if (lighting === 'waveoff') {
+      const step = (now: number) => {
+        shown.waveoff.visible = now % 400 < 200
+        current.draw()
+        frame = requestAnimationFrame(step)
+      }
+      frame = requestAnimationFrame(step)
+    }
+    return () => {
+      cancelAnimationFrame(frame)
+      current.scene.remove(shown.group)
+      current.lens = null
+      shown.group.traverse((o) => {
+        const p = o as THREE.Points
+        if (p.isPoints) {
+          p.geometry.dispose()
+          ;(p.material as THREE.PointsMaterial).map?.dispose()
+          ;(p.material as THREE.PointsMaterial).dispose()
+        }
+      })
+      current.draw()
+    }
+  }, [lighting, loaded, chosen])
+
   // The F/A-18C wears the loadout asked for, its rounds our own missiles hung as
   // the flight hangs them.
   useEffect(() => {
@@ -372,6 +494,20 @@ export function ModelViewer({
           <Button variant='outline' size='sm' onClick={() => setRaised((up) => !up)}>
             {/* jsx-text-ok: developer page, English only by decision */}
             {raised ? 'Lower JBDs' : 'Raise JBDs'}
+          </Button>
+        )}
+        {chosen === 'ford.glb' && count !== null && (
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() =>
+              setLighting(
+                (l) => LIGHTINGS[(LIGHTINGS.indexOf(l) + 1) % LIGHTINGS.length]
+              )
+            }
+          >
+            {/* jsx-text-ok: developer page, English only by decision */}
+            Lights: {lighting === 'waveoff' ? 'wave-off' : lighting}
           </Button>
         )}
         {chosen === 'fa18c.glb' && loaded && (

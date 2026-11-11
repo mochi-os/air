@@ -51,13 +51,15 @@ export interface Contract {
 }
 
 // The lens: its cell column's centre at datum height, the way it faces, its
-// cells and their pitch, and its datum, cut and wave-off lights
+// cells and their pitch, and its datum, cut and wave-off lights; housed when
+// the model carries its housing, so the engine draws only the lights
 export interface Lens {
   position: Point
   facing: Point
   cells: number
   pitch: number
   lights: { datum: Point[]; cut: Point[]; waveoff: Point[] }
+  housed?: boolean
 }
 
 // A group of the ship's lights: where each stands, its colour's name and
@@ -161,6 +163,55 @@ export function raising(ship: Layout): number {
   return most
 }
 
+// meatball is what the lens shows an eye at a point in the ship's frame, as
+// the game draws it for the pilot's (engine.ts update_ols): its datum and cut
+// lights lit to an eye astern of the touchdown, within 7 km and 40° either
+// side of the approach; and on an approach (40 m to 5 km out, above the
+// deck) the ball's height on the cell column, from the hook's deviation off
+// the 3.5° glideslope to the touchdown (the hook 4 m under the eye and 9 m
+// aft): 0.8° takes it to the column's end, and it turns red 0.7° low. The
+// touchdown is halfway between the wire before the target and the target, on
+// the landing line
+export function meatball(
+  ship: Layout,
+  eye: Point
+): { lit: boolean; ball: { height: number; low: boolean } | null } {
+  const lens = ship.lens
+  if (!lens) return { lit: false, ball: null }
+  const [aft, forward] = ship.landing.line
+  const { wires, target } = ship.landing
+  const x = target > 1 ? (wires[target - 2] + wires[target - 1]) / 2 : wires[0]
+  const z =
+    aft[1] + ((forward[1] - aft[1]) * (x - aft[0])) / (forward[0] - aft[0])
+  const length = Math.hypot(aft[0] - forward[0], aft[1] - forward[1])
+  const [ax, az] = [
+    (aft[0] - forward[0]) / length,
+    (aft[1] - forward[1]) / length,
+  ]
+  const [rx, rz] = [eye[0] - x, eye[2] - z]
+  const along = rx * ax + rz * az
+  const distance = Math.hypot(rx, rz)
+  const lit =
+    along > 10 &&
+    distance < 7000 &&
+    Math.abs(-rx * az + rz * ax) < along * Math.tan((40 * Math.PI) / 180)
+  if (distance <= 40 || distance >= 5000 || along <= 40 || eye[1] <= ship.deck)
+    return { lit, ball: null }
+  const deviation =
+    (Math.atan2(eye[1] - ship.deck - 4, Math.max(along + 9, 1)) * 180) /
+      Math.PI -
+    3.5
+  const travel = (lens.cells * lens.pitch) / 2
+  return {
+    lit,
+    ball: {
+      height:
+        lens.position[1] + Math.max(-1, Math.min(1, deviation / 0.8)) * travel,
+      low: deviation < -0.7,
+    },
+  }
+}
+
 // STATIONS is how many stations the waterline is given at, stern to stem: the
 // wake's limit (wake.ts HULL)
 export const STATIONS = 42
@@ -217,7 +268,7 @@ export function layout(c: Contract): Layout {
       target: c.landing.target,
     },
     ols: c.lens
-      ? { x: c.lens.position[0], z: c.lens.position[2], model: false }
+      ? { x: c.lens.position[0], z: c.lens.position[2], model: !!c.lens.housed }
       : { x: 0, z: 0, model: false },
     elevators: c.elevators.map((e) => {
       // the platform's outboard side, along the deck's edge: its two points
