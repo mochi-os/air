@@ -1257,7 +1257,9 @@ export async function recording_store(
 export async function recording_load(id: string): Promise<string | null> {
   try {
     await authenticated()
-    const res = await client.instance.get('-/recording/fetch', {
+    const res = await client.request<Blob>({
+      method: 'GET',
+      url: '-/recording/fetch',
       params: { id },
       responseType: 'blob',
     })
