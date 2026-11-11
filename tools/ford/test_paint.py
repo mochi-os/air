@@ -327,6 +327,31 @@ class Paint(unittest.TestCase):
 			self.assertGreater(inner.sum(), 4, name)
 			self.assertGreater(ratio[inner].min(), 0.9, name)
 
+	def test_ramp_over_the_round_down(self):
+		# the ramp at the stern as the 2022-23 photos show it (facts.json): white over the round-down aft of the stripe
+		# to the deck's edge, light grey along the edge either side of it, the plain deck forward of that grey, and
+		# the centreline's yellow over the white to the edge
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		marks = {m["name"]: m for m in layout["markings"]}
+		canvas = paint.Canvas(layout["deck"]["texture"], 1)
+		image = np.asarray(paint.render(layout), np.float32)
+		(ax, az), (bx, bz) = layout["deck"]["round"]["edge"]
+		edge = lambda z: ax + (z - az) / (bz - az) * (bx - ax)
+		def wears(x, z, colour, name):
+			# the median of the texels within 0.15 m against the colour, in linear light, within the wear's spread
+			c, r = canvas.pixel((x, z)); patch = image[int(r) - 2:int(r) + 3, int(c) - 2:int(c) + 3].reshape(-1, 3)
+			got = np.median(paint.linear(patch), axis=0)
+			np.testing.assert_allclose(got / paint.linear(np.array(colour, np.float32)), 1.0, atol=0.3, err_msg=name)
+		white, light, deck = marks["ramp"]["colour"], marks["ramp_port"]["colour"], layout["paint"]["deck"]
+		for z in (10, 16):
+			wears(edge(z) + 0.4, z, white, f"the round-down at z {z}, between the stripe and the edge")
+		wears(edge(-10) + 1.0, -10, light, "the port strip")
+		wears(edge(-6) + 2.5, -6, deck, "forward of the port strip")
+		wears(edge(20.5) + 1.5, 20.5, light, "the starboard end")
+		(cx, cz), (dx, dz) = marks["centreline"]["points"]
+		x = edge(cz) + 0.4
+		wears(x, cz + (x - cx) / (dx - cx) * (dz - cz), marks["centreline_yellow_1"]["colour"], "the centreline over the white")
+
 	def test_scorch_forward_of_the_hinge(self):
 		# darkest just forward of the hinge on the track's line, none aft of it,
 		# fading forward and to the sides
@@ -394,14 +419,23 @@ class Paint(unittest.TestCase):
 		self.assertLess(faded, grid[start].sum() * 0.5)
 
 	def test_round_down_white_from_where_photographed(self):
-		# the facts' ramp: white from z -5.0 to starboard, light grey to port,
-		# the two meeting there on one line
+		# the facts' ramp: the stripe white from z -5.0 to starboard, the round-down aft of it white from its aft
+		# corners, and light grey to either side, each strip meeting the stripe on the stripe's own end, square to it
 		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
-		ramps = {m["name"]: m for m in layout["markings"] if m["name"] in ("ramp", "ramp_port")}
-		self.assertEqual(ramps["ramp_port"]["points"][-1], ramps["ramp"]["points"][0])
-		self.assertAlmostEqual(ramps["ramp"]["points"][0][1], -5.0)
+		ramps = {m["name"]: m for m in layout["markings"] if m["name"].startswith("ramp")}
+		self.assertEqual(set(ramps), {"ramp", "ramp_port", "ramp_aft", "ramp_starboard"})
+		(px, pz), (qx, qz) = ramps["ramp"]["points"]
+		self.assertAlmostEqual(pz, -5.0)
 		self.assertEqual(ramps["ramp"]["colour"], layout["paint"]["white"])
-		self.assertLess(sum(ramps["ramp_port"]["colour"]), sum(ramps["ramp"]["colour"]) * 0.9)
+		self.assertEqual(ramps["ramp_aft"]["colour"], layout["paint"]["white"])
+		length = np.hypot(qx - px, qz - pz); u = np.array([qx - px, qz - pz]) / length
+		for name, end, along in (("ramp_port", (px, pz), 0.0), ("ramp_starboard", (qx, qz), length)):
+			self.assertLess(sum(ramps[name]["colour"]), sum(ramps["ramp"]["colour"]) * 0.9, name)
+			for point in ramps[name]["outline"][:2]:
+				self.assertAlmostEqual(float((np.array(point) - np.array([px, pz])) @ u), along, delta=0.002, msg=name)
+		# the white over the round-down starts at the stripe's aft corners
+		w = np.array([u[1], -u[0]]) * ramps["ramp"]["width"] / 2; w = w if w[0] > 0 else -w
+		np.testing.assert_allclose(ramps["ramp_aft"]["outline"][:2], [np.array([px, pz]) - w, np.array([qx, qz]) - w], atol=0.002)
 
 	def test_unknown_kind(self):
 		with self.assertRaises(ValueError):

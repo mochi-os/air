@@ -242,6 +242,26 @@ def corners(model, name, materials=None):
 	return np.concatenate([t for t, n in pieces]), np.concatenate([n for t, n in pieces])
 
 
+def crosses(tris, a, b):
+	# whether the segment from a to b meets any of the triangles
+	d = np.array(b) - np.array(a)
+	for t in tris:
+		e1, e2 = t[1] - t[0], t[2] - t[0]
+		h = np.cross(d, e2)
+		det = e1 @ h
+		if abs(det) < 1e-12:
+			continue
+		f = 1 / det
+		s_ = np.array(a) - t[0]
+		u = f * (s_ @ h)
+		q = np.cross(s_, e1)
+		v = f * (d @ q)
+		w = f * (e2 @ q)
+		if u >= 0 and v >= 0 and u + v <= 1 and 0 <= w <= 1:
+			return True
+	return False
+
+
 class BuildTest(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
@@ -678,25 +698,8 @@ class BuildTest(unittest.TestCase):
 		# a sight line across the block through both openings meets nothing of
 		# the island: the room is hollow and both walls open
 		tris = self.model.parts()["island"]
-		def crosses(a, b):
-			d = np.array(b) - np.array(a)
-			for t in tris:
-				e1, e2 = t[1] - t[0], t[2] - t[0]
-				h = np.cross(d, e2)
-				det = e1 @ h
-				if abs(det) < 1e-12:
-					continue
-				f = 1 / det
-				s_ = np.array(a) - t[0]
-				u = f * (s_ @ h)
-				q = np.cross(s_, e1)
-				v = f * (d @ q)
-				w = f * (e2 @ q)
-				if u >= 0 and v >= 0 and u + v <= 1 and 0 <= w <= 1:
-					return True
-			return False
-		self.assertFalse(crosses([-12, 23.5, 19.0], [-12, 23.5, 29.0]))
-		self.assertTrue(crosses([-12, 21.0, 19.0], [-12, 21.0, 29.0]))   # below the room, the block as it was
+		self.assertFalse(crosses(tris, [-12, 23.5, 19.0], [-12, 23.5, 29.0]))
+		self.assertTrue(crosses(tris, [-12, 21.0, 19.0], [-12, 21.0, 29.0]))   # below the room, the block as it was
 		# the panes: see-through, leaning out 0.25 m at the head
 		raw = self.glb.read_bytes()
 		length = int.from_bytes(raw[12:16], "little")
@@ -2075,38 +2078,149 @@ class AnchorTest(unittest.TestCase):
 		self.assertTrue(np.array_equal(port, np.unique(np.round(grey, 4), axis=0)))
 
 
-def alike(a, b):
-	# Two glbs the same but for what a build does not yet keep from run to run
-	# (#94): the order of their triangles (each primitive's indices compared as
-	# a set of triangles) and their normals to 2e-4
-	def parts(data):
-		n = int.from_bytes(data[12:16], "little")
-		gltf, start = json.loads(data[20 : 20 + n]), 20 + n
-		return gltf, data[start + 8 : start + 8 + int.from_bytes(data[start : start + 4], "little")]
+class RepeatTest(unittest.TestCase):
+	# The same inputs build the same model, byte for byte: its triangles in the
+	# same order, the same normals, the atlases packed and baked the same
+	def test_same_bytes(self):
+		with tempfile.TemporaryDirectory() as folder:
+			where = Path(folder)
+			(where / "facts.json").write_text(json.dumps({"layout": LAYOUT}))
+			models = []
+			for name in ("first", "second"):
+				run = subprocess.run(["blender", "-b", "--factory-startup", "--python-use-system-env", "-P", str(HERE / "build.py"), "--",
+					str(where / f"{name}.glb"), str(where / f"{name}.json"), "--facts", str(where / "facts.json")], capture_output=True, text=True)
+				if run.returncode or "Traceback" in run.stdout + run.stderr:
+					raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+				self.assertEqual(len(re.findall(r"^weathered \w+: baked", run.stdout, re.M)), 4)
+				models.append((where / f"{name}.glb").read_bytes())
+			self.assertEqual(models[0], models[1])
 
-	(ga, ba), (gb, bb) = parts(a), parts(b)
-	views = lambda g: {k: v for k, v in g.items() if k not in ("bufferViews", "buffers")}
-	if views(ga) != views(gb):
-		return False
-	indices = {p["indices"] for m in ga["meshes"] for p in m["primitives"] if "indices" in p}
-	normals = {p["attributes"]["NORMAL"] for m in ga["meshes"] for p in m["primitives"] if "NORMAL" in p["attributes"]}
-	kinds = {5126: np.float32, 5125: np.uint32, 5123: np.uint16, 5121: np.uint8}
-	for i, (x, y) in enumerate(zip(ga["accessors"], gb["accessors"])):
-		if "bufferView" not in x:
-			continue
-		def values(g, d, a):
-			v = g["bufferViews"][a["bufferView"]]
-			return np.frombuffer(d, kinds[a["componentType"]], v["byteLength"] // np.dtype(kinds[a["componentType"]]).itemsize, v.get("byteOffset", 0))
-		u, w = values(ga, ba, x), values(gb, bb, y)
-		if i in indices:
-			u, w = np.sort(np.sort(u.reshape(-1, 3), 1), 0), np.sort(np.sort(w.reshape(-1, 3), 1), 0)
-		if u.shape != w.shape or not (np.allclose(u, w, atol=2e-4, rtol=0) if i in normals else np.array_equal(u, w)):
-			return False
-	for x, y in zip(ga.get("images", []), gb.get("images", [])):
-		v, w = ga["bufferViews"][x["bufferView"]], gb["bufferViews"][y["bufferView"]]
-		if ba[v.get("byteOffset", 0) : v.get("byteOffset", 0) + v["byteLength"]] != bb[w.get("byteOffset", 0) : w.get("byteOffset", 0) + w["byteLength"]]:
-			return False
-	return True
+
+# build.py's unique() on boxes made in Blender: faces on the same vertices,
+# settled by its rules; prints each case's faces as [centre x, normal x, paint]
+UNIQUE = r'''
+import json, sys, bmesh, bpy
+from mathutils import Matrix
+build = {"__name__": "unique", "__file__": sys.argv[sys.argv.index("--") + 1]}
+exec(compile(open(build["__file__"]).read(), build["__file__"], "exec"), build)
+def made(*xs, end=None):
+	# 1 m boxes centred on each x, wound outward, sharing the vertices where
+	# they meet, and a copy of the first one's face at x 0.5 (end "same" or
+	# "reversed"): as a Blender mesh keeps them (bmesh will not make a face on
+	# vertices another uses), then in a bmesh
+	vertices, index, faces = [], {}, []
+	for x in xs:
+		bm = bmesh.new()
+		bmesh.ops.create_cube(bm, size=1.0, matrix=Matrix.Translation((x, 0, 0)))
+		for f in bm.faces:
+			face = []
+			for v in f.verts:
+				k = tuple(round(c, 6) for c in v.co)
+				index.setdefault(k, len(index))
+				face.append(index[k])
+			faces.append(face)
+		bm.free()
+	vertices = sorted(index, key=index.get)
+	if end:
+		face = next(f for f in faces if all(abs(vertices[i][0] - 0.5) < 1e-6 for i in f))
+		# the same way after it; reversed, before it, so keeping the first face
+		# would keep the inward one
+		if end == "same":
+			faces.append(face)
+		else:
+			faces.insert(0, face[::-1])
+	mesh = bpy.data.meshes.new("made")
+	mesh.from_pydata(vertices, [], faces)
+	bm = bmesh.new()
+	bm.from_mesh(mesh)
+	return bm
+def faces(bm):
+	return sorted([round(f.calc_center_median().x, 3), round(f.normal.x, 3), f.material_index] for f in bm.faces)
+out = {}
+# two boxes meeting at x 0.5: the face each has there, one against the other
+bm = made(0, 1)
+build["unique"](bm, ["grey"])
+out["membrane"] = faces(bm)
+# one box with its end counted twice, the copy wound inward
+bm = made(0, end="reversed")
+build["unique"](bm, ["grey"])
+out["outside"] = faces(bm)
+# one box with a copy of its end wound the same way in the room's paint, and again with no paint preferred
+for name, prefer in (("room", ("room",)), ("first", ())):
+	bm = made(0, end="same")
+	bm.faces.ensure_lookup_table()
+	bm.faces[-1].material_index = 1
+	build["unique"](bm, ["grey", "room"], prefer)
+	out[name] = faces(bm)
+print("UNIQUE " + json.dumps(out))
+'''
+
+
+class UniqueTest(unittest.TestCase):
+	# Faces on the same vertices, which the glTF exporter's mesh.validate()
+	# would delete all but one of, whichever came first, settled by rule
+	@classmethod
+	def setUpClass(cls):
+		run = subprocess.run(["blender", "-b", "--factory-startup", "--python-use-system-env", "--python-expr", UNIQUE, "--", str(HERE / "build.py")],
+			capture_output=True, text=True)
+		found = re.search(r"^UNIQUE (.*)$", run.stdout, re.M)
+		if not found:
+			raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+		cls.out = json.loads(found.group(1))
+
+	def box(self, x, paint=0):
+		# a 1 m box's faces round x, wound outward
+		return sorted([[x, 0.0, paint], [x, 0.0, paint], [x, 0.0, paint], [x, 0.0, paint], [x - 0.5, -1.0, paint], [x + 0.5, 1.0, paint]])
+
+	def test_membrane_between_two_solids_goes(self):
+		# both faces where the boxes meet go: one closed solid from x -0.5 to 1.5
+		self.assertEqual(self.out["membrane"], sorted([f for f in self.box(0) + self.box(1) if abs(f[0] - 0.5) > 1e-6]))
+
+	def test_outside_surface_keeps_its_outward_face(self):
+		self.assertEqual(self.out["outside"], self.box(0))
+
+	def test_copies_keep_one_of_the_preferred_paint(self):
+		self.assertEqual(self.out["room"], sorted([f for f in self.box(0) if f[0] != 0.5] + [[0.5, 1.0, 1]]))
+		# with no paint preferred, the first
+		self.assertEqual(self.out["first"], self.box(0))
+
+
+class CoincidentTest(unittest.TestCase):
+	# The island built from two blocks side by side that meet at x -12, inside
+	# its glazed level's room: the exact boolean leaves the wall where they
+	# meet as faces on the same vertices, which the exporter's mesh.validate()
+	# would halve, leaving one face of it standing across the room
+	@classmethod
+	def setUpClass(cls):
+		layout = json.loads(json.dumps(LAYOUT))
+		layout["island"]["prisms"] = [{"name": "aft", "bottom": 19.0, "top": 31.0, "outline": [[-20, 20], [-12, 20], [-12, 28], [-20, 28]]},
+			{"name": "forward", "bottom": 19.0, "top": 31.0, "outline": [[-12, 20], [-5, 20], [-5, 28], [-12, 28]]}]
+		cls.folder = tempfile.TemporaryDirectory()
+		where = Path(cls.folder.name)
+		(where / "facts.json").write_text(json.dumps({"layout": layout}))
+		run = subprocess.run(["blender", "-b", "--factory-startup", "--python-use-system-env", "-P", str(HERE / "build.py"), "--",
+			str(where / "ford.glb"), str(where / "ford.json"), "--facts", str(where / "facts.json"), "--draft"], capture_output=True, text=True)
+		cls.log = run.stdout + run.stderr
+		if run.returncode or "Traceback" in cls.log:
+			raise RuntimeError(cls.log[-3000:])
+		cls.model = Model(where / "ford.glb")
+
+	@classmethod
+	def tearDownClass(cls):
+		cls.folder.cleanup()
+
+	def test_exported_as_built(self):
+		self.assertNotIn("is not valid", self.log)
+
+	def test_room_clear_where_the_blocks_meet(self):
+		tris = self.model.parts()["island"]
+		# along the room through x -12, and across it through both openings either side of it
+		self.assertFalse(crosses(tris, [-13.8, 23.5, 24.0], [-10.2, 23.5, 24.0]))
+		for x in (-13, -11):
+			self.assertFalse(crosses(tris, [x, 23.5, 19.0], [x, 23.5, 29.0]))
+		# below the room the blocks stand as built
+		self.assertTrue(crosses(tris, [-13, 21.0, 19.0], [-13, 21.0, 29.0]))
+		self.assertTrue(crosses(tris, [-11, 21.0, 19.0], [-11, 21.0, 29.0]))
 
 
 class CacheTest(unittest.TestCase):
@@ -2144,7 +2258,7 @@ class CacheTest(unittest.TestCase):
 		# again: every group from the cache, the same model
 		again, baked = self.build(base, "again")
 		self.assertEqual(baked, {"island": False, "domes": False, "hull": False, "boot": False})
-		self.assertTrue(alike(again, first))
+		self.assertEqual(again, first)
 		# the port sheave's arm turned, 20 m from any weathered face: still all cached
 		turned = json.loads(json.dumps(base))
 		turned["landing"]["sheaves"][0]["arm"]["angle"] = 20

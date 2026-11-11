@@ -216,6 +216,45 @@ def tidy(data, smooth):
 		data.shade_flat()
 
 
+def unique(bm, paints, prefer=()):
+	# Faces on the same vertices, as Blender's exact boolean leaves where a cut
+	# meets a face in its own plane or where two of the cut's blocks meet,
+	# settled here by rule. Left in, the glTF exporter's mesh.validate() would
+	# delete all but one of each, whichever came first, from the very mesh it
+	# exports.
+	# Faces wound both ways: each stays only where more of the faces round it
+	# (not on its vertices) wind with it than against it, so an outside surface
+	# counted twice keeps its outward face, and a membrane between two solids,
+	# agreeing with each solid as often as it disagrees, goes. Of the faces
+	# left, one stays: of a paint in `prefer` where one has it (`paints`, the
+	# mesh's material names)
+	bm.verts.index_update()
+	bm.faces.index_update()
+	groups = {}
+	for f in bm.faces:
+		groups.setdefault(frozenset(v.index for v in f.verts), []).append(f)
+	gone = []
+	for faces in groups.values():
+		if len(faces) < 2:
+			continue
+		def agreement(f):
+			votes = 0
+			for loop in f.loops:
+				for other in loop.edge.link_loops:
+					if other.face not in faces:
+						votes += 1 if other.vert != loop.vert else -1
+			return votes
+		kept = faces
+		if any(f.normal.dot(faces[0].normal) < 0 for f in faces[1:]):
+			kept = [f for f in faces if agreement(f) > 0]
+		if kept:
+			best = min(kept, key=lambda f: (f.material_index >= len(paints) or paints[f.material_index] not in prefer, f.index))
+			kept = [best]
+		gone += [f for f in faces if f not in kept]
+	if gone:
+		bmesh.ops.delete(bm, geom=gone, context="FACES_ONLY")
+
+
 def joint(name, axis, arm, want, drive, keys, motion="rotate", follows=None):
 	# Records a joint. The axis is turned so that a positive angle moves `arm`
 	# (from the hinge toward the moving part) toward `want`, or a positive
@@ -293,12 +332,16 @@ def prism(outline, bottom, top, upper=None, paint="grey"):
 
 
 def primitive(make):
-	# (vertices, faces) of a closed bmesh primitive that make(bm) adds
+	# (vertices, faces) of a closed bmesh primitive that make(bm) adds. The
+	# faces are put in a fixed order, each keeping its winding: Blender's UV
+	# sphere gives the same vertices every run but its faces in a different
+	# order each time, which reordered the exported triangles, the normals the
+	# exporter writes and the atlases' packing from one build to the next
 	bm = bmesh.new()
 	make(bm)
 	bm.verts.index_update()
 	vertices = [v.co.copy() for v in bm.verts]
-	faces = [tuple(v.index for v in f.verts) for f in bm.faces]
+	faces = sorted((tuple(v.index for v in f.verts) for f in bm.faces), key=lambda f: (sorted(f), f))
 	bm.free()
 	return vertices, faces
 
@@ -1263,6 +1306,15 @@ def glazed(obj, cabs):
 				[bx - nx * 1.0 - dx * 0.4, bz - nz * 1.0 - dz * 0.4], [ax - nx * 1.0 + dx * 0.4, az - nz * 1.0 + dz * 0.4]]
 			if length > 1.0:
 				out.append(prism(c, cab["floor"], min(sill, cab["floor"] + 1.0), paint="dark"))
+	# the cuts leave faces on the same vertices where they meet the block's
+	# own faces in their planes, or where two of its blocks meet inside a
+	# room: settled once all are made, so each cut works on the block as built,
+	# the room's paint kept where a copy of the grey lies on it
+	bm = bmesh.new()
+	bm.from_mesh(obj.data)
+	unique(bm, [m.name for m in obj.data.materials], prefer=("room",))
+	bm.to_mesh(obj.data)
+	bm.free()
 	return out
 
 
@@ -3289,6 +3341,16 @@ def main():
 		if "lettering" in MATERIALS:
 			lettering_texture(facts)
 		weathered(facts, out[0], cache)
+	# the glTF exporter calls mesh.validate() on each mesh it exports, deletes
+	# what that finds and goes on with a warning: a mesh it would change fails
+	# the build here instead, so the model exported is the one built
+	for o in bpy.data.objects:
+		if o.type == "MESH":
+			copy = o.data.copy()
+			changed = copy.validate()
+			bpy.data.meshes.remove(copy)
+			if changed:
+				raise RuntimeError(f"mesh {o.name} is not valid: the glTF exporter would change it")
 	bpy.ops.export_scene.gltf(filepath=out[0], export_format="GLB", export_yup=True, use_selection=False,
 		export_apply=False, export_animations=False, export_extras=False)
 	Path(out[1]).write_text(json.dumps(ship_file(hulled), indent="\t") + "\n")
@@ -3299,4 +3361,5 @@ def main():
 		Path(out[2]).write_text(json.dumps(features, indent="\t") + "\n")
 
 
-main()
+if __name__ == "__main__":
+	main()
