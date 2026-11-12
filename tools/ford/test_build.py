@@ -178,7 +178,9 @@ LAYOUT = {
 				"sweep": [0, 90], "paint": "white"},
 			{"name": "bend", "kind": "railing", "height": 1.0, "posts": 1.5, "bent": True, "path": [[-88.5, 8.0, -3.5]]
 				+ [[round(-90.5 + 0.5 * math.cos(math.radians(-90 - 15 * k)), 4), 8.0, round(-3.0 + 0.5 * math.sin(math.radians(-90 - 15 * k)), 4)] for k in range(7)]
-				+ [[-91.0, 8.0, 0.0]]}],
+				+ [[-91.0, 8.0, 0.0]]},
+			# a panel of see-through net standing on the recess's floor, 2 m by 1.5 m, facing aft
+			{"name": "cage_net", "kind": "net", "corners": [[-89.5, 7.0, 0.5], [-89.5, 7.0, 2.5], [-89.5, 8.5, 2.5], [-89.5, 8.5, 0.5]]}],
 		# the walkway cut back round the drop bar to a ledge at x -92.8 from
 		# z 1.5 to 2.5, its railing in two lines turning in along the cut
 		"walkway": {"plan": [[-92, -5], [-94, -5], [-94, 1.5], [-92.8, 1.5], [-92.8, 2.5], [-94, 2.5], [-94, 5], [-92, 5]], "thickness": 0.2,
@@ -1301,6 +1303,27 @@ class BuildTest(unittest.TestCase):
 		np.testing.assert_allclose([ring[:, 0].min(), ring[:, 0].max()], [-88.1, -88.0], atol=1e-4)
 		# and named for the photo match at its centre, as its `mark` asks
 		self.assertEqual(self.features["landmarks"]["transom_ring"], {"at": [-88, 8.5, 2], "node": "transom_fittings"})
+
+	def test_net_panel_see_through(self):
+		# a transom detail of kind `net`: its own node in the nets' cut-out
+		# material, where its corners put it, none of it in the fittings, its
+		# cord mapped square on its plane (2 m across and 1.5 up, 4 and 3
+		# repeats of the 0.5 m image)
+		panel = self.model.parts(materials=["net"])["net_panels"].reshape(-1, 3)
+		np.testing.assert_allclose([panel[:, 0].min(), panel[:, 0].max(), panel[:, 1].min(), panel[:, 1].max(), panel[:, 2].min(), panel[:, 2].max()],
+			[-89.5, -89.5, 7.0, 8.5, 0.5, 2.5], atol=1e-4)
+		fittings = self.model.parts()["transom_fittings"].reshape(-1, 3)
+		self.assertFalse((np.isclose(fittings[:, 0], -89.5, atol=1e-3) & (fittings[:, 2] > 0.5) & (fittings[:, 2] < 2.5) & (fittings[:, 1] > 7.1)).any())
+		data = self.glb.read_bytes()
+		size = int.from_bytes(data[12:16], "little")
+		gltf = json.loads(data[20:20 + size])
+		blob = data[20 + size + 8:]
+		mesh = gltf["meshes"][next(n["mesh"] for n in gltf["nodes"] if n["name"] == "net_panels")]
+		self.assertEqual([gltf["materials"][p["material"]]["name"] for p in mesh["primitives"]], ["net"])
+		accessor = gltf["accessors"][mesh["primitives"][0]["attributes"]["TEXCOORD_0"]]
+		view = gltf["bufferViews"][accessor["bufferView"]]
+		uv = np.frombuffer(blob, np.float32, accessor["count"] * 2, view.get("byteOffset", 0) + accessor.get("byteOffset", 0)).reshape(-1, 2)
+		np.testing.assert_allclose(sorted([round(float(np.ptp(uv[:, 0])), 3), round(float(np.ptp(uv[:, 1])), 3)]), [3.0, 4.0], atol=1e-3)
 
 	def test_bent_railing(self):
 		# a railing bent round a rounded corner: its posts evenly along the

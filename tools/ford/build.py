@@ -1989,12 +1989,41 @@ def upper_transom(x0, section):
 	fittings.append(prism(pl["outline"], pl["bottom"], pl["top"], pl.get("upper")))
 	# the rest as photographed: the recess's mezzanine, doors, cabinet, lamps
 	# and life ring, the boat landing, the scuppers, pipe and chocks; a part
-	# that gives a `mark` is a landmark for the photo match at its centre
-	fittings += [shape(d) for d in t.get("details", [])]
+	# that gives a `mark` is a landmark for the photo match at its centre; a
+	# `net` a panel of see-through net (net_panels())
+	fittings += [shape(d) for d in t.get("details", []) if d["kind"] != "net"]
 	for d in t.get("details", []):
 		if "mark" in d:
 			MARKS[d["mark"]] = (at(*d["centre"]), "transom_fittings")
 	node("transom_fittings", mesh=merge(fittings))
+	net_panels([d for d in t.get("details", []) if d["kind"] == "net"])
+
+
+def net_panels(panels):
+	# Flat panels of net (the port aft sponson's cage), each four `corners` in
+	# the ship frame: one node, `net_panels`, in the nets' see-through cord
+	# (net_material()), mapped square on each panel's own plane at the nets'
+	# NET_TILE, so a vertical panel's meshes come out as the catwalks' do
+	if not panels:
+		return
+	vertices, faces, planes = [], [], []
+	for p in panels:
+		corners = [at(*q) for q in p["corners"]]
+		faces.append(tuple(range(len(vertices), len(vertices) + 4)))
+		vertices += corners
+		u, v = (corners[1] - corners[0]).normalized(), (corners[3] - corners[0]).normalized()
+		planes.append((corners[0], u, v, u.cross(v).normalized()))
+	net_material()
+	obj = node("net_panels", mesh=(vertices, faces, ["net"] * len(faces)))
+	uv = obj.data.uv_layers.new(name="net")
+	hinge = HINGES["net_panels"]
+	for polygon in obj.data.polygons:
+		# its panel: the one whose plane passes through its middle
+		middle = polygon.center + hinge
+		origin, u, v, _ = min(planes, key=lambda q: abs((middle - q[0]).dot(q[3])))
+		for k in polygon.loop_indices:
+			co = obj.data.vertices[obj.data.loops[k].vertex_index].co + hinge
+			uv.data[k].uv = ((co - origin).dot(u) / NET_TILE, (co - origin).dot(v) / NET_TILE)
 
 
 def turned(origin, axis, profile, paints, flat=(), segments=32, shift=None, section=None):
