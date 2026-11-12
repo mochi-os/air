@@ -13,7 +13,7 @@ sys.path.insert(0, str(HERE.parent / "verify"))
 import numpy as np  # noqa: E402
 
 import check  # noqa: E402
-from test_verify import box, glb  # noqa: E402
+from test_verify import box, glb, guess_counts  # noqa: E402
 
 
 class StoresTest(unittest.TestCase):
@@ -59,6 +59,16 @@ class EntriesTest(unittest.TestCase):
 			self.assertIn(fact, check.entries(check.FACTS), f"{fact}: exempt but not in facts.json")
 			self.assertNotIn(fact, measured, f"{fact}: both measured and exempt")
 
+	def test_no_fact_is_a_guess(self):
+		# A shape no source shows is asked about, never guessed: any facts.json
+		# text saying it is guessed ("by eye", "estimated", "not measured", "unseen": verify's GUESS) is a guess unless the user signed it off
+		# (check.GUESSES), and a sign-off names a text that still says it
+		counts = guess_counts(check.FACTS)
+		unsigned = [f"{p}: says it is guessed (verify's GUESS words), no source measured it and the user has not signed it off (check.GUESSES)" for p in sorted(set(counts) - set(check.GUESSES))]
+		stale = [f"{p}: signed off in check.GUESSES but no longer says it is guessed" for p in sorted(set(check.GUESSES) - set(counts))]
+		grown = [f"{p}: holds {counts[p]} guesses where the sign-off covers {check.GUESSES[p][0]}: ask the user about the new one" for p in sorted(set(counts) & set(check.GUESSES)) if counts[p] != check.GUESSES[p][0]]
+		self.assertFalse(unsigned + stale + grown, "\n" + "\n".join(unsigned + stale + grown))
+
 
 class ProvenanceTest(unittest.TestCase):
 	# Our model's scripts never open the old model or the vendor downloads (the
@@ -85,6 +95,14 @@ class GeometryTest(unittest.TestCase):
 		(loop,) = check.loops(square)
 		self.assertEqual(len(loop), 5)
 		self.assertAlmostEqual(check.shoelace(loop), 4.0)
+
+	def test_loops_from_a_segment_part_way_along(self):
+		# a cut's segments come in no order: a loop whose first-listed segment
+		# lies part way along an open chain, the rest listed back to front,
+		# still chains whole, walking back from that segment as well as on
+		chain = np.array([[[2, 0], [3, 0]], [[1, 0], [2, 0]], [[0, 0], [1, 0]], [[3, 0], [4, 0]]], float)
+		(loop,) = check.loops(chain)
+		self.assertEqual([tuple(p) for p in loop], [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)])
 
 	def test_leading_sweep(self):
 		# an untapered wing's leading edge sweeps as its quarter chord does

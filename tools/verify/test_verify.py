@@ -3,7 +3,7 @@
 # Mochi Application Interface Exception - see license.txt and license-exception.md.
 #
 # usage: python3 -I test_verify.py
-import json, math, struct, sys, tempfile, unittest
+import json, math, re, struct, sys, tempfile, unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -13,6 +13,35 @@ import numpy as np  # noqa: E402
 
 import camera as cam  # noqa: E402
 import model as mod  # noqa: E402
+
+
+# The words a facts text uses for a value no source measured: "by eye" alone
+# let "estimated", "the eye's", "not measured" and "unseen" through unasked
+GUESS = re.compile(r"\bby eye\b|\bthe eye's\b|\bestimated?\b|\bnot (yet )?measured\b|\bunmeasured\b|\bunseen\b|\bnot seen\b|"
+	r"\bno photo (sees|shows|fixes)\b|\bprovisional\b|\bguess(ed)?\b", re.I)
+
+
+def guesses(node, path=""):
+	# Every text in a facts table that says a value is guessed, by its path: a
+	# number no source measures is asked about and signed off (each check's
+	# GUESSES), never written in
+	if isinstance(node, dict):
+		return [p for k, v in node.items() for p in guesses(v, f"{path}.{k}" if path else k)]
+	if isinstance(node, list):
+		return [p for i, v in enumerate(node) for p in guesses(v, f"{path}[{i}]")]
+	return [path] if isinstance(node, str) and GUESS.search(node) else []
+
+
+def guess_counts(node, path=""):
+	# How many guesses each such text holds (GUESS's matches), by its path:
+	# a sign-off records the count it covers, so a guess added later to a
+	# signed text is caught, not hidden behind the earlier sign-off
+	if isinstance(node, dict):
+		return {p: n for k, v in node.items() for p, n in guess_counts(v, f"{path}.{k}" if path else k).items()}
+	if isinstance(node, list):
+		return {p: n for i, v in enumerate(node) for p, n in guess_counts(v, f"{path}[{i}]").items()}
+	n = len(list(GUESS.finditer(node))) if isinstance(node, str) else 0
+	return {path: n} if n else {}
 
 
 def box(lo, hi):
@@ -79,6 +108,24 @@ def glb(path, nodes):
 
 
 JET = {"names": ["station", "waterline", "buttline"], "unit": 0.0254, "origin": [456, 105, 0], "axes": [[-1, 0, 0], [0, 1, 0], [0, 0, 1]], "mirror": "buttline"}
+
+
+class GuessesTest(unittest.TestCase):
+	def test_finds_every_text_saying_by_eye(self):
+		self.assertEqual(guesses({"a": {"note": "its width by eye"}, "b": ["measured", {"where": "By eye against the wing"}]}), ["a.note", "b[1].where"])
+		self.assertEqual(guesses({"a": {"note": "read against the solved camera's stations"}, "b": "nearby eyelet"}), [])
+
+	def test_counts_each_texts_guesses(self):
+		self.assertEqual(guess_counts({"a": "its width by eye, its depth estimated", "b": ["fine", {"c": "unseen"}], "d": "measured"}), {"a": 2, "b[1].c": 1})
+
+	def test_finds_a_guess_in_other_words(self):
+		# each way the facts have said it: every one is a guess the user is asked about
+		for text in ("its ends are estimated", "the flaps' length is the eye's", "its thickness is not measured", "the inboard side unmeasured",
+				"its trailing edge rises to the wing, unseen", "its forward end's depth is not seen", "no photo shows its width", "provisional: near the helmet",
+				"a guess", "not yet measured"):
+			self.assertEqual(guesses({"note": text}), ["note"], text)
+		for text in ("the flight model's own estimates", "seen side-on", "measured on two photos", "every photo shows it"):
+			self.assertEqual(guesses({"note": text}), [], text)
 
 
 class FrameTest(unittest.TestCase):

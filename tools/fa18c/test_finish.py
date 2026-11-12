@@ -111,6 +111,25 @@ class ColourTest(unittest.TestCase):
 		beside = luminance(paint(skin([joint + 2.0], np.linspace(-170, 170, 60)), part=2))
 		self.assertGreater(on.mean(), 0.95 * beside.mean())
 
+	def test_the_wingtip_rails_body_is_dark_between_its_light_ends(self):
+		# the LAU-7 (layout.stores.paint tip): its body the measured dark tone,
+		# its cap and cone and the adapter inboard of it the stores' grey;
+		# the light ends from the rail's own layout, as build.py passes them
+		rail = LAYOUT["stores"]["rails"]["tip"]
+		length = float(np.linalg.norm(np.subtract(rail["aft"], rail["front"])))
+		spec = dict(SPEC, tip=dict(SPEC["tip"], light=[rail["cap"], length - rail["cone"]]))
+		frame = {"kind": "tip", "nose": [0.0, 0.0, 0.0], "axis": [-1.0, 0.0, 0.0], "up": [0.0, 0.0, 1.0]}
+		def at(station, inboard):
+			where = np.array([[[-station * INCH, 0.0, inboard * INCH]]])
+			return finish.colour(spec, GREY, np.ones((1, 1)), where, np.ones((1, 1), int), [frame], np.full((1, 1), 0.1))[0, 0]
+		body = np.asarray(SPEC["tip"]["body"]) / 255
+		for station, inboard, dark in ((length / 2, -2.0, True), (40.0, 2.0, True), (rail["cap"] - 1.0, -2.0, False), (length - rail["cone"] + 1.0, -2.0, False), (length / 2, 4.0, False)):
+			c = at(station, inboard)
+			if dark:
+				np.testing.assert_allclose(c, body, atol=0.03, err_msg=f"{station} in aft, {inboard} in inboard")
+			else:
+				np.testing.assert_allclose(c, GREY, atol=0.05, err_msg=f"{station} in aft, {inboard} in inboard")
+
 
 if __name__ == "__main__":
 	unittest.main()

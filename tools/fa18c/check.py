@@ -29,6 +29,35 @@ WING = ["wing_inner_{s}", "wing_outer_{s}", "flap_leading_inner_{s}", "flap_lead
 # Entries the check does not measure, and why
 PAINTED = {"layout.stencils"}   # facts only the paint's atlas shows
 
+# A shape no source shows is asked about, never guessed: every facts.json
+# text saying it is guessed (verify's GUESS words: "by eye", "estimated",
+# "not measured", "unseen" and the like) is listed here with the user's
+# sign-off (its path, how many guesses the text held when they signed it, the
+# date and what they approved), or test_check fails; a text that gains a
+# guess fails again until it is signed again
+GUESSES = {
+	"layout.stores.centreline.note": (2, "user, 2026-11-11: the SUU-62's width 9.5 in with its 7 in taper, consistent with dvids8025511, 9393257 and 9393262 but fixed by none; its aft end at FS 445, shaped as dvids_4642578 shows"),
+	"layout.stores.rack.note": (1, "user, 2026-11-11: keep the 3 in block joining each side rail to its LAU-115 until a solvable photo shows the shoulder fittings (dvids7378817 shows them, but no landmark lets its camera be solved)"),
+	"layout.stores.rails.tip.note": (1, "user, 2026-11-11: keep the LAU-7 channel 1.0 in deep; no public-domain end view of an empty LAU-7 was found"),
+	"layout.stores.rails.tip.adapter.note": (1, "user's ruling, 2026-11-11: the lower housing and the fairing's underside mirror the upper side about the rail (dvids_7440917, dvids_7847377)"),
+	"layout.strips.where": (1, "user's ruling, 2026-11-11: the strip under the tip rail held at the upper strip's buttlines, the mirror of the upper housing"),
+	"layout.stores.rails.tip.across": (1, "user, 2026-11-12: the wingtip LAU-7's cap and cone take their measured standing shares across the rail too; every view from above has a round on the rail hiding the ends and no photo of an empty rail from below was found"),
+	"layout.antennas.note": (3, "user, 2026-11-12: keep, under an inch and not seen at close range: the blades' thickness (0.4 in, as the nose blade's) and the comb posts' size"),
+	"layout.blade.note": (1, "user, 2026-11-12: keep, under an inch and not seen at close range: the nose blade's thickness"),
+	"layout.blisters.note": (1, "user, 2026-11-12: keep, under an inch and not seen at close range: how far the nose antenna blisters stand proud, in the ECM cover's proportion"),
+	"layout.strips.note": (1, "user, 2026-11-12: keep, under an inch and not seen at close range: the formation strips' width, the nose strip's measured 1.7 in"),
+	"layout.lights.gear.where": (1, "user, 2026-11-12: keep, under an inch and not seen at close range: the landing light box's facing angle"),
+	"layout.keel.note": (1, "user, 2026-11-12: keep; no photo can see it: the keel's forward end, rising to the body over FS 589-619 under the jet"),
+	"layout.nacelle.where": (1, "user, 2026-11-12: keep; no photo can see it: the nacelles' inboard sides in the tunnel, the section's own curve"),
+	"layout.panels.note": (1, "user, 2026-11-12: keep; no photo can see it: the spine panel joints' tops, continued over the crown"),
+	"layout.stores.pylon.note": (1, "user, 2026-11-12: keep; no photo can see it: the wing pylons' trailing edges rising to the wing"),
+	"layout.petals.where": (1, "user, 2026-11-12: keep; no photo can see it: the divergent flaps' length (nothing of known size at their depth)"),
+	"layout.petals.note": (1, "user, 2026-11-12: keep; no photo can see it: the divergent flaps' length"),
+	"layout.paint.note": (1, "user, 2026-11-12: keep; no photo can see it: the nozzle's divergent flap faces, convergent flaps and duct colours, in shadow in every photo"),
+	"layout.eye.note": (1, "user, 2026-11-12: keep; no photo can see it: the design eye on the pilot's helmet in the reference photo"),
+	"layout.cockpit.note": (1, "user, 2026-11-12: keep; no photo can see it: the simple cockpit's tub, panel and pilot's limbs, seen only through the canopy and replaced in first person"),
+}
+
 EXEMPT = {
 	"overall.span.missiles": "needs the wingtip launchers and missiles (step 5, stores)",
 	"nose.junction": "the radome's joint is a paint line, not a shape",
@@ -64,23 +93,10 @@ EXEMPT = {
 	"layout.eye": "the design eye is a point the build writes as given",
 	"layout.hardpoints": "store mounts the build writes as given, the fuselage ones draped onto the skin (shape.mount); step 5 checks them against the stores",
 	"layout.paint": "colours the paint bake writes into the atlas, not a shape (looked at on the comparison sheets)",
-	"layout.stores": "the stores the build hangs where the photos put them; step 5c measures them against their facts",
 	"stores.bru32.length": "the rack inside the pylon: not built",
 	"stores.bru32.hooks": "where the rack hangs the LAU-115: the build places it on them (step 5c)",
-	"stores.lau115.length": "not built yet (step 5c)",
-	"stores.lau115.width": "not built yet (step 5c)",
-	"stores.lau115.height": "not built yet (step 5c)",
 	"stores.lau115.rails": "which rail carries which missile, not a shape",
-	"stores.lau127.length": "not built yet (step 5c)",
-	"stores.lau127.width": "not built yet (step 5c)",
-	"stores.lau127.height": "not built yet (step 5c)",
-	"stores.lau7.length": "not built yet (step 5c)",
-	"stores.lau7.width": "not built yet (step 5c)",
-	"stores.lau7.height": "not built yet (step 5c)",
-	"stores.lau116.length": "not built yet (step 5c)",
-	"stores.lau116.width": "not built yet (step 5c)",
-	"stores.lau116.height": "not built yet (step 5c)",
-	"stores.tank.capacity": "not built yet (step 5c)",
+	"stores.tank.capacity": "a fuel capacity, not a shape: the tank's size is the photos' (layout.stores.tank)",
 }
 
 
@@ -206,6 +222,15 @@ def loops(segments, tolerance=1e-6):
 			used.add(nxt)
 			a, b = segments[nxt]
 			loop.append(b if tuple(np.round(a, 5)) == key else a)
+		# and back from its first segment, which may lie part way along it
+		while True:
+			key = tuple(np.round(loop[0], 5))
+			nxt = next((k for k in ends.get(key, []) if k not in used), None)
+			if nxt is None:
+				break
+			used.add(nxt)
+			a, b = segments[nxt]
+			loop.insert(0, b if tuple(np.round(a, 5)) == key else a)
 		out.append(np.array(loop))
 	return out
 
@@ -2336,6 +2361,336 @@ def checks(jet):
 				yield result("shape.mirror", f"{name} about the centreline, {pose}", 0, mirrored(p, p), 0.1)
 
 	yield from guard("shape", "shapes", shapes)
+
+	# The stores' shapes (layout.stores, stores.lau7, stores.lau115,
+	# stores.lau127, stores.lau116), every store part shown: a group per store,
+	# so one that cannot measure hides none of the others
+	def stores():
+		S, drives = F["layout"]["stores"], {"stores": 1}
+
+		def section(names, point, normal):
+			# The largest loop where a plane across `normal` through `point` cuts
+			# the parts, in the plane's own axes (the first level), and its area
+			normal = np.asarray(normal, float) / np.linalg.norm(normal)
+			across = np.cross(normal, [0.0, 1.0, 0.0])
+			across = across / np.linalg.norm(across)
+			upward = np.cross(across, normal)
+			best = None
+			for loop in loops(jet.cut(names, point, normal, drives).reshape(-1, 2, 3)):
+				if len(loop) < 4 or not np.allclose(loop[0], loop[-1]):
+					continue
+				flat = np.stack([(loop - point) @ across, (loop - point) @ upward], -1)
+				if best is None or shoelace(flat) > best[1]:
+					best = (flat, shoelace(flat))
+			if best is None:
+				raise ValueError(f"no section of {names} at {np.round(point, 1)}")
+			return best
+
+		def channel(names, point, normal, toward):
+			# The channel along a launcher's face toward its round, across a plane
+			# through `point`: its depth, the face's level less the section's reach
+			# at the face's middle, and its width, where the reach falls more than
+			# half that depth short
+			normal = np.asarray(normal, float) / np.linalg.norm(normal)
+			toward = np.asarray(toward, float) - normal * (np.asarray(toward, float) @ normal)
+			toward = toward / np.linalg.norm(toward)
+			side = np.cross(normal, toward)
+			segments = jet.cut(names, point, normal, drives).reshape(-1, 2, 3) - point
+			x, y = segments @ side, segments @ toward
+			def reach(c):
+				lo, hi = x.min(1), x.max(1)
+				on = (lo <= c) & (hi >= c) & (hi > lo)
+				k = (c - x[on, 0]) / (x[on, 1] - x[on, 0])
+				return (y[on, 0] + k * (y[on, 1] - y[on, 0])).max()
+			level = y.max()
+			flat = x[y >= level - 0.02]
+			middle = (flat.min() + flat.max()) / 2
+			depth = level - reach(middle)
+			if depth < 0.01:
+				return depth, 0.0   # no channel
+			edges = []
+			for step in (-0.005, 0.005):
+				c = middle
+				while reach(c) < level - depth / 2:
+					c += step
+				edges.append(c)
+			return depth, edges[1] - edges[0]
+
+		def axes(name, station):
+			# a launcher's or rack's axes from the round it carries: aft along
+			# it, and from it toward the round (against the round's up)
+			seat = jet.document["points"]["hardpoints"][station]["rounds"][name]
+			ends = FRAME.source(np.array([seat["mount"], np.add(seat["mount"], seat["forward"]), np.add(seat["mount"], seat["up"])]))
+			aft, up = ends[0] - ends[1], ends[2] - ends[0]
+			return aft / np.linalg.norm(aft), -up / np.linalg.norm(up)
+
+		def square(rounding, w, h):
+			# a section's area against its box's, its corners rounded by
+			# `rounding` of its smaller half
+			r = rounding * min(w, h) / 2
+			return 1 - (4 - math.pi) * r * r / (w * h)
+		def tip():
+			# The wingtip LAU-7: its length tip to tip, its section, its forward
+			# cap and aft cone (where its section first and last stands whole), and
+			# the channel along its outboard face
+			tip = S["rails"]["tip"]
+			front, aft = np.array(tip["front"], float), np.array(tip["aft"], float)
+			axis = (aft - front) / np.linalg.norm(aft - front)
+			p = jet.points(["rail_9"], drives)
+			along = (p - front) @ axis
+			off = p - front - np.outer(along, axis)
+			rail = np.abs(off[:, 1]) <= value(F["stores"]["lau7"]["width"]) / 2 + 0.05   # the rail's own corners, not its housings
+			ends = along[rail]
+			yield result("stores.lau7.length", "wingtip rail, tip to tip", value(F["stores"]["lau7"]["length"]), ends.max() - ends.min(), 0.3)
+			middle = front + axis * 25.0   # clear of the fitting strip (40 to 90 in) and the housings
+			flat, _ = section(["rail_9"], middle, axis)
+			yield result("stores.lau7.width", "wingtip rail's section, standing", value(F["stores"]["lau7"]["width"]), np.ptp(flat[:, 1]), 0.05)
+			yield result("stores.lau7.height", "wingtip rail's section, across", value(F["stores"]["lau7"]["height"]), np.ptp(flat[:, 0]), 0.05)
+			depth, width = channel(["rail_9"], middle, axis, axes("rail_9", "9")[1])
+			yield result("layout.stores", "wingtip rail's channel, deep", tip["channel"][1], depth, 0.05)
+			yield result("layout.stores", "wingtip rail's channel, wide", tip["channel"][0], width, 0.05)
+			stations = np.unique(np.round(ends, 2))
+			full = np.array([np.ptp(p[rail][np.abs(along[rail] - t) < 0.01][:, 1]) for t in stations])
+			whole = stations[full >= 0.995 * np.ptp(flat[:, 1])]   # its section whole, as half way along it
+			yield result("layout.stores", "wingtip rail's forward cap, whole behind its tip", tip["nose"]["run"], whole.min() - ends.min(), 0.5)
+			yield result("layout.stores", "wingtip rail's aft cone", tip["cone"], ends.max() - whole.max(), 0.5)
+			# the ends' profiles (nose, taper): the section's standing height as a
+			# share of the whole, between the rings either side
+			standing = np.ptp(flat[:, 1])
+			# the rail's own rings: a ring's worth of points within its section
+			# across, not a stray vertex of the strips or the fairing's last ring
+			counts = np.array([np.sum(np.abs(ends - t) < 0.01) for t in stations])
+			across = np.array([np.ptp(off[rail][np.abs(ends - t) < 0.01][:, 2]) for t in stations])
+			ring = (counts >= 20) & (across <= value(F["stores"]["lau7"]["height"]) + 0.1)
+			share = lambda t: float(np.interp(t, stations[ring] - ends.min(), full[ring])) / standing
+			nose, taper = tip["nose"], tip["taper"]
+			for t in (1.1, 2.0):
+				expect = nose["tip"] + (1 - nose["tip"]) * math.sin(math.pi / 2 * min(t / nose["run"], 1.0))
+				yield result("layout.stores", f"wingtip rail's cap {t} in behind its tip, its share of the section", round(expect, 3), share(t), 0.03, "share")
+			for d in (4.4, 7.7):
+				expect = max(0.01, taper["close"] + (1 - taper["close"]) * min(d / tip["cone"], 1.0) ** taper["power"])
+				yield result("layout.stores", f"wingtip rail's cone {d} in ahead of its tip, its share of the section", round(expect, 3), share(ends.max() - ends.min() - d), 0.03, "share")
+			# the fairing and the formation lights' housings joining it to the tip
+			# (layout.stores.rails.tip.adapter): each housing's outline, across it
+			# at its middle buttline; the fairing's top at the rail's level out to
+			# the step and at the wing's edge beyond it, clear of the housings
+			adapter = tip["adapter"]
+			most = lambda a: a.max() if len(a) else math.nan
+			least = lambda a: a.min() if len(a) else math.nan
+			strips, housing = F["layout"]["strips"], adapter["housings"]
+			for key, above in (("tip", True), ("undertip", False)):
+				(f0, w0, b0), (f1, w1, b1) = sorted(strips[key])
+				face = (abs(b0) + abs(b1)) / 2
+				cut = jet.cut(["rail_9"], np.array([(f0 + f1) / 2, (w0 + w1) / 2, face - housing["thick"] / 2]), [0.0, 0.0, 1.0], drives).reshape(-1, 3)
+				cut = cut[(cut[:, 0] > f0 - 8) & (cut[:, 0] < f1 + 8) & ((cut[:, 1] > w0) if above else (cut[:, 1] < w0))]
+				sign = 1 if above else -1
+				for word, f, w in (("forward", f0, w0), ("aft", f1, w1)):
+					edge = w + sign * (strips["width"] / 2 + housing["rim"])
+					near = cut[np.abs(cut[:, 0] - (f + (housing["end"] if word == "aft" else -housing["end"]))) < 0.4]
+					yield result("layout.stores", f"{key} strip's housing, its outer edge at its {word} end", edge, (most(near[:, 1]) if above else least(near[:, 1])), 0.05, "WL in")
+				line = lambda f: w0 + (f - f0) * (w1 - w0) / (f1 - f0) + sign * (strips["width"] / 2 + housing["rim"])
+				outer = cut[np.abs(cut[:, 1] - line(cut[:, 0])) < 0.1]
+				yield result("layout.stores", f"{key} strip's housing, its outer edge's length", f1 - f0 + 2 * housing["end"], np.ptp(outer[:, 0]) if len(outer) else math.nan, 0.3)
+				# its thickness 0.3 in inside its outer edge, clear of the fairing below it
+				middle = (f0 + f1) / 2
+				across = jet.cut(["rail_9"], np.array([middle, line(middle) - sign * 0.3, face]), [0.0, 1.0, 0.0], drives).reshape(-1, 3)
+				across = across[(across[:, 2] > face - housing["thick"] - 0.6) & (across[:, 2] < face + 0.6)]
+				yield result("layout.stores", f"{key} strip's housing, thick", housing["thick"], np.ptp(across[:, 2]) if len(across) else math.nan, 0.05)
+			station = 530.0
+			k = (station - front[0]) / (aft[0] - front[0])
+			half = value(F["stores"]["lau7"]["width"]) / 2
+			top, bottom = front[1] + k * (aft[1] - front[1]) + half - 0.15, front[1] + k * (aft[1] - front[1]) - half + 0.15
+			# the section's waterlines where its segments cross the buttline just
+			# outboard of the step
+			segments = jet.cut(["rail_9"], np.array([station, top, 226.0]), [1.0, 0.0, 0.0], drives).reshape(-1, 2, 3)
+			def crossing(at):
+				spans = segments[(segments[:, 0, 2] - at) * (segments[:, 1, 2] - at) <= 0]
+				share = (at - spans[:, 0, 2]) / np.where(spans[:, 1, 2] == spans[:, 0, 2], 1.0, spans[:, 1, 2] - spans[:, 0, 2])
+				wl = spans[:, 0, 1] + share * (spans[:, 1, 1] - spans[:, 0, 1])
+				return most(wl), least(wl)
+			beside = crossing(adapter["step"] + 0.5)
+			yield result("layout.stores", "wingtip fairing's top just outboard of the step, against the rail's", top, beside[0], 0.05, "WL in")
+			yield result("layout.stores", "wingtip fairing's underside just outboard of the step, against the rail's", bottom, beside[1], 0.05, "WL in")
+			ends = crossing(adapter["edge"] - 0.3 + 0.02)
+			inboard = crossing(adapter["step"] - 0.5)
+			k = 0.5 / (adapter["step"] - adapter["edge"] + 0.3)
+			yield result("layout.stores", "wingtip fairing's top just inboard of the step, on its rise to the tip's edge", top + k * (ends[0] - top), inboard[0], 0.05, "WL in")
+			yield result("layout.stores", "wingtip fairing's underside just inboard of the step, on its rise to the tip's edge", bottom + k * (ends[1] - bottom), inboard[1], 0.05, "WL in")
+			# the lower housing the upper's mirror about the rail: its outer edge
+			# as far under the rail's bottom as the upper's stands over its top,
+			# less their strips' gaps to the rail, half way along each, and its
+			# plate at the upper's buttline
+			reach = {}
+			for key, above in (("tip", True), ("undertip", False)):
+				(f0, w0, b0), (f1, w1, b1) = sorted(strips[key])
+				middle = (f0 + f1) / 2
+				k = (middle - front[0]) / (aft[0] - front[0])
+				axis_wl = front[1] + k * (aft[1] - front[1])
+				face = (abs(b0) + abs(b1)) / 2
+				cut = jet.cut(["rail_9"], np.array([middle, axis_wl, face - housing["thick"] / 2]), [0.0, 0.0, 1.0], drives).reshape(-1, 3)
+				cut = cut[np.abs(cut[:, 0] - middle) < 0.5]
+				reach[key] = most(cut[:, 1]) - (axis_wl + half) if above else (axis_wl - half) - least(cut[:, 1])
+				across = jet.cut(["rail_9"], np.array([middle, (w0 + w1) / 2 + (1 if above else -1) * strips["width"] / 2, face]), [0.0, 1.0, 0.0], drives).reshape(-1, 3)
+				across = across[(across[:, 2] > face - housing["thick"] - 0.6) & (across[:, 2] < face + 0.6) & (across[:, 0] > f0 - 6.0) & (across[:, 0] < f1 + 6.0)]
+				reach[key + " face"] = most(across[:, 2])
+			gap = strips["gap"]
+			yield result("layout.stores", "wingtip lower housing's reach under the rail against the upper's over it, less the strips' gaps", reach["tip"] - gap["tip"], reach["undertip"] - gap["undertip"], 0.15)
+			yield result("layout.stores", "wingtip lower housing's outboard face against the upper's", reach["tip face"], reach["undertip face"], 0.05, "BL in")
+
+		def side():
+			# a side rail's channel, the same LAU-7's: across station 8's outer
+			# rail half way along it
+			q = jet.points(["rail_8a"], drives)
+			lead, down = axes("rail_8a", "8")
+			reach = (q - q.mean(0)) @ lead
+			depth, width = channel(["rail_8a"], q.mean(0) + lead * ((reach.min() + reach.max()) / 2 + 3.0), lead, down)
+			yield result("layout.stores", "station 8's outer side rail's channel, deep", S["rails"]["tip"]["channel"][1], depth, 0.05)
+			yield result("layout.stores", "station 8's outer side rail's channel, wide", S["rails"]["tip"]["channel"][0], width, 0.05)
+
+		def rack():
+			# The LAU-115 under station 8's pylon: its length, and its section half
+			# way along
+			r = jet.points(["rack_8"], drives)
+			lead = axes("rack_8", "8")[0]
+			reach = (r - r.mean(0)) @ lead
+			# its length along its axis at mid-height: its end faces stand upright
+			# on its sloping axis, so their corners reach past its middle line's ends
+			level = np.array([0.0, 1.0, 0.0]) - lead * lead[1]
+			level = level / np.linalg.norm(level)
+			height = r @ level
+			cut = jet.cut(["rack_8"], r.mean(0) + level * ((height.min() + height.max()) / 2 - r.mean(0) @ level), level, drives).reshape(-1, 3)
+			yield result("stores.lau115.length", "station 8's LAU-115, end to end at mid-height", value(F["stores"]["lau115"]["length"]), np.ptp(cut @ lead), 0.3)
+			flat, area = section(["rack_8"], r.mean(0) + lead * ((reach.min() + reach.max()) / 2), lead)
+			w, h = np.ptp(flat[:, 0]), np.ptp(flat[:, 1])
+			yield result("stores.lau115.width", "station 8's LAU-115's section, across", value(F["stores"]["lau115"]["width"]), w, 0.1)
+			yield result("stores.lau115.height", "station 8's LAU-115's section, standing", value(F["stores"]["lau115"]["height"]), h, 0.1)
+			yield result("layout.stores", "station 8's LAU-115's section against its box", square(S["rack"]["corner"], w, h), area / (w * h), 0.005, "share")
+			# its front: upright, a ring in the upright plane across its axis 0.05 in
+			# behind the front's middle standing `tip` of its height
+			flat_ = np.array([lead[0], 0.0, lead[2]]) / np.linalg.norm([lead[0], lead[2]])
+			front = cut[np.argmin(cut @ lead)]
+			ring = jet.cut(["rack_8"], front + flat_ * 0.05, flat_, drives).reshape(-1, 3)
+			tips = S["rack"]["tip"] if isinstance(S["rack"]["tip"], list) else [S["rack"]["tip"]] * 2
+			yield result("layout.stores", "station 8's LAU-115's front, its height 0.05 in behind it", tips[1] * value(F["stores"]["lau115"]["height"]), np.ptp(ring[:, 1]), 0.2)
+			yield result("layout.stores", "station 8's LAU-115's front, its width 0.05 in behind it", tips[0] * value(F["stores"]["lau115"]["width"]), np.ptp(ring @ np.cross(flat_, [0.0, 1.0, 0.0])), 0.2)
+
+		def launcher():
+			# station 8's outer LAU-127: its length; its section aft of the fitting
+			# joining it to the LAU-115, in its own axes; its nose
+			body = S["rails"]["launcher"]
+			q = jet.points(["launcher_8a"], drives)
+			lead, down = axes("launcher_8a", "8")
+			reach = (q - q.mean(0)) @ lead
+			yield result("stores.lau127.length", "station 8's outer LAU-127, end to end", value(F["stores"]["lau127"]["length"]), np.ptp(reach), 0.3)
+			side = np.cross(lead, down)
+			at = q.mean(0) + lead * (reach.max() - 10.0)
+			cut = jet.cut(["launcher_8a"], at, lead, drives).reshape(-1, 3) - at
+			yield result("stores.lau127.width", "station 8's outer LAU-127's section, across", value(F["stores"]["lau127"]["width"]), np.ptp(cut @ side), 0.1)
+			yield result("stores.lau127.height", "station 8's outer LAU-127's section, standing", value(F["stores"]["lau127"]["height"]), np.ptp(cut @ down), 0.1)
+			flat, area = section(["launcher_8a"], at, lead)
+			w, h = np.ptp(cut @ side), np.ptp(cut @ down)
+			yield result("layout.stores", "station 8's outer LAU-127's section against its box", square(body["corner"], w, h), area / (w * h), 0.005, "share")
+			# its nose: each face (the round's, toward `down`, and the one away
+			# from it) against its full line just behind both runs, ahead of the
+			# fitting (which starts 3 in behind the LAU-115's front), at its own
+			# run's ring and half way along it; the tip's height and where it
+			# stands between them
+			height = value(F["stores"]["lau127"]["height"])
+			face = (q - q.mean(0)) @ down
+			plus, minus = body["faces"]["runs"]
+			full = (reach > reach.min() + max(plus, minus) + 0.5) & (reach < reach.min() + 15.0)
+			toward, away = face[full].max(), face[full].min()
+			def ring(run):
+				# the ring nearest `run` behind the tip
+				d = np.abs(reach - (reach.min() + run))
+				return d < d.min() + 0.02
+			yield result("layout.stores", f"station 8's outer LAU-127's round's face, {minus} in behind its tip, against its line", 0.0, face[ring(minus)].max() - toward, 0.05)
+			yield result("layout.stores", f"station 8's outer LAU-127's far face, {plus} in behind its tip, against its line", 0.0, face[ring(plus)].min() - away, 0.05)
+			for run, at_, sign, line, name in ((minus, body["faces"]["at"] - body["tip"] / 2, 1.0, toward, "round's face"), (plus, 1 - body["faces"]["at"] - body["tip"] / 2, -1.0, away, "far face")):
+				drop = at_ * height * (1 - math.sin(math.pi / 4))
+				reached = face[ring(run / 2)].max() if sign > 0 else face[ring(run / 2)].min()
+				yield result("layout.stores", f"station 8's outer LAU-127's {name}, {run / 2} in behind its tip, short of its line", drop, sign * (line - reached), 0.05)
+			tip_ = q[np.argmin(reach)]
+			cut = jet.cut(["launcher_8a"], tip_ + lead * 0.05, lead, drives).reshape(-1, 3) - q.mean(0)
+			yield result("layout.stores", "station 8's outer LAU-127's nose, its height 0.05 in behind its tip", body["tip"] * height, np.ptp(cut @ down), 0.1)
+			yield result("layout.stores", "station 8's outer LAU-127's tip, its middle up from its round's face", body["faces"]["at"] * height, toward - ((cut @ down).max() + (cut @ down).min()) / 2, 0.1)
+
+		def ejector():
+			# station 6's LAU-116: its length (its upper part, clear of the fairing
+			# behind it) and its section half way along, in its round's axes
+			seat = jet.document["points"]["hardpoints"]["6"]["rounds"]["ejector_6"]
+			ends = FRAME.source(np.array([seat["mount"], np.add(seat["mount"], seat["forward"]), np.add(seat["mount"], seat["up"])]))
+			forward, up = (ends[1] - ends[0]) / np.linalg.norm(ends[1] - ends[0]), (ends[2] - ends[0]) / np.linalg.norm(ends[2] - ends[0])
+			e = jet.points(["ejector_6"], drives)
+			upper = e[(e - ends[0]) @ up > 8.0]
+			along = (upper - ends[0]) @ forward
+			yield result("stores.lau116.length", "station 6's LAU-116, end to end", value(F["stores"]["lau116"]["length"]), np.ptp(along), 0.3)
+			at = ends[0] + forward * ((along.min() + along.max()) / 2)
+			cut = jet.cut(["ejector_6"], at, forward, drives).reshape(-1, 3) - at
+			yield result("stores.lau116.width", "station 6's LAU-116's section, across", value(F["stores"]["lau116"]["width"]), np.ptp(cut @ np.cross(forward, up)), 0.1)
+			yield result("stores.lau116.height", "station 6's LAU-116's section, standing", value(F["stores"]["lau116"]["height"]), np.ptp(cut @ up), 0.1)
+
+		def pylon():
+			# The SUU-62: its bottom flat at its front's lower end, clear of the
+			# tank (the braces apart), and its sides flat: its section's area
+			# against its box's, as its corners' rounding gives
+			line = S["centreline"]
+			c = jet.points(["pylon_5"], drives)
+			clear = (c[:, 0] > line["front"] + 3) & (c[:, 0] < line["back"] - 14) & np.all([np.abs(c[:, 0] - b) > 3.0 for b in line["braces"]], 0)
+			yield result("layout.stores", "SUU-62's bottom, between its braces", line["bottom"], c[clear][:, 1].min(), 0.05, "WL in")
+			pads = c[c[:, 1] < line["bottom"] - 0.5]
+			yield result("layout.stores", "SUU-62's brace pads, their station", np.mean(line["braces"]), (pads[:, 0].min() + pads[:, 0].max()) / 2, 0.1, "FS in")
+			flat, area = section(["pylon_5"], np.array([(line["front"] + line["back"]) / 2, 80.0, 0.0]), [1.0, 0.0, 0.0])
+			w, h = np.ptp(flat[:, 0]), np.ptp(flat[:, 1])
+			# its corners' radius from the section's area short of its box
+			yield result("layout.stores", "SUU-62's section's corners, their radius", line["corner"] * min(w, h) / 2, math.sqrt(max(0.0, w * h - area) / (4 - math.pi)), 0.1)
+			# its sides closing to its leading edge in straight lines: half its
+			# width half way along the taper
+			lead = (line["front"] + line["top"]) / 2
+			flat, _ = section(["pylon_5"], np.array([lead + line["taper"] / 2, 81.0, 0.0]), [1.0, 0.0, 0.0])
+			yield result("layout.stores", "SUU-62's width half way along its nose's taper", line["width"] / 2, np.ptp(flat[:, 0]), 0.1)
+			# its aft end (dvids_4642578): full width to the upright aft face, and
+			# the bottom rising into it round its corner (its first ring aft)
+			flat, _ = section(["pylon_5"], np.array([line["back"] - line["round"] - 1.0, 81.0, 0.0]), [1.0, 0.0, 0.0])
+			yield result("layout.stores", "SUU-62's width 1 in ahead of its aft corner", line["width"], np.ptp(flat[:, 0]), 0.1)
+			r = line["round"]
+			at_ = line["back"] - r * math.sin(math.pi / 12)
+			ring = c[np.abs(c[:, 0] - at_) < 0.02]
+			yield result("layout.stores", "SUU-62's bottom where it rounds into its aft face", line["bottom"] + r - math.sqrt(r * r - (at_ - (line["back"] - r)) ** 2),
+				ring[:, 1].min() if len(ring) else math.nan, 0.03, "WL in")
+			yield result("layout.stores", "SUU-62's aft face, its station", line["back"], c[:, 0].max(), 0.05, "FS in")
+			# the wing pylons' width, square across their middles (the right
+			# outboard and inboard)
+			for station in (7, 8):
+				p = jet.points([f"pylon_{station}"], drives)
+				middle = (p[:, 0].min() + p[:, 0].max()) / 2
+				flat, _ = section([f"pylon_{station}"], np.array([middle, p[:, 1].min() + 2.0, np.median(p[:, 2])]), [1.0, 0.0, 0.0])
+				yield result("layout.stores", f"station {station}'s pylon's width, across its middle", S["pylon"]["width"], np.ptp(flat[:, 0]), 0.1)
+
+		def fairing():
+			# The cheek fairing behind station 6's LAU-116: its aft edge, upright
+			# at its station and buttline, from just over the round to its top;
+			# its depth, whole ahead of its chamfer and half way along it
+			cheek = S["rounds"]["cheek"]
+			fairing = cheek["fairing"]
+			e = jet.points(["ejector_6"], drives)
+			aft = e[e[:, 0] > fairing["edge"][0] - 0.05]
+			yield result("layout.stores", "cheek fairing's aft edge, its station", fairing["edge"][0], e[:, 0].max(), 0.05, "FS in")
+			yield result("layout.stores", "cheek fairing's aft edge, its buttline", fairing["edge"][1], aft[:, 2].max(), 0.05, "BL in")
+			yield result("layout.stores", "cheek fairing's aft edge, its top", fairing["top"], aft[:, 1].max(), 0.05, "WL in")
+			nose_, tail_ = cheek["nose"], cheek["tail"]
+			diameter = value(json.loads((HERE.parent / "missiles" / "facts.json").read_text())["aim120c"]["diameter"])
+			k = (fairing["edge"][0] - nose_[0]) / (tail_[0] - nose_[0])
+			over = nose_[1] + k * (tail_[1] - nose_[1]) + diameter / 2 + fairing["clear"]
+			yield result("layout.stores", "cheek fairing's aft edge, its bottom over the round", over, aft[:, 1].min(), 0.05, "WL in")
+			for back, share in ((fairing["chamfer"] + 1.0, 1.0), (fairing["chamfer"] / 2, 0.5)):
+				flat, _ = section(["ejector_6"], np.array([fairing["edge"][0] - back, 82.0, fairing["edge"][1]]), [1.0, 0.0, 0.0])
+				yield result("layout.stores", f"cheek fairing's depth {back:.2f} in ahead of its aft edge", fairing["depth"] * share, np.ptp(flat[:, 0]), 0.05)
+
+		return [("the wingtip LAU-7", tip), ("station 8's outer side rail", side), ("station 8's LAU-115", rack), ("station 8's outer LAU-127", launcher), ("station 6's LAU-116", ejector), ("the pylons", pylon), ("the cheek fairing", fairing)]
+
+	for what, fn in stores():
+		yield from guard("layout.stores", f"{what}'s shape", fn)
 
 	# The stores' own atlas (layout.stores.paint, finish.py), read through the
 	# station 7 tank's UVs: its joint rings darker than the paint beside them

@@ -35,9 +35,9 @@ def winding(triangles, point):
 BUILT = {}
 
 
-def build(name, *options):
+def build(name, *options, missile="aim120c"):
 	glb, points = Path(BUILT["dir"].name) / f"{name}.glb", Path(BUILT["dir"].name) / f"{name}.json"
-	run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(HERE / "build.py"), "--", "aim120c", str(glb), str(points), *options],
+	run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(HERE / "build.py"), "--", missile, str(glb), str(points), *options],
 		capture_output=True, text=True)
 	if run.returncode:
 		raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
@@ -56,6 +56,49 @@ def setUpModule():
 
 def tearDownModule():
 	BUILT["dir"].cleanup()
+
+
+class WingTest(unittest.TestCase):
+	# The AIM-9M's wing: its section the wedge layout gives (its tip face in
+	# dvids6457087 and dvids1038285), probed at its tip edge, just behind its
+	# leading edge and where it reaches full thickness, each side of its plane
+	@classmethod
+	def setUpClass(cls):
+		glb, points = build("aim9m", "--draft", "--whole", missile="aim9m")
+		document = json.loads(points.read_text())
+		cls.parts = verify.Model(str(glb)).parts(verify.pose(document["joints"], {}))
+		cls.centre = document["points"]["nose"][0] / INCH
+		cls.spec = json.loads((HERE / "facts.json").read_text())["layout"]["aim9m"]["wings"]["value"]
+
+	def solid(self, station, off, across):
+		# whether the point (inches aft of the nose, off the axis along the
+		# upper right wing, across its plane) lies inside that wing
+		a = math.radians(45)
+		span, normal = np.array([0, math.cos(a), math.sin(a)]), np.array([0, -math.sin(a), math.cos(a)])
+		point = np.array([(self.centre - station) * INCH, 0, 0]) + span * off * INCH + normal * across * INCH
+		return winding(self.parts["wing_upper_right"], point) > 0.5
+
+	def test_the_wing_thickens_aft_of_its_leading_edge_to_its_full_thickness(self):
+		section = self.spec["section"]
+		(_, _), (tip_lead, tip) = self.spec["outline"][:2]
+		off = tip - 0.3
+		for behind in (1.0, section["run"], section["run"] + 0.5):
+			thick = section["leading"] + (section["full"] - section["leading"]) * min(1.0, behind / section["run"])
+			station = tip_lead + (off - tip) * (self.spec["outline"][0][0] - tip_lead) / (self.spec["outline"][0][1] - tip) + behind
+			for side in (1, -1):
+				self.assertTrue(self.solid(station, off, side * (thick / 2 - 0.03)), f"{behind} in behind the leading edge: {thick / 2 - 0.03:.2f} in off the plane should be solid")
+				self.assertFalse(self.solid(station, off, side * (thick / 2 + 0.03)), f"{behind} in behind the leading edge: {thick / 2 + 0.03:.2f} in off the plane should be empty")
+
+	def test_the_rollerons_housing_stands_its_measured_thickness(self):
+		# the flap (rollerons.flap), probed inside its outline, each side of
+		# the wing's plane
+		layout = json.loads((HERE / "facts.json").read_text())["layout"]["aim9m"]["rollerons"]["value"]["flap"]
+		a = math.radians(45)
+		span, normal = np.array([0, math.cos(a), math.sin(a)]), np.array([0, -math.sin(a), math.cos(a)])
+		for side in (1, -1):
+			for across, solid in ((layout["thickness"] / 2 - 0.03, True), (layout["thickness"] / 2 + 0.03, False)):
+				point = np.array([(self.centre - 109.5) * INCH, 0, 0]) + span * 10.0 * INCH + normal * side * across * INCH
+				self.assertEqual(winding(self.parts["rolleron_flap_upper_right"], point) > 0.5, solid, f"{side * across:.2f} in off the wing's plane")
 
 
 class HooksTest(unittest.TestCase):

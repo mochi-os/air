@@ -95,8 +95,9 @@ photo's `aside`, never its `marks` (a tank's tip is a silhouette end, and in the
   front and aft faces meet its bottom; `rack_outboard_root_front_<side>`: where its front face meets the pylon.
 - `pylon_centre_nose`, `pylon_centre_tail`: the SUU-62's foremost point low down (where its front meets the tank)
   and its aft lower corner; `pylon_centre_root_front`, `pylon_centre_root_aft`: where its edges meet the belly.
-- `ejector_front_<side>`, `ejector_aft_<side>`: the LAU-116's exposed lower face's front and aft ends, on its
-  middle line (`left` for station 4, `right` for 6).
+- `ejector_front_<side>`: the LAU-116's exposed lower face's front end, on its middle line; `ejector_aft_<side>`: the
+  middle of the launcher box's aft-most edge, the upright edge over the round's tail where the chamfered aft face
+  meets the outboard side (`left` for station 4, `right` for 6).
 - `missile_<where>_nose_<side>`, `missile_<where>_tail_<side>`: a round's nose tip and the middle of its aft end, only
   where they end the silhouette (seen from the side, above or below), never in a view along the round; say which
   missile it is (an AIM-9X's small fins, a 9M's large canards, a finless training round).

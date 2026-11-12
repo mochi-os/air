@@ -20,6 +20,27 @@ import model as verify  # noqa: E402
 
 FACTS = json.loads((HERE / "facts.json").read_text())
 INCH = 0.0254
+# A shape no source shows is asked about, never guessed: every facts.json
+# text saying it is guessed (verify's GUESS words: "by eye", "estimated",
+# "not measured", "unseen" and the like) is listed here with the user's
+# sign-off (its path, how many guesses the text held when they signed it, the
+# date and what they approved), or test_check fails; a text that gains a
+# guess fails again until it is signed again
+GUESSES = {
+	"layout.aim9m.profile.measured": (1, "user, 2026-11-12: keep the dome's curve; no public-domain side view of an uncovered dome was found (041102-N-5345W-096 sees it head-on, DF-ST-82-10199 a training dome at 40 deg)"),
+	"layout.aim9m.canards.measured": (1, "user, 2026-11-12: keep the canards 0.3 in thick; dvids7471726's near edge-on canard bounds them at 0.4 in, its view's angle off the plane unknown"),
+	"layout.aim9m.rollerons.measured": (1, "user, 2026-11-12: keep the wheel 0.35 in wide (dvids7680990's blurred edge view reads 0.33-0.43), the bracket 0.12 and the tip block 0.35 thick; neither is seen in any photo found (dvids7680970 and 7680990 carry a different dark block clamped across each housing's aft face by the hinge)"),
+	"layout.aim9m.nozzle.measured": (1, "user, 2026-11-12: keep the nozzle 4.0 in deep; no sharp view into a nozzle was found (shop rounds carry caps; dvids6457086 is out of focus)"),
+	"layout.aim9m.finishes.measured": (1, "user, 2026-11-12: keep the bare metal's sheen; a sheen can't be read off a photo without its lighting, and the sunlit views (dvids7471726, dvids1497062) show the highlights it gives"),
+	"layout.aim120c.wings.measured": (1, "user, 2026-11-12: keep the wings 0.3 in thick; dvids1497062 sees them only obliquely from aft"),
+	"layout.aim120c.fittings.measured": (3, "user, 2026-11-12: keep the clip plates 0.1 in proud (dvids1497062's low-sun profile reads 0.11-0.17 with the plate's shadow), and the hooks' cross-sections and the C-hangers' jaws from dvids9245725 (dvids9687343 agrees with the jaw reaching in as far as the lip, but obliquely and soft)"),
+	"layout.aim120c.finishes.measured": (1, "user, 2026-11-12: keep the bare metal's sheen, as the AIM-9M's"),
+	"layout.aim9m.wings.measured": (1, "user's ruling, 2026-11-11: the tip's wedge section (measured) across the full span; no photo shows the root's"),
+	"layout.aim9m.paint.measured": (1, "user, 2026-11-12: keep the AIM-120's measured paint; no photo shows an AIM-9M beside a grey of known tone"),
+	"layout.aim9m.fittings.measured": (1, "user, 2026-11-12: keep the AIM-120 aft shoe's measured stem (1.6 in) and flange (2.1 in); both ride the LAU-127's rail"),
+	"layout.aim120c.markings.measured": (1, "user, 2026-11-12: keep the right side's markings mirrored from the measured left (usmc090528 shows the same set there)"),
+}
+
 EXEMPT = {
 	"weight": "a mass, not a shape (the flight model's)",
 	"surfaces": "which surfaces it has, built from the layout",

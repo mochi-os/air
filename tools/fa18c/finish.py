@@ -45,6 +45,20 @@ def colour(layout, grey, occlusion, where, part, frames, size):
 	inches = where / INCH
 	shading = 0.4 + 0.6 * occlusion[..., None]
 	out = np.asarray(grey, float) * shading
+	# a part painted a colour of its own along its body (layout.<kind> body):
+	# between its light ends (light: inches aft of its nose) and within
+	# `inboard` inches of its axis toward its up (the wingtip LAU-7, dark,
+	# beside its light cap, cone and adapter)
+	for index, frame in enumerate(frames, start=1):
+		spec = layout.get(frame["kind"], {})
+		mine = part == index
+		if "body" not in spec or not mine.any():
+			continue
+		station, turn, radius = along(where[mine], frame)
+		body = (station > spec["light"][0]) & (station < spec["light"][1]) & (radius * np.cos(np.radians(turn)) < spec["inboard"])
+		cells = np.flatnonzero(mine.ravel())[body]
+		flat = out.reshape(-1, 3)
+		flat[cells] = np.asarray(spec["body"], float) / 255 * shading.reshape(-1, 1)[cells]
 	tone = 1 + wear.get("parts", 0.04) * missile.shade(part)
 	# each scale of the noise as strong as the missiles' calibration where the
 	# atlas resolves it, fading out as its features shrink to a texel (the

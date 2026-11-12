@@ -11,7 +11,7 @@ sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent / "verify"))
 
 import check  # noqa: E402
-from test_verify import box, glb  # noqa: E402
+from test_verify import box, glb, guess_counts  # noqa: E402
 
 INCH = 0.0254
 
@@ -71,6 +71,17 @@ class CheckTest(unittest.TestCase):
 			self.assertEqual(check.unaccounted("aim9m", results), ["fineness"])
 		finally:
 			del check.FACTS["aim9m"]["fineness"]
+
+
+	def test_no_fact_is_a_guess(self):
+		# A shape no source shows is asked about, never guessed: any facts.json
+		# text saying it is guessed ("by eye", "estimated", "not measured", "unseen": verify's GUESS) is a guess unless the user signed it off
+		# (check.GUESSES), and a sign-off names a text that still says it
+		counts = guess_counts(check.FACTS)
+		unsigned = [f"{p}: says it is guessed (verify's GUESS words), no source measured it and the user has not signed it off (check.GUESSES)" for p in sorted(set(counts) - set(check.GUESSES))]
+		stale = [f"{p}: signed off in check.GUESSES but no longer says it is guessed" for p in sorted(set(check.GUESSES) - set(counts))]
+		grown = [f"{p}: holds {counts[p]} guesses where the sign-off covers {check.GUESSES[p][0]}: ask the user about the new one" for p in sorted(set(counts) & set(check.GUESSES)) if counts[p] != check.GUESSES[p][0]]
+		self.assertFalse(unsigned + stale + grown, "\n" + "\n".join(unsigned + stale + grown))
 
 
 if __name__ == "__main__":

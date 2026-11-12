@@ -267,17 +267,34 @@ def radius_at(profile, s):
 	return profile[-1][1]
 
 
-def slab(outline, roll, thickness, offset=0.0):
+def slab(outline, roll, thickness, offset=0.0, caps=None):
 	# A planform (station, distance off the axis) as a slab in the plane
-	# through the axis at `roll`, `thickness` inches thick, its middle
-	# `offset` inches along the plane's normal (toward the missile's port
-	# side for an upper right fin, layout's face 1)
+	# through the axis at `roll`, `thickness` inches thick (or a thickness
+	# at each corner, its faces then split into the planar `caps`, lists of
+	# the outline's corners), its middle `offset` inches along the plane's
+	# normal (toward the missile's port side for an upper right fin, layout's
+	# face 1)
 	a = math.radians(roll)
 	normal = Vector((0, -math.cos(a), -math.sin(a)))
 	n = len(outline)
-	vertices = [point(s, r, roll) + normal * ((offset + side * thickness / 2) * INCH) for side in (1, -1) for s, r in outline]
-	faces = [tuple(range(n)), tuple(range(2 * n - 1, n - 1, -1))] + [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
+	widths = thickness if isinstance(thickness, (list, tuple)) else [thickness] * n
+	vertices = [point(s, r, roll) + normal * ((offset + side * t / 2) * INCH) for side in (1, -1) for (s, r), t in zip(outline, widths)]
+	caps = caps or [list(range(n))]
+	faces = [tuple(cap) for cap in caps] + [tuple(n + i for i in reversed(cap)) for cap in caps] + [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
 	return vertices, faces
+
+
+def wedge(spec):
+	# A fin whose section is a wedge (layout's section): `leading` inches
+	# thick at its leading edge, thickening to `full` over `run` inches aft
+	# of it and full to its trailing edge, its outline's corners leading
+	# root, leading tip, trailing tip, trailing root; as an outline with the
+	# run's line between, each corner's thickness and the two planar caps
+	(lr, lt, tt, tr), sec = spec["outline"], spec["section"]
+	run = sec["run"]
+	outline = [lr, lt, [lt[0] + run, lt[1]], tt, tr, [lr[0] + run, lr[1]]]
+	thickness = [sec["leading"], sec["leading"]] + [sec["full"]] * 4
+	return outline, thickness, [[0, 1, 2, 5], [5, 2, 3, 4]]
 
 
 def fin(kind, which, spec, parent=None):
@@ -285,7 +302,11 @@ def fin(kind, which, spec, parent=None):
 	# plane through the axis at its roll; a movable fin is its own node on its
 	# hinge, turning about the radial line there
 	roll = ROLLS[which]
-	vertices, faces = slab(spec["outline"], roll, spec["thickness"])
+	if "section" in spec:
+		outline, thickness, caps = wedge(spec)
+		vertices, faces = slab(outline, roll, thickness, caps=caps)
+	else:
+		vertices, faces = slab(spec["outline"], roll, spec["thickness"])
 	name = f"{kind}_{which}"
 	hinge = point(spec["hinge"], RADIUS, roll) if "hinge" in spec else None
 	node(name, parent=parent, hinge=hinge, mesh=(vertices, faces))
@@ -504,23 +525,6 @@ def fittings():
 		node("fittings", mesh=(vertices, faces, paints))
 
 
-def lugs():
-	# The launch lugs on top: small blocks the launcher's rail carries, where
-	# layout gives no fittings for them
-	if not LAYOUT.get("lugs") or "fittings" in LAYOUT:
-		return
-	l, w, h = (value(LAYOUT["lug"][k]) for k in ("length", "width", "height"))
-	vertices, faces = [], []
-	for s in LAYOUT["lugs"]:
-		base = len(vertices)
-		for ds in (-l / 2, l / 2):
-			for dz in (-w / 2, w / 2):
-				for dy in (RADIUS - 0.2, RADIUS + h):
-					vertices.append(Vector(((CG - s - ds) * INCH, -dz * INCH, dy * INCH)))
-		faces += [tuple(base + i for i in f) for f in ((0, 1, 3, 2), (4, 6, 7, 5), (0, 2, 6, 4), (1, 5, 7, 3), (0, 4, 5, 1), (2, 3, 7, 6))]
-	node("lugs", mesh=(vertices, faces), paint="metal")
-
-
 def rider(obj):
 	# The joint a part moves with (its own or its nearest moving ancestor's),
 	# or None for the missile's rigid frame: hidden.py's group
@@ -720,7 +724,6 @@ def main():
 			fin(kind[:-1], which, spec)
 			if kind == "wings" and "rollerons" in LAYOUT:
 				rolleron(which, LAYOUT["rollerons"])
-	lugs()
 	fittings()
 	if "--whole" not in sys.argv:   # --whole keeps them: every part a closed solid, for test_build's probes
 		cull()

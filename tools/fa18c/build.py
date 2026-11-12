@@ -2944,14 +2944,18 @@ def gear():
 	node("gear_nose_lamps", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(housing), undo))
 	node("lamp_gear_nose", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(lenses), undo), paint="lights")
 
-	def door(node_name, outline, hinge, targets, below=True, curve=None):
+	def door(node_name, outline, hinge, targets, below=True, curve=None, corners=None):
 		# A door cut from the skin inside its plan outline ([FS, BL]), hinged
 		# on the skin along `hinge` (two [FS, BL] ends), opened with the gear
 		# by the angle that brings its far edge's ends nearest the photos'
 		# (targets, [FS, WL, BL] each: an open edge's ends, or its one marked
 		# corner). `curve` names its free edge in the features file, an inch
-		# apart along the hinge, for the photos' traces of it
+		# apart along the hinge, for the photos' traces of it; `corners` its
+		# closed outline's corners ({mark: [FS, BL]}), on the door, for the
+		# gear-up photos' seams
 		mesh = merge([cut(None, None, below=below, outline=piece) for piece in outline])
+		for mark, (f, b) in (corners or {}).items():
+			MARKS[mark] = (draped(belly, f, b, below=below, out=0.15), node_name)
 		h0, h1 = (draped(belly, f, b, below=below, out=0.15) for f, b in hinge)
 		axis = (h1 - h0).normalized()
 
@@ -3018,15 +3022,19 @@ def gear():
 		edges = [[f, w, side * (b - (mark - on))] for (f, w, b), (_, on, mark) in zip(d["edge"], ends)]
 		reach0 = across(f0, side * b0, opened([f0, side * b0], [0, edges[0][1], edges[0][2]]), 0.0)
 		reach1 = across(f1, side * b1, opened([f1, side * b1], [0, edges[1][1], edges[1][2]]), 0.0)
-		door(f"gear_nose_door_{side_name(side)}", [[[f0, side * b0], [f1, side * b1], [f1, reach1], [f0, reach0]]],
-			[[f0, side * b0], [f1, side * b1]], edges, curve=f"door_nose_forward_edge_{side_name(side)}")
+		n = f"gear_nose_door_{side_name(side)}"
+		door(n, [[[f0, side * b0], [f1, side * b1], [f1, reach1], [f0, reach0]]],
+			[[f0, side * b0], [f1, side * b1]], edges, curve=f"door_nose_forward_edge_{side_name(side)}",
+			corners={f"{n}_front_outboard": [f0, side * b0], f"{n}_aft_outboard": [f1, side * b1], f"{n}_aft_inboard": [f1, reach1], f"{n}_front_inboard": [f0, reach0]})
 	for key in ("long", "aft"):
 		d = doors[key]
 		(f0, b0), (f1, b1) = d["hinge"]
 		(e0, _, _), (e1, _, _) = d["edge"]
 		reach0 = across(f0, b0, opened([f0, b0], d["edge"][0]), -20.0)
 		reach1 = across(f1, b1, opened([f1, b1], d["edge"][1]), -20.0)
-		door(f"gear_nose_door_{key}", [[[f0, b0], [f1, b1], [e1, reach1], [e0, reach0]]], [[f0, b0], [f1, b1]], d["edge"])
+		n = f"gear_nose_door_{key}"
+		door(n, [[[f0, b0], [f1, b1], [e1, reach1], [e0, reach0]]], [[f0, b0], [f1, b1]], d["edge"],
+			corners={f"{n}_front_right": [f0, b0], f"{n}_aft_right": [f1, b1], f"{n}_aft_left": [e1, reach1], f"{n}_front_left": [e0, reach0]})
 	# Each main leg's doors in the blister under its nacelle (layout.nacelle
 	# door), each hanging straight down when open: the inner hinged along the
 	# blister's inner edge, the outer along its outer edge outboard of the leg
@@ -3049,9 +3057,13 @@ def gear():
 		(a0, _), (a1, _), (tip_f, tip_b) = e["outline"]
 		meet = [f0, side * (inner - 0.1)]
 		pieces = [[[a0, side * c], [f0, side * c], meet, [tip_f, side * tip_b]], [[f0, side * c], [a1, side * c], [a1, side * (inner - 0.1)], meet]]
-		door(f"gear_door_inner_{name}", pieces, [[g0, side * c], [g1, side * c]], [[e["low"][0], e["low"][1], side * c]])
+		door(f"gear_door_inner_{name}", pieces, [[g0, side * c], [g1, side * c]], [[e["low"][0], e["low"][1], side * c]],
+			corners={f"gear_door_inner_front_inboard_{name}": [a0, side * c], f"gear_door_inner_aft_inboard_{name}": [a1, side * c],
+				f"gear_door_inner_aft_outboard_{name}": [a1, side * (inner - 0.1)], f"gear_door_inner_front_outboard_{name}": [tip_f, side * tip_b]})
 		door(f"gear_door_outer_{name}", [[[f0, side * b], [f1, side * b], [f1, side * inner], [f0, side * inner]]], [[f0, side * b], [f1, side * b]],
-			[[d["front"][1][0], d["front"][0][1] - tall, side * b]])
+			[[d["front"][1][0], d["front"][0][1] - tall, side * b]],
+			corners={f"gear_door_outer_front_outboard_{name}": [f0, side * b], f"gear_door_outer_aft_outboard_{name}": [f1, side * b],
+				f"gear_door_outer_aft_inboard_{name}": [f1, side * inner], f"gear_door_outer_front_inboard_{name}": [f0, side * inner]})
 
 
 def mechanisms():
@@ -3858,6 +3870,10 @@ def paint_stores(stored, key, folder=None):
 	inches = texel_size(where, covered) / INCH
 	frames = [FRAMES.get(o.name, {"kind": store_kind(o), "nose": [0, 0, 0], "axis": [-1, 0, 0], "up": [0, 0, 1]}) for o in stored]
 	grey = np.array(LAYOUT["paint"]["lower"]) / 255
+	# the wingtip LAU-7's light ends: its cap to the cap's joint and its cone
+	# from the cone's base (layout.stores.rails.tip)
+	tip = STORES["rails"]["tip"]
+	spec = dict(spec, tip=dict(spec["tip"], light=[tip["cap"], float(np.linalg.norm(np.subtract(tip["aft"], tip["front"]))) - tip["cone"]]))
 	out = finish.colour(spec, grey, occlusion, where, part, frames, inches)
 	out[~covered] = grey
 	from PIL import Image
@@ -4367,9 +4383,11 @@ def square(forward, up):
 	return f, (up - f * up.dot(f)).normalized()
 
 
-def rounded_ring(centre, f, u, width, height, rounding=1.0, n=4):
+def rounded_ring(centre, f, u, width, height, rounding=1.0, n=4, groove=None):
 	# A rounded rectangle across f: `height` inches along u, `width` across
-	# both, its corners rounded by `rounding` of the smaller half
+	# both, its corners rounded by `rounding` of the smaller half. groove:
+	# (height, depth) inches, a channel sunk into its -u face (the face a
+	# launcher's round hangs on), kept inside that face's flat
 	s = f.cross(u)
 	hw, hh = max(width, 0.05) * INCH / 2, max(height, 0.05) * INCH / 2
 	r = min(hw, hh) * rounding
@@ -4378,6 +4396,11 @@ def rounded_ring(centre, f, u, width, height, rounding=1.0, n=4):
 		for k in range(n + 1):
 			a = math.radians(start + 90 * k / n)
 			ring.append(centre + s * (cx + r * math.cos(a)) + u * (cy + r * math.sin(a)))
+		if groove and start == 180:
+			half = min(groove[0] * INCH / 2, hw - r - 0.05 * INCH)
+			depth = min(groove[1] * INCH, hh)
+			for x, y in ((-half, 0.0), (-half, depth), (half, depth), (half, 0.0)):
+				ring.append(centre + s * x + u * (y - hh))
 	return ring
 
 
@@ -4471,31 +4494,90 @@ def pylon_mesh(side, nose, tail, front, bottom, width, top=None):
 	return loft(rings)
 
 
-def box_mesh(front, f, u, length, width, height, fairing, tail=4.0, tip=0.3, hang=False):
-	# A launcher or rack: a rounded box `length` aft from its front, its
-	# forward fairing growing from `tip` of its section over `fairing` inches,
-	# its aft end closing to 0.7 over `tail`; with hang, its sections shrink
-	# toward its top rather than its middle, its top line straight (a LAU-115
-	# under its pylon)
-	stations = sorted({0.0, 0.5, 1.5} | {fairing * k / 6 for k in range(7)} | {float(t) for t in range(int(fairing) + 6, int(length - tail), 12)} | {length - tail, length})
+def box_pylon(front, back, bottom, width, corner, top, taper, round_=0.0):
+	# A boxed pylon on the centreline (the SUU-62): its leading edge along
+	# `front` ([FS, WL] pairs, its lower end to its root), narrow and rounded,
+	# its sides closing to it in straight lines over `taper` inches from the
+	# edge's middle station; behind that flat sides at their full width to an
+	# upright aft face at `back`, its sections' corners rounded by `corner`;
+	# its bottom flat at `bottom` WL, rising into the aft face round a corner
+	# of radius `round_`; its top 1.5 in inside `top(FS)`
+	line = sorted(front)
+	start = line[0][0]
+	lead = (line[0][0] + line[-1][0]) / 2
+	stations = [start + 0.15, start + 0.6] + [lead + taper * k / 4 for k in range(5)] + [line[-1][0] + d for d in (0.0, 0.5)]
+	stations += list(range(int(line[-1][0]) + 6, int(back - round_) - 1, 6))
+	stations += [back - round_ * math.sin(math.pi / 2 * k / 6) for k in range(7)] if round_ else [back]
+	stations = sorted(set(stations))
 	rings = []
-	for t in stations:
-		grow = tip + (1 - tip) * math.sin(min(t / fairing, 1.0) * math.pi / 2) if fairing else 1.0
-		shrink = 1.0 - 0.3 * max(0.0, (t - (length - tail)) / tail) if tail else 1.0
-		k = grow * shrink
-		lift = u * ((height - height * k) / 2 * INCH) if hang else u * 0.0
-		rings.append(rounded_ring(front - f * (t * INCH) + lift, f, u, width * k, height * k, rounding=0.45))
+	for s in stations:
+		low = max(bottom, interp(line, s)) if s <= line[-1][0] else bottom
+		if round_ and s > back - round_:
+			# the bottom's rise round the aft corner
+			low += round_ - math.sqrt(max(0.0, round_ * round_ - (s - (back - round_)) ** 2))
+		high = top(s) + 1.5
+		edge = min(1.0, max(0.15, (s - lead) / taper))
+		rings.append(rounded_ring(at(s, (low + high) / 2, 0.0), FORWARD, UP, width * edge, max(high - low, 0.1), rounding=corner + (1 - corner) * (1 - edge)))
 	return loft(rings)
 
 
-def casing(side, stations, waterlines, buttlines, keep="low", ends=0.3):
+def box_mesh(front, f, u, length, width, height, fairing, tail=4.0, tip=0.3, anchor=0.0, close=0.7, ogive=False, groove=None, rounding=0.45, faces=None, power=None):
+	# A launcher or rack: a box `length` aft from its front, its corners
+	# rounded by `rounding` of its smaller half, its forward fairing growing
+	# from `tip` of its section (or [width, height] tips) over `fairing`
+	# inches, its aft end closing to
+	# `close` over `tail`, straight, or with ogive a rounded cone, the
+	# sections rounding toward round as they shrink, and with `power` p
+	# closing as (1 - v)^p over it (the photos' fine cone to a point, the
+	# last ring a hundredth of the section); its sections shrink
+	# toward its middle, or with anchor 1 toward its +u face, that face's line
+	# straight (a LAU-115 under its pylon), with -1 toward its -u face (a
+	# launcher's face its round slides along); groove, a channel along its
+	# -u face (rounded_ring), fading out where the ends shrink. faces: its
+	# +u and -u faces closing to the tip each over its own run ([plus, minus]
+	# inches) and the tip standing `at` of its height up from the -u face
+	# ({"runs": [plus, minus], "at": share}); the width still over `fairing`
+	stations = {0.0, 0.5, 1.5} | {fairing * k / 6 for k in range(7)} | {float(t) for t in range(int(fairing) + 6, int(length - tail), 12)} | {length - tail, length}
+	if faces:
+		stations |= {run * k / 6 for run in faces["runs"] for k in range(7)}
+	if ogive:
+		stations |= {length - tail * k / 6 for k in range(7)}
+	if power:
+		stations |= {length - tail * k / 16 for k in range(17)}
+	rings = []
+	tips = tip if isinstance(tip, (list, tuple)) else (tip, tip)
+	for t in sorted(stations):
+		grow = [a + (1 - a) * math.sin(min(t / fairing, 1.0) * math.pi / 2) if fairing else 1.0 for a in tips]
+		v = max(0.0, (t - (length - tail)) / tail) if tail else 0.0
+		if power:
+			shrink = max(0.01, close + (1 - close) * (1 - min(v, 1.0)) ** power)
+		else:
+			shrink = close + (1 - close) * math.cos(v * math.pi / 2) if ogive else 1.0 - (1 - close) * v
+		kw, kh = grow[0] * shrink, grow[1] * shrink
+		lift = u * (anchor * (height - height * kh) / 2 * INCH)
+		if faces:
+			# the -u face's line and the +u face's, as shares of the height up
+			# from the -u face, each easing from the tip's over its own run
+			ease = [math.sin(min(t / run, 1.0) * math.pi / 2) if run else 1.0 for run in faces["runs"]]
+			low = (faces["at"] - tips[1] / 2) * (1 - ease[1])
+			high = faces["at"] + tips[1] / 2 + (1 - faces["at"] - tips[1] / 2) * ease[0]
+			kh = (high - low) * shrink
+			lift = u * (((high + low) / 2 - 0.5) * height * INCH)
+		k = min(kw, kh)
+		channel = (groove[0] * kw, groove[1] * min(1.0, max(0.0, (k - 0.85) / 0.15))) if groove else None
+		rings.append(rounded_ring(front - f * (t * INCH) + lift, f, u, width * kw, height * kh, rounding=rounding + ((0.95 - rounding) * (1 - k) if ogive else 0.0), groove=channel))
+	return loft(rings)
+
+
+def casing(side, stations, waterlines, buttlines, keep="low", ends=0.3, chamfer=2.0):
 	# A box at a wingtip along the jet's axis: stations [FS] front and back,
 	# waterlines low and high, buttlines inboard and outboard (on the right;
 	# mirrored on `side`), its fore and aft ends chamfered down to `ends` of
-	# its height, keeping the edge on the `keep` side (low or high) whole
+	# its height over up to `chamfer` inches, keeping the edge on the `keep`
+	# side (low or high) whole
 	(s0, s1), (w0, w1), (b0, b1) = stations, waterlines, buttlines
 	inward = Vector((0, side, 0))
-	t = min(2.0, (s1 - s0) / 4)
+	t = min(chamfer, (s1 - s0) / 4)
 	rings = []
 	for station, k in ((s0, ends), (s0 + t, 1.0), (s1 - t, 1.0), (s1, ends)):
 		low, high = (w0, w0 + (w1 - w0) * k) if keep == "low" else (w1 - (w1 - w0) * k, w1)
@@ -4531,33 +4613,70 @@ def stores():
 		surface = SURFACES[f"wing_{name}"]
 		tip, outboard, inboard, cheek = (1, 2, 3, 4) if side < 0 else (9, 8, 7, 6)
 		# The wingtip LAU-7, turned on its side with its round outboard of it,
-		# riding the outer panel's bend and fold
+		# riding the outer panel's bend and fold: a blunt cap forward (nose)
+		# and a long fine cone aft to a point (taper), the photos' profiles,
+		# the channel the round slides in along its outboard face
+		# (layout.stores.rails.tip)
 		front, aft = fwb(rails["tip"]["front"], side), fwb(rails["tip"]["aft"], side)
 		f, u = square(front - aft, Vector((0, side, 0)))   # u away from the round: inboard
 		flex_joint(f"flex_rail_{name}", bend, surface.point(surface.length, 0.5), parent=f"wing_{name}")
-		rail = box_mesh(front, f, u, (front - aft).length / INCH, value(lau7["width"]), value(lau7["height"]), 16.0)
-		# the fittings bolting it to the wingtip: a strip across the gap from
-		# the tip's edge to the rail's inboard face, along the rail's middle;
-		# the rail splays outboard aft, so its reach is the gap at its aft end
-		middle = front - f * (40 * INCH)
-		reach = abs((middle - f * (25 * INCH)).y) / INCH - value(lau7["height"]) / 2 - surface.length
-		strip = box_mesh(middle + u * ((value(lau7["height"]) / 2 + reach / 2) * INCH), f, u, 50.0, 2.5, reach + 1.0, 4.0, tail=4.0, tip=0.6)
-		# the launcher adapter's housings, one above the rail and one below it,
-		# each carrying a formation strip on its outboard face where the photos
-		# put it (layout.strips tip and undertip), their sizes by eye round the
-		# strips: the upper over the tip's edge up to the wing's top and down
-		# onto the fitting, the lower under the fitting, joined to it by a
-		# bridge the rail hides
-		strips = LAYOUT["strips"]
-		upper_, lower_ = strips["tip"], strips["undertip"]
-		station = (upper_[0][0] + upper_[1][0] + lower_[0][0] + lower_[1][0]) / 4
-		axis = (front + (aft - front) * ((ORIGIN["station"] - station) * INCH - front.x) / (aft.x - front.x)).z / INCH + ORIGIN["waterline"]
-		face = lambda ends: sum(abs(e[2]) for e in ends) / len(ends)
-		half = strips["width"] / 2
-		upper = casing(side, (upper_[0][0] - 3.0, upper_[1][0] + 3.0), (axis + 0.6, max(e[1] for e in upper_) + half + 0.4), (223.0, face(upper_)), keep="low")
-		lower = casing(side, (lower_[0][0] - 3.0, lower_[1][0] + 3.0), (min(e[1] for e in lower_) - half - 0.35, axis - 0.6), (220.5, face(lower_)), keep="high")
-		bridge = casing(side, (lower_[0][0] - 2.0, lower_[1][0] + 2.0), (axis - 1.6, axis - 0.6), (face(lower_) - 0.6, 225.5), keep="high", ends=1.0)
-		store(f"rail_{tip}", merge([rail, strip, upper, lower, bridge]), parent=f"flex_rail_{name}", hinge=front, shown=True, frame=(front, aft, u))
+		nose, taper = rails["tip"]["nose"], rails["tip"]["taper"]
+		rail = box_mesh(front, f, u, (front - aft).length / INCH, value(lau7["width"]), value(lau7["height"]), nose["run"],
+			tail=rails["tip"]["cone"], tip=nose["tip"], close=taper["close"], ogive=True, power=taper["power"], groove=rails["tip"]["channel"])
+		# the fairing joining it to the wingtip (layout.stores.rails.tip.adapter):
+		# along the tip's chord, the rail's top carried in level to the step
+		# where the photos from above put the upper housing's outboard face,
+		# rising from there to the wing's top at its edge; below, a ruled face
+		# from the rail's bottom inboard edge up to the wing's lower edge
+		adapter = rails["tip"]["adapter"]
+		wing = built([f"wing_outer_{name}", f"flap_leading_outer_{name}", f"aileron_{name}"])   # the tip's whole chord
+		def along(station):
+			# the rail's axis at a station: its buttline and waterline
+			k = (station - rails["tip"]["front"][0]) / (rails["tip"]["aft"][0] - rails["tip"]["front"][0])
+			return [rails["tip"]["front"][i] + k * (rails["tip"]["aft"][i] - rails["tip"]["front"][i]) for i in (1, 2)]
+		def edge(station, below):
+			# the wingtip's surface just inboard of its edge, WL
+			start = fwb([station, 60.0 if below else 160.0, adapter["edge"] - 0.3], side)
+			hit = wing.ray_cast(start, UP if below else -UP)[0]
+			if hit is None:
+				raise SystemExit(f"no wingtip surface at FS {station:.1f}")
+			return hit.z / INCH + ORIGIN["waterline"]
+		rings = []
+		for k in range(adapter["steps"] + 1):
+			station = adapter["chord"][0] + 0.3 + (adapter["chord"][1] - adapter["chord"][0] - 0.6) * k / adapter["steps"]   # just inside the tip's edges
+			wl, bl = along(station)
+			top, bottom = wl + value(lau7["width"]) / 2, wl - value(lau7["width"]) / 2
+			face = bl - value(lau7["height"]) / 2 + 0.3   # 0.3 in inside the rail
+			rings.append([fwb([station, w, b], side) for w, b in ((edge(station, False), adapter["edge"] - 0.3), (top - 0.15, adapter["step"]), (top - 0.15, face),
+				(bottom + 0.15, face), (bottom + 0.15, adapter["step"]), (edge(station, True), adapter["edge"] - 0.3))])
+		fairing = outward(loft(rings))
+		# the formation lights' housings, each a plate framing its strip, the
+		# rim, ends and slope as the side photos show them round the windows:
+		# the upper standing on the fairing's top at the rail's level, the
+		# lower its mirror, hanging from the fairing's underside, its top
+		# reaching up into the underside where that rises to the tip's edge
+		strips, housing = LAYOUT["strips"], adapter["housings"]
+		def underside(station, buttline):
+			# the fairing's underside at a station and buttline, WL: level with
+			# the rail's bottom out to the step, then rising to the tip's edge
+			bottom = along(station)[0] - value(lau7["width"]) / 2 + 0.15
+			k = min(1.0, max(0.0, (adapter["step"] - buttline) / (adapter["step"] - adapter["edge"] + 0.3)))
+			return bottom + k * (edge(station, True) - bottom)
+		def frame(key, above):
+			(f0, w0, b0), (f1, w1, b1) = sorted(strips[key])
+			face = (abs(b0) + abs(b1)) / 2
+			edge_ = lambda w: w + (1 if above else -1) * (strips["width"] / 2 + housing["rim"])
+			if above:
+				base_ = lambda f: along(f)[0] + value(lau7["width"]) / 2 - 0.3
+			else:
+				base_ = lambda f: underside(f, face - housing["thick"]) + 0.1
+			outer = [(f0 - housing["end"], edge_(w0)), (f1 + housing["end"], edge_(w1))]
+			drop = [abs(w - base_(f)) for f, w in outer]
+			base = [(outer[0][0] - drop[0], base_(outer[0][0] - drop[0])), (outer[1][0] + drop[1], base_(outer[1][0] + drop[1]))]
+			outline = [base[0], outer[0], outer[1], base[1]]
+			return outward(loft([[fwb([f, w, b], side) for f, w in outline] for b in (face - housing["thick"], face)]))
+		upper, lower = frame("tip", True), frame("undertip", False)
+		store(f"rail_{tip}", merge([rail, fairing, upper, lower]), parent=f"flex_rail_{name}", hinge=front, shown=True, frame=(front, aft, u))
 		inward = Vector((0, side, 0))
 		for key, housing in (("tip", upper), ("undertip", lower)):
 			node(f"formation_{key}_{name}", parent=f"flex_rail_{name}", mesh=flush(BVHTree.FromPolygons(*housing), strips[key], side, strips["width"], inward), paint="lights")
@@ -4599,7 +4718,9 @@ def stores():
 			start = middle - length / 2
 			top = interp(bottom_, start)
 			rack_front = at(start, top - value(lau115["height"]) / 2, bl(start) * side)
-			store(f"rack_{station}", box_mesh(rack_front, axis_f, UP, length, value(lau115["width"]), value(lau115["height"]), 9.0, tip=0.45, hang=True),
+			rack = STORES["rack"]
+			store(f"rack_{station}", box_mesh(rack_front, axis_f, UP, length, value(lau115["width"]), value(lau115["height"]), rack["fairing"], tip=rack["tip"],
+				anchor=1.0, rounding=rack["corner"]),
 				parent=flex, hinge=rack_front, frame=(rack_front, rack_front - axis_f * (length * INCH), UP))
 			if station == outboard:
 				# the LAU-115's front and aft lower corners and its front's top,
@@ -4640,9 +4761,11 @@ def stores():
 					edge = centre + math.copysign((value(lau115["width"]) / 2 - 0.3) * INCH, rail_at.y - centre)
 					front = Vector((at(s0, 0.0, 0.0).x, (edge + rail_at.y) / 2, rail_at.z + 1.5 * INCH))
 					return box_mesh(front, FORWARD, UP, s1 - s0, abs(rail_at.y - edge) / INCH, 3.0, 0.0, tail=0.0)
-				store(f"launcher_{station}{point}", merge([box_mesh(tip_, axis_f, -toward, value(lau127["length"]), value(lau127["width"]), value(lau127["height"]), 14.0),
+				body = rails["launcher"]
+				store(f"launcher_{station}{point}", merge([box_mesh(tip_, axis_f, -toward, value(lau127["length"]), value(lau127["width"]), value(lau127["height"]), body["fairing"],
+					tip=body["tip"], rounding=body["corner"], faces=body["faces"]),
 					fitting(value(lau127["length"]))]), parent=flex, hinge=tip_, frame=(tip_, tip_ - axis_f * (value(lau127["length"]) * INCH), -toward))
-				store(f"rail_{station}{point}", merge([box_mesh(tip_, axis_f, -toward, value(lau7["length"]), value(lau7["width"]), value(lau7["height"]), 14.0),
+				store(f"rail_{station}{point}", merge([box_mesh(tip_, axis_f, -toward, value(lau7["length"]), value(lau7["width"]), value(lau7["height"]), 14.0, groove=rails["tip"]["channel"]),
 					fitting(value(lau7["length"]))]), parent=flex, hinge=tip_, frame=(tip_, tip_ - axis_f * (value(lau7["length"]) * INCH), -toward))
 				ROUNDS[station][f"launcher_{station}{point}"] = round_at(n120, axis_f, -toward, "aim120c")
 				# an AIM-9M on the LAU-7 there: its axis 5.0 in from the rail's,
@@ -4675,12 +4798,31 @@ def stores():
 		middle = (min(lugs) + max(lugs)) / 2
 		hooks = nose - f * (middle * INCH) + u * ((radius + value(lau116["height"]) / 2) * INCH)
 		front = hooks + f * (value(lau116["length"]) / 2 * INCH)
-		store(f"ejector_{cheek}", box_mesh(front, f, u, value(lau116["length"]), value(lau116["width"]), value(lau116["height"]), 4.0, tip=0.8), hinge=front,
-			frame=(front, front - f * (value(lau116["length"]) * INCH), u))
-		# its exposed lower face's ends, on its middle line, the face toward the round (marking.md)
-		low = -u * (value(lau116["height"]) / 2 * INCH)
-		MARKS[f"ejector_front_{name}"] = (front + low * 0.8, f"ejector_{cheek}")
-		MARKS[f"ejector_aft_{name}"] = (front - f * (value(lau116["length"]) * INCH) + low * 0.7, f"ejector_{cheek}")
+		# behind it, over the round's aft end, the box the photos show running on
+		# to a chamfered aft face (layout.stores.rounds.cheek.fairing): standing
+		# off the nacelle's side, its outboard face upright, its bottom just over
+		# the round, its top level, its inboard face in the nacelle and turning
+		# outboard over its aft end to its aft edge
+		fairing = rounds["cheek"]["fairing"]
+		edge = fairing["edge"]
+		tail_, nose_ = rounds["cheek"]["tail"], rounds["cheek"]["nose"]
+		def over(station):
+			# its bottom, WL, at a station: the round's top and the clearance
+			k = (station - nose_[0]) / (tail_[0] - nose_[0])
+			return nose_[1] + k * (tail_[1] - nose_[1]) + value(MISSILES["aim120c"]["diameter"]) / 2 + fairing["clear"]
+		begin = ORIGIN["station"] - (front - f * (value(lau116["length"]) * INCH)).x / INCH - 2.0   # 2 in inside the LAU-116
+		turn = edge[0] - fairing["chamfer"]
+		rings = []
+		for station in [begin, (begin + turn) / 2, turn, edge[0] - fairing["chamfer"] / 2, edge[0]]:
+			deep = fairing["depth"] * min(1.0, max(0.06, (edge[0] - station) / fairing["chamfer"]))
+			low, high = over(station), fairing["top"]
+			rings.append([fwb([station, w, b], side) for w, b in ((low, edge[1]), (high, edge[1]), (high, edge[1] - deep), (low, edge[1] - deep))])
+		store(f"ejector_{cheek}", merge([box_mesh(front, f, u, value(lau116["length"]), value(lau116["width"]), value(lau116["height"]), 4.0, tip=0.8),
+			outward(loft(rings))]), hinge=front, frame=(front, front - f * (value(lau116["length"]) * INCH), u))
+		# the LAU-116's exposed lower face's front, on its middle line, the face
+		# toward the round; the fairing's aft edge's middle (marking.md)
+		MARKS[f"ejector_front_{name}"] = (front - u * (value(lau116["height"]) / 2 * INCH) * 0.8, f"ejector_{cheek}")
+		MARKS[f"ejector_aft_{name}"] = (fwb([edge[0], (over(edge[0]) + fairing["top"]) / 2, edge[1]], side), f"ejector_{cheek}")
 	# The centreline: the SUU-62 on the belly and its tank, level
 	centre = STORES["centre"]
 	n = at(*centre["nose"])
@@ -4691,15 +4833,25 @@ def stores():
 	profile = STORES["tank"]["profile"]
 	line = STORES["centreline"]
 	tank_top = lambda s: centre["nose"][1] + interp(profile, s - centre["nose"][0])
-	# its leading edge as the photos measure it, from its lower end above the
-	# tank up to the belly; aft of it the bottom runs down onto the tank
+	# a flat-sided box behind its narrow rounded leading edge, that edge as
+	# the photos measure it from its lower end above the tank up to the belly,
+	# its bottom flat at that lower end, the tank hanging from sway braces
+	# under it (layout.stores.centreline)
 	low, high = (line["front"], line["bottom"]), (line["top"], keel_at(line["top"]))
-	store("pylon_5", pylon_mesh(1, [low[0], low[1], 0.0], [line["back"], tank_top(line["back"]) - 1.0, 0.0], [low, high],
-		[low] + [(s, tank_top(s) - 1.0) for s in range(int(line["front"]) + 6, int(line["back"]) + 1, 4)], py["width"], top=lambda s: keel_at(s)),
-		frame=(at(low[0], low[1], 0.0), at(line["back"], tank_top(line["back"]) - 1.0, 0.0), UP))
+	# each brace a pad 2 in long on either side, from 0.5 in inside the
+	# pylon's bottom to 0.1 in inside the tank's skin there
+	pads = []
+	for station in line["braces"]:
+		radius = tank_top(station) - centre["nose"][1]
+		for across in (-3.0, 3.0):
+			seat = centre["nose"][1] + math.sqrt(radius * radius - across * across) - 0.1
+			top = line["bottom"] + 0.5
+			pads.append(box_mesh(at(station - 1.0, (seat + top) / 2, across), FORWARD, UP, 2.0, 1.5, top - seat, 0.0, tail=0.0))
+	store("pylon_5", merge([box_pylon([low, high], line["back"], line["bottom"], line["width"], line["corner"], keel_at, line["taper"], line["round"])] + pads),
+		frame=(at(low[0], low[1], 0.0), at(line["back"], line["bottom"], 0.0), UP))
 	# the SUU-62's ends low down and where its edges meet the belly (marking.md)
 	MARKS["pylon_centre_nose"] = (at(low[0], low[1], 0.0), "pylon_5")
-	MARKS["pylon_centre_tail"] = (at(line["back"], tank_top(line["back"]) - 1.0, 0.0), "pylon_5")
+	MARKS["pylon_centre_tail"] = (at(line["back"], line["bottom"], 0.0), "pylon_5")
 	MARKS["pylon_centre_root_front"] = (at(high[0], high[1], 0.0), "pylon_5")
 	MARKS["pylon_centre_root_aft"] = (at(line["back"], keel_at(line["back"]), 0.0), "pylon_5")
 
