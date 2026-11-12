@@ -50,6 +50,7 @@ EXEMPT = {
 	"layout.parking": "a placed spot the build writes as given",
 	"layout.sponsons": "built as given (references/research/sides, stern); the photo match checks their corners",
 	"layout.weapons": "built as given",
+	"layout.vehicles": "the deck's vehicles built as given (references/research/vehicles); test_build checks where each kind's parts stand and the footprints the ship file carries",
 	"layout.domes_edge": "built as given",
 	"layout.catwalks": "built as given",
 	"layout.racks": "built as given",

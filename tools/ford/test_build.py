@@ -75,11 +75,13 @@ LAYOUT = {
 		"lights": {"datum": [[-30, 19.6, -40], [-30, 19.6, -36]], "cut": [[-30, 20.1, -38.5]], "waveoff": [[-30, 19.9, -39]]}},
 	"lights": {"centreline": {"positions": [[-90, 19.0, -10], [-80, 19.0, -10]], "colour": "white", "kind": "recovery"}},
 	# an island: a block whose sides lean in, a radome on its plinth, a mast
+	# its ends' marks named, as a yardarm's tips are
 	"island": {"prisms": [{"name": "block", "bottom": 19.0, "top": 31.0, "outline": [[-20, 20], [-5, 20], [-5, 28], [-20, 28]],
-		"upper": [[-19, 21], [-6, 21], [-6, 27], [-19, 27]]}],
+		"upper": [[-19, 21], [-6, 21], [-6, 27], [-19, 27]], "tips": {"port": "block_port_tip", "starboard": "block_starboard_tip"}}],
 		"domes": [{"name": "radar", "centre": [-12, 33.0, 24], "radius": 1.5, "plinth": 2.0},
 			# an acorn turned on the roof: a drum, a collar, a frustum widening to a cap
-			{"name": "acorn", "centre": [-16, 22], "profile": [[31.0, 0.6], [32.0, 0.6], [32.0, 0.8], [33.0, 1.0], [33.6, 0.7], [33.9, 0.0]], "radome": 32.01}],
+			{"name": "acorn", "centre": [-16, 22], "profile": [[31.0, 0.6], [32.0, 0.6], [32.0, 0.8], [33.0, 1.0], [33.6, 0.7], [33.9, 0.0]], "radome": 32.01,
+				"mark": "dome_acorn"}],
 		"poles": [{"name": "mast", "base": [-12, 24], "bottom": 31.0, "top": 45.0, "radius": 0.5}],
 		# a window on its forward face and a radar face on its port face
 		"windows": [{"name": "bridge", "plane": "x=-5", "z": [21, 27], "y": [28, 29]},
@@ -95,7 +97,7 @@ LAYOUT = {
 		"details": [{"name": "rail", "kind": "railing", "path": [[-20, 31.0, 20], [-5, 31.0, 20]], "height": 1.0},
 			{"name": "dish", "kind": "dish", "centre": [-20.5, 25, 24], "diameter": 1.0, "facing": [-1, 0, 0]},
 			{"name": "brace", "kind": "cylinder", "base": [-12, 31, 24], "end": [-12, 29, 27], "radius": 0.2},
-			{"name": "box", "kind": "box", "centre": [-12, 40, 24], "size": [2, 0.5, 3]},
+			{"name": "box", "kind": "box", "centre": [-12, 40, 24], "size": [2, 0.5, 3], "mark": "box_centre"},
 			# a pipe with a bend, a ladder, a stair and a slab on the forward face
 			{"name": "pipe", "kind": "path", "round": True, "size": 0.1, "path": [[-6, 20, 28.5], [-6, 25, 28.5], [-8, 25, 28.5]]},
 			{"name": "ladder", "kind": "ladder", "bottom": [-19, 19.0, 28.5], "top": 22.0, "along": [1, 0], "width": 0.5},
@@ -137,6 +139,16 @@ LAYOUT = {
 		# and one elevated 30 degrees, facing forward, on a pedestal a metre tall
 		"mounts": [{"kind": "phalanx", "place": "quarter", "foot": [-85, 12.0, -16], "train": 90},
 			{"kind": "phalanx", "place": "raised", "foot": [-75, 10.0, -16], "train": 0, "elevation": 30, "pedestal": 1.0}]},
+	# a tractor parked fore and aft, and one turned to port: a white body with
+	# a blue cab at its front
+	"vehicles": {"kinds": {"tractor": {"size": [3.0, 1.6, 2.0], "parts": [{"name": "body", "kind": "box", "centre": [0, 0.5, 0], "size": [3.0, 1.0, 2.0], "paint": "white"},
+		{"name": "cab", "kind": "box", "centre": [1.0, 1.3, 0], "size": [1.0, 0.6, 1.8], "paint": "blue"},
+		# a lamp on its right, standing on both sides
+		{"name": "lamp", "kind": "box", "centre": [1.4, 0.5, 0.7], "size": [0.2, 0.2, 0.2], "paint": "red", "mirror": True},
+		# a step against its right side, on the body's edge, so the two weld
+		# into a solid tidy() cannot turn
+		{"name": "step", "kind": "box", "centre": [1.25, 0.5, 1.15], "size": [0.5, 1.0, 0.3], "paint": "grey"}]}},
+		"parked": [{"kind": "tractor", "at": [40, 10], "heading": 0}, {"kind": "tractor", "at": [30, 10], "heading": 90}]},
 	"openings": [{"name": "hangar", "plane": "z=16.2", "x": [0, 20], "y": [5, 10]}],
 	# a port catwalk from x -50 to -30 with a net outboard of it, but for a
 	# platform off it at x -36 to -34; and a net across the bow
@@ -865,6 +877,17 @@ class BuildTest(unittest.TestCase):
 	def test_features(self):
 		self.assertEqual(self.features["landmarks"]["deck_bow_port"], {"at": [100, 19.0, -40], "node": "deck"})
 
+	def test_island_marks(self):
+		# what the photos mark on the island, for the photo match to judge: a
+		# radome at the centre of its top's outline (its top less its widest
+		# radius, not its widest ring), a prism's ends at their middles half way
+		# up, a detail at its centre
+		marks = self.features["landmarks"]
+		for name, at, node in (("dome_acorn", [-16, 32.9, 22], "island"), ("block_port_tip", [-12.5, 25.0, 20], "island"),
+				("block_starboard_tip", [-12.5, 25.0, 28], "island"), ("box_centre", [-12, 40, 24], "island_details")):
+			np.testing.assert_allclose(marks[name]["at"], at, atol=1e-4, err_msg=name)
+			self.assertEqual(marks[name]["node"], node)
+
 
 	def faces(self, name, materials=None):
 		tris = self.model.parts(materials=materials)[name]
@@ -921,6 +944,44 @@ class BuildTest(unittest.TestCase):
 		self.assertAlmostEqual(muzzle[0], -75 + 1.365, places=2)
 		self.assertGreater(muzzle[1], 11.9)
 		self.assertAlmostEqual(raised[:, 1].min(), 9.0, places=3)
+
+	def test_vehicles(self):
+		# each parked tractor its kind's parts on the deck where it stands: the
+		# one fore and aft with its cab forward, the one turned to port with its
+		# cab to port; all in their own node, and in the ship file as the
+		# server collides with them
+		vehicles = self.model.parts()["vehicles"].reshape(-1, 3)
+		self.assertAlmostEqual(vehicles[:, 1].min(), 19.0, places=4)
+		self.assertAlmostEqual(vehicles[:, 1].max(), 20.6, places=4)
+		cab = self.model.parts(materials=["blue"])["vehicles"].reshape(-1, 3)
+		ahead = cab[np.abs(cab[:, 2] - 10) < 1.0]
+		ahead = ahead[ahead[:, 0] > 35]
+		np.testing.assert_allclose([ahead[:, 0].min(), ahead[:, 0].max()], [40.5, 41.5], atol=1e-4)
+		turned = cab[np.abs(cab[:, 0] - 30) < 1.0]
+		np.testing.assert_allclose([turned[:, 2].min(), turned[:, 2].max()], [8.5, 9.5], atol=1e-4)   # to port: toward -z
+		self.assertEqual(len(self.model.parts(materials=["white"])["vehicles"]), 2 * 12)   # each body a box's twelve triangles
+		# a part marked mirror stands on both sides, each copy wound outward:
+		# the fore-and-aft tractor's lamps at z 9.3 and 10.7
+		lamps = self.model.parts(materials=["red"])["vehicles"]
+		self.assertEqual(len(lamps), 2 * 2 * 12)
+		middle = lamps.mean(1)
+		normal = np.cross(lamps[:, 1] - lamps[:, 0], lamps[:, 2] - lamps[:, 0])
+		for z in (9.3, 10.7):
+			mine = (np.abs(middle[:, 0] - 41.4) < 0.11) & (np.abs(middle[:, 2] - z) < 0.11)
+			self.assertEqual(mine.sum(), 12, z)
+			self.assertTrue((((middle[mine] - [41.4, 19.5, z]) * normal[mine]).sum(1) > 0).all(), z)
+		# the body and the step welded to it along the body's edge each wound
+		# outward
+		for paint, centre in (("white", [40, 19.5, 10]), ("grey", [41.25, 19.5, 11.15])):
+			tri = self.model.parts(materials=[paint])["vehicles"]
+			middle = tri.mean(1)
+			mine = np.linalg.norm(middle - centre, axis=1) < 1.9
+			normal = np.cross(tri[mine, 1] - tri[mine, 0], tri[mine, 2] - tri[mine, 0])
+			self.assertEqual(mine.sum(), 12, paint)
+			self.assertTrue((((middle[mine] - centre) * normal).sum(1) > 0).all(), paint)
+		self.assertEqual(self.ship["vehicles"], [
+			{"kind": "tractor", "outline": [[38.5, 9.0], [41.5, 9.0], [41.5, 11.0], [38.5, 11.0]], "top": 20.6},
+			{"kind": "tractor", "outline": [[29.0, 11.5], [29.0, 8.5], [31.0, 8.5], [31.0, 11.5]], "top": 20.6}])
 
 	def test_sponson_details(self):
 		# what stands on a sponson is built with it: the house's eight corners
@@ -2183,6 +2244,272 @@ class UniqueTest(unittest.TestCase):
 		self.assertEqual(self.out["room"], sorted([f for f in self.box(0) if f[0] != 0.5] + [[0.5, 1.0, 1]]))
 		# with no paint preferred, the first
 		self.assertEqual(self.out["first"], self.box(0))
+
+
+# build.py's vehicle geometry on its own: ropes round sheaves, a bent bar,
+# a tyre, turned solids and extrusions; prints what each test reads
+GEOMETRY = r"""
+import json, math, sys
+from mathutils import Vector
+build = {"__name__": "geometry", "__file__": sys.argv[sys.argv.index("--") + 1]}
+exec(compile(open(build["__file__"]).read(), build["__file__"], "exec"), build)
+ship = lambda v: [v.x, v.z, -v.y]
+out = {}
+# a rope up from (0, 0, 0) over a sheave at (5, 3, 0), turning clockwise about +z, down to (10, 0, 0)
+out["over"] = build["reeved"]([{"at": [0, 0, 0]}, {"sheave": [5, 3, 0], "axis": [0, 0, 1], "radius": 0.5, "turn": -1}, {"at": [10, 0, 0]}])
+# an S: under a sheave at (3, 2, 0) turning anticlockwise, over one at (7, 4, 0) turning clockwise
+out["s"] = build["reeved"]([{"at": [0, 5, 0]}, {"sheave": [3, 2, 0], "axis": [0, 0, 1], "radius": 0.4, "turn": 1},
+	{"sheave": [7, 4, 0], "axis": [0, 0, 1], "radius": 0.6, "turn": -1}, {"at": [10, 0, 0]}])
+# a bar 0.05 round bent square at (1, 0, 0)
+v, f, p, s = build["sweep"]([[0, 0, 0], [1, 0, 0], [1, 1, 0]], 0.05, 8)
+out["sweep"] = {"vertices": [ship(q) for q in v], "faces": len(f), "smooth": s}
+# a tyre 1.85 across and 0.75 wide on an axle along +z at (0, 0.925, 0), lugged, on a rim 0.72 across
+v, f, p, s = build["tyre"]({"centre": [0, 0.925, 0], "axis": [0, 0, 1], "diameter": 1.85, "width": 0.75, "rim": 0.72, "dish": 0.12, "hub": 0.32,
+	"bolts": 10, "paint_rim": "yellow", "lugs": {"count": 18, "depth": 0.06, "width": 0.16, "lean": 0.35, "reach": 0.08}})
+out["tyre"] = {"vertices": [ship(q) for q in v], "faces": [list(x) for x in f], "paints": p}
+# a turned solid capped at both ends, and a closed ring
+for name, closed in (("capped", False), ("ring", True)):
+	v, f, p, s = build["spun"]([1, 2, 3], [1, 0, 0], [[0, 0.5], [1, 0.5], [1.2, 0.3]], 8, "grey", closed)
+	out[name] = {"vertices": [ship(q) for q in v], "faces": [len(x) for x in f], "smooth": s}
+# an extrusion: a triangle in the zy plane drawn from x 2 to 3
+v, f, p = build["shape"]({"kind": "extrusion", "plane": "zy", "profile": [[0, 0], [1, 0], [0, 2]], "along": [2, 3], "paint": "white"})
+out["extrusion"] = [ship(q) for q in v]
+print("GEOMETRY " + json.dumps(out))
+"""
+
+
+class NamesTest(unittest.TestCase):
+	# Two top-level functions of one name in build.py: Python keeps the
+	# later and every caller of the first gets it, raising only on the path
+	# that reaches one (a second turned() broke the anchors in a full build
+	# while every vehicle test passed)
+	def test_build_defines_each_name_once(self):
+		import ast
+		tree = ast.parse((HERE / "build.py").read_text())
+		names = [n.name for n in tree.body if isinstance(n, (ast.FunctionDef, ast.ClassDef))]
+		self.assertEqual(sorted({n for n in names if names.count(n) > 1}), [])
+
+
+class CraneTest(unittest.TestCase):
+	# The crash crane's wheels where the photos put them, read from the
+	# facts: references/research/vehicles/model's bundle sets each hub on its
+	# rim's disc and the bumper's left end at the tyre's outer face
+	# (dvids8484982), the outer faces 2.21 m either side of the middle (+-0.1);
+	# a 3.2 m track left them 0.14 m a side inside
+	def setUp(self):
+		crane = json.loads((HERE / "facts.json").read_text())["layout"]["vehicles"]["kinds"]["crane"]
+		names = [p["name"] for p in crane["parts"]]
+		self.assertEqual(sorted({n for n in names if names.count(n) > 1}), [])   # the gantry's posts once took the boom's posts' names
+		self.size, self.parts = crane["size"], {p["name"]: p for p in crane["parts"]}
+		self.wheels = [p for p in crane["parts"] if p["kind"] == "tyre"]
+		self.assertEqual(len(self.wheels), 3)   # each mirrored, six in all
+		self.outer = [abs(w["centre"][2]) + w["width"] / 2 for w in self.wheels]
+
+	def test_tyres_where_the_photos_put_them(self):
+		for outer in self.outer:
+			self.assertAlmostEqual(outer, 2.21, delta=0.1)
+
+	def test_bumper_flush_with_the_tyres(self):
+		self.assertAlmostEqual(self.parts["bumper"]["size"][2] / 2, max(self.outer), delta=0.02)
+
+	def test_footprint_as_wide_as_the_tyres(self):
+		# the server's collision across the tyres' bulging sidewalls (tyre():
+		# 1.03 of the half width), no wider
+		span = 2 * max(abs(w["centre"][2]) + 1.03 * w["width"] / 2 for w in self.wheels)
+		self.assertGreaterEqual(self.size[2], span - 1e-3)
+		self.assertLess(self.size[2], span + 0.05)
+
+	# The boom's frame: each tube ends inside what it joins (a casting, a
+	# block, the next tube, a sheave), so no cut end stands open in the air.
+	# The knee's casting once stood where the boom was before it was raised
+	# 12.6 degrees, 0.8 m off the legs' tops, and the posts and struts poked
+	# through the apex's plates
+	TUBES = ["leg_left", "leg_right", "strut_left", "strut_right", "post_left", "post_right", "lower_left", "lower_right", "lower", "upper", "barrel"]
+
+	def test_frame_tubes_end_inside_what_they_join(self):
+		self.assertEqual(sorted(set(self.TUBES) - set(self.parts)), [])
+		misses = []
+		for name in self.TUBES:
+			tube = self.parts[name]
+			for a, b in ((tube["base"], tube["end"]), (tube["end"], tube["base"])):
+				a, b = np.asarray(a, float), np.asarray(b, float)
+				d = (b - a) / np.linalg.norm(b - a)
+				e1 = np.cross(d, [0, 1, 0] if abs(d[1]) < 0.9 else [1, 0, 0])
+				e1 /= np.linalg.norm(e1)
+				e2 = np.cross(d, e1)
+				rim = [a + 0.02 * d] + [a + 0.02 * d + 0.95 * tube["radius"] * (math.cos(t) * e1 + math.sin(t) * e2) for t in np.linspace(0, 2 * math.pi, 12, endpoint=False)]
+				out = [q for q in rim if not any(holds(p, q) for p in self.parts.values() if p is not tube)]
+				if out:
+					misses.append(f"{name} at {np.round(a, 2).tolist()}: {len(out)} of {len(rim)}")
+		self.assertEqual(misses, [])
+
+	def test_hook_block_hangs_together(self):
+		# the frame touches both guards and runs through the axle's line, the
+		# swivel hangs from the frame and the hook from the swivel
+		frame, swivel, hook = self.parts["block_frame"], self.parts["swivel"], self.parts["hook"]
+		lo = np.asarray(frame["centre"]) - np.asarray(frame["size"]) / 2
+		hi = np.asarray(frame["centre"]) + np.asarray(frame["size"]) / 2
+		for name in ("block_front_guard", "block_rear_guard"):
+			guard = self.parts[name]
+			x = guard["centre"][0]
+			face = x - 0.09 if x > frame["centre"][0] else x + 0.09
+			self.assertAlmostEqual(face, hi[0] if x > frame["centre"][0] else lo[0], delta=0.015, msg=name)
+			self.assertTrue(lo[1] < guard["centre"][1] < hi[1], name)
+		self.assertTrue(lo[1] - 0.01 <= swivel["base"][1] <= lo[1] + 0.03)
+		self.assertAlmostEqual(hook["path"][0][1], swivel["end"][1], delta=0.01)
+
+
+def holds(part, q, slack=0.01):
+	# Whether a vehicle part (facts.json layout.vehicles.kinds.*.parts) holds
+	# a point, for the kinds the crane's frame joins into; a part marked
+	# `mirror` stands on both sides
+	q = np.asarray(q, float)
+	if part.get("mirror") and not holds({k: v for k, v in part.items() if k != "mirror"}, q * [1, 1, -1], slack) is False:
+		return True
+	kind = part["kind"]
+	if kind in ("box", "rounded"):
+		return bool((np.abs(q - np.asarray(part["centre"])) <= np.asarray(part["size"]) / 2 + slack).all())
+	if kind == "extrusion":
+		i, j = "xyz".index(part["plane"][0]), "xyz".index(part["plane"][1])
+		k = 3 - i - j
+		if not min(part["along"]) - slack <= q[k] <= max(part["along"]) + slack:
+			return False
+		u, v, ring, inside = q[i], q[j], part["profile"], False
+		for (u0, v0), (u1, v1) in zip(ring, ring[1:] + ring[:1]):
+			if (v0 > v) != (v1 > v) and u < u0 + (v - v0) * (u1 - u0) / (v1 - v0):
+				inside = not inside
+			t = np.clip(((u - u0) * (u1 - u0) + (v - v0) * (v1 - v0)) / max((u1 - u0) ** 2 + (v1 - v0) ** 2, 1e-12), 0, 1)
+			if math.hypot(u - u0 - t * (u1 - u0), v - v0 - t * (v1 - v0)) <= slack:
+				return True
+		return inside
+	if kind in ("cylinder", "path", "sweep"):
+		runs = [(part["base"], part["end"])] if kind == "cylinder" else list(zip(part["path"], part["path"][1:]))
+		radii = part["radius"] if kind != "path" else part["size"] / 2
+		# a sweep's radius may change along its path: each run takes its ends' larger
+		radii = [max(a, b) for a, b in zip(radii, radii[1:])] if isinstance(radii, list) else [radii] * len(runs)
+		for (b, e), radius in zip(runs, radii):
+			b, e = np.asarray(b, float), np.asarray(e, float)
+			length = np.linalg.norm(e - b)
+			d = (e - b) / length
+			s = (q - b) @ d
+			if -slack <= s <= length + slack and np.linalg.norm(q - b - s * d) <= radius + slack:
+				return True
+		return False
+	if kind == "turned":
+		c, a = np.asarray(part["centre"], float), np.asarray(part["axis"], float)
+		a /= np.linalg.norm(a)
+		s = (q - c) @ a
+		r = np.linalg.norm(q - c - s * a)
+		reach = [max(r0, r1) if abs(s1 - s0) < 1e-9 else r0 + (r1 - r0) * (s - s0) / (s1 - s0)
+			for (s0, r0), (s1, r1) in zip(part["profile"], part["profile"][1:]) if min(s0, s1) - slack <= s <= max(s0, s1) + slack]
+		return bool(reach) and r <= max(reach) + slack
+	return False
+
+
+class GeometryTest(unittest.TestCase):
+	@classmethod
+	def setUpClass(cls):
+		run = subprocess.run(["blender", "-b", "--factory-startup", "--python-use-system-env", "--python-expr", GEOMETRY, "--", str(HERE / "build.py")],
+			capture_output=True, text=True)
+		found = re.search(r"^GEOMETRY (.*)$", run.stdout, re.M)
+		if not found:
+			raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+		cls.out = json.loads(found.group(1))
+
+	def tangent(self, line, k, centre, radius):
+		# the straight run from line[k] to line[k + 1] meets the circle round
+		# `centre` square to its radius at whichever end lies on it
+		a, b = np.array(line[k]), np.array(line[k + 1])
+		run = (b - a) / np.linalg.norm(b - a)
+		for q in (a, b):
+			if abs(np.linalg.norm(q - centre) - radius) < 1e-4:
+				self.assertAlmostEqual(float(run @ (q - centre)), 0.0, places=4)
+				return
+		self.fail(f"run {k} touches no sheave")
+
+	def test_rope_runs_over_its_sheave_on_its_tangents(self):
+		line = np.array(self.out["over"])
+		centre = np.array([5, 3, 0])
+		np.testing.assert_allclose(line[0], [0, 0, 0], atol=1e-6)
+		np.testing.assert_allclose(line[-1], [10, 0, 0], atol=1e-6)
+		# the wrap lies in the groove and runs over the top: from the side it
+		# rises on to past it, within a chord's sag of it
+		wrap = line[1:-1]
+		np.testing.assert_allclose(np.linalg.norm(wrap - centre, axis=1), 0.5, atol=1e-5)
+		self.assertGreater(wrap[:, 1].max(), 3.5 - 0.5 * (1 - math.cos(math.radians(7.5))) - 1e-6)
+		self.assertTrue((wrap[:, 0] < 5).any() and (wrap[:, 0] > 5).any())
+		self.assertGreater(wrap[:, 1].min(), 3.0)
+		self.tangent(line, 0, centre, 0.5)
+		self.tangent(line, len(line) - 2, centre, 0.5)
+
+	def test_rope_between_two_sheaves_meets_both_on_their_tangents(self):
+		line = np.array(self.out["s"])
+		a, b = np.array([3, 2, 0]), np.array([7, 4, 0])
+		on_a = np.abs(np.linalg.norm(line - a, axis=1) - 0.4) < 1e-5
+		on_b = np.abs(np.linalg.norm(line - b, axis=1) - 0.6) < 1e-5
+		# under the first, over the second: each wrap passes its bottom or top,
+		# within a chord's sag of it
+		self.assertLess(line[on_a, 1].min(), 1.6 + 0.4 * (1 - math.cos(math.radians(7.5))) + 1e-6)
+		self.assertTrue((line[on_a, 0] < 3).any() and (line[on_a, 0] > 3).any())
+		self.assertGreater(line[on_b, 1].max(), 4.6 - 0.6 * (1 - math.cos(math.radians(7.5))) - 1e-6)
+		self.assertTrue((line[on_b, 0] < 7).any() and (line[on_b, 0] > 7).any())
+		# the run between them leaves the first and meets the second square to
+		# both their radii
+		last_a, first_b = np.where(on_a)[0].max(), np.where(on_b)[0].min()
+		self.assertEqual(first_b, last_a + 1)
+		run = line[first_b] - line[last_a]
+		self.assertAlmostEqual(float(run @ (line[last_a] - a)), 0.0, places=4)
+		self.assertAlmostEqual(float(run @ (line[first_b] - b)), 0.0, places=4)
+		self.tangent(line, 0, a, 0.4)
+		self.tangent(line, len(line) - 2, b, 0.6)
+
+	def test_sweep_keeps_its_thickness_round_a_bend(self):
+		sweep = self.out["sweep"]
+		v = np.array(sweep["vertices"])
+		self.assertEqual(len(v), 3 * 8)
+		self.assertEqual(sweep["faces"], 2 * 8 + 2)
+		self.assertEqual(sweep["smooth"], [True] * 16 + [False, False])
+		# the end rings square to their runs, 0.05 round; the corner's ring on
+		# the bisector, mitred to 0.05 / cos 45 so the bar does not pinch there
+		np.testing.assert_allclose(np.hypot(v[:8, 1], v[:8, 2]), 0.05, atol=1e-6)
+		np.testing.assert_allclose(v[:8, 0], 0, atol=1e-6)
+		corner = v[8:16] - [1, 0, 0]
+		np.testing.assert_allclose(corner @ [1, 1, 0], 0, atol=1e-6)
+		self.assertAlmostEqual(np.linalg.norm(corner, axis=1).max(), 0.05 / math.cos(math.pi / 4), places=5)
+
+	def test_tyre(self):
+		tyre = self.out["tyre"]
+		v = np.array(tyre["vertices"])
+		radius = np.hypot(v[:, 0], v[:, 1] - 0.925)
+		paints = np.array(tyre["paints"])
+		faces = tyre["faces"]
+		rubber = {i for f, p in zip(faces, paints) if p == "dark" for i in f}
+		wheel = {i for f, p in zip(faces, paints) if p == "yellow" for i in f}
+		# the lugs reach the tyre's diameter at their inner ends (two corners
+		# each, 18 lugs a side), the carcass's crown under them its diameter less
+		# their depth (two rings of 32), its sidewalls bulging 3% past its width
+		r = radius[list(rubber)]
+		self.assertAlmostEqual(r.max(), 0.925, places=4)
+		self.assertEqual(int((r > 0.9).sum()), 18 * 2 * 2)
+		self.assertEqual(int((np.abs(r - 0.865) < 1e-4).sum()), 2 * 32)
+		self.assertAlmostEqual(np.abs(v[list(rubber), 2]).max(), 0.375 * 1.03, places=4)
+		# the rim's lip at its diameter, a little proud; within the tyre's width
+		self.assertAlmostEqual(radius[list(wheel)].max(), 0.36 + 0.02, places=4)
+		self.assertLess(v[list(wheel), 2].max(), 0.375)
+		self.assertEqual(sorted(set(tyre["paints"])), ["dark", "yellow"])
+
+	def test_turned_caps_open_ends_and_closes_rings(self):
+		for name, caps in (("capped", 2), ("ring", 0)):
+			turned = self.out[name]
+			v = np.array(turned["vertices"])
+			# about the line through (1, 2, 3) along x
+			np.testing.assert_allclose(sorted(set(np.round(np.hypot(v[:, 1] - 2, v[:, 2] - 3), 6))), [0.3, 0.5], atol=1e-6)
+			self.assertEqual(turned["faces"].count(8), caps)
+			self.assertEqual(turned["smooth"].count(False), caps)
+
+	def test_extrusion_in_its_plane(self):
+		v = np.array(self.out["extrusion"])
+		np.testing.assert_allclose(sorted(map(tuple, np.round(v, 6))), sorted([(x, y, z) for x in (2, 3) for z, y in ((0, 0), (1, 0), (0, 2))]), atol=1e-6)
 
 
 class CoincidentTest(unittest.TestCase):

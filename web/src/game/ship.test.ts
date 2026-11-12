@@ -152,6 +152,23 @@ describe('layout', () => {
     ).toEqual({ x: -20, z: -28, model: true })
   })
 
+  it("passes the deck's vehicles through as the core collides with them, and none where the file has none", () => {
+    const tractor = {
+      kind: 'tractor',
+      outline: [
+        [38.5, 9.0],
+        [41.5, 9.0],
+        [41.5, 11.0],
+        [38.5, 11.0],
+      ] as [number, number][],
+      top: 20.6,
+    }
+    expect(layout({ ...contract, vehicles: [tractor] }).vehicles).toEqual([
+      tractor,
+    ])
+    expect(read.vehicles).toEqual([])
+  })
+
   it('gives the waterline at evenly spaced stations, closing to nothing at the stem', () => {
     const w = read.waterline!
     expect([w.stern, w.stem, w.sides.length]).toEqual([-90, 95, STATIONS])

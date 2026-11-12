@@ -5516,6 +5516,7 @@ function build_deck_grid(grp,deckY){
 	const island={ minFa:Infinity, maxFa:-Infinity, minLat:Infinity, maxLat:-Infinity, top:-Infinity };   // the island superstructure's box in the ship's frame, its body up to the bridge levels: the crash probes' prism (the mast is its own post)
 	const mast={x:0,y:-1e9,z:0};   // the island mast top — found here because the deck grid EXCLUDES island geometry by design, so the old deck_y_at height scan can never see it (the masthead/floods silently vanished when the grid replaced raycasts)
 	grp.traverse(o=>{ if(!o.isMesh||!o.geometry.attributes.position) return;
+		if(/^vehicles(_\d+)?$/.test(o.name)) return;   // the deck's vehicles are neither deck nor island: a tractor's roof is no surface to taxi onto, and the flight core strikes them as prisms (scenery)
 		const p=o.geometry.attributes.position, idx=o.geometry.index;
 		const n=idx?idx.count:p.count, body=!/^island_details(_\d+)?$/.test(o.name);   // the island's walkways, railings and antennas stand off its body high over the deck: neither its crash box nor its mast's top. In more than one material the loader makes the node a group of meshes numbered island_details_1, _2, ...
 		for(let i=0;i<n;i+=3){
@@ -10984,7 +10985,8 @@ function scenery(){
 		{ height:ISLAND_H+AIRFIELD_FLOAT, strips:physics_strips.map(capsules) }];
 	for(const is of obstacles.islands) fields.push({ height:ISLAND_H, coast:is.pts.map(q=>({x:q[0], z:q[1]})) });
 	const island=carrier_island();
-	const carrier={ position:{x:CHART.x, y:CARRIER.height, z:CHART.z}, heading:CHART.yaw, speed:0, prisms:island?[island.prism]:[], posts:island?[island.post]:[],   // where the map charts the ship; the core sets it under way from there
+	const parked=SHIP.vehicles.map(v=>({ outline:v.outline.map(q=>({x:q[0], z:q[1]})), top:CARRIER.height+(v.top-SHIP.deck) }));   // the deck's vehicles, in the ship's own frame as the island is, their tops carried from over the waterline to the deck's height as her lights are
+	const carrier={ position:{x:CHART.x, y:CARRIER.height, z:CHART.z}, heading:CHART.yaw, speed:0, prisms:(island?[island.prism]:[]).concat(parked), posts:island?[island.post]:[],   // where the map charts the ship; the core sets it under way from there
 		deck:SHIP.outline.map(q=>({x:q[0], z:q[1]})),
 		catapults:SHIP.catapults.map(c=>({ position:{x:c.x, y:0, z:c.z}, heading:c.heading*D2R, stroke:c.stroke, speed:c.speed })),   // shuttles ARE the nose-gear points — the core's native convention
 		wires:SHIP.landing.wires.map((fa,i)=>{ const e=SHIP.landing.ends?.[i]; return e?{ a:{x:e[0][0], y:0, z:e[0][2]}, b:{x:e[1][0], y:0, z:e[1][2]} }   // where each pendant leaves its sheaves, as the ship file measures them

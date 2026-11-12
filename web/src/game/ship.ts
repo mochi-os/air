@@ -39,6 +39,7 @@ export interface Contract {
   lens?: Lens
   lights?: Record<string, Lights>
   parking?: { x: number; z: number; heading: number }
+  vehicles?: Vehicle[]
   joints?: Record<string, Joint>
   elevators: { number: number; side: string; outline: Plan[] }[]
   texture: { x: [number, number]; z: [number, number] }
@@ -72,6 +73,15 @@ export interface Lights {
   colour: string
   kind: string
   green?: Point[]
+}
+
+// A vehicle parked on the deck as the flight core collides with it: its
+// kind, its footprint in the ship's plan and the height of its top over the
+// waterline
+export interface Vehicle {
+  kind: string
+  outline: Plan[]
+  top: number
 }
 
 // A rigged part of the model (the plan's contract): it slides along its axis or
@@ -117,6 +127,7 @@ export interface Layout {
   lens?: Lens
   lights: Record<string, Lights>
   parking?: { x: number; z: number; heading: number }
+  vehicles: Vehicle[]
   joints: Record<string, Joint>
   // followers: each joint some others follow, and those joints, by name
   followers: Record<string, string[]>
@@ -349,6 +360,7 @@ export function layout(c: Contract): Layout {
     texture: { x: c.texture.x, z: c.texture.z },
     ...(c.lens ? { lens: c.lens } : {}),
     lights: c.lights ?? {},
+    vehicles: c.vehicles ?? [],
     ...(c.parking ? { parking: c.parking } : {}),
     joints: c.joints ?? {},
     followers: followers(c.joints ?? {}),

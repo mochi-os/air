@@ -994,7 +994,12 @@ def shape(p, frame=None):
 	# face; ring {centre, facing, outer, inner, thickness, sweep}: a flat ring
 	# standing out along `facing` (a life ring, a chock's rim), or with
 	# `sweep` [from, to] only that arc of it (a deck circle the deck's edge
-	# cuts)
+	# cuts); turned {centre, axis, profile, closed}: turned about any line
+	# (spun()); tyre: a wheel (tyre()); sweep {path, radius}: a round bar
+	# along a line (sweep()); rope {path, diameter}: a rope round its sheaves
+	# (reeved()); extrusion {plane, profile, along}: a polygon in one of the
+	# frame's planes drawn along the third axis. The vehicles' kinds keep the
+	# smooth marks the last five give their faces
 	paint = p.get("paint", "rail" if p["kind"] in ("railing", "ladder") else "grey")
 	kind = p["kind"]
 	if kind == "box":
@@ -1087,10 +1092,31 @@ def shape(p, frame=None):
 			for q, _ in along_line([[v[0], v[2]] for v in run], p.get("posts", 1.5)):
 				rails.append(bar([q[0], level(run, q), q[1]], [q[0], level(run, q) + height, q[1]], 0.05, paint))
 		piece = merge(rails)
+	elif kind == "turned":
+		piece = spun(p["centre"], p["axis"], p["profile"], p.get("segments", 24), paint, p.get("closed", False))
+	elif kind == "tyre":
+		piece = tyre(p, p.get("paint", "dark"))
+	elif kind == "sweep":
+		piece = sweep(p["path"], p["radius"], p.get("segments", 8), paint)
+	elif kind == "rope":
+		piece = sweep(reeved(p["path"]), p["diameter"] / 2, p.get("segments", 6), p.get("paint", "dark"))
+	elif kind == "extrusion":
+		# a polygon in one of the frame's planes ("xy": profile [[x, y], ...]),
+		# drawn from along[0] to along[1] on the third axis
+		i, j = "xyz".index(p["plane"][0]), "xyz".index(p["plane"][1])
+		k = 3 - i - j
+		polygon = []
+		for q in p["profile"]:
+			v = [0.0, 0.0, 0.0]
+			v[i], v[j], v[k] = q[0], q[1], p["along"][0]
+			polygon.append(v)
+		outward = [0.0, 0.0, 0.0]
+		outward[k] = 1.0
+		piece = sheet(polygon, outward, p["along"][1] - p["along"][0], paint)
 	else:
 		raise ValueError(f"part {p.get('name')}: unknown kind {kind}")
 	if frame is not None:
-		piece = ([frame @ v for v in piece[0]], piece[1], piece[2])
+		piece = ([frame @ v for v in piece[0]],) + tuple(piece[1:])
 	return piece
 
 
@@ -1237,6 +1263,21 @@ def island():
 	for p in i.get("prisms", []):
 		for k, (x, z) in enumerate(p.get("upper") or p["outline"]):
 			MARKS[f"island_{p['name']}_top_{k + 1}"] = (at(x, p["top"], z), "island")
+		# a prism whose `tips` name its ends' marks (the yardarms'): each end's
+		# middle, half way up
+		xs = [x for x, _ in p["outline"]]
+		for side, mark in p.get("tips", {}).items():
+			z = (min if side == "port" else max)(z for _, z in p["outline"])
+			MARKS[mark] = (at((min(xs) + max(xs)) / 2, (p["bottom"] + p["top"]) / 2, z), "island")
+	# a radome the photos mark (its `mark`) at the centre of its top's
+	# outline, its top less its widest radius; a detail at its centre
+	for d in i.get("domes", []):
+		if "mark" in d:
+			top = max(y for y, _ in d["profile"])
+			MARKS[d["mark"]] = (at(d["centre"][0], top - max(r for _, r in d["profile"]), d["centre"][1]), "island")
+	for d in i.get("details", []):
+		if "mark" in d:
+			MARKS[d["mark"]] = (at(*d["centre"]), "island_details")
 
 
 def joined(name, other):
@@ -2198,6 +2239,270 @@ def sides():
 	openings = [face(o, [0, 0], "dark") for o in LAYOUT.get("openings", [])]
 	if openings:
 		node("openings", mesh=merge(openings))
+
+
+def basis(axis):
+	# A unit vector along `axis` (ship frame) and two square to it and to each
+	# other
+	n = Vector(axis).normalized()
+	u = n.cross(Vector((0, 1, 0)) if abs(n.y) < 0.9 else Vector((1, 0, 0))).normalized()
+	return n, u, n.cross(u)
+
+
+def spun(centre, axis, profile, segments=24, paint="grey", closed=False, paints=None):
+	# A solid turned about the line through `centre` (ship frame) along `axis`:
+	# profile [[along, radius], ...], `along` metres along the axis from the
+	# centre. A radius of 0 closes it to a point and an open end is capped
+	# flat; `closed` joins the profile's last point to its first instead (a
+	# ring: a tyre's carcass) and caps nothing. `paints` gives each step of the
+	# profile its own paint. (vertices, faces, paints, smooth): the turned
+	# bands smooth, the caps flat
+	c = Vector(centre)
+	n, u, w = basis(axis)
+	vertices, rings = [], []
+	for a, r in profile:
+		if r <= 1e-6:
+			rings.append([len(vertices)])
+			vertices.append(at(*(c + n * a)))
+			continue
+		rings.append(list(range(len(vertices), len(vertices) + segments)))
+		vertices += [at(*(c + n * a + (u * math.cos(2 * math.pi * k / segments) + w * math.sin(2 * math.pi * k / segments)) * r)) for k in range(segments)]
+	faces, out, smooth = [], [], []
+	steps = list(zip(rings, rings[1:])) + ([(rings[-1], rings[0])] if closed else [])
+	for i, (low, high) in enumerate(steps):
+		band = paints[i] if paints else paint
+		for k in range(segments):
+			a, b = k, (k + 1) % segments
+			if len(low) == 1 and len(high) == 1:
+				continue
+			faces.append((low[0], high[a], high[b]) if len(low) == 1 else (low[a], high[0], low[b]) if len(high) == 1 else (low[a], high[a], high[b], low[b]))
+			out.append(band)
+			smooth.append(True)
+	if not closed:
+		for ring, band in ((rings[0], paints[0] if paints else paint), (rings[-1], paints[-1] if paints else paint)):
+			if len(ring) > 1:
+				faces.append(tuple(ring))
+				out.append(band)
+				smooth.append(False)
+	return vertices, faces, out, smooth
+
+
+def sweep(path, radius, segments=8, paint="grey"):
+	# A round bar along a line of points (ship frame), `radius` across or one
+	# radius per point: a ring at every point, square to the line's mean
+	# direction there and widened so a bend keeps its thickness, carried round
+	# the line without twisting, and a flat cap at each end. A rope, a hose, a
+	# cable. (vertices, faces, paints, smooth)
+	points = [Vector(q) for q in path]
+	radii = radius if isinstance(radius, (list, tuple)) else [radius] * len(points)
+	runs = [(b - a).normalized() for a, b in zip(points, points[1:])]
+	tangents = [runs[0]] + [(a + b).normalized() if (a + b).length > 1e-6 else b for a, b in zip(runs, runs[1:])] + [runs[-1]]
+	_, u, _ = basis(tangents[0])
+	vertices, rings = [], []
+	for i, (q, t) in enumerate(zip(points, tangents)):
+		if i:
+			u = tangents[i - 1].rotation_difference(t) @ u
+			u = (u - t * u.dot(t)).normalized()
+		w = t.cross(u)
+		# a mitred ring: as much wider as the bend's half angle asks, so the
+		# bar does not pinch at a corner
+		widen = 1 / max(0.5, runs[min(i, len(runs) - 1)].dot(t))
+		rings.append(len(vertices))
+		vertices += [at(*(q + (u * math.cos(2 * math.pi * k / segments) + w * math.sin(2 * math.pi * k / segments)) * radii[i] * widen))
+			for k in range(segments)]
+	faces = [(r + k, r + (k + 1) % segments, s + (k + 1) % segments, s + k) for r, s in zip(rings, rings[1:]) for k in range(segments)]
+	smooth = [True] * len(faces)
+	faces += [tuple(range(rings[0], rings[0] + segments)), tuple(range(rings[-1], rings[-1] + segments))]
+	smooth += [False, False]
+	return vertices, faces, [paint] * len(faces), smooth
+
+
+def reeved(path, step=math.radians(15)):
+	# A rope's line (ship frame points) through `path`: its ends {"at": point}
+	# and the sheaves it runs round between them, {"sheave": centre, "axis",
+	# "radius": the groove's pitch radius, "turn": 1 to run round it
+	# anticlockwise about its axis, -1 clockwise}. Each straight run leaves one
+	# sheave and meets the next on their tangents, found by turns (each
+	# sheave's tangent points from its neighbours' until they settle), and the
+	# rope wraps each sheave's groove between them
+	nodes = []
+	for q in path:
+		if "sheave" in q:
+			n, u, w = basis(q["axis"])
+			nodes.append({"centre": Vector(q["sheave"]), "n": n, "u": u, "w": w, "r": q["radius"], "turn": q.get("turn", 1), "in": None, "out": None})
+		else:
+			nodes.append({"at": Vector(q["at"])})
+	if "at" not in nodes[0] or "at" not in nodes[-1]:
+		raise ValueError("a rope ends at points, not on sheaves")
+
+	def on(s, angle):
+		return s["centre"] + (s["u"] * math.cos(angle) + s["w"] * math.sin(angle)) * s["r"]
+
+	def seen(i, j):
+		# where node j's part of the rope is, as node i reaches toward it
+		other = nodes[j]
+		if "at" in other:
+			return other["at"]
+		key = "out" if j < i else "in"
+		return on(other, other[key]) if other[key] is not None else other["centre"]
+
+	for _ in range(30):
+		for i, s in enumerate(nodes):
+			if "at" in s:
+				continue
+			for j, key in ((i - 1, "in"), (i + 1, "out")):
+				d = seen(i, j) - s["centre"]
+				d = d - s["n"] * d.dot(s["n"])
+				angle = math.atan2(d.dot(s["w"]), d.dot(s["u"]))
+				spread = math.acos(min(1.0, s["r"] / max(d.length, 1e-9)))
+				s[key] = angle + s["turn"] * spread if key == "in" else angle - s["turn"] * spread
+	line = []
+	for s in nodes:
+		if "at" in s:
+			line.append(s["at"])
+			continue
+		wrap = ((s["out"] - s["in"]) * s["turn"]) % (2 * math.pi)
+		if wrap > 2 * math.pi - 1e-3:
+			wrap = 0.0
+		count = max(1, math.ceil(wrap / step))
+		line += [on(s, s["in"] + s["turn"] * wrap * k / count) for k in range(count + 1)]
+	return [list(q) for q in line]
+
+
+def tyre(p, paint="dark"):
+	# A wheel standing about its axle: `centre` the middle of the tyre's width,
+	# `axis` out from the vehicle; the tyre's carcass turned with rounded
+	# shoulders and a bulging sidewall, its lugs (lugs {count each side, depth,
+	# width, lean: how far round the tread a lug runs from the shoulder in, and
+	# reach: how far past the middle, of the half width}) standing on its tread
+	# alternately from either shoulder, and a dished rim (`rim` its lip's
+	# diameter, `dish` how far its disc sits in from the lip, `hub` the boss's
+	# diameter) with `bolts` round the boss. (vertices, faces, paints, smooth)
+	c = Vector(p["centre"])
+	n, u, w = basis(p["axis"])
+	segments = p.get("segments", 32)
+	R, half = p["diameter"] / 2, p["width"] / 2
+	lugs = p.get("lugs")
+	depth = lugs["depth"] if lugs else 0.0
+	crown, rim = R - depth, p["rim"] / 2
+	wall = crown - rim
+	# the carcass's section, from the rim's lip on the inner face round the
+	# outside to the outer face's lip, closed along the bead seat
+	section = [(-0.86, 0.0), (-1.03, 0.4), (-0.96, 0.82), (-0.75, 1.0), (0.75, 1.0), (0.96, 0.82), (1.03, 0.4), (0.86, 0.0)]
+	pieces = [spun(c, n, [(a * half, rim + 0.01 + h * (wall - 0.01)) for a, h in section], segments, paint, closed=True)]
+	if lugs:
+		count, width, lean, reach = lugs["count"], lugs["width"], lugs.get("lean", 0.3), lugs.get("reach", 0.1)
+		for side in (-1, 1):
+			for k in range(count):
+				centre = 2 * math.pi * (k + (0.5 if side > 0 else 0)) / count
+				# from over the shoulder in to past the middle: the lug's foot
+				# sunk a little into the carcass, its top falling away over
+				# the shoulder
+				stations = [(side * half * 0.97, crown - 0.22 * wall, R - 0.12 * wall), (-side * half * reach, crown - 0.01, R)]
+				vertices, rings = [], []
+				for along, low, high in stations:
+					t = (half * 0.99 - side * along) / (half * (0.99 + reach))
+					angle = centre + side * lean * t / R
+					ring = []
+					for radius in (low, high):
+						for e in (-0.5, 0.5):
+							a = angle + e * width / R
+							ring.append(len(vertices))
+							vertices.append(at(*(c + n * along + (u * math.cos(a) + w * math.sin(a)) * radius)))
+					rings.append(ring)
+				faces = [tuple(rings[0][i] for i in (0, 1, 3, 2)), tuple(rings[-1][i] for i in (0, 2, 3, 1))]
+				for a, b in zip(rings, rings[1:]):
+					for i, j in ((0, 1), (1, 3), (3, 2), (2, 0)):
+						faces.append((a[i], a[j], b[j], b[i]))
+				pieces.append((vertices, faces, [paint] * len(faces), [False] * len(faces)))
+	# the rim: its disc `dish` in from the lip, the boss proud of the disc
+	face, dish, boss = half * 0.86, p.get("dish", 0.1), p.get("hub", 0.3) / 2
+	rim_paint = p.get("paint_rim", "white")
+	pieces.append(spun(c, n, [(face - dish + 0.06, 0), (face - dish + 0.06, boss * 0.6), (face - dish, boss), (face - dish, boss * 1.9),
+		(face, rim - 0.015), (face - 0.025, rim + 0.02), (-face, rim + 0.02), (-face, 0)], segments, rim_paint))
+	bolts = p.get("bolts")
+	if bolts:
+		nut = boss * 0.14
+		for k in range(bolts):
+			a = 2 * math.pi * (k + 0.5) / bolts
+			foot = c + n * (face - dish) + (u * math.cos(a) + w * math.sin(a)) * boss * 1.4
+			pieces.append(spun(foot, n, [(0, nut), (nut * 1.5, nut), (nut * 1.5, 0)], 6, rim_paint))
+	return merge_smooth(pieces)
+
+
+def outward(piece):
+	# Each closed solid in a piece wound outward: its faces grouped by the
+	# vertices they share, and a group enclosing a negative volume turned
+	# over. A vehicle's parts touch one another, and welded together where
+	# they meet they make solids that are not closed, which tidy() leaves as
+	# built (a box from shape() inward, a reflected part inside out)
+	vertices, faces = piece[0], piece[1]
+	parent = list(range(len(vertices)))
+
+	def root(i):
+		while parent[i] != i:
+			parent[i] = parent[parent[i]]
+			i = parent[i]
+		return i
+
+	for f in faces:
+		for i in f[1:]:
+			parent[root(i)] = root(f[0])
+	volume = {}
+	for f in faces:
+		a = vertices[f[0]]
+		volume[root(f[0])] = volume.get(root(f[0]), 0.0) + sum(a.dot(vertices[f[k]].cross(vertices[f[k + 1]])) for k in range(1, len(f) - 1))
+	faces = [tuple(reversed(f)) if volume[root(f[0])] < 0 else tuple(f) for f in faces]
+	return (vertices, faces) + tuple(piece[2:])
+
+
+def merge_smooth(pieces):
+	# merge() keeping each face's smooth mark (False for a piece without any)
+	vertices, faces, paints = merge(pieces)
+	smooth = [s for piece in pieces for s in (piece[3] if len(piece) > 3 else [False] * len(piece[1]))]
+	return vertices, faces, paints, smooth
+
+
+def standing(p):
+	# Where a parked vehicle stands (layout.vehicles.parked): its kind's own
+	# frame (x forward from the middle of its footprint, y up from the deck, z
+	# to starboard) carried to its place on the deck and turned to its heading,
+	# positive to port
+	x, z = p["at"]
+	return Matrix.Translation(at(x, p.get("deck", LAYOUT["deck"]["height"]), z)) @ Matrix.Rotation(math.radians(p["heading"]), 4, "Z")
+
+
+def footprint(p):
+	# A parked vehicle as the server collides with it: its kind's footprint,
+	# `size` [length, height, width] about its middle, turned to its heading
+	# (positive to port) and carried to its place, and its top
+	length, height, width = LAYOUT["vehicles"]["kinds"][p["kind"]]["size"]
+	x, z = p["at"]
+	a = math.radians(p["heading"])
+	corners = [(u * length / 2, w * width / 2) for u, w in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+	outline = [[round(x + u * math.cos(a) + w * math.sin(a), 3), round(z - u * math.sin(a) + w * math.cos(a), 3)] for u, w in corners]
+	return {"kind": p["kind"], "outline": outline, "top": round(p.get("deck", LAYOUT["deck"]["height"]) + height, 3)}
+
+
+def vehicles():
+	# The deck's vehicles (layout.vehicles; decision 16 as amended): each
+	# parked one its kind's parts, carried to where it stands, all in one
+	# node, which the engine leaves out of what it measures from the model
+	v = LAYOUT.get("vehicles")
+	if not v or not v.get("parked"):
+		return
+	# a part marked `mirror` stands on both sides: as given, and reflected
+	# across the vehicle's middle (its z)
+	reflect = Matrix.Scale(-1, 4, (0, 1, 0))
+	pieces = []
+	for p in v["parked"]:
+		frame = standing(p)
+		for part in v["kinds"][p["kind"]]["parts"]:
+			pieces.append(outward(shape(part, frame)))
+			if part.get("mirror"):
+				pieces.append(outward(shape(part, frame @ reflect)))
+	vertices, faces, paints, smooth = merge_smooth(pieces)
+	node("vehicles", mesh=(vertices, faces, paints), smooth=smooth)
 
 
 def interpolate(x, xs, ys):
@@ -3412,6 +3717,9 @@ def ship_file(hulled):
 		if poles:
 			mast = max(poles, key=lambda p: p["top"])
 			out["island"]["mast"] = {"position": mast["base"], "top": mast["top"]}
+	if LAYOUT.get("vehicles", {}).get("parked"):
+		# the deck's vehicles as the server collides with them
+		out["vehicles"] = [footprint(p) for p in LAYOUT["vehicles"]["parked"]]
 	if hulled:
 		out["hull"] = hulled
 		if LAYOUT["hull"].get("screws"):
@@ -3450,6 +3758,7 @@ def main():
 	sides()
 	hulled = hull()
 	anchors()
+	vehicles()
 	regroup()
 	if "--draft" not in args:
 		deck_texture(facts)
