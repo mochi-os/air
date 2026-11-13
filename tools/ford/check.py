@@ -452,7 +452,7 @@ def checks(ship):
 		# of it, so it shows unbroken past the walkway from astern, and the
 		# recess's raised deck out past it at the gap's foot
 		d, floor = ship.layout["transom"]["drop"], ship.layout["transom"]["floor"]
-		parts = ship.model.parts(materials=["yellow"])
+		parts = ship.model.parts(materials=["yellow", "trim"])   # its yellow, weathered (layout.weathering's trim)
 		if "transom_fittings" not in parts:
 			raise KeyError("transom_fittings")
 		tris = parts["transom_fittings"]

@@ -12,7 +12,8 @@
 #   dishing in the height map, the seams a shade darker;
 # - streaks down from the group's fittings, rust or dirty water, and the
 #   runs the photos show where they show them, each face's streaks as heavy
-#   as its photos';
+#   as its photos', and rust stains where the photos show them on surfaces a
+#   run cannot follow (a rope's chafe in a chock's throat);
 # - grime toward the deck and the waterline, and walking surfaces darker;
 # - wear by zone: each texel's level of wear (0 almost clean, 1 the most
 #   worn), from the group's zones, scaling the paint's blotching, its grime
@@ -27,6 +28,8 @@
 #   {"height", "width", "origin"}, "frames": spacing, "touchups": share of cells, "streaks": {"spacing",
 #   "length": [min, max], "rust"}, "grey": [r, g, b] (the group's own paint), "runs": [{"top": [x, y, z],
 #   "length", "width", "rust": bool, "weight"}], "regions": [{"box": [[x, y, z], [x, y, z]], "streaks": factor}],
+#   "stains": [{"box": [[x, y, z], [x, y, z]], "soft": metres, "rust": weight}] (rust over every face in the box, mottled,
+#   its edges blended over `soft`),
 #   "decks": [{"box": [[x, y, z], [x, y, z]], "colour": [r, g, b] (linear), "dirt": {"mottle": [[scale, spread], ...],
 #   "patches": {"scale", "share", "darkening"}, "grain": relief, "seams": {"along", "across", "width", "lift", "origin": [x, z]}}}]:
 #   walking surfaces in a box their own non-skid, dirtied, its plates' seams lighter}],
@@ -273,6 +276,24 @@ def streaks(p, n, sources, spec, seed, runs=()):
 	return rust, dirt
 
 
+def stains(p, boxes, seed):
+	# Rust over every face in each box, whichever way it faces (a run follows
+	# a wall down; a chock's throat and lips face every way), mottled, its
+	# edges blended over `soft` metres, at its weight
+	rust = np.zeros(len(p))
+	for k, stain in enumerate(boxes):
+		low, high = np.asarray(stain["box"], float)
+		depth = np.minimum(p - low, high - p).min(axis=1)
+		t = np.clip(depth / stain.get("soft", 0.1) + 0.5, 0, 1)
+		member = t * t * (3 - 2 * t)
+		inside = member > 0
+		if not inside.any():
+			continue
+		mottle = np.clip(0.7 + 0.3 * noise(p[inside], 0.08, seed + 140 + k) / NOISE, 0.25, 1)   # never bare inside
+		rust[inside] = np.maximum(rust[inside], stain["rust"] * member[inside] * mottle)
+	return rust
+
+
 def wear_level(p, n, group):
 	# Each texel's wear, 0 to 1: the group's level, then each zone over it in
 	# turn, a box's edges blended over `soft` metres
@@ -474,6 +495,7 @@ def texels(position, normal, ao, texel, group, facts, sources):
 		inside = np.all((p >= low) & (p <= high), axis=1)
 		rust[inside] = np.clip(rust[inside] * region["streaks"], 0, 1)
 		dirt[inside] = np.clip(dirt[inside] * region["streaks"], 0, 1)
+	rust = np.maximum(rust, stains(p, group.get("stains", []), seed))
 	rusty = np.array(spec.get("rust", [0.22, 0.07, 0.025]))
 	dirty = np.array(spec.get("dirt", [0.11, 0.11, 0.10]))
 	strength = condition * group.get("streaks", {}).get("strength", 0.45)

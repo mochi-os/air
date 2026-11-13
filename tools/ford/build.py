@@ -69,8 +69,11 @@ COLOURS = {"deck": (0.16, 0.16, 0.16, 1), "grey": (0.30, 0.32, 0.33, 1), "boot":
 	# pixels in dvids7694418 (chromaticity 0.41, 0.30, 0.28 under the shade's
 	# blue light, so warmer still in white light)
 	"raft": (0.62, 0.62, 0.6, 1), "blue": (0.13, 0.35, 0.52, 1), "net": (0.16, 0.09, 0.05, 1),
-	# the transom's recess, its paint in shade there (0.35-0.4 of the face's
-	# brightness in the same light); the drop-light bar the deck's yellow
+	# what lies in shade: the band under the transom's catwalk (0.35-0.4 of
+	# the grey's brightness in the same light, as the transom's recess read
+	# in dvids7694418; the recesses, pits and grooves are the plating's grey,
+	# the weathering's occlusion their shade); the drop-light bar the deck's
+	# yellow
 	"recess": (0.11, 0.12, 0.12, 1), "yellow": (0.67, 0.39, 0.03, 1),
 	# glass seen through: tinted, its alpha the share of light it stops; the
 	# rooms behind it painted, in their own shade. Together they read as the
@@ -83,6 +86,10 @@ COLOURS = {"deck": (0.16, 0.16, 0.16, 1), "grey": (0.30, 0.32, 0.33, 1), "boot":
 	# stations' valves and extinguishers red, the signal lamps' lenses, an
 	# electrical box brown (references/research/island4)
 	"white": (0.62, 0.62, 0.6, 1), "red": (0.4, 0.03, 0.02, 1), "amber": (0.6, 0.3, 0.02, 1), "violet": (0.2, 0.06, 0.35, 1),
+	# the bow's mooring chocks a pale grey: in dvids9688116 their sunlit
+	# flanks read 1.6-1.8 times the plating beside them in linear light (their
+	# tops near white with the sky's sheen), so 1.6 times the haze grey
+	"chock": (0.48, 0.51, 0.53, 1),
 	"brown": (0.15, 0.08, 0.04, 1),
 	# the deck edge's coaming a weathered tan: in dvids9478807 its sunlit face
 	# reads (0.84, 0.68, 0.47) of the deck's white lines in the same light,
@@ -575,21 +582,55 @@ def painted(name):
 			uv.data[loop].uv = ((x - x0) / (x1 - x0), (z1 - z) / (z1 - z0)) if polygon.material_index in index else (0, 0)
 
 
+def side_name(e):
+	# an entry's side, "starboard" or "port", given by name or by sign
+	return "starboard" if e["side"] in ("starboard", 1) else "port"
+
+
+def well(e):
+	# An elevator's well (layout.elevators' well: the rails the platform runs
+	# on, their x at the hull side), in plan as [x, |z|] corners from aft:
+	# its aft end at the deck's edge, the hull side between the rails along
+	# the platform's inboard edge (the mean |z| of its inboard corners), its
+	# forward end at the deck's edge; each end parallel to the platform's own,
+	# moved as far as its rail is from the platform's inboard corner, and on
+	# by half its rail's width (well.rail), the rail standing on the wall
+	# against the end. None without one
+	w = e.get("well")
+	if not w:
+		return None
+	corners = sorted(e["outline"], key=lambda p: abs(p[1]))
+	inboard, outboard = sorted(corners[:2]), sorted(corners[2:])
+	z = sum(abs(p[1]) for p in inboard) / 2
+	half = w.get("rail", {}).get("width", 0.0) / 2
+	aft, forward = w["rails"][0] - half, w["rails"][1] + half
+	return [(outboard[0][0] + aft - inboard[0][0], abs(outboard[0][1])), (aft, z), (forward, z),
+		(outboard[1][0] + forward - inboard[1][0], abs(outboard[1][1]))]
+
+
 def elevators():
-	# Each deck-edge elevator's platform, a node sliding down its trunk.
-	# Decision 14 keeps them at deck level, so the keys run to the hangar deck
-	# but nothing drives them yet.
+	# Each deck-edge elevator's platform, a node sliding down its trunk to the
+	# hangar deck (well.hangar, the deck the platform's top comes down to).
+	# Decision 14 keeps them at deck level, so nothing drives them yet. Each
+	# rail's foot at the hangar deck is a landmark on the hull
 	d = LAYOUT["deck"]
 	for e in LAYOUT.get("elevators", []):
 		name = f"elevator_{e['number']}"
 		top = d["height"]
 		x = sum(p[0] for p in e["outline"]) / len(e["outline"])
 		z = sum(p[1] for p in e["outline"]) / len(e["outline"])
-		node(name, hinge=at(x, top, z), mesh=slab(e["outline"], top, top - e["thickness"], ("deck", "dark", "grey")))
+		# its top the deck's, its underside and edges the plating's grey,
+		# weathered with the hull (layout.weathering)
+		node(name, hinge=at(x, top, z), mesh=slab(e["outline"], top, top - e["thickness"], ("deck", "grey", "grey")))
 		painted(name)
-		joint(name, UP, Vector(), DOWN, "none yet (decision 14)", [[0, 0], [1, e["travel"]]], motion="slide")
+		hangar = e["well"]["hangar"]
+		joint(name, UP, Vector(), DOWN, "none yet (decision 14)", [[0, 0], [1, round(top - hangar, 4)]], motion="slide")
 		for i, (px, pz) in enumerate(e["outline"]):
 			MARKS[f"{name}_corner_{i + 1}"] = (at(px, top, pz), name)
+		sign = 1 if side_name(e) == "starboard" else -1
+		z = well(e)[1][1]
+		for end, px in zip(("aft", "forward"), e["well"]["rails"]):
+			MARKS[f"well_{e['number']}_{end}"] = (at(px, hangar, sign * z), "hull")
 
 
 def catapults():
@@ -682,9 +723,10 @@ def deflector(c, number, top):
 			vertices, faces, paints = cuboid(p((u0 + u1) / 2, -sink / 2, (w0 + w1) / 2), axes, (u1 - u0, w1 - w0, sink))
 			paints[1] = "deck"
 			pieces.append((vertices, faces, paints))
-	# the plate, dark in the grooves, and the back's ribs
+	# the plate, in the grooves, and the back's ribs: the grooves' floors and
+	# the back's cells between its ribs the plating's grey, which the
+	# weathering's occlusion shades
 	vertices, faces, paints = cuboid(p(D / 2, -(face + sink) / 2, W / 2), axes, (D, W, face - sink))
-	paints[0], paints[1] = "recess", "recess"   # the grooves' floors, and the back's cells between its ribs
 	pieces.append((vertices, faces, paints))
 	rib = k["rib"]
 	for j in range(modules * cells + 1):
@@ -763,12 +805,14 @@ def deflector(c, number, top):
 	def q(u, v, w):
 		return corner + aft * u + UP * v + edge * w
 
+	# walls and floor wound to face into the pit, the side the weathering's
+	# occlusion is baked from: the walls the plating's grey, the floor dark
 	walls = [[q(0, 0, 0), q(0, 0, width), q(0, -pit, width), q(0, -pit, 0)],
 		[q(0, 0, width), q(depth, 0, width), q(depth, -pit, width), q(0, -pit, width)],
 		[q(depth, 0, width), q(depth, 0, 0), q(depth, -pit, 0), q(depth, -pit, width)],
 		[q(depth, 0, 0), q(0, 0, 0), q(0, -pit, 0), q(depth, -pit, 0)]]
-	found = [(quad, [(0, 1, 2, 3)], ["recess"]) for quad in walls]
-	found.append(([q(0, -pit, 0), q(0, -pit, width), q(depth, -pit, width), q(depth, -pit, 0)], [(0, 1, 2, 3)], ["dark"]))
+	found = [(quad[::-1], [(0, 1, 2, 3)], ["grey"]) for quad in walls]
+	found.append(([q(depth, -pit, 0), q(depth, -pit, width), q(0, -pit, width), q(0, -pit, 0)], [(0, 1, 2, 3)], ["dark"]))
 	for w in struts:
 		found.append(cuboid(p(bu, (bv - pit) / 2, w), axes, (size_crank * 1.2, size_crank * 1.6, bv + pit)))
 	return found
@@ -992,7 +1036,8 @@ def shape(p, frame=None):
 	# and rungs; stair {bottom, top, width, railing}: a girder, treads and a
 	# railing either side; plate {corners, outward, thickness}: a slab on a
 	# face; ring {centre, facing, outer, inner, thickness, sweep}: a flat ring
-	# standing out along `facing` (a life ring, a chock's rim), or with
+	# standing out along `facing` (a life ring, a chock's rim; a radius
+	# [across, along] for an oval), or with
 	# `sweep` [from, to] only that arc of it (a deck circle the deck's edge
 	# cuts); turned {centre, axis, profile, closed}: turned about any line
 	# (spun()); tyre: a wheel (tyre()); sweep {path, radius}: a round bar
@@ -1122,22 +1167,28 @@ def shape(p, frame=None):
 
 def ring(centre, facing, outer, inner, thickness, segments, paint, sweep=None):
 	# A flat ring round `centre` (ship frame) in the plane square to `facing`,
-	# from `inner` to `outer` radius, standing `thickness` out along `facing`.
-	# With `sweep` [from, to] (degrees in plan, from forward toward starboard,
-	# for a ring facing up) only that arc, its ends closed
+	# from `inner` to `outer` radius, standing `thickness` out along `facing`;
+	# either radius may be [across, along] for an oval: across the level line
+	# in its plane, and along the line square to that (up a wall's face). With
+	# `sweep` [from, to] (degrees in plan, from forward toward starboard, for a
+	# ring facing up) only that arc, its ends closed
 	n = Vector(facing).normalized()
 	c = Vector(centre)
+	spread = lambda radius: (radius, radius) if isinstance(radius, (int, float)) else tuple(radius)
 	if sweep is None:
 		u = n.cross(Vector((0, 1, 0)) if abs(n.y) < 0.9 else Vector((1, 0, 0))).normalized()
 		w = n.cross(u)
-		directions = [u * math.cos(2 * math.pi * k / segments) + w * math.sin(2 * math.pi * k / segments) for k in range(segments)]
+		angles = [2 * math.pi * k / segments for k in range(segments)]
+		loop = lambda radius: [u * math.cos(a) * spread(radius)[0] + w * math.sin(a) * spread(radius)[1] for a in angles]
 	else:
+		assert all(isinstance(r, (int, float)) for r in (outer, inner)), "a swept ring is round"
 		def direction(degrees):
 			d = Vector((math.cos(math.radians(degrees)), 0, math.sin(math.radians(degrees))))
 			return (d - n * d.dot(n)).normalized()
 		directions = [direction(sweep[0] + (sweep[1] - sweep[0]) * k / segments) for k in range(segments + 1)]
-	count = len(directions)
-	points = [at(*(c + n * depth + d * radius)) for depth in (0.0, thickness) for radius in (outer, inner) for d in directions]
+		loop = lambda radius: [d * radius for d in directions]
+	count = len(loop(outer))
+	points = [at(*(c + n * depth + d)) for depth in (0.0, thickness) for radius in (outer, inner) for d in loop(radius)]
 	ring_of = lambda layer, which: layer * 2 * count + which * count   # the first vertex of a loop
 	faces = []
 	for k in range(segments):
@@ -1164,6 +1215,70 @@ def rounded(corners, radius, steps=3):
 			t = i / steps * math.pi / 2
 			out.append(list(middle - w * r * math.cos(t) - u * r * math.sin(t)))
 	return out
+
+
+def clipped(polygon, low, high):
+	# A convex polygon [[x, y], ...] cut to low <= x <= high
+	for keep, bound in ((lambda x: x >= low, low), (lambda x: x <= high, high)):
+		out = []
+		for k, p in enumerate(polygon):
+			q = polygon[k - 1]
+			if keep(p[0]) != keep(q[0]):
+				t = (bound - q[0]) / (p[0] - q[0])
+				out.append([bound, q[1] + t * (p[1] - q[1])])
+			if keep(p[0]):
+				out.append(list(p))
+		polygon = out
+	return polygon
+
+
+def rails(xs, z, side, r, top):
+	# A well's two rails (well.rail), each a channel on its wall (the plane z,
+	# facing `side`) centred on its x: `width` wide, from its foot (`foot`, a
+	# bar 0.15 deep across its bottom) up to `top`, the platform's underside
+	# at the deck; a flange `flange` wide at each side standing `depth` out,
+	# a web `web` wide down its middle standing 0.1 less, and the slots
+	# between them closed at the wall, all the plating's grey (weathered
+	# with the hull, its occlusion the slots' shade)
+	outward = (at(0, 0, side) - at(0, 0, 0)).normalized()
+	along = at(1, 0, 0) - at(0, 0, 0)
+	width, depth, flange, web, foot = r["width"], r["depth"], r["flange"], r["web"], r["foot"]
+	slot = width / 2 - flange - web / 2
+	pieces = []
+	for x in xs:
+		pieces.append(box(at(x, foot - 0.15, z + side * depth / 2), along, outward, width, depth, 0.15))
+		pieces.append(box(at(x, foot, z + side * (depth - 0.1) / 2), along, outward, web, depth - 0.1, top - foot))
+		for s in (-1, 1):
+			pieces.append(box(at(x + s * (width - flange) / 2, foot, z + side * depth / 2), along, outward, flange, depth, top - foot))
+			pieces.append(box(at(x + s * (web + slot) / 2, foot, z + side * 0.01), along, outward, slot, 0.02, top - foot))
+	return pieces
+
+
+def sill(s, x0, x1, top, z, side):
+	# What stands on a hangar doorway's wall under its sill (well.opening.sill):
+	# a `curb` from `bottom` up to the sill standing `out` from the wall along
+	# the doorway's width, `posts` square `width` standing `height` on it at
+	# each `x`, and a `comb`, its teeth's dark gaps `tooth` wide at `pitch`
+	# from x[0] to x[1], `depth` down from the sill (`top`)
+	outward = (at(0, 0, side) - at(0, 0, 0)).normalized()
+	along = at(1, 0, 0) - at(0, 0, 0)
+	pieces = []
+	curb = s.get("curb")
+	if curb:
+		pieces.append(box(at((x0 + x1) / 2, curb["bottom"], z + side * curb["out"] / 2), along, outward, x1 - x0, curb["out"], top - curb["bottom"]))
+	posts = s.get("posts")
+	if posts:
+		out = curb["out"] / 2 if curb else posts["width"] / 2
+		for x in posts["x"]:
+			pieces.append(box(at(x, top, z + side * out), along, outward, posts["width"], posts["width"], posts["height"]))
+	comb = s.get("comb")
+	if comb:
+		(a, b), pitch, tooth = comb["x"], comb["pitch"], comb["tooth"]
+		n = int((b - a - tooth) / pitch + 1e-9) + 1
+		start = (a + b) / 2 - (n - 1) * pitch / 2
+		for k in range(n):
+			pieces.append(box(at(start + k * pitch, top - comb["depth"], z + side * 0.01), along, outward, tooth, 0.02, comb["depth"], "dark"))
+	return pieces
 
 
 def sheet(polygon, outward, thickness, paint):
@@ -1288,6 +1403,168 @@ def joined(name, other):
 	bpy.context.view_layer.objects.active = NODES[name]
 	bpy.ops.object.join()
 	del NODES[other], HINGES[other]
+
+
+def pierce(obj, holes):
+	# Openings cut into a node's flat faces and the recesses behind them, made
+	# by hand so nothing else of the mesh changes (Blender's exact boolean
+	# rebuilds faces far from the cut, and not the same way from run to run).
+	# Each hole: `outline`, a polygon (ship frame) on one of the node's planes,
+	# `normal` out of that plane; its faces round it lying in the plane are
+	# taken out and filled again round the hole, and from its edge walls run
+	# `depth` in to a back. The walls take `paint`, a wall along the outline's
+	# lowest height `floor`, the back `back`. With `room` {outline, depth} a
+	# larger recess opens behind the first's back: its front wall round the
+	# first's inner end, its walls as the first's, its floor the first's or
+	# the room's own `floor`, its back `back`
+	import bmesh
+	from mathutils.geometry import tessellate_polygon
+	names = [m.name for m in obj.data.materials]
+	def slot(paint):
+		if paint not in names:
+			obj.data.materials.append(material(paint))
+			names.append(paint)
+		return names.index(paint)
+	bm = bmesh.new()
+	bm.from_mesh(obj.data)
+	for hole in holes:
+		bm.normal_update()   # the faces an earlier hole filled
+		n = (at(*hole["normal"]) - at(0, 0, 0)).normalized()
+		ring = [at(*q) for q in hole["outline"]]
+		origin = sum(ring, Vector()) / len(ring)
+		u = n.cross(Vector((0, 0, 1)) if abs(n.z) < 0.9 else Vector((1, 0, 0))).normalized()
+		w = n.cross(u)
+		flat = lambda p: ((p - origin).dot(u), (p - origin).dot(w))
+		# wound counter-clockwise seen from outside
+		pts = [flat(p) for p in ring]
+		if sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(pts, pts[1:] + pts[:1])) < 0:
+			ring = ring[::-1]
+		pts = [flat(p) for p in ring]
+		low = (min(p[0] for p in pts) - 0.5, min(p[1] for p in pts) - 0.5)
+		high = (max(p[0] for p in pts) + 0.5, max(p[1] for p in pts) + 0.5)
+		# the faces in the plane round the hole
+		region = []
+		for f in bm.faces:
+			# within 15 cm of it, facing as it does within 18 degrees (a face
+			# drawn on a curve, as a bow face on its stem's, strays from its
+			# plane by a few centimetres)
+			if all(abs((v.co - origin).dot(n)) < 0.15 for v in f.verts) and f.normal.dot(n) > 0.95:
+				c = [flat(v.co) for v in f.verts]
+				if min(q[0] for q in c) < high[0] and max(q[0] for q in c) > low[0] and min(q[1] for q in c) < high[1] and max(q[1] for q in c) > low[1]:
+					region.append(f)
+		assert region, f"no flat face round hole {hole.get('name')}"
+		paint = region[0].material_index
+		chosen = set(region)
+		# its edge, as the faces wind it, chained into loops
+		after = {}
+		for f in region:
+			for loop in f.loops:
+				other = [g for g in loop.edge.link_faces if g is not f]
+				if not other or other[0] not in chosen:
+					after[loop.vert] = loop.link_loop_next.vert
+		loops = []
+		while after:
+			first = min(after, key=lambda v: tuple(v.co))
+			chain, v = [first], after.pop(first)
+			while v is not first:
+				chain.append(v)
+				v = after.pop(v)
+			loops.append(chain)
+		# the hole inside the region, clear of its edge
+		edge = [flat(v.co) for chain in loops for v in chain]
+		reach = [(min(q[k] for q in edge), max(q[k] for q in edge)) for k in (0, 1)]
+		assert all(lo + 0.01 < q[k] < hi - 0.01 for q in pts for k, (lo, hi) in enumerate(reach)), \
+			f"hole {hole.get('name')} reaches its region's edge: hole {[(round(min(q[k] for q in pts), 2), round(max(q[k] for q in pts), 2)) for k in (0, 1)]}, region {[(round(a, 2), round(b, 2)) for a, b in reach]}, {len(region)} faces, {len(loops)} loops"
+		for f in region:
+			bm.faces.remove(f)
+		opening = [bm.verts.new(p) for p in ring]
+		def fill(outer_chains, inner, facing, index):
+			# the plane between the outer loops and the inner polygon, facing `facing`
+			everything = [v for chain in outer_chains for v in chain] + inner
+			lines = [[(*flat(v.co), 0.0) for v in chain] for chain in outer_chains] + [[(*flat(v.co), 0.0) for v in inner]]
+			for tri in tessellate_polygon(lines):
+				vs = [everything[k] for k in tri]
+				if (vs[1].co - vs[0].co).cross(vs[2].co - vs[1].co).dot(facing) < 0:
+					vs = vs[::-1]
+				bm.faces.new(vs).material_index = index
+		fill(loops, opening, n, paint)
+		def walls(front, back_ring, floor_index, wall_index):
+			# from one loop to another behind it, facing into the recess; the
+			# floor along its lowest height (up, not the plane's w, which points
+			# down on an upright face)
+			bottom = min(v.co.z for v in front)
+			middle = sum((v.co for v in front), Vector()) / len(front)
+			for k in range(len(front)):
+				a, b = front[k], front[(k + 1) % len(front)]
+				quad = [a, b, back_ring[(k + 1) % len(front)], back_ring[k]]
+				inward = middle - (a.co + b.co) / 2
+				inward -= n * inward.dot(n)
+				if (quad[1].co - quad[0].co).cross(quad[2].co - quad[1].co).dot(inward) < 0:
+					quad = quad[::-1]
+				level = abs(a.co.z - bottom) < 1e-6 and abs(b.co.z - bottom) < 1e-6
+				bm.faces.new(quad).material_index = floor_index if level else wall_index
+		inner = [bm.verts.new(v.co - n * hole["depth"]) for v in opening]
+		walls(opening, inner, slot(hole.get("floor", hole.get("paint", "grey"))), slot(hole.get("paint", "grey")))
+		room = hole.get("room")
+		if room:
+			# wound as the hole is, counter-clockwise seen from outside
+			front = [at(*q) - n * hole["depth"] for q in room["outline"]]
+			corners = [flat(p) for p in front]
+			if sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(corners, corners[1:] + corners[:1])) < 0:
+				front = front[::-1]
+			front = [bm.verts.new(p) for p in front]
+			paint = hole.get("paint", "grey")
+			fill([front], inner, -n, slot(paint))
+			behind = [bm.verts.new(v.co - n * room["depth"]) for v in front]
+			walls(front, behind, slot(room.get("floor", hole.get("floor", paint))), slot(paint))
+			last = behind
+		else:
+			last = inner
+		face = bm.faces.new(last)
+		face.normal_update()   # a new face has none until asked
+		if face.normal.dot(n) < 0:
+			face.normal_flip()
+		face.material_index = slot(hole.get("back", "dark"))
+	bm.normal_update()
+	bm.to_mesh(obj.data)
+	bm.free()
+
+
+def lip(centre, facing, outer, inner, height, paint, segments=32, steps=10, barrel=0.25):
+	# A cast rim round an opening in a face (a fairlead's or a chock's): its
+	# section a half ellipse from `inner` out to `outer` radius (either may be
+	# [across, along], as ring()'s), standing `height` out of the face at its
+	# middle, rolling over into a barrel `barrel` deep inside the opening at
+	# 0.98 of the inner radius, and its outer edge running 5 cm into the
+	# face. An open surface, wound outward
+	n = Vector(facing).normalized()
+	c = Vector(centre)
+	u = n.cross(Vector((0, 1, 0)) if abs(n.y) < 0.9 else Vector((1, 0, 0))).normalized()
+	w = n.cross(u)
+	spread = lambda radius: (radius, radius) if isinstance(radius, (int, float)) else tuple(radius)
+	(ia, ib), (oa, ob) = spread(inner), spread(outer)
+	# the section, inside out: (share of the way from inner to outer radius, height)
+	section = [(-0.02, -barrel), (-0.02, 0.0)]
+	section += [((1 - math.cos(math.pi * k / steps)) / 2, height * math.sin(math.pi * k / steps)) for k in range(steps + 1)]
+	section += [(1.0, -0.05)]
+	vertices = []
+	for k in range(segments):
+		a = 2 * math.pi * k / segments
+		for share, rise in section:
+			vertices.append(at(*(c + n * rise + u * math.cos(a) * (ia + (oa - ia) * share) + w * math.sin(a) * (ib + (ob - ib) * share))))
+	m = len(section)
+	faces = []
+	for k in range(segments):
+		j = (k + 1) % segments
+		for i in range(m - 1):
+			faces.append((k * m + i, k * m + i + 1, j * m + i + 1, j * m + i))
+	# wound so the crest faces out along `facing`
+	crest = steps // 2 + 2
+	f = faces[crest]
+	normal = (vertices[f[1]] - vertices[f[0]]).cross(vertices[f[2]] - vertices[f[1]])
+	if normal.dot(at(*n) - at(0, 0, 0)) < 0:
+		faces = [tuple(reversed(f)) for f in faces]
+	return vertices, faces, [paint] * len(faces)
 
 
 def glazed(obj, cabs):
@@ -1940,12 +2217,13 @@ def upper_transom(x0, section):
 	for za, zb in ((section[0][0], hole[0][0]), (hole[-1][0], section[-1][0])):
 		shell.append(facing([[x0, floor, za], [x1, floor, za], [x1, floor, zb], [x0, floor, zb]], [0, -1, 0], "grey"))
 	shell.append(facing([[x1, y, z] for z, y in [section[0]] + hole + section[:0:-1]], [-1, 0, 0], "grey"))
-	# the recess: its walls and floor face in, its back wall aft
+	# the recess: its walls and floor face in, its back wall aft, in the ship's
+	# grey, the weathering's occlusion darkening it as the photos' shade does
 	centre = [sum(q[0] for q in hole) / len(hole), sum(q[1] for q in hole) / len(hole)]
 	for (za, ya), (zb, yb) in zip(hole, hole[1:] + hole[:1]):
 		inward = [0, centre[1] - (ya + yb) / 2, centre[0] - (za + zb) / 2]
-		shell.append(facing([[x1, ya, za], [back, ya, za], [back, yb, zb], [x1, yb, zb]], inward, "recess"))
-	shell.append(facing([[back, y, z] for z, y in hole], [-1, 0, 0], "recess"))
+		shell.append(facing([[x1, ya, za], [back, ya, za], [back, yb, zb], [x1, yb, zb]], inward, "grey"))
+	shell.append(facing([[back, y, z] for z, y in hole], [-1, 0, 0], "grey"))
 	node("transom", mesh=merge(shell))
 	# closed pieces, which tidy() turns outward
 	fittings = [face(w, [0, 0], "glass") for w in t["windows"]]
@@ -2245,13 +2523,17 @@ def anchors():
 
 def sides():
 	# What the hull carries outside its loft: the weapon sponsons and the small
-	# deck-edge sponsons with their domes, the catwalks and the raft racks (one
-	# fixed node); the weapons on the sponsons; and the openings in the hull
-	# sides and transom, drawn dark a few centimetres proud of them
+	# deck-edge sponsons with their domes, what hangs on the sides
+	# (hull.details), the catwalks and the raft racks (one fixed node); the
+	# weapons on the sponsons; and the openings in the hull sides and
+	# transom, drawn dark a few centimetres proud of them
 	top = LAYOUT["deck"]["height"]
 	pieces = [prism(s["outline"], s["bottom"], s["top"]) for s in LAYOUT.get("sponsons", [])]
 	# what stands on a sponson (shape()s: a deckhouse, its railings)
 	pieces += [shape(d) for s in LAYOUT.get("sponsons", []) for d in s.get("details", [])]
+	# what hangs on the hull's sides clear of the sponsons (shape()s: the
+	# frame in the starboard bay aft of the island)
+	pieces += [shape(d) for d in LAYOUT.get("hull", {}).get("details", [])]
 	for s in LAYOUT.get("sponsons", []):
 		n = len(s["outline"])
 		for k, (x, z) in enumerate(s["outline"]):
@@ -2534,6 +2816,60 @@ def vehicles():
 	node("vehicles", mesh=(vertices, faces, paints), smooth=smooth)
 
 
+def single_layers():
+	# One UV layer a mesh: where a mesh carries the weathering's atlas and
+	# another layer (the deck's paint on an elevator's top or a deflector's
+	# face, the lettering on the island's faces), the other is dropped, so
+	# every material reads the first UV set. The engine puts each material's
+	# images back by name on that set (engine.ts carrier_images), so a
+	# material reading a second set showed the wrong part of its image. The
+	# atlas layer began as a copy of the other (weathered() makes it from
+	# the active layer) and the bake moves only its groups' faces, so the
+	# other faces already hold their own mapping in it
+	for o in bpy.data.objects:
+		if o.type != "MESH" or "atlas" not in o.data.uv_layers or len(o.data.uv_layers) < 2:
+			continue
+		others = [layer.name for layer in o.data.uv_layers if layer.name != "atlas"]
+		if len(others) != 1:
+			raise RuntimeError(f"{o.name}: the atlas and {others}: which layer each face reads is not known")
+		o.data.uv_layers.remove(o.data.uv_layers[others[0]])
+		atlas = o.data.uv_layers["atlas"]
+		o.data.uv_layers.active = atlas
+		atlas.active_render = True
+
+
+def posed(names):
+	# Each named joint, and every joint that follows it, turned to the end of
+	# its keys (a deflector raised, its crank and rod at the panel's angle);
+	# returns what puts them back. A joint's axis is the exported frame's,
+	# its node's parent's frame at rest; a follower's keys take its leader's
+	# value as their input
+	kept = []
+	for name, j in JOINTS.items():
+		leader = name if name in names else j.get("follows")
+		if leader not in names:
+			continue
+		if j["motion"] != "rotate":
+			raise ValueError(f"{name}: only a turning joint is posed for the bake")
+		value = JOINTS[leader]["keys"][-1][1]
+		if name != leader:
+			xs, ys = zip(*j["keys"])
+			value = interpolate(value, xs, ys)
+		gx, gy, gz = j["axis"]
+		o = NODES[name]
+		kept.append((o, o.rotation_mode, tuple(o.rotation_axis_angle)))
+		o.rotation_mode = "AXIS_ANGLE"
+		o.rotation_axis_angle = (value, gx, -gz, gy)   # the exported frame's (x, z, -y) back to Blender's
+	bpy.context.view_layer.update()
+
+	def undo():
+		for o, mode, angle in kept:
+			o.rotation_axis_angle = angle
+			o.rotation_mode = mode
+		bpy.context.view_layer.update()
+	return undo
+
+
 def interpolate(x, xs, ys):
 	# Piecewise linear, held at the ends
 	if x <= xs[0]:
@@ -2680,10 +3016,15 @@ def hull():
 	# Along a quarter (hull.quarters) the section runs from the knuckle out
 	# through the quarter's points to its wall's foot, or under a sponson to
 	# the sponson's bottom at its inboard edge, and the quarter ends square at
-	# both ends.
+	# both ends. Under a deck-edge elevator (its well, well()) the section
+	# runs out along the flare only as far as the well's wall, which stands on
+	# the flare there and rises to the deck's underside: along the rails the
+	# hull side, at the well's ends walls parallel to the platform's ends.
 	# Below the knuckle the hull is symmetric: its half-breadth at a height is
-	# read off the stations either side (the transom the first of them), and
-	# ahead of the last it narrows to the stem. The flare is flat between its
+	# read off the stations either side (the transom the first of them; under
+	# water each at the same share of its own depth, half()), and ahead of the
+	# last it narrows to the stem; the keel runs a monotone cubic through the
+	# stations' keels. The flare is flat between its
 	# creases: a section at every corner of the deck's edge and every knot of
 	# the knuckle and the gallery, and where hull.flare gives creases that
 	# slant, flat facets between them in place of the sections' strips.
@@ -2717,11 +3058,16 @@ def hull():
 		# the stem's x at a height
 		return interpolate(y, [p[1] for p in stem], [p[0] for p in stem])
 
+	def keel(x):
+		# the stations' keel line, a monotone cubic through their keels, so
+		# where it rises aft it bends smoothly rather than kinking at each
+		return monotone(x, sx, keels)
+
 	def low(x):
 		# the hull's lowest point at x: the stations' keel, or the stem once
 		# it has risen above it
 		rising = sorted(stem)
-		return max(interpolate(x, sx, keels), interpolate(x, [p[0] for p in rising], [p[1] for p in rising]) if x > rising[0][0] else -1e9)
+		return max(keel(x), interpolate(x, [p[0] for p in rising], [p[1] for p in rising]) if x > rising[0][0] else -1e9)
 
 	def crease(y):
 		# the bow's forward edge's half-breadth at a height: the face's crease
@@ -2737,16 +3083,36 @@ def hull():
 		return interpolate(y, [p[0] for p in front], [p[1] for p in front]) if front else 0.0
 
 	fillet = h.get("fillet", 0.0)
+	fade = h.get("fade", 0.0)
 
 	def rounding(y):
 		# the radius the stem's front turns into the sides at a height (in
 		# plan, hull.fillet, or its whole half-width where that is less); the
-		# face above keeps its creases
+		# face above keeps its creases, the rounding easing out (smoothstep)
+		# over hull.fade below the face's bottom edge, so the stem's corners
+		# come to the face's creases with no step
 		face = h.get("face")
-		return 0.0 if face and y >= face["bottom"][0] else min(fillet, crease(y))
+		if face and y >= face["bottom"][0]:
+			return 0.0
+		radius = min(fillet, crease(y))
+		if face and fade > 0:
+			t = max(0.0, min(1.0, (face["bottom"][0] - y) / fade))
+			radius *= t * t * (3 - 2 * t)
+		return radius
 
 	def half(x, y, power=1.0):
-		values = [interpolate(y, [p[0] for p in s["points"]], [p[1] for p in s["points"]]) for s in stations]
+		# below the waterline each station is read as far into its own depth
+		# as the height is into the hull's here: a height a share of the way
+		# from the keel line up to the waterline reads every station that
+		# share of the way up from its own keel. Where the keel rises aft (2-3
+		# m a station) the flat bottom and the turn of the bilge then run on
+		# between stations, where read at one height one station's keel strip
+		# met the next one's bilge; with the keels level it is the height
+		# itself. Above the waterline, the height
+		bottom = keel(x)
+		share = max(0.0, (y - bottom) / -bottom) if y < 0 and bottom < 0 else None
+		reads = [y if share is None else k * (1 - share) for k in keels]
+		values = [interpolate(r, [p[0] for p in s["points"]], [p[1] for p in s["points"]]) for r, s in zip(reads, stations)]
 		value = interpolate(x, sx, values)
 		if x > sx[-1]:
 			# ahead of the last station each height runs straight to the bow's
@@ -2776,16 +3142,45 @@ def hull():
 	walls = h.get("walls", {})
 	flare = h.get("flare", {})
 	quarters = {name: sorted(q, key=lambda s: s["x"]) for name, q in h.get("quarters", {}).items()}
-	# every ring carries as many points between its knuckle and its foot as a
-	# quarter's section has; outside a quarter they sit on the knuckle, where
-	# tidy() welds them away
-	counts = {len(s["points"]) for q in quarters.values() for s in q}
-	assert len(counts) <= 1, "hull.quarters' sections differ in their number of points"
-	K = counts.pop() if counts else 0
-	for name, q in quarters.items():
+	# the measured profiles (hull.profiles: on each side, stretches of
+	# sections as a quarter's, the side stepping out of the flare along them,
+	# each ending square), as quarters along their own stretches
+	profiles = {name: [sorted(q, key=lambda s: s["x"]) for q in stretches] for name, stretches in h.get("profiles", {}).items()}
+	# the elevators' wells (well()), each side's plans
+	wells = {"port": [], "starboard": []}
+	for e in LAYOUT.get("elevators", []):
+		plan = well(e)
+		if plan:
+			name = side_name(e)
+			wells[name].append(plan)
+			assert all(not plan[0][0] <= p[0] <= plan[-1][0] for c in flare.get(name, []) for p in c), "a well clear of the flare's creases"
+
+	def inner(x, side):
+		# the |z| of a well's wall over x on a side: along the rails, or on
+		# either end between them and the deck's edge; None outside every well
+		for (x0, z0), (x1, z1), (x2, z2), (x3, z3) in wells["starboard" if side > 0 else "port"]:
+			if x1 <= x <= x2:
+				return z1
+			if x0 <= x < x1:
+				return z0 + (z1 - z0) * (x - x0) / (x1 - x0)
+			if x2 < x <= x3:
+				return z2 + (z3 - z2) * (x - x2) / (x3 - x2)
+		return None
+	# every ring carries as many points between its knuckle and its foot as
+	# the longest quarter's or profile's section has (a shorter one's last
+	# point repeated); outside them they sit on the knuckle, where tidy()
+	# welds them away
+	stretches = {name: ([quarters[name]] if quarters.get(name) else []) + profiles.get(name, []) for name in ("port", "starboard")}
+	K = max([len(s["points"]) for q in stretches.values() for stretch in q for s in stretch], default=0)
+	for name, q in stretches.items():
 		creases = [p[0] for c in flare.get(name, []) for p in (c[0], c[-1])]
-		assert q[0]["x"] - 0.01 > transom, "a quarter ends forward of the transom"
-		assert not creases or q[-1]["x"] + 0.01 < min(creases) or q[0]["x"] - 0.01 > max(creases), "a quarter clear of the flare's creases"
+		for stretch in q:
+			assert stretch[0]["x"] - 0.01 > transom, "a quarter ends forward of the transom"
+			assert not creases or stretch[-1]["x"] + 0.01 < min(creases) or stretch[0]["x"] - 0.01 > max(creases), "a quarter clear of the flare's creases"
+		for stretch in profiles.get(name, []):
+			assert all(stretch[-1]["x"] + 0.01 < plan[0][0] or stretch[0]["x"] - 0.01 > plan[-1][0] for plan in wells[name]), "a profile clear of the wells"
+		spans = sorted((stretch[0]["x"], stretch[-1]["x"]) for stretch in q)
+		assert all(a[1] + 0.02 < b[0] for a, b in zip(spans, spans[1:])), "the profiles apart"
 	# the bow's shoulders (hull.shoulders): forward of full the flare between
 	# the knuckle and the gallery's foot follows the stations' points above the
 	# knuckle, aft of start it runs straight, and between the two it goes its
@@ -2804,7 +3199,8 @@ def hull():
 		for name in ("port", "starboard"):
 			assert all(p[0] < start for c in flare.get(name, []) for p in c), "the shoulders clear of the flare's creases"
 			assert all(w["wall"][-1][0] < start for w in walls.get(name, [])), "the shoulders clear of the walls"
-			assert not quarters.get(name) or quarters[name][-1]["x"] < start, "the shoulders clear of the quarters"
+			assert all(stretch[-1]["x"] < start for stretch in stretches[name]), "the shoulders clear of the quarters and profiles"
+			assert all(plan[-1][0] < start for plan in wells[name]), "the shoulders clear of the wells"
 	J = len(levels)
 
 	def shoulder(x, ky, kz, foot, z):
@@ -2837,14 +3233,20 @@ def hull():
 		return None
 
 	def quarter(x, side):
-		# a quarter's section at x (hull.quarters: its points out from the
-		# knuckle to where it meets its wall's foot or its sponson's bottom, as
-		# [y, |z|]), straight between its measured sections; None outside it
-		q = quarters.get("starboard" if side > 0 else "port")
-		if not q or not q[0]["x"] <= x <= q[-1]["x"]:
-			return None
-		along = [s["x"] for s in q]
-		return [(interpolate(x, along, [s["points"][k][0] for s in q]), abs(interpolate(x, along, [s["points"][k][1] for s in q]))) for k in range(K)]
+		# a quarter's or a profile's section at x (hull.quarters: its points
+		# out from the knuckle to where it meets its wall's foot or its
+		# sponson's bottom; hull.profiles: out from the knuckle to where its
+		# plating runs on to the gallery's foot; as [y, |z|], a short section's
+		# last point repeated to K), straight between its measured sections,
+		# and whether it is a profile's; (None, False) outside them
+		name = "starboard" if side > 0 else "port"
+		for q in stretches[name]:
+			if q[0]["x"] <= x <= q[-1]["x"]:
+				along = [s["x"] for s in q]
+				points = [s["points"] + [s["points"][-1]] * (K - len(s["points"])) for s in q]
+				section = [(interpolate(x, along, [p[k][0] for p in points]), abs(interpolate(x, along, [p[k][1] for p in points]))) for k in range(K)]
+				return section, any(q is stretch for stretch in profiles.get(name, []))
+		return None, False
 
 	def inboard(x, side):
 		# the inboard edge of a sponson standing over x on a side, as the |z|
@@ -2878,9 +3280,16 @@ def hull():
 		# and at each of a quarter's sections, with a section a centimetre past
 		# either end, so it ends square: a face across the ship from its section
 		# to the hull's either side of it
-		if quarters.get(name):
-			q = quarters[name]
+		for q in stretches[name]:
 			turns |= {s["x"] for s in q} | {q[0]["x"] - 0.01, q[-1]["x"] + 0.01}
+		# and at each corner of a well's plan, with a section a centimetre past
+		# an end that stands square across the ship, so it ends square there
+		for (x0, _), (x1, _), (x2, _), (x3, _) in wells[name]:
+			turns |= {x0, x1, x2, x3}
+			if x1 - x0 < 0.01:
+				turns.add(x1 - 0.01)
+			if x3 - x2 < 0.01:
+				turns.add(x2 + 0.01)
 	if shoulders:
 		# and where the shoulders start and come in full
 		turns |= {start, full}
@@ -2898,12 +3307,23 @@ def hull():
 			# quarter-angles of the fillet, so its front rounds there too
 			foot = ahead(h["front"][0][0])
 			turns |= {foot - fillet * (1 - math.cos(math.pi / 8 * k)) for k in range(1, 5)}
+			# and, where the rounding eases out under the face, at the front and
+			# the rounding's quarter-angles at each quarter of the fade, so it
+			# narrows smoothly
+			if h.get("face") and fade > 0:
+				for j in range(5):
+					y = h["face"]["bottom"][0] - fade * j / 4
+					turns |= {ahead(y) - rounding(y) * (1 - math.cos(math.pi / 8 * k)) for k in range(5)}
 	turns = [x for x in turns if transom + 0.4 < x < bow - 0.4]
 	count = max(2, int((bow - transom) / STEP) + 1)
 	grid = [transom + (bow - transom) * k / (count - 1) for k in range(count)]
 	xs = sorted(set([x for x in grid if all(abs(x - t) > 0.4 for t in turns)] + turns + [transom, bow]))
 
-	LOWER, UPPER = 6, 8
+	# the rings below the boot top: under the waterline at these shares of
+	# the depth from the keel up to it, closest where the bilge turns (a
+	# tenth of the way up at every station, half()), a ring on the waterline,
+	# and two more to the boot top; above it UPPER more to the knuckle
+	SHARES, UPPER = (0.0, 0.04, 0.1, 0.18, 0.3, 0.5, 0.75, 1.0), 8
 	rings = []
 	for x in xs:
 		# nothing of the hull reaches the deck-edge band: a stem or flare drawn
@@ -2918,19 +3338,19 @@ def hull():
 		# the hull is symmetric there, then each to its own
 		lower = min(k[0] for k in knuckles.values())
 		b = min(max(boot, y0), lower)
-		if y0 < foul < b:
-			# the anti-fouling's top is a ring height, so the paint's edge runs
-			# along the rings rather than through faces
-			heights = [y0] + [y0 + (foul - y0) * (j + 1) / (LOWER - 2) for j in range(LOWER - 2)] + [foul + (b - foul) * (j + 1) / 2 for j in range(2)]
+		w = min(0.0, b)
+		if y0 < w:
+			heights = [y0 + (w - y0) * s for s in SHARES] + [w + (b - w) * (j + 1) / 2 for j in range(2)]
 		else:
-			heights = [y0] + [y0 + (b - y0) * (j + 1) / LOWER for j in range(LOWER)]
+			heights = [y0 + (b - y0) * j / (len(SHARES) + 1) for j in range(len(SHARES) + 2)]
 		heights += [b + (lower - b) * (j + 1) / UPPER for j in range(UPPER)]
 		sides = {}
 		for side in (-1, 1):
 			ky, kz = knuckles[side]
 			points = [(y, half(x, y)) for y in heights] + [(ky, kz)]
 			standing = wall(x, side)
-			section = quarter(x, side)
+			section, profiled = quarter(x, side)
+			recess = inner(x, side)
 			if standing:
 				# a wall: out from the knuckle (along a quarter's section) to its
 				# foot and up it to the deck's underside, the deck overhanging any
@@ -2938,6 +3358,12 @@ def hull():
 				z, foot = standing
 				points += section or [(ky, kz)] * K
 				points += [points[-1]] * J + [(max(foot, ky), z), (under, z)]
+			elif section and profiled:
+				# a profile: along its section, then on to the gallery's foot at
+				# the deck's edge as the flare reaches it, and up to the deck
+				z = abs(edge(outlines, x, side))
+				foot = max(feet[side], ky)
+				points += section + [section[-1]] * J + [(foot, z), (under, z)]
 			elif section:
 				# a quarter under a sponson: along its section, then in or out to
 				# the sponson's bottom at its inboard edge (the deck's edge at the
@@ -2946,6 +3372,14 @@ def hull():
 				z = abs(edge(outlines, x, side))
 				reach = inboard(x, side)
 				points += section + [section[-1]] * J + [(section[-1][0], z) if reach is None else (reach[1], reach[0]), (under, z)]
+			elif recess is not None:
+				# a well: the flare from the knuckle as far as the well's wall,
+				# which stands on it there and rises to the deck's underside, the
+				# platform over it; a wall inboard of the knuckle rising from it
+				z = abs(edge(outlines, x, side))
+				foot = max(feet[side], ky)
+				share = 0.0 if recess <= kz or z <= kz else min(1.0, (recess - kz) / (z - kz))
+				points += [(ky, kz)] * (K + J) + [(ky + (foot - ky) * share, recess), (under, recess)]
 			else:
 				# the flare: straight from the knuckle to the gallery's foot, or
 				# over the bow's shoulders
@@ -3064,11 +3498,33 @@ def hull():
 	# flats, walls, facets and ends flat
 	smooth += [False] * (len(faces) - len(smooth))
 	node("hull", mesh=(vertices, faces, paints), smooth=smooth)
+	if foul > -1e8:
+		# the anti-fouling's edge cut along its top, level, and everything
+		# under it red: the rings stand at shares of the hull's depth, so its
+		# top is no ring's height
+		obj = NODES["hull"]
+		bm = bmesh.new()
+		bm.from_mesh(obj.data)
+		level = at(0, foul, 0).z - HINGES["hull"].z
+		bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], dist=1e-6, plane_co=(0, 0, level), plane_no=(0, 0, 1))
+		names = [m.name for m in obj.data.materials]
+		if "antifouling" not in names:
+			obj.data.materials.append(material("antifouling"))
+			names.append("antifouling")
+		red = names.index("antifouling")
+		for f in bm.faces:
+			if f.material_index != red and names[f.material_index] == "boot" and max(v.co.z for v in f.verts) <= level + 1e-6:
+				f.material_index = red
+		bm.to_mesh(obj.data)
+		bm.free()
+	holes = []   # openings pierced in the hull's flat faces once its parts are made (pierce())
 	blisters = []
 	for b in h.get("blisters", []):
 		# a blister on the hull side (hull.blisters): its outline seen from
 		# the side, rounded at each end or square, standing `depth` out from
-		# the side and running on into it, so it follows the side's curve
+		# the side and running on into it, so it follows the side's curve; a
+		# square one's `ribs` upright on its face, `width` wide standing
+		# `depth` out every `pitch`, as many as fit, centred along it
 		side = 1 if b["side"] == "starboard" else -1
 		(x0, x1), (y0, y1) = b["x"], b["y"]
 		if b.get("ends") == "round":
@@ -3082,6 +3538,15 @@ def hull():
 		corners = [at(x, y, side * (half(x, y) + b["depth"])) for x, y in outline] + [at(x, y, side * (half(x, y) - 0.4)) for x, y in outline]
 		walls = [(i, (i + 1) % m, m + (i + 1) % m, m + i) for i in range(m)]
 		blisters.append((corners, [tuple(range(m)), tuple(range(2 * m - 1, m - 1, -1))] + walls, ["grey"] * (m + 2)))
+		ribs = b.get("ribs")
+		if ribs and b.get("ends") != "round":
+			n = int((x1 - x0) / ribs["pitch"])
+			# the face between its corners, as its quad lies
+			face = lambda x, y: half(x0, y) + b["depth"] + (half(x1, y) - half(x0, y)) * (x - x0) / (x1 - x0)
+			for k in range(n):
+				x = (x0 + x1) / 2 + (k - (n - 1) / 2) * ribs["pitch"]
+				rib = [at(x + dx, y, side * (face(x + dx, y) + out)) for y in (y0, y1) for dx, out in ((-ribs["width"] / 2, -0.05), (ribs["width"] / 2, -0.05), (ribs["width"] / 2, ribs["depth"]), (-ribs["width"] / 2, ribs["depth"]))]
+				blisters.append((rib, [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)], ["grey"] * 6))
 	if blisters:
 		node("hull_blisters", mesh=merge(blisters))
 	if h.get("bulb"):
@@ -3092,11 +3557,113 @@ def hull():
 		for end, (y, w) in (("bottom", h["face"]["bottom"]), ("top", h["face"]["top"])):
 			for name, side in (("port", -1), ("starboard", 1)):
 				MARKS[f"hull_face_{end}_{name}"] = (at(ahead(y), y, side * w), "hull")
-		if "bullnose" in h["face"]:
-			# the bullnose ring on the face's centreline: it fixes the bow's
-			# photos sideways, as nothing else near the bow does from ahead
-			y = h["face"]["bullnose"]
-			MARKS["hull_face_bullnose"] = (at(ahead(y), y, 0), "hull")
+		# its mooring openings (hull.face.chocks: each {y, z} on the face): a
+		# cast rim (lip()) from `inner` to `outer` radius standing `thickness`
+		# out of it at its crown, in its `paint`, and its throat cut `depth`
+		# into the bow (carved below), its walls the plating's grey for the
+		# weathering's occlusion to shade, its back dark (the ship's inside
+		# beyond it): the bullnose on the centreline and a
+		# chock either side, a landmark at each one's centre where it gives a
+		# `mark` (the bullnose fixes the bow's photos sideways, as nothing else
+		# near the bow does from ahead)
+		(y0, _), (y1, _) = h["face"]["bottom"], h["face"]["top"]
+		normal = Vector((y1 - y0, -(ahead(y1) - ahead(y0)), 0)).normalized()   # out of the face, forward and down
+		across = normal.cross(Vector((0, 1, 0))).normalized()
+		up = normal.cross(across)
+		chocks = []
+		for c in h["face"].get("chocks", []):
+			centre = Vector((ahead(c["y"]), c["y"], c["z"]))
+			chocks.append(lip(list(centre), list(normal), c["outer"], c["inner"], c["thickness"], c.get("paint", "white")))
+			ia, ib = (c["inner"], c["inner"]) if isinstance(c["inner"], (int, float)) else c["inner"]
+			throat = [centre + across * math.cos(2 * math.pi * k / 32) * ia + up * math.sin(2 * math.pi * k / 32) * ib for k in range(32)]
+			holes.append({"name": "chock", "outline": [list(q) for q in throat], "normal": list(normal), "depth": c["depth"], "paint": "grey", "back": "dark"})
+			if "mark" in c:
+				MARKS[c["mark"]] = (at(*centre), "chocks")
+		if chocks:
+			# cast, so shaded smooth (sharp only where the rim runs into the face)
+			node("chocks", mesh=merge(chocks), smooth=True)
+	# the open decks in the sides (hull.decks: each an `outline` [[x, y], ...]
+	# on the face whose plan line is `face` [[x, |z|], [x, |z|]], cut `depth`
+	# in square to it), and each deck-edge elevator's hangar doorway on its
+	# well's wall (well.opening: its outline on the wall with its corners'
+	# radius, `depth` through the wall, and the hangar behind it as a room
+	# `room.depth` deep, `room.beyond` past the doorway's ends and
+	# `room.above` over its head): rooms cut from the hull, their walls,
+	# floors and a deck's back the plating's grey (or a deck's own `back`),
+	# for the weathering's occlusion to shade, and a doorway's back the
+	# hangar's dark: the doorway a hole through the side's plating, `depth`
+	# its thickness, and behind it a rectangular room, so the space runs on
+	# behind the hole's rounded corners, its floor its own `floor` (the
+	# hangar deck's dark), `beams` under its ceiling (`count` of them `width`
+	# wide and `depth` deep). A doorway with a `door` has it shut at the
+	# room's back, 5 cm in front of it (the node `doors`): the room's outline
+	# cut square `gap` [aft, forward] short of its ends, in two equal leaves
+	# with a `seam` between them; a fitting on the seam (`fitting`: its `height`
+	# over the sill and `size` along, up and out, in its `paint`). Marked for
+	# the photo match: the fitting's face and the doorway's forward end at
+	# mid-height. Each well's rails (rails()) and its sill's curb, posts and
+	# comb (sill()) are the node `wells`
+	doors, fittings = [], []
+	for d in h.get("decks", []):
+		side = 1 if d["side"] == "starboard" else -1
+		(ax, az), (bx, bz) = d["face"]
+		dx, dz = bx - ax, bz - az
+		n = Vector((dz, 0, -dx)).normalized()
+		n = n if n.z * side > 0 else -n
+		on = lambda x, y: [x, y, side * (az + dz * (x - ax) / dx)]
+		holes.append({"name": d["name"], "outline": [on(x, y) for x, y in d["outline"]], "normal": list(n), "depth": d["depth"], "paint": "grey",
+			"floor": "grey", "back": d.get("back", "grey")})
+	for e in LAYOUT.get("elevators", []):
+		w = e.get("well")
+		if not w:
+			continue
+		side = 1 if side_name(e) == "starboard" else -1
+		z = well(e)[1][1] * side
+		outward = (at(0, 0, side) - at(0, 0, 0)).normalized()
+		along = at(1, 0, 0) - at(0, 0, 0)
+		if w.get("rail"):
+			fittings += rails(w["rails"], z, side, w["rail"], LAYOUT["deck"]["height"] - e["thickness"])
+		o = w.get("opening")
+		if not o:
+			continue
+		(x0, x1), (y0, y1) = o["x"], o["y"]
+		r = o["room"]
+		doorway = rounded([[x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z]], o.get("radius", 0.0), steps=8)
+		# the room's floor 5 cm under the doorway's sill, so the doorway is a
+		# hole in its wall, clear of its edge
+		rx0, rx1, ry0, ry1 = x0 - r["beyond"], x1 + r["beyond"], y0 - 0.05, y1 + r["above"]
+		room = [[rx0, ry0, z], [rx1, ry0, z], [rx1, ry1, z], [rx0, ry1, z]]
+		holes.append({"name": f"hangar_{e['number']}", "outline": doorway, "normal": [0, 0, side], "depth": o["depth"], "paint": "grey", "floor": "grey",
+			"back": "dark", "room": {"outline": room, "depth": r["depth"], "floor": r.get("floor", "grey")}})
+		beams = r.get("beams")
+		if beams:
+			# under the room's ceiling, its length, evenly through its depth
+			span = (rx0, rx1)
+			for k in range(1, beams["count"] + 1):
+				at_depth = o["depth"] + r["depth"] * k / (beams["count"] + 1)
+				fittings.append(box(at((span[0] + span[1]) / 2, ry1 - beams["depth"], z - side * at_depth), along, outward, span[1] - span[0], beams["width"], beams["depth"]))
+		MARKS[f"doorway_{e['number']}_forward"] = (at(x1, (y0 + y1) / 2, z), "hull")
+		fittings += sill(o.get("sill", {}), x0, x1, y0, z, side)
+		shut = o.get("door")
+		if shut:
+			plane = z - side * (o["depth"] + r["depth"] - 0.05)
+			aft, forward = shut["gap"]
+			middle = (rx0 + aft + rx1 - forward) / 2
+			for start, end in ((rx0 + aft, middle - shut["seam"] / 2), (middle + shut["seam"] / 2, rx1 - forward)):
+				leaf = [at(x, y, plane) for x, y in clipped([q[:2] for q in room], start, end)]
+				if (leaf[1] - leaf[0]).cross(leaf[2] - leaf[1]).dot(outward) < 0:
+					leaf = leaf[::-1]
+				doors.append((leaf, [tuple(range(len(leaf)))], ["grey"]))
+			f = shut["fitting"]
+			length, height, out = f["size"]
+			doors.append(box(at(middle, y0 + f["height"] - height / 2, plane + side * out / 2), along, outward, length, out, height, f.get("paint", "white")))
+			MARKS[f"door_{e['number']}_fitting"] = (at(middle, y0 + f["height"], plane + side * out), "doors")
+	if holes:
+		pierce(NODES["hull"], holes)
+	if doors:
+		node("doors", mesh=merge(doors))
+	if fittings:
+		node("wells", mesh=merge(fittings))
 	draught = LAYOUT.get("lettering", {}).get("draught")
 	if draught:
 		# the stem's draught marks: each numeral a plate on the hull's side just
@@ -3130,7 +3697,7 @@ def hull():
 			# knuckle and its knee (its section's last point)
 			x = quarters[name][0]["x"]
 			ky, kz = knuckle(x, side)
-			y, z = quarter(x, side)[-1]
+			y, z = quarter(x, side)[0][-1]
 			MARKS[f"hull_quarter_{name}_knuckle"] = (at(x, ky, side * kz), "hull")
 			MARKS[f"hull_quarter_{name}_knee"] = (at(x, y, side * z), "hull")
 	front = ahead(0)
@@ -3384,7 +3951,10 @@ def fingerprint(group, objs, target, spec, inputs, scene):
 	# the weathering block the rules read is the shared spec and the group's
 	# own, never another group's (test_weather checks)
 	read = {k: v for k, v in inputs.items() if k != "layout/weathering"}
-	add([CACHE, bpy.app.version_string, group, {k: v for k, v in spec.items() if k != "groups"}, read, list(FRAME_LOW), list(FRAME_SPAN)])
+	# (the joints `raised` reach it through the faces they move, so only the
+	# atlases those faces or their neighbours make re-bake when it changes)
+	shared = {k: v for k, v in spec.items() if k not in ("groups", "raised")}
+	add([CACHE, bpy.app.version_string, group, shared, read, list(FRAME_LOW), list(FRAME_SPAN)])
 	for f in (weathered, baked, emitting, fingerprint, placed, cycles, scene_faces, surface, near, face_uvs, restored, stored):
 		add(inspect.getsource(f).encode())
 	for name in ("weather.py", "plates.py"):
@@ -3538,7 +4108,9 @@ def weathered(facts, out, cache=None):
 			# one atlas layer a mesh, which each group's faces share, each
 			# group packing its own into the whole square
 			if "atlas" not in o.data.uv_layers:
-				o.data.uv_layers.new(name="atlas")
+				# a copy of the mesh's active layer (the deck's paint, the
+				# lettering), which its other faces keep (single_layers())
+				o.data.uv_layers.new(name="atlas", do_init=True)
 			o.data.uv_layers.active = o.data.uv_layers["atlas"]
 			for poly in o.data.polygons:
 				poly.select = o.data.materials[poly.material_index] == target
@@ -3793,7 +4365,12 @@ def main():
 		deck_texture(facts)
 		if "lettering" in MATERIALS:
 			lettering_texture(facts)
+		# the joints seen posed (a deflector raised behind a jet) baked so,
+		# their occlusion as they are seen, and put back to rest for export
+		undo = posed(LAYOUT.get("weathering", {}).get("raised", []))
 		weathered(facts, out[0], cache)
+		undo()
+		single_layers()
 	# the glTF exporter calls mesh.validate() on each mesh it exports, deletes
 	# what that finds and goes on with a warning: a mesh it would change fails
 	# the build here instead, so the model exported is the one built

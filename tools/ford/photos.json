@@ -271,29 +271,29 @@
 		},
 		"deck_corner_22": {
 			"at": [
-				68.924,
+				68.971,
 				18.27,
-				36.641
+				36.6
 			],
 			"sigma": [
 				0.3,
 				0.25,
 				0.3
 			],
-			"why": "layout.deck.outline corner 22 (noaa2022 line fits, layout.notes.deck: 0.1-0.6 m); y the deck's height, 18.27 (spread 0.23 m)"
+			"why": "layout.deck.outline corner 22 (noaa2022 line fits, the starboard plain stretches moved in to the white band's outer side, layout.notes.deck); y the deck's height, 18.27 (spread 0.23 m)"
 		},
 		"deck_corner_31": {
 			"at": [
 				-109.109,
 				18.27,
-				36.777
+				36.6
 			],
 			"sigma": [
 				0.3,
 				0.25,
 				0.3
 			],
-			"why": "layout.deck.outline corner 31 (noaa2022 line fits, layout.notes.deck: 0.1-0.6 m); y the deck's height, 18.27 (spread 0.23 m)"
+			"why": "layout.deck.outline corner 31 (noaa2022 line fits, the starboard plain stretches moved in to the white band's outer side, layout.notes.deck); y the deck's height, 18.27 (spread 0.23 m)"
 		},
 		"deck_corner_32": {
 			"at": [
@@ -2326,15 +2326,15 @@
 					"points": [
 						[
 							2300,
-							2122
+							2124.5
 						],
 						[
 							2400,
-							2122
+							2124.5
 						],
 						[
 							2500,
-							2122.5
+							2125
 						]
 					]
 				}
@@ -2646,8 +2646,8 @@
 					1262.0
 				],
 				"deck_bow_starboard": [
-					4636.0,
-					1260.0
+					4640.0,
+					1267.0
 				],
 				"dome_roof_aft": [
 					1723.3,
@@ -2748,6 +2748,22 @@
 				"hull_face_bottom_starboard": [
 					4461.0,
 					1395.0
+				],
+				"well_1_aft": [
+					1977.0,
+					1400.0
+				],
+				"well_1_forward": [
+					2268.0,
+					1400.0
+				],
+				"well_2_aft": [
+					2911.0,
+					1392.0
+				],
+				"well_2_forward": [
+					3180.0,
+					1392.0
 				]
 			},
 			"masks": [
@@ -2982,6 +2998,22 @@
 				"hull_face_top_starboard": [
 					4806.0,
 					1858.0
+				],
+				"well_1_aft": [
+					1710.0,
+					1988.0
+				],
+				"well_1_forward": [
+					2005.0,
+					1988.0
+				],
+				"well_2_aft": [
+					2697.0,
+					1988.0
+				],
+				"well_2_forward": [
+					2992.0,
+					1988.0
 				]
 			},
 			"ground": true,
@@ -3335,6 +3367,14 @@
 				"hull_face_bottom_port": [
 					301.0,
 					1729.0
+				],
+				"well_3_forward": [
+					2938.0,
+					1752.0
+				],
+				"well_3_aft": [
+					3200.0,
+					1752.0
 				]
 			},
 			"edges": {
@@ -3836,6 +3876,14 @@
 				"anchor_stock_bottom_port": [
 					4572.0,
 					2457.0
+				],
+				"hull_face_chock_starboard": [
+					4492.0,
+					2030.0
+				],
+				"hull_face_chock_port": [
+					4750.0,
+					2032.0
 				]
 			},
 			"ground": false,
@@ -3985,6 +4033,14 @@
 				"hull_face_bullnose": [
 					1888.0,
 					1600.0
+				],
+				"hull_face_chock_starboard": [
+					1750.0,
+					1582.0
+				],
+				"hull_face_chock_port": [
+					2012.0,
+					1582.0
 				]
 			},
 			"ground": false,
@@ -4065,6 +4121,170 @@
 					]
 				]
 			]
+		},
+		"dvids5862257": {
+			"file": "photos/dvids5862257.jpg",
+			"marks": {
+				"deck_bow_port": [
+					511.4,
+					3133.8
+				],
+				"deck_stern_port": [
+					6965.7,
+					3091.1
+				],
+				"dome_roof_aft": [
+					5298.9,
+					2620.2
+				],
+				"dome_roof_forward": [
+					5120.1,
+					2614.4
+				],
+				"doorway_3_forward": [
+					5141.0,
+					3252.0
+				],
+				"hull_face_bottom_port": [
+					810.8,
+					3326.3
+				],
+				"hull_face_top_port": [
+					544.0,
+					3184.4
+				],
+				"mast_dome_upper": [
+					5196.2,
+					2307.1
+				],
+				"well_3_aft": [
+					5680.8,
+					3355.3
+				],
+				"well_3_forward": [
+					5127.0,
+					3355.3
+				]
+			},
+			"ground": true,
+			"aside": {
+				"door_3_fitting": [
+					5432.5,
+					3291.5
+				],
+				"door_3_edge_forward": [
+					5199.0,
+					3291.5
+				]
+			},
+			"notes": "the port hangar door shut (layout.notes.elevators). Out of the shared solve: their cameras are weak (no lens in dvids6015622's EXIF, seven marks in the oblique dvids5862258), and with them in it the bundle swung the port wall 11 m along their sight lines and pulled five other points past the gate. Measured instead in their own solve with the island, bow and rail points held at the model's (references/research/doors). The door's leaves slide, so its points are aside",
+			"solve": false
+		},
+		"dvids6015622": {
+			"file": "photos/dvids6015622.jpg",
+			"marks": {
+				"deck_bow_port": [
+					131.4,
+					1416.6
+				],
+				"deck_stern_port": [
+					3913.6,
+					1409.2
+				],
+				"dome_roof_aft": [
+					2987.9,
+					1153.0
+				],
+				"dome_roof_forward": [
+					2886.9,
+					1148.0
+				],
+				"doorway_3_forward": [
+					2948.0,
+					1495.0
+				],
+				"hull_face_bottom_port": [
+					309.0,
+					1524.4
+				],
+				"hull_face_top_port": [
+					152.5,
+					1438.5
+				],
+				"mast_dome_upper": [
+					2932.7,
+					977.2
+				],
+				"well_3_aft": [
+					3238.4,
+					1542.4
+				],
+				"well_3_forward": [
+					2932.7,
+					1542.4
+				]
+			},
+			"ground": true,
+			"focal": false,
+			"aside": {
+				"door_3_fitting": [
+					3095.1,
+					1511.4
+				],
+				"door_3_edge_forward": [
+					2966.0,
+					1511.5
+				]
+			},
+			"notes": "the port hangar door shut (layout.notes.elevators). Out of the shared solve: their cameras are weak (no lens in dvids6015622's EXIF, seven marks in the oblique dvids5862258), and with them in it the bundle swung the port wall 11 m along their sight lines and pulled five other points past the gate. Measured instead in their own solve with the island, bow and rail points held at the model's (references/research/doors). The door's leaves slide, so its points are aside",
+			"solve": false
+		},
+		"dvids5862258": {
+			"file": "photos/dvids5862258.jpg",
+			"marks": {
+				"deck_bow_port": [
+					1796.3,
+					2759.2
+				],
+				"deck_stern_port": [
+					5027.9,
+					2707.2
+				],
+				"dome_roof_aft": [
+					4393.0,
+					2417.8
+				],
+				"dome_roof_forward": [
+					4299.0,
+					2403.9
+				],
+				"doorway_3_forward": [
+					4054.0,
+					2842.0
+				],
+				"mast_dome_upper": [
+					4350.0,
+					2201.2
+				],
+				"well_3_forward": [
+					4034.2,
+					2887.8
+				]
+			},
+			"ground": true,
+			"sigma": 6,
+			"aside": {
+				"door_3_fitting": [
+					4235.5,
+					2844.5
+				],
+				"door_3_edge_forward": [
+					4109.0,
+					2845.5
+				]
+			},
+			"notes": "the port hangar door shut (layout.notes.elevators). Out of the shared solve: their cameras are weak (no lens in dvids6015622's EXIF, seven marks in the oblique dvids5862258), and with them in it the bundle swung the port wall 11 m along their sight lines and pulled five other points past the gate. Measured instead in their own solve with the island, bow and rail points held at the model's (references/research/doors). The door's leaves slide, so its points are aside",
+			"solve": false
 		}
 	},
 	"gate": {
@@ -4074,14 +4294,15 @@
 		"field": 1.5,
 		"rms": 10.0,
 		"known": {
-			"edge dvids7694421:deck_edge_starboard": "the trace follows the white edge band's inboard side (z about 36.1); the band's outer side, the deck's edge, is the layout's 36.8 at the elevators and 36.5-36.6 between them (references/research/deck); retrace on the outer side",
 			"point elevator_1_corner_3": "seen in two photos, one the level beam whose camera puts the elevators' outboard corners 0.8 m below the deck, pulling them inboard; the orthophoto has the corner at the layout's (references/research/deck)",
 			"point elevator_1_corner_4": "as elevator_1_corner_3",
 			"point deck_bow_port": "the bundle pulls it 0.75 m forward and the starboard corner 0.2 m aft, a 2.6 deg skew the photos of the bow do not show: the 2023 overhead (dvids7694421, 12 px/m) sees the bow's forward edge square across the deck (the end of its white edge line at x 166.67, rms 0.03 m over z -12 to 12), 0.41-0.47 m forward of the plan, as it casts the stern's eight sheave housings 0.41 m (sd 0.12) forward of the plan's, so it puts the bow where the plan does relative to the wires; the bow research (references/research/bow) measured the deck-edge band's front at 166.2 (+-0.3) from ahead. The pull comes from cameras at the bow's edge of their fields (dvids9142613 20 px off there, dvids9167788 moving 1 m between solves)",
 			"point elevator_2_corner_2": "one photo, the 2023 overhead, whose mark is on the corner of the painted red-and-white outline (its deck line ends at x 21.3), not the platform's: the noaa2022 orthophoto puts the platform's forward end at the layout's (x 22.08 and 22.28 at 2 and 3 m in from its inboard edge, against 22.17 and 22.32), and its length 27.05 m as measured before (references/research/deck, elevator_2)",
 			"point elevator_2_corner_3": "as elevator_1_corner_3: the level beam (dvids9167788), whose camera puts the elevators' outboard corners 0.8 m below the deck, pulls it down and inboard",
 			"point elevator_3_corner_2": "one photo, the 2023 overhead, which casts the sheave housings beside it 0.41 m forward of the plan (wire 2 port's, 1.7 m away, 0.55): the miss is that camera's along the ship",
-			"point hull_face_bottom_starboard": "the bow face's lower corner seen only by the level beam (dvids9167788) and the head-on telephoto (dvids3299641) through the gate's cameras, which miss the face's top corner by 1.3 m; the bow research re-solved them with the bow's own points free and placed the corner at (156.21, 7.62, +-2.02), +-0.3-0.5 (references/research/bow)"
+			"point hull_face_bottom_starboard": "the bow face's lower corner seen only by the level beam (dvids9167788) and the head-on telephoto (dvids3299641) through the gate's cameras, which miss the face's top corner by 1.3 m; the bow research re-solved them with the bow's own points free and placed the corner at (156.21, 7.62, +-2.02), +-0.3-0.5 (references/research/bow)",
+			"edge dvids7694421:deck_edge_starboard": "traced on the white edge band's outer side, the deck's edge (the band's inboard side, 0.2 m in, was traced before); the outline there is the orthophoto's 36.6 (layout.notes.deck), but this photo's camera casts the band's outer side onto 36.1 and its centre onto 35.9, where the deck research's own resection of the same photo reads 36.35 (references/research/deck, starboard_edge): the camera's error across the ship, as it casts the stern's sheave housings 0.41 m along it",
+			"point well_3_aft": "one photo (dvids7481395) sees the port well's opening, and reads its sill at 8.28-8.46 (well_3_forward 0.78 high, inside its sigma), where both starboard openings, on the same hangar deck, read 7.48-7.8 in two photos each; the same camera reads the port aperture's top 16.3 against the starboard 15.3 (layout.notes.elevators), so its heights there run about 0.8-1 m high, and no other photo sees the opening (the high port views see only the deck's edge over it)"
 		}
 	},
 	"skyline": {
