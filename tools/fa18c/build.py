@@ -300,7 +300,7 @@ def linear(srgb):
 
 COLOURS = {"paint": (0.42, 0.45, 0.48, 1), "team": (0.42, 0.45, 0.48, 1), "glass": (0.1, 0.12, 0.14, 0.4),
 	"lights": (0.34, 0.35, 0.32, 1), "burner": (0.012, 0.011, 0.010, 1), "display": (0.05, 0.08, 0.05, 1),
-	"stores": linear(LAYOUT["paint"]["lower"])}
+	"stores": linear(LAYOUT["paint"]["lower"]), "red": linear(LAYOUT["scoop"]["red"])}
 
 
 def material(name):
@@ -501,7 +501,7 @@ def wing(side):
 		bent(joint_name, bend)
 
 	hinged(f"flap_leading_inner_{name}", spans["lef"]["inner"], inner_lef, (0, inner_lef), FORWARD, DOWN, "slat")
-	hinged(f"flap_trailing_{name}", spans["tef"], 1 - tef, (1 - tef, 1), AFT, DOWN, f"flaperon.{name}")
+	hinged(f"flap_trailing_{name}", spans["tef"], 1 - tef, (1 - tef, 1), AFT, DOWN, f"trailing.{name}")
 	# The outer panel folds about the fold line, carrying its flap and aileron,
 	# as far as the photos fold it (layout.fold): NATOPS's folded span holds at
 	# any angle past 90 deg, where the panel's foot stands outermost
@@ -516,7 +516,7 @@ def wing(side):
 	node(f"wing_outer_{name}", parent=f"wing_{name}", hinge=a, paint="team", mesh=outer)
 	bent(f"wing_outer_{name}", bend)
 	hinged(f"flap_leading_outer_{name}", spans["lef"]["outer"], outer_lef, (0, outer_lef), FORWARD, DOWN, "slat", parent=f"wing_{name}")
-	hinged(f"aileron_{name}", spans["aileron"], 1 - aileron, (1 - aileron, 1), AFT, DOWN, f"flaperon.{name}", parent=f"wing_{name}")
+	hinged(f"aileron_{name}", spans["aileron"], 1 - aileron, (1 - aileron, 1), AFT, DOWN, f"aileron.{name}", parent=f"wing_{name}")
 	SURFACES[f"wing_{name}"] = surface
 	BENDING[name] = bend
 	LANDMARKS[f"wingtip_leading_{name}"] = surface.point(semispan, 0)
@@ -1593,14 +1593,14 @@ def canopy(stations, rings):
 		kinds += [kind] * len(pieces)
 	node("fuselage", mesh=(vertices_, split, kinds))
 	node("windscreen", mesh=mesh(groups["windscreen"]))
-	# The canopy slides 1.5 in aft to unlatch (NATOPS 2.15.1), then swings up
-	# about its aft hinge. The opening angle is provisional until the canopy-
-	# open photos of BuNo 165221 are matched.
+	# The canopy slides aft to unlatch (NATOPS 2.15.1), then swings up about
+	# its aft hinge (layout.motion canopy)
+	motion = LAYOUT["motion"]["canopy"]["value"]
 	hinge = at(back + 1.0, layout["aft"]["waterline"] - 4.0, 0)
 	node("canopy_slide", hinge=hinge)
-	joint("canopy_slide", AFT, AFT, AFT, "canopy", [[0, 0], [0.08, 1.5 * INCH], [1, 1.5 * INCH]], motion="slide")
+	joint("canopy_slide", AFT, AFT, AFT, "canopy", [[0, 0], [motion["unlatch"], motion["slide"] * INCH], [1, motion["slide"] * INCH]], motion="slide")
 	node("canopy", parent="canopy_slide", hinge=hinge, mesh=mesh(groups["canopy"]))
-	joint("canopy", PORT, FORWARD, UP, "canopy", [[0, 0], [0.08, 0], [1, math.radians(45)]])
+	joint("canopy", PORT, FORWARD, UP, "canopy", [[0, 0], [motion["unlatch"], 0], [1, math.radians(motion["open"])]])
 	# Features: the frame's corners and the sill on each side (the column
 	# SILL steps down from the top; the port half runs back up the ring)
 	index = {round(st, 1): r for r, st in enumerate(stations)}
@@ -2175,6 +2175,11 @@ def union_ring(station, angles=None, sided=True):
 		side = assembled(width)
 		ring = [(x0 + (x1 - x0) * weight, y0 + (y1 - y0) * weight) for (x0, y0), (x1, y1) in zip(ring, side)]
 	ring = doored(station, ring)
+	if sided:
+		# the band on the sided outline alone: the columns are spaced along
+		# the unsided one (along()), and shortened by the tunnel's walls it
+		# moved every column round the section, the upper skin's with them
+		ring = floored(station, centre, ring)
 	shape = bay(station, centre, ring) if sided else None
 	if angles is DENSE:
 		BAYS[(round(station, 4), sided)] = shape
@@ -2268,6 +2273,45 @@ def doored(station, ring):
 		across = ease((abs(x) - inner) / 4.0) * ease((outer - abs(x)) / 4.0)
 		height = 1.0 - ease((y - own) / band)
 		out.append((x, y - depth * across * height))
+	return out
+
+
+def floored(station, centre, ring):
+	# layout.band: between the nacelles the photos see the belly as a nearly
+	# flat band level with the main gear inner doors' inboard edges, crowned on
+	# the centreline, where the HATP fit hollowed a tunnel 6-8 in deeper. Under
+	# the nacelles' inner halves (out to the band's reach) the outline takes a
+	# line across the buttlines through the band's centre, the doors' inboard
+	# edges where they run and the outline's own height at the reach, a
+	# monotone cubic, mirrored so the crown is level; eased in from the
+	# forebody and out to the tail over the band's fades, the edge held past
+	# its ends (a knot that came and went with the station creased the skin
+	# 6 deg there). Ahead of the first drain the centre runs on from the
+	# forebody's keel (layout.belly)
+	band = LAYOUT["band"]
+	f0, f1, f2, f3 = band["fade"]
+	if not f0 < station < f3:
+		return ring
+	weight = ease((station - f0) / (f1 - f0)) if station < f1 else ease((f3 - station) / (f3 - f2)) if station > f2 else 1.0
+	reach = band["reach"]
+	# the lower outline: below the nacelles' centre line (the core's mid-height
+	# lies above the nacelles' tops aft, which lie inside the reach)
+	below = nacelle_at(station)[1]
+	lower = [(x, y) for x, y in ring if y < below]
+	# the outline's own height at the reach: the lowest crossing of that buttline
+	crossings = [y0 + (y1 - y0) * (reach - x0) / (x1 - x0) for (x0, y0), (x1, y1) in zip(lower, lower[1:]) if (x0 - reach) * (x1 - reach) <= 0 and x0 != x1]
+	if not crossings:
+		return ring
+	edge = min(crossings)
+	floor = band["floor"]
+	b = smooth([(k[0], k[1]) for k in floor], station)
+	w = smooth([(k[0], k[2]) for k in floor], station)
+	knots = [(0.0, smooth([tuple(k) for k in band["centre"]], station)), (b, w), (-b, w), (reach, edge), (-reach, edge)]
+	out = []
+	for x, y in ring:
+		if y < below and abs(x) < reach:
+			y += (smooth(knots, abs(x)) - y) * weight
+		out.append((x, y))
 	return out
 
 
@@ -2784,7 +2828,226 @@ def crossings(tree, start, direction):
 		travelled += 1e-5
 
 
-SHOWN = [[0, 0], [0.95, 0], [1, 1]]   # a part shown only with its drive nearly full: the gear's folding braces
+STROKE = [round(k / 24, 4) for k in range(25)]   # the gear drive's samples for the braces' solved keys
+BRACES = []   # the gear's braces, built once the whole airframe is (braces())
+
+
+def turning(hinge, axis, angle):
+	# A turn by `angle` about `axis` through `hinge`
+	return Matrix.Translation(hinge) @ Matrix.Rotation(angle, 4, axis) @ Matrix.Translation(-hinge)
+
+
+def placed(name, drives):
+	# A node's move from rest under the drives ({drive: value}): its own and
+	# its ancestors' joints, each about or along its axis through its hinge as
+	# it rests (every node rests unrotated)
+	move, obj = Matrix.Identity(4), NODES[name]
+	while obj is not None:
+		j = JOINTS.get(obj.name)
+		if j and j["motion"] in ("rotate", "slide"):
+			axis = Vector((j["axis"][0], -j["axis"][2], j["axis"][1]))
+			value = interp(j["keys"], drives.get(j["drive"], 0.0))
+			move = (turning(HINGES[obj.name], axis, value) if j["motion"] == "rotate" else Matrix.Translation(axis.normalized() * value)) @ move
+		obj = obj.parent
+	return move
+
+
+def enclosed(tree, p):
+	# Whether a point is enclosed by a tree's surfaces: a ray along each axis,
+	# both ways, meets one (check.py's enclosed())
+	return all(tree.ray_cast(p, d)[0] is not None for d in (FORWARD, AFT, PORT, -PORT, UP, DOWN))
+
+
+def room(skin, parts, a, b, radius, skip=0.0):
+	# The least room round a tube of the given radius from a to b, in: to the
+	# skin, as far outside it as it stands where it leaves it, and to the other
+	# parts (trees); `skip` the share of its length at a left out, where it is
+	# pinned to what it rides
+	least = math.inf
+	for k in range(9):
+		p = a.lerp(b, skip + (1 - skip) * k / 8)
+		gap = skin.find_nearest(p)[3] / INCH
+		least = min(least, gap - radius if enclosed(skin, p) else -gap - radius)
+		for tree in parts:
+			least = min(least, tree.find_nearest(p)[3] / INCH - radius)
+	return least
+
+
+def scoop():
+	# The FCS ram air scoop (layout.scoop): a can under the right LEX whose end
+	# is the round cap the photos see flush in its sub-panel, and which AV COOL
+	# EMERG swings out about a hinge at the cap's aft edge until its mouth
+	# faces forward (layout.motion scoop, NATOPS 2.16.7). Its body red, its
+	# end the airframe's paint
+	s, m = LAYOUT["scoop"], LAYOUT["motion"]["scoop"]["value"]
+	skin = built(["fuselage"])
+	cap, normal = skin.find_nearest(at(*s["cap"]))[:2]
+	normal = normal.normalized()
+	if normal.y > 0:
+		normal = -normal   # outward, to starboard
+	forward = (FORWARD - normal * FORWARD.dot(normal)).normalized()
+	radius = s["diameter"] / 2
+	centre = cap + normal * (0.05 * INCH)   # standing just proud of the skin, as the flush doors do
+	hinge = centre - forward * (radius * INCH)
+	vertices, faces = cylinder(centre, centre - normal * (s["length"] * INCH), radius, sides=16)
+	node("scoop", hinge=hinge, mesh=(vertices, faces, ["red"] * 16 + ["paint", "red"]))
+	joint("scoop", forward.cross(normal), -normal, forward, "scoop", [[0, 0], [1, round(math.radians(m["travel"]), 4)]])
+	MARKS["scoop_cap"] = (centre, "scoop")
+
+
+def drag_brace(pin, top, undo, skin, parts):
+	# The nose leg's drag brace (decision 17), telescopic (layout.gear): the
+	# tube the photos see from its pin on the post up to where it enters the
+	# bay, and a hidden rod on from there to a pin in the airframe, straight
+	# with the gear down and drawn out of the tube as the leg swings forward.
+	# The rod is the shortest that keeps its tip in the tube with the gear down
+	# and reaches into it layout.motion braces' overlap at full stretch, with
+	# both inside the skin stowed and the rod inside it with the gear down: a
+	# longer rod buys under 0.05 in of room an inch, so the most room has no
+	# end short of the fuselage's top.
+	length = (top - pin).length
+	w = (top - pin).normalized()
+	rest = undo @ pin
+	carry = [placed("gear_nose_strut", {"gear": d}) for d in STROKE]
+	feet = [c @ rest for c in carry]
+	b = LAYOUT["motion"]["braces"]["value"]
+	tube, rod, overlap = 1.9, b["rod"] / 2, b["overlap"] * INCH
+	best = None
+	for hidden in range(0, 41):
+		end = top + w * (hidden * INCH)
+		reach = max((end - f).length for f in feet) - length + overlap
+		if reach > min((end - f).length for f in feet) - 2 * INCH:
+			continue   # the rod's tip would leave the tube's bottom
+		terms = (room(skin, parts, rest, rest + (end - rest).normalized() * length, tube, 0.15),
+			room(skin, parts, end, end + (rest - end).normalized() * reach, rod), room(skin, [], top, end, rod, 0.15) if hidden else math.inf)
+		if min(terms) > 0:
+			best = (min(terms), hidden, end, reach, terms)
+			break
+	score, hidden, end, reach, terms = best
+	print(f"nose drag brace: rod's pin {hidden} in above the tube's top, the rod {reach / INCH:.1f} in long, {score:.2f} in of room at its least",
+		"(tube stowed, rod stowed, rod hidden gear down:", ", ".join(f"{t:.2f}" for t in terms) + ")")
+	axis = undo.to_3x3() @ PORT
+	toward = (end - rest).normalized()
+	node("gear_nose_brace", parent="gear_nose_strut", hinge=rest, mesh=cylinder(rest, rest + toward * length, tube, 1.4))
+	targets = [(c.to_3x3().inverted() @ (end - f)).normalized() for c, f in zip(carry, feet)]
+	joint("gear_nose_brace", axis, toward, axis.cross(toward), "gear",
+		[[d, round(math.atan2(axis.dot(toward.cross(v)), toward.dot(v)), 4)] for d, v in zip(STROKE, targets)])
+	down = (rest - end).normalized()
+	node("gear_nose_brace_upper", hinge=end, mesh=cylinder(end, end + down * reach, rod))
+	joint("gear_nose_brace_upper", axis, down, axis.cross(down), "gear",
+		[[d, round(math.atan2(axis.dot(down.cross((f - end).normalized())), down.dot((f - end).normalized())), 4)] for d, f in zip(STROKE, feet)])
+
+
+def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing, strut_undo):
+	# A main leg's side brace and connecting link (layout.gear legs main,
+	# layout.motion braces), each between a pin in the structure and a point
+	# riding the leg, at each of the gear's steps. The leg turns about the
+	# trunnion's axis by the swing times one less the gear; the brace's halves,
+	# the link and the bell crank hinge about axes along it, so that turn
+	# keeps each in its plane square to the axis and their ends meet exactly
+	m, b = LAYOUT["gear"]["legs"]["main"], LAYOUT["motion"]["braces"]["value"]
+	steps = [k / 20 for k in range(21)]
+	n = axis.normalized()
+
+	def carry(p, t):
+		return trunnion + Matrix.Rotation(swing * (1 - t), 3, n) @ (p - trunnion)
+
+	def flat(v):
+		return v - n * v.dot(n)
+
+	def angle(u, v):
+		u, v = flat(u), flat(v)
+		return math.atan2(n.dot(u.cross(v)), u.dot(v))
+
+	def on(start, direction, waterline):
+		# where a line reaches a waterline (the model's z is up)
+		return start + direction * ((waterline - 105.0) * INCH - start.z) / direction.z
+
+	def meet(origin, target, first, second, sense):
+		# where two members from origin and target meet, square to the axis:
+		# first's length from origin, second's from target, in the plane, the
+		# joint to one side
+		q = flat(target - origin)
+		d = min(q.length, first + second - 1e-9)
+		x = (d * d + first * first - second * second) / (2 * d)
+		h = math.sqrt(max(first * first - x * x, 0.0))
+		u = q.normalized()
+		return origin + u * x + n.cross(u) * (sense * h)
+
+	# The side brace folds at its knee: its lower half from the bolt on the
+	# post's lower casting, its upper on up its axis to the pin, straight
+	# with the gear down
+	bolt = at(m["brace"][1][0], m["brace"][1][1], side * m["brace"][1][2])
+	seen = at(m["brace"][0][0], m["brace"][0][1], side * m["brace"][0][2])
+	pin = on(bolt, (seen - bolt).normalized(), b["side"]["pin"])
+	straight = bolt + (pin - bolt) * b["side"]["knee"]
+	rise = n * (straight - pin).dot(n)   # the knee's offset along the axis, which no turn changes
+	upper, lower = flat(straight - pin).length, flat(bolt - straight).length
+	bolts = [carry(bolt, t) for t in steps]
+	radius = b["link"] / 2
+
+	def folded(sense):
+		return [meet(pin, q, upper, lower, sense) + rise for q in bolts]
+	knees = max((folded(sense) for sense in (1, -1)), key=lambda k: min(room(skin, [], pin, k[0], radius), room(skin, [], k[0], bolts[0], radius, 0.15)))
+	k0, q0 = knees[0], bolts[0]
+	off = max((k + (q - k) - q).length for k, q in zip(knees, bolts))
+	print(f"{leg} side brace: halves {(straight - pin).length / INCH:.1f} and {(bolt - straight).length / INCH:.1f} in, its knee turning {math.degrees(abs(angle(k0 - pin, knees[-1] - pin))):.0f} deg")
+	node(f"{leg}_brace_upper", hinge=pin, mesh=cylinder(pin, k0, radius))
+	joint(f"{leg}_brace_upper", n, flat(k0 - pin), n.cross(flat(k0 - pin)), "gear", [[t, round(angle(k0 - pin, k - pin), 4)] for t, k in zip(steps, knees)])
+	node(f"{leg}_brace", parent=f"{leg}_brace_upper", hinge=k0, mesh=cylinder(k0, q0, radius))
+	joint(f"{leg}_brace", n, flat(q0 - k0), n.cross(flat(q0 - k0)), "gear",
+		[[t, round(angle(q0 - k0, q - k) - angle(k0 - pin, k - pin), 4)] for t, k, q in zip(steps, knees, bolts)])
+	MARKS[f"brace_bolt_{name}"] = (q0, f"{leg}_brace")
+	# The connecting link, rigid, from its pin in the structure down its axis
+	# to the bell crank's pin; the crank, on a bracket off the arm's pivot
+	# boss with its arm square to the link, turns to hold the link's length
+	# as the leg swings (the turn the planing link carries to the axle)
+	link = m["link"]
+	direction = Vector((-link["direction"][0], -side * link["direction"][2], link["direction"][1])).normalized()
+	through = at(link["through"][0], link["through"][1], side * link["through"][2])
+	top, crank_pin = on(through, direction, b["connecting"]["pin"]), on(through, direction, b["connecting"]["crank"])
+	across = n.cross(flat(direction)).normalized()
+	if (crank_pin + across - pivot).length > (crank_pin - across - pivot).length:
+		across = -across   # toward the arm's pivot
+	centre = crank_pin + across * (b["connecting"]["arm"] * INCH)
+	length, height = flat(top - crank_pin).length, (top - crank_pin).dot(n)
+
+	def held(t, guess):
+		# the crank's turn that holds the link's length at gear t, near a guess
+		def gap(phi):
+			return flat(carry(centre + Matrix.Rotation(phi, 3, n) @ (crank_pin - centre), t) - top).length - length
+		lo, hi = guess - 1.0, guess + 1.0
+		if gap(lo) * gap(hi) > 0:
+			raise SystemExit(f"{leg} connecting link: the crank cannot hold its length at gear {t}")
+		while hi - lo > 1e-7:
+			mid = (lo + hi) / 2
+			lo, hi = (lo, mid) if gap(lo) * gap(mid) <= 0 else (mid, hi)
+		return (lo + hi) / 2
+	phis = [0.0]
+	for t in reversed(steps[:-1]):
+		phis.append(held(t, phis[-1]))
+	phis = list(reversed(phis))   # by step, gear 0 to 1
+	pins = [carry(centre + Matrix.Rotation(phi, 3, n) @ (crank_pin - centre), t) for t, phi in zip(steps, phis)]
+	print(f"{leg} connecting link: {(top - crank_pin).length / INCH:.1f} in, its crank's arm {(crank_pin - centre).length / INCH:.1f} in turning {math.degrees(max(phis) - min(phis)):.1f} deg")
+	node(f"{leg}_link", hinge=top, mesh=cylinder(top, pins[0], b["connecting"]["diameter"] / 2))
+	joint(f"{leg}_link", n, flat(pins[0] - top), n.cross(flat(pins[0] - top)), "gear", [[t, round(angle(pins[0] - top, p - top), 4)] for t, p in zip(steps, pins)])
+	collar = (on(through, direction, link["collars"][0][1]) - top).length
+	MARKS[f"link_collar_{name}"] = (top + (pins[0] - top).normalized() * collar, f"{leg}_link")
+	# the crank: a bar from its boss to the link's pin, riding the leg, at
+	# rest turned as with the gear stowed
+	rest_pin = centre + Matrix.Rotation(phis[0], 3, n) @ (crank_pin - centre)
+	node(f"{leg}_crank", parent=f"{leg}_strut", hinge=strut_undo @ centre,
+		mesh=rested(merge([cylinder(centre, rest_pin, 0.8), cylinder(centre - n * (1.0 * INCH), centre + n * (1.0 * INCH), 1.3)]), strut_undo))
+	arm = strut_undo.to_3x3() @ flat(rest_pin - centre)
+	joint(f"{leg}_crank", n, arm, n.cross(arm), "gear", [[t, round(phi - phis[0], 4)] for t, phi in zip(steps, phis)])
+	# the post's lower casting's fittings, riding the post: a lug out to the
+	# side brace's bolt with the bolt's boss along the axis the brace turns
+	# about, and the crank's bracket from the pivot boss (within its length,
+	# gear()) out to the crank's pin
+	root = trunnion + (fork - trunnion).normalized() * (bolt - trunnion).dot((fork - trunnion).normalized())
+	base = pivot + out * max(-4.5 * INCH, min(2.5 * INCH, (centre - pivot).dot(out)))
+	node(f"{leg}_casting", parent=f"{leg}_strut", hinge=strut_undo @ centre, mesh=rested(merge([cylinder(root, bolt, 1.0),
+		cylinder(bolt - n * (1.2 * INCH), bolt + n * (1.2 * INCH), 1.2), cylinder(base, centre, 1.0)]), strut_undo))
 
 
 def gear():
@@ -2815,48 +3078,106 @@ def gear():
 		fork = pivot - out * (3.0 * INCH) + UP * (1.5 * INCH)
 		extended = (fork - top).normalized()
 		trunnion = top - extended * (8.0 * INCH)
-		# stowed aft, 19 deg inboard and 3 deg up: the most room round the
-		# post and wheel inside the nacelle, the wheel within 14 deg of flat
-		inboard, up = math.radians(19), math.radians(3)
-		stowed = Vector((-math.cos(up) * math.cos(inboard), side * math.cos(up) * math.sin(inboard), math.sin(up)))
-		swing = math.acos(max(-1.0, min(1.0, stowed.dot(extended))))
-		axis = stowed.cross(extended).normalized()
-		# post swing, then a quarter turn about the post that stands the
-		# wheel up from lying flat in the nacelle, each side the mirror of the other
-		frames = chain([(trunnion, axis, swing), (trunnion, -side * extended, math.pi / 2)])
-		strut_undo, twist_undo = frames[0][2], frames[1][2]
-		node(f"{leg}_strut", hinge=trunnion, mesh=rested(merge([cylinder(trunnion, fork, m["post"] / 2),
-			cylinder(pivot - out * (4.5 * INCH), pivot + out * (2.5 * INCH), 2.0)]), strut_undo))
-		joint(f"{leg}_strut", frames[0][1], AFT, extended, "gear", [[0, 0], [1, swing]])
-		# the side brace, which folds as the leg retracts: one rigid part
-		# cannot, so it is shown only with the gear down
-		brace = [at(f, w, side * b) for f, w, b in m["brace"]]
-		node(f"{leg}_brace", parent=f"{leg}_strut", hinge=strut_undo @ brace[0], mesh=rested(cylinder(brace[0], brace[1], 0.9), strut_undo))
-		joint(f"{leg}_brace", UP, UP, UP, "gear", SHOWN, motion="show")
-		node(f"{leg}_twist", parent=f"{leg}_strut", hinge=frames[1][0])
-		joint(f"{leg}_twist", frames[1][1], Vector((0, 0, 1)), Vector((0, 0, 1)), "gear", [[0, 0], [1, math.pi / 2]])
-		# the trailing arm, from the pivot back to the wheel's inboard face:
-		# the leg's compression turns it about the pivot, the axle rising by
-		# the oleo drive's metres
+		# Stowed as Grandmont 2009 has the mechanism (layout.motion stowed):
+		# the whole leg turns about one trunnion axis, never about its post;
+		# the shrink link draws the shock absorber in, turning the trailing
+		# arm up about its pivot; the axle and wheel turn a quarter about an
+		# axis at the arm's end. The facts give the left leg in stations,
+		# waterlines and buttlines, the right its mirror; the model's frame
+		# reflects them, so an axis (a, b, c) there is (a, c, -b) here
+		stow = LAYOUT["motion"]["stowed"]["value"]["main"]
+
+		def turned(v):
+			x, w, b = v if side < 0 else (-v[0], -v[1], v[2])
+			return Vector((x, b, -w)).normalized()
 		face = axle - out * (g["tyres"]["main"]["width"] / 2 * INCH)
-		eye = pivot.lerp(face, m["shock"][1])
-		shock_top = at(m["shock"][0][0], m["shock"][0][1], side * m["shock"][0][2])
-		gland = shock_top.lerp(eye, 0.45)
-		# the shock absorber, from the airframe to the arm, shown with the gear
-		# down as the brace is
-		node(f"{leg}_shock", parent=f"{leg}_twist", hinge=twist_undo @ shock_top,
-			mesh=rested(merge([cylinder(shock_top, gland, 1.3), cylinder(gland, eye, 1.8)]), twist_undo))
-		joint(f"{leg}_shock", UP, UP, UP, "gear", SHOWN, motion="show")
-		turn = twist_undo.to_3x3()
-		node(f"{leg}_oleo", parent=f"{leg}_twist", hinge=twist_undo @ pivot, mesh=rested(cylinder(pivot, face, 2.6, 1.8), twist_undo))
-		joint(f"{leg}_oleo", turn @ out, turn @ (face - pivot), turn @ UP, f"oleo.{name}", [[0, 0], [1, round(1 / (face - pivot).length, 4)]])
-		wheel_axis = out
-		node(f"{leg}_wheel", parent=f"{leg}_oleo", hinge=twist_undo @ axle, mesh=rested(tyre(axle, wheel_axis, main_r, g["tyres"]["main"]["width"]), twist_undo))
+		shock = m["shock"]
+		shock_top, eye = (at(f, w, side * b) for f, w, b in shock["ends"])
+		reach = (face - pivot).length
+		lever = out if out.cross(face - pivot).dot(UP) > 0 else -out
+		# the arm's turn that draws the shock absorber in by the shrink
+		length, lo, hi = (eye - shock_top).length, 0.0, 1.2
+		for _ in range(60):
+			mid = (lo + hi) / 2
+			lo, hi = (mid, hi) if (pivot + Matrix.Rotation(mid, 3, lever) @ (eye - pivot) - shock_top).length > length - stow["shrink"] * INCH else (lo, mid)
+		shrink = (lo + hi) / 2
+		drawn = Matrix.Rotation(shrink, 3, lever)
+		swing, quarter = math.radians(stow["swing"]), math.pi / 2
+		# the axle's axis with the arm drawn up, as it lies with the arm down
+		turn_axis = drawn.inverted() @ turned(stow["turn"])
+		frames = chain([(trunnion, turned(stow["axis"]), -swing), (pivot, lever, -shrink), (eye, turn_axis, -quarter)])
+		strut_undo, shrink_undo, axle_undo = (f[2] for f in frames)
+		boss = cylinder(pivot - out * (4.5 * INCH), pivot + out * (2.5 * INCH), 2.0)
+		node(f"{leg}_strut", hinge=trunnion, mesh=rested(merge([cylinder(trunnion, fork, m["post"] / 2), boss]), strut_undo))
+		stowed_post = strut_undo.to_3x3() @ extended
+		joint(f"{leg}_strut", frames[0][1], stowed_post, extended, "gear", [[0, 0], [1, round(swing, 4)]])
+		# the shrink link's turn of the arm, and the leg's own compression on
+		# the ground (the oleo drive's metres over the arm's length) below it
+		node(f"{leg}_shrink", parent=f"{leg}_strut", hinge=frames[1][0])
+		rest_turn = shrink_undo.to_3x3()
+		joint(f"{leg}_shrink", frames[1][1], rest_turn @ (eye - pivot), strut_undo.to_3x3() @ (eye - pivot), "gear", [[0, 0], [1, round(shrink, 4)]])
+		node(f"{leg}_oleo", parent=f"{leg}_shrink", hinge=frames[1][0], mesh=rested(cylinder(pivot, eye, 2.6, 2.2), shrink_undo))
+		joint(f"{leg}_oleo", rest_turn @ lever, rest_turn @ (face - pivot), rest_turn @ UP, f"oleo.{name}", [[0, 0], [1, round(1 / reach, 4)]])
+		# the axle's stub, from the arm's end out to the wheel's inboard face,
+		# turning a quarter with the wheel on it
+		node(f"{leg}_axle", parent=f"{leg}_oleo", hinge=frames[2][0], mesh=rested(cylinder(eye, face, 2.2, 1.8), axle_undo))
+		joint(f"{leg}_axle", frames[2][1], axle_undo.to_3x3() @ (axle - eye), shrink_undo.to_3x3() @ (axle - eye), "gear", [[0, 0], [1, round(quarter, 4)]])
+		wheel_turn = axle_undo.to_3x3()
+		node(f"{leg}_wheel", parent=f"{leg}_axle", hinge=axle_undo @ axle, mesh=rested(tyre(axle, out, main_r, g["tyres"]["main"]["width"]), axle_undo))
 		# the hub's outer face, where a photo shows the wheel's centre
-		MARKS[f"axle_main_{name}"] = (twist_undo @ (axle + wheel_axis * (g["tyres"]["main"]["width"] * 0.35 * INCH)), f"{leg}_wheel")
+		MARKS[f"axle_main_{name}"] = (axle_undo @ (axle + out * (g["tyres"]["main"]["width"] * 0.35 * INCH)), f"{leg}_wheel")
 		# its centre, where a head-on photo shows the middle of the tyre
-		MARKS[f"wheel_main_{name}"] = (twist_undo @ axle, f"{leg}_wheel")
-		joint(f"{leg}_wheel", turn @ wheel_axis, Vector((0, 0, -1)), FORWARD, f"wheel.{name}", IDENTITY)
+		MARKS[f"wheel_main_{name}"] = (axle_undo @ axle, f"{leg}_wheel")
+		joint(f"{leg}_wheel", wheel_turn @ out, Vector((0, 0, -1)), FORWARD, f"wheel.{name}", IDENTITY)
+		# the shock absorber, from a lug on the post's top casting down to an
+		# eye on the arm: as the shrink link draws the arm up its body turns
+		# about the lug to follow the eye and a sleeve slides its can up over
+		# the body (the gear drive); on the ground the leg's compression does
+		# the same (the oleo drive; the two never move at once)
+		arm = eye - shock_top
+		drawn_eye = pivot + drawn @ (eye - pivot)
+
+		def toward(e, ref, axis):
+			# the turn about `axis` that aims the body from ref at e, in the
+			# plane square to the axis
+			a, c = ref - axis * ref.dot(axis), (e - shock_top) - axis * (e - shock_top).dot(axis)
+			return math.atan2(axis.dot(a.cross(c)), a.dot(c))
+		bend_in = arm.cross(drawn_eye - shock_top).normalized()
+		aim_in = Matrix.Translation(shock_top) @ Matrix.Rotation(toward(drawn_eye, arm, bend_in), 4, bend_in) @ Matrix.Translation(-shock_top)
+		body_undo = strut_undo @ aim_in
+		body_turn = body_undo.to_3x3()
+		steps = [k / 10 for k in range(11)]
+		eyes_in = [pivot + Matrix.Rotation(shrink * (1 - g_), 3, lever) @ (eye - pivot) for g_ in steps]
+		node(f"{leg}_shock_aim", parent=f"{leg}_strut", hinge=strut_undo @ shock_top)
+		aim_keys = [[g_, round(abs(toward(e, drawn_eye - shock_top, bend_in)), 4)] for g_, e in zip(steps, eyes_in)]
+		joint(f"{leg}_shock_aim", strut_undo.to_3x3() @ bend_in, body_turn @ arm, strut_undo.to_3x3() @ arm, "gear", aim_keys)
+		travel = [round(0.05 * k, 2) for k in range(13)]   # the oleo drive, m: the struts' 0.5 m travel and past it
+		eyes = [pivot + Matrix.Rotation(d / reach, 3, lever) @ (eye - pivot) for d in travel]
+		bend = arm.cross(eyes[-1] - shock_top).normalized()
+		if bend.cross(arm).dot(eyes[-1] - eye) < 0:
+			bend = -bend
+		collar = shock_top.lerp(eye, shock["collar"])
+		body, can = (w / 2 for w in shock["diameters"])
+		node(f"{leg}_shock", parent=f"{leg}_shock_aim", hinge=strut_undo @ shock_top, mesh=rested(cylinder(shock_top, collar, body), body_undo))
+		joint(f"{leg}_shock", body_turn @ bend, body_turn @ arm, body_turn @ (eyes[-1] - eye), f"oleo.{name}",
+			[[d, round(toward(e, arm, bend), 4)] for d, e in zip(travel, eyes)])
+		# the can drawn up the body by the shrink at rest, the sleeve letting it
+		# back down as the arm lowers
+		drawn_length = (drawn_eye - shock_top).length
+		up_body = -arm.normalized()
+		sleeve = Matrix.Translation(up_body * (length - drawn_length))
+		node(f"{leg}_shock_sleeve", parent=f"{leg}_shock", hinge=body_undo @ (sleeve @ eye))
+		joint(f"{leg}_shock_sleeve", body_turn @ arm, body_turn @ arm, body_turn @ arm, "gear",
+			[[g_, round((e - shock_top).length - drawn_length, 4)] for g_, e in zip(steps, eyes_in)], motion="slide")
+		end = eye - arm.normalized() * (1.5 * INCH)
+		node(f"{leg}_shock_can", parent=f"{leg}_shock_sleeve", hinge=body_undo @ (sleeve @ eye),
+			mesh=rested(merge([cylinder(collar, end, can), cylinder(end, eye, 1.5)]), body_undo @ sleeve))
+		joint(f"{leg}_shock_can", body_turn @ arm, body_turn @ arm, body_turn @ -arm, f"oleo.{name}",
+			[[d, round(arm.length - (e - shock_top).length, 4)] for d, e in zip(travel, eyes)], motion="slide")
+		# the side brace and the planing mechanism's connecting link, solved
+		# once the whole airframe is built (main_members())
+		BRACES.append(lambda skin, leg=leg, name=name, side=side, out=out, pivot=pivot, trunnion=trunnion, fork=fork, axis=turned(stow["axis"]), swing=swing, strut_undo=strut_undo:
+			main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing, strut_undo))
 	# The nose leg: a vertical post, the polished piston below it and the
 	# axle trailing behind; it retracts forward; twin wheels; the drag brace
 	# up and aft into the bay; the launch bar raised in front
@@ -2868,7 +3189,8 @@ def gear():
 	extended = DOWN
 	# stowed forward and 6 deg up, the twin wheels clear of the forebody's
 	# lower skin either side of the bay
-	stowed = (FORWARD * math.cos(math.radians(6)) + UP * math.sin(math.radians(6))).normalized()
+	rise = math.radians(LAYOUT["motion"]["stowed"]["value"]["nose"])
+	stowed = (FORWARD * math.cos(rise) + UP * math.sin(rise)).normalized()
 	swing = math.acos(max(-1.0, min(1.0, stowed.dot(extended))))
 	axis = stowed.cross(extended).normalized()
 	frames = chain([(trunnion, axis, swing)])
@@ -2881,11 +3203,6 @@ def gear():
 	node("gear_nose_strut", hinge=trunnion, mesh=rested(merge([cylinder(trunnion, top, n["post"] / 2),
 		cylinder(at(column, n["bar"]["pivot"][1], 1.6), at(column, n["bar"]["pivot"][1], -1.6), 1.6)]), undo))
 	joint("gear_nose_strut", frames[0][1], stowed, extended, "gear", [[0, 0], [1, swing]])
-	# the drag brace up and aft into the bay, which folds as the leg retracts:
-	# shown with the gear down
-	node("gear_nose_brace", parent="gear_nose_strut", hinge=undo @ pin,
-		mesh=rested(cylinder(pin, pin + (AFT * math.sin(lean) + UP * math.cos(lean)) * (reach * INCH), 1.9, 1.4), undo))
-	joint("gear_nose_brace", UP, UP, UP, "gear", SHOWN, motion="show")
 	# the piston from the post's foot to the axle's fitting, which trails aft to the axle
 	foot = at(column, g["axles"]["nose"] + 1.5, 0)
 	node("gear_nose_oleo", parent="gear_nose_strut", hinge=trunnion, mesh=rested(merge([cylinder(top, foot, n["piston"] / 2),
@@ -2900,13 +3217,21 @@ def gear():
 		MARKS[f"axle_nose_{side_name(side)}"] = (undo @ (axle + Vector((0, -side * (offset + g["tyres"]["nose"]["width"] * 0.35) * INCH, 0))), "gear_nose_wheel")
 		MARKS[f"wheel_nose_{side_name(side)}"] = (undo @ (axle + Vector((0, -side * offset * INCH, 0))), "gear_nose_wheel")
 	joint("gear_nose_wheel", undo.to_3x3() @ PORT, Vector((0, 0, -1)), FORWARD, "wheel.nose", IDENTITY)
+	top = pin + (AFT * math.sin(lean) + UP * math.cos(lean)) * (reach * INCH)
+	BRACES.append(lambda skin, top=top, undo=undo: drag_brace(pin, top, undo, skin, [built(["gear_nose_wheel", "gear_nose_oleo"])]))
 	# The launch bar: raised as the photos show it, lowered forward until its
-	# tip meets the shuttle 3 in above the deck
+	# tip rests on the deck (layout.motion bar)
 	length = (bar_tip - bar_pivot).length / INCH
 	ground = g["axles"]["nose"] - nose_r
 	raised = math.atan2((bar_tip - bar_pivot).z, (bar_tip - bar_pivot).x)
-	lowered = -math.asin(min(1.0, (n["bar"]["pivot"][1] - ground - 3.0) / length))
-	node("launch_bar", parent="gear_nose_strut", hinge=undo @ bar_pivot, mesh=rested(cylinder(bar_pivot, bar_tip, 1.6, 1.2, sides=8), undo))
+	tip = 1.2   # the bar's radius at its tip, in
+	# its end ring's lowest point on the deck: the axis stands the radius
+	# times the cosine of the bar's slope above it
+	drop = n["bar"]["pivot"][1] - ground - LAYOUT["motion"]["bar"]["value"]["deck"]
+	lowered = -math.asin(min(1.0, drop / length))
+	for _ in range(8):
+		lowered = -math.asin(min(1.0, (drop - tip * math.cos(lowered)) / length))
+	node("launch_bar", parent="gear_nose_strut", hinge=undo @ bar_pivot, mesh=rested(cylinder(bar_pivot, bar_tip, 1.6, tip, sides=8), undo))
 	joint("launch_bar", undo.to_3x3() @ PORT, undo.to_3x3() @ (bar_tip - bar_pivot), undo.to_3x3() @ DOWN, "bar", [[0, 0], [1, round(raised - lowered, 4)]])
 	MARKS["launch_bar_tip"] = (undo @ bar_tip, "launch_bar")
 	# The strut's lamps (layout.lights gear, natops 2.6.1.5-6): the landing
@@ -2944,7 +3269,7 @@ def gear():
 	node("gear_nose_lamps", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(housing), undo))
 	node("lamp_gear_nose", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(lenses), undo), paint="lights")
 
-	def door(node_name, outline, hinge, targets, below=True, curve=None, corners=None):
+	def door(node_name, outline, hinge, targets, below=True, curve=None, corners=None, pairs=None):
 		# A door cut from the skin inside its plan outline ([FS, BL]), hinged
 		# on the skin along `hinge` (two [FS, BL] ends), opened with the gear
 		# by the angle that brings its far edge's ends nearest the photos'
@@ -2953,10 +3278,13 @@ def gear():
 		# apart along the hinge, for the photos' traces of it; `corners` its
 		# closed outline's corners ({mark: [FS, BL]}), on the door, for the
 		# gear-up photos' seams
+		# A hinge end given as [FS, WL, BL] is where the photos fix the axis
+		# (off the skin, inside it); `pairs` fits the turn to named closed
+		# corners ([FS, BL]) and where the photos put each open ([FS, WL, BL])
 		mesh = merge([cut(None, None, below=below, outline=piece) for piece in outline])
 		for mark, (f, b) in (corners or {}).items():
 			MARKS[mark] = (draped(belly, f, b, below=below, out=0.15), node_name)
-		h0, h1 = (draped(belly, f, b, below=below, out=0.15) for f, b in hinge)
+		h0, h1 = (at(*h) if len(h) == 3 else draped(belly, h[0], h[1], below=below, out=0.15) for h in hinge)
 		axis = (h1 - h0).normalized()
 
 		def off(v):
@@ -2965,9 +3293,13 @@ def gear():
 
 		reach = max(off(v) for v in mesh[0])
 		edge = [v for v in mesh[0] if off(v) > reach - 0.5 * INCH]
-		goals = [at(*t) for t in targets]
-		# for each target the far edge's point nearest it along the hinge
-		ends = [min(edge, key=lambda v: abs((v - g).dot(axis))) for g in goals]
+		if pairs:
+			ends = [draped(belly, f, b, below=below, out=0.15) for (f, b), _ in pairs]
+			goals = [at(*t) for _, t in pairs]
+		else:
+			goals = [at(*t) for t in targets]
+			# for each target the far edge's point nearest it along the hinge
+			ends = [min(edge, key=lambda v: abs((v - g).dot(axis))) for g in goals]
 
 		def miss(turn):
 			R = Matrix.Rotation(turn, 3, axis)
@@ -2977,7 +3309,8 @@ def gear():
 		closed = ends[0] - h0
 		opened = Matrix.Rotation(turn, 3, axis) @ closed
 		node(node_name, hinge=h0, mesh=mesh)
-		joint(node_name, axis, closed, opened, "gear", [[0, 0], [0.15, round(abs(turn), 4)], [1, round(abs(turn), 4)]])
+		share = LAYOUT["motion"]["doors"]["value"]["open"]
+		joint(node_name, axis, closed, opened, "gear", [[0, 0], [share, round(abs(turn), 4)], [1, round(abs(turn), 4)]])
 		if curve:
 			bins = {}
 			for v in edge:
@@ -3002,8 +3335,8 @@ def gear():
 
 	# The nose bay's doors, open while the leg is down (NATOPS 2.10.1): a
 	# forward door each side hinged along the bay's sides, closing toward the
-	# centreline; behind them a long door and a short aft one on the right,
-	# hinged beside the centreline and closing across it
+	# centreline; behind them a long door hinged right of the centreline and
+	# closing across it, to its closed free edge (the views from below)
 	# (the marks' buttlines are the open doors' outer faces, standing off the
 	# skin: each hinge end is on the skin at its mark's height, the free
 	# edge's end moved in by as much)
@@ -3026,49 +3359,50 @@ def gear():
 		door(n, [[[f0, side * b0], [f1, side * b1], [f1, reach1], [f0, reach0]]],
 			[[f0, side * b0], [f1, side * b1]], edges, curve=f"door_nose_forward_edge_{side_name(side)}",
 			corners={f"{n}_front_outboard": [f0, side * b0], f"{n}_aft_outboard": [f1, side * b1], f"{n}_aft_inboard": [f1, reach1], f"{n}_front_inboard": [f0, reach0]})
-	for key in ("long", "aft"):
-		d = doors[key]
-		(f0, b0), (f1, b1) = d["hinge"]
-		(e0, _, _), (e1, _, _) = d["edge"]
-		reach0 = across(f0, b0, opened([f0, b0], d["edge"][0]), -20.0)
-		reach1 = across(f1, b1, opened([f1, b1], d["edge"][1]), -20.0)
-		n = f"gear_nose_door_{key}"
-		door(n, [[[f0, b0], [f1, b1], [e1, reach1], [e0, reach0]]], [[f0, b0], [f1, b1]], d["edge"],
-			corners={f"{n}_front_right": [f0, b0], f"{n}_aft_right": [f1, b1], f"{n}_aft_left": [e1, reach1], f"{n}_front_left": [e0, reach0]})
+	d = doors["long"]
+	(f0, b0), (f1, b1) = d["hinge"]
+	(e0, r0), (e1, r1) = d["free"]
+	n = "gear_nose_door_long"
+	door(n, [[[f0, b0], [f1, b1], [e1, r1], [e0, r0]]], [[f0, b0], [f1, b1]], d["edge"],
+		corners={f"{n}_front_right": [f0, b0], f"{n}_aft_right": [f1, b1], f"{n}_aft_left": [e1, r1], f"{n}_front_left": [e0, r0]})
 	# Each main leg's doors in the blister under its nacelle (layout.nacelle
 	# door), each hanging straight down when open: the inner hinged along the
 	# blister's inner edge, the outer along its outer edge outboard of the leg
 	for side in (-1, 1):
 		name = side_name(side)
-		# the outer door as tall, closed, along the skin from its hinge as the
-		# photos' front edge is open
+		# the outer door from its hinge in to the middle seam, closed as the
+		# views from below put them
 		d = doors["outer"]
 		f0, f1, b = d["hinge"]
-		tall = d["front"][0][1] - d["front"][1][1]
-		h = draped(belly, f0, side * b, below=True)
-		inner = b - 0.5
-		while inner > 16 and (draped(belly, f0, side * inner, below=True) - h).length < tall * INCH:
-			inner -= 0.25
-		# the inner door: forward of the outer door out to its front's
-		# outboard corner, aft of it a strip meeting the outer door's inner
-		# edge; cut as two convex pieces
-		e = doors["inner"]
-		g0, g1, c = e["hinge"]
-		(a0, _), (a1, _), (tip_f, tip_b) = e["outline"]
-		meet = [f0, side * (inner - 0.1)]
-		pieces = [[[a0, side * c], [f0, side * c], meet, [tip_f, side * tip_b]], [[f0, side * c], [a1, side * c], [a1, side * (inner - 0.1)], meet]]
-		door(f"gear_door_inner_{name}", pieces, [[g0, side * c], [g1, side * c]], [[e["low"][0], e["low"][1], side * c]],
-			corners={f"gear_door_inner_front_inboard_{name}": [a0, side * c], f"gear_door_inner_aft_inboard_{name}": [a1, side * c],
-				f"gear_door_inner_aft_outboard_{name}": [a1, side * (inner - 0.1)], f"gear_door_inner_front_outboard_{name}": [tip_f, side * tip_b]})
-		door(f"gear_door_outer_{name}", [[[f0, side * b], [f1, side * b], [f1, side * inner], [f0, side * inner]]], [[f0, side * b], [f1, side * b]],
-			[[d["front"][1][0], d["front"][0][1] - tall, side * b]],
+		inner = d["seam"]
+		# the inner door's two panels and the outer door, closed as the views
+		# from below put them, each turned open about the axis the gear-down
+		# photos fit (layout.gear doors): the forward panel about an axis
+		# inside the skin, skewed to the centreline; the strip aft of it about
+		# its own inboard edge; the outer door about an axis outboard of its edge
+		def plan(points):
+			return [[fs, side * bl] for fs, bl in points]
+
+		def axis_(points):
+			return [[q[0], q[1], side * q[2]] if len(q) == 3 else [q[0], side * q[1]] for q in points]
+
+		def fitted(free):
+			return [([fs, side * bl], [tf, tw, side * tb]) for (fs, bl), (tf, tw, tb) in free]
+
+		e = doors["inner"]["forward"]
+		door(f"gear_door_inner_{name}", [plan(e["outline"])], axis_(e["hinge"]), None, pairs=fitted(e["free"]),
+			corners={f"gear_door_inner_{k}_{name}": [fs, side * bl] for k, (fs, bl) in zip(("front_inboard", "front_outboard", "bend", "aft_outboard", "aft_inboard"), e["outline"])})
+		e = doors["inner"]["strip"]
+		door(f"gear_door_strip_{name}", [plan(e["outline"])], axis_(e["hinge"]), None, pairs=fitted(e["free"]),
+			corners={f"gear_door_strip_{k}_{name}": [fs, side * bl] for k, (fs, bl) in zip(("front_inboard", "front_outboard", "aft_outboard", "aft_inboard"), e["outline"])})
+		door(f"gear_door_outer_{name}", [[[f0, side * b], [f1, side * b], [f1, side * inner], [f0, side * inner]]], axis_(d["axis"]), None, pairs=fitted(d["free"]),
 			corners={f"gear_door_outer_front_outboard_{name}": [f0, side * b], f"gear_door_outer_aft_outboard_{name}": [f1, side * b],
 				f"gear_door_outer_aft_inboard_{name}": [f1, side * inner], f"gear_door_outer_front_inboard_{name}": [f0, side * inner]})
 
 
 def mechanisms():
-	# The arresting hook, the refuelling probe and its door, the speedbrake
-	# and the boarding ladder. Placements are provisional: the hook's pivot is
+	# The arresting hook, the refuelling probe and its door and the
+	# speedbrake. Placements are provisional: the hook's pivot is
 	# located on the reference photo dvids9820808 (FS 641, WL 80); the rest
 	# wait on photos that show them open.
 	# The keel under the centreline (layout.keel): a narrow wedge from where
@@ -3152,8 +3486,9 @@ def mechanisms():
 	rings = [[shell(st, th, 0.15) for th in angles] + [shell(st, th, -0.1) for th in reversed(angles)] for st in stations]
 	a, b = shell(start, lower, 0.15), shell(end, lower, 0.15)
 	node("probe_door", hinge=a, mesh=loft(rings))
+	motion = LAYOUT["motion"]["probe"]["value"]
 	joint("probe_door", b - a, shell((start + end) / 2, upper, 0.15) - shell((start + end) / 2, lower, 0.15), -PORT, "probe",
-		[[0, 0], [0.25, math.radians(80)], [1, math.radians(80)]])
+		[[0, 0], [motion["opening"], math.radians(motion["door"])], [1, math.radians(motion["door"])]])
 	middle = (upper + lower) / 2
 	# its lower corners, the crispest in a photo
 	MARKS["probe_door_front"] = (shell(start, lower, 0.15), "probe_door")
@@ -3163,7 +3498,7 @@ def mechanisms():
 	root, tip = shell(end - 2, middle, -3.5), shell(start + 3, middle, -3.5)
 	PROBE[:] = [tip]
 	node("probe", hinge=root, mesh=merge([cylinder(root, tip, 2.2, 1.9), cylinder(tip, tip + FORWARD * (2 * INCH), 1.9, 1.2)]))
-	joint("probe", UP + PORT * 0.4, FORWARD, -PORT, "probe", [[0, 0], [0.25, 0], [1, math.radians(28)]])
+	joint("probe", UP + PORT * 0.4, FORWARD, -PORT, "probe", [[0, 0], [motion["opening"], 0], [1, math.radians(motion["swing"])]])
 	# Speedbrake: the dorsal panel between the fins, on the spine's skin,
 	# hinged at its forward edge (layout.speedbrake)
 	sb = LAYOUT["speedbrake"]
@@ -3171,41 +3506,6 @@ def mechanisms():
 	skin_tree = built(["fuselage"])
 	node("speedbrake", hinge=draped(skin_tree, front, 0, out=0.15), mesh=cut((front, back), (-half, half)))
 	joint("speedbrake", PORT, AFT, UP, "speedbrake", [[0, 0], [1, math.radians(60)]])
-
-
-def ladder():
-	# The boarding ladder, stowed in its well under the left LEX and rotating
-	# down from its forward beam (NATOPS 2.15.2). The LEX is 2-3 in deep
-	# there, so each rail runs straight on the line that leaves it the most
-	# room between the LEX's lower and upper skins
-	front, length, rails, radius = 300, 92, (-26.0, -38.0), 0.45
-	tree = built(["fuselage", "lex_left"])
-	stations = [front + length * i / 23 for i in range(24)]
-	ends = []
-	for bl in rails:
-		skins = []
-		for st in stations:
-			hits = crossings(tree, at(st, 60, bl), UP)
-			if len(hits) < 2:
-				raise SystemExit(f"ladder: no LEX over BL {bl} at FS {st:.0f}")
-			skins.append((60 + hits[0], 60 + hits[1]))
-		best = None
-		for i in range(61):
-			w0 = skins[0][0] + (skins[0][1] - skins[0][0]) * i / 60
-			for j in range(61):
-				w1 = skins[-1][0] + (skins[-1][1] - skins[-1][0]) * j / 60
-				room = min(min(w - lo, hi - w) for (lo, hi), w in zip(skins, (w0 + (w1 - w0) * k / 23 for k in range(24))))
-				if best is None or room > best[0]:
-					best = (room, w0, w1)
-		if best[0] < radius + 0.1:
-			raise SystemExit(f"ladder: its BL {bl} rail has {best[0]:.2f} in of room in the LEX")
-		ends.append((at(front, best[1], bl), at(front + length, best[2], bl)))
-	(a0, a1), (b0, b1) = ends
-	pieces = [cylinder(a0, a1, radius), cylinder(b0, b1, radius)]
-	pieces += [cylinder(a0.lerp(a1, k * 11 / length), b0.lerp(b1, k * 11 / length), 0.35) for k in range(1, 9)]
-	beam = (a0 + b0) / 2
-	node("ladder", hinge=beam, mesh=merge(pieces))
-	joint("ladder", a0 - b0, AFT, DOWN, "ladder", [[0, 0], [1, math.radians(68)]])
 
 
 def surface_angle(station, waterline, side):
@@ -4970,7 +5270,12 @@ def main():
 		fractions["rudder"] = fin(side)
 	for side in (-1, 1):
 		lex(side, widths)
-	ladder()
+	# the gear's braces, solved for room inside the whole airframe (check.py's
+	# hull: the stowed parts lie inside it)
+	skin = built(["fuselage", "lex_left", "lex_right", "inlet_left", "inlet_right", "wing_inner_left", "wing_inner_right", "canopy", "windscreen", "fin_left", "fin_right"])
+	for brace in BRACES:
+		brace(skin)
+	scoop()
 	lamps()
 	stores()
 	print("chord fractions:", json.dumps(fractions, default=lambda x: round(x, 3)))
@@ -4985,7 +5290,13 @@ def main():
 		paint(Path(out[0]).parent, folder)
 	bpy.ops.export_scene.gltf(filepath=out[0], export_format="GLB", export_yup=True, use_selection=False,
 		export_apply=False, export_animations=False, export_extras=False)
+	# the mechanisms' stroke times and the rudders' toe-in, for the engine
+	# (layout.motion)
+	m = {k: v["value"] for k, v in LAYOUT["motion"].items() if isinstance(v, dict)}
+	motion = {"seconds": {k: m[k]["seconds"] for k in ("canopy", "probe", "bar", "fold", "hook", "scoop")}, "toe": m["toe"], "swing": m["swing"],
+		"canopy": {k: m["canopy"][k] for k in ("unlatch", "fall", "lock")}}   # the closing's own phases: the opening's are its stroke and the slide's share
 	document = {"frame": {"origin": {"station": ORIGIN["station"], "waterline": ORIGIN["waterline"], "buttline": 0}},
+		"motion": motion,
 		"joints": dict(sorted(JOINTS.items())),
 		"points": {**located, "landmarks": {name: exported(point) for name, point in sorted(LANDMARKS.items())}}}
 	Path(out[1]).write_text(json.dumps(document, indent="\t") + "\n")

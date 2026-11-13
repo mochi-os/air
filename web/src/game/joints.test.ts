@@ -211,6 +211,102 @@ describe('the airframe each view draws', () => {
   })
 })
 
+// The hook on a caught wire (engine.ts hook_swing): the shank trails the pull of
+// the pendant's two legs, positive with the claw to starboard (the build's
+// hook_swing sense), and holds within its travel (points file motion.swing).
+describe('the hook on a wire', () => {
+  const swing = (fwd: number[], right: number[], travel = 20) =>
+    new Function('THREE', 'carrier_rig', 'ownship', 'MOTION', 'D2R', '_swing_q', '_swing_fwd', '_swing_right', `${lift('hook_swing')}\nreturn hook_swing`)(
+      THREE, { getWorldQuaternion: (q: THREE.Quaternion) => q.identity() }, { fwd: new THREE.Vector3(...fwd), right: new THREE.Vector3(...right) },
+      { swing: travel }, Math.PI / 180, new THREE.Quaternion(), new THREE.Vector3(), new THREE.Vector3()
+    ) as (ax: number, az: number, bx: number, bz: number) => number
+  const along = swing([1, 0, 0], [0, 0, 1])
+  it('trails straight aft from a jet on the pendant\'s middle', () => {
+    close(along(-30, -15, -30, 15), 0)
+  })
+  it('swings toward the middle from a jet off to one side', () => {
+    // 5 m to starboard, 30 m past the sheaves: the port leg's longer pull
+    // leans the bisector to port
+    const a = Math.hypot(30, 20), b = Math.hypot(30, 10)
+    close(along(-30, -20, -30, 10), -Math.atan2(20 / a - 10 / b, 30 / a + 30 / b))
+    expect(along(-30, -10, -30, 20)).toBeGreaterThan(0)
+  })
+  it('reads the pull in the jet\'s own axes, turned on the deck', () => {
+    const c = Math.cos(0.3), s = Math.sin(0.3)
+    const turned = swing([c, 0, s], [-s, 0, c])
+    const a = [-30 * c + 15 * s, -30 * s - 15 * c], b = [-30 * c - 15 * s, -30 * s + 15 * c]
+    close(turned(a[0], a[1], b[0], b[1]), 0)
+  })
+  it('holds within its travel, and centres with the pull ahead of it', () => {
+    close(along(-3, -40, -3, 1), -20 * Math.PI / 180)
+    close(along(30, -15, 30, 15), 0)
+  })
+})
+
+// The canopy (engine.ts update_anim), as public-domain videos time it: opening
+// a 2.3 s slide aft and a 6.9 s rise at one pace through its drive, the slide
+// the drive's first quarter; closing a 4.5 s fall, then a 2.0 s slide forward
+// to lock.
+describe('the canopy', () => {
+  const lines = /\n\tif\(st\.canopy===undefined\)[^\n]*\n\t\{ const c=MOTION\.canopy[^\n]*\n[^\n]*\n/.exec(engine)?.[0] ?? ''
+  const MOTION = { seconds: { canopy: 9.2 }, canopy: { unlatch: 0.25, fall: 4.5, lock: 2 } }
+  const run = (st: Record<string, number>, seconds: number) => {
+    if (!lines) throw new Error('the canopy lines not found in update_anim')
+    const dt = 1 / 60
+    for (let i = 0; i < Math.round(seconds / dt); i++) new Function('st', 'dt', 'MOTION', 'THREE', lines)(st, dt, MOTION, THREE)
+    return st.canopy
+  }
+  it('opens through its slide in 2.3 s and is up in 9.2', () => {
+    const st = { canopy: 0, canopyTarget: 1 }
+    expect(run(st, 2.3)).toBeCloseTo(0.25, 2)
+    expect(run(st, 6.9)).toBeCloseTo(1, 2)
+  })
+  it('closes its fall in 4.5 s and locks 2.0 s after', () => {
+    const st = { canopy: 1, canopyTarget: 0 }
+    expect(run(st, 4.5)).toBeCloseTo(0.25, 2)
+    expect(run(st, 1)).toBeCloseTo(0.125, 2)
+    expect(run(st, 1)).toBeCloseTo(0, 2)
+  })
+})
+
+// The FCS ram air scoop (engine.ts update_anim, NATOPS 2.16.7): AV COOL
+// EMERG deploys it on the pilot's jet, it cannot be closed in flight, and a
+// plane captain restows it by hand once the jet is stopped on the deck with
+// the switch back at NORM.
+describe('the ram air scoop', () => {
+  const lines = /\n\tif\(st===ownship\)\{ if\(travel_at\("avcool"\)[^\n]*\n\tif\(st\.scoop===undefined\)[^\n]*\n/.exec(engine)?.[0] ?? ''
+  const step = (st: Record<string, unknown>, avcool: number, dt: number, own = true) => {
+    if (!lines) throw new Error('the scoop lines not found in update_anim')
+    const ownship = own ? st : {}
+    new Function('st', 'ownship', 'travel_at', 'dt', 'MOTION', 'THREE', lines)(st, ownship, (name: string) => (name === 'avcool' ? avcool : 0), dt, { seconds: { scoop: 1 } }, THREE)
+    return st.scoop as number
+  }
+  it('deploys on AV COOL EMERG, over its stroke', () => {
+    const st = { squish: 0, speed: 150, scoop: 0 }
+    close(step(st, 1, 0.5), 0.5)
+    close(step(st, 1, 1), 1)
+  })
+  it('stays stowed at NORM, and on another jet', () => {
+    close(step({ squish: 0, speed: 150, scoop: 0 }, 0, 1), 0)
+    close(step({ squish: 1, speed: 0, scoop: 0 }, 1, 1, false), 0)
+  })
+  it('stays out in flight and rolling once deployed, the switch back at NORM', () => {
+    const st = { squish: 0, speed: 150, scoop: 0 }
+    step(st, 1, 1)
+    close(step(st, 0, 1), 1)
+    st.squish = 1
+    st.speed = 5
+    close(step(st, 0, 1), 1)
+  })
+  it('is restowed stopped on the deck at NORM', () => {
+    const st = { squish: 0, speed: 150, scoop: 0 }
+    step(st, 1, 1)
+    st.squish = 1
+    st.speed = 0
+    close(step(st, 0, 0.5), 0.5)
+  })
+})
+
 describe('the lights on our model', () => {
   it('ride the outer panels where they sit on them', () => {
     const lights = (points as unknown as { points: { lights: Record<string, { node?: string }> } }).points.lights

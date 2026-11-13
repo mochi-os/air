@@ -84,6 +84,7 @@ import ford_ship from '../assets/ford.json'   // its ship file, written beside i
 import { layout as ship_layout, lit as ship_lit } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
 import fa18c_points from '../assets/fa18c.json'   // its points file, written beside it by tools/fa18c/build.py: the joints and their schedules, and the points the engine draws
+const MOTION=(fa18c_points as any).motion as { seconds:{ canopy:number, probe:number, bar:number, fold:number, hook:number, scoop:number }, toe:number, swing:number, canopy:{ unlatch:number, fall:number, lock:number } };   // the mechanisms' stroke times, the rudders' toe-in and the hook's sideways travel each way, deg (tools/fa18c facts layout.motion)
 import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the model it replaces: the player's own jet in first person, whose cockpit the engine's cockpit tables are measured on, until our cockpit is built (claude/plans/air-fa18c.md, step 4)
 import fa18c_far_url from '../assets/fa18c-far.glb?url'   // the distant stages (#3): tools/fa18c
 import amraam_model_url from '../assets/aim120c.glb?url'   // our own missiles (tools/missiles), each with its points file: the mount its launcher seats
@@ -1592,16 +1593,16 @@ const AIRCRAFT_MODELS={
 		      { name:"slatLO",    node:"Left_slat_outer_77",   axis:"x", drive:"slat" },
 		      { name:"slatRI",    node:"Right_Slat_inner_300", axis:"x", drive:"slat" },
 		      { name:"slatRO",    node:"Right_Slat_Outer_315", axis:"x", drive:"slat" },
-		      { name:"flapL",     node:"FlapL_12",           axis:"x", sign:-1, drive:"flapL" },   // flap droop percent keys sweep 0..-40° with 0 = 0% droop, so the authored pose IS flush — no base needed (unlike the aileron roll stage, whose keys are roll ±20° around a -20° flush centre)
-		      { name:"flapR",     node:"FlapR_15",           axis:"x", sign:-1, drive:"flapR" },
+		      { name:"flapL",     node:"FlapL_12",           axis:"x", sign:-1, drive:"trailingL" },   // flap droop percent keys sweep 0..-40° with 0 = 0% droop, so the authored pose IS flush — no base needed (unlike the aileron roll stage, whose keys are roll ±20° around a -20° flush centre)
+		      { name:"flapR",     node:"FlapR_15",           axis:"x", sign:-1, drive:"trailingR" },
 		      // Left_Flaperon_74 / Right_Flaperon_312 are the droop stage of the
 		      // aileron chains, not separate surfaces: driving them alongside the
 		      // aileron entries doubles the droop. The aileron entries carry the full
 		      // signal.
-		      { name:"aileronL",  node:"AileronL_69",        axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapL" },   // both ailerons: flush (TE continues the wing; ailerons are faired with flaps up) = -20° local, the centre of each side's 0..±40° roll percent-key sweep — matches the right's silhouette-bisected hand calibration to 0.02°. The authored static poses are asymmetric (left full-up 0°, right full-down -40°), so neither is neutral
-		      { name:"aileronR",  node:"AileronR_309",       axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"flapR" },
-		      { name:"coverL",    node:"l_aileron_percent_key_AN_Cover_65",  axis:"x", sign:-1, max:0, drive:"flapL" },   // aileron shroud covers: separate follower nodes outside the aileron subtrees, seated on the wing at their authored statics and floored there via the node-drive max cap (they ride up with an up-deflected aileron so it never pokes through, and never follow the droop down). The original left plate was a different, smaller ride-on-the-aileron design that leaked a gap at every pose; its mesh was replaced in the GLB by a mirrored copy of the right cover baked closed at the authored static, so both wings now share the validated seated design
-		      { name:"coverR",    node:"r_aileron_percent_key_AN_Cover_302", axis:"x", sign:-1, max:0, drive:"flapR" },
+		      { name:"aileronL",  node:"AileronL_69",        axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"aileronL" },   // both ailerons: flush (TE continues the wing; ailerons are faired with flaps up) = -20° local, the centre of each side's 0..±40° roll percent-key sweep — matches the right's silhouette-bisected hand calibration to 0.02°. The authored static poses are asymmetric (left full-up 0°, right full-down -40°), so neither is neutral
+		      { name:"aileronR",  node:"AileronR_309",       axis:"x", sign:-1, base:[-0.17365,0,0,0.98481], drive:"aileronR" },
+		      { name:"coverL",    node:"l_aileron_percent_key_AN_Cover_65",  axis:"x", sign:-1, max:0, drive:"aileronL" },   // aileron shroud covers: separate follower nodes outside the aileron subtrees, seated on the wing at their authored statics and floored there via the node-drive max cap (they ride up with an up-deflected aileron so it never pokes through, and never follow the droop down). The original left plate was a different, smaller ride-on-the-aileron design that leaked a gap at every pose; its mesh was replaced in the GLB by a mirrored copy of the right cover baked closed at the authored static, so both wings now share the validated seated design
+		      { name:"coverR",    node:"r_aileron_percent_key_AN_Cover_302", axis:"x", sign:-1, max:0, drive:"aileronR" },
 		      { name:"rudderL",  node:"rudder_percent_key_AN_Left_319",  axis:"y", base:[0,0.15471,0,0.98796], sign:-1, toe:-0.5236, min:-0.5236, max:0.5236, drive:"rudder" },   // rudder neutral: trailing-edge-in-fin-plane (PCA fin plane, rotate until the TE's mean plane distance is zero) — sharper than the lateral-extent minimum, which sat ~6° off; re-verified 2026-07-06 (TE residual under 4 mm). toe = the Hornet's rudder toe-in: with the gear down both trailing edges deflect 30° INBOARD (the canted fins turn that into nose-up pitch for takeoff rotation), active with weight on wheels (washing out at liftoff via the squish signal); min/max clamp the sum of toe + yaw command at the ±30° physical throw
 		      { name:"rudderR",  node:"rudder_percent_key_AN_Right_322", axis:"y", base:[0,0.19423,0,0.98096], sign:-1, toe:0.5236, min:-0.5236, max:0.5236, drive:"rudder" },   // sign -1 on both: the core's aero convention is +rudder = nose LEFT (tail pushed right), and these hinges deflect the TEs starboard for +local rotation — so nose-right (negative) commands must show TE-starboard rudders. The toe values are pre-sign, hence flipped
 		      { name:"brake",    track:/^SPOILER_L/i, drive:"speedbrake" },
@@ -1925,8 +1926,8 @@ const D2R=Math.PI/180;
 // fleet: aircraft name -> { proto, rig:[{clip, t0, t1, drive, min, max, flip}] } once loaded.
 const fleet={}; const fleet_loading={};
 let model_active=false;   // the ownship's aircraft model is ready (loading gate)
-const GEAR_RATE=0.5;   // extend/retract speed of the 0..1 visual progress for aircraft the core doesn't fly
-const DROOP=30*D2R;    // PA trailing-edge droop (NATOPS flaps HALF on the ground: TEF 30°, aileron droop 30°) — the rest pose of the flap family for gear-down aircraft the core doesn't fly; the ownship's comes live from the FCS (Droop.Angle in the flight core)
+const GEAR_RATE=0.2;   // extend/retract speed of the 0..1 visual progress for aircraft the core doesn't fly: the core's own 5 s each way on HYD 2 (world flight/events.go)
+const FLAPS={ trailing:30*D2R, aileron:30*D2R };   // the flaps' and the ailerons' droop at HALF (NATOPS 2.8.4.1: 30° each, as on deck) — the rest pose of the flap family for gear-down aircraft the core doesn't fly
 const SLAT_PA=12*D2R;  // parked/gear-down LEF droop for aircraft without FCS data (NATOPS flaps HALF: LEF 12°) — the ownship's comes live from the alpha schedule
 const _NWS=75*D2R;      // nosewheel steering throw, NWS HI's 75° (Gear.Nose.Steer in the flight core); LOW's 16° is the core's Strut.limit
 // model_cut drops the triangles of one mesh lying wholly inside any of its boxes,
@@ -2126,7 +2127,7 @@ function exterior_load_factor(st){
 const _exterior_wheel=new THREE.Vector3(), _exterior_contact=new THREE.Vector3();
 function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 	if(g.userData.player) airframe_show(g);   // the view picks the pilot's airframe
-	const s=st.surfaces, down=1-THREE.MathUtils.clamp(st.gear??1,0,1), toe=30*D2R*(st.squish??0), clamp=THREE.MathUtils.clamp;
+	const s=st.surfaces, down=1-THREE.MathUtils.clamp(st.gear??1,0,1), toe=s&&s.toe!==undefined?s.toe:MOTION.toe*D2R*(st.squish??0), clamp=THREE.MathUtils.clamp;   // the core's toe-in where it flies the jet, its weight-on-the-wheels setting otherwise
 	let hook=clamp(st.hook??0,0,1);
 	if(hook>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8&&st.pos.y<=surf+stance_of(g.userData.hasModel)+0.6) hook=Math.min(hook,x.deck??HOOK_DECK_CAP); }   // the claw rests ON the deck, not through it
 	const own=st===ownship, spool=own?(ownship.spool??0.8):0.8, stage=own?(ownship.stage??0):Math.max(...burners(st));
@@ -2137,20 +2138,22 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 	const value=(drive,name)=>{ switch(drive){
 		case "stabilator.left": return s?s.stabL:0;
 		case "stabilator.right": return s?s.stabR:0;
-		case "flaperon.left": return s&&s.flapL!==undefined?s.flapL:DROOP*down;
-		case "flaperon.right": return s&&s.flapR!==undefined?s.flapR:DROOP*down;
+		case "aileron.left": return s&&s.aileronL!==undefined?s.aileronL:FLAPS.aileron*down;
+		case "aileron.right": return s&&s.aileronR!==undefined?s.aileronR:FLAPS.aileron*down;
+		case "trailing.left": return s&&s.trailingL!==undefined?s.trailingL:FLAPS.trailing*down;
+		case "trailing.right": return s&&s.trailingR!==undefined?s.trailingR:FLAPS.trailing*down;
 		case "slat": return s&&s.slat!==undefined?s.slat:SLAT_PA*down;
-		case "rudder": return clamp((s?s.rudder:0)+(name==="rudder_left"?-toe:toe),-30*D2R,30*D2R);   // toe-in with weight on the wheels: both trailing edges inboard
+		case "rudder": return clamp((s?s.rudder:0)+(name==="rudder_left"?-toe:toe),-30*D2R,30*D2R);   // toe-in: both trailing edges inboard
 		case "speedbrake": return clamp(st.speedbrake??0,0,1);
 		case "fold": return clamp(st.fold??0,0,1);
 		case "gear": return down;
 		case "hook": return hook;
-		case "swing": return 0;
+		case "swing": return own?(ownship.hookSwing??0):0;   // the hook trails the caught wire's pull (update_wire_drag)
 		case "probe": return clamp(st.probe??0,0,1);
 		case "canopy": return clamp(st.canopy??0,0,1);
 		case "bar": return clamp(st.bar??0,0,1);
 		case "nozzle": return 1-open;
-		case "ladder": return 0;
+		case "scoop": return clamp(st.scoop??0,0,1);
 		case "steering": return st.steer??0;
 		case "wheel.nose": return wheel("nose");
 		case "wheel.left": return wheel("left");
@@ -5156,9 +5159,8 @@ function ddi_fcs(x,display){ const o=last_out||[], gz=ownship.gauges||{};
 		if(jammed){ x.strokeStyle=colour?"#ffb04a":"#39e07a"; x.lineWidth=3;
 			x.beginPath(); x.moveTo(xx+10,y-11); x.lineTo(xx+40,y+11); x.moveTo(xx+40,y-11); x.lineTo(xx+10,y+11); x.stroke();
 			x.strokeStyle="#39e07a"; x.lineWidth=2; } };
-	const flap=o[STATE.flap]||0, tef=flap_shown(flap)/D2R, droop=(droop_shown(flap)-flap)/D2R;   // the jet's flap and aileron droop for the core's (flap_shown)
-	const rows=[["LEF",56,deg(STATE.slat),deg(STATE.slat),false,jam(5),jam(5)],["TEF",80,tef,tef,false,false,false],
-		["AIL",128,deg(STATE.flaperon)+droop,deg(STATE.flaperon+1)+droop,false,jam(2),jam(3)],["RUD",152,deg(STATE.rudder),deg(STATE.rudder),true,jam(4),jam(4)],
+	const rows=[["LEF",56,deg(STATE.slat),deg(STATE.slat),false,jam(5),jam(5)],["TEF",80,deg(STATE.trailing),deg(STATE.trailing+1),false,jam(2),jam(3)],
+		["AIL",128,deg(STATE.aileron),deg(STATE.aileron+1),false,jam(2),jam(3)],["RUD",152,deg(STATE.rudder),deg(STATE.rudder),true,jam(4),jam(4)],
 		["STAB",176,deg(STATE.stabilator),deg(STATE.stabilator+1),false,jam(0),jam(1)]];
 	for(const [label,y,L,R,sideways,jamL,jamR] of rows){
 		x.textAlign="center"; x.font="18px monospace"; x.fillText(label,256,y);
@@ -7360,6 +7362,7 @@ function claw_world(out){   // world position of the actual rendered claw, or nu
 	return out.copy(hook_claw.local).applyMatrix4(hook_claw.node.matrixWorld);
 }
 function update_wire_drag(){   // the caught wire deforms into a V, its apex dragged forward by the tailhook; released wires snap back straight
+	ownship.hookSwing=0;
 	if(!carrier_ols) return; const o=carrier_ols, caught=ownship.trapped?ownship.wire:0;
 	for(let i=0;i<o.wires.length;i++) o.wires[i].mesh.visible=(i+1)!==caught;
 	if(!caught){ o.vsegs[0].visible=o.vsegs[1].visible=false; return; }
@@ -7374,7 +7377,21 @@ function update_wire_drag(){   // the caught wire deforms into a V, its apex dra
 	else { hx=ownship.pos.x-ownship.fwd.x*6.5; hz=ownship.pos.z-ownship.fwd.z*6.5; hy=o.dy+0.5; }   // fallback before the model resolves
 	{ const h=rig_local(_wireApex.set(hx,hy,hz)); hx=h.x; hz=h.z; }   // the V hangs on the rig, in the frame the wires were built in
 	seg_between(o.vsegs[0],w.ax,w.az,hx,hz,hy); seg_between(o.vsegs[1],hx,hz,w.bx,w.bz,hy); o.vsegs[0].visible=o.vsegs[1].visible=true;
+	ownship.hookSwing=hook_swing(w.ax-hx,w.az-hz,w.bx-hx,w.bz-hz);
 }
+// The hook's sideways swing on a wire: the shank trails along the pull, which with one tension in both legs is
+// their bisector; its angle off the jet's tail, positive with the claw to starboard (the joint's sense, tools/fa18c
+// build.py hook_swing), within the hook's travel. The legs are given in the rig's frame, where the jet's own axes
+// are carried into it.
+const _swing_q=new THREE.Quaternion(), _swing_fwd=new THREE.Vector3(), _swing_right=new THREE.Vector3();
+function hook_swing(ax,az,bx,bz){
+	const la=Math.hypot(ax,az), lb=Math.hypot(bx,bz); if(la<1e-3||lb<1e-3) return 0;
+	const px=ax/la+bx/lb, pz=az/la+bz/lb;
+	carrier_rig.getWorldQuaternion(_swing_q).invert();
+	_swing_fwd.copy(ownship.fwd).applyQuaternion(_swing_q); _swing_right.copy(ownship.right).applyQuaternion(_swing_q);
+	const aft=-(px*_swing_fwd.x+pz*_swing_fwd.z), across=px*_swing_right.x+pz*_swing_right.z;
+	if(aft<=0) return 0;   // a pull ahead of the hook: the jet rolled back past its wire
+	return THREE.MathUtils.clamp(Math.atan2(across,aft),-MOTION.swing*D2R,MOTION.swing*D2R); }
 function build_aircraft_lights(){   // the position lights (red port, green starboard, white tail), the red anti-collision strobes and the landing light, on the ownship
 	const mk=(color,x,y,z,size)=>{ const g=new THREE.BufferGeometry(); g.setAttribute("position",new THREE.BufferAttribute(new Float32Array([x,y,z]),3));
 		const p=new THREE.Points(g,new THREE.PointsMaterial({size,map:light_dot,color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,sizeAttenuation:true})); p.frustumCulled=false; ownship.group.add(p); return p; };   // aircraft-local: +x nose, +y up, +z starboard
@@ -7626,8 +7643,9 @@ function parked_deck(){ const p=SHIP.parking, h=p.heading*D2R, nose=(AIRCRAFT_MO
 // ac power on (2.14.5). Bleed air from either side pressurises the cockpit on figure 2-37's schedule
 // for aircraft 163092 and up: 2,300 ft below the field on the ground, 8,000 ft from 11,000 to 24,000
 // and a 5 psi differential above; without it the cockpit is at the aircraft's altitude (#14). TEMP,
-// the engine anti-ice switch, PITOT, AV COOL and the windshield anti-ice and rain switch move and act
-// on nothing: the game has no icing and no temperatures.
+// the engine anti-ice switch, PITOT and the windshield anti-ice and rain switch move and act on
+// nothing: the game has no icing and no temperatures. AV COOL's EMERG deploys the FCS ram air scoop
+// (scoopTarget, below), which is all it does here.
 const BLEED=["loff","norm","roff","off"];
 const BLEED_DETENTS=[0,0.3075,0.653,0.92];   // the knob's clip fraction at each position: its 282° sweep eases, and the four sit 90° apart from its authored L OFF
 const ecs={ bleed:1, valves:[true,true], through:false };
@@ -9562,7 +9580,7 @@ function recording_sample(){
 		// switch, the stores, the catapult and the wire, the lights and the deck
 		// states, the achieved spool, the airframe's damage, the seat, and what
 		// the pilot was told - coaching, radio and banners.
-		surfaces:[out[STATE.stabilator]||0,out[STATE.stabilator+1]||0,out[STATE.flaperon]||0,out[STATE.flaperon+1]||0,out[STATE.rudder]||0,out[STATE.slat]||0],
+		surfaces:[out[STATE.stabilator]||0,out[STATE.stabilator+1]||0,out[STATE.aileron]||0,out[STATE.aileron+1]||0,out[STATE.rudder]||0,out[STATE.slat]||0,out[STATE.trailing]||0,out[STATE.trailing+1]||0,out[STATE.toe]||0],
 		master, declutter, stores:JSON.stringify(ownship.loadout||{}), heaters:ownship.msl|0, amraams:Math.max(0,ownship.amraam|0),
 		catapult:core_catapult, stroke:core_stroke, wire:ownship.trapped?(ownship.wire|0):0, waving:!!ownship.waving,
 		lights:!!ownship.lights, bar:bar_switch==="extend", canopy:ownship.canopy??0, fold:ownship.fold??0, probe:ownship.probe??0, spool:ownship.spool??0,
@@ -9585,7 +9603,7 @@ function recording_sample(){
 					ias:bandit_words[STATE.cas]||0, mach:bandit_words[STATE.mach]||0, fuel:bandit_words[STATE.fuel]||0,
 					spool:Math.max(bandit_words[STATE.engine]||0,bandit_words[STATE.engine+2]||0), burner:bandit.reheat||0,   // Afterburner, the name TacView plots — the bandit used to write a Mochi-only Reheat, invisible to every other tool and a silent empty read for anything looking on the standard channel
 					stabilator:(bandit_words[STATE.stabilator]||0)/D2R,
-					surfaces:[bandit_words[STATE.stabilator]||0,bandit_words[STATE.stabilator+1]||0,bandit_words[STATE.flaperon]||0,bandit_words[STATE.flaperon+1]||0,bandit_words[STATE.rudder]||0,bandit_words[STATE.slat]||0],
+					surfaces:[bandit_words[STATE.stabilator]||0,bandit_words[STATE.stabilator+1]||0,bandit_words[STATE.aileron]||0,bandit_words[STATE.aileron+1]||0,bandit_words[STATE.rudder]||0,bandit_words[STATE.slat]||0,bandit_words[STATE.trailing]||0,bandit_words[STATE.trailing+1]||0,bandit_words[STATE.toe]||0],
 					damage:damage_words(bandit_words) }:{}),
 				...(due?bandit_notes():{}) },   // the decision journal (journal.ts), left out of the player's own download: what the arbiter weighed, how wrong its forecasts were, the reflexes that pre-empted it, and the g it asked for on the way to the stick
 			cfg.task==="joust"?(cfg.bandit||"expert"):undefined);   // the tier flown against, on the bandit's own object (shipped): the debrief's context for judging every play it chose. Keyed on the CONFIG, not on bandit_brain — the brain arms lazily on the first core-ready frame, and the first recorded sample must not read as an untiered bandit   // the bandit's gun, on the same channel as mine: without it a debrief cannot tell a bandit that shot and missed from one that never fired (both look identical from the ownship)   // the wasm exports come through flight.ts, never as globals — reading globalThis here left the channel silently empty
@@ -9662,15 +9680,9 @@ const _q=new THREE.Quaternion(), _fwd=new THREE.Vector3(), _up=new THREE.Vector3
 function start_launch(){ launch_flag=true; ownship.trapped=false; ownship.throttle=Math.max(ownship.throttle,0.9); }   // requests the shot; the core fires it while attached to the shuttle (caller gates on launch_status()===2)
 let atc_on=false, atc_alpha=0, atc_seen=0;   // Approach Power Compensator (#202): engaged flag + last-frame alpha for the rate term, and the sim time it was read
 let atc_speed=null, atc_last=0;   // cruise mode's engaged true airspeed, knots (null in approach mode), and last frame's, for the acceleration term
-// TEF_DOWN: the trailing-edge flaps "down 27° or more" (2.1.2.1), as the flight core's angle. The core's flap is
-// a camber model whose FULL is 26° where the jet's is 45° (fa18c.go Droop.Angle), and its HALF two thirds of
-// that, so the jet's 27° is three fifths of the core's FULL: both HALF and FULL are down, a flap in transit not yet.
-const TEF_FULL=26*D2R, TEF_DOWN=TEF_FULL*27/45;
-// What the FCS display writes for that flap (2.8.3): the jet's angle, 45° at FULL and 30° at HALF, which one scale
-// gives. The ailerons droop with the flaps, to 30° at HALF and 42° at FULL: droop_shown is the jet's droop for the
-// core's, and the AIL row adds each aileron's own deflection to it.
-function flap_shown(flap){ return flap*45*D2R/TEF_FULL; }
-function droop_shown(flap){ const half=TEF_FULL*2/3; return flap<=half?flap*30*D2R/half:30*D2R+(flap-half)*12*D2R/(TEF_FULL-half); }
+// TEF_DOWN: the trailing-edge flaps "down 27° or more" (2.1.2.1): both HALF (30°) and FULL (45°) are down, a flap
+// in transit not yet.
+const TEF_DOWN=27*D2R;
 // atc_engage: the mode the ATC button engages (NATOPS 2.1.2): approach with the FLAP switch at HALF or FULL and
 // the trailing-edge flaps down 27° or more (2.1.2.1), cruise with it at AUTO (2.1.2.2); none on the deck.
 function atc_engage(){ if(on_ground()) return null;
@@ -9950,7 +9962,7 @@ if(DEV_MODE) (globalThis as any).dev_playback=()=>{ if(!playback) return null;
 		jet:{ x:+ownship.pos.x.toFixed(1), y:+ownship.pos.y.toFixed(1), z:+ownship.pos.z.toFixed(1), yaw:+((Math.atan2(ownship.fwd.x,-ownship.fwd.z)*180/Math.PI+360)%360).toFixed(1), gear:+(ownship.gear??1).toFixed(2), speed:+(ownship.speed||0).toFixed(1), handle:ownship.gearTarget??1, brake:+(ownship.speedbrake??0).toFixed(2) }, darts:playback_darts, view:cfg.view, held:playback_held, braked:!!playback.tracks.get(playback.own)?.frames.some(f=>playback_number(f.properties,"SpeedBrake",0)>0.5),   // i18n-format-ok: developer telemetry, never shown to a user
 		recorded:at?{ surfaces:at.properties.Surfaces??null, master:at.properties.Master??null, stores:at.properties.Stores??null, heaters:at.properties.Heaters??null, lights:at.properties.Lights??null, canopy:at.properties.Canopy??null, catapult:at.properties.Catapult??null, wire:at.properties.Wire??null, spool:at.properties.Spool??null, stick:at.properties.Stick??null, coach:at.properties.Coach??null, damage:at.properties.Damage??null, beta:at.properties.Beta??null, yawrate:at.properties.YawRate??null }:null, messages:(playback.tracks.get(playback.own)?.frames||[]).filter(f=>f.properties.Radio!==undefined||f.properties.Notice!==undefined).length,
 		effects:{ sparks:_spark_count, bursts:spawn_report.burst, flares:flares.activeList.length }, expect:(playback_expect??=playback_expected()),
-		drawn:{ surfaces:ownship.surfaces?[ownship.surfaces.stabL,ownship.surfaces.stabR,ownship.surfaces.flapL,ownship.surfaces.flapR,ownship.surfaces.rudder,ownship.surfaces.slat].map(r=>Math.round(r/D2R)).join("|"):null, master, declutter, stores:JSON.stringify(ownship.loadout||{}), heaters:ownship.msl|0, lights:!!ownship.lights, canopy:+(ownship.canopy??0).toFixed(2), catapult:core_catapult, launching:!!ownship.launching, wire:ownship.trapped?ownship.wire:0, spool:+(ownship.spool??0).toFixed(2), stick:last_controls?+last_controls.pitch.toFixed(3):null, hints:hint_rows?[...hint_rows]:null, comms:comms.map(c=>c.text), banner:net_notice_t>0?net_notice:"", fate:ownship.fate??null, crashed:crash_t>0, heard:playback_heard, damage:last_out?damage_words(last_out).join("|"):null, beta:last_out?(last_out[STATE.beta]||0)/D2R:null, yawrate:last_out?-(last_out[STATE.omega+1]||0)/D2R:null } }; };   // i18n-format-ok: developer telemetry, never shown to a user. dev: the replay's clock, where the recording has the jet and where it is drawn
+		drawn:{ surfaces:ownship.surfaces?[ownship.surfaces.stabL,ownship.surfaces.stabR,ownship.surfaces.aileronL,ownship.surfaces.aileronR,ownship.surfaces.rudder,ownship.surfaces.slat,ownship.surfaces.trailingL,ownship.surfaces.trailingR,ownship.surfaces.toe].map(r=>Math.round(r/D2R)).join("|"):null, master, declutter, stores:JSON.stringify(ownship.loadout||{}), heaters:ownship.msl|0, lights:!!ownship.lights, canopy:+(ownship.canopy??0).toFixed(2), catapult:core_catapult, launching:!!ownship.launching, wire:ownship.trapped?ownship.wire:0, spool:+(ownship.spool??0).toFixed(2), stick:last_controls?+last_controls.pitch.toFixed(3):null, hints:hint_rows?[...hint_rows]:null, comms:comms.map(c=>c.text), banner:net_notice_t>0?net_notice:"", fate:ownship.fate??null, crashed:crash_t>0, heard:playback_heard, damage:last_out?damage_words(last_out).join("|"):null, beta:last_out?(last_out[STATE.beta]||0)/D2R:null, yawrate:last_out?-(last_out[STATE.omega+1]||0)/D2R:null } }; };   // i18n-format-ok: developer telemetry, never shown to a user. dev: the replay's clock, where the recording has the jet and where it is drawn
 // playback_expected counts, for the developer hook, what a recording should
 // make a replay draw: the hits taken, the flares dispensed, the missiles that
 // fused, and how the pilot's own jet ended.
@@ -10759,9 +10771,13 @@ function playback_change(pose,channel){ const now=playback_number(pose.propertie
 	const key=pose.id+":"+channel, before=playback_counts.get(key); playback_counts.set(key,now);
 	return before===undefined?0:now-before; }
 // playback_surfaces reads the recorded control surfaces (degrees) into the
-// rig's shape, radians; null for a recording without them.
+// rig's shape, radians; null for a recording without them. Recordings before
+// the flaps and ailerons were told apart carry six, one angle for both
+// surfaces of a side and no toe-in.
 function playback_surfaces(p){ const v=(p.Surfaces||"").split("|").map(Number);
-	return v.length===6&&v.every(Number.isFinite)?{ stabL:v[0]*D2R, stabR:v[1]*D2R, flapL:v[2]*D2R, flapR:v[3]*D2R, rudder:v[4]*D2R, slat:v[5]*D2R }:null; }
+	if(!(v.length===6||v.length===9)||!v.every(Number.isFinite)) return null;
+	const r=v.map(d=>d*D2R), split=v.length===9;
+	return { stabL:r[0], stabR:r[1], aileronL:r[2], aileronR:r[3], rudder:r[4], slat:r[5], trailingL:split?r[6]:r[2], trailingR:split?r[7]:r[3], toe:split?r[8]:undefined }; }
 // playback_damage writes the recorded damage into core words: the element
 // losses the shed panels read, the gear struts and the jammed channels.
 function playback_damage(p,words){ const v=(p.Damage||"").split("|").map(Number); if(v.length!==51||!v.every(Number.isFinite)) return false;
@@ -10835,7 +10851,7 @@ function playback_own(pose,dt){
 	o[STATE.extension]=1-n("Gear",1);   // Gear is the retraction fraction, 0 down
 	o[STATE.speedbrake]=n("SpeedBrake",0);   // the board, where the recording has it (recordings before it was written show it stowed)
 	const surfaces=playback_surfaces(p);
-	if(surfaces){ o[STATE.stabilator]=surfaces.stabL; o[STATE.stabilator+1]=surfaces.stabR; o[STATE.flaperon]=surfaces.flapL; o[STATE.flaperon+1]=surfaces.flapR; o[STATE.rudder]=surfaces.rudder; o[STATE.slat]=surfaces.slat; }
+	if(surfaces){ o[STATE.stabilator]=surfaces.stabL; o[STATE.stabilator+1]=surfaces.stabR; o[STATE.aileron]=surfaces.aileronL; o[STATE.aileron+1]=surfaces.aileronR; o[STATE.trailing]=surfaces.trailingL; o[STATE.trailing+1]=surfaces.trailingR; o[STATE.toe]=surfaces.toe??0; o[STATE.rudder]=surfaces.rudder; o[STATE.slat]=surfaces.slat; }
 	playback_damage(p,o);
 	o[STATE.catapult]=n("Catapult",-1); o[STATE.stroke]=n("Stroke",-1); o[STATE.wire]=-1; o[STATE.contact]=-1;   // the shot through the core's own words, so the shuttle runs; the wire below, not through sync_core's trap
 	const ground=ground_height(pose.x,pose.z); o[STATE.wow]=(ground>-1e9&&pose.y-ground<3)?1:0;   // on its wheels: the CG rides about 2.6 m over them
@@ -11044,7 +11060,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.reheat=Math.max(out[STATE.engine+1],out[STATE.engine+3]);   // the plume as the engines make it, the one the bandit's brain reads through its mirror to decide a heater shot: the lever leaves burner at once, the flame takes a second to die, and the light zones round the lever up
 	ownship.spools=[out[STATE.engine]*(1-Math.min(1,out[STATE.engine_harm]||0)), out[STATE.engine+2]*(1-Math.min(1,out[STATE.engine_harm+1]||0))];   // per-engine achieved power, health-weighted: a contrail follows a running engine
 	ownship.gear=1-out[STATE.extension]; ownship.speedbrake=out[STATE.speedbrake];
-	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], flapL:out[STATE.flaperon], flapR:out[STATE.flaperon+1], rudder:out[STATE.rudder], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
+	ownship.surfaces={ stabL:out[STATE.stabilator], stabR:out[STATE.stabilator+1], aileronL:out[STATE.aileron], aileronR:out[STATE.aileron+1], trailingL:out[STATE.trailing], trailingR:out[STATE.trailing+1], rudder:out[STATE.rudder], toe:out[STATE.toe], slat:out[STATE.slat] };   // live FCS deflections, rad — the rig scrubs surfaces from these
 	if(presenting) update_gauges(out);   // cockpit instruments (#99): drawn, so once a frame; its panel systems step over the core's elapsed time
 	recording_sample();
 	if(presenting) screens_update();   // the displays are drawn once a frame: the radar page redrew and re-uploaded on every call
@@ -11520,9 +11536,10 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 	for(const r of g.userData.rig){
 		if(r.object){ const surfaces=st.surfaces;
 			let v=r.gauge!==undefined ? ((st.gauges&&st.gauges[r.gauge])||0) : ((surfaces&&surfaces[r.drive]!==undefined)?surfaces[r.drive]:0);   // gauges (#99, ownship only) read the instrument channel; no FCS data (remotes): neutral, NOT the GLB rest pose (the C's right stab rests at -50°)
-			if((!surfaces||surfaces[r.drive]===undefined)&&(r.drive==="flapL"||r.drive==="flapR")) v=DROOP*(1-THREE.MathUtils.clamp(st.gear??1,0,1));
+			if((!surfaces||surfaces[r.drive]===undefined)&&(r.drive==="trailingL"||r.drive==="trailingR")) v=FLAPS.trailing*(1-THREE.MathUtils.clamp(st.gear??1,0,1));
+			if((!surfaces||surfaces[r.drive]===undefined)&&(r.drive==="aileronL"||r.drive==="aileronR")) v=FLAPS.aileron*(1-THREE.MathUtils.clamp(st.gear??1,0,1));
 			if((!surfaces||surfaces[r.drive]===undefined)&&r.drive==="slat") v=SLAT_PA*(1-THREE.MathUtils.clamp(st.gear??1,0,1));   // ...except the trailing-edge flap family: gear down = the PA configuration, drooped 30° (NATOPS flaps HALF on deck), scaled by the drawn gear travel — matching what the FCS commands for the ownship
-			if(r.toe) v+=r.toe*(st.squish??0);   // rudder toe-in is a WEIGHT-ON-WHEELS aid: full during the takeoff roll, washing out at liftoff (squish = the smoothed ground-contact signal the oleo squat already uses) — NOT gear-scheduled; a climbing or approaching jet with gear down flies with straight rudders
+			if(r.toe) v+=surfaces&&surfaces.toe!==undefined?Math.sign(r.toe)*surfaces.toe:r.toe*(st.squish??0);   // rudder toe-in is a WEIGHT-ON-WHEELS aid: full during the takeoff roll, washing out at liftoff (squish = the smoothed ground-contact signal the oleo squat already uses) — NOT gear-scheduled; a climbing or approaching jet with gear down flies with straight rudders
 			if(r.max!==undefined&&v>r.max) v=r.max;   // node-driven caps (one-sided followers like the shroud covers, and the rudders' ±30° throw around the toe)
 			if(r.min!==undefined&&v<r.min) v=r.min;
 			v*=(r.gain??1);   // instrument throw scaling (#99): track-derived physical throws
@@ -11684,15 +11701,19 @@ function update_anim(dt){ const jets=[ownship,bandit];
 	st.squish=(st.squish??0)+THREE.MathUtils.clamp(settled-(st.squish??0),-3*dt,3*dt);
 	if(!owned){ if(st.gear===undefined) st.gear=st.gearTarget??1; st.gear=ease_to(st.gear,st.gearTarget??1,dt);
 		if(st.speedbrake===undefined) st.speedbrake=st.speedbrakeTarget??0; st.speedbrake+=THREE.MathUtils.clamp((st.speedbrakeTarget??0)-st.speedbrake,-0.4*dt,0.4*dt); }   // air-brake ease at the actuator's 2.5 s travel for the aircraft the core doesn't fly
-	if(st.hook===undefined) st.hook=st.hookTarget??0; st.hook=ease_to(st.hook,st.hookTarget??0,dt);
-	if(st.probe===undefined) st.probe=st.probeTarget??0; st.probe+=THREE.MathUtils.clamp((st.probeTarget??0)-st.probe,-0.2*dt,0.2*dt);   // refueling probe: ~5 s hydraulic stroke
+	if(st.hook===undefined) st.hook=st.hookTarget??0; st.hook+=THREE.MathUtils.clamp((st.hookTarget??0)-st.hook,-dt/MOTION.seconds.hook,dt/MOTION.seconds.hook);   // the hook's stroke
+	if(st.probe===undefined) st.probe=st.probeTarget??0; st.probe+=THREE.MathUtils.clamp((st.probeTarget??0)-st.probe,-dt/MOTION.seconds.probe,dt/MOTION.seconds.probe);   // refueling probe: its hydraulic stroke
 	if(st===ownship && (st.canopyTarget??0)>0.5 && st.speed>13) st.canopyTarget=0;   // the takeoff roll closes an open canopy before the airflow does it destructively
-	if(st.canopy===undefined) st.canopy=st.canopyTarget??0; st.canopy+=THREE.MathUtils.clamp((st.canopyTarget??0)-st.canopy,-0.167*dt,0.167*dt);   // ~6 s canopy stroke
+	if(st.canopy===undefined) st.canopy=st.canopyTarget??0;
+	{ const c=MOTION.canopy, rate=(st.canopyTarget??0)>=st.canopy?1/MOTION.seconds.canopy:st.canopy>c.unlatch?(1-c.unlatch)/c.fall:c.unlatch/c.lock;   // the canopy's stroke as the videos time it: opening its slide aft and its rise at one pace, closing its fall and its slide forward to lock each at its own
+	  st.canopy+=THREE.MathUtils.clamp((st.canopyTarget??0)-st.canopy,-dt*rate,dt*rate); }
 	if(st===ownship && (fold_handle==="fold"||fold_handle==="hold") && st.speed>13) fold_set("spread");   // rolling for takeoff spreads folded wings before the airflow rips them...
 	if(st===ownship && fold_handle==="spread" && (st.fold??0)<=0.001 && st.speed>13) fold_handle="lock";   // ...and locks them once spread
-	if(st.fold===undefined) st.fold=st.foldTarget??0; st.fold+=THREE.MathUtils.clamp((st.foldTarget??0)-st.fold,-0.125*dt,0.125*dt);   // ~8 s fold cycle
+	if(st.fold===undefined) st.fold=st.foldTarget??0; st.fold+=THREE.MathUtils.clamp((st.foldTarget??0)-st.fold,-dt/MOTION.seconds.fold,dt/MOTION.seconds.fold);   // the fold's cycle
 	if(st===ownship) st.barTarget=(st.launching || ((st.squish??0)>0.5 && bar_switch==="extend"))?1:0;   // the LAUNCH BAR switch lowers the bar with weight on the wheels; the shuttle holds it down through the stroke, and its springs raise it as the jet flies off — the real bar's retraction IS automatic
-	if(st.bar===undefined) st.bar=st.barTarget??0; st.bar+=THREE.MathUtils.clamp((st.barTarget??0)-st.bar,-0.8*dt,0.8*dt);   // ~1.3 s swing
+	if(st.bar===undefined) st.bar=st.barTarget??0; st.bar+=THREE.MathUtils.clamp((st.barTarget??0)-st.bar,-dt/MOTION.seconds.bar,dt/MOTION.seconds.bar);   // the launch bar's swing
+	if(st===ownship){ if(travel_at("avcool")===1) st.scoopTarget=1; else if((st.squish??0)>0.5&&(st.speed??0)<1) st.scoopTarget=0; }   // the FCS ram air scoop (NATOPS 2.16.7): AV COOL EMERG opens it and it cannot be closed in flight; stopped on the deck with the switch back at NORM, a plane captain restows it by hand (Before Taxi step 16)
+	if(st.scoop===undefined) st.scoop=st.scoopTarget??0; st.scoop+=THREE.MathUtils.clamp((st.scoopTarget??0)-st.scoop,-dt/MOTION.seconds.scoop,dt/MOTION.seconds.scoop);
 	if(st===ownship&&steering<0){ const sp=Math.max(st.speed||0,0.3), rate=(ownship.gauges||{}).yaw||0;   // steering off (#36): the nosewheel castors, trailing the path its leg travels 5.4 m ahead of the mains
 		const target=THREE.MathUtils.clamp(Math.atan2(rate*5.4,sp),-_NWS,_NWS)*(st.squish??0);
 		st.steer=(st.steer??0)+THREE.MathUtils.clamp(target-(st.steer??0),-1.5*dt,1.5*dt); }

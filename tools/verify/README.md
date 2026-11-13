@@ -302,6 +302,32 @@ sketch to several inches. Say which in the facts table.
 
 What went wrong on the F/A-18C, each a rule now:
 
+- **A coordinate along the sight line is loose, however many rays.** The F/A-18C's outer main gear door,
+  triangulated open from front-quarter and head-on photos (6 rays over 55 degrees), put its front edge at FS 505;
+  cast closed onto the skin from three views from below it reads FS 498-502, and the steepest of them moves only
+  0.3 in per inch of skin height. In views from ahead a station lies along the sight line: the two candidates
+  were 8-15 px apart. Take each coordinate from the views that fix it, and check how far a cast moves per inch
+  of the surface it lands on before trusting it.
+- **A surface no view's outline crosses is unchecked, however good the drawing it came from.** The F/A-18C's
+  belly between its nacelles came from a fit to a wind-tunnel model's views, which no side view and no outline
+  from below can see: it was hollowed 6-8 in too deep for months. Features on it (drains, a grille, holes, a
+  pin) triangulated between views from ahead-below and behind-below (75-90 degrees apart) put it nearly flat,
+  level with the doors beside it. List the surfaces that never reach an outline, and mark points on them.
+- **A cast lands on the model's surface, so a wrong surface makes a wrong cast agree with itself.** Casts of
+  the inner gear doors' corners onto the build sat on its hollow at WL 85; triangulated, the same corners read
+  WL 75.5. When casts from views close together disagree with a wide-angle triangulation, believe the
+  triangulation and suspect the surface.
+- **A stowed pose fitted inside a hull alone can sit anywhere inside it.** The hull is a shell: the F/A-18C's
+  signed-off stowed wheels sat at WL 100-117 by the engine faces, where the intake ducts are, and a search for
+  the most room folded the legs up into the fuselage's middle. Bound the search by the bay's own walls and
+  ceiling, and say which of them no source gives.
+- **Name a mechanism's members from an engineering source, then place each one in the photos.** A thesis
+  and the parts catalogue settled that the F/A-18C's main leg swings without turning about its post, and that
+  only the axle turns, driven by a rigid connecting link: the stowed pose solved with a twisted leg was wrong.
+  But taking the photographed "side brace" for that link was wrong too: marked across five photos, it climbs
+  inboard into the bay as the side brace does, and the link is a separate tube 5 in outboard of the post.
+  Match each photographed member to the source's by where it runs, not by its look.
+
 - **Cut each photo's ray at the part before trusting a triangulated end.** The F/A-18C's wingtip LAU-7 read
   113 in long against its cited 110 because one camera, at its frame's edge, put the front 6 in forward of six
   others and pulled the solution with it; the leave-one-out spread showed it, and so did each photo's ray cut at

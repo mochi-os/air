@@ -115,7 +115,7 @@ const K = {
   attitude: 0.5, // g per degree the nose is off the attitude held
   rate: 0.1, // g per degree a second of pitch rate
   trim: 0.03, // stick a second per degree the nose is off
-  approach: { path: 0.05, damp: 0.08, learn: 0.01, leak: 15, attitude: 0.06, rate: 1 }, // the same loops through the powered approach law's stick
+  approach: { path: 0.07, damp: 0.08, learn: 0.01, leak: 15, attitude: 0.06, rate: 1 }, // the same loops through the powered approach law's stick; path 0.05 until the core flew the real flaps (2026-11-12), when RALT through a 30° turn climbed 12 m and the ACL approach met the wires 1.4 m high
 }
 
 export function fresh(): Autopilot {

@@ -175,10 +175,10 @@ class ShapeTest(unittest.TestCase):
 		# just outside each face in turn
 		outside = np.array([[399, 110, 0], [501, 110, 0], [450, 99, 0], [450, 121, 0], [450, 110, -11], [450, 110, 11]], float)
 		self.assertFalse(check.enclosed(outside, self.HULL).any())
-		# a point under a lid with nothing beneath it: the stowed ladder beneath the LEX
+		# a point under a lid with nothing beneath it
 		lid = triangles((400, 120, -10), (500, 121, 10))
 		self.assertFalse(check.enclosed(np.array([[450, 110, 0]], float), lid).any())
-		# inside walls open below (the LEX over its ladder well): every way but down meets the hull
+		# inside walls open below: every way but down meets the hull
 		open_below = np.delete(self.HULL, [4, 5], axis=0)
 		self.assertFalse(check.enclosed(np.array([[450, 110, 0]], float), open_below).any())
 		# inside a tube open at its ends: along it nothing at all is met
@@ -542,7 +542,7 @@ class TipsTest(unittest.TestCase):
 		# an aileron hinged at FS 540 on the tip's trailing corner, the fixed wing's leading corner ahead
 		hinge = np.array(at(540, 105, 0))
 		self.leading = at(500, 105, 224.5)
-		self.joints = {"aileron_right": {"motion": "rotate", "axis": [0, 0, 1], "drive": "flaperon.right", "keys": [[0, 0], [1, 1]]}}
+		self.joints = {"aileron_right": {"motion": "rotate", "axis": [0, 0, 1], "drive": "aileron.right", "keys": [[0, 0], [1, 1]]}}
 		glb(root / "m.glb", [{"name": "wing_right", "mesh": box(at(560, 103, 54.5), at(480, 108, 224.5))},
 			{"name": "aileron_right", "translation": tuple(hinge), "mesh": box(np.array(at(560, 104, 180)) - hinge, np.array(at(540, 106, 224.5)) - hinge)}])
 		landmarks = {n: {"at": p, "node": "wing_right"} for n, p in self.corners.items()}
@@ -602,14 +602,14 @@ class TipsTest(unittest.TestCase):
 		features = ph.Features(self.model, self.joints, self.root / "hinged.json")
 		marks = {}
 		for name in ("wingtip_leading_right", "wingtip_trailing_right"):
-			point = features.landmark(name, {"flaperon.right": 0.2}) + np.array([0, 0.0254, 0]) * 3.0
+			point = features.landmark(name, {"aileron.right": 0.2}) + np.array([0, 0.0254, 0]) * 3.0
 			marks[name] = list(self.cam.project(self.camera, point[None], np.array(self.size, float) / 2)[0][0])
 		catalogue = {"frame": self.frame, "photos": {"p": {"marks": marks}}}
 		tips = self.tips.Tips(catalogue, [{"photo": "p", "size": list(self.size), "camera": list(self.camera)}], self.model, self.joints, features)
 		kind = {"marks": ["wingtip_leading_right", "wingtip_trailing_right"], "span": self.SPAN}
 		offset, deflections, _ = tips.fit(kind)
 		self.assertAlmostEqual(offset, 3.0, places=2)
-		self.assertAlmostEqual(deflections[("p", "flaperon.right")], 0.2, places=3)
+		self.assertAlmostEqual(deflections[("p", "aileron.right")], 0.2, places=3)
 		# held neutral, the deflection has nowhere to go but the raise
 		offset, deflections, misses = tips.fit(kind, neutral=True)
 		self.assertEqual(deflections, {})

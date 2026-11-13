@@ -115,12 +115,14 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   the throat, and the paint gives the flaps bare metal outside, the divergent flaps' cooling holes and a dark
   ring of brackets at the exit (`layout.paint.nozzle`). Flush panels (the speedbrake, the gear doors) are
   cut from the fuselage's own built skin (`cut()`, between stations and buttlines or inside a convex plan
-  outline) and offset off every facet; parts that stow inside it (the gear, the ladder in the LEX) are placed
+  outline) and offset off every facet; parts that stow inside it (the gear) are placed
   by ray casts on the built parts (`built()`). The gear stands where the photos put it (`layout.gear` legs and
   doors): each main leg a post down to a trailing arm's pivot, the arm carrying the wheel (its turn about the
-  pivot the leg's compression), a side brace and a shock absorber; the nose leg a vertical post, the piston
-  and the trailing axle, a drag brace and the launch bar raised, with the landing lamp and the approach lights' box on the post's front. The braces fold as the gear retracts, which
-  one rigid part cannot, so they are shown only with the gear down (a "show" joint). Each door, hinged on the
+  pivot the leg's compression), a shock absorber, a side brace folding at a knee and the planing mechanism's
+  connecting link and bell crank; the leg swings aft about one trunnion axis, its shock drawn in and its axle
+  turned a quarter so the wheel lies flat in the bay (`layout.motion.stowed`, `main_members()`). The nose leg is a
+  vertical post, the piston and the trailing axle, a telescopic drag brace and the launch bar raised, with the
+  landing lamp and the approach lights' box on the post's front. Each door, hinged on the
   skin, opens by the angle that brings its free edge's ends nearest the photos', and closes as long along the
   skin as the photos show it open. The third
   output, the features file, names points and curves on the model with the node each rides on, for the photo
