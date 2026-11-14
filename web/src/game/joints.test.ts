@@ -214,12 +214,16 @@ describe('the airframe each view draws', () => {
 // The hook on a caught wire (engine.ts hook_swing): the shank trails the pull of
 // the pendant's two legs, positive with the claw to starboard (the build's
 // hook_swing sense), and holds within its travel (points file motion.swing).
+// Every jet's hook reads its own axes: another player's as well as the pilot's.
 describe('the hook on a wire', () => {
-  const swing = (fwd: number[], right: number[], travel = 20) =>
-    new Function('THREE', 'carrier_rig', 'ownship', 'MOTION', 'D2R', '_swing_q', '_swing_fwd', '_swing_right', `${lift('hook_swing')}\nreturn hook_swing`)(
-      THREE, { getWorldQuaternion: (q: THREE.Quaternion) => q.identity() }, { fwd: new THREE.Vector3(...fwd), right: new THREE.Vector3(...right) },
+  const swing = (fwd: number[], right: number[], travel = 20) => {
+    const run = new Function('THREE', 'carrier_rig', 'MOTION', 'D2R', '_swing_q', '_swing_fwd', '_swing_right', `${lift('hook_swing')}\nreturn hook_swing`)(
+      THREE, { getWorldQuaternion: (q: THREE.Quaternion) => q.identity() },
       { swing: travel }, Math.PI / 180, new THREE.Quaternion(), new THREE.Vector3(), new THREE.Vector3()
-    ) as (ax: number, az: number, bx: number, bz: number) => number
+    ) as (st: unknown, ax: number, az: number, bx: number, bz: number) => number
+    const st = { fwd: new THREE.Vector3(...fwd), right: new THREE.Vector3(...right) }
+    return (ax: number, az: number, bx: number, bz: number) => run(st, ax, az, bx, bz)
+  }
   const along = swing([1, 0, 0], [0, 0, 1])
   it('trails straight aft from a jet on the pendant\'s middle', () => {
     close(along(-30, -15, -30, 15), 0)
@@ -240,6 +244,111 @@ describe('the hook on a wire', () => {
   it('holds within its travel, and centres with the pull ahead of it', () => {
     close(along(-3, -40, -3, 1), -20 * Math.PI / 180)
     close(along(30, -15, 30, 15), 0)
+  })
+})
+
+// The wire each jet's hook holds (engine.ts wire_holders): the pilot's own from
+// his core while trapped, every other jet's from its pose record, each counted
+// from 1. The first claim on a wire wins, the pilot's own first.
+describe('the jets holding the wires', () => {
+  const ownship = { trapped: true, wire: 2 }
+  const holders = new Function('ownship', `${lift('wire_holders')}\nreturn wire_holders`)(ownship) as (jets: unknown[], count: number) => unknown[]
+  it('gives each wire the jet whose hook holds it', () => {
+    const other = { wire: 3 }, free = { wire: 0 }
+    expect(holders([ownship, free, other], 3)).toEqual([null, ownship, other])
+  })
+  it('leaves the pilot\'s own last wire once he is off it', () => {
+    const own = { trapped: false, wire: 2 }
+    const run = new Function('ownship', `${lift('wire_holders')}\nreturn wire_holders`)(own) as (jets: unknown[], count: number) => unknown[]
+    expect(run([own], 3)).toEqual([null, null, null])
+  })
+  it('keeps the first claim on a wire, and ignores a wire the ship lacks', () => {
+    const late = { wire: 2 }, beyond = { wire: 4 }
+    expect(holders([ownship, late, beyond], 3)).toEqual([null, ownship, null])
+  })
+})
+
+// Every caught wire drawn (engine.ts update_wire_drag): each wire a hook holds,
+// the pilot's own or another player's, is dragged into a V under that jet's
+// claw and his hook's pull taken from it; a free wire stays straight, every
+// other jet's pull falls to centre, and a jet not drawn has its hook centred.
+describe('the wires the hooks hold', () => {
+  const D2R = Math.PI / 180
+  const mesh = () => new THREE.Object3D()
+  type Jet = { pos: THREE.Vector3; fwd: THREE.Vector3; right: THREE.Vector3; group: { visible: boolean; updateMatrixWorld(): void }; pull?: number; swing?: number; wire?: number; trapped?: boolean }
+  const jet = (x: number, z: number, extra: Partial<Jet> = {}): Jet => ({
+    pos: new THREE.Vector3(x, 0, z), fwd: new THREE.Vector3(1, 0, 0), right: new THREE.Vector3(0, 0, 1),
+    group: { visible: true, updateMatrixWorld() {} }, ...extra,
+  })
+  const run = (ownship: Jet, remotes: Map<number, Jet>) => {
+    const wires = [0, 1, 2].map((i) => ({ ax: -10 * i, az: -15, bx: -10 * i, bz: 15, mesh: { visible: true }, vsegs: [mesh(), mesh()] }))
+    const carrier = { wires, dy: 0 }
+    const update = new Function('THREE', 'ownship', 'remotes', 'carrier_ols', 'claw_world', 'rig_local', '_wireApex', 'carrier_rig', 'MOTION', 'D2R', '_swing_q', '_swing_fwd', '_swing_right',
+      `${lift('seg_between')}\n${lift('wire_holders')}\n${lift('hook_swing')}\n${lift('update_wire_drag')}\nreturn update_wire_drag`)(
+      THREE, ownship, remotes, carrier,
+      (st: { pos: THREE.Vector3 }, out: THREE.Vector3) => out.set(st.pos.x - 6, 0, st.pos.z),   // the claw 6 m aft of each jet
+      (v: THREE.Vector3) => v, new THREE.Vector3(), { getWorldQuaternion: (q: THREE.Quaternion) => q.identity() },
+      { swing: 20 }, D2R, new THREE.Quaternion(), new THREE.Vector3(), new THREE.Vector3()
+    ) as () => void
+    update()
+    return wires
+  }
+  it('drags each held wire into a V under the jet holding it, and leaves a free one straight', () => {
+    const own = jet(30, 0, { trapped: true, wire: 1 })
+    const other = jet(40, 4, { wire: 3 })
+    const wires = run(own, new Map([[5, other]]))
+    expect(wires.map((w) => w.mesh.visible)).toEqual([false, true, false])
+    expect(wires.map((w) => w.vsegs[0].visible && w.vsegs[1].visible)).toEqual([true, false, true])
+    // the V's apex lies under each holder's claw: the legs meet there
+    expect(wires[2].vsegs[0].position.x).toBeCloseTo((-20 + 34) / 2, 6)
+  })
+  it('swings each holder\'s hook to its own wire\'s pull and centres every other jet', () => {
+    const own = jet(30, 0, { trapped: true, wire: 1 })
+    const other = jet(40, 4, { wire: 3 })   // 4 m to starboard of the pendant's middle
+    const idle = jet(50, 0, { wire: 0, pull: 0.3 })
+    run(own, new Map([[5, other], [6, idle]]))
+    expect(own.pull).toBeCloseTo(0, 6)   // on the middle: straight aft
+    expect(other.pull!).toBeLessThan(0)   // the port leg's longer pull leans it to port
+    expect(idle.pull).toBe(0)
+  })
+  it('centres the hook of a jet not drawn, and gives it no wire', () => {
+    const own = jet(30, 0, { trapped: false, wire: 0 })
+    const gone = jet(40, 0, { wire: 2, pull: 0.2, swing: 0.3 })
+    gone.group.visible = false
+    const wires = run(own, new Map([[5, gone]]))
+    expect(wires.map((w) => w.mesh.visible)).toEqual([true, true, true])
+    expect(gone.pull).toBe(0)
+    expect(gone.swing).toBe(0)
+  })
+})
+
+// The hook's sideways swing (engine.ts update_anim): its liquid spring damps it
+// toward the pull of the wire it holds and back to centre once the wire lets
+// go, at the points file's rate, the travel each way in motion.seconds.swing.
+describe('the hook\'s swing', () => {
+  const line = /\n\t\{ const rate=MOTION\.swing\*D2R\/MOTION\.seconds\.swing[^\n]*\n/.exec(engine)?.[0] ?? ''
+  const MOTION = (points as unknown as { motion: { swing: number; seconds: { swing: number } } }).motion
+  const D2R = Math.PI / 180
+  const run = (st: Record<string, number>, seconds: number) => {
+    if (!line) throw new Error('the swing line not found in update_anim')
+    const dt = 1 / 60
+    for (let i = 0; i < Math.round(seconds / dt); i++) new Function('st', 'dt', 'MOTION', 'D2R', 'THREE', line)(st, dt, MOTION, D2R, THREE)
+    return st.swing
+  }
+  const stop = MOTION.swing * D2R
+  it('reaches a pull at the stop in its time, not at once', () => {
+    const st = { swing: 0, pull: stop }
+    expect(run(st, MOTION.seconds.swing / 2)).toBeCloseTo(stop / 2, 6)
+    expect(run(st, MOTION.seconds.swing / 2)).toBeCloseTo(stop, 6)
+  })
+  it('poses every jet\'s hook from its own swing, another jet\'s wire read off his pose', () => {
+    expect(engine).toContain('case "swing": return st.swing??0;')
+    expect(engine).toContain('st.wire=pose.wire||0;')
+  })
+  it('returns to centre in its time once the wire lets go', () => {
+    const st = { swing: -stop, pull: 0 }
+    expect(run(st, MOTION.seconds.swing / 2)).toBeCloseTo(-stop / 2, 6)
+    expect(run(st, MOTION.seconds.swing)).toBeCloseTo(0, 6)
   })
 })
 

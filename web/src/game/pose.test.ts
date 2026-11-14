@@ -13,13 +13,13 @@ vi.mock('@mochi/web', () => ({ createAppClient: () => ({}) }))
 const { Net, local } = await import('./net')
 type Net = InstanceType<typeof Net>
 
-// The server's 39-byte pose record (world/games/air/air.go, func pose): slot,
+// The server's 40-byte pose record (world/games/air/air.go, func pose): slot,
 // position f32x3, ..., flags at 26, both engine fires in byte 29 (fifteenths,
 // the left high), his sideslip at 30, leak at 31, the radar emitter at 34
-// (#30), the gun expenditure at 35 (#163) and his alpha and g at 37/38
-// (#164). Only the fields this test asserts on are filled; the
-// rest stay zero.
-const RECORD = 39
+// (#30), the gun expenditure at 35 (#163), his alpha and g at 37/38
+// (#164) and the wire his hook holds at 39. Only the fields this test asserts
+// on are filled; the rest stay zero.
+const RECORD = 40
 function pose(options: {
   slot: number
   alive?: boolean
@@ -33,6 +33,7 @@ function pose(options: {
   aoa?: number
   load?: number
   beta?: number
+  wire?: number
   direction?: [number, number, number]
   speed?: number
 }): Uint8Array {
@@ -59,6 +60,7 @@ function pose(options: {
   v.setUint16(35, options.spent ?? 0, true)
   v.setInt8(37, options.aoa ?? 0) // #164: alpha, whole degrees
   v.setInt8(38, Math.round((options.load ?? 0) * 10)) // #164: g at a tenth
+  v.setUint8(39, options.wire ?? 0) // the caught wire, from 1; 0 on none
   return b
 }
 
@@ -142,13 +144,13 @@ describe('self pose', () => {
     expect(mine.burning).toBe(true)
   })
 
-  // Cross-language contract: these bytes were captured from the real server
-  // encoder (world/games/air/air.go func pose), the same case Go's
-  // TestSelfPoseDamage asserts on. If either side's layout drifts, one of the
+  // Cross-language contract: these bytes are the real server encoder's
+  // (world/games/air/air.go func pose) for the jet Go's TestPoseGolden builds,
+  // which asserts the same bytes. If either side's layout drifts, one of the
   // two tests fails.
   it('decodes the bytes the server actually produces', () => {
     const golden = Uint8Array.from(
-      '0000a02d4500e08e45000000000d7e0000391600006fe2cccf0731000093fb0f00003ff0000e40'
+      '00000000000000000000000000eb7eae008a05950f7f0000d00731000093050f000000f0000e4002'
         .match(/../g)!
         .map((h) => parseInt(h, 16))
     )
@@ -162,9 +164,10 @@ describe('self pose', () => {
     expect(mine.leak).toBeCloseTo(1.5, 2)
     expect(mine.alive).toBe(true)
     expect(mine.spent).toBe(240) // the uint16 at 35, from the same encoder run
-    expect(mine.beta).toBe(-5) // byte 30: the flow from his left
+    expect(mine.beta).toBe(5) // byte 30: the flow from his right
     expect(mine.aoa).toBe(14) // byte 37 (#164)
     expect(mine.g).toBeCloseTo(6.4, 3) // byte 38 (#164)
+    expect(mine.wire).toBe(2) // byte 39: the core's wire index 1, counted from 1
   })
 
   it('leaves remote decoding alone', () => {
@@ -203,6 +206,20 @@ describe('alpha and load (#164)', () => {
     )
     expect(s.remote(3)!.aoa).toBe(-5)
     expect(s.remote(3)!.g).toBeCloseTo(-1.3, 3)
+  })
+})
+
+// The wire a remote's hook holds: his client drags it into a V under his
+// hook and swings the hook to its pull, as the pilot's own does from his core.
+describe('caught wire', () => {
+  it('reads the wire his hook holds off byte 39, counted from 1', () => {
+    const s = session(0)
+    feed(
+      s,
+      concat([pose({ slot: 0 }), pose({ slot: 3, wire: 3 }), pose({ slot: 4 })])
+    )
+    expect(s.remote(3)!.wire).toBe(3)
+    expect(s.remote(4)!.wire).toBe(0) // off every wire
   })
 })
 

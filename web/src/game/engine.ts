@@ -84,7 +84,7 @@ import ford_ship from '../assets/ford.json'   // its ship file, written beside i
 import { layout as ship_layout, lit as ship_lit } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
 import fa18c_points from '../assets/fa18c.json'   // its points file, written beside it by tools/fa18c/build.py: the joints and their schedules, and the points the engine draws
-const MOTION=(fa18c_points as any).motion as { seconds:{ canopy:number, probe:number, bar:number, fold:number, hook:number, scoop:number }, toe:number, swing:number, canopy:{ unlatch:number, fall:number, lock:number } };   // the mechanisms' stroke times, the rudders' toe-in and the hook's sideways travel each way, deg (tools/fa18c facts layout.motion)
+const MOTION=(fa18c_points as any).motion as { seconds:{ canopy:number, probe:number, bar:number, fold:number, hook:number, scoop:number, swing:number }, toe:number, swing:number, canopy:{ unlatch:number, fall:number, lock:number } };   // the mechanisms' stroke times (the swing's from centre to either stop), the rudders' toe-in and the hook's sideways travel each way, deg (tools/fa18c facts layout.motion)
 import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the model it replaces: the player's own jet in first person, whose cockpit the engine's cockpit tables are measured on, until our cockpit is built (claude/plans/air-fa18c.md, step 4)
 import fa18c_far_url from '../assets/fa18c-far.glb?url'   // the distant stages (#3): tools/fa18c
 import amraam_model_url from '../assets/aim120c.glb?url'   // our own missiles (tools/missiles), each with its points file: the mount its launcher seats
@@ -2148,7 +2148,7 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 		case "fold": return clamp(st.fold??0,0,1);
 		case "gear": return down;
 		case "hook": return hook;
-		case "swing": return own?(ownship.hookSwing??0):0;   // the hook trails the caught wire's pull (update_wire_drag)
+		case "swing": return st.swing??0;   // the hook trailing the pull of the wire it holds (update_wire_drag, update_anim)
 		case "probe": return clamp(st.probe??0,0,1);
 		case "canopy": return clamp(st.canopy??0,0,1);
 		case "bar": return clamp(st.bar??0,0,1);
@@ -7250,7 +7250,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 		const wyaw=Math.atan2(-ddz,ddx);
 		if(!ends) for(const e of [a,b]){ const s=new THREE.Mesh(new THREE.BoxGeometry(1.3,0.24,0.5),sheaveMat); s.position.set(e.x,dy+0.12,e.z); s.rotation.y=wyaw; scene.add(s); }   // deck-edge fairing housings over the sheave pockets (the real 60-90 cm sheave wheels live BELOW deck) — long low deck-grey ramps aligned with the cable run
 	}
-	const vsegs=[0,1].map(()=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(1,0.05,0.05),wireMat); m.visible=false; m.castShadow=true; scene.add(m); return m; });   // the caught wire, dragged into a V by the hook
+	for(const w of wires) w.vsegs=[0,1].map(()=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(1,0.05,0.05),wireMat); m.visible=false; m.castShadow=true; scene.add(m); return m; });   // each wire's two legs once a hook holds it, dragged into a V
 	// --- catapult shuttles: the towing spreader standing proud of each track slot; the launch bar drops onto it.
 	// Real C-13 shuttle: a low greased-steel block with a raised towing HORN at the rear that the bar hooks
 	// over — near-black worn metal, never painted ---
@@ -7299,7 +7299,7 @@ function build_carrier_deck_aids(){   // arrestor wires + OLS meatball on the fl
 	const td=carrier_world(twfa,strip_lat(twfa));   // touchdown reference — the glideslope references the wires, NOT the OLS housing on the bracket
 	const ramp=Math.hypot(twfa-SHIP.landing.line[0][0],strip_lat(twfa)-SHIP.landing.line[0][1]);   // the round-down's distance short of the touchdown, along the landing line (its aft end)
 	const sdx=STRIP_UFA*CARRIER_C+STRIP_ULAT*CARRIER_S, sdz=-STRIP_UFA*CARRIER_S+STRIP_ULAT*CARRIER_C, sl=Math.hypot(sdx,sdz);
-	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, wires, vsegs, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, ramp }; carrier_ols.chart={ x:o.x, z:o.z, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, dy, deck:CARRIER.deckY };   // approach comes from the −fa (aft) side, opposite the rollout
+	carrier_ols={ x:o.x, z:o.z, dy, datumY, travel, ballPts, wavePts, datumPts, wires, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, ramp }; carrier_ols.chart={ x:o.x, z:o.z, tdx:td.x, tdz:td.z, apx:-sdx/sl, apz:-sdz/sl, dy, deck:CARRIER.deckY };   // approach comes from the −fa (aft) side, opposite the rollout
 	// --- the ship's lights: the ship file's (tools/ford: measured, or placed by rule where no photo shows the fittings), each group drawn in
 	// every colour it shows and lit as ship.ts lit says for the deck (update_papi); heights over the waterline carried to the deck's height
 	// here, the deck's own a touch proud ---
@@ -7347,48 +7347,59 @@ function update_ols(p){   // 3D ball on the bracket, driven by the hook's deviat
 	o.wavePts.visible = !!ownship.waving && ((sim_time-(ownship.wavet||0))*1000%400)<200;   // the waveoff lights are the LSO's: lit for every waveoff he calls - low, lined up badly, high in close or hook up - and flashing in phase with his call
 }
 function seg_between(mesh,ax,az,bx,bz,y){ const dx=bx-ax, dz=bz-az, len=Math.hypot(dx,dz)||0.001; mesh.position.set((ax+bx)/2,y,(az+bz)/2); mesh.rotation.y=Math.atan2(-dz,dx); mesh.scale.x=len; }
-let hook_claw=null;   // {node, local}: the tailhook claw tip, resolved once as the furthest vertex from the hook pivot (attitude-invariant in the node's local frame). (Restored with _wireApex: the #166 sweep removed both while claw_world still used them — carrier traps would throw.)
 const _wireApex=new THREE.Vector3();
-function claw_world(out){   // world position of the actual rendered claw, or null if the hook model isn't resolved
-	const x=ownship.group.userData.exterior;
-	if(x&&(!hook_claw||hook_claw.exterior!==x)){ const hook=x.object.getObjectByName("hook"), p=x.points.hook;   // our own model's: the points file's hook point, riding the hook joint
-		if(hook&&p){ const origin=exterior_origin(x,hook); hook_claw={ node:hook, local:new THREE.Vector3(p.point[0]-origin.x,p.point[1]-origin.y,p.point[2]-origin.z), exterior:x }; } }
-	if(!hook_claw){ const base=ownship.group.getObjectByName("Hook_AN_base_20"); if(!base) return null;
+// claw_world gives the world position of a jet's rendered claw, or null if its hook isn't resolved: our own
+// model's hook point from the points file, riding the hook joint, or on the old airframe the furthest vertex
+// from its hook's pivot (attitude-invariant in the node's local frame). Each jet keeps its own (st.claw),
+// resolved once and again whenever its model changes.
+function claw_world(st,out){
+	const x=st.group.userData.exterior;
+	if(x&&(!st.claw||st.claw.exterior!==x)){ const hook=x.object.getObjectByName("hook"), p=x.points.hook;
+		if(hook&&p){ const origin=exterior_origin(x,hook); st.claw={ node:hook, local:new THREE.Vector3(p.point[0]-origin.x,p.point[1]-origin.y,p.point[2]-origin.z), exterior:x }; } }
+	if(!st.claw){ const base=st.group.getObjectByName("Hook_AN_base_20"); if(!base) return null;
 		const v=new THREE.Vector3(); let far=null, best=-1; base.updateWorldMatrix(true,true);
 		base.traverse(o=>{ if(o.isMesh&&o.geometry?.attributes?.position){ const pos=o.geometry.attributes.position;
 			for(let i=0;i<pos.count;i++){ v.fromBufferAttribute(pos,i); o.localToWorld(v); base.worldToLocal(v); const d=v.length(); if(d>best){ best=d; far=v.clone(); } } } });
-		if(!far) return null; hook_claw={node:base, local:far};   // the claw in the hook node's local frame: reused every frame via localToWorld
+		if(!far) return null; st.claw={node:base, local:far};
 	}
-	return out.copy(hook_claw.local).applyMatrix4(hook_claw.node.matrixWorld);
+	return out.copy(st.claw.local).applyMatrix4(st.claw.node.matrixWorld);
 }
-function update_wire_drag(){   // the caught wire deforms into a V, its apex dragged forward by the tailhook; released wires snap back straight
-	ownship.hookSwing=0;
-	if(!carrier_ols) return; const o=carrier_ols, caught=ownship.trapped?ownship.wire:0;
-	for(let i=0;i<o.wires.length;i++) o.wires[i].mesh.visible=(i+1)!==caught;
-	if(!caught){ o.vsegs[0].visible=o.vsegs[1].visible=false; return; }
-	const w=o.wires[caught-1]; ownship.group.updateMatrixWorld(true);
-	const claw=claw_world(_wireApex);   // the V apex rides the ACTUAL claw, not the fixed pos-6.5m guess that floated ~0.9 m above it (#72)
-	let hx, hz, hy;
-	if(claw){
-		const rx=ownship.right.x, rz=ownship.right.z, rl=Math.hypot(rx,rz)||1;   // starboard, horizontal-projected
-		const off=((claw.x-ownship.pos.x)*rx+(claw.z-ownship.pos.z)*rz)/(rl*rl);   // the claw vertex sits ~7 cm off the centreline (furthest-vertex of the asymmetric claw); project the apex back onto the jet's vertical centreline so the V is dead centre under the hook (#72)
-		hx=claw.x-rx*off; hz=claw.z-rz*off; hy=Math.max(claw.y, o.dy+0.05);   // clamp to the deck: the mesh tip dips a touch below, the wire rides on top
-	}
-	else { hx=ownship.pos.x-ownship.fwd.x*6.5; hz=ownship.pos.z-ownship.fwd.z*6.5; hy=o.dy+0.5; }   // fallback before the model resolves
-	{ const h=rig_local(_wireApex.set(hx,hy,hz)); hx=h.x; hz=h.z; }   // the V hangs on the rig, in the frame the wires were built in
-	seg_between(o.vsegs[0],w.ax,w.az,hx,hz,hy); seg_between(o.vsegs[1],hx,hz,w.bx,w.bz,hy); o.vsegs[0].visible=o.vsegs[1].visible=true;
-	ownship.hookSwing=hook_swing(w.ax-hx,w.az-hz,w.bx-hx,w.bz-hz);
-}
+// wire_holders names the jet holding each of the ship's count wires, from the wire each jet's hook holds
+// counted from 1: the pilot's own from the core he flies, every other from his pose record. The first claim
+// wins, the pilot's own coming first, so two jets naming one wire draw one V.
+function wire_holders(jets,count){ const held=new Array(count).fill(null);
+	for(const st of jets){ const w=st===ownship?(ownship.trapped?ownship.wire:0):(st.wire|0); if(w>=1&&w<=count&&!held[w-1]) held[w-1]=st; }
+	return held; }
+function update_wire_drag(){   // each caught wire deforms into a V, its apex dragged forward by the hook that holds it; released wires snap back straight
+	const jets=[ownship]; ownship.pull=0;   // off every wire the hook's liquid spring centres it
+	for(const st of remotes.values()){ if(st===ownship) continue; st.pull=0;
+		if(st.group&&st.group.visible) jets.push(st); else st.swing=0; }   // a jet not drawn comes back with its hook centred
+	if(!carrier_ols) return; const o=carrier_ols, held=wire_holders(jets,o.wires.length);
+	for(let i=0;i<o.wires.length;i++){ const w=o.wires[i], st=held[i];
+		w.mesh.visible=!st; w.vsegs[0].visible=w.vsegs[1].visible=!!st;
+		if(!st) continue;
+		st.group.updateMatrixWorld(true);
+		const claw=claw_world(st,_wireApex);   // the V apex rides the ACTUAL claw, not the fixed pos-6.5m guess that floated ~0.9 m above it (#72)
+		let hx, hz, hy;
+		if(claw){
+			const rx=st.right.x, rz=st.right.z, rl=Math.hypot(rx,rz)||1;   // starboard, horizontal-projected
+			const off=((claw.x-st.pos.x)*rx+(claw.z-st.pos.z)*rz)/(rl*rl);   // the claw vertex sits ~7 cm off the centreline (furthest-vertex of the asymmetric claw); project the apex back onto the jet's vertical centreline so the V is dead centre under the hook (#72)
+			hx=claw.x-rx*off; hz=claw.z-rz*off; hy=Math.max(claw.y, o.dy+0.05);   // clamp to the deck: the mesh tip dips a touch below, the wire rides on top
+		}
+		else { hx=st.pos.x-st.fwd.x*6.5; hz=st.pos.z-st.fwd.z*6.5; hy=o.dy+0.5; }   // fallback before the model resolves
+		{ const h=rig_local(_wireApex.set(hx,hy,hz)); hx=h.x; hz=h.z; }   // the V hangs on the rig, in the frame the wires were built in
+		seg_between(w.vsegs[0],w.ax,w.az,hx,hz,hy); seg_between(w.vsegs[1],hx,hz,w.bx,w.bz,hy);
+		st.pull=hook_swing(st,w.ax-hx,w.az-hz,w.bx-hx,w.bz-hz); } }
 // The hook's sideways swing on a wire: the shank trails along the pull, which with one tension in both legs is
 // their bisector; its angle off the jet's tail, positive with the claw to starboard (the joint's sense, tools/fa18c
 // build.py hook_swing), within the hook's travel. The legs are given in the rig's frame, where the jet's own axes
 // are carried into it.
 const _swing_q=new THREE.Quaternion(), _swing_fwd=new THREE.Vector3(), _swing_right=new THREE.Vector3();
-function hook_swing(ax,az,bx,bz){
+function hook_swing(st,ax,az,bx,bz){
 	const la=Math.hypot(ax,az), lb=Math.hypot(bx,bz); if(la<1e-3||lb<1e-3) return 0;
 	const px=ax/la+bx/lb, pz=az/la+bz/lb;
 	carrier_rig.getWorldQuaternion(_swing_q).invert();
-	_swing_fwd.copy(ownship.fwd).applyQuaternion(_swing_q); _swing_right.copy(ownship.right).applyQuaternion(_swing_q);
+	_swing_fwd.copy(st.fwd).applyQuaternion(_swing_q); _swing_right.copy(st.right).applyQuaternion(_swing_q);
 	const aft=-(px*_swing_fwd.x+pz*_swing_fwd.z), across=px*_swing_right.x+pz*_swing_right.z;
 	if(aft<=0) return 0;   // a pull ahead of the hook: the jet rolled back past its wire
 	return THREE.MathUtils.clamp(Math.atan2(across,aft),-MOTION.swing*D2R,MOTION.swing*D2R); }
@@ -10659,7 +10670,7 @@ function start_test(i){ const sc=TESTS[i]; if(!sc || crash_t>0) return;
 	const vd=new THREE.Vector3(d.x*Vh,-S,d.z*Vh).normalize();
 	ownship.q.copy(q); ownship.vel_dir.copy(vd); ownship.speed=V; ownship.throttle=0;
 	ownship.gearTarget=sc.gearup?1:0; ownship.gear=ownship.gearTarget; ownship.hookTarget=sc.hook?1:0; ownship.hook=ownship.hookTarget;
-	ownship.launching=false; ownship.trapped=false; ownship.wire=0; ownship.touch=null; ownship.grounded=false;
+	ownship.launching=false; ownship.trapped=false; ownship.pull=0; ownship.swing=0; ownship.wire=0; ownship.touch=null; ownship.grounded=false;
 	ownship.pass=pass_start(); ownship.waved=false;
 	test_active={ name:sc.name, q:q.clone(), vd:vd.clone(), V, t0:sim_time, bolter:!!sc.bolter, touchY:T.y, carrier:!!sc.carrier }; dev_peakbank=0; dev_pitchhi=0; dev_pitchlo=0;
 	flight_push();
@@ -11702,6 +11713,7 @@ function update_anim(dt){ const jets=[ownship,bandit];
 	if(!owned){ if(st.gear===undefined) st.gear=st.gearTarget??1; st.gear=ease_to(st.gear,st.gearTarget??1,dt);
 		if(st.speedbrake===undefined) st.speedbrake=st.speedbrakeTarget??0; st.speedbrake+=THREE.MathUtils.clamp((st.speedbrakeTarget??0)-st.speedbrake,-0.4*dt,0.4*dt); }   // air-brake ease at the actuator's 2.5 s travel for the aircraft the core doesn't fly
 	if(st.hook===undefined) st.hook=st.hookTarget??0; st.hook+=THREE.MathUtils.clamp((st.hookTarget??0)-st.hook,-dt/MOTION.seconds.hook,dt/MOTION.seconds.hook);   // the hook's stroke
+	{ const rate=MOTION.swing*D2R/MOTION.seconds.swing*dt; st.swing=(st.swing??0)+THREE.MathUtils.clamp((st.pull??0)-(st.swing??0),-rate,rate); }   // the hook's sideways swing, its liquid spring damping it toward the pull of the wire it holds (update_wire_drag) and back to centre once the wire lets go
 	if(st.probe===undefined) st.probe=st.probeTarget??0; st.probe+=THREE.MathUtils.clamp((st.probeTarget??0)-st.probe,-dt/MOTION.seconds.probe,dt/MOTION.seconds.probe);   // refueling probe: its hydraulic stroke
 	if(st===ownship && (st.canopyTarget??0)>0.5 && st.speed>13) st.canopyTarget=0;   // the takeoff roll closes an open canopy before the airflow does it destructively
 	if(st.canopy===undefined) st.canopy=st.canopyTarget??0;
@@ -11823,7 +11835,7 @@ function reset_ownship(){
 	bandit.spent=0; bandit.rounds=MAGAZINE; assign_loadout(bandit, bandit_fit()); bandit.msl=bandit_remaining(); bandit.amraam=stores_amraams(bandit.loadout).length;   // a fresh fight rearms the bandit: full belt, full rails, clean expenditure. The counts carried the last fight's launches into the next until 2026-10-12
 	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
-	ownship.rounds=MAGAZINE; ownship.msl=magazine(); rearm_order(ownship); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");
+	ownship.rounds=MAGAZINE; ownship.msl=magazine(); rearm_order(ownship); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.pull=0; ownship.swing=0; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");
 	master=default_master(); default_radar();   // the match's own weapon is already selected at spawn, and the radar set for it: a dead trigger at the merge is a trap, and so is arriving with the gun up in a heater fight   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
 	update_rails(ownship, ownship.msl); update_rails(bandit, bandit_remaining());
 	ownship.grounded=false; ownship.touch=null; ownship.pass=pass_start(); ownship.grade=""; ownship.remarks=""; ownship.waved=false; ownship.groove=false; ownship.ended=false; ownship.closing=null; ownship.turned=false; ownship.taxied=false;   // landing / LSO pass state
@@ -14015,6 +14027,7 @@ function net_frame(dt){
 		(st.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(st.group.quaternion);
 		remote_velocity(st,pose);
 		st.gearTarget=pose.gear?0:1; st.hookTarget=pose.hook?1:0; st.speedbrakeTarget=pose.speedbrake;
+		st.wire=pose.wire||0;   // the wire his hook holds, from 1 (update_wire_drag drags it into a V under him)
 		st.jamming=!!pose.jamming;   // #31: the flag the RDR page strobes and the STT MEM logic feed on
 		// The battle channels the pose already carries (#163): the recorder
 		// writes these for a remote exactly as it does for the ownship, so an

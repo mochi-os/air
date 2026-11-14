@@ -7666,8 +7666,11 @@
 				"unit": "link: the side braces' diameter, in (their tubes' measured 1.8); rod: the drag brace rod's, in; overlap: how far the rod reaches into the tube at full stretch, in; side: the main side brace's structure pin, WL in on its axis, and its knee's place, the share of its length up from the bolt; connecting: the connecting link's structure pin and the bell crank's pin, WL in on its axis, the crank's arm from its pivot to that pin and the link's diameter, in"
 			},
 			"swing": {
-				"value": 20.0,
-				"note": "the hook's sideways travel each way estimated (NATOPS 2.10.5 gives no figure)"
+				"value": {
+					"travel": 20.0,
+					"seconds": 0.5
+				},
+				"note": "the hook's sideways travel each way estimated (NATOPS 2.10.5 gives no figure), and its time from centre to either stop estimated: 40 deg/s both ways, toward the pull of the wire the hook holds and back to centre once the wire lets go (no source gives the liquid spring's rate)"
 			},
 			"hook": {
 				"value": {

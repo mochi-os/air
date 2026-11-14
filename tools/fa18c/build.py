@@ -5290,10 +5290,11 @@ def main():
 		paint(Path(out[0]).parent, folder)
 	bpy.ops.export_scene.gltf(filepath=out[0], export_format="GLB", export_yup=True, use_selection=False,
 		export_apply=False, export_animations=False, export_extras=False)
-	# the mechanisms' stroke times and the rudders' toe-in, for the engine
-	# (layout.motion)
+	# the mechanisms' stroke times (the hook's swing from centre to either
+	# stop), the rudders' toe-in and the hook's sideways travel each way, for
+	# the engine (layout.motion)
 	m = {k: v["value"] for k, v in LAYOUT["motion"].items() if isinstance(v, dict)}
-	motion = {"seconds": {k: m[k]["seconds"] for k in ("canopy", "probe", "bar", "fold", "hook", "scoop")}, "toe": m["toe"], "swing": m["swing"],
+	motion = {"seconds": {k: m[k]["seconds"] for k in ("canopy", "probe", "bar", "fold", "hook", "scoop", "swing")}, "toe": m["toe"], "swing": m["swing"]["travel"],
 		"canopy": {k: m["canopy"][k] for k in ("unlatch", "fall", "lock")}}   # the closing's own phases: the opening's are its stroke and the slide's share
 	document = {"frame": {"origin": {"station": ORIGIN["station"], "waterline": ORIGIN["waterline"], "buttline": 0}},
 		"motion": motion,

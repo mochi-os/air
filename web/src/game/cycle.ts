@@ -159,7 +159,7 @@ function by(movers: Record<string, Mover>): Motion {
 
 type Points = {
   motion: {
-    seconds: Record<'canopy' | 'probe' | 'bar' | 'fold' | 'hook' | 'scoop', number>
+    seconds: Record<'canopy' | 'probe' | 'bar' | 'fold' | 'hook' | 'scoop' | 'swing', number>
     swing: number
     canopy: { unlatch: number; fall: number; lock: number }
   }
@@ -247,9 +247,14 @@ export function fa18c(legs: Legs, points: Points = fa18c_points as unknown as Po
     // the wing's bend through its whole -3 to 7.5 g at 5 g/s: an estimate
     // (it follows the lift)
     load: stroke(-3, 7.5, 5),
-    // the hook's sideways travel each way (fa18c.json motion.swing) at
-    // 40 deg/s: an estimate (it trails the caught wire's pull)
-    swing: stroke(-points.motion.swing * DEGREE, points.motion.swing * DEGREE, 40 * DEGREE),
+    // the hook's sideways travel each way (fa18c.json motion.swing) at the
+    // game's own rate, its time from centre to either stop
+    // (motion.seconds.swing)
+    swing: stroke(
+      -points.motion.swing * DEGREE,
+      points.motion.swing * DEGREE,
+      (points.motion.swing * DEGREE) / points.motion.seconds.swing
+    ),
   })
 }
 

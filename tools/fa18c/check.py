@@ -55,7 +55,7 @@ GUESSES = {
 	"layout.petals.note": (1, "user, 2026-11-12: keep; no photo can see it: the divergent flaps' length"),
 	"layout.paint.note": (1, "user, 2026-11-12: keep; no photo can see it: the nozzle's divergent flap faces, convergent flaps and duct colours, in shadow in every photo"),
 	"layout.motion.fold.note": (1, "user, 2026-11-12: keep the wing fold's 8 s; NATOPS gives no time"),
-	"layout.motion.swing.note": (1, "user, 2026-11-12: keep the hook's 20 deg sideways travel each way; NATOPS 2.10.5 gives no figure"),
+	"layout.motion.swing.note": (2, "user, 2026-11-12: keep the hook's 20 deg sideways travel each way; NATOPS 2.10.5 gives no figure; user, 2026-11-13: the swing's rate 40 deg/s both ways (0.5 s from centre to either stop), the game's and the model viewer's alike"),
 	"layout.motion.bar.note": (1, "user, 2026-11-12: keep the launch bar's 1.25 s swing; NATOPS gives no time"),
 	"layout.motion.doors.note": (1, "user, 2026-11-12: keep the gear doors opening over the first 15% of the gear's travel; NATOPS gives only that every door stays open with the gear down"),
 	"layout.motion.hook.note": (1, "user, 2026-11-12: keep the hook's 2 s stroke, within NATOPS's 3 s down and 6 s up maxima"),
@@ -2850,7 +2850,7 @@ def checks(jet):
 		for leg in ("left", "right"):
 			yield result("layout.motion", f"{leg} main axle's turn, stowed", 90.0, math.degrees(last(f"gear_{leg}_axle")), 0.05, "deg")
 		told = jet.document["motion"]
-		for k in ("canopy", "probe", "bar", "fold", "hook", "scoop"):
+		for k in ("canopy", "probe", "bar", "fold", "hook", "scoop", "swing"):
 			yield result("layout.motion", f"{k}'s stroke time in the points file", m[k]["seconds"], told["seconds"][k], 0.001, "s")
 		for k in ("unlatch", "fall", "lock"):
 			yield result("layout.motion", f"canopy's closing {k} in the points file", m["canopy"][k], told["canopy"][k], 0.001, "s" if k != "unlatch" else "share")
@@ -2880,7 +2880,7 @@ def checks(jet):
 		yield result("layout.motion", "deployed scoop's mouth off straight ahead", 0.0, math.degrees(math.acos(min(1.0, -line[0] / np.linalg.norm(line)))), 5.0, "deg")
 		yield result("layout.motion", "deployed scoop's points inside the airframe", 0, enclosed(np.unique(out, axis=0), hull).sum(), 0, "corners")
 		yield result("layout.motion", "rudders' toe-in in the points file", m["toe"], told["toe"], 0.001, "deg")
-		yield result("layout.motion", "hook's sideways travel in the points file", m["swing"], told["swing"], 0.001, "deg")
+		yield result("layout.motion", "hook's sideways travel in the points file", m["swing"]["travel"], told["swing"], 0.001, "deg")
 
 		def stowed(name, post):
 			# the post's axis as the facts give it gear down (layout.gear legs),

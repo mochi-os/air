@@ -18,8 +18,8 @@ import { attitude as earth_attitude, point as earth_point, theatre, vector as ea
 
 export { crossHost } from './host'
 
-const POSE_RECORD = 39 // the server's fixed pose stride (world/games/air/air.go, pose_record) — MUST equal it exactly; the protocol byte below does not distinguish strides, so a build that disagrees here misparses every pose instead of being refused at the door
-const PROTOCOL = 1 // 1: the 39-byte pose record, its position an offset from the datagram's origin (#134: a 32-bit float holds the earth's size to a metre and a half, a neighbour's offset to a centimetre) — byte 29 both engine fires, byte 30 his sideslip, byte 34 the emitter state (#30), the uint16 at 35 the gun expenditure (#163), bytes 37-38 his alpha and g (#164). Must equal world/server/message.go's `protocol`: the server refuses any join that does not match it exactly (#184). DELIBERATELY NOT bumped for the #164 widening nor for the fires sharing byte 29 to make room for the sideslip (held at 1 on instruction both times), so client and server must ship together — a 37-byte peer would be ACCEPTED here and then misread every pose, and a peer on the older 39-byte layout would read a slip as a fire and a fire as a slip.
+const POSE_RECORD = 40 // the server's fixed pose stride (world/games/air/air.go, pose_record) — MUST equal it exactly; the protocol byte below does not distinguish strides, so a build that disagrees here misparses every pose instead of being refused at the door
+const PROTOCOL = 1 // 1: the 40-byte pose record, its position an offset from the datagram's origin (#134: a 32-bit float holds the earth's size to a metre and a half, a neighbour's offset to a centimetre) — byte 29 both engine fires, byte 30 his sideslip, byte 34 the emitter state (#30), the uint16 at 35 the gun expenditure (#163), bytes 37-38 his alpha and g (#164), byte 39 the arresting wire his hook holds. Must equal world/server/message.go's `protocol`: the server refuses any join that does not match it exactly (#184). DELIBERATELY NOT bumped for the #164 widening nor for the fires sharing byte 29 to make room for the sideslip (held at 1 on instruction both times), so client and server must ship together — a 37-byte peer would be ACCEPTED here and then misread every pose, and a peer on the older 39-byte layout would read a slip as a fire and a fire as a slip. The caught wire's byte widened it to 40 the same way.
 
 // isEnvelope is the minimal shape every server message must have before it
 // reaches handle(): an object with a string `kind` discriminator.
@@ -326,6 +326,7 @@ export interface RemotePose {
   aoa: number // degrees, whole (#164) — wire-quantised, the ownship's own channel is exact
   g: number // load factor, tenths (#164)
   beta: number // sideslip, degrees, whole, positive with the flow from the right — against the air, which the ground track cannot give
+  wire: number // the arresting wire his hook holds, counted from 1 as the ship's wires are; 0 on none
 }
 
 interface Snapshot {
@@ -723,7 +724,8 @@ export class Net {
         // The interest-managed pose datagram (#81): fixed POSE_RECORD-byte
         // records — self first, then the nearest remotes, then the rotating
         // far tail. Byte 34 is the emitter state (#30), bytes 35-36 the gun
-        // expenditure (#163), and 37-38 his alpha and g (#164). The protocol
+        // expenditure (#163), 37-38 his alpha and g (#164), and 39 the wire his
+        // hook holds. The protocol
         // check at the join gates the WIRE VERSION, not the stride, so this
         // parse trusts POSE_RECORD to match the server's own constant.
         const blob = message.blob as Uint8Array | undefined
@@ -790,6 +792,7 @@ export class Net {
             aoa: view.getInt8(base + 37), // #164: alpha in whole degrees, saturating
             g: view.getInt8(base + 38) / 10, // #164: the g meter at a tenth
             beta: view.getInt8(base + 30), // sideslip in whole degrees
+            wire: view.getUint8(base + 39), // the wire his hook holds, from 1; 0 on none
             kills: tally?.kills ?? 0,
             deaths: tally?.deaths ?? 0,
           }

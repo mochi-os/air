@@ -227,10 +227,16 @@ describe('the F/A-18C', () => {
     expect(motion.value('wheel.nose', '')).toBeCloseTo((5.1 * 0.1) / gear.nose.radius, 6)
     expect(motion.value('wheel.left', '')).toBeCloseTo((5.1 * 0.1) / gear.left.radius, 6)
   })
-  it('swings the hook through its travel each way', () => {
-    const swing = (fa18c_points as unknown as { motion: { swing: number } }).motion.swing
-    expect(read('swing', 0.5)).toBeCloseTo(swing * DEGREE, 9)
-    expect(read('swing', 1.5)).toBeCloseTo(-swing * DEGREE, 9)
+  it('swings the hook through its travel each way at the game\'s rate', () => {
+    const { swing, seconds } = (fa18c_points as unknown as { motion: { swing: number; seconds: { swing: number } } }).motion
+    expect(read('swing', seconds.swing)).toBeCloseTo(swing * DEGREE, 9)
+    expect(read('swing', 3 * seconds.swing)).toBeCloseTo(-swing * DEGREE, 9)
+    // the rate is the points file's, whatever it holds
+    const slower = structuredClone(fa18c_points) as unknown as { motion: { seconds: { swing: number } } }
+    slower.motion.seconds.swing = 2
+    const motion = fa18c(LEGS, slower as unknown as Parameters<typeof fa18c>[1])
+    motion.step(2)
+    expect(motion.value('swing', '')).toBeCloseTo(swing * DEGREE, 9)
   })
 })
 
