@@ -36,6 +36,8 @@ PAINTED = {"layout.stencils"}   # facts only the paint's atlas shows
 # date and what they approved), or test_check fails; a text that gains a
 # guess fails again until it is signed again
 GUESSES = {
+	"layout.wells.note": (1, "user, 2026-11-13: the speedbrake well's floor 4 in under the skin; no photo shows the open speedbrake from above or behind"),
+	"layout.paint.where": (1, "user, 2026-11-13: the speedbrake's and the probe's wells keep the airframe's greys; no photo shows the speedbrake open and the refuelling photos show the probe's bay only in deep shadow"),
 	"layout.stores.centreline.note": (2, "user, 2026-11-11: the SUU-62's width 9.5 in with its 7 in taper, consistent with dvids8025511, 9393257 and 9393262 but fixed by none; its aft end at FS 445, shaped as dvids_4642578 shows"),
 	"layout.stores.rack.note": (1, "user, 2026-11-11: keep the 3 in block joining each side rail to its LAU-115 until a solvable photo shows the shoulder fittings (dvids7378817 shows them, but no landmark lets its camera be solved)"),
 	"layout.stores.rails.tip.note": (1, "user, 2026-11-11: keep the LAU-7 channel 1.0 in deep; no public-domain end view of an empty LAU-7 was found"),
@@ -163,10 +165,60 @@ class Jet:
 		self.cache = {}
 
 	def parts(self, drives=None):
+		# Every part, posed. The fuselage is the skin as the checks measure it:
+		# each opening closed by the skin its door was cut from (plugs())
 		key = tuple(sorted((drives or {}).items()))
 		if key not in self.cache:
-			self.cache[key] = self.model.parts(verify.pose(self.joints, drives or {}))
+			parts = self.model.parts(verify.pose(self.joints, drives or {}))
+			if "fuselage" in parts:
+				parts = {**parts, "fuselage": np.concatenate([parts["fuselage"], self.plugs()])}
+			self.cache[key] = parts
 		return self.cache[key]
+
+	def opened(self):
+		# the fuselage as built, its openings open, at rest
+		return self.model.parts(verify.pose(self.joints, {}))["fuselage"]
+
+	def plugs(self, names=None):
+		# The skin under each closed door (build.py wells() cuts it away, as
+		# cut() copied it for the door): the door's outer face at rest moved
+		# back in by the PROUD it stands off. A door is its outer face, its
+		# inner face a quarter inch under it, and an edge square to both round
+		# its outline: an outer face is turned to the door's side (down, or up
+		# for the speedbrake's and the probe's), and a ray in from it meets the
+		# door again within 0.4 in, where one in from its edge crosses the
+		# whole door. Model frame
+		if "plugs" not in self.cache:
+			rest = self.model.parts(verify.pose(self.joints, {}))
+			up = np.array([0.0, 1.0, 0.0]) @ FRAME.axes.T
+			out = {}
+			for name, below in FLUSH:
+				if name not in rest:
+					continue
+				t = rest[name]
+				n = np.cross(t[:, 1] - t[:, 0], t[:, 2] - t[:, 0])
+				n /= np.linalg.norm(n, axis=1)[:, None]
+				side = np.flatnonzero((n @ up) * (-1 if below else 1) > 0)
+				reach = np.array([inward(t, t[k].mean(0), -n[k]) for k in side])
+				outer = side[reach < 0.4 * FRAME.unit]
+				# moved back along each corner's normal, its faces' mean, as cut()
+				# moved the skin out, so neighbouring faces stay joined
+				key = lambda v: tuple(np.round(v, 7))
+				normals = {}
+				for tri, m in zip(t[outer], n[outer]):
+					for v in tri:
+						normals.setdefault(key(v), []).append(m)
+				normals = {k: np.mean(v, 0) / np.linalg.norm(np.mean(v, 0)) for k, v in normals.items()}
+				moved = np.array([[v - normals[key(v)] * PROUD * FRAME.unit for v in tri] for tri in t[outer]]).reshape(-1, 3, 3)
+				out[name] = (t[outer], moved)
+			self.cache["plugs"] = out
+		chosen = [v[1] for k, v in self.cache["plugs"].items() if names is None or k in names]
+		return np.concatenate(chosen) if chosen else np.zeros((0, 3, 3))
+
+	def faces(self, name):
+		# a door's outer face at rest, as built (model frame)
+		self.plugs()
+		return self.cache["plugs"][name][0]
 
 	def has(self, *names):
 		return all(n in self.parts() for n in names)
@@ -293,17 +345,32 @@ def shoelace(loop):
 # (stowed, or under the canopy), and the panels that lie flush on the skin
 # with the side they face
 HULL = ["fuselage", "lex_left", "lex_right", "inlet_left", "inlet_right", "wing_inner_left", "wing_inner_right", "canopy", "windscreen",
-	"fin_left", "fin_right"]
+	"fin_left", "fin_right",
+	# and the parts on the skin, where the hidden faces under them are gone
+	"fairings_left", "fairings_right", "fin_root_left", "fin_root_right", "fin_fairing_left", "fin_fairing_right", "keel",
+	"antenna_chin", "antenna_dome", "antenna_dorsal", "antenna_spine", "antenna_ventral", "blade_nose", "aoa_left", "aoa_right",
+	"pitot_left", "pitot_right", "splitter_left", "splitter_right", "lex_fence_left", "lex_fence_right",
+	"formation_body_left", "formation_body_right", "formation_fin_left", "formation_fin_right", "formation_left", "formation_right",
+	"formation_tip_left", "formation_tip_right", "formation_undertip_left", "formation_undertip_right"]
 STOWED = [f"gear_{leg}_{piece}" for leg in ("left", "right", "nose") for piece in ("strut", "oleo", "wheel")] + [
 	f"gear_{leg}_{piece}" for leg in ("left", "right") for piece in ("axle", "shock", "shock_can", "brace", "brace_upper", "link", "crank", "casting")] + ["gear_nose_brace", "gear_nose_brace_upper"] + [
 	"launch_bar", "gear_nose_lamps", "lamp_gear_nose", "probe", "cockpit_tub", "cockpit_panel", "cockpit_seat", "cockpit_stick", "cockpit_hud", "pilot"]
+# how far a door's outer face stands off the skin it was cut from (build.py cut())
+PROUD = 0.15
 FLUSH = [("speedbrake", False), ("gear_nose_door_left", True), ("gear_nose_door_right", True), ("gear_nose_door_long", True),
 	("gear_door_inner_left", True), ("gear_door_inner_right", True), ("gear_door_strip_left", True), ("gear_door_strip_right", True), ("gear_door_outer_left", True), ("gear_door_outer_right", True), ("probe_door", False)]
 # The parts with no twin that stand to one side; every other one is
 # symmetric about the centreline
 # a store part's name, its station and its side of a twin (the contract's Stores)
 STATION = re.compile(r"^((?:pylon|rack|rail|launcher|ejector|tank))_([1-9])([ab]?)$")
-ONE_SIDED = {"antenna_dome", "antenna_ventral", "gear_nose_door_long", "gear_nose_lamps", "lamp_gear_nose", "lamp_position_tail", "pilot", "probe", "probe_door", "scoop"}
+ONE_SIDED = {"antenna_dome", "antenna_ventral", "gear_nose_door_long", "gear_nose_lamps", "lamp_gear_nose", "lamp_position_tail", "pilot", "probe", "probe_door", "scoop", "well_probe"}
+# Each well (layout.wells): the doors that close its opening and the parts it
+# holds at rest. The launch bar is left out: it stands up into the cockpit
+# when stowed, a fault of its own (its fold)
+WELLS = {f"main_{side}": ([f"gear_door_{d}_{side}" for d in ("inner", "strip", "outer")], [f"gear_{side}_{p}" for p in ("strut", "oleo", "wheel", "axle", "shock", "shock_can", "brace", "brace_upper", "link", "crank", "casting")]) for side in ("left", "right")}
+WELLS["nose"] = (["gear_nose_door_left", "gear_nose_door_right", "gear_nose_door_long"], ["gear_nose_strut", "gear_nose_oleo", "gear_nose_wheel", "gear_nose_brace", "gear_nose_brace_upper", "gear_nose_lamps", "lamp_gear_nose"])
+WELLS["speedbrake"] = (["speedbrake"], [])
+WELLS["probe"] = (["probe_door"], ["probe"])
 
 
 def enclosed(points, tris):
@@ -336,37 +403,105 @@ def enclosed(points, tris):
 	return out
 
 
-def standoff(panel, skin, below=False, step=0.5):
-	# How far a panel's outer face (triangles, source coordinates) stands off
-	# the skin, along the skin's normal, on a grid over the panel at least
-	# half an inch in from its outline, looking down on it (or up from below):
-	# the gap straight down, times the cosine of the slope of the skin's own
-	# facet beneath (a slope read across the height map's cells mixes the
-	# facets either side of a crease)
-	flip = -1.0 if below else 1.0
-	fs, bl = panel[..., 0], panel[..., 2]
-	stations = np.arange(fs.min(), fs.max() + 1e-9, step)
-	buttlines = np.arange(bl.min(), bl.max() + 1e-9, step)
+# Oblique rays, none along an axis or in a plane the builds' faces lie in
+OBLIQUE = np.array([[0.577, 0.601, 0.552], [-0.432, 0.742, -0.513], [0.811, -0.322, 0.488], [-0.263, -0.579, 0.772],
+	[0.659, 0.207, -0.723], [-0.705, -0.461, -0.539], [0.134, -0.911, -0.390]])
 
-	def outermost(tris, tilt=False):
-		t = tris.copy()
-		t[..., 1] *= flip
-		if tilt:
-			h, cosine = heights(t, stations, buttlines, tilt=True)
-			return h * flip, cosine
-		return heights(t, stations, buttlines) * flip
 
-	outer, (under, cosine) = outermost(panel), outermost(skin, tilt=True)
-	# the panel's cover less a cell's margin all round
-	cover = np.isfinite(outer)
-	inner = cover.copy()
-	inner[1:] &= cover[:-1]
-	inner[:-1] &= cover[1:]
-	inner[:, 1:] &= cover[:, :-1]
-	inner[:, :-1] &= cover[:, 1:]
-	inner[[0, -1], :] = inner[:, [0, -1]] = False
-	s = flip * (outer - under) * cosine
-	return s[inner & np.isfinite(s)]
+def crossed(point, tris):
+	# Whether a point lies inside closed triangles (source coordinates): an
+	# odd count of crossings along most of the oblique rays
+	a, b, c = tris[:, 0], tris[:, 1], tris[:, 2]
+	e1, e2 = b - a, c - a
+	odd = 0
+	for d in OBLIQUE / np.linalg.norm(OBLIQUE, axis=1)[:, None]:
+		q = np.cross(d, e2)
+		det = (e1 * q).sum(1)
+		ok = np.abs(det) > 1e-12
+		inv = np.where(ok, 1 / np.where(ok, det, 1), 0)
+		s = point - a
+		u = (s * q).sum(1) * inv
+		w = np.cross(s, e1)
+		v = (w @ d) * inv
+		t = (e2 * w).sum(1) * inv
+		odd += int((ok & (u >= 0) & (v >= 0) & (u + v <= 1) & (t > 0)).sum()) % 2
+	return odd > len(OBLIQUE) // 2
+
+
+def inward(tris, origin, direction):
+	# How far a ray from a point goes before it leaves through one of the
+	# triangles turned along it, within 25 deg (Moller-Trumbore, a hair's
+	# tolerance at their edges so a ray down a shared edge counts); inf if none
+	a, b, c = tris[:, 0], tris[:, 1], tris[:, 2]
+	e1, e2 = b - a, c - a
+	n = np.cross(e1, e2)
+	along = (n @ direction) > 0.9 * np.linalg.norm(n, axis=1)
+	p = np.cross(direction, e2)
+	det = (e1 * p).sum(1)
+	ok = (np.abs(det) > 1e-15) & along
+	inv = np.where(ok, 1 / np.where(ok, det, 1), 0)
+	s = origin - a
+	u = (s * p).sum(1) * inv
+	q = np.cross(s, e1)
+	v = (q @ direction) * inv
+	d = (e2 * q).sum(1) * inv
+	hit = ok & (u >= -1e-6) & (v >= -1e-6) & (u + v <= 1 + 1e-6) & (d > 1e-7)
+	return float(d[hit].min()) if hit.any() else np.inf
+
+
+def outline(jet, name):
+	# A closed door's outline moved back to the skin it was cut from: its
+	# outer face's edges no other face of it shares, every quarter inch along
+	# them, moved in as plugs() moves its corners. Model frame
+	t, moved = jet.faces(name), jet.plugs([name])
+	key = lambda v: tuple(np.round(v, 7))
+	back = {key(v): w for tri, shifted in zip(t, moved) for v, w in zip(tri, shifted)}
+	count = {}
+	for tri in t:
+		for i in range(3):
+			e = tuple(sorted((key(tri[i]), key(tri[(i + 1) % 3]))))
+			count[e] = count.get(e, 0) + 1
+	points = []
+	for e, k in count.items():
+		if k != 1:
+			continue
+		a, b = back[e[0]], back[e[1]]
+		steps = max(1, int(np.ceil(np.linalg.norm(b - a) / (0.25 * FRAME.unit))))
+		for f in np.linspace(0, 1, steps + 1):
+			points.append(a + (b - a) * f)
+	if not points:
+		raise ValueError(f"{name} has no outline")
+	return np.array(points)
+
+
+def rim(jet, name):
+	# How far a closed door's outline, moved back to the skin it was cut
+	# from, stands off what closes the skin round it, at its furthest, in
+	# inches: the skin as built, and where it borders another door, that
+	# door's closed face moved back the same way
+	points = outline(jet, name)
+	skin = np.concatenate([jet.opened(), jet.plugs([n for n, _ in FLUSH if n != name])])
+	lo, hi = points.min(0) - 0.05, points.max(0) + 0.05
+	skin = skin[((skin.max(1) >= lo) & (skin.min(1) <= hi)).all(1)]
+	return float(closest(FRAME.source(points), FRAME.source(skin.reshape(-1, 3)).reshape(-1, 3, 3)).max())
+
+
+def stacked(jet, doors):
+	# How many points on each door's closed face, its faces' middles and
+	# halfway to their corners, more than 0.15 in in from its outline (where
+	# neighbours meet), have another of the doors' closed faces on them: two
+	# doors cut from one band of skin lie on each other
+	count = 0
+	for d in doors:
+		t = FRAME.source(jet.plugs([d]).reshape(-1, 3)).reshape(-1, 3, 3)
+		middle = t.mean(1)
+		own = np.concatenate([middle[:, None, :], (middle[:, None, :] + t) / 2], 1).reshape(-1, 3)
+		line = FRAME.source(outline(jet, d))
+		own = own[np.array([np.linalg.norm(line - p, axis=1).min() for p in own]) > 0.15]
+		others = jet.plugs([o for o in doors if o != d])
+		if len(own) and len(others):
+			count += int((closest(own, FRAME.source(others.reshape(-1, 3)).reshape(-1, 3, 3)) < 0.01).sum())
+	return count
 
 
 # The parts that lie against each other's skin, each pair seen from above,
@@ -1992,6 +2127,18 @@ def checks(jet):
 		# the nose pair's outer sidewalls, less one tyre's width: the centres' spacing
 		p = jet.points(["gear_nose_wheel"], down)
 		yield result("layout.gear", "nose wheels' spacing", gear["spacing"], p[:, 2].max() - p[:, 2].min() - gear["tyres"]["nose"]["width"], 0.3)
+		# each tyre's hub, gear down: the rubber reaching in from the tread to
+		# the hub's edge, its share of the tyre's radius seen from the side
+		rubber = jet.model.parts(verify.pose(jet.joints, down), materials=("rubber",))
+		for name, tyre in (("gear_right_wheel", "main"), ("gear_left_wheel", "main"), ("gear_nose_wheel", "nose")):
+			if name not in rubber:
+				raise KeyError(f"no rubber on {name}")
+			p = FRAME.source(rubber[name].reshape(-1, 3))
+			for half in ((p[:, 2] > 0, p[:, 2] < 0) if tyre == "nose" else (np.ones(len(p), bool),)):
+				q = p[half]
+				centre = (q.max(0) + q.min(0)) / 2
+				r = np.hypot(q[:, 0] - centre[0], q[:, 1] - centre[1])
+				yield result("layout.gear", f"{name}'s hub at BL {centre[2]:.1f}, of its tyre's radius", gear["tyres"][tyre]["hub"], r.min() / r.max(), 0.01, "share")
 		# the legs where the photos put them, gear down (layout.gear legs)
 		legs, axes = gear["legs"], (("FS", 0), ("WL", 1), ("BL", 2))
 		m = legs["main"]
@@ -2068,8 +2215,10 @@ def checks(jet):
 		# each door open as the photos show it: its lowest point
 		doors = gear["doors"]
 		def skin(station, height):
-			# the fuselage's outboard buttline at a height, on the right
-			c = jet.cut(["fuselage"], [station, 0, 0], [1, 0, 0])
+			# the fuselage's outboard buttline at a height, on the right, a hair
+			# aft of the station: a hinge station is a seam of the skin, where a
+			# cut through it meets only edges
+			c = jet.cut(["fuselage"], [station + 0.01, 0, 0], [1, 0, 0])
 			a_, b_ = c[0::2], c[1::2]
 			hit = ((a_[:, 1] - height) * (b_[:, 1] - height) < 0) & (np.maximum(a_[:, 2], b_[:, 2]) > 0)
 			if not hit.any():
@@ -2277,8 +2426,8 @@ def checks(jet):
 			gap = seated(part, skin, np.arange(place["station"] + 1.0, place["station"] + chord - 1.0, 2.0), jet.points([f"fin_{side}"]).reshape(-1, 3, 3))
 			yield result("shape.seated", f"fin_{side}'s root standing off the skin beneath it, its furthest", 0.0, float(np.maximum(gap, 0.0)), 0.05)
 		for name, below in FLUSH:
-			s = standoff(jet.points([name]).reshape(-1, 3, 3), skin, below)
-			yield result("shape.flush", f"{name}'s outer face off the skin, its furthest from 0.15 in", 0.15, s[np.argmax(np.abs(s - 0.15))] if len(s) else np.inf, 0.15)
+			gap = rim(jet, name)
+			yield result("shape.flush", f"{name}'s closed face off the skin round its opening, its furthest", 0.0, gap, 0.1 if name == "probe_door" else 0.02)
 		for spot in F["layout"]["hardpoints"]["stations"]:
 			if spot["kind"] != "fuselage":
 				continue
@@ -2829,6 +2978,54 @@ def checks(jet):
 
 	yield from guard("paint", "stores' paint", stores_paint)
 
+	# The landing gear's finishes (layout.paint gear): its legs, braces and
+	# fittings white or chrome, its tyres rubber, its hubs white or the main's
+	# hub finish, its doors' outer faces the paint and the rest of them white,
+	# its bays white
+	def gear_finishes():
+		finishes = {}   # node: {material: triangles}
+		for n in jet.model.nodes:
+			name = n["name"]
+			if n["mesh"] is None or not (name.startswith(("gear_", "well_")) or name == "launch_bar"):
+				continue
+			for tris, material in jet.model.meshes[n["mesh"]]:
+				finishes.setdefault(name, {})
+				finishes[name][material] = finishes[name].get(material, 0) + len(tris)
+		legs = [n for n in finishes if n.startswith("gear_") and "door" not in n and "wheel" not in n and n != "gear_nose_lamps"] + ["launch_bar", "gear_nose_lamps"]
+		if len(legs) < 20:
+			raise KeyError(f"gear: only {len(legs)} legs' parts built")
+		yield result("shape.gear", "legs' faces in neither white nor chrome", 0, sum(c for n in legs for m, c in finishes.get(n, {}).items() if m not in ("white", "chrome")), 0, "faces")
+		for name, hub in (("gear_right_wheel", "hub"), ("gear_left_wheel", "hub"), ("gear_nose_wheel", "white")):
+			f = finishes.get(name, {})
+			yield result("shape.gear", f"{name}'s faces in neither rubber nor {hub}", 0, sum(c for m, c in f.items() if m not in ("rubber", hub)), 0, "faces")
+			yield result("shape.gear", f"{name}'s hub faces", 1, int(f.get(hub, 0) > 0), 0, "present")
+		for name, below in FLUSH:
+			if not name.startswith("gear_"):
+				continue
+			outer = len(jet.faces(name))
+			f = finishes.get(name, {})
+			yield result("shape.gear", f"{name}'s outer face, faces not in the paint", 0, abs(f.get("paint", 0) - outer), 0, "faces")
+			yield result("shape.gear", f"{name}'s other faces not in white", 0, sum(f.values()) - outer - f.get("white", 0), 0, "faces")
+		for name, want in (("well_main_left", "white"), ("well_main_right", "white"), ("well_nose", "white"), ("well_speedbrake", "paint"), ("well_probe", "paint")):
+			f = finishes.get(name, {})
+			yield result("shape.gear", f"{name}'s faces not in {want}", 0, sum(f.values()) - f.get(want, 0) if f else 1, 0, "faces")
+
+	yield from guard("shape", "gear's finishes", gear_finishes)
+
+	# with the atlas, each leg lit as it stands gear down, not in the dark of
+	# the bay it is stowed in
+	def gear_paint():
+		image = atlas(jet.path, "white")
+		if image is None:
+			return
+		white = float(np.mean(F["layout"]["paint"]["gear"]["white"])) / 255
+		for name in ("gear_right_strut", "gear_left_strut", "gear_nose_strut"):
+			_, uvs = jet.textured(("white",), [name])
+			lit = float(np.median(sample(image, uvs.mean(1)))) / white
+			yield result("paint.gear", f"{name}'s paint, of white at its median, its shading baked gear down", 1.0, lit, 0.3, "share")
+
+	yield from guard("paint", "gear's paint", gear_paint)
+
 	# The mechanisms' strokes (layout.motion): each joint's last key against its
 	# fact, what the points file hands the engine, and the poses no key states
 	# outright measured off the posed model
@@ -3011,6 +3208,83 @@ def checks(jet):
 			yield result("layout.motion", f"{side} main connecting link's end off the bell crank's pin through the stroke, its most", 0.0, end_off, 0.6, "in")
 
 	yield from guard("layout.motion", "mechanisms' strokes", motion)
+
+	# Wells (layout.wells): under each closed door the skin is open, and the
+	# well behind the opening, closed by its doors and the skin round it,
+	# holds its parts at rest, stands inside the airframe, and holds no other
+	# part
+	def wells():
+		opened = jet.opened()
+		hull = jet.points(HULL).reshape(-1, 3, 3)
+		rest = jet.parts()
+		for well, (doors, members) in WELLS.items():
+			box = jet.tris([f"well_{well}"])
+			plug = jet.plugs(doors)
+			if not len(plug):
+				raise KeyError(f"no closed face on {doors}")
+			# no skin left where the doors close: points on the skin the doors
+			# were cut from, more than 0.15 in in from any door's outline (where
+			# the cut's slivers lie), with the skin as built on them
+			edge = FRAME.source(np.concatenate([outline(jet, d) for d in doors]))
+			middle = FRAME.source(plug.mean(1))
+			middle = middle[np.array([np.linalg.norm(edge - m, axis=1).min() for m in middle]) > 0.15]
+			lo, hi = plug.reshape(-1, 3).min(0) - 0.02, plug.reshape(-1, 3).max(0) + 0.02
+			near = FRAME.source(opened[((opened.max(1) >= lo) & (opened.min(1) <= hi)).all(1)].reshape(-1, 3)).reshape(-1, 3, 3)
+			left = int((closest(middle, near) < 0.01).sum()) if len(near) and len(middle) else 0
+			yield result("layout.wells", f"{well}'s closed face with skin on it, points more than 0.15 in from its outline", 0, left, 0, "points")
+			# no door closing on another (two cut from one band of skin)
+			yield result("layout.wells", f"{well}'s doors closing on one another, points more than 0.15 in from their outlines", 0, stacked(jet, doors), 0, "points")
+			# its faces turned into the well: those square to the opening facing
+			# out through it, as its doors' outer faces do (the bake shades a face
+			# from the side it faces: turned away, the well bakes black)
+			out = sum(np.cross(t[:, 1] - t[:, 0], t[:, 2] - t[:, 0]).sum(0) for t in (jet.faces(d) for d in doors))
+			out = out / np.linalg.norm(out)
+			n = np.cross(box[:, 1] - box[:, 0], box[:, 2] - box[:, 0])
+			area = np.linalg.norm(n, axis=1)
+			facing = (n / np.maximum(area, 1e-12)[:, None]) @ out
+			square = np.abs(facing) > 0.5
+			turned = float(area[square & (facing < 0)].sum() / area[square].sum()) if square.any() else 1.0
+			yield result("layout.wells", f"well_{well}'s faces square to its opening turned away from it, of their area", 0, round(turned, 3), 0, "share")
+			# the space the well, its closed doors and the skin round its opening close
+			lo, hi = box.reshape(-1, 3).min(0) - 0.3 * FRAME.unit, box.reshape(-1, 3).max(0) + 0.3 * FRAME.unit
+			c = opened.mean(1)
+			cavity = FRAME.source(np.concatenate([box, plug, opened[((c >= lo) & (c <= hi)).all(1)]]).reshape(-1, 3)).reshape(-1, 3, 3)
+			for m in members:
+				corners = np.unique(jet.points([m]), axis=0)
+				yield result("layout.wells", f"{m}'s corners outside the {well} well at rest", 0, int((~enclosed(corners, cavity)).sum()), 0, "corners")
+			# four points over each face, its middle and halfway from it to each
+			# corner, a few hundredths off it so that none lies on the plane of
+			# an opening's edge; one an axis ray finds outside is judged again by
+			# its crossings along oblique rays, since an axis ray can run down a
+			# seam where an opening's rim meets its closed face, and passed if it
+			# lies on the skin, where a well's rim stands
+			t = FRAME.source(box.reshape(-1, 3)).reshape(-1, 3, 3)
+			middle = t.mean(1)
+			spots = np.concatenate([middle[:, None, :], (middle[:, None, :] + t) / 2], 1) + np.array([0.013, 0.007, 0.011])
+			flat = spots.reshape(-1, 3)
+			out = np.zeros(len(flat), bool)
+			out[~enclosed(flat, hull)] = True
+			out[out] = [not crossed(p, hull) for p in flat[out]]
+			if out.any():
+				skin = FRAME.source(jet.tris(["fuselage"]).reshape(-1, 3)).reshape(-1, 3, 3)
+				out[out] = closest(flat[out], skin) > 0.02
+			yield result("layout.wells", f"well_{well}'s faces reaching outside the airframe", 0, int(out.reshape(-1, 4).any(1).sum()), 0, "faces")
+			# no other part inside it: each part near it at rest, but its own,
+			# the skin's and the launch bar (a fault of its own)
+			own = set(members) | set(doors) | set(HULL) | {f"well_{well}", "launch_bar"}
+			blo, bhi = FRAME.source(lo), FRAME.source(hi)
+			blo, bhi = np.minimum(blo, bhi), np.maximum(blo, bhi)
+			inside = []
+			for name, tris in rest.items():
+				if name in own or name.startswith("well_"):
+					continue
+				p = np.unique(FRAME.source(tris.reshape(-1, 3)), axis=0)
+				p = p[((p >= blo) & (p <= bhi)).all(1)]
+				if len(p) and enclosed(p, cavity).any():
+					inside.append(name)
+			yield result("layout.wells", f"other parts inside the {well} well at rest{': ' + ', '.join(sorted(inside)) if inside else ''}", 0, len(inside), 0, "parts")
+
+	yield from guard("layout.wells", "wells", wells)
 
 	# The paint, on a painted build (a draft carries no atlas: main() says so)
 	image = atlas(jet.path)

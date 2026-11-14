@@ -6,19 +6,14 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
-import aim120c_points from '../assets/aim120c.json'
-import aim9m_points from '../assets/aim9m.json'
 import fa18c_points from '../assets/fa18c.json'
-import ford_ship from '../assets/ford.json'
 import * as THREE from 'three'
-import { engine, fa18c, ford, missile, nozzle, rises, spin, STILL, stroke } from './cycle'
-import { rig, schedule, type Joint } from './joints'
+import { engine, fa18c, nozzle, rises, spin, STILL, stroke } from './cycle'
+import { rig, type Joint } from './joints'
 import { PACE, REACH } from './oleo'
-import { deflectors, layout, raising } from './ship'
 
 const DEGREE = Math.PI / 180
 const LEGS = { nose: 1, left: 0.4, right: 0.5 } // each leg's wheel rise per unit of its oleo drive, for these tests
-const FORD = layout(ford_ship as unknown as Parameters<typeof layout>[0])
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 
 // after reads a mover after stepping it some seconds in one step, and in
@@ -118,6 +113,17 @@ describe('engine', () => {
   it('poses the nozzles as the engine does', () => {
     expect(source).toContain('const open=Math.max(clamp((0.7-spool)/0.55,0,1),clamp(stage,0,1));')
     expect(source).toContain('case "nozzle": return 1-open;')
+  })
+})
+
+// The model viewer offers the Motion button for the F/A-18C alone (user,
+// 2026-11-13): nothing drives the missiles' or the Ford's parts there
+describe('the viewer', () => {
+  it('offers motion for fa18c.glb alone', () => {
+    const viewer = readFileSync(fileURLToPath(new URL('../components/ModelViewer.tsx', import.meta.url)), 'utf8')
+    expect(viewer).toContain("file: 'fa18c.glb',")
+    expect(viewer).toContain('{chosen === MOTION.file && loaded && (')
+    expect(viewer).toContain("if (!current || !loaded || !moving || chosen !== MOTION.file) return")
   })
 })
 
@@ -238,42 +244,4 @@ describe('the F/A-18C', () => {
     motion.step(2)
     expect(motion.value('swing', '')).toBeCloseTo(swing * DEGREE, 9)
   })
-})
-
-describe('the missiles', () => {
-  it('moves every drive their joints read', () => {
-    for (const points of [aim9m_points, aim120c_points]) {
-      const motion = missile()
-      for (const drive of drives((points as unknown as { joints: Record<string, { drive?: string }> }).joints))
-        expect(motion.value(drive, ''), drive).toBeTypeOf('number')
-    }
-  })
-})
-
-describe('the Ford', () => {
-  it('moves every joint', () => {
-    const motion = ford(FORD)
-    for (const name of Object.keys(FORD.joints)) expect(motion.value(FORD.joints[name].drive, name), name).toBeTypeOf('number')
-  })
-  it('raises the blast deflectors in real time, their struts following as the engine poses them', () => {
-    const motion = ford(FORD)
-    motion.step(0.5)
-    const pose = deflectors(FORD, 0.5)
-    for (const [name, joint] of Object.entries(FORD.joints)) {
-      if (!/^catapult_\d+_deflector/.test(name)) continue
-      expect(schedule(joint.keys, motion.value(joint.drive, name)!), name).toBeCloseTo(pose[name], 6)
-    }
-    expect(read('catapult_1_deflector', raising(FORD))).toBeCloseTo(raising(FORD), 9)
-    expect(read('catapult_1_deflector', 2 * raising(FORD))).toBeCloseTo(0, 9)
-  })
-  it("shoots the shuttles over the stroke at the catapults' capped end speed", () => {
-    const cat = FORD.catapults[0]
-    expect(read('catapult_1_shuttle', (2 * cat.stroke) / cat.speed)).toBeCloseTo(1, 9)
-  })
-  // read is a Ford joint of a fresh motion after some seconds
-  function read(name: string, seconds: number): number {
-    const motion = ford(FORD)
-    motion.step(seconds)
-    return motion.value(FORD.joints[name].drive, name)!
-  }
 })

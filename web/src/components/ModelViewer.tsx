@@ -120,25 +120,12 @@ function lift(ship: THREE.Object3D, seconds: number): void {
   }
 }
 
-// The models whose parts move, for the Motion button: each one's joints, its
-// motion (cycle.ts) from the model and its rigged joints, and the parts the
-// view stands somewhere other than their rest, by the offset that stands them
-// there (the Ford's control stations, shown raised), from which they move
-const MOTIONS: Record<
-  string,
-  { joints: Record<string, Joint>; motion: (shown: THREE.Object3D, posed: Posed[]) => cycle.Motion; raised?: Record<string, number[]> }
-> = {
-  'fa18c.glb': {
-    joints: (fa18c_points as unknown as { joints: Record<string, Joint> }).joints,
-    motion: (shown, posed) => cycle.fa18c(cycle.rises(shown, posed)),
-  },
-  'aim9m.glb': { joints: (aim9m_points as unknown as { joints: Record<string, Joint> }).joints, motion: cycle.missile },
-  'aim120c.glb': { joints: (aim120c_points as unknown as { joints: Record<string, Joint> }).joints, motion: cycle.missile },
-  'ford.glb': {
-    joints: FORD.joints as unknown as Record<string, Joint>,
-    motion: () => cycle.ford(FORD),
-    raised: stations(FORD.joints),
-  },
+// The model whose parts the Motion button moves, the F/A-18C: its joints, and
+// its motion (cycle.ts) from the model and its rigged joints
+const MOTION = {
+  file: 'fa18c.glb',
+  joints: (fa18c_points as unknown as { joints: Record<string, Joint> }).joints,
+  motion: (shown: THREE.Object3D, posed: Posed[]) => cycle.fa18c(cycle.rises(shown, posed)),
 }
 
 // The Ford's lens lights as the game draws them (engine.ts,
@@ -472,30 +459,20 @@ export function ModelViewer({
     }
   }, [lighting, loaded, chosen])
 
-  // While asked, every moving part of the shown model goes back and forth
-  // through its travel at its pace (cycle.ts), redrawn each frame; stopped,
-  // each goes back where it stood. The Ford's blast deflectors start from
-  // rest, the raise its button asked for given up.
+  // While asked, every moving part of the F/A-18C goes back and forth through
+  // its travel at its pace (cycle.ts), redrawn each frame; stopped, each goes
+  // back where it stood.
   useEffect(() => {
     const current = view.current
-    const entry = MOTIONS[chosen]
-    if (!current || !loaded || !moving || !entry) return
+    if (!current || !loaded || !moving || chosen !== MOTION.file) return
     const shown = loaded
-    if (chosen === 'ford.glb') {
-      time.current = 0
-      lift(shown, 0)
-    }
-    const posed = rig(shown, entry.joints)
+    const posed = rig(shown, MOTION.joints)
     const stood = posed.map((p) => ({
       position: p.object.position.clone(),
       quaternion: p.object.quaternion.clone(),
       influences: p.morphs.map((m) => m.mesh.morphTargetInfluences?.[m.index] ?? 0),
     }))
-    for (const p of posed) {
-      const offset = entry.raised?.[p.name]
-      if (offset) p.position.sub(new THREE.Vector3(...offset))
-    }
-    const motion = entry.motion(shown, posed)
+    const motion = MOTION.motion(shown, posed)
     let frame = 0
     let last = performance.now()
     const step = (now: number) => {
@@ -560,20 +537,13 @@ export function ModelViewer({
             ))}
           </SelectContent>
         </Select>
-        {MOTIONS[chosen] && loaded && (
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={() => {
-              if (!moving) setRaised(false)
-              setMoving((m) => !m)
-            }}
-          >
+        {chosen === MOTION.file && loaded && (
+          <Button variant='outline' size='sm' onClick={() => setMoving((m) => !m)}>
             {/* jsx-text-ok: developer page, English only by decision */}
             Motion: {moving ? 'on' : 'off'}
           </Button>
         )}
-        {chosen === 'ford.glb' && count !== null && !moving && (
+        {chosen === 'ford.glb' && count !== null && (
           <Button variant='outline' size='sm' onClick={() => setRaised((up) => !up)}>
             {/* jsx-text-ok: developer page, English only by decision */}
             {raised ? 'Lower JBDs' : 'Raise JBDs'}

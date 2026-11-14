@@ -2,16 +2,15 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-// The model viewer's motion (/air/models): every moving part of a model
+// The model viewer's motion (/air/models): every moving part of the F/A-18C
 // driven back and forth through its whole travel without end, each at the
 // pace the game moves it. Where nothing in the game sets a pace - the part
 // follows the jet's state (a wheel the ground, the wing its lift) or no game
 // code drives it yet - the pace is an estimate, marked as one where it is set.
 import * as THREE from 'three'
 import fa18c_points from '../assets/fa18c.json'
-import { pose, roll, schedule, type Posed } from './joints'
+import { pose, roll, type Posed } from './joints'
 import { PACE, REACH } from './oleo'
-import { type Layout, raising } from './ship'
 
 const DEGREE = Math.PI / 180
 
@@ -256,75 +255,4 @@ export function fa18c(legs: Legs, points: Points = fa18c_points as unknown as Po
       (points.motion.swing * DEGREE) / points.motion.seconds.swing
     ),
   })
-}
-
-// missile drives a missile's joints (aim9m.json, aim120c.json): its control
-// fins through 20 deg each way at 200 deg/s, and the AIM-9M's rolleron wheels
-// spinning a turn a second each way for 3 s. Each is an estimate: nothing in
-// the game moves them yet, and a rolleron in flight spins far faster than a
-// frame can show
-export function missile(): Motion {
-  return by({
-    control: stroke(-20 * DEGREE, 20 * DEGREE, 200 * DEGREE),
-    rolleron: spin(2 * Math.PI, 3),
-  })
-}
-
-// A Ford joint's pace, by its name: the parts each pattern names, their
-// drive's travel (0 to 1, or a blast deflector's seconds) and its pace
-interface Part {
-  pattern: RegExp
-  mover: (ship: Layout) => Mover
-}
-
-const DEFLECTOR = /^catapult_\d+_deflector$/
-
-const PARTS: Part[] = [
-  // the blast deflectors on their raise, in real time each way (ford.json:
-  // their keys are seconds into it); their struts follow (ship.ts deflectors)
-  { pattern: DEFLECTOR, mover: (ship) => stroke(0, raising(ship), 1) },
-  // the shuttles' shot over the stroke at the catapults' capped end speed,
-  // accelerating evenly (ford.json catapults: 2 x stroke / speed), and their
-  // return in 20 s: an estimate
-  {
-    pattern: /^catapult_\d+_shuttle$/,
-    mover: (ship) => {
-      const cat = ship.catapults[0]
-      const shot = cat ? (2 * cat.stroke) / cat.speed : 2
-      return stroke(0, 1, (_, rising) => (rising ? 1 / shot : 1 / 20))
-    },
-  },
-  // the rest are estimates: nothing in the game drives them yet
-  { pattern: /^catapult_console_/, mover: () => stroke(0, 1, 1 / 4) }, // the control stations raised in 4 s
-  { pattern: /^elevator_\d+$/, mover: () => stroke(0, 1, 1 / 15) }, // the elevators' 10.8 m in 15 s
-  { pattern: /^antenna_/, mover: () => stroke(0, 1, 1 / 20) }, // the antennas lowered in 20 s
-  { pattern: /^barricade_(port|starboard)$/, mover: () => stroke(0, 1, 1 / 10) }, // the barricade stanchions raised in 10 s
-  { pattern: /_sheave_/, mover: () => stroke(0, 1, 1 / 2) }, // the wires' sheaves sunk in 2 s
-  { pattern: /^wire_\d+_support_\d+$/, mover: () => stroke(0, 1, 1 / 0.3) }, // a wire support pressed flat under a wheel in 0.3 s
-]
-
-// ford drives every joint of our Ford by its name: a joint that follows
-// another takes its leader's value through the leader's own keys, as a
-// deflector's crank and rod take its angle
-export function ford(ship: Layout): Motion {
-  const movers: Record<string, Mover> = {}
-  const kinds: Mover[] = []
-  for (const part of PARTS) {
-    const mover = part.mover(ship)
-    kinds.push(mover)
-    for (const name of Object.keys(ship.joints)) if (!movers[name] && part.pattern.test(name)) movers[name] = mover
-  }
-  return {
-    step(seconds: number) {
-      for (const m of kinds) m.step(seconds)
-    },
-    value(_: string, name: string) {
-      const leader = ship.joints[name]?.follows
-      if (leader) {
-        const lead = movers[leader]
-        return lead ? schedule(ship.joints[leader].keys, lead.value) : undefined
-      }
-      return movers[name]?.value
-    },
-  }
 }

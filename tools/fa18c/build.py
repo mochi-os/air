@@ -25,12 +25,14 @@
 #
 # usage: blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.json [FEATURES.json] [--draft] [--cache DIR] [--facts FILE] [--keys FILE]
 import json, math, re, sys
+from contextlib import contextmanager
 from pathlib import Path
 
 import bmesh
 import numpy as np
 import bpy
-from mathutils import Matrix, Vector
+from mathutils import Matrix, Quaternion, Vector
+from mathutils.geometry import tessellate_polygon
 from mathutils.bvhtree import BVHTree
 
 HERE = Path(__file__).resolve().parent
@@ -226,12 +228,23 @@ def outward(mesh):
 
 
 def merge(pieces):
-	vertices, faces = [], []
-	for vs, fs in pieces:
+	# Meshes as one; a piece may carry a finish per face (a material's name,
+	# None for the node's own), and then so does the whole
+	vertices, faces, finishes = [], [], []
+	for piece in pieces:
+		vs, fs = piece[0], piece[1]
 		offset = len(vertices)
 		vertices += vs
 		faces += [tuple(i + offset for i in f) for f in fs]
+		finishes += piece[2] if len(piece) > 2 else [None] * len(fs)
+	if any(finishes):
+		return vertices, faces, finishes
 	return vertices, faces
+
+
+def finished(mesh, name):
+	# A mesh with every face in one finish
+	return mesh[0], mesh[1], [name] * len(mesh[1])
 
 
 class Bend:
@@ -292,7 +305,9 @@ MATERIALS = {}
 # in dvids9820808 (the engine lights them at night); burner the afterburner
 # duct's soot, sRGB about 28 (the engine sets its glow); stores the pylons',
 # tanks' and launchers' grey, the airframe's lower grey (layout.paint lower:
-# the real ones carry the airframe's paint), plain: they stay out of the atlas
+# the real ones carry the airframe's paint), plain: they stay out of the atlas.
+# The landing gear's finishes (layout.paint gear: white, rubber, chrome, hub)
+# share the paint's atlas: their colour, shaded, in place of the greys
 def linear(srgb):
 	c = np.asarray(srgb, float) / 255
 	return tuple(float(v) for v in np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)) + (1,)
@@ -301,6 +316,8 @@ def linear(srgb):
 COLOURS = {"paint": (0.42, 0.45, 0.48, 1), "team": (0.42, 0.45, 0.48, 1), "glass": (0.1, 0.12, 0.14, 0.4),
 	"lights": (0.34, 0.35, 0.32, 1), "burner": (0.012, 0.011, 0.010, 1), "display": (0.05, 0.08, 0.05, 1),
 	"stores": linear(LAYOUT["paint"]["lower"]), "red": linear(LAYOUT["scoop"]["red"])}
+COLOURS.update({name: linear(c) for name, c in LAYOUT["paint"]["gear"].items()})
+ATLASED = ("paint", "team") + tuple(LAYOUT["paint"]["gear"])   # the materials the atlas paints
 
 
 def material(name):
@@ -327,17 +344,20 @@ BENDING = {}   # each wing's bend under load, for the stores hung under it
 TOPLINE, KEELLINE = [], []
 
 
-def node(name, parent=None, hinge=None, mesh=None, paint="paint"):
+def node(name, parent=None, hinge=None, mesh=None, paint="paint", inside=False):
 	# An object at `hinge` (world space). Its mesh's vertices are given in
 	# world space and stored relative to the hinge. Every ancestor rests
 	# unrotated, so a child's location is its hinge less its parent's.
+	# `inside`: an open shell seen from within (a well), its faces turned in
+	# once tidy() has turned them out
 	if hinge is None:
 		hinge = HINGES[parent].copy() if parent else Vector()
 	data = None
 	if mesh:
-		# a mesh is (vertices, faces), or (vertices, faces, a material per face)
+		# a mesh is (vertices, faces), or (vertices, faces, a material per face,
+		# None for `paint`)
 		vertices, faces = mesh[0], mesh[1]
-		paints = mesh[2] if len(mesh) > 2 else [paint] * len(faces)
+		paints = [n or paint for n in mesh[2]] if len(mesh) > 2 else [paint] * len(faces)
 		data = bpy.data.meshes.new(name)
 		data.from_pydata([v - hinge for v in vertices], [], faces)
 		names = sorted(set(paints))
@@ -347,6 +367,8 @@ def node(name, parent=None, hinge=None, mesh=None, paint="paint"):
 			polygon.material_index = names.index(n)
 		data.validate()
 		tidy(data)
+		if inside:
+			data.flip_normals()
 	obj = bpy.data.objects.new(name, data)
 	bpy.context.scene.collection.objects.link(obj)
 	if parent:
@@ -2748,9 +2770,10 @@ def pod(front, back, radius, sides=14):
 	return loft(rings)
 
 
-def tyre(centre, axis, radius, width, hub=0.55, sides=28):
+def tyre(centre, axis, radius, width, hub, finish, sides=28):
 	# A tyre and wheel: a rounded tread round the axis, its sidewalls
-	# dished in to the hub
+	# dished in to the hub, `hub` of the tyre's radius (layout.gear tyres),
+	# whose two faces close it, in their `finish`; the tyre in rubber
 	axis = axis.normalized()
 	u = axis.orthogonal().normalized()
 	v = axis.cross(u)
@@ -2762,15 +2785,23 @@ def tyre(centre, axis, radius, width, hub=0.55, sides=28):
 		a = 2 * math.pi * i / sides
 		radial = u * math.cos(a) + v * math.sin(a)
 		rings.append([centre + radial * d + axis * z for d, z in profile])
-	# a closed torus: loft round the circle, then close the seam
+	# the tread and sidewalls lofted round the circle, then each hub's face a
+	# fan from its middle to the sidewall's inner ring
 	vertices = [p for ring in rings for p in ring]
 	n = len(profile)
 	faces = []
 	for i in range(sides):
 		a, b = i * n, ((i + 1) % sides) * n
 		faces += [(a + j, a + j + 1, b + j + 1, b + j) for j in range(n - 1)]
-		faces.append((a + n - 1, a, b, b + n - 1))
-	return vertices, faces
+	finishes = ["rubber"] * len(faces)
+	for j, z in ((0, -w * 0.7), (n - 1, w * 0.7)):
+		middle = len(vertices)
+		vertices.append(centre + axis * z)
+		for i in range(sides):
+			a, b = i * n + j, ((i + 1) % sides) * n + j
+			faces.append((middle, b, a) if j == 0 else (middle, a, b))
+			finishes.append(finish)
+	return vertices, faces, finishes
 
 
 def plate(corner, along, across, thickness):
@@ -2801,7 +2832,7 @@ def chain(joints):
 
 
 def rested(mesh, undo):
-	return [undo @ v for v in mesh[0]], mesh[1]
+	return ([undo @ v for v in mesh[0]], *mesh[1:])
 
 
 def built(names):
@@ -2830,6 +2861,11 @@ def crossings(tree, start, direction):
 
 STROKE = [round(k / 24, 4) for k in range(25)]   # the gear drive's samples for the braces' solved keys
 BRACES = []   # the gear's braces, built once the whole airframe is (braces())
+# Each well's opening in the skin, cut once the airframe is built (wells()):
+# {well: {"below": bool, "pieces": [a door's plan outline, [[FS, BL], ...]]}}
+# for the doors and the speedbrake, as cut() copied them; the probe's is its
+# door's stations and angles, {"probe": {"shell": (from, to, upper, lower)}}
+OPENINGS = {}
 
 
 def turning(hinge, axis, angle):
@@ -2928,12 +2964,12 @@ def drag_brace(pin, top, undo, skin, parts):
 		"(tube stowed, rod stowed, rod hidden gear down:", ", ".join(f"{t:.2f}" for t in terms) + ")")
 	axis = undo.to_3x3() @ PORT
 	toward = (end - rest).normalized()
-	node("gear_nose_brace", parent="gear_nose_strut", hinge=rest, mesh=cylinder(rest, rest + toward * length, tube, 1.4))
+	node("gear_nose_brace", parent="gear_nose_strut", hinge=rest, mesh=cylinder(rest, rest + toward * length, tube, 1.4), paint="white")
 	targets = [(c.to_3x3().inverted() @ (end - f)).normalized() for c, f in zip(carry, feet)]
 	joint("gear_nose_brace", axis, toward, axis.cross(toward), "gear",
 		[[d, round(math.atan2(axis.dot(toward.cross(v)), toward.dot(v)), 4)] for d, v in zip(STROKE, targets)])
 	down = (rest - end).normalized()
-	node("gear_nose_brace_upper", hinge=end, mesh=cylinder(end, end + down * reach, rod))
+	node("gear_nose_brace_upper", hinge=end, mesh=cylinder(end, end + down * reach, rod), paint="white")
 	joint("gear_nose_brace_upper", axis, down, axis.cross(down), "gear",
 		[[d, round(math.atan2(axis.dot(down.cross((f - end).normalized())), down.dot((f - end).normalized())), 4)] for d, f in zip(STROKE, feet)])
 
@@ -2992,9 +3028,9 @@ def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing,
 	k0, q0 = knees[0], bolts[0]
 	off = max((k + (q - k) - q).length for k, q in zip(knees, bolts))
 	print(f"{leg} side brace: halves {(straight - pin).length / INCH:.1f} and {(bolt - straight).length / INCH:.1f} in, its knee turning {math.degrees(abs(angle(k0 - pin, knees[-1] - pin))):.0f} deg")
-	node(f"{leg}_brace_upper", hinge=pin, mesh=cylinder(pin, k0, radius))
+	node(f"{leg}_brace_upper", hinge=pin, mesh=cylinder(pin, k0, radius), paint="white")
 	joint(f"{leg}_brace_upper", n, flat(k0 - pin), n.cross(flat(k0 - pin)), "gear", [[t, round(angle(k0 - pin, k - pin), 4)] for t, k in zip(steps, knees)])
-	node(f"{leg}_brace", parent=f"{leg}_brace_upper", hinge=k0, mesh=cylinder(k0, q0, radius))
+	node(f"{leg}_brace", parent=f"{leg}_brace_upper", hinge=k0, mesh=cylinder(k0, q0, radius), paint="white")
 	joint(f"{leg}_brace", n, flat(q0 - k0), n.cross(flat(q0 - k0)), "gear",
 		[[t, round(angle(q0 - k0, q - k) - angle(k0 - pin, k - pin), 4)] for t, k, q in zip(steps, knees, bolts)])
 	MARKS[f"brace_bolt_{name}"] = (q0, f"{leg}_brace")
@@ -3029,7 +3065,7 @@ def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing,
 	phis = list(reversed(phis))   # by step, gear 0 to 1
 	pins = [carry(centre + Matrix.Rotation(phi, 3, n) @ (crank_pin - centre), t) for t, phi in zip(steps, phis)]
 	print(f"{leg} connecting link: {(top - crank_pin).length / INCH:.1f} in, its crank's arm {(crank_pin - centre).length / INCH:.1f} in turning {math.degrees(max(phis) - min(phis)):.1f} deg")
-	node(f"{leg}_link", hinge=top, mesh=cylinder(top, pins[0], b["connecting"]["diameter"] / 2))
+	node(f"{leg}_link", hinge=top, mesh=cylinder(top, pins[0], b["connecting"]["diameter"] / 2), paint="chrome")
 	joint(f"{leg}_link", n, flat(pins[0] - top), n.cross(flat(pins[0] - top)), "gear", [[t, round(angle(pins[0] - top, p - top), 4)] for t, p in zip(steps, pins)])
 	collar = (on(through, direction, link["collars"][0][1]) - top).length
 	MARKS[f"link_collar_{name}"] = (top + (pins[0] - top).normalized() * collar, f"{leg}_link")
@@ -3037,7 +3073,7 @@ def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing,
 	# rest turned as with the gear stowed
 	rest_pin = centre + Matrix.Rotation(phis[0], 3, n) @ (crank_pin - centre)
 	node(f"{leg}_crank", parent=f"{leg}_strut", hinge=strut_undo @ centre,
-		mesh=rested(merge([cylinder(centre, rest_pin, 0.8), cylinder(centre - n * (1.0 * INCH), centre + n * (1.0 * INCH), 1.3)]), strut_undo))
+		mesh=rested(merge([cylinder(centre, rest_pin, 0.8), cylinder(centre - n * (1.0 * INCH), centre + n * (1.0 * INCH), 1.3)]), strut_undo), paint="white")
 	arm = strut_undo.to_3x3() @ flat(rest_pin - centre)
 	joint(f"{leg}_crank", n, arm, n.cross(arm), "gear", [[t, round(phi - phis[0], 4)] for t, phi in zip(steps, phis)])
 	# the post's lower casting's fittings, riding the post: a lug out to the
@@ -3047,7 +3083,7 @@ def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing,
 	root = trunnion + (fork - trunnion).normalized() * (bolt - trunnion).dot((fork - trunnion).normalized())
 	base = pivot + out * max(-4.5 * INCH, min(2.5 * INCH, (centre - pivot).dot(out)))
 	node(f"{leg}_casting", parent=f"{leg}_strut", hinge=strut_undo @ centre, mesh=rested(merge([cylinder(root, bolt, 1.0),
-		cylinder(bolt - n * (1.2 * INCH), bolt + n * (1.2 * INCH), 1.2), cylinder(base, centre, 1.0)]), strut_undo))
+		cylinder(bolt - n * (1.2 * INCH), bolt + n * (1.2 * INCH), 1.2), cylinder(base, centre, 1.0)]), strut_undo), paint="white")
 
 
 def gear():
@@ -3108,7 +3144,7 @@ def gear():
 		frames = chain([(trunnion, turned(stow["axis"]), -swing), (pivot, lever, -shrink), (eye, turn_axis, -quarter)])
 		strut_undo, shrink_undo, axle_undo = (f[2] for f in frames)
 		boss = cylinder(pivot - out * (4.5 * INCH), pivot + out * (2.5 * INCH), 2.0)
-		node(f"{leg}_strut", hinge=trunnion, mesh=rested(merge([cylinder(trunnion, fork, m["post"] / 2), boss]), strut_undo))
+		node(f"{leg}_strut", hinge=trunnion, mesh=rested(merge([cylinder(trunnion, fork, m["post"] / 2), boss]), strut_undo), paint="white")
 		stowed_post = strut_undo.to_3x3() @ extended
 		joint(f"{leg}_strut", frames[0][1], stowed_post, extended, "gear", [[0, 0], [1, round(swing, 4)]])
 		# the shrink link's turn of the arm, and the leg's own compression on
@@ -3116,14 +3152,15 @@ def gear():
 		node(f"{leg}_shrink", parent=f"{leg}_strut", hinge=frames[1][0])
 		rest_turn = shrink_undo.to_3x3()
 		joint(f"{leg}_shrink", frames[1][1], rest_turn @ (eye - pivot), strut_undo.to_3x3() @ (eye - pivot), "gear", [[0, 0], [1, round(shrink, 4)]])
-		node(f"{leg}_oleo", parent=f"{leg}_shrink", hinge=frames[1][0], mesh=rested(cylinder(pivot, eye, 2.6, 2.2), shrink_undo))
+		node(f"{leg}_oleo", parent=f"{leg}_shrink", hinge=frames[1][0], mesh=rested(cylinder(pivot, eye, 2.6, 2.2), shrink_undo), paint="white")
 		joint(f"{leg}_oleo", rest_turn @ lever, rest_turn @ (face - pivot), rest_turn @ UP, f"oleo.{name}", [[0, 0], [1, round(1 / reach, 4)]])
 		# the axle's stub, from the arm's end out to the wheel's inboard face,
 		# turning a quarter with the wheel on it
-		node(f"{leg}_axle", parent=f"{leg}_oleo", hinge=frames[2][0], mesh=rested(cylinder(eye, face, 2.2, 1.8), axle_undo))
+		node(f"{leg}_axle", parent=f"{leg}_oleo", hinge=frames[2][0], mesh=rested(cylinder(eye, face, 2.2, 1.8), axle_undo), paint="white")
 		joint(f"{leg}_axle", frames[2][1], axle_undo.to_3x3() @ (axle - eye), shrink_undo.to_3x3() @ (axle - eye), "gear", [[0, 0], [1, round(quarter, 4)]])
 		wheel_turn = axle_undo.to_3x3()
-		node(f"{leg}_wheel", parent=f"{leg}_axle", hinge=axle_undo @ axle, mesh=rested(tyre(axle, out, main_r, g["tyres"]["main"]["width"]), axle_undo))
+		node(f"{leg}_wheel", parent=f"{leg}_axle", hinge=axle_undo @ axle,
+			mesh=rested(tyre(axle, out, main_r, g["tyres"]["main"]["width"], g["tyres"]["main"]["hub"], "hub"), axle_undo))
 		# the hub's outer face, where a photo shows the wheel's centre
 		MARKS[f"axle_main_{name}"] = (axle_undo @ (axle + out * (g["tyres"]["main"]["width"] * 0.35 * INCH)), f"{leg}_wheel")
 		# its centre, where a head-on photo shows the middle of the tyre
@@ -3158,7 +3195,7 @@ def gear():
 			bend = -bend
 		collar = shock_top.lerp(eye, shock["collar"])
 		body, can = (w / 2 for w in shock["diameters"])
-		node(f"{leg}_shock", parent=f"{leg}_shock_aim", hinge=strut_undo @ shock_top, mesh=rested(cylinder(shock_top, collar, body), body_undo))
+		node(f"{leg}_shock", parent=f"{leg}_shock_aim", hinge=strut_undo @ shock_top, mesh=rested(cylinder(shock_top, collar, body), body_undo), paint="white")
 		joint(f"{leg}_shock", body_turn @ bend, body_turn @ arm, body_turn @ (eyes[-1] - eye), f"oleo.{name}",
 			[[d, round(toward(e, arm, bend), 4)] for d, e in zip(travel, eyes)])
 		# the can drawn up the body by the shrink at rest, the sleeve letting it
@@ -3171,7 +3208,7 @@ def gear():
 			[[g_, round((e - shock_top).length - drawn_length, 4)] for g_, e in zip(steps, eyes_in)], motion="slide")
 		end = eye - arm.normalized() * (1.5 * INCH)
 		node(f"{leg}_shock_can", parent=f"{leg}_shock_sleeve", hinge=body_undo @ (sleeve @ eye),
-			mesh=rested(merge([cylinder(collar, end, can), cylinder(end, eye, 1.5)]), body_undo @ sleeve))
+			mesh=rested(merge([cylinder(collar, end, can), cylinder(end, eye, 1.5)]), body_undo @ sleeve), paint="white")
 		joint(f"{leg}_shock_can", body_turn @ arm, body_turn @ arm, body_turn @ -arm, f"oleo.{name}",
 			[[d, round(arm.length - (e - shock_top).length, 4)] for d, e in zip(travel, eyes)], motion="slide")
 		# the side brace and the planing mechanism's connecting link, solved
@@ -3201,18 +3238,18 @@ def gear():
 	reach = (95 - n["brace"][1]) / math.cos(lean)
 	bar_pivot, bar_tip = at(*n["bar"]["pivot"], 0), at(*n["bar"]["tip"], 0)
 	node("gear_nose_strut", hinge=trunnion, mesh=rested(merge([cylinder(trunnion, top, n["post"] / 2),
-		cylinder(at(column, n["bar"]["pivot"][1], 1.6), at(column, n["bar"]["pivot"][1], -1.6), 1.6)]), undo))
+		cylinder(at(column, n["bar"]["pivot"][1], 1.6), at(column, n["bar"]["pivot"][1], -1.6), 1.6)]), undo), paint="white")
 	joint("gear_nose_strut", frames[0][1], stowed, extended, "gear", [[0, 0], [1, swing]])
 	# the piston from the post's foot to the axle's fitting, which trails aft to the axle
 	foot = at(column, g["axles"]["nose"] + 1.5, 0)
-	node("gear_nose_oleo", parent="gear_nose_strut", hinge=trunnion, mesh=rested(merge([cylinder(top, foot, n["piston"] / 2),
-		cylinder(foot, axle, 1.6)]), undo))
+	node("gear_nose_oleo", parent="gear_nose_strut", hinge=trunnion, mesh=rested(merge([finished(cylinder(top, foot, n["piston"] / 2), "chrome"),
+		cylinder(foot, axle, 1.6)]), undo), paint="white")
 	joint("gear_nose_oleo", undo.to_3x3() @ UP, UP, UP, "oleo.nose", down, motion="slide")
 	node("gear_nose_steering", parent="gear_nose_oleo", hinge=undo @ trunnion)
 	joint("gear_nose_steering", undo.to_3x3() @ extended, PORT, -PORT, "steering", IDENTITY)
-	wheels = merge([tyre(axle + Vector((0, s * offset * INCH, 0)), PORT, nose_r, g["tyres"]["nose"]["width"]) for s in (-1, 1)] +
+	wheels = merge([tyre(axle + Vector((0, s * offset * INCH, 0)), PORT, nose_r, g["tyres"]["nose"]["width"], g["tyres"]["nose"]["hub"], "white") for s in (-1, 1)] +
 		[cylinder(axle + Vector((0, -6 * INCH, 0)), axle + Vector((0, 6 * INCH, 0)), 1.2)])
-	node("gear_nose_wheel", parent="gear_nose_steering", hinge=undo @ axle, mesh=rested(wheels, undo))
+	node("gear_nose_wheel", parent="gear_nose_steering", hinge=undo @ axle, mesh=rested(wheels, undo), paint="white")
 	for side in (-1, 1):
 		MARKS[f"axle_nose_{side_name(side)}"] = (undo @ (axle + Vector((0, -side * (offset + g["tyres"]["nose"]["width"] * 0.35) * INCH, 0))), "gear_nose_wheel")
 		MARKS[f"wheel_nose_{side_name(side)}"] = (undo @ (axle + Vector((0, -side * offset * INCH, 0))), "gear_nose_wheel")
@@ -3231,7 +3268,7 @@ def gear():
 	lowered = -math.asin(min(1.0, drop / length))
 	for _ in range(8):
 		lowered = -math.asin(min(1.0, (drop - tip * math.cos(lowered)) / length))
-	node("launch_bar", parent="gear_nose_strut", hinge=undo @ bar_pivot, mesh=rested(cylinder(bar_pivot, bar_tip, 1.6, tip, sides=8), undo))
+	node("launch_bar", parent="gear_nose_strut", hinge=undo @ bar_pivot, mesh=rested(cylinder(bar_pivot, bar_tip, 1.6, tip, sides=8), undo), paint="white")
 	joint("launch_bar", undo.to_3x3() @ PORT, undo.to_3x3() @ (bar_tip - bar_pivot), undo.to_3x3() @ DOWN, "bar", [[0, 0], [1, round(raised - lowered, 4)]])
 	MARKS["launch_bar_tip"] = (undo @ bar_tip, "launch_bar")
 	# The strut's lamps (layout.lights gear, natops 2.6.1.5-6): the landing
@@ -3266,10 +3303,10 @@ def gear():
 	for k in (1, 0, -1):
 		centre = middle + UP * (k * a_["spacing"] * INCH)
 		lenses.append(cylinder(centre, centre - facing * (0.4 * INCH), a_["lens"] / 2))
-	node("gear_nose_lamps", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(housing), undo))
+	node("gear_nose_lamps", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(housing), undo), paint="white")
 	node("lamp_gear_nose", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(lenses), undo), paint="lights")
 
-	def door(node_name, outline, hinge, targets, below=True, curve=None, corners=None, pairs=None):
+	def door(node_name, well, outline, hinge, targets, below=True, curve=None, corners=None, pairs=None):
 		# A door cut from the skin inside its plan outline ([FS, BL]), hinged
 		# on the skin along `hinge` (two [FS, BL] ends), opened with the gear
 		# by the angle that brings its far edge's ends nearest the photos'
@@ -3281,7 +3318,8 @@ def gear():
 		# A hinge end given as [FS, WL, BL] is where the photos fix the axis
 		# (off the skin, inside it); `pairs` fits the turn to named closed
 		# corners ([FS, BL]) and where the photos put each open ([FS, WL, BL])
-		mesh = merge([cut(None, None, below=below, outline=piece) for piece in outline])
+		mesh = merge([cut(None, None, below=below, outline=piece, inside="white") for piece in outline])
+		OPENINGS.setdefault(well, {"below": below, "pieces": []})["pieces"] += outline
 		for mark, (f, b) in (corners or {}).items():
 			MARKS[mark] = (draped(belly, f, b, below=below, out=0.15), node_name)
 		h0, h1 = (at(*h) if len(h) == 3 else draped(belly, h[0], h[1], below=below, out=0.15) for h in hinge)
@@ -3356,14 +3394,14 @@ def gear():
 		reach0 = across(f0, side * b0, opened([f0, side * b0], [0, edges[0][1], edges[0][2]]), 0.0)
 		reach1 = across(f1, side * b1, opened([f1, side * b1], [0, edges[1][1], edges[1][2]]), 0.0)
 		n = f"gear_nose_door_{side_name(side)}"
-		door(n, [[[f0, side * b0], [f1, side * b1], [f1, reach1], [f0, reach0]]],
+		door(n, "nose", [[[f0, side * b0], [f1, side * b1], [f1, reach1], [f0, reach0]]],
 			[[f0, side * b0], [f1, side * b1]], edges, curve=f"door_nose_forward_edge_{side_name(side)}",
 			corners={f"{n}_front_outboard": [f0, side * b0], f"{n}_aft_outboard": [f1, side * b1], f"{n}_aft_inboard": [f1, reach1], f"{n}_front_inboard": [f0, reach0]})
 	d = doors["long"]
 	(f0, b0), (f1, b1) = d["hinge"]
 	(e0, r0), (e1, r1) = d["free"]
 	n = "gear_nose_door_long"
-	door(n, [[[f0, b0], [f1, b1], [e1, r1], [e0, r0]]], [[f0, b0], [f1, b1]], d["edge"],
+	door(n, "nose", [[[f0, b0], [f1, b1], [e1, r1], [e0, r0]]], [[f0, b0], [f1, b1]], d["edge"],
 		corners={f"{n}_front_right": [f0, b0], f"{n}_aft_right": [f1, b1], f"{n}_aft_left": [e1, r1], f"{n}_front_left": [e0, r0]})
 	# Each main leg's doors in the blister under its nacelle (layout.nacelle
 	# door), each hanging straight down when open: the inner hinged along the
@@ -3390,12 +3428,12 @@ def gear():
 			return [([fs, side * bl], [tf, tw, side * tb]) for (fs, bl), (tf, tw, tb) in free]
 
 		e = doors["inner"]["forward"]
-		door(f"gear_door_inner_{name}", [plan(e["outline"])], axis_(e["hinge"]), None, pairs=fitted(e["free"]),
+		door(f"gear_door_inner_{name}", f"main_{name}", [plan(e["outline"])], axis_(e["hinge"]), None, pairs=fitted(e["free"]),
 			corners={f"gear_door_inner_{k}_{name}": [fs, side * bl] for k, (fs, bl) in zip(("front_inboard", "front_outboard", "bend", "aft_outboard", "aft_inboard"), e["outline"])})
 		e = doors["inner"]["strip"]
-		door(f"gear_door_strip_{name}", [plan(e["outline"])], axis_(e["hinge"]), None, pairs=fitted(e["free"]),
+		door(f"gear_door_strip_{name}", f"main_{name}", [plan(e["outline"])], axis_(e["hinge"]), None, pairs=fitted(e["free"]),
 			corners={f"gear_door_strip_{k}_{name}": [fs, side * bl] for k, (fs, bl) in zip(("front_inboard", "front_outboard", "aft_outboard", "aft_inboard"), e["outline"])})
-		door(f"gear_door_outer_{name}", [[[f0, side * b], [f1, side * b], [f1, side * inner], [f0, side * inner]]], axis_(d["axis"]), None, pairs=fitted(d["free"]),
+		door(f"gear_door_outer_{name}", f"main_{name}", [[[f0, side * b], [f1, side * b], [f1, side * inner], [f0, side * inner]]], axis_(d["axis"]), None, pairs=fitted(d["free"]),
 			corners={f"gear_door_outer_front_outboard_{name}": [f0, side * b], f"gear_door_outer_aft_outboard_{name}": [f1, side * b],
 				f"gear_door_outer_aft_inboard_{name}": [f1, side * inner], f"gear_door_outer_front_inboard_{name}": [f0, side * inner]})
 
@@ -3486,6 +3524,7 @@ def mechanisms():
 	rings = [[shell(st, th, 0.15) for th in angles] + [shell(st, th, -0.1) for th in reversed(angles)] for st in stations]
 	a, b = shell(start, lower, 0.15), shell(end, lower, 0.15)
 	node("probe_door", hinge=a, mesh=loft(rings))
+	OPENINGS["probe"] = {"shell": (start, end, upper, lower)}
 	motion = LAYOUT["motion"]["probe"]["value"]
 	joint("probe_door", b - a, shell((start + end) / 2, upper, 0.15) - shell((start + end) / 2, lower, 0.15), -PORT, "probe",
 		[[0, 0], [motion["opening"], math.radians(motion["door"])], [1, math.radians(motion["door"])]])
@@ -3505,7 +3544,204 @@ def mechanisms():
 	front, back, half = sb["front"], sb["back"], sb["half"]
 	skin_tree = built(["fuselage"])
 	node("speedbrake", hinge=draped(skin_tree, front, 0, out=0.15), mesh=cut((front, back), (-half, half)))
+	OPENINGS["speedbrake"] = {"below": False, "pieces": [[[front, -half], [back, -half], [back, half], [front, half]]]}
 	joint("speedbrake", PORT, AFT, UP, "speedbrake", [[0, 0], [1, math.radians(60)]])
+
+
+def wells():
+	# The wells behind the openings (layout.wells): each main gear's bay, the
+	# nose gear's, the speedbrake's and the probe's, a box of walls and a roof
+	# standing on the closed skin; then each opening cut from the skin, the
+	# faces cut() copied for each door, so a closed door fills its own hole.
+	# Every material is two-sided, so the skin's inside shows where a well
+	# reaches past its opening. check.py holds every face inside the airframe
+	w = LAYOUT["wells"]
+	tree = built(["fuselage"])
+	rows, across = 8, 8
+
+	def height(station, buttline, below):
+		# the skin's waterline at a station and buttline, its lower surface
+		# seen from below or its upper from above
+		hit = tree.ray_cast(at(station, -100.0 if below else 300.0, buttline), UP if below else DOWN)[0]
+		if hit is None:
+			raise SystemExit(f"wells: no skin at FS {station:.1f}, BL {buttline:.1f}")
+		return hit.z / INCH + ORIGIN["waterline"]
+
+	def column(station, buttline, bottom, top):
+		# a wall from the skin to the roof
+		return [at(station, bottom + (top - bottom) * k / rows, buttline) for k in range(rows + 1)]
+
+	def section(station, segment, below, depth):
+		# a ring round the well's section: up the low wall, across the roof,
+		# down the high wall; its two ends on the skin
+		_, _, lo, hi, roof = segment
+		top = (lambda bl: height(station, bl, below) - depth) if depth else (lambda bl: roof)
+		low = column(station, lo, height(station, lo, below), top(lo))
+		high = column(station, hi, height(station, hi, below), top(hi))
+		roof_ = [at(station, top(lo + (hi - lo) * j / across), lo + (hi - lo) * j / across) for j in range(1, across)]
+		return low + roof_ + list(reversed(high))
+
+	def bottom(station, b0, b1, below):
+		# the skin across a section between two buttlines, ends left out
+		n = max(2, math.ceil(abs(b1 - b0)))
+		return [at(station, height(station, b0 + (b1 - b0) * j / n, below), b0 + (b1 - b0) * j / n) for j in range(1, n)]
+
+	def cap(station, ring, inner, below):
+		# a section's end wall, less the smaller section it opens into
+		lo, hi = -ring[0].y / INCH, -ring[-1].y / INCH
+		if inner is None:
+			outline = ring + list(reversed(bottom(station, lo, hi, below)))
+		else:
+			i0, i1 = -inner[0].y / INCH, -inner[-1].y / INCH
+			outline = ring + bottom(station, hi, i1, below) + list(reversed(inner)) + bottom(station, i0, lo, below)
+		triangles = tessellate_polygon([outline])
+		return outline, [tuple(t) for t in triangles]
+
+	def box(segments, below, depth=0.0):
+		# the well's walls, roof and end walls over its segments ([FS from, FS
+		# to, BL low, BL high, roof WL]), each opening into the next, the
+		# larger's end wall round the smaller
+		vertices, faces = [], []
+
+		def add(points, polys):
+			base = len(vertices)
+			vertices.extend(points)
+			faces.extend(tuple(base + i for i in f) for f in polys)
+
+		rings = []
+		for segment in segments:
+			f0, f1 = segment[0], segment[1]
+			n = max(2, math.ceil((f1 - f0) / 2.0))
+			strip = [section(f0 + (f1 - f0) * i / n, segment, below, depth) for i in range(n + 1)]
+			m = len(strip[0])
+			for a, b in zip(strip, strip[1:]):
+				add(a + b, [(j, j + 1, m + j + 1, m + j) for j in range(m - 1)])
+			rings.append(strip)
+		add(*cap(segments[0][0], rings[0][0], None, below))
+		add(*cap(segments[-1][1], rings[-1][-1], None, below))
+		within = lambda inner, outer: outer[2] <= inner[2] and inner[3] <= outer[3] and (inner[4] <= outer[4] if below else inner[4] >= outer[4])
+		for (a, b), (ra, rb) in zip(zip(segments, segments[1:]), zip(rings, rings[1:])):
+			if within(b, a):
+				add(*cap(a[1], ra[-1], rb[0], below))
+			elif within(a, b):
+				add(*cap(a[1], rb[0], ra[-1], below))
+			else:
+				raise SystemExit(f"wells: the sections either side of FS {a[1]} do not nest")
+		return vertices, faces
+
+	def holds(segments, outline, name):
+		# every corner of the opening lies within the well's plan
+		for f, b in outline:
+			if not any(sg[0] - 0.05 <= f <= sg[1] + 0.05 and sg[2] - 0.05 <= b <= sg[3] + 0.05 for sg in segments):
+				raise SystemExit(f"wells: {name}'s opening corner FS {f:.2f}, BL {b:.2f} lies outside its well")
+
+	built_ = {}
+	for side in (-1, 1):
+		name = f"main_{side_name(side)}"
+		segments = [[f0, f1, lo, hi, roof] if side > 0 else [f0, f1, -hi, -lo, roof] for f0, f1, lo, hi, roof in w["main"]]
+		built_[name] = (segments, True, 0.0)
+	built_["nose"] = (w["nose"], True, 0.0)
+	built_["speedbrake"] = (w["speedbrake"]["segments"], False, w["speedbrake"]["depth"])
+	for name, (segments, below, depth) in built_.items():
+		for piece in OPENINGS[name]["pieces"]:
+			holds(segments, piece, name)
+		node(f"well_{name}", mesh=box(segments, below, depth), paint="paint" if name == "speedbrake" else "white", inside=True)
+	# the probe's: a trough under its door, the skin's own section moved in,
+	# starting a tenth of an inch under the skin and as far past the door's
+	# edges, so its top lies hidden under the rim of the hole
+	start, end, upper, lower = OPENINGS["probe"]["shell"]
+	depth = w["probe"]["depth"]
+	shell = lambda st, th, out: at(st, *reversed(skin(st, th, out)))
+	over = 0.1
+	reach = lambda st: over / math.hypot(*(a - b for a, b in zip(skin(st, (upper + lower) / 2), half_ring(st)[0])))
+	start, end = start - over, end + over
+	stations = [start + (end - start) * i / 14 for i in range(15)]
+	rings = []
+	for st in stations:
+		top, bottom = upper - reach(st), lower + reach(st)
+		angles = [top + (bottom - top) * j / 6 for j in range(7)]
+		rings.append([shell(st, top, -over - (depth - over) * k / 4) for k in range(5)] + [shell(st, th, -depth) for th in angles[1:-1]] +
+			[shell(st, bottom, -over - (depth - over) * k / 4) for k in range(4, -1, -1)])
+	vertices, faces = [v for r in rings for v in r], []
+	m = len(rings[0])
+	for i in range(len(rings) - 1):
+		faces += [(i * m + j, i * m + j + 1, (i + 1) * m + j + 1, (i + 1) * m + j) for j in range(m - 1)]
+	for ring, st in ((rings[0], start), (rings[-1], end)):
+		top, bottom = upper - reach(st), lower + reach(st)
+		outline = ring + [shell(st, top + (bottom - top) * j / 6, -over) for j in range(5, 0, -1)]
+		base = len(vertices)
+		vertices += outline
+		faces += [tuple(base + i for i in t) for t in tessellate_polygon([outline])]
+	node("well_probe", mesh=(vertices, faces), inside=True)
+	opened()
+
+
+def opened():
+	# Cuts each opening from the fuselage's skin: for a door cut from the skin
+	# (cut()), the faces inside its plan outline on its side, split along the
+	# outline's planes as cut() split them; for the probe's, the faces inside
+	# its door's stations and angles, split along the planes through its
+	# edges' ends and the section's centre
+	obj = NODES["fuselage"]
+	bm = bmesh.new()
+	bm.from_mesh(obj.data)
+	bmesh.ops.translate(bm, verts=bm.verts, vec=HINGES["fuselage"])
+
+	def split(planes, facing, near):
+		for point, normal in planes:
+			bm.normal_update()
+			faces = [f for f in bm.faces if f.normal.dot(facing) > 0 and near(f)]
+			geom = faces + list({e for f in faces for e in f.edges}) + list({v for f in faces for v in f.verts})
+			bmesh.ops.bisect_plane(bm, geom=geom, plane_co=point, plane_no=normal)
+		bm.normal_update()
+		gone = [f for f in bm.faces if f.normal.dot(facing) >= 0.3 and near(f) and all((f.calc_center_median() - p).dot(n) < 0 for p, n in planes)]
+		bmesh.ops.delete(bm, geom=gone, context="FACES")
+		return len(gone)
+
+	removed = {}
+	for name, o in OPENINGS.items():
+		if "pieces" in o:
+			facing = DOWN if o["below"] else UP
+			for piece in o["pieces"]:
+				corners = [at(f, 0, b) for f, b in piece]
+				x0, x1 = min(c.x for c in corners) - 0.02, max(c.x for c in corners) + 0.02
+				y0, y1 = min(c.y for c in corners) - 0.02, max(c.y for c in corners) + 0.02
+				near = lambda f: max(v.co.x for v in f.verts) >= x0 and min(v.co.x for v in f.verts) <= x1 and max(v.co.y for v in f.verts) >= y0 and min(v.co.y for v in f.verts) <= y1
+				removed[name] = removed.get(name, 0) + split(sides(piece), facing, near)
+		else:
+			# in six pieces along the stations, each edge a plane through its
+			# ends and the section's centre, moved in by as far as the door's
+			# curved edge strays from it there, so the hole never reaches past
+			# the closed door
+			start, end, upper, lower = o["shell"]
+			shell = lambda st, th: at(st, *reversed(skin(st, th, 0.0)))
+			cuts = [start + (end - start) * i / 6 for i in range(7)]
+			worst, removed[name] = 0.0, 0
+			for s0, s1 in zip(cuts, cuts[1:]):
+				middle = (s0 + s1) / 2
+				centre = half_ring(middle)[0]
+				axis = at(middle, centre[1], centre[0])
+				planes = [(at(s0, 0, 0), FORWARD), (at(s1, 0, 0), AFT)]
+				for th, other in ((upper, lower), (lower, upper)):
+					a, b = shell(s0, th), shell(s1, th)
+					normal = (b - a).cross(axis - a).normalized()
+					if normal.dot(shell(middle, other) - a) > 0:
+						normal = -normal
+					stray = max(abs((shell(s0 + (s1 - s0) * i / 8, th) - a).dot(normal)) for i in range(9))
+					planes.append((a - normal * stray, normal))
+					worst = max(worst, stray / INCH)
+				outward = (shell(middle, (upper + lower) / 2) - axis).normalized()
+				lo, hi = at(s1 + 1, 0, 0).x, at(s0 - 1, 0, 0).x
+				near = lambda f, lo=lo, hi=hi: lo <= f.calc_center_median().x <= hi and f.calc_center_median().y < 0
+				removed[name] += split(planes, outward, near)
+			print(f"wells: the probe door's edges stray from their planes by {worst:.3f} in at most, the hole kept inside them")
+	# the cuts' slivers of no area, whose normals no facing test can read
+	bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.calc_area() < 1e-10], context="FACES_ONLY")
+	bmesh.ops.translate(bm, verts=bm.verts, vec=-HINGES["fuselage"])
+	bm.to_mesh(obj.data)
+	bm.free()
+	obj.data.update()
+	print("wells: skin faces cut away:", json.dumps(removed))
 
 
 def surface_angle(station, waterline, side):
@@ -3537,11 +3773,26 @@ def draped(tree, station, buttline, below=False, out=0.0):
 	return hit - normal * (math.copysign(1, normal.dot(direction)) * out * INCH)
 
 
-def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None):
+def sides(outline):
+	# A convex plan outline's ([FS, BL] corners) edges, each as its vertical
+	# plane (a point, its normal pointing away from the middle)
+	corners = [at(f, 0, bl) for f, bl in outline]
+	middle = sum(corners, Vector()) / len(corners)
+	planes = []
+	for c0, c1 in zip(corners, corners[1:] + corners[:1]):
+		normal = (c1 - c0).cross(UP).normalized()
+		if normal.dot(c0 - middle) < 0:
+			normal = -normal
+		planes.append((c0, normal))
+	return planes
+
+
+def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None, inside=None):
 	# A thin panel cut from the built fuselage's own skin between two
 	# stations and two buttlines, or inside a convex plan `outline` of
 	# [FS, BL] corners, on its top or its bottom: its outer face `proud` off
-	# every facet, its inner `under` beneath, its edges closed
+	# every facet, its inner `under` beneath, its edges closed; with `inside`,
+	# its inner face and edges in that finish
 	bm = bmesh.new()
 	bm.from_mesh(NODES["fuselage"].data)
 	bmesh.ops.translate(bm, verts=bm.verts, vec=HINGES["fuselage"])
@@ -3549,15 +3800,7 @@ def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None):
 		(front, back), ys = stations, sorted(-b * INCH for b in buttlines)
 		planes = ((at(front, 0, 0), FORWARD), (at(back, 0, 0), AFT), (Vector((0, ys[1], 0)), PORT), (Vector((0, ys[0], 0)), -PORT))
 	else:
-		# each edge's vertical plane, its normal pointing away from the middle
-		corners = [at(f, 0, bl) for f, bl in outline]
-		middle = sum(corners, Vector()) / len(corners)
-		planes = []
-		for c0, c1 in zip(corners, corners[1:] + corners[:1]):
-			normal = (c1 - c0).cross(UP).normalized()
-			if normal.dot(c0 - middle) < 0:
-				normal = -normal
-			planes.append((c0, normal))
+		planes = sides(outline)
 	for point, normal in planes:
 		bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], plane_co=point, plane_no=normal, clear_outer=True)
 	bm.normal_update()
@@ -3570,11 +3813,14 @@ def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None):
 	vertices = [v.co + v.normal * (proud * INCH) for v in bm.verts] + [v.co - v.normal * (under * INCH) for v in bm.verts]
 	faces = [tuple(index[v] for v in f.verts) for f in bm.faces]
 	faces += [tuple(n + index[v] for v in reversed(f.verts)) for f in bm.faces]
+	outer = len(bm.faces)
 	for e in bm.edges:
 		if len(e.link_faces) == 1:
 			a, b = (index[v] for v in e.verts)
 			faces.append((a, b, n + b, n + a))
 	bm.free()
+	if inside:
+		return vertices, faces, [None] * outer + [inside] * (len(faces) - outer)
 	return vertices, faces
 
 
@@ -3934,11 +4180,13 @@ def painted_parts():
 def jet_key(parts, frames):
 	# The jet's bakes' key: every part's faces (each lies within the
 	# occlusion's reach of the rest), the stencils' frames on the built skin,
-	# the atlas's layout, the nozzles' parts and the code that unwraps and bakes
+	# the atlas's layout, the nozzles' parts, the finishes, the open pose's
+	# joints and drives and the code that unwraps and bakes
 	key = cache.Key("paint")
 	key.meshes(parts)
 	key.add([[spec, list(c), list(a), list(u), list(n)] for spec, c, a, u, n in frames], [ATLAS, STRIP, STENCIL_DENSITY, STENCIL_MARGIN], sorted(NOZZLE_PARTS))
-	key.code(bakes, texels, stencil_islands, flattened, unfolded)
+	key.add(list(ATLASED), sorted(OPENED.items()), sorted([n, j] for n, j in JOINTS.items() if j.get("drive") in OPENED), sorted(o.name for o in parts if exposed(o.name)))
+	key.code(bakes, texels, stencil_islands, flattened, unfolded, posed, keyed, exposed)
 	return key
 
 
@@ -4024,13 +4272,19 @@ def paint(directory, folder=None):
 	dv = (along * rows % 1 - 0.5) * (NOZZLE["exit"] - NOZZLE_WAIST[0]) / rows
 	tint = np.where((divergent & (np.hypot(du, dv) < hole))[..., None], dark, tint)
 	colour = np.where(nozzle[..., None], tint * (0.4 + 0.6 * shade[..., None]), colour)
+	# the landing gear's finishes (layout.paint gear), shaded, with no panel
+	# lines or stencils
+	finish = baked["finish"]
+	for k, name in enumerate(ATLASED):
+		if name in p["gear"]:
+			colour = np.where((finish == k + 1)[..., None], np.array(p["gear"][name]) / 255 * (0.4 + 0.6 * shade[..., None]), colour)
 	pixels = np.concatenate([colour, np.ones((ATLAS, ATLAS, 1))], -1)
 	image.pixels[:] = pixels.ravel()
 	image.filepath_raw = str(Path(directory) / "paint.png")
 	image.file_format = "PNG"
 	image.save()
 	for name, m in MATERIALS.items():
-		if name in ("paint", "team"):
+		if name in ATLASED:
 			nodes = m.node_tree.nodes
 			texture = next(n for n in nodes if n.type == "TEX_IMAGE")
 			m.node_tree.links.new(texture.outputs["Color"], nodes["Principled BSDF"].inputs["Base Color"])
@@ -4046,13 +4300,64 @@ def texels(image):
 	return out.reshape(image.size[1], image.size[0], 4)
 
 
+# What the bake shades as it stands open, gear down, speedbrake up and probe
+# out: the gear, its doors and bays, the speedbrake and the probe, their doors
+# and wells (exposed()). Baked where they rest, stowed behind closed doors, they sit in
+# the dark; the rest of the airframe is shaded at rest, so nothing hanging
+# open shadows the belly it is stowed against
+OPENED = {"gear": 1.0, "speedbrake": 1.0, "probe": 1.0}
+
+
+def exposed(name):
+	return name.startswith(("gear_", "well_")) or name in ("launch_bar", "speedbrake", "probe", "probe_door")
+
+
+def keyed(keys, x):
+	# a schedule's value at x: its keys read piecewise linearly, held at the ends
+	if x <= keys[0][0]:
+		return keys[0][1]
+	for (x0, y0), (x1, y1) in zip(keys, keys[1:]):
+		if x <= x1:
+			return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+	return keys[-1][1]
+
+
+@contextmanager
+def posed(drives):
+	# Every joint that turns or slides moved to its drive's value through its
+	# keys, as the engine moves it (render.py), and back to rest after
+	moved = []
+	for name, j in JOINTS.items():
+		if j["motion"] not in ("rotate", "slide") or j["drive"] not in drives:
+			continue
+		value = keyed(j["keys"], drives[j["drive"]])
+		obj = NODES[name]
+		moved.append((obj, obj.rotation_mode, obj.matrix_basis.copy()))
+		axis = Vector((j["axis"][0], -j["axis"][2], j["axis"][1]))   # glTF to Blender
+		if j["motion"] == "rotate":
+			obj.rotation_mode = "QUATERNION"
+			obj.rotation_quaternion = obj.rotation_quaternion @ Quaternion(axis, value)
+		else:
+			obj.location += axis * value
+	bpy.context.view_layer.update()
+	try:
+		yield
+	finally:
+		for obj, mode, basis in reversed(moved):
+			obj.rotation_mode = mode
+			obj.matrix_basis = basis
+		bpy.context.view_layer.update()
+
+
 def bakes(parts, frames):
 	# The atlas's UVs and what Cycles bakes on them, each material's texture
 	# node the target: every part unwrapped, the skin under the stencils (at
 	# their frames) on islands of its own, faces folding over others on
 	# theirs, all packed; then the ambient occlusion, the normals in the
-	# objects' axes, each texel's place on the jet and which texels are the
-	# nozzles' flaps, as the bakes' pixels (rows from the atlas's bottom)
+	# objects' axes, each texel's place on the jet, which texels are the
+	# nozzles' flaps, and each texel's finish (layout.paint gear), as the
+	# bakes' pixels (rows from the atlas's bottom); the occlusion of what is
+	# seen open (exposed()) baked open
 	bpy.ops.object.select_all(action="DESELECT")
 	for o in parts:
 		o.select_set(True)
@@ -4091,6 +4396,9 @@ def bakes(parts, frames):
 	scene.render.bake.margin = 6
 	bpy.ops.object.bake(type="AO", use_clear=True)
 	shade = texels(occlusion)[..., 0]
+	with posed(OPENED):
+		bpy.ops.object.bake(type="AO", use_clear=True)
+	open_ = texels(occlusion)[..., 0]
 	normals = bpy.data.images.new("normals", ATLAS, ATLAS, alpha=False, float_buffer=True)
 	normals.colorspace_settings.name = "Non-Color"
 	for target in targets:
@@ -4111,18 +4419,30 @@ def bakes(parts, frames):
 		temporary.append((m, geometry, emission))
 	bpy.ops.object.bake(type="EMIT", use_clear=True)
 	where = texels(positions)[..., :3]
-	# and which texels are the nozzles' flaps: their objects' index emitted
+	# which texels are the nozzles' flaps and which are seen open: their
+	# objects' index emitted
 	for o in parts:
-		o.pass_index = 1 if o.name in NOZZLE_PARTS else 0
+		o.pass_index = 1 if o.name in NOZZLE_PARTS else 2 if exposed(o.name) else 0
 	indices = []
 	for m, geometry, emission in temporary:
 		index = m.node_tree.nodes.new("ShaderNodeObjectInfo")
 		m.node_tree.links.new(index.outputs["Object Index"], emission.inputs["Color"])
 		indices.append((m, index))
 	bpy.ops.object.bake(type="EMIT", use_clear=True)
-	nozzle = texels(positions)[..., 0] > 0.5
+	kind = np.rint(texels(positions)[..., 0])
+	nozzle = kind == 1
+	shade = np.where(kind == 2, open_, shade)
 	for m, index in indices:
 		m.node_tree.nodes.remove(index)
+	# and each texel's finish: 1 and up for ATLASED's, 0 for the rest
+	for m, index in indices:
+		value = m.node_tree.nodes.new("ShaderNodeValue")
+		value.outputs[0].default_value = float(ATLASED.index(m.name) + 1) if m.name in ATLASED else 0.0
+		m.node_tree.links.new(value.outputs[0], next(e for n, g, e in temporary if n == m).inputs["Color"])
+	bpy.ops.object.bake(type="EMIT", use_clear=True)
+	finish = np.rint(texels(positions)[..., 0]).astype(np.int8)
+	for m, _ in indices:
+		m.node_tree.nodes.remove(next(n for n in m.node_tree.nodes if n.type == "VALUE"))
 	for m, geometry, emission in temporary:
 		nodes = m.node_tree.nodes
 		nodes.remove(geometry)
@@ -4132,7 +4452,7 @@ def bakes(parts, frames):
 		target.image = None
 	for made in (occlusion, normals, positions):
 		bpy.data.images.remove(made)
-	return {"shade": shade, "normal": normal, "where": where, "nozzle": nozzle}
+	return {"shade": shade, "normal": normal, "where": where, "nozzle": nozzle, "finish": finish}
 
 
 # The ambient occlusion's reach on the stores, inches: a rack shaded by its
@@ -5280,6 +5600,7 @@ def main():
 	stores()
 	print("chord fractions:", json.dumps(fractions, default=lambda x: round(x, 3)))
 	located = points()
+	wells()
 	cull()
 	if keys:
 		# the keys the atlases would bake under, and nothing more (test_build.py)

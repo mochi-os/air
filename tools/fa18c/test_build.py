@@ -46,7 +46,9 @@ class KeyTest(unittest.TestCase):
 		"tanks": (lambda l: l["stores"]["tank"]["profile"][7].__setitem__(1, 14.6), None),
 		"pitot": (lambda l: l["pitot"].update(tube=0.9), None),
 		"near": (lambda l: l["antennas"]["ventral"][2].__setitem__(1, 75.3), None),   # the blade under the nose, within the centreline tank's reach
-		"bakes": (None, ("	bpy.ops.object.bake(type=\"AO\", use_clear=True)\n", "	bpy.ops.object.bake(type=\"AO\", use_clear=True)   # changed\n")),
+		"bakes": (None, ("	shade = texels(occlusion)[..., 0]\n", "	shade = texels(occlusion)[..., 0]   # changed\n")),
+		"opened": (None, ('OPENED = {"gear": 1.0, "speedbrake": 1.0, "probe": 1.0}', 'OPENED = {"gear": 0.9, "speedbrake": 1.0, "probe": 1.0}')),
+		"finish": (lambda l: l["paint"]["gear"].update(white=[150, 150, 152]), None),
 		"atlas": (None, ("ATLAS = 2048\n", "ATLAS = 4096\n")),
 		"store_bakes": (None, ("	occlusion = np.ones((size, size), np.float32)\n", "	occlusion = np.ones((size, size), np.float32)   # changed\n")),
 		"reach": (None, ("STORE_REACH = 12.0\n", "STORE_REACH = 12.5\n")),
@@ -103,6 +105,12 @@ class KeyTest(unittest.TestCase):
 
 	def test_a_stencil_bakes_the_jet_alone(self):
 		self.assertEqual(self.moved("stencil"), {"paint": True, "stores": False})
+
+	def test_the_gears_finishes_bake_nowhere(self):
+		self.assertEqual(self.moved("finish"), {"paint": False, "stores": False})
+
+	def test_the_open_pose_counts_in_the_jets_key_alone(self):
+		self.assertEqual(self.moved("opened"), {"paint": True, "stores": False})
 
 	def test_the_tanks_bake_the_stores_alone(self):
 		self.assertEqual(self.moved("tanks"), {"paint": False, "stores": True})

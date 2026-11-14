@@ -185,34 +185,79 @@ class ShapeTest(unittest.TestCase):
 		tube = np.delete(self.HULL, [6, 7, 10, 11], axis=0)
 		self.assertFalse(check.enclosed(np.array([[450, 110, 0]], float), tube).any())
 
-	def test_standoff(self):
-		# a panel 0.15 in over the box's top, then one sunk 0.05 in into it, then one hanging under the belly
-		top = triangles((420, 119.9, -5), (480, 120.15, 5))
-		s = check.standoff(top, self.HULL)
-		self.assertTrue(len(s))
-		np.testing.assert_allclose(s, 0.15, atol=1e-6)
-		sunk = triangles((420, 119.8, -5), (480, 119.95, 5))
-		np.testing.assert_allclose(check.standoff(sunk, self.HULL), -0.05, atol=1e-6)
-		hanging = triangles((420, 95, -5), (480, 96, 5))
-		np.testing.assert_allclose(check.standoff(hanging, self.HULL, below=True), 5, atol=1e-6)
-		# on a slope the gap counts along the skin's normal: a 45 deg roof with a panel 0.3 in above it vertically
-		# a three-cornered panel whose edge walls lean out to its wider inner face, as an offset along
-		# a sloping skin's normals leaves them: a look straight down at its outline sees the walls, not the panel
-		outer = np.array([[420, 120.15, -5], [480, 120.15, -5], [420, 120.15, 5]], float)
-		inner = np.array([[419.8, 119.9, -5.2], [480.5, 119.9, -5.2], [419.8, 119.9, 5.5]], float)
-		walls = [t for i in range(3) for t in ((outer[i], outer[i - 1], inner[i - 1]), (outer[i], inner[i - 1], inner[i]))]
-		wedge = np.array([outer, inner[::-1]] + walls)
-		np.testing.assert_allclose(check.standoff(wedge, self.HULL), 0.15, atol=1e-6)
-		roof = np.array([[[400, 100, 0], [500, 100, 0], [500, 120, 20]], [[400, 100, 0], [500, 120, 20], [400, 120, 20]]], float)
-		panel = roof + np.array([0, 0.3, 0])
-		np.testing.assert_allclose(check.standoff(panel[:, :, :], roof), 0.3 / math.sqrt(2), atol=1e-6)
-		# over a crease each cell's gap counts along its own facet's normal: a 45 deg ridge, and a panel
-		# 0.15 in off each face along its normal, meeting above the ridge (the speedbrake on the spine's
-		# shoulder): a slope read across the cells either side of the ridge would see it level there
-		ridge = np.array([[[400, 100, -20], [500, 100, -20], [500, 120, 0]], [[400, 100, -20], [500, 120, 0], [400, 120, 0]],
-			[[400, 120, 0], [500, 120, 0], [500, 100, 20]], [[400, 120, 0], [500, 100, 20], [400, 100, 20]]], float)
-		cap = ridge + np.array([0, 0.15 * math.sqrt(2), 0])
-		np.testing.assert_allclose(check.standoff(cap, ridge), 0.15, atol=1e-6)
+	def test_inward_and_crossed(self):
+		# a ray in from a box's top, straight down, leaves through its floor
+		# 20 in below, a face turned along it; one from under the floor going
+		# down meets nothing, and one going up meets the floor turned against it
+		# and leaves through the top
+		top = np.array([450.0, 120.0, 0.0])
+		self.assertAlmostEqual(check.inward(self.HULL, top, np.array([0.0, -1.0, 0.0])), 20.0, places=6)
+		self.assertEqual(check.inward(self.HULL, np.array([450.0, 99.0, 0.0]), np.array([0.0, -1.0, 0.0])), np.inf)
+		self.assertAlmostEqual(check.inward(self.HULL, np.array([450.0, 99.0, 0.0]), np.array([0.0, 1.0, 0.0])), 21.0, places=6)
+		# inside by its crossings' parity along the oblique rays, even beside a face's edge
+		self.assertTrue(check.crossed(np.array([450.0, 110.0, 0.0]), self.HULL))
+		self.assertTrue(check.crossed(np.array([400.01, 100.01, -9.99]), self.HULL))
+		self.assertFalse(check.crossed(np.array([450.0, 125.0, 0.0]), self.HULL))
+		self.assertFalse(check.crossed(np.array([399.0, 110.0, 0.0]), self.HULL))
+		# with a hole in the top (FS 440-460, BL -5 to 5) two rays pass through
+		# it: from 3 in above, they read inside and the other five outside; from
+		# 3 in under, they read outside and the other five inside
+		fs, bl = (400, 440, 460, 500), (-10, -5, 5, 10)
+		top = np.array([[f, 120.0, b] for f in fs for b in bl])
+		cells = [(a, b) for a in range(3) for b in range(3) if (a, b) != (1, 1)]
+		lid = [top[list(t)] for a, b in cells for t in ((a * 4 + b, a * 4 + b + 1, (a + 1) * 4 + b + 1), (a * 4 + b, (a + 1) * 4 + b + 1, (a + 1) * 4 + b))]
+		holed = np.array([t for t in self.HULL if not np.allclose(t[:, 1], 120)] + lid)
+		self.assertFalse(check.crossed(np.array([442.44, 123.0, -4.55]), holed))
+		self.assertTrue(check.crossed(np.array([447.12, 117.0, -2.76]), holed))
+
+	def test_rim_and_the_closed_skin(self):
+		# a box with a square hole in its top (FS 440-460, BL -5 to 5) and a
+		# door over it 0.15 in proud (the speedbrake): the checks' fuselage is
+		# closed by the door's outer face moved back in, and the door's rim
+		# meets the hole's edge; moved an inch aft, it misses by an inch
+		i = 0.0254
+		x = lambda fs: (456 - fs) * i
+		fs, bl = (400, 440, 460, 500), (-10, -5, 5, 10)
+		top = np.array([[x(f), 15 * i, b * i] for f in fs for b in bl])
+		cells = [(a, b) for a in range(3) for b in range(3) if (a, b) != (1, 1)]
+		faces = [t for a, b in cells for t in ((a * 4 + b, a * 4 + b + 1, (a + 1) * 4 + b + 1), (a * 4 + b, (a + 1) * 4 + b + 1, (a + 1) * 4 + b))]
+		v, f = box((x(500), -5 * i, -10 * i), (x(400), 15 * i, 10 * i))
+		keep = [t for t in f if not all(abs(v[k][1] - 15 * i) < 1e-9 for k in t)]
+		shell = (np.concatenate([v, top]), np.array([list(t) for t in keep] + [[len(v) + k for k in t] for t in faces]))
+		with tempfile.TemporaryDirectory() as d:
+			path, points = Path(d) / "m.glb", Path(d) / "m.json"
+			for shift, want in ((0.0, 0.0), (1.0, 1.0)):
+				# as cut() makes a door: its outer face, the same triangles under it turned in, and its edges
+				corners = [(440 + shift, -5), (460 + shift, -5), (460 + shift, 5), (440 + shift, 5)]
+				dv = np.array([[x(f), 15.15 * i, b * i] for f, b in corners] + [[x(f), 14.9 * i, b * i] for f, b in corners])
+				df = [(0, 1, 2), (0, 2, 3), (4, 6, 5), (4, 7, 6)] + [t for k in range(4) for t in ((k, (k + 1) % 4, 4 + (k + 1) % 4), (k, 4 + (k + 1) % 4, 4 + k))]
+				door = (dv, np.array(df))
+				glb(path, [{"name": "fuselage", "mesh": shell}, {"name": "speedbrake", "mesh": door}])
+				points.write_text(json.dumps({"joints": {}, "points": {}}))
+				jet = check.Jet(path, points)
+				self.assertAlmostEqual(check.rim(jet, "speedbrake"), want, places=3)
+			# a second door cut from the same skin: overlapping the first by
+			# 5 in, they lie on each other; abutting it, they do not, though
+			# a sliver of its faces 0.01 in wide runs along the edge they share
+			# (as the cut leaves them)
+			def plate(stations):
+				n = len(stations)
+				pv = np.array([[x(f), h * i, b * i] for h in (15.15, 14.9) for f in stations for b in (-5, 5)])
+				outer = [t for k in range(n - 1) for t in ((2 * k, 2 * k + 2, 2 * k + 3), (2 * k, 2 * k + 3, 2 * k + 1))]
+				inner = [(a + 2 * n, c + 2 * n, b + 2 * n) for a, b, c in outer]
+				ring = [2 * k for k in range(n)] + [2 * k + 1 for k in reversed(range(n))]
+				sides = [t for a, b in zip(ring, ring[1:] + ring[:1]) for t in ((a, b, b + 2 * n), (a, b + 2 * n, a + 2 * n))]
+				return pv, np.array(outer + inner + sides)
+
+			for stations, want in (((455, 465), True), ((460, 460.01, 470), False)):
+				glb(path, [{"name": "fuselage", "mesh": shell}, {"name": "speedbrake", "mesh": door}, {"name": "probe_door", "mesh": plate(stations)}])
+				jet = check.Jet(path, points)
+				self.assertEqual(check.stacked(jet, ["speedbrake", "probe_door"]) > 0, want, stations)
+			glb(path, [{"name": "fuselage", "mesh": shell}, {"name": "speedbrake", "mesh": door}])
+			jet = check.Jet(path, points)
+			self.assertEqual(len(jet.opened()) + 2, len(jet.tris(["fuselage"])))
+			closed = check.heights(jet.points(["fuselage"]).reshape(-1, 3, 3), np.array([449.0, 451.0]), np.array([-1.0, 1.0]))
+			np.testing.assert_allclose(closed, 120.0, atol=1e-6)
 
 	def test_seam(self):
 		# a plate lying 0.15 in over the box's top all along: one stays on top

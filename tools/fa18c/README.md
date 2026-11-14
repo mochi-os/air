@@ -115,8 +115,12 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   the throat, and the paint gives the flaps bare metal outside, the divergent flaps' cooling holes and a dark
   ring of brackets at the exit (`layout.paint.nozzle`). Flush panels (the speedbrake, the gear doors) are
   cut from the fuselage's own built skin (`cut()`, between stations and buttlines or inside a convex plan
-  outline) and offset off every facet; parts that stow inside it (the gear) are placed
-  by ray casts on the built parts (`built()`). The gear stands where the photos put it (`layout.gear` legs and
+  outline) and offset off every facet; once the airframe is built, the skin under each door is cut away and a
+  well stands behind the opening (`wells()`, `layout.wells`): each gear bay, the speedbrake's and the probe's,
+  walls and a roof standing on the skin, sized to hold the parts that stow there, its faces turned in
+  (`node(inside=True)`: `tidy()` turns every face out, and an open box's out is away from its bay). The
+  cut is made last, after everything that drapes on or casts at the closed skin. Parts that stow inside it
+  (the gear) are placed by ray casts on the built parts (`built()`). The gear stands where the photos put it (`layout.gear` legs and
   doors): each main leg a post down to a trailing arm's pivot, the arm carrying the wheel (its turn about the
   pivot the leg's compression), a shock absorber, a side brace folding at a knee and the planing mechanism's
   connecting link and bell crank; the leg swings aft about one trunnion axis, its shock drawn in and its axle
@@ -141,8 +145,13 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   where the entry needs it, and fails outside each tolerance; entries it does not measure are listed in
   `EXEMPT` with the reason, and `test_check.py` fails on an entry that is neither. Shape checks (`shape.*`)
   cover what no number does: the LEX running into the wing with no step; every stowed part, and the
-  cockpit, inside the airframe at rest (`STOWED`: a ray each way along each axis meets it); each flush panel
-  0.15 in off the skin along its normal, with no skin poking through (`FLUSH`); each left part the mirror
+  cockpit, inside the airframe at rest (`STOWED`: a ray each way along each axis meets it; `HULL` holds the
+  parts on the skin too, since the hidden faces under them are gone); the skin every check measures closed,
+  each opening by its door's outer face moved back to the skin it was cut from (`plugs()`), and each closed
+  door's outline meeting the skin round its opening (`FLUSH`, `rim()`); each well open under its doors,
+  no two of its doors closing on each other (`stacked()`), its faces turned toward its opening, holding its stowed parts, inside the airframe and
+  holding no other part (`layout.wells`); the gear in its finishes and each tyre's hub its share of the radius
+  (`paint.gear`, `layout.gear`), and with the atlas the legs lit as they stand gear down; each left part the mirror
   image of its right twin, at rest and gear down; parts lying against each other (`SEAMS`: the inlets, the
   LEX and its fairing, the wing root, the fuselage) never crossing back and forth where they show; nothing
   poking through the LEX's fairing, which covers the wing's root end; the fuselage's store mounts on the
@@ -213,7 +222,15 @@ upper grey or, facing down, the lower (`layout.paint`, sampled in the reference 
 atlas is about 0.47 in on the jet: the skin under each stencil gets its own island four times as dense
 (`stencil_islands()`), and the panel lines, 0.4 in wide, shade each texel by the share of it they cover. The
 slot along each LEX's root (`layout.lex` slot), an opening, is painted the same way as a dark band 3 in wide
-until the paint is traced.
+until the paint is traced. The landing gear takes finishes of its own, materials sharing the atlas
+(`layout.paint.gear`, `ATLASED`): white for the legs, braces, the nose hubs, the bays and the doors' inner faces
+(`cut(inside=)`), rubber for the tyres, chrome for the polished pistons and the planing link's rod, and the main
+hubs' grey (`tyre()` closes each wheel with a hub `layout.gear.tyres` sizes); a bake of each texel's material
+picks its colour, shaded, with no panel lines or stencils. What is seen only open (the gear, its doors and bays,
+the speedbrake, the probe and their wells, `exposed()`) takes its occlusion from a second bake with the gear down,
+the speedbrake up and the probe out (`OPENED`, `posed()`): baked stowed behind closed doors it sat at the
+occlusion's floor, sRGB 32, 37, 42 whatever its colour. The rest is shaded at rest, so nothing hanging open
+shadows the belly it stows against.
 
 Our model's distant stages wait until the model is finished (the user, 2026-11-02): the first set was
 deleted. These scripts stay for then, building from the painted model (the old model's own pipeline is below):
