@@ -680,6 +680,15 @@ describe("the carrier's ship file", () => {
     }
   })
 
+  it('labels each of her wires in the banner and the match log, and none she lacks', () => {
+    const wires = new Set(ford.landing.wires.map((_, i) => i + 1))
+    for (const file of ['../components/GameCanvas.tsx', '../components/MatchLog.tsx']) {
+      const text = readFileSync(fileURLToPath(new URL(file, import.meta.url)), 'utf8')
+      const labelled = new Set([...text.matchAll(/`(\d+) WIRE`/g)].map((m) => Number(m[1])))
+      expect(labelled, file).toEqual(wires)
+    }
+  })
+
   it("measures the island's crash box and mast top from its body, not the walkways and antennas standing off it", async () => {
     const THREE = await import('three')
     const grid = new Function(
