@@ -76,7 +76,32 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   - The deck wears `paint.py`'s texture and the lettering's plates `letters.py`'s, which the build runs
     unless `--draft`. Each plate maps its cell to read from outside its face. Its aft edge rounds down
     (`deck.round`): the deck is cut along lines parallel to that edge and each vertex dropped on a parabola
-    over the last `length` metres, its edge plate's top and foot with it.
+    over the last `length` metres, its edge plate's top and foot with it. Where the plate's foot hangs below
+    the deck's underside (the fascia, `round.fascia`) it is a plate `FASCIA` thick, its inner face looking
+    inboard and its lower edge down.
+  - Every paint is drawn on the front of its faces only (glTF `doubleSided` false), but the sheets seen from
+    either side, the panes and the nets (`BOTH`): a face seen from behind is not drawn, so every surface a
+    camera can see is a face wound toward it. `outward()` turns each closed group of a piece outward by its
+    volume, measured from one of its own vertices in double precision (from the ship's origin in Blender's
+    single precision, the volume of a small part 80 m out was lost in the rounding, and good parts turned
+    over at random).
+  - Nothing lies a little behind a face facing its way, for the game's depth buffer to draw through it from
+    afar (`depth.py`: the game camera's near plane, field and lines, and the gap a place a given size across
+    needs). Where two pieces of a node touch on the same corners (a sponson's body on its foot) the faces
+    between them go and they are one solid, told by the sides the pieces lie on (`tidy()`, before its weld); a plate on a face stands off it as far as
+    its size needs (`plate()`, up to `STANDOFF`; a larger one needs the face behind it cut away); a framed window's
+    frame is a ring round its glass, the glass standing off the face as a plate does; a stowed console sinks as
+    deep as its lid needs, and a whip's hinge housing stands as far over the deck; a railing's rails are each
+    one bar mitred along its whole path, its posts (`POST`) a little thinner than the top rail, sunk a
+    centimetre and stopping under it; a deflector's ribs across its rows are `RIBBED` deeper than those along
+    them; a well sill's curb and comb stop `RESTING` under the sill, where the lowered platform rests; a
+    blister's ribs stop `SHORT` of its top and bottom; a path of bars (`shape()`'s `path`: frames, seals, the
+    halyards) is one piece round its corners, mitred (`swept()`, closed where it ends where it began); a cast
+    rim (`lip()`) turns down into its throat at once, with no flat ring in the face; a gun tub's knee's tail
+    rises into the sponson from its foot. Where layout parts met in one plane the facts move them apart
+    instead (the island's doors as plates, the halyards' feet spread, the bay frame's cross members and
+    one brace of each cross slimmer than the others, the vehicles' generators each wall between the ones
+    it meets).
   - Each moving part is a node on its hinge or slide line, resting unrotated:
     - the catapult shuttles, the blast deflectors and the two
       integrated catapult control stations (`consoles`): each a cab sliding up `rise` out of the surface it
@@ -89,7 +114,9 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
       from a bearing in the pit and a rod to the panel's back (each panel's own lengths, solved to fold flat
       under it lowered), are two joints that `follow` it: their keys' input is its angle, and the ship file
       lists them as its followers;
-    - the arresting gear's deck sheaves (in their own white) and wire supports, and the barricade's
+    - the arresting gear's deck sheaves (in their own white, a red triangle on each drum's side facing its
+      wire), the small hatch covers' hinges and handles (`fittings.hatch`, the node `hatches`), and wire
+      supports, and the barricade's
       stanchions, hinged at their heads; a part stowed in the deck sits 2 cm under its top (`STOWED`), which
       hides it, where level with it the two surfaces tore;
     - the port whips, which lower for flight operations;
@@ -126,7 +153,7 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     rounded off), the Phalanx's radome a turned profile with its flange rings.
   - Every closed piece of a node is turned outward on its own when the node is tidied; an open piece keeps
     the winding it was built with. The weathering bakes read each face's facing, so a piece wound inward
-    bakes as if it faced into the solid.
+    bakes as if it faced into the solid, and is not drawn where it is seen.
   - The bow's mast is square, with its fittings as parts on it; each port whip's hinge housing stays at the
     deck's edge as the whip lowers.
   - The hull is a loft of sections from the transom to the bow: keel, hull side to each side's knuckle, the
@@ -138,11 +165,21 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     flare (`hull.profiles`: on each side, stretches of measured sections, a ledge, a face, a recessed wall) the
     section runs from the knuckle through the profile's points, straight between its sections (a shorter one's
     last point repeated), and on from its last point to the gallery's foot at the deck's edge as the flare
-    does; each stretch ends square, the flare between them. What hangs on the sides clear of the sponsons
+    does; each stretch ends square, the flare between them. Where a square end's two sections cross (a
+    profile's face out of the flare below and inside it above), the face between them is split at each
+    crossing into lobes (`earcut()`), one facing out of the stretch and the next into it, each crossing a
+    corner of the strips either side so the hull stays closed. The hull's top is an open edge at the deck's
+    underside, which the deck closes; where that edge strays outside the deck's outline (the port quarter's
+    walls, the starboard gallery's foot, the stem) `lid()` closes the strip between, facing up, an edge that
+    crosses the outline split where it does first. Under the round-down, where the side comes up to the deck's
+    edge, its top is drawn in by the fascia's thickness times the round-down's share, behind the fascia that
+    hangs there. What hangs on the sides clear of the sponsons
     (`hull.details`, `shape()`s: the frame in the starboard bay aft of the island) is built with the
     sponsons. The open decks in the sides (`hull.decks`: each an `outline` on the face whose plan line is
     `face`, cut `depth` in) are pierced into the hull once it is made (`pierce()`): its faces lying in that
-    plane round the opening taken out and filled again round it, and from the opening's edge walls, a floor
+    plane round the opening taken out and filled again round it (each outline of that region with the openings
+    and earlier rims inside it on its own: given every outline at once, the fill laid triangles across the
+    gaps between them), and from the opening's edge walls, a floor
     and a back run in, so nothing else of the mesh changes (Blender's exact boolean rebuilt faces far from
     its cut, and not the same way from run to run). A section stands at every corner of
     the deck's edge and every knot of the knuckle and the gallery, so the flare is flat between them and creases only there, and either
@@ -154,14 +191,18 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     deck-edge elevator the flare is cut away to its well (`elevators[].well`): the section runs out along the
     flare only as far as the well's wall, which stands on the flare there and rises to the deck's underside,
     along the hull side between the rails the platform runs on (`rails`) and at each end parallel to the
-    platform's own; the platform slides down to the hangar deck (`hangar`), and the hangar door's aperture
+    platform's own, or where an end was measured (`ends`: its x at the platform's inboard edge and at the
+    deck's edge; elevator 1's forward end and elevator 2's both, clear of their rails); the platform slides down to the hangar deck (`hangar`), and the hangar door's aperture
     (`opening`) is a hole through the side's plating, `depth` its thickness, and behind it a rectangular room
     (`room`), so the space runs on behind the hole's rounded corners: larger than the hole, its floor 5 cm under
     the sill (the plating's grey, walked on and shaded by the weathering, or its own `floor` paint), `beams`
-    under its ceiling. Its door (`door`) is
-    shut at the room's back, 5 cm in front of it (the node `doors`, weathered with the hull): the room's
-    rectangle cut square `gap` [aft, forward] short of its ends, in two equal leaves a `seam` apart, a fitting on
-    the seam; the fitting and the doorway's forward end are landmarks.
+    under its ceiling. The plating is a skin, as the rest of the hull: no face behind it round the hole, only
+    its cut edge `depth` thick. Its door (`door`) is
+    shut as the room's back, which is built in pieces (`pierce()`'s room `pieces`): the room's rectangle cut
+    square `gap` [aft, forward] short of its ends into two equal leaves a `seam` apart, in the plating's grey,
+    and behind the seam and the gaps a dark pocket a metre deep. Nothing lies a few centimetres behind a leaf
+    for the depth buffer to draw through it in stripes. A fitting stands on the seam (the node `doors`); it and
+    the doorway's forward end are landmarks.
     `pierce()` lays a hole's `floor` paint on its lowest edges by height. Each well's rails (`rail`) are channels on its
     wall centred on their x (flanges, a web and slots closed at the wall, all grey for the weathering's occlusion
     to shade, a foot bar), the well running half a rail past them;
@@ -175,7 +216,9 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     knot of the stem it rises past and where it rises through the boot top), or above it the bow's flat face
     (`hull.face`, its mooring openings `chocks`: each a cast rim (`lip()`, a half-ellipse section from the
     opening out to its outer radius, rolling over into a barrel inside, shaded smooth, the node `chocks`)
-    round a throat pierced `depth` into the bow); the sections ahead take the front or the face as their flat bottom. In plan the front's
+    round a throat pierced `depth` into the bow; its vents `vents`, rounded holes `depth` deep with a grille of
+    bars across their mouths, each bowed `bow` out at its middle (the node `vents`), a section above and below
+    each so one flat strip of the face holds it, cut before the throats); the sections ahead take the front or the face as their flat bottom. In plan the front's
     corners turn into the sides round a quarter circle (`hull.fillet`, or the front's whole half-width where
     that is less), with sections behind the stem's upright foot to draw it; under the face the rounding
     eases out over `hull.fade`, with sections to draw that too, so the corners meet the face's creases with
@@ -184,9 +227,29 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     stations' points above the knuckle, at their heights: in full forward of `full`, straight aft of `start`,
     and between the two easing (smoothstep) from the straight line out to them; aft of `start` those points
     sit on the knuckle, or on a quarter's last point, and weld away; ahead of the last station they run to the
-    face's crease by the share of the way raised to `power`, holding their breadth and then turning in. Below the knuckles and over the shoulders
+    face's crease by the share of the way raised to `power`, holding their breadth and then turning in. Over a
+    crease (`hull.crease`, a side's stretch of plain flare) the plating rises from the knuckle at `slope` to
+    `height`, the overhang running out from there to the gallery's foot, a well's wall standing on whichever
+    strip it meets; aft of `hold` the bend keeps the |z| it has there, the plating straight from each
+    section's knuckle up to it (under the island the knuckle line narrows aft and the plating does not).
+    Below the knuckles and over the shoulders
     the hull is shaded smooth, sharp where it turns more than 30 degrees; the rest of the flare flat. A face
     lying wholly on the centreline (where the stem stands upright with a knife edge) is left out.
+  - The side's boxes and small openings (`openings()`, after the hull): each box (`hull.boxes`) an upright face
+    built back into the hull from a shelf to its top, its aft end raked where it leans, and where the flare
+    stands outboard of it the flare cut away level in to the face, its back open (`pierce()`'s `level`, `back`
+    None), clear of a well's wall beside it (the node `boxes`); each opening (`hull.openings`) placed by its x
+    and height on the outermost plating of its node there (the hull, the boxes or the sponsons): vents
+    (holes to a dark back), windows (glass `depth` in, a frame round them), closed chocks (a lip round a
+    throat), recesses cut level into the flare (a rim, a railing across the floor and a ledge on knees),
+    plain placards, and placards drawn from a lettering cell (the node `side_lettering`); the frames, lips,
+    railings and plain placards the node `frames`. The openings on faces that share a face are cut together.
+    Before the openings, the bays (`hull.notches`, `notch()`): over a stretch of the side the plating from a
+    floor height up through the crease and the overhang to the foot of the deck edge's face taken out, and a
+    bay built behind it (a level floor, ends square across the ship, an upright back `depth` in from the
+    plating at its floor, its paint `back`, a ceiling at the foot). One over a box (`box`) starts a quarter
+    of a metre under where the flare passes in behind the box's face, the box built back to the bay's back,
+    so the box's top is the bay's floor.
   - The anchors (`anchors`, the starboard one given, the port its mirror image) are housed. The hawse pipe's
     end is a grey hood: a pipe of rounded-square section running aft, up and outboard into the plating, closed
     at its far end by a dome, its mouth cut on the slant to open down, its lip rolled round into a dark bore.
@@ -206,10 +269,15 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   - The sponsons are prisms whose tops and bottoms may slope (a height per corner), carrying what stands on and under them (`details`: a deckhouse, railings, slots, and prisms under the deck whose faces slope, given a plan of their own at the top). Each corner is a landmark
     for the photo match. The gun
     tubs (`tubs`) on the aft sponsons' faces are a floor, a railing round its outboard sides and a knee
-    under its aft end; their guns are weapons' mounts.
+    under its aft end, holed (`knee.holes`, `section()`'s round holes), its outer end upright for `knee.toe`
+    before its edge slopes to its foot; their guns are weapons' mounts. The
+    coaming carries its station placards (`coaming.placards`), plates proud of its inboard face.
   - The catwalks follow the deck's edge between their ends: a floor from inside the band out, a toe board,
     rails and posts on the outer edge, plate knees under it down to the edge. The platforms off them, the
-    edge domes' platforms (carried in to the catwalk or the band) and their knees likewise. The raft racks
+    edge domes' platforms (on the catwalk's outer edge, or carried into the band) and their knees likewise.
+    Each line along the edge ends square to the ship's length (`offset()`'s `square`), so runs meeting at an x
+    cut alike; a corner closer to a line's end than its mitre shifts it is dropped; a platform's inboard edge
+    is each run's outer edge along it; and one knee stands at each place, the furthest reaching. The raft racks
     hang outboard of the railing: a canister lying fore and aft in each tier, on cradles. The safety nets
     (`nets`, the `net` material: a small image of rust-brown cord whose holes are cut out, both faces drawn)
     rise outward from the railing's top on frames, their outer edge hanging `catwalks.net.sag` between each
@@ -219,7 +287,10 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     photo checks leave out.
   - The transom's face stands round its stepped recess, with the windows, the catwalk band, the walkway and
     its fascia (cut back round the drop-light pole: its `rail` and its `aft` edge each one line or several,
-    the fascia standing out from the walkway along each piece), the post frame and its fenders, the
+    the fascia and the member under it each one strip along a line, mitred at its corners), the face run on
+    outboard of the section on one side (`transom.run`: a solid from the section's side out to |z| `out`,
+    `bottom` up to the deck's underside, forward to `forward`, its foot put into the section's side so the two
+    faces meet edge to edge), the post frame and its fenders, the
     drop-light pole (`transom.drop`, in two sections where it has a `gap`; `references/research/drop`) and
     the Phalanx's raised deck (`transom.plinth`:
     its plan at its foot and its `upper` plan at its top, its sides sloping between); the rest as parts
@@ -252,7 +323,25 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
 python3 -I check.py OUT.glb OUT.json   # every fact measured back on the build, or exempt with its reason
 python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --check --cameras CAMERAS.json   # the photo match
 python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json DIR                            # the sky check
+blender -b --factory-startup --python-use-system-env -P sides.py -- OUT.glb OUT.json [FACES.json]       # nothing seen from behind
+python3 -I stacks.py OUT.glb OUT.json                                                                     # nothing drawn through the face in front
 ```
+
+- **`sides.py`** - from each face drawn on its front only, rays into the space in front of it and behind it
+  (Blender's ray tree; the see-through paints let rays through); one that gets away behind fails the face:
+  a part wound inside out, a sheet seen from its back, a crack in a closed hull. A face in its plane facing the
+  other way covers its back (a floor and the underside beneath it): each point within 2 mm of the other's
+  plane, however far from the origin and however little out of level. Posed at rest and with every joint at its
+  keys' end. FACES.json lists each failing face, its node, paint, pose, middle, normal, area and rays.
+- **`stacks.py`** - where a face lies a little behind another and overlaps it along its normal, facing the same
+  way or drawn on both sides, the depth buffer draws the one behind through the one in front in stripes from
+  far enough off. Each such overlap fails where the front can be seen and its gap is under four steps of the
+  game camera's depth buffer (near plane 3 m, 45 degrees over 1080 lines, 24 bits) at the distance where the
+  overlap still spans three pixels: a plate half a metre across needs 4 mm, a door 8 m across 0.96 m. Its size
+  is the side of the largest square inside the overlap, so a grid of ribs counts as its strips. Faces are paired
+  among neighbouring cells of their normals (to a fortieth) along each cell's own axis, so two a degree out of
+  parallel far from the origin still meet. The model viewer's logarithmic depth buffer is fine enough everywhere
+  but at no gap at all.
 
 - **`check.py`** - measures the build and its ship file against every `facts.json` entry, each within a stated
   tolerance, and fails outside it. Entries it does not measure are in `EXEMPT` with the reason; `shape.*`
@@ -285,8 +374,16 @@ python3 -I test_paint.py
 python3 -I test_check.py
 python3 -I test_weather.py
 python3 -I test_plates.py
+python3 -I test_stacks.py
+python3 -I test_sides.py
 python3 -I test_build.py   # runs Blender: under the probe.slice memory cap
 ```
+
+`test_stacks.py` and `test_sides.py` hold the two checks to small models: the gap a size needs, a door a
+little in front of a wall facing as it does, a back drawn, coincident faces, neighbours in a plane, a strip's
+overlap and not the face it lies on, a grid of ribs, a stack under a lid and under glass, a plate a degree out of
+a deck's plane 160 m out; a box wound out and inside out, a sheet, a crack, a sheet of two faces (one 2 mm out
+of level 150 m out), a room glazed over seen through the glass.
 
 `test_paint.py` also holds the tyre marks to the measured band (core and shoulders along the landing line), its
 taper and rounded aft edge, the streaks' contrast, the tracks' smoothness and their place on the texture, the soot
@@ -336,14 +433,27 @@ the deck; a new sighting in the game becomes a ray here first.
   repeated, its square ends, the flare between two, and the hull still closed; the hull's side details
   built with the sponsons; an open deck pierced into a profile's face to its back, floor and ceiling, its
   raked end, on either side;
-- a well's hangar door pierced through its wall into the hangar behind it, its back dark, its floor
-  under the sill, the wall standing in the door's rounded corners; its door shut at the room's
-  back, filling its rectangle short of its ends by its gaps, the room's back seen past them and through
-  the seam, the fitting on the seam, and their landmarks; the room rectangular behind the hole's rounded corners,
+- a well's measured end standing where it was measured, clear of its rail, the other end the platform's;
+- a well's hangar door pierced through its wall into the hangar behind it, its floor
+  under the sill, the wall standing in the door's rounded corners; its door shut as the room's
+  back, filling its rectangle short of its ends by its gaps, a dark pocket seen past them and through
+  the seam (closed, its faces turned in), nothing behind a leaf or the plating facing either way (`stacked()`),
+  the fitting on the seam, and their landmarks; the room rectangular behind the hole's rounded corners,
   its floor dark and not its ceiling, its beams its whole length a third and two thirds through it; its rails' flanges, web, slots, foot and top, the well half a
   rail past them; the sill's curb, posts and comb; a square blister's ribs, and none on a round one;
 - the bow face's chocks: each rim's crown halfway out and its height, its throat its depth deep, dark at
-  the back, and the face beside it;
+  the back, and the face beside it; its vent: a hole its depth deep to its dark back, grey walls, rounded
+  corners, the grille's bars across it;
+- a crease: the section through its point in its stretch, none outside it, and a well's wall's foot on its
+  lower strip; held, its bend's line aft of the hold where the knuckle narrows; on that flare a vent to its back, a window's glass and frame, a chock's lip round an open
+  throat, a recess's level floor, back, railing and ledge, a plain placard, a lettered placard on a box, and a
+  box's face proud below the flare and standing in its open cut above it, with its shelf and a window; the
+  bow face vent's bars bowed; a bay through the crease and the overhang to the deck edge's foot (its floor,
+  ceiling, ends and dark back each facing into it, the plating under and beside it as it was, every edge
+  round it shared), and a box high on the flare under a bay (nothing of the hull outboard of its face above
+  the crossing, its top the bay's floor built back to the bay's back);
+- a red triangle on each sheave's inboard side, only there; a hatch's hinges on its outboard edge and its
+  handle on its inboard edge; a coaming placard proud of the inboard face over its run;
 - the bow's shoulders: the flare through the station's points in full, the eased share between the
   straight line and them (none at their start, all at full), held out ahead of the last station by the
   share squared, straight aft of them, smooth, and the hull closed with their points under a wall and along
@@ -372,8 +482,8 @@ the deck; a new sighting in the game becomes a ray here first.
   lamps round a lettering cell's shapes standing out of the plate; a weapon's mount
   trained and elevated with its pedestal, the square mast with its fitting and a whip's hinge housing;
 - a blister rounded at its ends and a square one, standing out from the hull side and running on into it;
-- a gun tub's floor, its railing on the outboard sides only, and its knee down to the face; railings in
-  their own material;
+- a gun tub's floor, its railing on the outboard sides only, and its knee down to the face, holed through
+  at its holes and solid beside them, its outer end upright for its toe; railings in their own material;
 - the flare's sections at the deck's corners, its creases' facets in place of the sections' strips, and the
   hull whole and wound one way;
 - a catwalk's floor, railing and knees off the deck's edge, a platform off it, a dome's platform carried in

@@ -300,7 +300,14 @@ export function ModelViewer({
     if (!host) return
     let renderer: THREE.WebGLRenderer
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: true })
+      // Depth kept to a share of the distance, not of the clip planes: zoomed
+      // to the cursor, the orbit target can lie a few metres from the camera
+      // with the model 80 m off, its near plane then millimetres, and a door
+      // 5 cm in front of a wall drew through it in stripes
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        logarithmicDepthBuffer: true,
+      })
     } catch {
       setStatus('WebGL is not available in this browser')
       return
