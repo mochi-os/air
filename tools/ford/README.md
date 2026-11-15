@@ -93,7 +93,7 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     frame is a ring round its glass, the glass standing off the face as a plate does; a stowed console sinks as
     deep as its lid needs, and a whip's hinge housing stands as far over the deck; a railing's rails are each
     one bar mitred along its whole path, its posts (`POST`) a little thinner than the top rail, sunk a
-    centimetre and stopping under it; a deflector's ribs across its rows are `RIBBED` deeper than those along
+    centimetre and stopping under it, and its mid rail (`MIDDLE`) 5 mm inside the posts' faces each side; a deflector's ribs across its rows are `RIBBED` deeper than those along
     them; a well sill's curb and comb stop `RESTING` under the sill, where the lowered platform rests; a
     blister's ribs stop `SHORT` of its top and bottom; a path of bars (`shape()`'s `path`: frames, seals, the
     halyards) is one piece round its corners, mitred (`swept()`, closed where it ends where it began); a cast
@@ -130,7 +130,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     faces' frames, the floodlight banks, ladders, pipes, the stair, the fittings on the base's faces, the
     halyards) as parts: boxes, cylinders, prisms, railings, dishes, domes, lathes, paths (bars or pipes along
     a line), ladders, stairs, plates and rings. A railing's posts stand evenly along each straight run, or,
-    `bent`, along the whole of a path bent round a rounded corner. The windows and radar covers are plates on its faces; a
+    `bent`, along the whole of a path bent round a rounded corner; one post stands at each corner, square to the turn's
+    bisector, and where two railings of one node meet end to end the later one adds none (`stand()`). The windows and radar covers are plates on its faces; a
     window that gives a `radius` has its corners rounded, and a `frame` sets it in a flatter rim. Its glazed
     levels (`island.cabs`) are seen through: each one's room and an opening through each glazed face are cut
     from the blocks (an exact boolean, before the radomes and poles join them, which it would trim), and
@@ -161,7 +162,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     midbody's) up the wall standing under it. Along a quarter (`hull.quarters`, from its wall's forward end to
     the transom) the section runs from the knuckle out through the quarter's measured points, straight between
     its sections, to the wall's foot, or under a sponson to the sponson's bottom at its inboard edge; it ends
-    square at both ends, and its aft end's knuckle and knee are landmarks. Where the side steps out of the
+    square at both ends, and its aft end's knuckle and knee are landmarks; a quarter's or a profile's section
+    starting under its knuckle would fold the plating back down over the side, and the build refuses it. Where the side steps out of the
     flare (`hull.profiles`: on each side, stretches of measured sections, a ledge, a face, a recessed wall) the
     section runs from the knuckle through the profile's points, straight between its sections (a shorter one's
     last point repeated), and on from its last point to the gallery's foot at the deck's edge as the flare
@@ -242,7 +244,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     and height on the outermost plating of its node there (the hull, the boxes or the sponsons): vents
     (holes to a dark back), windows (glass `depth` in, a frame round them), closed chocks (a lip round a
     throat), recesses cut level into the flare (a rim, a railing across the floor and a ledge on knees),
-    plain placards, and placards drawn from a lettering cell (the node `side_lettering`); the frames, lips,
+    plain placards, and placards drawn from a lettering cell (the node `side_lettering`), each standing off its face
+    5 mm or as far as its size needs (depth.py), a cell's marks able to fill its plate; the frames, lips,
     railings and plain placards the node `frames`. The openings on faces that share a face are cut together.
     Before the openings, the bays (`hull.notches`, `notch()`): over a stretch of the side the plating from a
     floor height up through the crease and the overhang to the foot of the deck edge's face taken out, and a
@@ -364,7 +367,9 @@ python3 -I stacks.py OUT.glb OUT.json                                           
   sponson keeps to its top, within 0.01 m of its plane and inside its edges.
 - **`photos.json`** - the photo match's catalogue for the shared tools in `../verify` (their README): the
   photos' marks, the deck plan's anchors, the sea at the waterline, and the ship's regions (port and starboard,
-  by part family). Run both under the probe.slice memory cap.
+  by part family). A photo's camera holds only where its marks reach: one marked forward of the island runs on
+  unheld over the stern (facts.json `layout.notes.cameras`), so a placement there through a broadside view needs
+  marks there too, or the correction `references/research/cameras` fits. Run both under the probe.slice memory cap.
 
 ## Tests
 
@@ -376,6 +381,7 @@ python3 -I test_weather.py
 python3 -I test_plates.py
 python3 -I test_stacks.py
 python3 -I test_sides.py
+python3 -I test_raycheck.py
 python3 -I test_build.py   # runs Blender: under the probe.slice memory cap
 ```
 
@@ -383,7 +389,10 @@ python3 -I test_build.py   # runs Blender: under the probe.slice memory cap
 little in front of a wall facing as it does, a back drawn, coincident faces, neighbours in a plane, a strip's
 overlap and not the face it lies on, a grid of ribs, a stack under a lid and under glass, a plate a degree out of
 a deck's plane 160 m out; a box wound out and inside out, a sheet, a crack, a sheet of two faces (one 2 mm out
-of level 150 m out), a room glazed over seen through the glass.
+of level 150 m out), a room glazed over seen through the glass. `test_raycheck.py` holds the ray check to small
+models (a box met front first, a floor met from behind, a sheet drawn both ways, faces back to back within
+2 cm, a start inside a box, and one inside a box whose ray meets a box within it front first) and its reader to
+a small glTF file (the deck's frame, a mirrored node under a moved parent).
 
 `test_paint.py` also holds the tyre marks to the measured band (core and shoulders along the landing line), its
 taper and rounded aft edge, the streaks' contrast, the tracks' smoothness and their place on the texture, the soot
@@ -415,7 +424,10 @@ python3 -I skyprobe.py [MODEL.glb]    # finds candidate corridors for raycheck (
 
 Both default to the game's `ford.glb` and read rays in the deck's terms: metres forward, to starboard and
 above the flight deck. Run raycheck after any change to the hull loft, its walls, flare or face, the sponsons or
-the deck; a new sighting in the game becomes a ray here first.
+the deck; a new sighting in the game becomes a ray here first. The closed parts are single-sided, so a ray
+starts where a camera can stand, outside the ship, and its end only aims it: a start inside a part sees out
+through the backs of its walls whatever the model, so each start must see the first wall along each axis, both
+ways, from the front. A part built over a ray's start fails it until the start is moved out.
 
 `test_build.py` builds a small lopsided ship, so a flipped axis shows, and checks:
 - the frame, and each joint's sign;
@@ -428,7 +440,7 @@ the deck; a new sighting in the game becomes a ray here first.
 - the bow's face and the stem's front below it as the flat bottom of the sections ahead of them, a section at
   each of the front's knots, and a quarter's wall inside the deck's edge;
 - a quarter's section under its wall and under its sponson, its square ends, its landmarks, and the hull
-  still closed;
+  still closed; a quarter starting under its knuckle refused;
 - a profile's section through its points and on to the gallery's foot, a short section's last point
   repeated, its square ends, the flare between two, and the hull still closed; the hull's side details
   built with the sponsons; an open deck pierced into a profile's face to its back, floor and ceiling, its
@@ -446,7 +458,8 @@ the deck; a new sighting in the game becomes a ray here first.
   corners, the grille's bars across it;
 - a crease: the section through its point in its stretch, none outside it, and a well's wall's foot on its
   lower strip; held, its bend's line aft of the hold where the knuckle narrows; on that flare a vent to its back, a window's glass and frame, a chock's lip round an open
-  throat, a recess's level floor, back, railing and ledge, a plain placard, a lettered placard on a box, and a
+  throat, a recess's level floor, back, railing and ledge, a plain placard, a lettered placard on a box (a large one
+  standing off as far as its size needs), and a
   box's face proud below the flare and standing in its open cut above it, with its shelf and a window; the
   bow face vent's bars bowed; a bay through the crease and the overhang to the deck edge's foot (its floor,
   ceiling, ends and dark back each facing into it, the plating under and beside it as it was, every edge
@@ -493,7 +506,8 @@ the deck; a new sighting in the game becomes a ray here first.
 - the transom's fittings: the walkway, drop bar, frame and the plinth's sloping sides, a window rounded at its corners in a flatter
   frame, and a ring part between its radii; the drop bar in two sections round its gap, the walkway cut back round it so
   nothing stands aft of it, the fascia along the cut's sides standing out into the cut and none on the ledge's edge, the
-  railing in two lines; a railing bent round a corner, its posts evenly along the whole of it;
+  railing in two lines; a railing bent round a corner, its posts evenly along the whole of it, its mid rail
+  inside its posts' faces; one post at a railing's corner and none doubled where two railings meet;
 - the weathered atlases: each group's colour and normal maps at its size, its faces in its material with UVs,
   the radomes their own group, and only the group's faces in its atlas; the boot top's colour alone; the
   deflector baked raised (its pit's walls open, read through the UV set the material names) and exported at

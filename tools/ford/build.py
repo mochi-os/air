@@ -142,6 +142,10 @@ RIBBED = 0.003
 RESTING = 0.02
 # A railing's posts, a little thinner than its top rail (0.05)
 POST = 0.045
+# Its mid rail, through the posts: 5 mm inside their faces each side, the
+# posts turned square to their run (at 0.04, 2.5 mm, and the posts square to
+# the ship, a run slanting across it laid a face in a post's)
+MIDDLE = 0.035
 # How far short of a face it would otherwise lie in a part's end stops (a
 # blister's ribs at its top and bottom)
 SHORT = 0.01
@@ -1177,7 +1181,7 @@ def sheave_arm(sheave, k):
 	return pieces
 
 
-def shape(p, frame=None):
+def shape(p, frame=None, posts=None):
 	# One part of the layout's (layout.island.details, a weapon kind's parts, a
 	# mast's fittings) as (vertices, faces, paints), its points in the ship's
 	# frame, or carried by `frame` (a matrix on Blender's points) from a
@@ -1276,7 +1280,7 @@ def shape(p, frame=None):
 			q = a + (b - a) * (i / count)
 			pieces.append(bar(list(q - side), list(q + side), 0.05, p.get("paint", "grey")))
 		for k in (-1, 1):
-			pieces.append(shape({"kind": "railing", "path": [list(a + side * k), list(b + side * k)], "height": p.get("railing", 1.0)}))
+			pieces.append(shape({"kind": "railing", "path": [list(a + side * k), list(b + side * k)], "height": p.get("railing", 1.0)}, posts=posts))
 		piece = merge(pieces)
 	elif kind == "prism":
 		piece = prism(p["outline"], p["bottom"], p["top"], upper=p.get("upper"), paint=paint)
@@ -1293,12 +1297,15 @@ def shape(p, frame=None):
 		# rounded corner's many short runs), evenly along the whole of it
 		height, rails, path = p["height"], [], p["path"]
 		# each rail one bar along the whole path, mitred (swept()); the
-		# posts from a centimetre under the path to the top rail's underside
-		for rise, size in ((height, 0.05), (height / 2, 0.04)):
+		# posts from a centimetre under the path to the top rail's underside,
+		# one at each corner (stand())
+		for rise, size in ((height, 0.05), (height / 2, MIDDLE)):
 			rails.append(swept([[v[0], v[1] + rise, v[2]] for v in path], size, paint))
+		mine = []
 		for run in ([path] if p.get("bent") else [[a, b] for a, b in zip(path, path[1:])]):
-			for q, _ in along_line([[v[0], v[2]] for v in run], p.get("posts", 1.5)):
-				rails.append(bar([q[0], level(run, q) - 0.01, q[1]], [q[0], level(run, q) + height - 0.025, q[1]], POST, paint))
+			for q, d in along_line([[v[0], v[2]] for v in run], p.get("posts", 1.5)):
+				stand(mine, [q[0], level(run, q) - 0.01, q[1]], d, posts)
+		rails += [bar(foot, [foot[0], foot[1] + 0.01 + height - 0.025, foot[2]], POST, paint, facing=[d[0], 0, d[1]]) for foot, d in mine]
 		piece = merge(rails)
 	elif kind == "turned":
 		piece = spun(p["centre"], p["axis"], p["profile"], p.get("segments", 24), paint, p.get("closed", False))
@@ -1504,7 +1511,8 @@ def antennas():
 			# a square mast, with its fittings on it
 			(x, z), w = a["base"], a["width"]
 			pieces = [prism([[x - w / 2, z - w / 2], [x + w / 2, z - w / 2], [x + w / 2, z + w / 2], [x - w / 2, z + w / 2]], top, top + a["length"])]
-			pieces += [shape(p) for p in a.get("details", [])]
+			posts = []
+			pieces += [shape(p, posts=posts) for p in a.get("details", [])]
 			node(name, hinge=base, mesh=merge(pieces))
 		else:
 			radius = fittings["antenna"]["radius"] * (1 if a.get("lowered") else 2.5)
@@ -1559,7 +1567,8 @@ def island():
 	if i.get("details") or lit or glazing:
 		# the mast's and the body's fittings, walkways and railings, the lamps
 		# round the numbers, and the glazed levels' glass and fittings
-		node("island_details", mesh=merge([shape(p) for p in i.get("details", [])] + lit + glazing))
+		posts = []
+		node("island_details", mesh=merge([shape(p, posts=posts) for p in i.get("details", [])] + lit + glazing))
 	details = [face(w, middle, "glass") for w in i.get("windows", []) if "cab" not in w] + [face(f, middle, "panel") for f in i.get("panels", [])]
 	plates = [p for p in LAYOUT.get("lettering", {}).get("plates", []) if p.get("on") == "island"]
 	details += [face(p, middle, "lettering") for p in plates]
@@ -2203,11 +2212,13 @@ def face(entry, centre, paint):
 	return merge(pieces)
 
 
-def bar(a, b, size, paint="grey"):
-	# A square bar `size` across from a to b (ship frame)
+def bar(a, b, size, paint="grey", facing=None):
+	# A square bar `size` across from a to b (ship frame), its sides square to
+	# `facing` (a ship-frame direction across it) where given, else to the
+	# ship's axes
 	a, b = at(*a), at(*b)
 	along = b - a
-	helper = UP if abs(along.normalized().dot(UP)) < 0.9 else FORWARD
+	helper = at(*facing) if facing else UP if abs(along.normalized().dot(UP)) < 0.9 else FORWARD
 	u = along.cross(helper).normalized() * (size / 2)
 	w = along.cross(u).normalized() * (size / 2)
 	corners = [a + u * i + w * j for i, j in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
@@ -2352,18 +2363,42 @@ def level(path, q):
 	return best[1]
 
 
-def railing(line, floor, spec, paint="rail"):
+def railing(line, floor, spec, paint="rail", posts=None):
 	# A toe board, a mid rail and a top rail along a plan line, and posts.
 	# Each rail is one bar along the whole line, mitred at its corners
 	# (swept()); each post runs from a centimetre into the floor up to the
-	# top rail's underside
+	# top rail's underside, square to its run (stand())
 	pieces = []
 	height = spec["railing"]
-	for y, size in ((floor + spec["toe"] / 2, spec["toe"]), (floor + height / 2, 0.04), (floor + height, 0.05)):
+	for y, size in ((floor + spec["toe"] / 2, spec["toe"]), (floor + height / 2, MIDDLE), (floor + height, 0.05)):
 		pieces.append(swept([[q[0], y, q[1]] for q in line], size, paint))
-	for q, _ in along_line(line, spec["posts"]):
-		pieces.append(bar([q[0], floor - 0.01, q[1]], [q[0], floor + height - 0.025, q[1]], POST, paint))
+	mine = []
+	for q, d in along_line(line, spec["posts"]):
+		stand(mine, [q[0], floor - 0.01, q[1]], d, posts)
+	pieces += [bar(foot, [foot[0], floor + height - 0.025, foot[2]], POST, paint, facing=[d[0], 0, d[1]]) for foot, d in mine]
 	return pieces
+
+
+def stand(mine, foot, direction, posts=None):
+	# A railing's post at `foot` (ship frame), square to its run's plan
+	# `direction`, added to `mine` (this railing's, [[foot, direction], ...]),
+	# and to `posts` (every railing's of one node so far, where the caller
+	# shares one) unless one stands there already: where two runs meet (a
+	# corner, or a closed path's ends) one post, square to the turn's
+	# bisector, and where two railings meet end to end none for the later.
+	# Two in one place, each square to its own run, lay in each other's faces
+	for p in mine:
+		if math.dist(p[0], foot) < 0.01:
+			turned = [p[1][0] + direction[0], p[1][1] + direction[1]]
+			length = math.hypot(*turned)
+			if length > 1e-6:
+				p[1] = [turned[0] / length, turned[1] / length]
+			return
+	if posts is not None:
+		if any(math.dist(q, foot) < 0.01 for q in posts):
+			return
+		posts.append(foot)
+	mine.append([foot, list(direction)])
 
 
 def swept(points, size, paint, closed=False):
@@ -2884,12 +2919,13 @@ def upper_transom(x0, section):
 	(zp, _), (zs, _) = section[2], section[3]
 	fittings.append(face({"plane": f"x={x1}", "z": sorted([zp, zs]), "y": t["catwalk"]["y"]}, [0, 0], "recess"))
 	rail = {"railing": t["walkway"]["railing"], "posts": t["walkway"]["posts"], "toe": 0.1}
-	fittings += railing([[x1 - 0.1, zs - 0.3], [x1 - 0.1, zp + 0.3]], t["catwalk"]["y"][0], rail)
+	posts = []
+	fittings += railing([[x1 - 0.1, zs - 0.3], [x1 - 0.1, zp + 0.3]], t["catwalk"]["y"][0], rail, posts=posts)
 	w = t["walkway"]
 	fittings.append(prism(w["plan"], floor - w["thickness"], floor))
 	# its railing one line, or several where the walkway is cut back
 	for line in (w["rail"] if isinstance(w["rail"][0][0], list) else [w["rail"]]):
-		fittings += railing(line, floor, rail)
+		fittings += railing(line, floor, rail, posts=posts)
 	# the fascia and the member under it along its aft edge (one line or
 	# several), each standing out from the walkway, one piece along the whole
 	# line mitred at its corners: a piece a run, each overlapped the next at
@@ -2934,7 +2970,7 @@ def upper_transom(x0, section):
 	# and life ring, the boat landing, the scuppers, pipe and chocks; a part
 	# that gives a `mark` is a landmark for the photo match at its centre; a
 	# `net` a panel of see-through net (net_panels())
-	fittings += [shape(d) for d in t.get("details", []) if d["kind"] != "net"]
+	fittings += [shape(d, posts=posts) for d in t.get("details", []) if d["kind"] != "net"]
 	for d in t.get("details", []):
 		if "mark" in d:
 			MARKS[d["mark"]] = (at(*d["centre"]), "transom_fittings")
@@ -3197,10 +3233,11 @@ def sides():
 	top = LAYOUT["deck"]["height"]
 	pieces = [prism(s["outline"], s["bottom"], s["top"]) for s in LAYOUT.get("sponsons", [])]
 	# what stands on a sponson (shape()s: a deckhouse, its railings)
-	pieces += [shape(d) for s in LAYOUT.get("sponsons", []) for d in s.get("details", [])]
+	posts = []
+	pieces += [shape(d, posts=posts) for s in LAYOUT.get("sponsons", []) for d in s.get("details", [])]
 	# what hangs on the hull's sides clear of the sponsons (shape()s: the
 	# frame in the starboard bay aft of the island)
-	pieces += [shape(d) for d in LAYOUT.get("hull", {}).get("details", [])]
+	pieces += [shape(d, posts=posts) for d in LAYOUT.get("hull", {}).get("details", [])]
 	for s in LAYOUT.get("sponsons", []):
 		n = len(s["outline"])
 		for k, (x, z) in enumerate(s["outline"]):
@@ -4102,6 +4139,9 @@ def hull():
 			points = [(y, half(x, y)) for y in heights] + [(ky, kz)]
 			standing = wall(x, side)
 			section, profiled = quarter(x, side)
+			# a quarter's or a profile's section starts at or above the knuckle:
+			# one starting under it folds the plating back down over the side
+			assert section is None or section[0][0] >= ky - 1e-6, f"the section at x {x:.2f} starts at {section[0][0]:.2f}, under the knuckle at {ky:.2f}"
 			recess = inner(x, side)
 			if standing:
 				# a wall: out from the knuckle (along a quarter's section) to its
@@ -4795,16 +4835,23 @@ def openings():
 				corners = [q + along * i * a + up * j * b for i, j in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
 				outline = [Vector(c) for c in rounded([list(c) for c in corners], o.get("radius", 0.0), steps=4)]
 		if kind == "placard":
-			# square-cornered, 5 mm proud of the plating; one with a `cell`
-			# drawn from the lettering's (the node `side_lettering`)
+			# square-cornered, a centimetre thick and 5 mm proud of the
+			# plating, or as far as its size needs (depth.py) where that is
+			# more: a cell's marks can fill its whole plate (the P's square),
+			# so its front stands off the face for all of it; one with a
+			# `cell` drawn from the lettering's (the node `side_lettering`)
 			a, b = o["size"][0] / 2, o["size"][1] / 2
-			corners = [q + along * i * a + up * j * b + n * 0.005 for i, j in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+			proud = max(0.005, 1.1 * needed(min(o["size"])) - 0.01)
+			corners = [q + along * i * a + up * j * b + n * proud for i, j in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
 			if o.get("cell"):
 				lettering.append(plate([list(c) for c in corners], list(n), 0.01, "lettering"))
 				right = along * (1 if (along.cross(up)).dot(n) > 0 else -1)
-				frames_.append({"middle": tuple(q + n * 0.015), "right": tuple(right), "up": tuple(up), "size": tuple(o["size"]), "cell": o["cell"]})
+				frames_.append({"middle": tuple(q + n * (proud + 0.01)), "right": tuple(right), "up": tuple(up), "size": tuple(o["size"]), "cell": o["cell"]})
 			else:
 				pieces.append(plate([list(c) for c in corners], list(n), 0.01, o["paint"]))
+			if o.get("mark"):
+				# its middle on its front, where the photos mark it
+				MARKS[o["mark"]] = (at(*(q + n * (proud + 0.01))), "side_lettering" if o.get("cell") else "frames")
 			continue
 		hole = {"name": o["name"], "outline": [list(c) for c in outline], "normal": list(n), "depth": o["depth"], "paint": "grey", "floor": "grey",
 			"back": o.get("back", {"window": "glass", "recess": "grey"}.get(kind, "dark"))}

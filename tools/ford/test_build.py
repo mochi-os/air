@@ -317,15 +317,22 @@ def crosses(tris, a, b):
 
 
 def covers_up(tris, x, z, y):
-	# how many upward faces at height y cover the plan point (x, z)
+	# how many upward faces at height y cover the plan point (x, z): a point
+	# on an edge counts half to each triangle it bounds, so one on the
+	# diagonal between two counts once
 	flat = tris[(np.abs(tris[:, :, 1] - y) < 1e-4).all(axis=1)]
 	up = np.cross(flat[:, 1] - flat[:, 0], flat[:, 2] - flat[:, 0])[:, 1] > 1e-9
 	count = 0
 	for t in flat[up]:
 		a, b, c = t[:, [0, 2]]
-		d = lambda p, q, r: (p[0] - r[0]) * (q[1] - r[1]) - (q[0] - r[0]) * (p[1] - r[1])
-		e = [d((x, z), a, b), d((x, z), b, c), d((x, z), c, a)]
-		count += min(e) > 1e-9 or max(e) < -1e-9
+		d = lambda p, q, r: ((p[0] - r[0]) * (q[1] - r[1]) - (q[0] - r[0]) * (p[1] - r[1])) / math.dist(p, q)
+		e = np.array([d(a, b, (x, z)), d(b, c, (x, z)), d(c, a, (x, z))])
+		e *= np.sign(e[np.abs(e).argmax()])
+		if (e < -1e-6).any():
+			continue
+		on = int((np.abs(e) <= 1e-6).sum())
+		assert on < 2, f"({x}, {z}) is a corner of a face"
+		count += 0.5 if on else 1
 	return count
 
 
@@ -1220,12 +1227,13 @@ class BuildTest(unittest.TestCase):
 
 	def test_sponson_and_its_phalanx(self):
 		sponson = self.model.parts()["sponsons"].reshape(-1, 3)
-		self.assertTrue(((sponson[:, 0] >= -90 - 1e-6) & (sponson[:, 0] <= -30 + 0.03)).all())   # the railing's last post half its width past
+		self.assertTrue(((sponson[:, 0] >= -90 - 1e-6) & (sponson[:, 0] <= -10 + 0.03)).all())   # the second run's last post half its width past its end
 		quarter = sponson[np.isclose(sponson[:, 0], -90) | np.isclose(sponson[:, 0], -80)]   # its corners
 		self.assertAlmostEqual(quarter[:, 1].min(), 8.0, places=4)
 		self.assertAlmostEqual(quarter[:, 1].max(), 12.0, places=4)
-		# the catwalk's floor at its height, its railing a metre above it
-		catwalk = sponson[(sponson[:, 0] >= -50 - 1e-6) & (sponson[:, 2] < -39)]
+		# the catwalk's floor at its height, its railing a metre above it (the
+		# first run's, short of the second's edge dome)
+		catwalk = sponson[(sponson[:, 0] >= -50 - 1e-6) & (sponson[:, 0] <= -30) & (sponson[:, 2] < -39)]
 		self.assertTrue(np.isclose(catwalk[:, 1], 17.5, atol=1e-4).any())
 		self.assertAlmostEqual(catwalk[:, 1].max(), 18.525, places=3)
 		weapons = self.model.parts()["weapons"].reshape(-1, 3)
@@ -1721,6 +1729,17 @@ class BuildTest(unittest.TestCase):
 		top = bend[np.isclose(bend[:, 1], 9.0, atol=0.03)]
 		middle = np.array([-90.5 - 0.5 * math.cos(math.radians(45)), -3.0 - 0.5 * math.sin(math.radians(45))])
 		self.assertLess(np.linalg.norm(top[:, [0, 2]] - middle, axis=1).min(), 0.04)
+
+	def test_mid_rail_inside_its_posts(self):
+		# the bent railing's mid rail (its rails at 9.0 and 8.5 over its floor
+		# at 8.0) 3.5 cm square, a clear 5 mm inside its 4.5 cm posts' faces
+		# each side: at 4 cm, 2.5 mm, a run slanting across the ship laid one
+		# of its faces in a post's
+		rail = self.model.parts(materials=["rail"])["transom_fittings"].reshape(-1, 3)
+		bend = rail[(rail[:, 0] > -91.1) & (rail[:, 0] < -88.4) & (rail[:, 2] < 0.1) & (rail[:, 1] > 7.9) & (rail[:, 1] < 9.1)]
+		middle = bend[(bend[:, 1] > 8.4) & (bend[:, 1] < 8.6)]
+		self.assertGreater(len(middle), 0)
+		self.assertAlmostEqual(float(np.ptp(middle[:, 1])), 0.035, places=4)
 
 	def test_ring_sweep(self):
 		# a deck circle the deck's edge cuts: only its swept arc, from forward
@@ -2338,6 +2357,20 @@ class QuarterTest(unittest.TestCase):
 			for e in open_))
 
 
+class QuarterKnuckleTest(unittest.TestCase):
+	# a quarter whose section starts under its knuckle (the fixture's port
+	# knuckle at 6, the section's first point at 5.5) folds the plating back
+	# down over the side: the build refuses it
+	def test_section_under_its_knuckle(self):
+		layout = json.loads(json.dumps(LAYOUT))
+		layout["hull"]["quarters"] = {"port": [{"x": -55, "points": [[5.5, -20], [8, -30]]}, {"x": -89, "points": [[7, -13], [7.5, -16]]}]}
+		holder = type("holder", (), {})
+		with self.assertRaises(RuntimeError) as refused:
+			build(holder, layout)
+		holder.folder.cleanup()
+		self.assertIn("under the knuckle at 6.00", str(refused.exception))
+
+
 class ProfileTest(unittest.TestCase):
 	# the fixture with two measured profiles to starboard, apart: from x -35
 	# to -25 the side stepping out of the flare to a ledge at 7 (z 20) and up
@@ -2573,7 +2606,10 @@ class CreaseTest(unittest.TestCase):
 			{"name": "box_window", "kind": "window", "node": "boxes", "at": [-12.7, 11], "size": [0.4, 0.6], "radius": 0.1, "depth": 0.1,
 				"frame": [0.05, 0.03]},
 			# a lettered plate on the box's face, drawn from the fixture's cell
-			{"name": "box_sign", "kind": "placard", "node": "boxes", "at": [-13.5, 11.5], "size": [0.6, 0.4], "cell": "square"}]
+			{"name": "box_sign", "kind": "placard", "node": "boxes", "at": [-13.5, 11.5], "size": [0.6, 0.4], "cell": "square"},
+			# and one a metre and a half square on the other box, its marks
+			# as large as its plate can hold
+			{"name": "boxed_sign", "kind": "placard", "node": "boxes", "at": [26.25, 12.9], "size": [1.5, 1.5], "cell": "square", "mark": "boxed_sign"}]
 		# the bow face's vent's bars bowed 4 cm out at their middles
 		hull["face"]["vents"][0]["grille"]["bow"] = 0.04
 		# a box whose face (20.5) crosses the flare at 9 2/3: proud below it,
@@ -2608,6 +2644,20 @@ class CreaseTest(unittest.TestCase):
 		self.assertAlmostEqual(40 - reach(tris, [-13.5, 11.5, 40], [0, 0, -1]), 20.5 + 0.015, delta=0.002)
 		uvs = model.uvs[mesh]
 		self.assertTrue(any(len(u) for u in uvs))
+
+	def test_large_placard_stands_off(self):
+		# a lettered plate 1.5 m square stands its front off the box's face
+		# (24) as far as its size needs (depth.py: 3.4 cm, and a tenth more),
+		# not the small plates' 1.5 cm: its marks can fill all of it
+		tris = self.model.parts(materials=["lettering"])["side_lettering"]
+		self.assertAlmostEqual(40 - reach(tris, [26.25, 12.9, 40], [0, 0, -1]), 24.0 + 1.1 * depth.needed(1.5), delta=0.001)
+
+	def test_placard_mark(self):
+		# a placard that gives a `mark` is a landmark at its front's middle,
+		# on the node it is drawn in
+		mark = self.features["landmarks"]["boxed_sign"]
+		self.assertEqual(mark["node"], "side_lettering")
+		np.testing.assert_allclose(mark["at"], [26.25, 12.9, 24.0 + 1.1 * depth.needed(1.5)], atol=1e-3)
 
 	def test_bowed_grille(self):
 		# each bar across the bow face's vent 4 cm further out at its middle
@@ -3677,6 +3727,17 @@ v, f, p = build["swept"]([[0, 0, 0], [1, 0, 0], [1, 0, 1]], 0.1, "grey")
 out["swept_l"] = {"vertices": [ship(q) for q in v], "faces": [list(x) for x in f]}
 v, f, p = build["swept"]([[0, 0, 0], [2, 0, 0], [2, 0, 2], [0, 0, 2]], 0.1, "grey", closed=True)
 out["swept_loop"] = {"vertices": [ship(q) for q in v], "faces": [list(x) for x in f]}
+# a railing along a run slanting across the ship (10 m along, 1 across): its
+# three rails, then its posts
+pieces = build["railing"]([[0, 0], [10, 1]], 0, {"railing": 1.0, "posts": 1.5, "toe": 0.1})
+out["railing_posts"] = [[ship(q) for q in piece[0]] for piece in pieces[3:]]
+# two layout railings sharing one node's posts: an L, posts 1.5 apart along
+# each run, and a run on from the L's end; each one's post feet (a
+# centimetre under its path)
+shared = []
+for name, path in (("corner", [[0, 0, 0], [3, 0, 0], [3, 0, 3]]), ("on", [[3, 0, 3], [6, 0, 3]])):
+	v, f, p = build["shape"]({"kind": "railing", "path": path, "height": 1.0}, posts=shared)
+	out["railing_" + name] = [ship(q) for q in v if abs(q.z + 0.01) < 1e-6]
 # a layout part's path of bars round the same L, and a seal round a square
 # given as a path ending where it began
 v, f, p = build["shape"]({"kind": "path", "path": [[0, 0, 0], [1, 0, 0], [1, 0, 1]], "size": 0.1})
@@ -3882,6 +3943,45 @@ class GeometryTest(unittest.TestCase):
 		# their winding), leaving one closed solid of ten faces; the lone
 		# block's six and the sheet's two stay
 		self.assertEqual(self.out["tidied"], {"faces": 10 + 6 + 2, "between": 0})
+
+	def test_railing_posts_square_to_their_run(self):
+		# along a run slanting across the ship every post's sides lie square
+		# to the run, as the rails' do: square to the ship, a slanting run's
+		# mid rail crossed into a post's face
+		run = np.array([10.0, 1.0]) / np.hypot(10, 1)
+		posts = self.out["railing_posts"]
+		self.assertEqual(len(posts), 8)
+		for post in posts:
+			v = np.array(post)
+			foot = v[np.argsort(v[:, 1])[:4]][:, [0, 2]]
+			for a in foot:
+				for b in foot:
+					edge = b - a
+					if 0.04 < np.linalg.norm(edge) < 0.05:   # a side, not a diagonal
+						edge /= np.linalg.norm(edge)
+						self.assertLess(min(abs(edge @ run), abs(edge[0] * run[1] - edge[1] * run[0])), 1e-3)   # square to the ship it reads sin 5.7 deg, 0.0995
+
+	def test_railings_share_their_posts(self):
+		# one post at the L's corner, square to the turn's bisector (each run
+		# put one there, square to itself, the two in each other's faces), and
+		# none where the next railing begins on the L's last post
+		def posts(feet):
+			feet = np.array(feet)[:, [0, 2]]
+			groups = []
+			for q in feet:
+				for g in groups:
+					if np.linalg.norm(g[0] - q) < 0.1:   # a post 0.045 across, the next 1.5 on
+						g.append(q)
+						break
+				else:
+					groups.append([q])
+			return {tuple(np.round(np.mean(g, axis=0), 3)): np.array(g) for g in groups}
+		corner, on = posts(self.out["railing_corner"]), posts(self.out["railing_on"])
+		self.assertEqual(sorted(corner), [(0.0, 0.0), (1.5, 0.0), (3.0, 0.0), (3.0, 1.5), (3.0, 3.0)])
+		self.assertTrue(all(len(g) == 4 for g in corner.values()))
+		self.assertEqual(sorted(on), [(4.5, 3.0), (6.0, 3.0)])
+		turned = corner[(3.0, 0.0)] - [3.0, 0.0]
+		np.testing.assert_allclose(sorted(np.abs(turned).max(axis=1)), [0.0318] * 4, atol=1e-4)   # its corners on the axes, half its diagonal out
 
 	def test_a_swept_bar_mitres_its_corners(self):
 		# one piece round its corner, cut on the plane halfway between its runs
