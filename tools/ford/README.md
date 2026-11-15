@@ -341,10 +341,11 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   paint keeps its mostly solid triangles (the island's plating round its windows) and loses its mostly open ones
   (the nets). gltfpack simplifies it to a quarter (`RATIO`: 38k triangles) and compresses it (0.35 MB). Its check:
   one call, vertex colours, no images, its extent within a pixel at the nearest range it is drawn (`PIXEL`, 1.9 m).
-  Rendered at 2.5 km from four bearings it differs from the build's PNG-textured model by 3-6 levels of 255 on
-  average over the ship, against the full model's own KTX2 textures' 6-14; unsimplified it differs by 3-5, at a
-  tenth by 5-9. It costs 0.1-0.25 ms a frame where the full model costs 0.9-1.8 (three.js, this machine's GPU,
-  with and without shadows).
+  Rendered at 2.5 km from four bearings, it differs from the full model as the game draws it by 3.5-6.4 levels of
+  255 on average over the ship, and from the build's PNG-textured model by 3-6 (unsimplified 3-5, at a tenth
+  5-9). Render such comparisons with the normal maps linear, as the engine reads them: the KTX2 files are all
+  flagged sRGB (`../texswap.py` encodes each image as a colour), and read so they bend every normal. It costs
+  0.1-0.25 ms a frame where the full model costs 0.9-1.8 (three.js, this machine's GPU, with and without shadows).
 
 ## Check
 
