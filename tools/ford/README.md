@@ -313,12 +313,38 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     landing line, wires and their sheaves, the lens and the lights among it), the island's collision prisms,
     the hull's waterline, and every joint's axis, drive and keys.
   - FEATURES.json holds the named points and curves the photo match measures.
-- **Into the game:** `web/src/assets/ford.glb` is the build with its images in KTX2 and `ford.json` its ship
-  file. `python3 -I ../texswap.py OUT.glb ford.glb etc1s 1,3,5,7` encodes the deck and the weathered colour
-  atlases ETC1S (the deck's 4x4 blocks are 16 cm, finer than its thinnest marking; worn, UASTC made it 5.4 MB
-  against ETC1S's 1.1) and the lettering and the three normal maps UASTC (the build writes its images in the order deck,
-  hull normal, hull, island normal, island, radomes' normal, radomes, lettering, nets, boot top; check the order before
-  reusing the indices). Run it in a folder inside the project, which its sandboxed encoder can reach.
+- **Into the game:** `web/src/assets/ford.glb` is the build packed by `python3 -I pack.py OUT.glb OUT.json
+  ford.glb`, and `ford.json` its ship file. The packing:
+  - merges the parts that never move into one node (`ship`), a primitive a paint, which draws the ship in 148
+    calls rather than 184. A part stays whole if it is a joint or hangs from one, or if the engine or the far stage
+    finds it by name (`KEEP`: the vehicles and the island's walkways, which the engine's deck grid tells apart,
+    and the deck, its skirt and underside);
+  - encodes the images in KTX2 through `../texswap.py`: the deck and the weathered colour atlases ETC1S (the
+    deck's 4x4 blocks are 16 cm, finer than its thinnest marking; worn, UASTC made it 5.4 MB against ETC1S's 1.1),
+    the lettering and the three normal maps UASTC;
+  - compresses the geometry with meshopt (gltfpack `-cc -noq`: positions stay full floats, since 16 bits over
+    the ship's length steps 5 mm; gltfpack drops the UVs of paints with no image, which nothing reads);
+  - names each mesh after its part again (gltfpack drops mesh names, and the glTF loader names a part's meshes
+    after them, which the engine's deck grid reads);
+  - decodes the result with the game's own decoder (`unpack.mjs`, three's MeshoptDecoder under node) and checks it
+    against the build: every triangle under the same part, in the same place, wound the same way, with the same
+    normals and UVs (gltfpack's dropped degenerate triangles aside), every joint where it was and hanging from the
+    same part, the kept parts whole, every mesh named, every material as it was. It exits non-zero on a finding.
+
+  Its working files go in `references/pack/`, inside the project, which the sandboxed encoders can reach. The
+  tools that read the game's model (`raycheck.py`, `skyprobe.py`) decode it through `pack.plain()`.
+- **The distant model:** `web/src/assets/ford-far.glb`, from the same build by `python3 -I far.py OUT.glb OUT.json
+  ford-far.glb`. Past `CARRIER_LIMIT` (engine.ts: about 2.9 km, back to the full model at about 2.5 km) the engine
+  draws it in place of every part of the full model but the deck, its skirt and underside (`CARRIER_KEEP`), in one
+  call against some 150. It is the build posed as the game draws it (the whips lowered), each corner coloured by
+  its paint as the average of its image over a box 1/512 of its width round its UV, in linear light. A cut-out
+  paint keeps its mostly solid triangles (the island's plating round its windows) and loses its mostly open ones
+  (the nets). gltfpack simplifies it to a quarter (`RATIO`: 38k triangles) and compresses it (0.35 MB). Its check:
+  one call, vertex colours, no images, its extent within a pixel at the nearest range it is drawn (`PIXEL`, 1.9 m).
+  Rendered at 2.5 km from four bearings it differs from the build's PNG-textured model by 3-6 levels of 255 on
+  average over the ship, against the full model's own KTX2 textures' 6-14; unsimplified it differs by 3-5, at a
+  tenth by 5-9. It costs 0.1-0.25 ms a frame where the full model costs 0.9-1.8 (three.js, this machine's GPU,
+  with and without shadows).
 
 ## Check
 
@@ -382,6 +408,8 @@ python3 -I test_plates.py
 python3 -I test_stacks.py
 python3 -I test_sides.py
 python3 -I test_raycheck.py
+python3 -I test_pack.py
+python3 -I test_far.py
 python3 -I test_build.py   # runs Blender: under the probe.slice memory cap
 ```
 
@@ -392,7 +420,18 @@ a deck's plane 160 m out; a box wound out and inside out, a sheet, a crack, a sh
 of level 150 m out), a room glazed over seen through the glass. `test_raycheck.py` holds the ray check to small
 models (a box met front first, a floor met from behind, a sheet drawn both ways, faces back to back within
 2 cm, a start inside a box, and one inside a box whose ray meets a box within it front first) and its reader to
-a small glTF file (the deck's frame, a mirrored node under a moved parent).
+a small glTF file (the deck's frame, a mirrored node under a moved parent), and to the game's packed model.
+`test_pack.py` holds the packing to small models: the fixed parts merged a primitive a paint, a moved, a turned
+and a mirrored part carried into the world frame facing as they did, the joints, a part hanging from one and the
+kept parts whole, the images copied; each mesh named after its part, a shared one described for each; and the
+check finding each change (a triangle lost, turned inside out or moved a millimetre, a normal turned, a UV moved
+where the paint draws an image, a kept part merged, a joint moved or hung from another part, a mesh unnamed, a
+paint changed) but not a dropped degenerate triangle, a UV where no image is drawn, or a number written to fewer
+figures. With node and gltfpack installed it packs one and decodes it. `test_far.py` holds the distant model to
+small models: the deck, a part hanging from it and its skirt left to the full model; a whip lowered as the engine
+sets it, its normal turned with it; a paint's colour its factor times its image in linear light; a cut-out's solid
+half kept and its open half gone; a mirrored part facing out; its check finding images, a second call and a short
+extent but passing a miss under a pixel; and its constants (`KEEP`, the switch, the ship's length) the engine's.
 
 `test_paint.py` also holds the tyre marks to the measured band (core and shoulders along the landing line), its
 taper and rounded aft edge, the streaks' contrast, the tracks' smoothness and their place on the texture, the soot

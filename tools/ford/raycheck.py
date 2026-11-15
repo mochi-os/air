@@ -14,6 +14,8 @@ Usage: raycheck.py [glb]   (default the game's ford.glb)"""
 import json, struct, sys
 import numpy as np
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pack  # noqa: E402  the game's model is packed: plain() decodes it
 DECKY=18.27   # the deck's height in the contract frame
 CT={5121:np.uint8,5123:np.uint16,5125:np.uint32,5126:np.float32}
 NC={'SCALAR':1,'VEC2':2,'VEC3':3}
@@ -31,7 +33,7 @@ def trs(n):
     return M
 def load(path):
     """every triangle in the deck's terms, its front normal, and whether its material is double-sided"""
-    d=Path(path).read_bytes()
+    d=pack.plain(path)
     cl=struct.unpack('<I',d[12:16])[0]
     G=json.loads(d[20:20+cl]); bin0=d[20+cl+8:]
     def readA(ai):

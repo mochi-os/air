@@ -118,7 +118,7 @@ export function textures(
 }
 
 // strip removes every texture reference so parse() never builds a blob URL.
-function strip(json: any): void {
+export function strip(json: any): void {
   for (const m of json.materials || []) {
     if (m.pbrMetallicRoughness) {
       delete m.pbrMetallicRoughness.baseColorTexture

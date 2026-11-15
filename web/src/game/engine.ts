@@ -80,6 +80,7 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 // the URL changes when the bytes do, so there is no version constant to bump on
 // regen. The dev readout shows the hash.
 import ford_model_url from '../assets/ford.glb?url'
+import ford_far_url from '../assets/ford-far.glb?url'
 import ford_ship from '../assets/ford.json'   // its ship file, written beside it by tools/ford/build.py: the deck layout and the points the engine draws
 import { layout as ship_layout, lit as ship_lit } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
@@ -199,11 +200,13 @@ function model_stamp(url){ const m=/-([\w-]+)\.\w+$/.exec(url); return m?m[1]:ur
 const CARRIER_MODELS={
 	// The model is built in its ship file's frame at true scale, its origin on
 	// the waterline: the loader neither scales, centres nor sinks it. length is
-	// the flight deck's, end to end. No far model yet: whether she needs one is settled once the rest of her is done.
+	// the flight deck's, end to end. far is her distant model (tools/ford/far.py): past CARRIER_LIMIT it
+	// draws in one call what the full model, its deck aside, draws in some 150.
 	ford:{ url:ford_model_url, length:332.6, yaw:20, bow:0,   // yaw:20 faces the bow to 070° (into the Midway wind): the model's bow is +X. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
 		ident:"GF",                                       // the ship's TACAN ident (ACP 113), shown beside the HUD's slant range
 		tacan:{ channel:74, band:"X" }, icls:11,          // the ship's TACAN and ICLS channels, which the pre-flight tunes: plausible values, not a real hull's
 		channels:[305000,262500,275800,318500],           // its tower, approach, marshal and landing signal officer frequencies, kHz, the first four comm presets of the mission load: plausible values too
+		far:ford_far_url,
 		...ship_layout(ford_ship as Parameters<typeof ship_layout>[0]) } };
 const SHIP=CARRIER_MODELS.ford;   // the active carrier (a picker arrives with the second ship)
 function sanitize_cfg(){   // runs after every config merge (the server-backed store can hold stale eras too)

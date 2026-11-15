@@ -10,9 +10,11 @@ from collections import defaultdict
 import numpy as np
 
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pack  # noqa: E402  the game's model is packed: plain() decodes it
 GLB=sys.argv[1] if len(sys.argv)>1 else str(Path(__file__).resolve().parents[2]/'web/src/assets/ford.glb')
 CX,CZ,DECKY,S=0.0,0.0,18.27,1.0   # the contract frame: x forward, z to starboard, metres; the deck's height
-d=open(GLB,'rb').read()
+d=pack.plain(GLB)
 cl=struct.unpack('<I',d[12:16])[0]
 G=json.loads(d[20:20+cl]); bin0=d[20+cl+8:]
 CT={5121:np.uint8,5123:np.uint16,5125:np.uint32,5126:np.float32}

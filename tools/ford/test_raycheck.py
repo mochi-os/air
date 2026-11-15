@@ -6,13 +6,14 @@
 # cast on small models, and the reader's frame on a small glTF file.
 #
 # usage: python3 -I test_raycheck.py
-import json, struct, sys, tempfile, unittest
+import json, shutil, struct, sys, tempfile, unittest
 from pathlib import Path
 
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import pack  # noqa: E402
 import raycheck  # noqa: E402
 from test_stacks import slab, square  # noqa: E402
 
@@ -106,6 +107,24 @@ class LoadTest(unittest.TestCase):
 		for n in normals:
 			np.testing.assert_allclose(n / np.linalg.norm(n), [0, 0, -1], atol=1e-6)
 		self.assertEqual(sided.tolist(), [True, False])
+
+	@unittest.skipUnless(shutil.which("node") and Path("~/bin/bwrap-build").expanduser().exists() and pack.GLTFPACK.exists(),
+		"needs node, ~/bin/bwrap-build and ../gltfpack-native")
+	def test_load_reads_the_game_s_packed_model_as_built(self):
+		# the game's model is meshopt-compressed (pack.py): the same triangles, faces and sides
+		work = HERE / "references" / "pack" / "test"
+		work.mkdir(parents=True, exist_ok=True)
+		glb(work / "model.glb")
+		pack.sandboxed([str(pack.GLTFPACK), "-i", str(work / "model.glb"), "-o", str(work / "packed.glb"), "-cc", "-noq", "-kn", "-km", "-ke"])
+		self.assertIn("EXT_meshopt_compression", pack.read((work / "packed.glb").read_bytes())[0]["extensionsUsed"])
+
+		def rows(ship):
+			out = []
+			for t, n, d in zip(*ship):
+				first = min(range(3), key=lambda k: tuple(np.round(t[k], 5)))
+				out.append(tuple(np.round(np.roll(t, -first, axis=0), 5).ravel()) + tuple(np.round(n / np.linalg.norm(n), 5)) + (bool(d),))
+			return sorted(out)
+		self.assertEqual(rows(raycheck.load(str(work / "packed.glb"))), rows(raycheck.load(str(work / "model.glb"))))
 
 
 if __name__ == "__main__":
