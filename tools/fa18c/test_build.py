@@ -54,7 +54,8 @@ class KeyTest(unittest.TestCase):
 		"reach": (None, ("STORE_REACH = 12.0\n", "STORE_REACH = 12.5\n")),
 		"store_atlas": (lambda l: l["stores"]["paint"].update(atlas=512), None),
 		"strip": (None, ("STRIP = 0.03   #", "STRIP = 0.04   #")),
-		"density": (None, ("STENCIL_DENSITY = 4.0   #", "STENCIL_DENSITY = 3.0   #")),
+		"density": (None, ("STENCIL_DENSITY = 4.4   #", "STENCIL_DENSITY = 3.0   #")),
+		"open_reach": (None, ("OPEN_REACH = 24.0   #", "OPEN_REACH = 25.0   #")),
 		"margin": (None, ("STENCIL_MARGIN = 1.5    #", "STENCIL_MARGIN = 2.0    #")),
 		"nozzles": (None, ("			NOZZLE_PARTS.append(petal)\n", "			NOZZLE_PARTS.append(petal) if k else None\n")),
 	}
@@ -111,6 +112,9 @@ class KeyTest(unittest.TestCase):
 
 	def test_the_open_pose_counts_in_the_jets_key_alone(self):
 		self.assertEqual(self.moved("opened"), {"paint": True, "stores": False})
+
+	def test_the_open_parts_reach_counts_in_the_jets_key_alone(self):
+		self.assertEqual(self.moved("open_reach"), {"paint": True, "stores": False})
 
 	def test_the_tanks_bake_the_stores_alone(self):
 		self.assertEqual(self.moved("tanks"), {"paint": False, "stores": True})

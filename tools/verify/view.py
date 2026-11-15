@@ -15,6 +15,9 @@ from pathlib import Path
 import bpy
 from mathutils import Matrix, Quaternion, Vector
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from camera import clipping  # noqa: E402
+
 
 def lookup(keys, x):
 	# as model.py's: a bend's keys ([input, turn, slide]) give a tuple
@@ -102,7 +105,14 @@ def main():
 		data.sensor_fit = "HORIZONTAL"
 		data.sensor_width = 36.0
 		data.lens = f * 36.0 / w
-		data.clip_start, data.clip_end = 0.05, 2000.0
+		bpy.context.view_layer.update()
+		spheres = []
+		for obj in scene.objects:
+			if obj.type == "MESH":
+				corners = [obj.matrix_world @ Vector(c) for c in obj.bound_box]
+				centre = sum(corners, Vector()) / 8
+				spheres.append((tuple(centre), max((c - centre).length for c in corners)))
+		data.clip_start, data.clip_end = clipping(tuple(camera.matrix_world.translation), spheres)
 		scene.render.resolution_x, scene.render.resolution_y = width, round(width * h / w)
 		scene.render.filepath = str(Path(outdir) / f"{entry['photo']}.png")
 		bpy.ops.render.render(write_still=True)

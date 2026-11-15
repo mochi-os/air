@@ -326,6 +326,39 @@ class CameraTest(unittest.TestCase):
 			R = cam.rotation(v)
 			np.testing.assert_allclose(cam.rotation(cam.vector(R)), R, atol=1e-6)
 
+	def test_clipping_holds_what_the_camera_sees(self):
+		# a jet 20 m long seen from 215 m, 12 m and 5 m: every point of each
+		# part within 50 degrees of the line of sight lies between the clip
+		# planes (from 12 m, looking at a part off to the side, the middle
+		# stands nearer in depth than its sphere's near side is in distance)
+		rng = np.random.default_rng(3)
+		spheres = [((0.0, 0.0, 0.0), 6.0), ((8.0, -1.0, 0.0), 3.0), ((-8.0, 0.5, 1.0), 2.0), ((6.0, -4.0, 0.0), 1.0)]
+		for position in ((0.0, -215.0, 20.0), (0.0, -12.0, 0.0), (0.0, -5.0, 1.0)):
+			start, end = cam.clipping(position, spheres)
+			position = np.array(position)
+			points = []
+			for centre, radius in spheres:
+				ball = rng.normal(size=(2000, 3))
+				points.append(np.array(centre) + radius * ball / np.linalg.norm(ball, axis=1, keepdims=True) * rng.random((2000, 1)) ** (1 / 3))
+			offset = np.concatenate(points) - position
+			for axis in [-position] + [np.array(centre) - position for centre, _ in spheres]:
+				axis = axis / np.linalg.norm(axis)
+				depth = offset @ axis
+				seen = depth > np.cos(math.radians(50)) * np.linalg.norm(offset, axis=1)
+				self.assertGreater(seen.sum(), 100)
+				self.assertGreaterEqual(depth[seen].min(), start)
+				self.assertLessEqual(depth[seen].max(), end)
+
+	def test_clipping_starts_near_a_distant_jet(self):
+		# from 215 m the near plane stands past 100 m, where a start of a few
+		# centimetres leaves the depth buffer too coarse for the shading; from
+		# inside a part's sphere it falls back to 5 cm
+		start, end = cam.clipping((0.0, -215.0, 20.0), [((0.0, 0.0, 0.0), 10.0)])
+		self.assertGreater(start, 100.0)
+		self.assertLess(end, 230.0)
+		start, _ = cam.clipping((0.0, -1.0, 0.0), [((0.0, 0.0, 0.0), 10.0)])
+		self.assertEqual(start, 0.05)
+
 	def test_solve_recovers_camera(self):
 		points = scene()
 		truth = cam.looking(np.array([4.0, 2.0, 30.0]), np.zeros(3), 9000.0)

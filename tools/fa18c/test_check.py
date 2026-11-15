@@ -236,6 +236,23 @@ class ShapeTest(unittest.TestCase):
 				points.write_text(json.dumps({"joints": {}, "points": {}}))
 				jet = check.Jet(path, points)
 				self.assertAlmostEqual(check.rim(jet, "speedbrake"), want, places=3)
+			# the same door cut as two panels abutting at FS 450, each with its
+			# own corners, the second's seam split at BL 0 (as door() cuts a
+			# door's convex pieces one by one, each subdivided its own way):
+			# where they meet is no edge of the door's, so its rim still meets
+			# the hole's
+			def panel(ring):
+				n = len(ring)
+				pv = np.array([[x(f), 15.15 * i, b * i] for f, b in ring] + [[x(f), 14.9 * i, b * i] for f, b in ring])
+				outer = [(0, k, k + 1) for k in range(1, n - 1)]
+				inner = [(n, n + k + 1, n + k) for k in range(1, n - 1)]
+				walls = [t for k in range(n) for t in ((k, (k + 1) % n, n + (k + 1) % n), (k, n + (k + 1) % n, n + k))]
+				return pv, outer + inner + walls
+			(va, fa), (vb, fb) = panel([(440, -5), (450, -5), (450, 5), (440, 5)]), panel([(450, 0), (450, -5), (460, -5), (460, 5), (450, 5)])
+			halves = (np.concatenate([va, vb]), np.array(fa + [tuple(k + len(va) for k in t) for t in fb]))
+			glb(path, [{"name": "fuselage", "mesh": shell}, {"name": "speedbrake", "mesh": halves}])
+			jet = check.Jet(path, points)
+			self.assertAlmostEqual(check.rim(jet, "speedbrake"), 0.0, places=3)
 			# a second door cut from the same skin: overlapping the first by
 			# 5 in, they lie on each other; abutting it, they do not, though
 			# a sliver of its faces 0.01 in wide runs along the edge they share
@@ -341,6 +358,36 @@ class ShapeTest(unittest.TestCase):
 		# reach, are still the nearest
 		sliver = np.array([[[11.0, 0.0, 1.0], [11.9, 2.6, 1.0], [11.5, 0.0, 1.0]]])
 		self.assertAlmostEqual(check.apart(np.concatenate([one, sliver]), tris((0.0, 4.5, 0.0), (10.0, 6.0, 2.0))), 2.5, places=6)
+
+	def test_through(self):
+		# two boxes crossing: their faces cross where an edge of either passes
+		# through a face of the other; boxes touching face to face, lying
+		# apart, or one wholly inside the other (no face crossing) do not
+		tris = lambda lo, hi: (lambda v, f: v[f])(*box(lo, hi))
+		one = tris((0.0, 0.0, 0.0), (10.0, 2.0, 2.0))
+		hits = check.through(one, tris((4.0, 1.5, -1.0), (6.0, 4.0, 3.0)))
+		self.assertTrue(len(hits))
+		self.assertTrue(((hits[:, 1] >= 1.5 - 1e-9) & (hits[:, 1] <= 2.0 + 1e-9)).all())
+		self.assertEqual(len(check.through(one, tris((0.0, 2.0, 0.0), (10.0, 4.0, 2.0)))), 0)
+		self.assertEqual(len(check.through(one, tris((0.0, 2.0, 0.5), (5.0, 4.0, 1.5)))), 0)
+		self.assertEqual(len(check.through(one, tris((0.0, 2.5, 0.0), (10.0, 4.0, 2.0)))), 0)
+		self.assertEqual(len(check.through(one, tris((2.0, 0.5, 0.5), (8.0, 1.5, 1.5)))), 0)
+		# a thin plate standing through the box's middle: none of its corners
+		# inside the box, its faces crossed by the box's long edges
+		self.assertTrue(len(check.through(one, tris((4.9, -1.0, -1.0), (5.1, 3.0, 3.0)))))
+
+	def test_shrunk(self):
+		# a box pulled in is the box with each face stepped in by the seam,
+		# every copy of a corner alike; a plate grazing it by less than the
+		# seam then clears it, one deeper does not
+		tris = lambda lo, hi: (lambda v, f: v[f])(*box(lo, hi))
+		one = tris((0.0, 0.0, 0.0), (10.0, 2.0, 2.0))
+		self.assertTrue(np.allclose(check.shrunk(one, 0.1), tris((0.1, 0.1, 0.1), (9.9, 1.9, 1.9))))
+		graze = tris((2.0, 1.95, 0.5), (8.0, 3.0, 1.5))
+		self.assertTrue(len(check.through(one, graze)))
+		self.assertEqual(len(check.through(check.shrunk(graze, 0.1), one)), 0)
+		deep = tris((2.0, 1.5, 0.5), (8.0, 3.0, 1.5))
+		self.assertTrue(len(check.through(check.shrunk(deep, 0.1), one)))
 
 	def test_vertical(self):
 		# a vertical line through a box crosses its top and bottom; beside it, nothing

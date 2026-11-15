@@ -49,7 +49,7 @@ import { model as model_stock } from './library'
 import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, test as ifei_test, reset as ifei_reset, settle as ifei_settle, zulu as ifei_zulu, BUTTONS as ifei_buttons } from './ifei'
 import { reconcile as cautions_reconcile, restack as cautions_restack, lines as cautions_lines, host as cautions_host, dedicated as cautions_dedicated } from './cautions'
 import { diagnose } from '../lib/graphics'
-import { oleo, flatten } from './oleo'
+import { oleo, flatten, REACH } from './oleo'
 import { rig as joints_rig, pose as joints_pose, roll as wheel_roll, schedule as joints_schedule } from './joints'
 import { rounds as hang_rounds, parts as hang_parts, place as hang_place, KINDS as round_kinds } from './hang'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
@@ -2102,7 +2102,8 @@ function exterior_legs(x, spec){ const legs=[], e=x.object, at=new THREE.Vector3
 	for(const [leg,tyre] of Object.entries(EXTERIOR_LEGS)){ const wheel=e.getObjectByName(`gear_${leg}_wheel`), oleo=x.joints.find(j=>j.name===`gear_${leg}_oleo`), point=x.points.gear[leg];
 		const spin=(spec.spin||[]).find(s=>s.node===tyre); if(!wheel||!oleo||!point) continue;
 		const rate=(lift(leg,0.1)-lift(leg,0))/0.1;   // metres the wheel rises per unit of oleo drive
-		legs.push({ leg, wheel, oleo, radius:point.radius, rate:rate>1e-3?rate:1, lift:0, contact:spin?spin.attach:null, strut:spin?spin.strut:0, tyre:spin?spin.tyre:0, travel:spin?spin.travel:0, limit:spin?spin.limit:0 }); }
+		const r=rate>1e-3?rate:1;
+		legs.push({ leg, wheel, oleo, radius:point.radius, rate:r, lift:0, reach:point.full!==undefined?point.full*r:REACH+(point.static||0)*r, contact:spin?spin.attach:null, strut:spin?spin.strut:0, tyre:spin?spin.tyre:0, travel:spin?spin.travel:0, limit:spin?spin.limit:0 }); }   // reach: the leg's own stroke from its length in flight to fully in (the points file's full: the nose's 17 in, a main arm's droop and the inch and a half its shock absorber has left), so the drawn oleo never pushes past what its parts allow; a points file without it, the default bound on a bad terrain sample plus the leg's static stroke
 	joints_pose(x.joints,(drive)=>drive==="gear"||drive.startsWith("oleo.")?0:undefined);   // back to rest: stowed
 	return legs; }
 // exterior_deck is how far our own model's hook lowers before its point meets the ground the jet stands on
@@ -2177,7 +2178,7 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 			if(seated&&l.contact){ const c=_exterior_contact.set(l.contact[0],l.contact[1],l.contact[2]).applyMatrix4(g.matrixWorld), under=ground_height(c.x,c.z), surface=ground_height(_exterior_wheel.x,_exterior_wheel.z);
 				const depth=under>-1e8?under-c.y:0;
 				if(depth>0&&surface>-1e8) plane=surface-flatten(depth,l.strut,l.tyre,l.travel,l.limit); }
-			l.lift=oleo(_exterior_wheel.y-l.radius,plane,l.lift,dt); }
+			l.lift=oleo(_exterior_wheel.y-l.radius,plane,l.lift,dt,l.reach); }
 		joints_pose(legs.map(l=>l.oleo),value); } }
 // shift_node moves a node of the model by an offset in the group frame (forward x, up y, right z),
 // whatever frames the model's own nodes are in (spec.shift).
@@ -10581,7 +10582,9 @@ if(DEV_MODE) (globalThis as any).dev_wheels=()=>{   // #203: where each DRAWN ty
 	const gnd=ground_height(ownship.pos.x,ownship.pos.z);
 	return JSON.stringify({ gear:+(ownship.gear??1).toFixed(2), grounded:!!ownship.grounded, squish:+(ownship.squish??0).toFixed(2), speed:+(ownship.speed||0).toFixed(1),   // i18n-format-ok: dev probe payload, never rendered to a user
 		origin:+ownship.pos.y.toFixed(3), ground:+gnd.toFixed(3), stand:+(ownship.pos.y-gnd).toFixed(3),   // #220: the origin's height above the surface — 2.63 minus the strut compression, so it pins the load directly   // i18n-format-ok: dev probe payload, never rendered to a user
-		groupy:+(ownship.group?ownship.group.position.y:NaN).toFixed(3), wheels:rows });   // i18n-format-ok: dev probe payload, never rendered to a user
+		groupy:+(ownship.group?ownship.group.position.y:NaN).toFixed(3), wheels:rows,   // i18n-format-ok: dev probe payload, never rendered to a user
+		legs:(ownship.group?.userData?.exterior?.legs||[]).map((l:any)=>{ const w=l.wheel.getWorldPosition(new THREE.Vector3()), g=ground_height(w.x,w.z);   // our model's legs: each one's lift against its reach (the points file's full stroke) and its tyre's bottom against the surface
+			return { leg:l.leg, lift:+l.lift.toFixed(3), reach:+l.reach.toFixed(3), clear:g>-1e8?+(w.y-l.radius-g).toFixed(3):null }; }) });   // i18n-format-ok: dev probe payload, never rendered to a user
 };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, bingo:bingo_low(), aerosol:air_aerosol, banner:net_notice_t>0?net_notice:"", y:+ownship.pos.y.toFixed(2), raw:[ownship.pos.x,ownship.pos.y,ownship.pos.z], shown:(()=>{ const p=presented(ownship); return [p.x,p.y,p.z]; })(), camera:[camera.position.x,camera.position.y,camera.position.z], clock:sim_time, v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1, contrail:(ownship.contrail&&ownship.contrail.count)||0, comms:comms.map(c=>c.text),   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought  // i18n-format-ok: dev probe payload, never rendered to a user
 	msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // restored (#100): the #69 comment swallowed these two fields, and every weapons probe reading dev_probe().msl/.amraam went KeyError-red unnoticed   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
