@@ -177,3 +177,23 @@ describe('the backup frequency control', () => {
     expect(C.tuned(radios.one)).toBe(305000)
   })
 })
+
+describe("the TACAN's identity (MIL-STD-291, 23.1.1)", () => {
+  it('keys the ship\'s GF in Morse: dash dash dot, three dots\' gap, dot dot dash dot, at 0.125 s a dot', () => {
+    const ms = (t: number) => Math.round(t * 1000) / 1000
+    const spans = C.keying('GF').map(([a, b]) => [ms(a), ms(b)])
+    expect(spans).toEqual([[0, 0.375], [0.5, 0.875], [1, 1.125], [1.5, 1.625], [1.75, 1.875], [2, 2.375], [2.5, 2.625]])
+  })
+  it('sends the message once every 37.5 s, inside the 5 s a message may take', () => {
+    expect(C.IDENT).toEqual({ tone: 1350, period: 37.5, dot: 0.125 })
+    const spans = C.keying('GF'), last = spans[spans.length - 1][1]
+    expect(last).toBeLessThan(5)
+    for (const t of [0.1, 0.6, 1.05, 2.55]) expect(C.sounding('GF', t), String(t)).toBe(true)
+    for (const t of [0.4, 0.95, 1.3, 2.7, 20]) expect(C.sounding('GF', t), String(t)).toBe(false)
+    expect([C.sounding('GF', 37.6), C.sounding('GF', 37.5 * 3 + 2.55), C.sounding('GF', -37.4)]).toEqual([true, true, true])
+  })
+  it('takes the ident in either case and skips what Morse has no code for', () => {
+    expect(C.keying('gf')).toEqual(C.keying('GF'))
+    expect(C.keying('G-F')).toEqual(C.keying('GF'))
+  })
+})

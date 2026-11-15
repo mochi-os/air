@@ -29,7 +29,7 @@ function lift(name: string): string {
   return end ? rest.slice(0, end.index + 1) : rest
 }
 const block = /\n\/\/ =+ panel systems \(G1\)\n[\s\S]*?\nfunction travel_press\([^\n]*\n/.exec(source)?.[0] ?? ''
-const tables = [/\nconst TRAVEL=\{[^\n]*\n[^\n]*\n/, /\nconst TRAVEL_REST=[^\n]*\n/, /\nconst FUEL_TANKS=[^\n]*\n/, /\nconst lighting=\{[^\n]*\n/]
+const tables = [/\nconst TRAVEL=\{[^\n]*\n[^\n]*\n/, /\nconst TRAVEL_REST=[^\n]*\n/, /\nconst FUEL_TANKS=[^\n]*\n/, /\nconst FLOOD=[^\n]*\n/, /\nconst lighting=\{[^\n]*\n/]
   .map((re) => re.exec(source)?.[0] ?? '').join('')
 const press = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t\} \}\n/.exec(source)?.[0] ?? ''
 const rig = /rig:\[[\s\S]*?\{ name:"flaplever"[^\n]*\n/.exec(source)?.[0] ?? ''
@@ -58,7 +58,7 @@ function system(o: { tod?: string; grounded?: boolean; parking?: boolean; multip
     const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
     ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${press}
     return { press:pit_press, step(t,out){ sim_time=t; glance=t; power_step(out); }, start(t,out,dt){ sim_time=t; glance=t; power_step(out); start_step(out,dt); }, at(t){ sim_time=t; glance=t; }, generators,
-      starter, start_fresh, apu_ready, ground_power, cranking, sub_idle, secured, get apu(){ return apu_accumulator; }, set apu(v){ apu_accumulator=v; }, knob_level, knob_turn, display_level, display_contrast, display_press, symbology,
+      starter, start_fresh, apu_ready, ground_power, cranking, sub_idle, secured, fed, GROUND, get apu(){ return apu_accumulator; }, set apu(v){ apu_accumulator=v; }, knob_level, knob_turn, display_level, display_contrast, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, wing_kept, clock_elapsed, travel_at, lighting_set,
       ownship, knobs, displays, hud_panel, electrics, ecs, transfer, thrown, fire_test, lighting, RADAR, TRAVEL, get finder(){ return finder; },
       get buses(){ return buses; }, set buses(v){ buses=v; }, get reset(){ return reset_flag; }, get owed(){ return reset_owed; }, get accumulator(){ return brake_accumulator; }, get rudder(){ return rudder_trim; },
@@ -245,7 +245,7 @@ describe('the electrical power panel (#21, #116)', () => {
     expect(source).toMatch(/l\.transit\.material\.opacity=!buses\.essential\?0:wheels_warning\(\)/)
     expect(source).toMatch(/if\(e\) e\.intensity=\(unpowered&&buses\.essential&&cfg\.view==="cockpit"\)\?EMERGENCY_LIGHT:0;/)
     expect(source).toMatch(/const sym=symbology\(\);[^\n]*\n\tconst flight_symbols=sym>0&&\(/)
-    expect(source).toMatch(/adi_face\(faces\.adi,[^\n]*sari_testing\(\),!buses\.essential\|\|caged,sari_trim\);/)
+    expect(source).toMatch(/adi_face\(faces\.adi,[^\n]*sari_testing\(\),!buses\.essential\|\|!fed\(2,\"b\"\)\|\|caged,sari_trim\);/)
     expect(source).toMatch(/power_step\(out\); start_step\(out,step\); displays_light\(\); bezel_turn\(\); centre_turn\(\); plates_turn\(\); wing_step\(lbs,step\); cabin_step\(out,step\); spin_step\(out\);/)
     const radar = readFileSync(fileURLToPath(new URL('./radar.ts', import.meta.url)), 'utf8')
     expect(radar).toMatch(/return this\.sil \|\| this\.emcon \|\| this\.unpowered/)
@@ -356,6 +356,62 @@ describe('the start systems (#133)', () => {
     expect(s.travel_at('extpwr')).toBe(1)
     expect(s.ground_power()).toBe(true)
   })
+  it('keeps the GND PWR groups off on the cart at AUTO: the displays, the HUD and the radar dark with the ac buses up (2.5.4.2)', () => {
+    const s = cold()
+    s.start_fresh('field'); s.step(1, quiet)
+    expect([s.buses.ac, s.electrics.cart]).toEqual([true, true])
+    expect(['left', 'right', 'center'].map((d) => s.display_level(d))).toEqual([0, 0, 0])
+    expect([s.symbology(), s.RADAR.unpowered]).toEqual([0, true])
+    expect([1, 2, 3, 4].map((n) => [s.fed(n, 'a'), s.fed(n, 'b')])).toEqual([[false, false], [false, false], [false, false], [false, false]])
+  })
+  it('powers group A at A ON and groups A and B at B ON, switch by switch, from the placard (figure 2-10)', () => {
+    const s = cold()
+    s.start_fresh('field'); s.step(1, quiet)
+    expect(s.GROUND).toEqual({ bon: 0, auto: 1, aon: 2 })
+    s.press('travel.groundone', 1); s.step(2, quiet) // forward, to A ON: MC 1 and the left DDI
+    expect([s.travel_at('groundone'), s.fed(1, 'a'), s.fed(1, 'b'), s.display_level('left'), s.display_level('right')]).toEqual([2, true, false, 1, 0])
+    s.press('travel.groundtwo', -1); s.step(3, quiet) // aft, to B ON: the right DDI, the HUD, the radar, the INS and the AMPCD, and group B with them
+    expect([s.travel_at('groundtwo'), s.fed(2, 'a'), s.fed(2, 'b'), s.display_level('right'), s.display_level('center'), s.RADAR.unpowered]).toEqual([0, true, true, 1, 1, false])
+    expect(s.symbology()).toBeGreaterThan(0)
+    expect([s.fed(3, 'a'), s.fed(4, 'a')]).toEqual([false, false]) // the others still at AUTO
+  })
+  it('holds a switch at ON only on external power: off the cart it returns to AUTO, and so do all of them when a generator comes on the line', () => {
+    const s = cold()
+    s.press('travel.groundthree', 1); s.step(1, quiet) // no cart: the solenoid has nothing to hold it with
+    expect(s.travel_at('groundthree')).toBe(1)
+    s.start_fresh('field'); s.step(2, quiet)
+    s.press('travel.groundthree', 1); s.press('travel.groundfour', -1); s.step(3, quiet)
+    expect([s.travel_at('groundthree'), s.travel_at('groundfour')]).toEqual([2, 0])
+    s.step(4, running) // the engines turning: both generators on the line
+    expect([s.travel_at('groundthree'), s.travel_at('groundfour'), s.electrics.cart]).toEqual([1, 1, false])
+    expect([1, 2, 3, 4].every((n) => s.fed(n, 'a') && s.fed(n, 'b'))).toBe(true) // on the generators every group runs
+    expect(['left', 'right', 'center'].map((d) => s.display_level(d))).toEqual([1, 1, 1])
+  })
+  it('takes each system its power from its own placard group (figure 2-10)', () => {
+    const wired: [string, RegExp][] = [
+      ['1A MC1, 1B MC2', /function mc\(\)\{ const c=avionics\.computers\(mc_switch,buses\.ac\); return \{ one:c\.one&&buses\.left&&fed\(1,"a"\), two:c\.two&&buses\.right&&fed\(1,"b"\) \}; \}/],
+      ['1A left DDI, 2A right DDI and AMPCD', /function display_level\(d\)\{[^\n]*\|\|!fed\(d==="left"\?1:2,"a"\)\|\|/],
+      ['2A HUD', /function symbology\(\)\{ return buses\.ac&&fed\(2,"a"\)\?/],
+      ['2A radar', /\tRADAR\.unpowered=!ac\|\|!fed\(2,"a"\); \}/],
+      ['2A INS', /brake:parking, power:buses\.ac&&fed\(2,"a"\), computer:mc\(\)\.one,/],
+      ['2B TACAN', /if\(!t\.on\|\|t\.air\|\|!fed\(2,"b"\)\|\|t\.channel!==SHIP\.tacan\.channel/],
+      ['2B UHF', /if\(uhf\.one\.on&&buses\.essential&&fed\(2,"b"\)&&/],
+      ['2B radar altimeter', /function radalt_inhibited\(\)\{ return emcon\|\|!radalt_on\|\|!buses\.ac\|\|!fed\(2,"b"\); \}/],
+      ['2B data link and beacon', /link:!!o&&radios\.link\.on&&buses\.ac&&fed\(2,"b"\)&&!emcon, beacon:radios\.beacon\.on&&buses\.ac&&fed\(2,"b"\)&&!emcon,/],
+      ['2B IFF', /identification\.step\(squawk,buses\.essential&&fed\(2,"b"\),/],
+      ['2B IFF challenge', /identification\.challenging\(squawk,\{ power:buses\.ac&&fed\(2,"b"\), emission:emcon \}\)/],
+      ['2B IFF reply', /identification\.replying\(squawk,\{ power:buses\.ac&&fed\(2,"b"\),/],
+      ['2B Link 16', /function link_sense\(\)\{ return \{ power:buses\.ac&&fed\(2,"b"\),/],
+      ['3A jammer', /function jammer_armed\(\)\{ return buses\.ac&&fed\(3,"a"\)&&suite\.jammer==="transmit"; \}/],
+      ['3A jammer radiating', /countermeasures\.radiating\(suite,RWR\.locked\(\)\|\|RWR\.warned\(\),buses\.ac&&fed\(3,"a"\)\)/],
+      ['3A jammer lights', /countermeasures\.lamps\(suite,RWR\.locked\(\)\|\|RWR\.warned\(\),buses\.ac&&fed\(3,"a"\),/],
+      ['3A RWR AI light', /lamp_set\(l\.ai,suite\.receiver\.power&&buses\.ac&&fed\(3,"a"\)&&/],
+      ['3A anti-skid', /function guarded\(\)\{ return antiskid&&fed\(3,"a"\)&&!pulled&&!parking; \}/],
+      ['4A intercom: voice alerts', /if\(!audio_voiced\(message\)\|\|!buses\.essential\|\|!fed\(4,"a"\)\|\|/],
+      ['4A intercom: caution tone', /if\(toned&&!battery&&fed\(4,"a"\)&&/],
+    ]
+    for (const [name, re] of wired) expect(source, name).toMatch(re)
+  })
   it('plugs the deck\'s cart in at the parking spot itself, wherever the jet stood when it was plugged in', () => {
     const s = cold()
     s.ownship.pos.x = 40 // a re-spot moves the jet after the cart is plugged in; the cart stands by the spot
@@ -451,6 +507,16 @@ describe('the display and lights knobs (#11, #23, #115)', () => {
     expect(day.lighting.warn).toBe(1)
   })
 
+  it('light the floods and the chart light from FLOOD at COCKPIT, and the chart light alone at CHART (2.6.2.5)', () => {
+    const s = system({ tod: 'night' })
+    s.press('knob.flood', -1); s.lighting_set()
+    expect([s.travel_at('floodswitch'), s.lighting.flood, s.lighting.chart]).toEqual([1, 0.8, 0.8]) // the pre-flight leaves it at COCKPIT
+    s.press('travel.floodswitch', 0); s.lighting_set()
+    expect([s.travel_at('floodswitch'), s.lighting.flood, s.lighting.chart]).toEqual([0, 0, 0.8])
+    s.unpowered = true; s.lighting_set()
+    expect([s.lighting.flood, s.lighting.chart]).toEqual([0, 0]) // both generators gone takes the chart light too
+  })
+
   it('take each DDI off with its own side\'s ac bus, the AMPCD staying on either (FO-8)', () => {
     const s = system({ grounded: true, parking: false })
     s.step(0, running); s.step(1, stopped); s.step(2, words({ spoolL: 0 })) // a ground start that opened the bus tie, the left generator not turning
@@ -535,11 +601,11 @@ describe('the display and lights knobs (#11, #23, #115)', () => {
   })
 
   it('dark the azimuth indicator without ac power', () => {
-    expect(source).toMatch(/if\(u\.rwr\) u\.rwr\.mesh\.material\.color\.setScalar\(buses\.ac&&suite\.receiver\.power\?1:0\);/) // and with the control indicator's POWER off (#9)
+    expect(source).toMatch(/if\(u\.rwr\) u\.rwr\.mesh\.material\.color\.setScalar\(buses\.ac&&fed\(3,\"a\"\)&&suite\.receiver\.power\?1:0\);/) // and with the control indicator's POWER off (#9)
   })
 
   it('light the UFC and the IFEI from their BRT knobs, the IFEI\'s under NITE only', () => {
-    expect(source).toMatch(/if\(u\.ufc\) u\.ufc\.mesh\.material\.color\.setScalar\(buses\.ac\?0\.3\+0\.7\*knob_level\("ufc"\):0\);/)
+    expect(source).toMatch(/if\(u\.ufc\) u\.ufc\.mesh\.material\.color\.setScalar\(buses\.ac&&fed\(2,"b"\)\?0\.3\+0\.7\*knob_level\("ufc"\):0\);/)
     expect(source).toMatch(/if\(u\.ifei\) u\.ifei\.mesh\.material\.color\.setScalar\(buses\.ac\?\(lighting\.mode==="nite"\?0\.3\+0\.7\*knob_level\("ifei"\):1\):0\);/)
   })
 })

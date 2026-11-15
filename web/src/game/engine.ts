@@ -70,7 +70,7 @@ import { shellStorage } from '@mochi/web'
 import { deviceDefaults, unreachable } from '../lib/config'
 import { demise, opponent, report } from './fate'
 import { geometry_canonical, geometry_hash } from './geometry'
-import { audio_pace, audio_pass, audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
+import { audio_pace, audio_pass, audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_tacan, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
@@ -1695,7 +1695,7 @@ const AIRCRAFT_MODELS={
 	      { name:"ruddertrim",   track:/^HANDLING_Knob_RudderTrim_AN/i,                 drive:"ruddertrim" }, // the FCS panel's RUD TRIM knob (#19)
 	      { name:"wingtanks",    track:/^Wings_Tanks_AN/i,                              drive:"wingtanks" },  // the fuel panel's EXT TANKS switches (#18)
 	      { name:"centretank",   track:/^CTR_Tank_AN/i,                                 drive:"centretank" },
-	      // controls that move and act on nothing (#16, #17, #22, #25): TRAVEL
+	      // controls without a drive of their own (#16, #17, #22, #25): TRAVEL
 	      { name:"apu",          track:/^ELECTRICAL_Switch_APU_Generator_AN/i,          drive:"travel" },
 	      { name:"crank",        track:/^Switch_ENG_CRANK_LeftPanel_AN/i,               drive:"travel" },
 	      { name:"extpwr",       track:/^RESET_AN/i,                                    drive:"travel" },     // the ground power panel (2.5.4): EXT PWR and GND PWR 1 to 4
@@ -1727,8 +1727,10 @@ const AIRCRAFT_MODELS={
 	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
 // The clickable rig entries (#19): each names the action a click on its node fires
 // through pit_press.
-// TRAVEL: the controls that move and act on nothing (#16, #17, #22, #25), each with its number of
+// TRAVEL: the controls without a drive of their own (#16, #17, #22, #25), each with its number of
 // positions; a click throws one a position, right toward its clip's end and left back (travel_press).
+// What one acts on reads its position (travel_at): the start systems, the ground power switches, the engine
+// anti-ice, AV COOL and the FLOOD switch; the rest act on nothing the game has.
 const TRAVEL={ apu:2, crank:3, extpwr:3, groundone:3, groundtwo:3, groundthree:3, groundfour:3, antiice:3, pitot:2, avcool:2, cabintemp:5, windshield:3, windlever:2,
 	kymode:4, kyfill:5, kypower:3, oxygen:2, chains:2, mask:2, smoke:2, spare:2, visors:2, floodswitch:2 };
 // TRAVEL_REST: where the pre-flight leaves one that does not rest where the model draws it - the three-position
@@ -2471,7 +2473,7 @@ function build_faces(g){
 	g.userData.faces=built; faces_key=""; faces_update(); }
 // faces_shown: what the faces show now (faces.ts Shown). faces_update redraws them when it changes.
 let faces_key="";
-function faces_shown(){ return { power:buses.essential, test:lamps_testing, arm:arms.arm, air:master!=="nav", ready:armament.ready(secured), discharged:arms.discharged, stations:arms.stations,
+function faces_shown(){ return { power:buses.essential, test:lamps_testing, arm:arms.arm, air:master!=="nav"&&master!=="ag", ground:master==="ag", ready:armament.ready(secured), discharged:arms.discharged, stations:arms.stations,
 	dispenser:suite.dispenser, jammer:suite.jammer, indicator:countermeasures.indicator(suite.receiver,sim_time) }; }
 function faces_update(){ const u=ownship.group.userData; if(!u.faces) return;
 	const shown=faces_shown(), key=JSON.stringify(shown); if(key===faces_key) return; faces_key=key;
@@ -2510,7 +2512,7 @@ function build_standby(g){
 	g.userData.standby=faces; standby_draw(faces,{}); }
 function standby_draw(faces,gz){
 	const caged=sari_caged();
-	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,caged?SARI_CAGE:gz.pitch||0,caged?0:gz.bank||0,gz.yaw||0,gz.slip||0,sari_testing(),!buses.essential||caged,sari_trim);
+	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,caged?SARI_CAGE:gz.pitch||0,caged?0:gz.bank||0,gz.yaw||0,gz.slip||0,sari_testing(),!buses.essential||!fed(2,"b")||caged,sari_trim);
 	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
 function face_start(f,colour){ const x=face_context(f); x.globalAlpha=1;
 	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
@@ -2877,10 +2879,10 @@ function lamps_update(out){
 	// glareshield panels (#12): SAM, AAA and CW stay dark, the world having no missile site, gun radar or continuous-wave illuminator to light them, and the BLEEDs and APU FIRE light only in the fire test
 	lamp_set(l.spdbrk,(out[STATE.speedbrake]||0)>0.02);   // any time the board is off its stop (NATOPS 2.8.4.8.2, #9)
 	lamp_set(l.lbar,bar_switch==="extend");   // green with the launch bar switch at EXTEND, out when it goes to RETRACT, which on this jet it does not do by itself at MIL (2.10.4, #11, #127); the red L BAR needs a retraction fault the game has none of
-	{ const j=countermeasures.lamps(suite,RWR.locked()||RWR.warned(),buses.ac,ASPJ_TEST,sim_time);   // the jammer's lights follow the ECM knob (countermeasures.ts, #10): STBY, ASPJ ON, REC and XMIT, and GO from its test at BIT; NO GO stays dark, the jammer having no failure to find
+	{ const j=countermeasures.lamps(suite,RWR.locked()||RWR.warned(),buses.ac&&fed(3,"a"),ASPJ_TEST,sim_time);   // the jammer's lights follow the ECM knob (countermeasures.ts, #10): STBY, ASPJ ON, REC and XMIT, and GO from its test at BIT; NO GO stays dark, the jammer having no failure to find
 		lamp_set(l.aspj,j.on); lamp_set(l.xmit,j.transmit); lamp_set(l.rec,j.receive); lamp_set(l.stby,j.standby); lamp_set(l.go,j.go); }
 	lamp_set(l.disp,countermeasures.dispensing(suite,sim_time));   // DISP while a dispenser programme runs
-	lamp_set(l.ai,suite.receiver.power&&buses.ac&&RWR.contacts.some(c=>c.locked&&!c.missile&&RWR.time-c.at<0.5));   // AI: an air intercept radar locked on, as the RWR hears it; a search radar's paint does not light it
+	lamp_set(l.ai,suite.receiver.power&&buses.ac&&fed(3,"a")&&RWR.contacts.some(c=>c.locked&&!c.missile&&RWR.time-c.at<0.5));   // AI: an air intercept radar locked on, as the RWR hears it; a search radar's paint does not light it
 	lamp_set(l.rcdr,recording());   // RCDR ON while the video recording system records (2.13.8.10)
 	lamp_set(l.spin,spin_switch==="rcvy");   // SPN RCVY with the spin recovery switch at RCVY (2.8.2.6.1)
 	faces_update();   // the faces' lights and switches: the master arm panel, the station select buttons, the dispenser/EMC panel and the RWR control indicator (#7, #10, #9)
@@ -3143,19 +3145,25 @@ function build_screens(g){
 const ddi_state={ left:{page:"eng",menu:""}, right:{page:"adi",menu:""}, center:{page:"hsi",menu:""} };
 let designator="right";   // the display the TDC works (#27, #32): the sensor control switch assigns it, and a diamond in that display's upper right corner says so
 // Master-mode display recall (#15): a display configuration per master-mode
-// family (A/A - gun and 9m share - and NAV), restored when the family is
-// selected; page selections record into the current family.
-const ddi_sets={ aa:{left:"sms",right:"rdr",center:"sa"}, nav:{left:"chklst",right:"fuel",center:"hsi"} };   // A/A seeds the attack scan on the right DDI with stores left and the SA picture on the AMPCD (#30) — the fighting layout; NAV keeps its instrument set
-function ddi_family(){ return master==="nav"?"nav":"aa"; }
+// family (A/A - gun and 9m share - NAV and A/G), restored when the family is
+// selected; page selections record into the current family. A/G carries no
+// sensor or store of its own here, so it starts on NAV's layout.
+const ddi_sets={ aa:{left:"sms",right:"rdr",center:"sa"}, nav:{left:"chklst",right:"fuel",center:"hsi"}, ag:{left:"chklst",right:"fuel",center:"hsi"} };   // A/A seeds the attack scan on the right DDI with stores left and the SA picture on the AMPCD (#30) — the fighting layout; NAV keeps its instrument set
+function ddi_family(){ return master==="nav"||master==="ag"?master:"aa"; }
 function ddi_recall(){ const set=ddi_sets[ddi_family()]; for(const d of ["left","right","center"]) ddi_state[d]={ page:set[d], menu:"" }; ddi_dirty=true; }
 function ddi_show(display,page){ ddi_state[display]={ page, menu:"" }; ddi_sets[ddi_family()][display]=page; ddi_dirty=true; }
-function set_master(m){ const before=ddi_family(); master=m; if(m!=="nav") air_weapon=m; if(ddi_family()!==before) ddi_recall(); }
-// air_press is the A/A master mode button (2.13.2, FO-5 item 12): from NAV it enters A/A on the weapon last selected
-// there, or the first aboard; pressed in A/A it deselects the mode, which is NAV.
+function set_master(m){ const before=ddi_family(); master=m; if(m!=="nav"&&m!=="ag") air_weapon=m; if(ddi_family()!==before) ddi_recall(); }
+// air_press is the A/A master mode button (2.13.2, FO-5 item 12): from NAV or A/G it enters A/A on the weapon last
+// selected there, or the first aboard; pressed in A/A it deselects the mode, which is NAV.
 let air_weapon="gun";
-function air_press(){ if(master!=="nav"){ set_master("nav"); return; }
+function air_press(){ if(master!=="nav"&&master!=="ag"){ set_master("nav"); return; }
 	const loaded={ gun:(ownship.rounds??0)>0, "9m":(ownship.msl|0)>0, "120c":Math.max(0,ownship.amraam|0)>0 };
 	set_master(loaded[air_weapon]?air_weapon:["9m","120c","gun"].find(m=>loaded[m])||"gun"); }
+// ground_press is the A/G master mode button (2.13.2): it selects the A/G master mode, and pressed in A/G it deselects
+// it, which is NAV. Its light on the master arm panel shows the mode. The jet carries no air-to-ground store, so the
+// mode delivers nothing: the HUD keeps the flight symbology every mode draws, without A/A's weapon cues or NAV's
+// steering, since A/G's own symbology is the NATIP's (2.13.4.8.11), which is not held.
+function ground_press(){ set_master(master==="ag"?"nav":"ag"); }
 // next_master cycles GUN -> 9M -> 120C -> NAV, skipping any station with
 // nothing left to fire; NAV always stays. select_master is the positional pick,
 // ignored for an empty station. default_master is the match's weapon at spawn:
@@ -3176,7 +3184,7 @@ function select_master(m){
 function next_master(){
 	const order=["gun","9m","120c","nav"];
 	const loaded={ gun:(ownship.rounds??0)>0, "9m":(ownship.msl|0)>0, "120c":Math.max(0,ownship.amraam|0)>0, nav:true };
-	let at=order.indexOf(master); if(at<0) at=0;
+	let at=order.indexOf(master==="ag"?"nav":master); if(at<0) at=0;   // from A/G the switch enters A/A as from NAV (2.13.2)
 	for(let step=1;step<=order.length;step++){ const m=order[(at+step)%order.length]; if(loaded[m]||m==="gun"&&!order.some(w=>w!=="nav"&&loaded[w])) return m; }
 	return master; }
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
@@ -3252,7 +3260,7 @@ function diamond(x){ x.save(); x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x
 // the HSI is MC2's backup of it, and the GPWS and the low altitude warning are silent; without MC2 the TAC menu loses STORES and no missile leaves the rail;
 // with neither the displays flash STANDBY (2.13.4.2.1, 2.20.5, 2.12.5.1, 2.17.5.1, figure 12-1).
 let mc_switch="norm";
-function mc(){ const c=avionics.computers(mc_switch,buses.ac); return { one:c.one&&buses.left, two:c.two&&buses.right }; }   // MC1 on the left ac bus and MC2 on the right (FO-8), which differ only with the bus tie open
+function mc(){ const c=avionics.computers(mc_switch,buses.ac); return { one:c.one&&buses.left&&fed(1,"a"), two:c.two&&buses.right&&fed(1,"b") }; }   // MC1 on the left ac bus and MC2 on the right (FO-8), which differ only with the bus tie open
 // bit: the built-in test's state. bit_state: the BIT display's level - "" the top level, a group's
 // key its sublevel, "config" the configuration display, "ins" the INS post flight data - with SELBIT
 // boxed, which POST display shows and which page of failures. display_test: the displays' test pattern, on every display from its
@@ -3276,7 +3284,7 @@ let hold_was=false, onspeed_flag=false, onspeed_owed=false;   // the autopilot a
 // link - the hook against the touchdown point, as the lens has it (ols_dev).
 function link_picture(){ const g=demonstration_picture().groove, o=carrier_ols;
 	return { time:sim_time, along:g.along+HOOK_AFT, across:g.right, height:ownship.pos.y-(o?o.dy:0)-HOOK_DROP, final:g.heading, altitude:ownship.pos.y, waved:!!ownship.waving,
-		link:!!o&&radios.link.on&&buses.ac&&!emcon, beacon:radios.beacon.on&&buses.ac&&!emcon, able:navigate.attitude(nav.ins)&&mc().one, flaps:flap_select===2, throttle:atc_on&&atc_speed===null, coupled:hold.modes.coupled?hold.source:"" }; }
+		link:!!o&&radios.link.on&&buses.ac&&fed(2,"b")&&!emcon, beacon:radios.beacon.on&&buses.ac&&fed(2,"b")&&!emcon, able:navigate.attitude(nav.ins)&&mc().one, flaps:flap_select===2, throttle:atc_on&&atc_speed===null, coupled:hold.modes.coupled?hold.source:"" }; }
 // couple_now: what the UFC's CPL option couples to (2.9.2.6, 24.6.1.2) - with ACL boxed and the uplink
 // offering it, the carrier's commands or its heading; else the steering boxed on the HSI, the TACAN station
 // by its bearing and range. label: the cue for it on the HUD and HSI. passed: a point flown direct has been
@@ -3336,7 +3344,7 @@ const ASPJ_TEST=avionics.UNITS.find(u=>u.key==="aspj").seconds;   // how long th
 function avionics_frame(dt){ const before=Object.keys(bit.tests).join()+JSON.stringify(bit.results)+bit.advisory, m=mc();
 	avionics.step(bit,equipment(),dt,DDI_ORDER.some(d=>!ddi_state[d].menu&&ddi_state[d].page==="bit"));
 	helmet_frame(dt);
-	identification.step(squawk,buses.essential,(ownship.gearTarget??0)>0.5);   // the mode 4 codes, held or lost with the CRYPTO switch and the power (23.6.2.2.2)
+	identification.step(squawk,buses.essential&&fed(2,"b"),(ownship.gearTarget??0)>0.5);   // the mode 4 codes, held or lost with the CRYPTO switch and the power (23.6.2.2.2)
 	RADAR.testing=avionics.testing(bit,"rdr");
 	if(ufc_test.at>-Infinity){ ufc_dirty=true; if(sim_time-ufc_test.at>=10) ufc_test.at=-Infinity; }   // the UFC's test runs its two five-second periods
 	if(!m.one&&hsi_state.level!==""&&hsi_state.level!=="mode"){ hsi_state.level=""; hsi_state.slew=false; ddi_dirty=true; }   // the backup HSI has no position, update or data sublevel (25.1.2)
@@ -3656,7 +3664,7 @@ function aboard(){ return !!ownship.grounded&&Math.hypot((CARRIER.x-ownship.pos.
 // gives a fix only from a station in the stored table, received with range.
 function nav_sense(dt){ const gz=ownship.gauges||{}, station=tacan(), t=radios.tacan, stored=nav.stations.find(s=>s.channel===t.channel&&s.band===t.band);
 	return { dt, x:ownship.pos.x, z:ownship.pos.z, east:ownship.velx??ownship.vel_dir.x*ownship.speed, south:ownship.velz??ownship.vel_dir.z*ownship.speed, tas:last_out?airspeed(last_out[STATE.mach]||0,ownship.pos.y):ownship.speed,   // true airspeed through the air, where ownship.speed is over the ground
-		heading:gz.heading||0, pitch:gz.pitch||0, bank:gz.bank||0, airborne:!ownship.grounded, brake:parking, power:buses.ac, computer:mc().one, radar:!RADAR.silent()&&master==="nav", deck:aboard(),
+		heading:gz.heading||0, pitch:gz.pitch||0, bank:gz.bank||0, airborne:!ownship.grounded, brake:parking, power:buses.ac&&fed(2,"a"), computer:mc().one, radar:!RADAR.silent()&&master==="nav", deck:aboard(),
 		tacan:station&&station.range!=null&&stored?{ x:stored.x, z:stored.z, bearing:station.bearing, range:station.range }:null }; }
 // mission: what the memory unit carries for the map flown (2.13.1.2.1, #97) - the ship as waypoint 1
 // and the first airfield as waypoint 2, the ship's TACAN station, and the ship and every airfield as
@@ -4102,7 +4110,7 @@ function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0,
 // another aircraft answers; bearing without range in RCV or under EMCON, where the set
 // sends no interrogation to range with (24.4.2, 2.13.5.2).
 function tacan(){ const t=radios.tacan;
-	if(!t.on||t.air||t.channel!==SHIP.tacan.channel||t.band!==SHIP.tacan.band) return null;
+	if(!t.on||t.air||!fed(2,"b")||t.channel!==SHIP.tacan.channel||t.band!==SHIP.tacan.band) return null;
 	const dx=(CARRIER.x-ownship.pos.x), dz=(CARRIER.z-ownship.pos.z), ranging=t.mode==="tr"&&!emcon;
 	return { bearing:Math.atan2(dx,-dz), range:ranging?Math.hypot(dx,dz):null, slant:ranging?Math.hypot(dx,ownship.pos.y,dz):null }; }
 // time_to_go: a TTG as the HSI shows it, m:ss and from an hour h:mm:ss, to 8:59:59 (2.13.4.7).
@@ -4419,15 +4427,15 @@ function known(){
 // of the side whose radar tracks the jet, and whether every one of them gets its answer.
 function own_team(){ return MULTIPLAYER&&net?(net.teams.get(net.slot)||""):""; }
 function status_of(slot){ return (MULTIPLAYER&&net&&net.statuses.get(slot))||mids.STANDING; }
-function link_sense(){ return { power:buses.ac, held:squawk.held, emission:emcon }; }
+function link_sense(){ return { power:buses.ac&&fed(2,"b"), held:squawk.held, emission:emcon }; }
 function link_picture16(){ const mine=own_team(); if(!MULTIPLAYER||!net||!mine) return { members:[], donated:[] };
 	return mids.picture({ slot:net.slot, team:mine, receiving:mids.receiving(terminal,link_sense()) },[...net.teams.entries()].map(([slot,team])=>({ slot, team, sending:status_of(slot).link, tracks:status_of(slot).tracks }))); }
 function overhead(from,of){ const up=of.up||world_up; return (from.x-of.pos.x)*up.x+(from.y-of.pos.y)*up.y+(from.z-of.pos.z)*up.z>0; }
 function identified(c,mine){ const st=remotes.get(c.id), theirs=status_of(c.id);
-	return !!mine&&c.team===mine&&!!st&&identification.challenging(squawk,{ power:buses.ac, emission:emcon })&&theirs.reply&&identification.facing(theirs.antenna,overhead(ownship.pos,st)); }
+	return !!mine&&c.team===mine&&!!st&&identification.challenging(squawk,{ power:buses.ac&&fed(2,"b"), emission:emcon })&&theirs.reply&&identification.facing(theirs.antenna,overhead(ownship.pos,st)); }
 function challenges(){ const mine=own_team(), list=[]; if(!MULTIPLAYER||!net||!mine) return { challenged:false, answered:false };
 	for(const [slot,st] of remotes.entries()){ const theirs=status_of(slot); if(st.group&&st.group.visible&&net.teams.get(slot)===mine&&theirs.challenge&&theirs.tracks.includes(net.slot)) list.push(st); }
-	return { challenged:list.length>0, answered:list.length>0&&list.every(st=>identification.replying(squawk,{ power:buses.ac, emission:emcon, above:overhead(st.pos,ownship) })) }; }
+	return { challenged:list.length>0, answered:list.length>0&&list.every(st=>identification.replying(squawk,{ power:buses.ac&&fed(2,"b"), emission:emcon, above:overhead(st.pos,ownship) })) }; }
 // status_own: this aircraft's status for the session to relay: its transponder answering mode 4 and on which antenna,
 // its interrogator challenging, its terminal sending, and the slots its radar holds - the trackfiles and the single
 // target track.
@@ -5080,7 +5088,7 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 	x.fillText("9M "+Math.max(0,ownship.msl|0),24,430);
 	x.fillText("120C "+Math.max(0,ownship.amraam|0),120,430);
 	x.fillText("GUN "+(ownship.rounds??0),24,458);
-	x.textAlign="right"; x.fillText(master.toUpperCase(),488,458);
+	x.textAlign="right"; x.fillText(master==="ag"?"A/G":master.toUpperCase(),488,458);
 	x.textAlign="center"; x.font="26px monospace"; x.fillText(armament.armed(arms,arm_sense())?"ARM":"SAFE",256,66); }   // the ARM status (2.17.1.2, #109): ARM with the ARM conditions met, else SAFE. The NTRP's format is not held: its place here, under the title and clear of the caution and advisory lines, is ours
 function ddi_ew(x){ x.fillText("EW",256,36); ew_draw(x,256,266,190,18); }
 // ew_draw: the ALR-67 picture the EW page and the azimuth indicator share, at a
@@ -6336,7 +6344,7 @@ const _v=new THREE.Vector3();
 // with no keyup wedges Space into the held-keys set and both paths then skip
 // the edge block.
 function trigger_missile(){
-	if(master!=="nav"&&!arms.arm){ notice(translate("MASTER ARM SAFE")); return; }   // the trigger pulled with MASTER ARM at SAFE: nothing fires, and the press says why
+	if(master!=="nav"&&master!=="ag"&&!arms.arm){ notice(translate("MASTER ARM SAFE")); return; }   // the trigger pulled with MASTER ARM at SAFE: nothing fires, and the press says why
 	if(!mc().two) return;   // without the weapon delivery computer no missile leaves the rail (figure 12-1, MC 2)
 	if(master==="120c"){ trigger_amraam(); return; }   // #27 phase 1: the trigger serves the selected weapon
 	if(master!=="9m" || weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || ownship.msl<=0) return;   // an unarmed loadout has no rounds, so msl covers the retired missiles flag (#17)
@@ -6373,8 +6381,8 @@ let amraam_visual=false;   // UNCAGE: the boresight/MADDOG launch mode (#27 phas
 const VISUAL=7.5*D2R;
 function amraam_field(){ return master==="120c"&&(amraam_visual||(RADAR.stt==null&&RADAR.ls==null)); }
 let caged=false;   // the same switch in the NAV master mode: the velocity vector caged to the HUD centreline (NATOPS I-2-102 item 10)
-function jammer_armed(){ return buses.ac&&suite.jammer==="transmit"; }   // XMIT (#31): the ECM knob's standing decision, on ac power; jammer_loud() is whether it radiates right now
-function jammer_loud(){ return countermeasures.radiating(suite,RWR.locked()||RWR.warned(),buses.ac); }   // armed AND painted: the threat picture decides the radiation, so forgetting it armed is a carried risk, not a constant beacon
+function jammer_armed(){ return buses.ac&&fed(3,"a")&&suite.jammer==="transmit"; }   // XMIT (#31): the ECM knob's standing decision, on ac power; jammer_loud() is whether it radiates right now
+function jammer_loud(){ return countermeasures.radiating(suite,RWR.locked()||RWR.warned(),buses.ac&&fed(3,"a")); }   // armed AND painted: the threat picture decides the radiation, so forgetting it armed is a carried risk, not a constant beacon
 // launch_amraam (#27 phase 2): the round separates off its rail or ejector
 // and is handed to the Go core with the datalink's first estimate — or with
 // none at all for a VISUAL shot, which starts the seeker hot. The slot is
@@ -7491,14 +7499,18 @@ const EMERGENCY_LIGHT=0.5;   // the white emergency instrument light's intensity
 // (2.6.2.4), CONSOLES the console lighting (2.6.2.3), FLOOD the white floods (2.6.2.5) and WARN/CAUT the
 // lens brightness within NITE's low range, each from its knob (knob_level): the pre-flight leaves INST
 // PNL a dim wash by day and up at night, CONSOLES and FLOOD on at night. Both generators gone (2.6.2.8)
-// takes the integral lighting and the floods with them. NVG is not modelled: the game has no goggles,
-// and the FLOOD switch's CHART position has no chart light to light.
-const lighting={ mode:"day", instrument:0.22, consoles:0, flood:0, warn:1 };
+// takes the integral lighting and the floods with them. NVG is not modelled: the game has no goggles.
+// The FLOOD switch beside the knob (2.6.2.5, aircraft 161353 THRU 163782) sets what the knob lights: at
+// COCKPIT the floods and the chart light on the canopy arch, at CHART the chart light alone. The pre-flight
+// leaves it at COCKPIT, where the model draws it.
+const FLOOD={ chart:0, cockpit:1 };
+const lighting={ mode:"day", instrument:0.22, consoles:0, flood:0, chart:0, warn:1 };
 function lighting_set(){ const night=cfg.tod==="night";   // none of it on the L key, the exterior lights master switch
 	lighting.mode=night?"nite":"day";
 	lighting.instrument=unpowered?0:knob_level("instrument");
 	lighting.consoles=unpowered?0:knob_level("consoles");
-	lighting.flood=unpowered?0:knob_level("flood");
+	lighting.flood=unpowered||travel_at("floodswitch")===FLOOD.chart?0:knob_level("flood");
+	lighting.chart=unpowered?0:knob_level("flood");
 	lighting.warn=night?0.2+0.5*knob_level("warn"):1; }
 function instrument_backlight(){
 	lighting_set(); const level=lighting.instrument;
@@ -7506,7 +7518,7 @@ function instrument_backlight(){
 	for(const mm of instrument_mats) mm.emissiveIntensity=level;
 	const g=ownship.group;   // WARN/CAUT and the NITE mode dim every warning, caution and advisory light (2.6.2.1, 2.17.2.2): a lens's painted legend multiplies by its material colour, a plain lamp's colour is its own at that level
 	if(g&&g.userData.lamps) g.traverse(o=>{ if(o.userData.lens) o.material.color.setScalar(lighting.warn); else if(o.userData.lit!==undefined) o.material.color.setHex(o.userData.lit).multiplyScalar(lighting.warn); }); }
-let cockpit_flood=null, console_lights=null;
+let cockpit_flood=null, console_lights=null, chart_light=null;
 // ============================================================================ panel systems (G1)
 // Knobs the pilot has turned (#11, #23, #115): null keeps the level the pre-flight leaves, the time of
 // day's for the interior lights and full for the rest. A click turns one a fifth of its throw, right
@@ -7531,7 +7543,7 @@ const displays={ left:{ mode:"auto", brt:1, contrast:1 }, right:{ mode:"auto", b
 // video switch, BLK LVL, BAL and the ADF switch move and act on nothing.
 const hud_panel={ range:"day", video:"off" };
 let finder="off";
-function display_level(d){ const s=displays[d]; if(!buses.ac||(d==="left"&&!buses.left)||(d==="right"&&!buses.right)||s.mode==="off"||(d==="center"&&s.brt<=0)) return 0;   // each DDI on its own side's ac bus (FO-8)
+function display_level(d){ const s=displays[d]; if(!buses.ac||(d==="left"&&!buses.left)||(d==="right"&&!buses.right)||!fed(d==="left"?1:2,"a")||s.mode==="off"||(d==="center"&&s.brt<=0)) return 0;   // each DDI on its own side's ac bus (FO-8)
 	return (s.mode==="night"?0.45:1)*(0.3+0.7*s.brt); }
 // display_contrast: how much of a screen's face is its own light (#132), the rest a veil over symbology and background
 // alike (screen_contrast), at any brightness: all of it at the top stop, CONTRAST_FLOOR at the bottom, where the symbology
@@ -7544,10 +7556,10 @@ function display_press(d,control,direction){ const s=displays[d], up=direction>=
 	else s.mode=SELECTOR[THREE.MathUtils.clamp(SELECTOR.indexOf(s.mode)+(up?1:-1),0,3)]; }
 function displays_light(){ const u=ownship.group.userData;
 	for(const sc of u.screens||[]){ sc.mesh.material.color.setScalar(display_level(sc.display)); if(sc.mesh.material.userData.contrast) sc.mesh.material.userData.contrast.value=display_contrast(sc.display); }
-	if(u.ufc) u.ufc.mesh.material.color.setScalar(buses.ac?0.3+0.7*knob_level("ufc"):0);
+	if(u.ufc) u.ufc.mesh.material.color.setScalar(buses.ac&&fed(2,"b")?0.3+0.7*knob_level("ufc"):0);
 	if(u.ifei) u.ifei.mesh.material.color.setScalar(buses.ac?(lighting.mode==="nite"?0.3+0.7*knob_level("ifei"):1):0);
-	if(u.rwr) u.rwr.mesh.material.color.setScalar(buses.ac&&suite.receiver.power?1:0); }   // the azimuth indicator is dark without ac power (#116), and with the set's POWER off (#9)
-function symbology(){ return buses.ac?knob_level("symbology")*(hud_panel.range==="night"?0.45:1):0; }   // the HUD's SYM BRT knob, its bottom stop OFF (2.13.4.8.2), in the selector's range as a DDI's NIGHT takes the lower (#139); the HUD is on the ac buses
+	if(u.rwr) u.rwr.mesh.material.color.setScalar(buses.ac&&fed(3,"a")&&suite.receiver.power?1:0); }   // the azimuth indicator is dark without ac power (#116), and with the set's POWER off (#9)
+function symbology(){ return buses.ac&&fed(2,"a")?knob_level("symbology")*(hud_panel.range==="night"?0.45:1):0; }   // the HUD's SYM BRT knob, its bottom stop OFF (2.13.4.8.2), in the selector's range as a DDI's NIGHT takes the lower (#139); the HUD is on the ac buses
 // The electrical power panel (#21, NATOPS 2.5, figure 2-9): the L and R GEN switches, NORM or OFF, and
 // BATT, OFF, ON or ORIDE. Either generator on the line powers every bus. With both off the 28 V dc
 // essential bus alone lives, on the batteries with BATT at ON or ORIDE (2.5.2): the warning, caution
@@ -7565,7 +7577,7 @@ function symbology(){ return buses.ac?knob_level("symbology")*(hud_panel.range==
 // switch is cycled; open, each generator powers its own side alone, and a generator off the line leaves its side dead.
 // Of each side's loads (FO-8) the game splits the mission computers and the DDIs: MC1 and the left DDI on the left ac
 // bus, MC2 and the right DDI on the right.
-const electrics={ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true };
+const electrics={ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true, cart:false };
 const BATTERY_LIFE=600;   // s, each battery's charge on the essential bus alone
 let buses={ ac:true, essential:true, left:true, right:true };
 // sub_idle: an engine's IFEI readings below ground idle (#133, NATOPS 2.1.1.6, 7.2), from the core's rundown (STATE.rundown,
@@ -7584,7 +7596,8 @@ function battery_source(){ const c=electrics.charge;   // the battery carrying t
 function power_step(out){ const dt=electrics.at===null?0:THREE.MathUtils.clamp(sim_time-electrics.at,0,4); electrics.at=sim_time;   // once a frame, over the frame's sim time: 3.2 s at 64× and the 50 ms frame clamp
 	const [l,r]=generators(out), generating=l||r, cart=ground_power()&&!generating, ac=generating||cart;   // the cart's power reaches the buses only while neither generator is on the line (2.5.4)
 	if(generating&&!electrics.generating&&electrics.powered&&ownship.grounded&&!parking) electrics.tie=false;   // an engine start on the ground with the parking brake released opens the bus tie (2.5.1.3): a generator coming on the line of a jet that has had ac power, from a generator or the cart - a spawn's engines take a moment to read as turning, and that is no start
-	electrics.generating=generating;
+	electrics.generating=generating; electrics.cart=cart;
+	for(const k of GROUND_SWITCHES) if(!cart&&travel_at(k)!==GROUND.auto) thrown[k]=GROUND.auto;   // the solenoid holds a switch at ON on external power alone: a generator on the line, or the cart off the buses, and it returns to AUTO (2.5.4.2)
 	if(ac) electrics.powered=true;
 	if(ac){ electrics.lost=-Infinity; electrics.cutoff=false; for(const k of ["u","e"]) electrics.charge[k]=Math.min(1,electrics.charge[k]+dt/BATTERY_LIFE); }
 	else if(electrics.lost===-Infinity){ electrics.lost=sim_time; electrics.ground=!!ownship.grounded; }
@@ -7595,7 +7608,7 @@ function power_step(out){ const dt=electrics.at===null?0:THREE.MathUtils.clamp(s
 	if(essential){ electrics.dead=-Infinity; electrics.energised=true; } else if(electrics.dead===-Infinity&&electrics.energised) electrics.dead=sim_time;   // the reversion follows a loss of the bus: a cold jet's controls were never powered to lose it (#133)
 	if(!essential&&electrics.dead>-Infinity&&sim_time-electrics.dead>=8) electrics.mech=true;
 	buses={ ac, essential, left:l||(electrics.tie&&r)||cart, right:r||(electrics.tie&&l)||cart };
-	RADAR.unpowered=!ac; }
+	RADAR.unpowered=!ac||!fed(2,"a"); }
 function battery_set(position){ if(position==="on"&&electrics.battery!=="on"&&electrics.lost>-Infinity){ electrics.lost=sim_time; electrics.cutoff=false; }   // back to ON from OFF or ORIDE: five more minutes (15.17.1)
 	electrics.battery=position; }
 function mechanical(){ return electrics.mech; }
@@ -7625,6 +7638,19 @@ const CRANK=["port","","starboard"];   // ENG CRANK's positions as its clip runs
 const EXTERNAL={ off:0, norm:1, reset:2 };   // EXT PWR's positions as its clip runs (measured): OFF aft, NORM, RESET forward
 const START={ held:50, crossbleed:80, cable:3, reset:0.4 };   // % N2 that releases ENG CRANK, and the other engine's that crossbleeds; m the cart's cable reaches; s a click holds EXT PWR at RESET
 const starter={ speed:0, running:false, lined:-Infinity, cart:null, reset:-Infinity };   // the APU's speed 0 to 1 and whether it runs; when both generators came on the line; where the cart is plugged in ({ ship, a, b }: deck fore-aft and lateral, or world x and z), null with none; when EXT PWR went to RESET
+// The ground power switches (2.5.4.2, figure 2-10's placard): on external power the ac buses come up as on a
+// generator, but each GND PWR switch's systems stay off at AUTO. A ON powers its group A, B ON its group B with A:
+//   1: A mission computer 1 and the left DDI; B mission computer 2.
+//   2: A the right DDI, the HUD, the radar, the INS and the AMPCD; B the TACAN, the air data computer, UHF 1 and 2,
+//      the radar altimeter, the beacon, the ILS, the data link, the IFF, the standby instruments, the KY-58 and the UFC.
+//   3: A the jammer, the dispenser, anti-skid, the oxygen gauging and the RWR; B the SMS and the gun decoder.
+//   4: A the intercom, which carries every voice alert and tone; B the intercom and the flight control electronics.
+// A switch is held at ON by its solenoid while external power is on the buses, and returns to AUTO when a
+// generator comes on the line. The first one set to ON runs the avionics cooling BIT for about 3 s, held under
+// the pilot's hand: a click holds it through. On a generator, or the battery, every group runs as before.
+const GROUND={ bon:0, auto:1, aon:2 };   // the positions as each switch's clip runs (measured: the same turn as EXT PWR's, OFF aft to RESET forward), B ON aft, AUTO, A ON forward
+const GROUND_SWITCHES=["groundone","groundtwo","groundthree","groundfour"];
+function fed(n,group){ if(!electrics.cart) return true; const at=travel_at(GROUND_SWITCHES[n-1]); return group==="a"?at!==GROUND.auto:at===GROUND.bon; }   // whether switch n's group a or b has power
 function apu_ready(){ return starter.speed>=1; }
 function ground_power(){ return !!starter.cart&&travel_at("extpwr")!==EXTERNAL.off; }
 function cranking(){ return CRANK[travel_at("crank")]||undefined; }   // the engine ENG CRANK motors, as the core's control
@@ -7653,10 +7679,11 @@ function parked_deck(){ const p=SHIP.parking, h=p.heading*D2R, nose=(AIRCRAFT_MO
 // air test, after which they reopen only once the knob has been turned through OFF back to NORM with
 // ac power on (2.14.5). Bleed air from either side pressurises the cockpit on figure 2-37's schedule
 // for aircraft 163092 and up: 2,300 ft below the field on the ground, 8,000 ft from 11,000 to 24,000
-// and a 5 psi differential above; without it the cockpit is at the aircraft's altitude (#14). TEMP,
-// the engine anti-ice switch, PITOT and the windshield anti-ice and rain switch move and act on
-// nothing: the game has no icing and no temperatures. AV COOL's EMERG deploys the FCS ram air scoop
-// (scoopTarget, below), which is all it does here.
+// and a 5 psi differential above; without it the cockpit is at the aircraft's altitude (#14). The
+// engine anti-ice switch lights the L and R HEAT advisories (2.1.1.6.1) and AV COOL's EMERG deploys the
+// FCS ram air scoop (scoopTarget, below), which is all either does here. TEMP, PITOT and the windshield
+// anti-ice and rain switch act on nothing: the game has no icing, rain or temperatures, and NATOPS gives
+// the pitot heater and the windshield a caution only for a failure (2.12.1.4, 2.16.4.2).
 const BLEED=["loff","norm","roff","off"];
 const BLEED_DETENTS=[0,0.3075,0.653,0.92];   // the knob's clip fraction at each position: its 282° sweep eases, and the four sit 90° apart from its authored L OFF
 const ecs={ bleed:1, valves:[true,true], through:false };
@@ -7767,8 +7794,10 @@ function update_aircraft_lights(){
 		ownship.group.add(cockpit_flood); }
 	const at=ownship.group.userData.eye||{x:3.0,y:0.6}; cockpit_flood.position.set(at.x+0.45,at.y-0.15,0);
 	if(!console_lights){ console_lights=[-0.45,0.45].map(z=>{ const l=new THREE.PointLight(0xffd9a8,0,1.2,2); l.layers.set(LAYER_OWN); l.position.set(at.x+0.15,at.y-0.25,z); ownship.group.add(l); return l; }); }   // the console lighting (2.6.2.3): the tub's texture has no emissive layer, so a low light over each console stands in for the integral panels; two, not the jet's six floods
+	if(!chart_light){ chart_light=new THREE.PointLight(0xffffff,0,0.9,2); chart_light.layers.set(LAYER_OWN); chart_light.position.set(at.x-0.05,at.y+0.3,0); ownship.group.add(chart_light); }   // the chart light on the canopy arch (2.6.2.5), over the pilot's lap
 	const pit=cfg.view==="cockpit";   // only spends when the pit is on screen
 	cockpit_flood.intensity=pit?0.12*lighting.flood:0;   // the instrument panel floods (2.6.2.5) on the FLOOD level
+	chart_light.intensity=pit?0.05*lighting.chart:0;
 	for(const l of console_lights) l.intensity=pit?0.06*Math.max(lighting.consoles,lighting.flood):0;
 	const geardown=(ownship.gear??0)<0.02, land=exterior.landing && (ownship.gearTarget??1)<0.5 && geardown;   // LDG/TAXI ON, the handle DN and the gear down (2.6.1.5): the light rides the nose gear strut, on when the extend animation finishes (down & locked, the HUD's green GEAR threshold), dark the moment retraction starts
 	for(const p of aircraft_lights.pos){ p.visible=position>0&&!(p.userData&&p.userData.spare); p.material.opacity=position; }   // the POSITION knob's level
@@ -9069,7 +9098,7 @@ function pit_press(action,direction){ const d=direction||0;
 	// the master arm panel and the selective jettison controls (#7, FO-5 items 12, 17, 20, 32)
 	case "arm": arms.arm=d>0?true:d<0?false:!arms.arm; break;   // MASTER ARM: up to ARM, down to SAFE
 	case "mode.air": air_press(); break;
-	case "mode.ground": break;   // the A/G master mode button: no air-to-ground weapon or sensor aboard to select it for (#104)
+	case "mode.ground": ground_press(); break;
 	case "extinguisher": if(armament.discharge(arms,secured)) extinguish_flag=true; break;   // FIRE EXTGH with READY on (2.14.2)
 	case "jettison.emergency": emergency_clicked=glance; break;   // a click holds the button as long as a hand would, on the pilot's clock
 	case "jettison.select": armament.turn(arms,d||1); break;
@@ -9276,7 +9305,7 @@ let parking=false;   // the parking brake: forces the wheel-brake input while se
 let bar_switch="retract";
 let pulled=false;   // the same handle out to its detent without the turn: EMERG, the emergency brakes (2.10.3.3)
 let antiskid=true;
-function guarded(){ return antiskid&&!pulled&&!parking; }   // anti-skid at work: the switch ON and the brakes on their normal circuit, since EMERG and PARK run without it (2.10.3.3)
+function guarded(){ return antiskid&&fed(3,"a")&&!pulled&&!parking; }   // anti-skid at work: the switch ON and the brakes on their normal circuit, since EMERG and PARK run without it (2.10.3.3)
 let spun=-Infinity;   // the touchdown (its landing.at) whose wheels have spun up past 50 kt: its protection is over
 function brakes_held(){ const kt=(ownship.speed??0)*1.94384;
 	if(!ownship.grounded) return false;
@@ -9462,7 +9491,7 @@ function read_input(dt){
 	nws_step();
 	{ const x=(held("tdc.right")?1:0)-(held("tdc.left")?1:0)||pad_tdc.x, y=(held("tdc.up")?1:0)-(held("tdc.down")?1:0)||pad_tdc.y;
 		if(hmd.mode==="fine") helmet.nudge(hmd,x,y,dt); else tdc_slew(x,y,dt); }   // in fine alignment the TDC moves the helmet's crosses (2.21.12.2)
-	input.guns=hotas.trigger&&master==="gun"&&arms.arm;   // the trigger serves the SELECTED weapon (#133): guns only in GUN, and nothing with MASTER ARM at SAFE (2.17.1.2)
+	input.guns=hotas.trigger&&master==="gun"&&arms.arm&&fed(3,"b");   // the trigger serves the SELECTED weapon (#133): guns only in GUN, and nothing with MASTER ARM at SAFE (2.17.1.2)
 	input.trim=(held("trim.up")?1:0)-(held("trim.down")?1:0);   // . / , held: the pitch trim switch (UA attitude datum, PA alpha datum)
 	input.lean=(held("trim.right")?1:0)-(held("trim.left")?1:0);   // Shift+. / Shift+, held: the hat's roll half — a standing differential-flaperon bias
 	if(pad_trim.x||pad_trim.y){ input.trim=input.trim||-pad_trim.y; input.lean=input.lean||pad_trim.x; }   // the trim HAT (an axis pair, e.g. the VelocityOne castle at 8/9): forward = nose DOWN, the aviation convention
@@ -9852,7 +9881,7 @@ function cautions_update(dt){
 		relight.high=high; relight.sat=sat;
 		if(back&&!caution_lamp&&latch.length){ fresh=true; toned=true; } }
 	if(fresh) caution_lamp=true;
-	if(toned&&!battery&&sim_time-caution_toned>=5&&glance>=caution_free){ caution_free=glance+audio_caution(); caution_toned=sim_time; }   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have passed since the last, reset or not; a burst of related cautions is one tone
+	if(toned&&!battery&&fed(4,"a")&&sim_time-caution_toned>=5&&glance>=caution_free){ caution_free=glance+audio_caution(); caution_toned=sim_time; }   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have passed since the last, reset or not; a burst of related cautions is one tone
 	if(!latch.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
 	const bingo=low||below;
 	if(bingo&&!battery&&!audio_voiced("BINGO")){ bingo_nag+=dt; if(bingo_nag>=30&&glance>=caution_free){ bingo_nag=0; caution_free=glance+audio_caution(); caution_toned=sim_time; } } else bingo_nag=0;   // seconds of the world's time, whatever the frame rate
@@ -9862,7 +9891,7 @@ function cautions_update(dt){
 	if(gpws.call) active.add(gpws.call);   // the GPWS recovery call, back to back while the warning holds
 	if(sim_time-altitude_called<1) active.add("ALTITUDE");   // the secondary and barometric warnings' single call
 	if(fire_testing()){ active.add("ENGINE FIRE LEFT"); active.add("ENGINE FIRE RIGHT"); }   // the fire test runs the voice alerts (2.14.5, #17)
-	for(const message of [...active]) if(!audio_voiced(message)||!buses.essential||(battery&&!BATTERY_VOICES.has(message))) active.delete(message);   // nothing speaks with the essential bus dead
+	for(const message of [...active]) if(!audio_voiced(message)||!buses.essential||!fed(4,"a")||(battery&&!BATTERY_VOICES.has(message))) active.delete(message);   // nothing speaks with the essential bus dead
 	voice_step(voice,sim_time,glance,active,audio_voice); }
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
 let law_primary=false;   // the primary radar low-altitude warning is sounding (NATOPS 2.12.5.1): gear up and locked, the radar altitude below the index
@@ -9873,7 +9902,7 @@ let law_disabled=false;   // the primary warning was disabled from the UFC (:RAL
 // the green light GO for its 5 s. At ground power-up the set sounds the whoop once to
 // familiarise the pilot (2.12.5.1): greet is that whoop, owed.
 let radalt_on=true, radalt_test=-Infinity, radalt_greet=false;
-function radalt_inhibited(){ return emcon||!radalt_on||!buses.ac; }   // the set off, silenced by EMCON, or without ac power (#116): its OFF flag in view (2.12.5.4.6) and no warning
+function radalt_inhibited(){ return emcon||!radalt_on||!buses.ac||!fed(2,"b"); }   // the set off, silenced by EMCON, or without ac power (#116): its OFF flag in view (2.12.5.4.6) and no warning
 let law_index=200;   // the low-altitude index, ft, set only with the height indicator's knob (2.12.5.4.1, 2.12.5.4.4): a cat shot's 40 or 200, the pre-flight settings, until the pilot turns it
 const altitude_set={ radar:0, baro:5000 };   // ft: the secondary radar and barometric low-altitude warnings (2.12.5.2, 2.12.5.3), as power-up with weight on wheels leaves them; 0 disables either
 const altitude_armed={ radar:false, baro:false };   // each call is a descent through its altitude, so each arms once the jet is above it
@@ -11877,7 +11906,7 @@ function reset_ownship(){
 		Object.assign(hmd,helmet.fresh(air,{ azimuth:wild(), elevation:wild(), roll:wild() },Math.random()*Math.PI*2)); if(!air) knobs.hmd=0; }
 	displays.left.mode=displays.right.mode="auto"; displays.center.mode="day"; for(const d of Object.values(displays)){ d.brt=1; d.contrast=1; }
 	Object.assign(hud_panel,{ range:"day", video:"off" }); finder="off";   // the HUD control panel's selector at DAY and video OFF, and the ADF switch OFF (#139)
-	Object.assign(electrics,{ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true }); buses={ ac:true, essential:true, left:true, right:true };   // both generators and BATT ON, charged,
+	Object.assign(electrics,{ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true, cart:false }); buses={ ac:true, essential:true, left:true, right:true };   // both generators and BATT ON, charged,
 	if(cold_start){ electrics.battery="off"; electrics.energised=false; buses={ ac:false, essential:false, left:false, right:false }; }   // cold and dark (#133): BATT OFF and nothing powered
 	buttons.trim=buttons.reset=-Infinity; buttons.standing=false; buttons.jams=0;
 	ecs.bleed=1; ecs.valves=[true,true]; ecs.through=false; fire_test.at=-Infinity; rudder_trim=0; reference="auto";   // BLEED AIR at NORM, the rudder trimmed neutral, ATT at AUTO,
@@ -12395,7 +12424,7 @@ function heat_lit(lockon,brk,cue){ return lockon&&!brk&&!weapons_hold&&ownship.m
 // than read from the HUD's frame, which the head-down view never draws: the heater's from its own seeker lock
 // and zone, the AMRAAM's from its zone, and the X for the breakaway or either missile's minimum range.
 function attack_cue(){
-	if(master==="nav"||hud_landing()) return { shoot:false, brk:false };
+	if(master==="nav"||master==="ag"||hud_landing()) return { shoot:false, brk:false };   // A/G's cues are its stores', and it has none
 	const boxed=hud_target(), r=boxed?ranging():null, brk=breakaway_due(boxed,r?r.range:1500,r?r.closure:0);
 	if(master==="9m"){ const lockon=seeker_now.lockon, cue=lockon?heat_cue(heat_zone()):null;
 		return { shoot:heat_lit(lockon,brk,cue), brk:brk||(lockon&&ownship.msl>0&&cue==="break") }; }
@@ -12683,7 +12712,8 @@ function draw_hud(){
 	// from the glass, exactly like the real headset.
 	const lockon=seeker_now.lockon, drinking=seeker_now.drinking, quarry=seeker_now.quarry;
 	if(growl_force&&sim_time<growl_force.until) audio_seeker(growl_force.state,growl_force.strength);
-	else audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0),drinking,uhf.panel.volume.weapon);   // the WPN volume control sets the tone's level (23.1.1)
+	else audio_seeker(game_paused||!fed(4,"a")?0:(master==="9m"&&!pa?(lockon?2:1):0),drinking,uhf.panel.volume.weapon);   // the WPN volume control sets the tone's level (23.1.1)
+	audio_tacan(!game_paused&&buses.ac&&fed(4,"a")&&!!tacan()&&communication.sounding(SHIP.ident,sim_time),uhf.panel.volume.tacan);   // the ship's TACAN identity in Morse, at the TCN volume control's level (23.1.1): heard while the set receives her
 	// Departure / AoA warning tone (NATOPS 2.8.2.5, #53): yaw-rate intensity
 	// from the 40°/s onset to the 60°/s ceiling, steady above 35° AoA. Ground
 	// excluded — a HI-mode nosewheel turn yaws faster than the onset.
@@ -13078,7 +13108,7 @@ let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left,
 // control off the bottom - and the COMM 1 antenna selected in view of a station on the surface - the lower one unless the jet is on its back,
 // ANT SEL's AUTO taking whichever it is. The pilot's own calls go out the same way.
 function radio(text){ const inverted=ownship.up.y<0;   // a station on the surface is above the wings only of a jet upside down
-	if(uhf.one.on&&buses.essential&&(uhf.panel.antenna==="auto"||(uhf.panel.antenna==="upper")===inverted)) comm(text,"#9fd0ff"); }
+	if(uhf.one.on&&buses.essential&&fed(2,"b")&&(uhf.panel.antenna==="auto"||(uhf.panel.antenna==="upper")===inverted)) comm(text,"#9fd0ff"); }
 function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift();
 	if(cfg.record&&!playback&&record_radio.length<20) record_radio.push((colour&&String(colour).startsWith("#")?colour+" ":"")+String(text).slice(0,80)); if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); log.push(String(text)); } }   // dev_comms: the un-fading log — the live rows expire in ten seconds, which is faster than a headless probe can attach
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"match"; }
@@ -13659,7 +13689,7 @@ function rwr_step(dt){ if(!running) return;
 	const events=RWR.step(dt,{ x:ownship.pos.x, z:ownship.pos.z },emitters,Math.random,seekers);
 	rwr_fresh+=events.fresh; rwr_missile=rwr_missile||events.missile;   // what every chunk of a compressed frame heard, sounded once a frame
 	if(!presenting) return;
-	const level=suite.receiver.power&&buses.ac?uhf.panel.volume.receiver:0;   // the set's tones, at the RWR volume control's level (23.1.1); none with it off or unpowered (#116)
+	const level=suite.receiver.power&&buses.ac&&fed(3,"a")&&fed(4,"a")?uhf.panel.volume.receiver:0;   // the set's tones, at the RWR volume control's level (23.1.1); none with it off or unpowered (#116)
 	if(rwr_fresh>0) audio_rwr_paint(level);
 	if(rwr_missile&&level>0&&glance-rwr_called>3){ rwr_called=glance; notice(translate("MISSILE")); }   // the third voice: nails, spike, MISSILE
 	rwr_fresh=0; rwr_missile=false;

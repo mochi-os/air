@@ -42,7 +42,7 @@ function cockpit<T>(body: string, o: Jet = {}): T {
   return new Function('o', 'THREE', 'communication', 'identification', 'mids', `let sim_time=100, ufc_dirty=false, updates=0, gear_emergency=false, brake_accumulator=3000, master=o.master||"nav";
     const SHIP={ channels:${JSON.stringify(CHANNELS)}, icls:11 }, CODES={ one:"11", two:"0000", three:"1200" }, ACCUMULATOR={ full:3000, empty:1750, gas:80000 };
     const uhf={ one:communication.fresh(SHIP.channels), two:communication.fresh(SHIP.channels), panel:communication.panel(SHIP.icls), keypad:communication.backup(), pulled:"" }, squawk=identification.fresh(CODES), terminal=mids.fresh();
-    const ufc={ func:"", entry:"", letter:"", error:false, option:-1, back:"" }, ufc_update=()=>{ updates++; }, buses={ ac:o.ac??true, essential:o.essential??true };
+    const ufc={ func:"", entry:"", letter:"", error:false, option:-1, back:"" }, ufc_update=()=>{ updates++; }, buses={ ac:o.ac??true, essential:o.essential??true }, fed=()=>true;
     const ownship={ grounded:!!o.grounded, up:{ y:o.up??1 } }, hydraulic=()=>o.pump??true, heard=[], comm=(text,colour)=>heard.push([text,colour]);
     const nav={ memory:{ files:o.files||["WYPT","TCN","IFF","COMM","GPS WYPT","GPS ALM"] } }, loads=[], navigate={ load:(n,m,file)=>loads.push(file) }, mission=()=>({}), mumi={ file:"", at:-Infinity };
     ${line('MUMI_FILES')} ${accumulator} ${recorder} ${backup}
@@ -105,9 +105,15 @@ describe('the volume controls', () => {
   it('move the model\'s RWR and WPN knobs with their levels, and set the Sidewinder tone\'s', () => {
     expect(source).toMatch(/\{ name:"volumereceiver", track:\/\^KNOB_RWR_VOL_LEFTPANEL_AN\/i, +drive:"volumereceiver" \},\n\t +\{ name:"volumeweapon", +track:\/\^KNOB_WPN_VOL_LEFTPANEL_AN\/i, +drive:"volumeweapon" \},/)
     expect(source).toMatch(/case "volumereceiver": f=st===ownship\?uhf\.panel\.volume\.receiver:1; break; case "volumeweapon": f=st===ownship\?uhf\.panel\.volume\.weapon:1; break;/)
-    expect(source).toMatch(/\telse audio_seeker\(game_paused\?0:\(master==="9m"&&!pa\?\(lockon\?2:1\):0\),drinking,uhf\.panel\.volume\.weapon\);/)
+    expect(source).toMatch(/\telse audio_seeker\(game_paused\|\|!fed\(4,\"a\"\)\?0:\(master==="9m"&&!pa\?\(lockon\?2:1\):0\),drinking,uhf\.panel\.volume\.weapon\);/)
     const audio = readFileSync(fileURLToPath(new URL('./audio.ts', import.meta.url)), 'utf8')
     expect(audio).toMatch(/state === 0 \? 0 : \(lock \? 0\.09 : 0\.13\) \* \(0\.7 \+ 0\.5 \* heat\) \* level,/)
+  })
+  it('sound the ship\'s TACAN identity at the TCN control\'s level, keyed in Morse, while the set receives her on ac power', () => {
+    expect(source).toMatch(/\n\taudio_tacan\(!game_paused&&buses\.ac&&fed\(4,\"a\"\)&&!!tacan\(\)&&communication\.sounding\(SHIP\.ident,sim_time\),uhf\.panel\.volume\.tacan\);/)
+    const audio = readFileSync(fileURLToPath(new URL('./audio.ts', import.meta.url)), 'utf8')
+    expect(audio).toMatch(/osc\.frequency\.value = 1350\n[\s\S]{0,200}ident = \{ osc, gain \}/)
+    expect(audio).toMatch(/ident\.gain\.gain\.setTargetAtTime\(keyed \? 0\.05 \* level : 0, now\(\), 0\.004\)/)
   })
 })
 

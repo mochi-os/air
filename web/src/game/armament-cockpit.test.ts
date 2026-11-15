@@ -46,7 +46,7 @@ function cockpit<T>(body: string, o: Jet = {}): T {
     let sim_time=0, glance=0, master=o.master||"nav", apu_accumulator=0.4, isolate_clicked=3, taping="off", ufc_dirty=false, ddi_dirty=false, recalled=0;
     const ownship={ gearTarget:o.handle??1, gear:o.gear??1, rounds:o.rounds??578, msl:o.missiles??2, amraam:o.amraams??4, failures:[7], loadout:{} }, on_ground=()=>!!o.grounded;
     const said=[], notice=(t)=>said.push(t), translate=(t)=>t, dropped=[], jettison_stations=(stations,what)=>{ dropped.push([stations,what]); return true; }, ddi_recall=()=>{ recalled++; };
-    ${line('EMERGENCY_HOLD')} ${line('EMERGENCY_PAIRS')} ${line('emergency')} ${panels} ${lift('ddi_family')} ${lift('set_master')} ${line('air_weapon')} ${lift('air_press')} ${lift('jettison_press')} ${lift('emergency_update')} ${press}
+    ${line('EMERGENCY_HOLD')} ${line('EMERGENCY_PAIRS')} ${line('emergency')} ${panels} ${lift('ddi_family')} ${lift('set_master')} ${line('air_weapon')} ${lift('air_press')} ${lift('ground_press')} ${lift('next_master')} ${lift('jettison_press')} ${lift('emergency_update')} ${press}
     systems_fresh(!o.grounded); ${body}`)(o, ...Object.values(modules)) as T
 }
 
@@ -88,7 +88,7 @@ describe('the MASTER ARM switch', () => {
     expect(source).toMatch(/if\(ch===key_of\("arm"\)\) pit_press\("arm",0\);/)
   })
   it('holds the gun: the trigger fires only at ARM', () => {
-    expect(source).toMatch(/\n\tinput\.guns=hotas\.trigger&&master==="gun"&&arms\.arm;/)
+    expect(source).toMatch(/\n\tinput\.guns=hotas\.trigger&&master==="gun"&&arms\.arm&&fed\(3,"b"\);/)
   })
   // trigger_missile's own closing brace stands alone, so the lift stops short of it
   const fired = (arm: boolean, master: string) => new Function('arm', 'master', `let fired=""; const said=[], arms={ arm }, mc=()=>({ one:true, two:true }), notice=(t)=>said.push(t), translate=(t)=>t, weapons_hold=false, ownship={ launching:false, gear:1, msl:2 }, MULTIPLAYER=false, has_enemy=false;
@@ -98,8 +98,9 @@ describe('the MASTER ARM switch', () => {
     expect(fired(true, '9m')).toEqual(['sidewinder', []]); expect(fired(true, '120c')).toEqual(['amraam', []])
     expect(fired(false, '9m')).toEqual(['', ['MASTER ARM SAFE']]); expect(fired(false, '120c')).toEqual(['', ['MASTER ARM SAFE']])
   })
-  it('says nothing for the trigger pulled in the navigation master mode, which selects no weapon', () => {
+  it('says nothing for the trigger pulled in the navigation or A/G master mode, neither of which selects a weapon here', () => {
     expect(fired(false, 'nav')).toEqual(['', []])
+    expect(fired(false, 'ag')).toEqual(['', []]); expect(fired(true, 'ag')).toEqual(['', []])
   })
 })
 
@@ -128,9 +129,20 @@ describe('the A/A master mode button', () => {
 })
 
 describe('the A/G master mode button', () => {
-  it('selects nothing: there is no air-to-ground weapon or sensor aboard', () => {
-    expect(cockpit('pit_press("mode.ground",0); return [master,recalled];')).toEqual(['nav', 0])
-    expect(cockpit('pit_press("mode.ground",0); return master;', { master: '9m' })).toBe('9m')
+  it('selects the A/G master mode from NAV or A/A, and deselects it when pressed in it, which is NAV (2.13.2)', () => {
+    expect(cockpit('pit_press("mode.ground",0); return master;')).toBe('ag')
+    expect(cockpit('pit_press("mode.ground",0); return master;', { master: '9m' })).toBe('ag')
+    expect(cockpit('pit_press("mode.ground",0); pit_press("mode.ground",0); return master;')).toBe('nav')
+  })
+  it('recalls A/G\'s own displays, which start on NAV\'s layout and keep their own selections', () => {
+    expect(cockpit('pit_press("mode.ground",0); return [recalled,ddi_family()];')).toEqual([1, 'ag'])
+    expect(cockpit('pit_press("mode.ground",0); return ddi_family();', { master: '120c' })).toBe('ag')
+  })
+  it('leaves the A/A weapon to return to: the A/A button enters A/A from A/G on it', () => {
+    expect(cockpit('set_master("120c"); pit_press("mode.ground",0); const a=[master,air_weapon]; pit_press("mode.air",0); return [...a,master];')).toEqual(['ag', '120c', '120c'])
+  })
+  it('gives the stick\'s weapon select A/A from A/G, as from NAV', () => {
+    expect(cockpit('pit_press("mode.ground",0); return next_master();')).toBe('gun')
   })
 })
 
@@ -242,7 +254,7 @@ describe('the panels drawn over the model', () => {
   function pit<T>(body: string, o: { essential?: boolean; testing?: boolean; master?: string; pushed?: boolean[] } = {}): T {
     if (!seats) throw new Error('the face seats not found in engine.ts')
     return new Function('o', 'THREE', 'faces', 'armament', 'countermeasures', `const LAYER_OWN=1, D2R=Math.PI/180, _v=new THREE.Vector3(), secured=o.pushed||[false,false];
-      let sim_time=10, lamps_testing=!!o.testing, master=o.master||"nav", drawn=[], buses={ essential:o.essential??true };
+      let sim_time=10, lamps_testing=!!o.testing, master=o.master||"nav", drawn=[], buses={ essential:o.essential??true }, fed=()=>true;
       const arms=armament.fresh(true), suite=countermeasures.fresh(true);
       const document={ createElement:()=>({ width:0, height:0, getContext(){ const canvas=this; return new Proxy({}, { get:(t,k)=>k==="clearRect"?()=>drawn.push(canvas.width):()=>{}, set:()=>true }); } }) };
       const g=new THREE.Group(), ownship={ group:g }, _click_ray={ intersectObjects:(meshes)=>hit?[{ object:meshes[hit.face], uv:{ x:hit.u, y:hit.v } }]:[] }; let hit=null;
@@ -280,9 +292,10 @@ describe('the panels drawn over the model', () => {
   })
   it('shows the panels\' own state: the switches, the A/A mode, the extinguisher\'s lights, the stations pressed, the RWR\'s lights', () => {
     expect(pit('arms.stations=[5]; suite.receiver.limit=true; return faces_shown();', { master: '9m', pushed: [true, false] })).toEqual({
-      power: true, test: false, arm: true, air: true, ready: true, discharged: false, stations: [5], dispenser: 'on', jammer: 'receive',
+      power: true, test: false, arm: true, air: true, ground: false, ready: true, discharged: false, stations: [5], dispenser: 'on', jammer: 'receive',
       indicator: { power: true, limit: true, offset: false, special: false, fail: false } })
     expect(pit('arms.discharged=true; return faces_shown();', { essential: false, testing: true })).toMatchObject({ power: false, test: true, air: false, ready: false, discharged: true })
+    expect(pit('return faces_shown();', { master: 'ag' })).toMatchObject({ air: false, ground: true }) // the A/G light, and not A/A's
   })
   it('redraws every face when what they show changes, and not otherwise', () => {
     expect(pit<number[]>('const a=drawn.length; faces_update(); const b=drawn.length; arms.arm=false; faces_update(); const c=drawn.length; faces_update(); return [a,b,c,drawn.length];')).toEqual([4, 4, 8, 8])

@@ -569,7 +569,7 @@ describe('the known picture: what the SA page and the map draw', () => {
     return new Function(
       'Radar', 'identification', 'mids',
       `const RADAR=new Radar(), statuses=new Map(), squawk=identification.fresh(), terminal=mids.fresh(), world_up={ x:0, y:1, z:0 };
-       let buses={ ac:true }, emcon=false;
+       let buses={ ac:true }, emcon=false; const fed=()=>true;
        const MULTIPLAYER=${multiplayer}, net=MULTIPLAYER?{ slot:1, teams:new Map([[1,'blue'],[2,'blue'],[3,'red']]), statuses }:null;
        const cfg={ tod:${night}?'night':'day' }, ownship={ pos:{ x:0, y:0, z:0 }, up:{ x:0, y:1, z:0 } }, wrap_axis=(v)=>v;
        const jets=MULTIPLAYER
@@ -836,8 +836,9 @@ describe("the attack format's cues (attack_cue)", () => {
     expect(cue("master='gun'; radar={ range:250, closure:100 }; return attack_cue();")).toEqual({ shoot: false, brk: true })
     expect(cue("master='gun'; return attack_cue();")).toEqual({ shoot: false, brk: false })
   })
-  it('shows nothing in NAV or on the gear', () => {
+  it('shows nothing in NAV, in A/G, which has no store to cue, or on the gear', () => {
     expect(cue("master='nav'; radar={ range:100, closure:100 }; return attack_cue();")).toEqual({ shoot: false, brk: false })
+    expect(cue("master='ag'; radar={ range:100, closure:100 }; return attack_cue();")).toEqual({ shoot: false, brk: false })
     expect(cue('landing=true; return attack_cue();')).toEqual({ shoot: false, brk: false })
   })
   it("is the HUD's decision too", () => {

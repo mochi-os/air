@@ -37,7 +37,7 @@ function line(name: string): string {
 const menus = /\nconst DDI_MENUS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''
 const legends = /\nconst BIT_LEGENDS=\{[\s\S]*?\};/.exec(source)?.[0] ?? ''
 const world = `const NM=1852, D2R=Math.PI/180, DDI_ORDER=["left","right","center"], STATE={ jam:0 }, FCS_CHANNELS=[0,1,2,3,4,5];
-  let sim_time=100, ddi_dirty=false, ufc_dirty=false, buses={ ac:true, essential:true, left:true, right:true }, last_out=[0,0,0,0,0,0], radalt_on=true;
+  let sim_time=100, ddi_dirty=false, ufc_dirty=false, buses={ ac:true, essential:true, left:true, right:true }, fed=()=>true, last_out=[0,0,0,0,0,0], radalt_on=true;
   const suite=countermeasures.fresh(true), squawk=identification.fresh(), uhf={ one:communication.fresh(), two:communication.fresh() }, terminal=mids.fresh();
   const ownship={ grounded:true, torn:false, gearTarget:0, pos:{ x:0, y:0, z:0 } }, electrics={ mech:false }, displays={ left:{ mode:"auto", brt:1 }, right:{ mode:"auto", brt:1 }, center:{ mode:"day", brt:1 } };
   const radios={ tacan:{ on:true }, ils:{ on:true }, link:{ on:true }, beacon:{ on:true } }, knobs={ symbology:1 }, knob_level=(k)=>knobs[k], RADAR={ testing:false };

@@ -135,7 +135,7 @@ function cautions(moments: Moment[]): Result[] {
   if (!tail) throw new Error('cautions_update tail not found in engine.ts')
   const run = new Function('SPOKEN', 'moments', `let caution_keys=new Set(), caution_lamp=false, bingo_nag=0, caution_toned=-1e9, caution_free=-1e9, caution_list=[], sim_time=0, glance=0, ready=false, tones=[], active_passed=[], altitude_called=-Infinity;
     const voice={}, gpws={gear:false, call:""}, ownship={ grounded:false, gauges:{} }; ${constants}
-    let buses={ ac:true, essential:true }, firetest=false; const fire_testing=()=>firetest;
+    let buses={ ac:true, essential:true }, firetest=false; const fed=()=>true; const fire_testing=()=>firetest;
     const audio_caution=()=>{ tones.push("caution"); return 0.5; }, audio_voiced=()=>ready, audio_voice=()=>0;
     const voice_step=(queue,time,wall,set)=>{ active_passed=[...set]; };
     function cautions_update(rows,test,m,dt){ const low=!test&&rows.some((r)=>r[0]==="FUEL LO"), below=!test&&rows.some((r)=>r[0]==="BINGO"||r[0]==="FUEL LO");

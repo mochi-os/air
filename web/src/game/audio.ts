@@ -113,6 +113,7 @@ let seeker: {
   gain: GainNode
 } | null = null
 let alr: { osc: OscillatorNode; gain: GainNode } | null = null
+let ident: { osc: OscillatorNode; gain: GainNode } | null = null
 let departure: { osc: OscillatorNode; gain: GainNode } | null = null
 let wind: {
   source: AudioBufferSourceNode
@@ -472,6 +473,18 @@ function build(): void {
     osc.connect(gain).connect(bus('alerts'))
     osc.start()
     alr = { osc, gain }
+  }
+
+  // The TACAN's identity (communication.ts IDENT): its 1350 Hz tone, keyed in Morse by audio_tacan.
+  {
+    const osc = c.createOscillator()
+    osc.type = 'sine'
+    osc.frequency.value = 1350
+    const gain = c.createGain()
+    gain.gain.value = 0
+    osc.connect(gain).connect(bus('alerts'))
+    osc.start()
+    ident = { osc, gain }
   }
 
   // Airflow: white noise through a speed-tracking lowpass.
@@ -1342,6 +1355,14 @@ export function audio_rwr(lock: boolean, level: number): void {
     t,
     0.02
   )
+}
+
+// The TACAN's identity in the headset: call every frame with whether the station's tone is keyed now and the TCN
+// volume control's level (0..1). A quiet tone under the voice and the alerts, its edges eased over a few
+// milliseconds so the keying does not click.
+export function audio_tacan(keyed: boolean, level: number): void {
+  if (!ident || !context || context.state !== 'running') return
+  ident.gain.gain.setTargetAtTime(keyed ? 0.05 * level : 0, now(), 0.004)
 }
 
 // New-threat chirp (#28): two quick high beeps when a symbol first appears on
