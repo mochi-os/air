@@ -5567,6 +5567,11 @@ function deck_y_at(grp,x,z,fallback){
 	if(deck_grid){ const g=deck_grid, fa=carrier_fore_aft(x,z), lat=carrier_lateral(x,z), gi=Math.floor((fa-g.minFa)/g.cell), gj=Math.floor((lat-g.minLat)/g.cell);
 		if(gi>=0&&gi<g.W&&gj>=0&&gj<g.H){ const y=g.data[gj*g.W+gi]; if(!Number.isNaN(y)) return CARRIER.deckY+_deck_rise.set(fa,y-CARRIER.height,lat).applyQuaternion(carrier_turn).y; } return fallback; }
 	_ray.set(new THREE.Vector3(x,5000,z), new THREE.Vector3(0,-1,0)); const hits=_ray.intersectObject(grp,true); return hits.length?hits[0].point.y:fallback; }
+// deck_plane is the flight deck's height at (x, z) where the ship floats now:
+// the plane through her deck reference, carried through her attitude. In a
+// frame anchored away from her she leans with the curved sea, so her deck is
+// level only where the frame is, and a spawn is laid in the map's frame.
+function deck_plane(x,z){ return CARRIER.deckY+_deck_rise.set(carrier_fore_aft(x,z),0,carrier_lateral(x,z)).applyQuaternion(carrier_turn).y; }
 // Place ownship on the configured catapult (deck height found by raycast when a model carrier is present).
 function place_on_cat(i=cat_idx){
 	// A cat pose ({x,z} offset and launch heading) was tuned at yaw 90; rotate it by the
@@ -10470,9 +10475,10 @@ let _ground_kind="";   // surface kind under the last ground_height() hit: deck 
 function ground_height(x,z){   // top of the solid surface under (x,z): carrier deck / runway / apron / island; -inf = open sea (no landing)
 	_ground_kind="";
 	if(Math.abs(carrier_fore_aft(x,z))<180 && Math.abs(carrier_lateral(x,z))<60){   // the ship's own footprint, in her frame whatever her heading (contact.go's deck search): a world-axis box cut her ends off when she headed near east or west
-		if(!carrier_model){ _ground_kind="deck"; return CARRIER.deckY; }   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
+		const plane=deck_plane(x,z);
+		if(!carrier_model){ _ground_kind="deck"; return plane; }   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
 		const h=deck_y_at(carrier_model,x,z,-1e9);
-		if(h>-1e8 && h<CARRIER.deckY+4){ _ground_kind="deck"; return h>CARRIER.deckY-2.5?CARRIER.deckY:h; }   // the flight deck is one horizontal plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to the measured plane; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
+		if(h>-1e8 && h<plane+4){ _ground_kind="deck"; return h>plane-2.5?plane:h; }   // the flight deck is one plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to her deck's plane where she floats now; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
 	}
 	const home=homeward({ x, y:0, z }), h=land_height(home.x,home.z);   // the map is laid in the chart
 	return h>-1e8?chart_point({ x:home.x, y:h, z:home.z }).y:h;

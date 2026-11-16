@@ -376,6 +376,7 @@ describe("the carrier's ship file", () => {
       let _ground_kind="";
       ${lift('carrier_fore_aft')}${lift('carrier_lateral')}
       const deck_y_at=(m,x,z,f)=>Math.abs(carrier_fore_aft(x,z))<=166.29&&Math.abs(carrier_lateral(x,z))<30?18.27:f;
+      const deck_plane=()=>18.27;   // level on her heading
       const homeward=(p)=>p, land_height=()=>-1e9, chart_point=(p)=>p;
       ${lift('ground_height')}
       return ground_height(x,z);`

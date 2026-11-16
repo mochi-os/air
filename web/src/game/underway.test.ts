@@ -97,6 +97,8 @@ interface Harness {
   deck_carry(st: Remote, then: number): void
   carry_start(): void
   deck_y_at(grp: unknown, x: number, z: number, fallback: number): number
+  ground_height(x: number, z: number): number
+  model(value: unknown): void
   grid(value: Grid): void
   turn(): THREE.Quaternion
 }
@@ -107,7 +109,9 @@ function harness(): Harness {
     'THREE',
     `const D2R=Math.PI/180, SHIP={ yaw:110, bow:90, tacan:{ channel:74, band:"X" } };
     const CARRIER={ x:-18500, z:7500, deckY:19.9, height:19.9 };
-    const scene=new THREE.Scene(), world_up=new THREE.Vector3(0,1,0), poses=new Map(), carrier_model={};
+    const scene=new THREE.Scene(), world_up=new THREE.Vector3(0,1,0), poses=new Map();
+    let carrier_model={}, _ground_kind="";
+    const homeward=(p)=>p, land_height=()=>-1e9, chart_point=(p)=>p;   // no map under the ship
     const flight_carrier=(t)=>poses.get(t)??null;
     const flight_deck=(t)=>{ const p=poses.get(t); if(!p) return null;   // the ship on her heading, level on a flat sea unless the pose sets her lower and leaning, as the curved sea does
       const q=new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),p.heading).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,0,1),p.lean??0));
@@ -127,12 +131,12 @@ function harness(): Harness {
     ${line(/^let placed=[^\n]*/m)}
     ${lift('carrier_fore_aft')}${lift('carrier_world')}${lift('carrier_lateral')}
     ${lift('carrier_set')}${lift('carrier_pose')}${lift('carrier_hang')}${lift('carrier_place')}${lift('with_charted')}${lift('rig_adopt')}${lift('rig_local')}
-    ${lift('charted')}${lift('ols_follow')}${lift('deck_carry')}${lift('carry_start')}${lift('deck_y_at')}
+    ${lift('charted')}${lift('ols_follow')}${lift('deck_carry')}${lift('carry_start')}${lift('deck_y_at')}${lift('deck_plane')}${lift('ground_height')}
     return { scene, rig:carrier_rig, chart:CHART, carrier:CARRIER, poses, stations:nav.stations, ownship,
       frame:()=>({ yaw:CARRIER_YD, closed:deck_closed, time:carrier_time }),
       lens:(v)=>{ carrier_ols=v; }, placed:(v)=>{ placed=v; },
-      grid:(v)=>{ deck_grid=v; }, turn:()=>carrier_turn.clone(),
-      carrier_pose, with_charted, rig_adopt, rig_local, carrier_world, carrier_fore_aft, carrier_lateral, deck_carry, carry_start, deck_y_at };`
+      grid:(v)=>{ deck_grid=v; }, model:(v)=>{ carrier_model=v; }, turn:()=>carrier_turn.clone(),
+      carrier_pose, with_charted, rig_adopt, rig_local, carrier_world, carrier_fore_aft, carrier_lateral, deck_carry, carry_start, deck_y_at, ground_height };`
   )(THREE) as Harness
 }
 
@@ -310,6 +314,36 @@ describe('the carrier under way', () => {
     expect(h.deck_y_at(null, h.carrier.x + 1000, h.carrier.z, -1e9)).toBe(-1e9) // off the deck
     // inside with_charted, the height the deck was built at
     expect(h.with_charted(() => { const c = h.carrier_world(45, -0.6); return h.deck_y_at(null, c.x, c.z, -1e9) })).toBeCloseTo(19.9 + 1.5, 6)
+  })
+
+  it('rests what stands on her deck on the plane she floats in now, leaning with the curved sea, not on her reference level', () => {
+    // A ship 20 km from where the map charts her leans 0.004 rad bow up in the map's frame, where a spawn is laid: her
+    // deck reference sits at 12.1 m, her deck 130 m aft of it about half a metre lower, 50 m forward higher.
+    const h = harness()
+    const cell = 1.5
+    const W = Math.ceil(400 / cell)
+    const H = Math.ceil(80 / cell)
+    const data = new Float32Array(W * H).fill(19.9) // the flight deck, built at her reference height
+    const at = (fa: number, lat: number) => Math.floor((lat + 40) / cell) * W + Math.floor((fa + 200) / cell)
+    data[at(-110, 5)] = 19.9 - 1.72 // the lower of the deck's two layers, through a gap in the top one
+    data[at(-120, 38)] = 19.9 - 3 // a sponson off the deck edge
+    data[at(-150, -10)] = 19.9 - 2.3 // a ledge 2.3 m down at her stern, where her deck lies 0.6 m under her reference's level
+    h.grid({ data, W, H, cell, minFa: -200, minLat: -40 })
+    h.poses.set(NOW, { x: h.chart.x + 20000, z: h.chart.z - 4000, heading: h.chart.yaw + 0.3, closed: false, y: 12.1, lean: 0.004 })
+    h.carrier_pose(NOW)
+    const plane = (fa: number, lat: number) => 12.1 + new THREE.Vector3(fa, 0, lat).applyQuaternion(h.turn()).y
+    for (const [fa, lat] of [[-130, 14.5], [50, -6], [-110, 5], [-150, -10]]) {
+      const w = h.carrier_world(fa, lat)
+      expect(h.ground_height(w.x, w.z), `${fa} ${lat}`).toBeCloseTo(plane(fa, lat), 6)
+    }
+    expect(plane(-130, 14.5)).toBeLessThan(12.1 - 0.5)
+    const top = h.carrier_world(-130, 14.5)
+    expect(h.ground_height(top.x, top.z)).toBeCloseTo(h.deck_y_at(null, top.x, top.z, -1e9), 6) // the deck the jet is laid on, and drawn on
+    const sponson = h.carrier_world(-120, 38)
+    expect(h.ground_height(sponson.x, sponson.z)).toBeCloseTo(h.deck_y_at(null, sponson.x, sponson.z, -1e9), 6) // lower than the deck, it stays real
+    expect(h.ground_height(sponson.x, sponson.z)).toBeLessThan(plane(-120, 38) - 2.5)
+    h.model(null) // and while her model is still loading
+    expect(h.ground_height(top.x, top.z)).toBeCloseTo(plane(-130, 14.5), 6)
   })
 })
 
