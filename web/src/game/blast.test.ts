@@ -114,3 +114,37 @@ describe('the engine sets the scenario off for real', () => {
     expect(source).toMatch(/if\(blasts\) hctx\.fillText\(blasts\.label\(sim_time\), 14, 82\);/)
   })
 })
+
+// The fireball at range (#92, #183): held to a floor that is the larger of 1.3° of sky and BOOM_PIXELS of the
+// view's 1080 reference pixels out to 4 km, and drawn from a sharp level of the atlas so a small one keeps its
+// colour and alpha instead of averaging into a pale disc.
+describe('the fireball at range', () => {
+  const constant = (name: string) => (new RegExp(`\\nconst ${name}=[^\\n]*\\n`).exec(source) ?? [''])[0]
+  const floor = (fov: number, reach: number) =>
+    new Function('fov', 'reach', `const D2R=Math.PI/180, camera={ fov }; ${constant('BOOM_PIXELS')} ${lift('boom_floor')} return boom_floor(reach);`)(fov, reach) as number
+  const pixels = (fov: number, reach: number) => (floor(fov, reach) * 1080) / (2 * reach * Math.tan((fov * Math.PI) / 360)) // reference pixels across
+  it('is never under 1.3° of sky, the floor that governs in a narrow view', () => {
+    expect(floor(40, 800) / 800).toBeCloseTo(0.0227, 6)
+    expect(floor(30, 2500) / 2500).toBeCloseTo(0.0227, 6)
+  })
+  it('is never under 32 reference pixels, the floor that governs in the wide view the game flies', () => {
+    expect(pixels(60, 800)).toBeCloseTo(32, 6)
+    expect(pixels(60, 2500)).toBeCloseTo(32, 6)
+    expect(pixels(75, 1500)).toBeCloseTo(32, 6)
+    expect(pixels(30, 800)).toBeGreaterThan(32) // where 1.3° is the larger, it holds
+  })
+  it('shrinks honestly past 4 km', () => {
+    expect(floor(60, 8000)).toBeCloseTo(floor(60, 4000), 9)
+  })
+  it('sizes each flipbook card by it every frame', () => {
+    expect(lift('update_transient_fx')).toContain('f.mesh.scale.setScalar(Math.max(f.size*(1+.5*t),boom_floor(camera.position.distanceTo(f.mesh.position))));')
+  })
+  it('samples the atlas at its natural level, held at the sharp one', () => {
+    const material = new Function(`const THREE={ ShaderMaterial:function(o){ return o; }, DoubleSide:2 }; ${constant('BOOM_SHARP')} ${lift('boom_material')} return boom_material(null);`)() as { fragmentShader: string }
+    expect(constant('BOOM_SHARP')).toContain('const BOOM_SHARP=3;')
+    expect(material.fragmentShader).toContain('return min(log2(max(max(length(dFdx(t)),length(dFdy(t))),1.0)),3.0); }')
+    expect(material.fragmentShader).toContain('vec2 t=v*vec2(textureSize(map,0))/5.0;')
+    expect(material.fragmentShader).toContain('return textureLod(map,vec2((v.x+mod(f,5.0))/5.0,(floor(f/5.0)+1.0-v.y)/5.0),l); }')
+    expect(material.fragmentShader).not.toContain('texture2D(')
+  })
+})

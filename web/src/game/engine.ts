@@ -10242,12 +10242,18 @@ function boom_texture(){ if(!boom_tex){ boom_tex=new Promise(done=>{ ktx2_loader
 	transient_fx.push({mesh:warm,age:0,life:.1,boom:true,size:.001,roll:0,stagger:0});
 	done(t); },undefined,()=>done(null)); }); } return boom_tex; }
 boom_texture();   // prefetch: the first burst of a fight should not wait on the network
+// A fireball a few pixels across would sample the atlas's small mips, where the 5x5 cells (2048/5 is no power of
+// two) bleed into their neighbours and their clear margins: the hot core averages away into a pale disc the sky
+// shows through. The level is held at BOOM_SHARP (cells 51 texels across), so a distant fireball keeps its colour
+// and its alpha.
+const BOOM_SHARP=3;
 function boom_material(t){ return new THREE.ShaderMaterial({ transparent:true, depthWrite:false, side:THREE.DoubleSide,
 	uniforms:{ map:{value:t}, frame:{value:0}, fade:{value:1} },
 	vertexShader:"varying vec2 v; void main(){ v=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }",
 	fragmentShader:"uniform sampler2D map; uniform float frame; uniform float fade; varying vec2 v;\n"
-		+"vec4 cell(float f){ return texture2D(map,vec2((v.x+mod(f,5.0))/5.0,(floor(f/5.0)+1.0-v.y)/5.0)); }\n"
-		+"void main(){ float f=clamp(frame,0.0,24.0); vec4 c=mix(cell(floor(f)),cell(min(floor(f)+1.0,24.0)),fract(f)); gl_FragColor=vec4(c.rgb,c.a*fade); }" }); }
+		+"float level(){ vec2 t=v*vec2(textureSize(map,0))/5.0; return min(log2(max(max(length(dFdx(t)),length(dFdy(t))),1.0)),"+BOOM_SHARP.toFixed(1)+"); }   // the cell's texels a pixel spans, held at the sharp level\n"   // i18n-format-ok: a GLSL literal, never shown to a user
+		+"vec4 cell(float f,float l){ return textureLod(map,vec2((v.x+mod(f,5.0))/5.0,(floor(f/5.0)+1.0-v.y)/5.0),l); }\n"
+		+"void main(){ float f=clamp(frame,0.0,24.0), l=level(); vec4 c=mix(cell(floor(f),l),cell(min(floor(f)+1.0,24.0),l),fract(f)); gl_FragColor=vec4(c.rgb,c.a*fade); }" }); }
 function transient_blast(x,y,z,water){ if((cfg.effects_quality??2)<1) return;
 	const light=new THREE.PointLight(water?0xcceeff:0xff8b32,water?14:38,water?35:75,2); light.position.set(x,y+1,z); scene.add(light);
 	if(water){ const mat=new THREE.MeshBasicMaterial({color:0xd9f4ff,transparent:true,opacity:.72,depthWrite:false,side:THREE.DoubleSide,toneMapped:false});
@@ -10258,14 +10264,18 @@ function transient_blast(x,y,z,water){ if((cfg.effects_quality??2)<1) return;
 		for(let i=0;i<2;i++){ const mesh=new THREE.Mesh(boom_geo,boom_material(t));
 			const size=(i?15:11)+Math.random()*4; mesh.position.set(x,y+1,z); mesh.scale.setScalar(size); scene.add(mesh);
 			transient_fx.push({mesh,age:0,life:i?1.15:.9,boom:true,size,roll:Math.random()*Math.PI*2,stagger:i?-1.5:0}); } }); }
+// boom_floor: the least a fireball reach metres away is drawn across, metres, so a kill reads as a fireball, not a
+// dot: never under 1.3° of sky nor under BOOM_PIXELS of the view's 1080 reference pixels, whatever the field of view
+// and the zoom, out to 4 km; past 4 km it shrinks honestly. Close in the fireball's own size governs. BOOM_PIXELS is
+// what 1.3° came to in the 45° view the floor was tuned in.
+const BOOM_PIXELS=32;
+function boom_floor(reach){ return Math.min(reach,4000)*Math.max(0.0227,BOOM_PIXELS*2*Math.tan(camera.fov*D2R/2)/1080); }
 function update_transient_fx(dt){
 	for(let i=soot_queue.length-1;i>=0;i--) if(sim_time>=soot_queue[i].at){ const q=soot_queue.splice(i,1)[0]; soot_burst(q.x,q.y,q.z); }
 	for(let i=transient_fx.length-1;i>=0;i--){ const f=transient_fx[i]; f.age+=dt; const t=f.age/f.life;
 	if(t>=1){ if(f.mesh){ scene.remove(f.mesh); f.mesh.material.dispose(); if(!f.boom) f.mesh.geometry.dispose(); } if(f.light) scene.remove(f.light); transient_fx.splice(i,1); continue; }
 	if(f.boom){ f.mesh.material.uniforms.frame.value=Math.max(0,t*25+(f.stagger||0)); f.mesh.material.uniforms.fade.value=t>.75?(1-t)*4:1;
-		const reach=camera.position.distanceTo(f.mesh.position);
-		const least=Math.min(reach,4000)*0.0227;   // never under ~1.3° of sky out to 4 km: a kill reads as a fireball, not a dot (#92) — the close audition is untouched, and past 4 km it shrinks honestly
-		f.mesh.scale.setScalar(Math.max(f.size*(1+.5*t),least)); f.mesh.quaternion.copy(camera.quaternion); f.mesh.rotateZ(f.roll); }
+		f.mesh.scale.setScalar(Math.max(f.size*(1+.5*t),boom_floor(camera.position.distanceTo(f.mesh.position)))); f.mesh.quaternion.copy(camera.quaternion); f.mesh.rotateZ(f.roll); }
 	else if(f.mesh){ const s=3+t*24; f.mesh.scale.setScalar(s); f.mesh.material.opacity=(1-t)*.55; }
 	if(f.light) f.light.intensity=(1-t)*(f.water?14:38); } }
 function explosion_at(x,y,z,kind){
