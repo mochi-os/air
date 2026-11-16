@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import * as countermeasures from './countermeasures'
 import { DEGREE } from './earth'
 import * as magnetic from './magnetic'
+import { warns } from './proximity'
 
 // The standby attitude reference indicator (NATOPS 2.12.2) carries pitch,
 // roll, an OFF flag and a needle and ball - no ILS bars. The model has
@@ -604,11 +605,12 @@ describe('the GPWS warning', () => {
   })
 
   it('runs its recovery model whatever the gear', () => {
-    const model = /const closure=\(\(\)=>\{[\s\S]*?\}\)\(\);/.exec(source)?.[0] ?? ''
-    expect(model).not.toBe('')
-    const escape = (gearTarget: number) => new Function('gearTarget', `const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
-      const ownship={ gearTarget, speed:200, up:{ y:1 } }, sink=40, agl=250; ${model} return closure;`)(gearTarget) as boolean
-    expect(escape(0)).toBe(true) // gear down, diving at 250 ft
+    const call = /const closure=proximity_warns\([^\n]*?\);/.exec(source)?.[0] ?? ''
+    expect(call).not.toBe('')
+    expect(call).not.toMatch(/gear/) // the escape model (proximity.ts) is given no gear position
+    const escape = (gearTarget: number) => new Function('proximity_warns', 'gearTarget', `const ownship={ gearTarget, gear:gearTarget, velx:0, vely:-40, velz:-196, up:{ x:0, y:0.98, z:-0.2 }, gload:1 }, agl=330;
+      ${call} return closure;`)(warns, gearTarget) as boolean
+    expect(escape(0)).toBe(true) // gear down, sinking 40 m/s at 330 ft: above the 300 ft floor, so it is the escape that warns
     expect(escape(1)).toBe(true)
   })
 })

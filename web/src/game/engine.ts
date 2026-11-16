@@ -117,6 +117,7 @@ import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, moon as sky_moon, planet as sky_planet, seen as sky_seen, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 import { subdivide } from './subdivide'
+import { bank as proximity_bank, escape as proximity_escape, PROXIMITY, warns as proximity_warns } from './proximity'
 import { MIRROR_CLEAR, MIRROR_HEIGHT, MIRROR_MARGIN, MIRROR_PIECE, MIRROR_PIECES, MIRROR_STALE, MIRROR_WIDTH, MirrorClock, mirror_aim, mirror_carried, mirror_clear, mirror_live, mirror_material, mirror_normal, mirror_pieces, mirror_setting, mirror_view, mirror_virtual } from './mirror'
 
 export type GameConfig = Record<string, unknown>
@@ -10239,9 +10240,8 @@ if(DEV_MODE) (globalThis as any).dev_demonstration=function(){ if(!demonstration
 	return { phase:demonstration.phase, seed:demonstration.seed, configured:demonstration.configured, habits:demonstration.habits,
 		altitude:+(t.altitude*3.28084).toFixed(0), vertical:+t.vertical.toFixed(2), kcas:+(t.cas*1.94384).toFixed(0), heading:+t.heading.toFixed(1), bank:+t.bank.toFixed(1), throttle:+demonstration.throttle.toFixed(3) }; };   // i18n-format-ok: dev probe payload, never rendered to a user
 if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=ownship.pos.y-(g>-1e8?Math.max(g,0):0);
-	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
-	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
-	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
+	const velocity={x:ownship.velx??0,y:ownship.vely??0,z:ownship.velz??0}, load=ownship.gload??1;
+	return {agl:+agl.toFixed(0), sink:+(-velocity.y).toFixed(1), speed:+ownship.speed.toFixed(1), load:+load.toFixed(2), bank:+(proximity_bank(velocity,ownship.up)*57.2958*(ownship.right.y<0?1:-1)).toFixed(0), required:+Math.max(PROXIMITY.floor,proximity_escape(velocity,ownship.up,load)+PROXIMITY.clearance).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
 if(DEV_MODE) (globalThis as any).dev_voice=(message)=>{ if(message) audio_voice(message); return { clock:sim_time, until:voice.until, gear:gpws.gear, wheels:gpws.wheels, waveoff:gpws.waveoff }; };   // dev: the voice alert queue and the GPWS gear-up landing state; given a message, plays it outside the queue to audition the mix
 if(DEV_MODE) (globalThis as any).dev_alert=(name)=>{ ({caution:audio_caution,law:audio_law,horn:()=>audio_horn(true)})[name]?.(); };   // dev: sound one alert tone outside its condition, to audition the mix
 if(DEV_MODE) (globalThis as any).dev_ladder=()=>({ ...hud_ladder, speed:ownship.speed });   // dev: the ladder and its marker as last drawn
@@ -11600,21 +11600,7 @@ function fly_player(dt){
 			audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded; }
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // the radar altimeter's height above the surface, ft, for its warnings and the GPWS escape model
 			const sink=-(ownship.vely??0);   // m/s down
-			// The GPWS warning models the ESCAPE, as the real one does (#94, NATOPS 2.17.5.2):
-			// a second of pilot reaction, the roll to wings-level, then a 4 g
-			// pull — deliberately milder than the jet's limit, so the call errs
-			// early — consumed against the altitude available. The old rule
-			// (six seconds of current sink, capped at the 5,000 ft hard deck)
-			// fired at 4,400 ft in a 530 kt 67-degree slice whose recovery
-			// already needed 5,200: a time-of-sink rule cannot lead a steep,
-			// accelerating dive, and the pilot heard it with the arithmetic
-			// already lost.
-			const closure=(()=>{ if(sink<=10) return false;   // any gear position: the GPWS protects the approach too (2.17.5)
-				const speed=Math.max(ownship.speed,50), steep=Math.min(sink/speed,1), level=Math.sqrt(1-steep*steep);
-				const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level);
-				const upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));   // radians of roll to bring the lift vector upright, flown at 180 deg/s
-				const required=sink*1.0+sink*(upright/Math.PI)+pull;
-				return agl/3.28084<Math.max(91,required); })();
+			const closure=proximity_warns(agl/3.28084,{x:ownship.velx??0,y:ownship.vely??0,z:ownship.velz??0},ownship.up,ownship.gload??1);   // the GPWS warning models the escape (proximity.ts), in any gear position: it protects the approach too (2.17.5)
 			const flying=!ownship.grounded&&!ownship.launching&&crash_t<=0;
 			// GPWS below 150 ft (NATOPS 2.17.5.2, 2.17.5.4): CHECK GEAR while descending under 200 knots
 			// with the gear not down and locked, once 60 s have passed since weight on wheels or a
