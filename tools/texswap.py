@@ -11,9 +11,14 @@
 # bdd7ebc63^:web/src/assets/fa18c.glb) repainted by fa18c/fresh.py (#147),
 # etc1s, UASTC 15,19,20,21,22: the cockpit's panel atlases and the lit
 # placards' emissive map (#121). See fa18c/README.md.
-import json, struct, subprocess, sys, os, base64
-
-import os
+#
+# Each image is encoded as what the model's materials use it as, which the
+# wrapper tells gltfpack by the slot it puts the image in: a normal map linear
+# and as normals, a metallic-roughness or occlusion map linear, anything else
+# (base colour, emissive, unused) as a colour, sRGB. The KTX2 file carries that
+# transfer function, which a reader such as three's KTX2Loader trusts. An image
+# serving as two of those cannot be encoded for both, and is refused.
+import base64, json, os, struct, subprocess, sys
 from pathlib import Path
 
 # Derived, never typed: these scripts are committed, so an absolute home path
@@ -22,12 +27,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 APP = ROOT / "apps" / "air"
 
-
-SRC, DST, MODE = sys.argv[1], sys.argv[2], (sys.argv[3] if len(sys.argv) > 3 else "etc1s")
-UASTC = {int(i) for i in sys.argv[4].split(",")} if len(sys.argv) > 4 else set()
-WORK = os.path.dirname(os.path.abspath(DST))
 GLTFPACK = str(Path(__file__).resolve().parent / "gltfpack-native")   # native build from github.com/zeux/meshoptimizer/releases (the npm gltfpack is wasm and lacks BasisU); NOT committed - fetch and chmod +x when regenerating
 MIN = 50000
+
+# The wrapper's material for each class: the slot gltfpack classes an image by
+SLOTS = {
+    "color": {"pbrMetallicRoughness": {"baseColorTexture": {"index": 0}}},
+    "normal": {"normalTexture": {"index": 0}},
+    "attrib": {"pbrMetallicRoughness": {"metallicRoughnessTexture": {"index": 0}}},
+}
+
 
 def load_glb(p):
     with open(p, "rb") as f:
@@ -39,6 +48,7 @@ def load_glb(p):
         bin_ = f.read(blen)
     return js, bin_
 
+
 def save_glb(p, js, bin_):
     jb = json.dumps(js, separators=(",", ":")).encode()
     jb += b" " * (-len(jb) % 4)
@@ -48,9 +58,36 @@ def save_glb(p, js, bin_):
         f.write(struct.pack("<II", len(jb), 0x4E4F534A)); f.write(jb)
         f.write(struct.pack("<II", len(bin_), 0x004E4942)); f.write(bin_)
 
-def encode_ktx2(data, mime, tag, mode):
+
+def classes(js):
+    # image index -> "color", "normal" or "attrib", by the material slots that use it
+    uses = {}
+    def mark(ref, kind):
+        if not ref:
+            return
+        texture = js["textures"][ref["index"]]
+        source = texture.get("source", texture.get("extensions", {}).get("KHR_texture_basisu", {}).get("source"))
+        if source is not None:
+            uses.setdefault(source, set()).add(kind)
+    for m in js.get("materials", []):
+        pbr = m.get("pbrMetallicRoughness", {})
+        mark(pbr.get("baseColorTexture"), "color")
+        mark(m.get("emissiveTexture"), "color")
+        mark(m.get("normalTexture"), "normal")
+        mark(pbr.get("metallicRoughnessTexture"), "attrib")
+        mark(m.get("occlusionTexture"), "attrib")
+    found = {}
+    for source, kinds in uses.items():
+        if len(kinds) > 1:
+            name = js["images"][source].get("name", source)
+            raise SystemExit(f"image {name} serves as {' and '.join(sorted(kinds))}: one encoding cannot be both")
+        (found[source],) = kinds
+    return found
+
+
+def encode_ktx2(data, mime, tag, mode, kind, work):
     ext = "png" if "png" in mime else "jpg"
-    img = f"{WORK}/tex_{tag}.{ext}"
+    img = f"{work}/tex_{tag}.{ext}"
     open(img, "wb").write(data)
     # Minimal textured quad so gltfpack keeps and encodes the image.
     pos = struct.pack("<12f", 0,0,0, 1,0,0, 1,1,0, 0,1,0)
@@ -61,7 +98,7 @@ def encode_ktx2(data, mime, tag, mode):
       "asset": {"version": "2.0"}, "scene": 0, "scenes": [{"nodes": [0]}],
       "nodes": [{"mesh": 0}],
       "meshes": [{"primitives": [{"attributes": {"POSITION": 0, "TEXCOORD_0": 1}, "indices": 2, "material": 0}]}],
-      "materials": [{"pbrMetallicRoughness": {"baseColorTexture": {"index": 0}}}],
+      "materials": [json.loads(json.dumps(SLOTS[kind]))],
       "textures": [{"source": 0}], "images": [{"uri": os.path.basename(img)}],
       "buffers": [{"uri": "data:application/octet-stream;base64," + base64.b64encode(binq).decode(), "byteLength": len(binq)}],
       "bufferViews": [
@@ -73,9 +110,9 @@ def encode_ktx2(data, mime, tag, mode):
         {"bufferView": 1, "componentType": 5126, "count": 4, "type": "VEC2"},
         {"bufferView": 2, "componentType": 5123, "count": 6, "type": "SCALAR"}],
     }
-    wrapper = f"{WORK}/wrap_{tag}.gltf"
+    wrapper = f"{work}/wrap_{tag}.gltf"
     json.dump(gltf, open(wrapper, "w"))
-    out = f"{WORK}/wrap_{tag}.glb"
+    out = f"{work}/wrap_{tag}.glb"
     mode = ["-tc", "-tu", "-tj", "8"] if mode == "uastc" else ["-tc", "-tq", "10", "-tj", "8"]
     env = dict(os.environ, BWRAP_PROJECT=os.environ.get("BWRAP_PROJECT", str(ROOT)))
     r = subprocess.run([os.path.expanduser("~/bin/bwrap-build"), GLTFPACK, "-i", wrapper, "-o", out] + mode,
@@ -90,37 +127,53 @@ def encode_ktx2(data, mime, tag, mode):
     for f_ in (img, wrapper, out): os.remove(f_)
     return ktx
 
-js, bin_ = load_glb(SRC)
-views = js["bufferViews"]
-swaps = {}   # bufferView index -> ktx2 bytes
-for i, im in enumerate(js.get("images", [])):
-    bv = views[im["bufferView"]]
-    if bv["byteLength"] < MIN: continue
-    data = bin_[bv.get("byteOffset", 0): bv.get("byteOffset", 0) + bv["byteLength"]]
-    mode = "uastc" if i in UASTC else MODE
-    ktx = encode_ktx2(data, im["mimeType"], str(i), mode)
-    swaps[im["bufferView"]] = ktx
-    im["mimeType"] = "image/ktx2"
-    print(f"image {i}: {len(data)} -> {len(ktx)} bytes ({mode})")
 
-# Rebuild the BIN preserving bufferView order/indices; recompute offsets.
-newbin = bytearray()
-for j, bv in enumerate(views):
-    data = swaps.get(j) or bin_[bv.get("byteOffset", 0): bv.get("byteOffset", 0) + bv["byteLength"]]
-    newbin += b"\0" * (-len(newbin) % 4)
-    bv["byteOffset"] = len(newbin)
-    bv["byteLength"] = len(data)
-    newbin += data
-js["buffers"][0]["byteLength"] = len(newbin)
+def transfer(ktx):
+    # A KTX2 file's transfer function, from its data format descriptor: "linear" or "srgb"
+    assert ktx[:12] == b"\xabKTX 20\xbb\r\n\x1a\n", "not KTX2"
+    (dfd,) = struct.unpack_from("<I", ktx, 48)
+    return {1: "linear", 2: "srgb"}[ktx[dfd + 14]]
 
-# Route swapped textures through KHR_texture_basisu (no fallback image kept).
-swapped_images = {i for i, im in enumerate(js.get("images", [])) if im.get("mimeType") == "image/ktx2"}
-for t in js.get("textures", []):
-    if t.get("source") in swapped_images:
-        t.setdefault("extensions", {})["KHR_texture_basisu"] = {"source": t.pop("source")}
-for key in ("extensionsUsed", "extensionsRequired"):
-    js.setdefault(key, [])
-    if "KHR_texture_basisu" not in js[key]: js[key].append("KHR_texture_basisu")
 
-save_glb(DST, js, bytes(newbin))
-print(f"done: {os.path.getsize(SRC)} -> {os.path.getsize(DST)} bytes, {len(swaps)} textures encoded")
+def swap(src, dst, mode="etc1s", uastc=()):
+    work = os.path.dirname(os.path.abspath(dst))
+    js, bin_ = load_glb(src)
+    kinds = classes(js)
+    views = js["bufferViews"]
+    swaps = {}   # bufferView index -> ktx2 bytes
+    for i, im in enumerate(js.get("images", [])):
+        bv = views[im["bufferView"]]
+        if bv["byteLength"] < MIN: continue
+        data = bin_[bv.get("byteOffset", 0): bv.get("byteOffset", 0) + bv["byteLength"]]
+        encoding, kind = "uastc" if i in uastc else mode, kinds.get(i, "color")
+        ktx = encode_ktx2(data, im["mimeType"], str(i), encoding, kind, work)
+        swaps[im["bufferView"]] = ktx
+        im["mimeType"] = "image/ktx2"
+        print(f"image {i}: {len(data)} -> {len(ktx)} bytes ({encoding}, {kind}, {transfer(ktx)})")
+
+    # Rebuild the BIN preserving bufferView order/indices; recompute offsets.
+    newbin = bytearray()
+    for j, bv in enumerate(views):
+        data = swaps.get(j) or bin_[bv.get("byteOffset", 0): bv.get("byteOffset", 0) + bv["byteLength"]]
+        newbin += b"\0" * (-len(newbin) % 4)
+        bv["byteOffset"] = len(newbin)
+        bv["byteLength"] = len(data)
+        newbin += data
+    js["buffers"][0]["byteLength"] = len(newbin)
+
+    # Route swapped textures through KHR_texture_basisu (no fallback image kept).
+    swapped_images = {i for i, im in enumerate(js.get("images", [])) if im.get("mimeType") == "image/ktx2"}
+    for t in js.get("textures", []):
+        if t.get("source") in swapped_images:
+            t.setdefault("extensions", {})["KHR_texture_basisu"] = {"source": t.pop("source")}
+    for key in ("extensionsUsed", "extensionsRequired"):
+        js.setdefault(key, [])
+        if "KHR_texture_basisu" not in js[key]: js[key].append("KHR_texture_basisu")
+
+    save_glb(dst, js, bytes(newbin))
+    print(f"done: {os.path.getsize(src)} -> {os.path.getsize(dst)} bytes, {len(swaps)} textures encoded")
+
+
+if __name__ == "__main__":
+    swap(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else "etc1s",
+         {int(i) for i in sys.argv[4].split(",")} if len(sys.argv) > 4 else set())

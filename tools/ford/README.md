@@ -321,7 +321,9 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     and the deck, its skirt and underside);
   - encodes the images in KTX2 through `../texswap.py`: the deck and the weathered colour atlases ETC1S (the
     deck's 4x4 blocks are 16 cm, finer than its thinnest marking; worn, UASTC made it 5.4 MB against ETC1S's 1.1),
-    the lettering and the three normal maps UASTC;
+    the lettering and the three normal maps UASTC. Each is encoded as what its material uses it as: the
+    colours sRGB, the normal maps as normals and flagged linear, so a reader taking the file's flag (three's
+    KTX2Loader) reads them as the engine does;
   - compresses the geometry with meshopt (gltfpack `-cc -noq`: positions stay full floats, since 16 bits over
     the ship's length steps 5 mm; gltfpack drops the UVs of paints with no image, which nothing reads);
   - names each mesh after its part again (gltfpack drops mesh names, and the glTF loader names a part's meshes
@@ -343,8 +345,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   one call, vertex colours, no images, its extent within a pixel at the nearest range it is drawn (`PIXEL`, 1.9 m).
   Rendered at 2.5 km from four bearings, it differs from the full model as the game draws it by 3.5-6.4 levels of
   255 on average over the ship, and from the build's PNG-textured model by 3-6 (unsimplified 3-5, at a tenth
-  5-9). Render such comparisons with the normal maps linear, as the engine reads them: the KTX2 files are all
-  flagged sRGB (`../texswap.py` encodes each image as a colour), and read so they bend every normal. It costs
+  5-9). Render such comparisons with the normal maps linear, as the engine reads them: read as sRGB they bend
+  every normal, which put the KTX2 model 12-15 levels from the PNG build at 75-170 m. It costs
   0.1-0.25 ms a frame where the full model costs 0.9-1.8 (three.js, this machine's GPU, with and without shadows).
 
 ## Check
@@ -411,6 +413,7 @@ python3 -I test_sides.py
 python3 -I test_raycheck.py
 python3 -I test_pack.py
 python3 -I test_far.py
+python3 -I ../test_texswap.py
 python3 -I test_build.py   # runs Blender: under the probe.slice memory cap
 ```
 
@@ -433,6 +436,9 @@ small models: the deck, a part hanging from it and its skirt left to the full mo
 sets it, its normal turned with it; a paint's colour its factor times its image in linear light; a cut-out's solid
 half kept and its open half gone; a mirrored part facing out; its check finding images, a second call and a short
 extent but passing a miss under a pixel; and its constants (`KEEP`, the switch, the ship's length) the engine's.
+`../test_texswap.py` holds the KTX2 encoding to small models: each image classed by the material slot that uses
+it, one serving two classes refused, a file's transfer function read, and with gltfpack installed a colour
+encoded sRGB and a normal map linear.
 
 `test_paint.py` also holds the tyre marks to the measured band (core and shoulders along the landing line), its
 taper and rounded aft edge, the streaks' contrast, the tracks' smoothness and their place on the texture, the soot
