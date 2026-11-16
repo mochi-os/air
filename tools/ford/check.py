@@ -50,16 +50,18 @@ EXEMPT = {
 	"layout.parking": "a placed spot the build writes as given",
 	"layout.sponsons": "built as given (references/research/sides, stern); the photo match checks their corners",
 	"layout.weapons": "built as given",
+	"layout.vehicles": "the deck's vehicles built as given (references/research/vehicles); test_build checks where each kind's parts stand and the footprints the ship file carries",
 	"layout.domes_edge": "built as given",
 	"layout.catwalks": "built as given",
 	"layout.racks": "built as given",
 	"layout.openings": "built as given, dark on the hull",
 	"layout.weathering": "the paint's wear by rule (weather.py); test_weather checks the rules, test_build the atlas",
 	"layout.wear": "the deck's wear by rule from measured numbers (paint.py); test_paint holds the tyres to the band measured in dvids7694421 and the soot to its panels",
+	"layout.coaming": "built as given (dvids9478807); test_build checks its wall, scuppers and pillars",
 	"layout.tubs": "built as given (references/research/stern); test_build checks a tub's floor, railing and knee",
 	"layout.transom": "built as given (references/research/transom); test_build checks the face, its recess and the walkway",
 	"layout.lettering": "plates built as given; test_build checks each reads from outside its face",
-	"layout.lens": "the lens the build writes as given, for the engine to draw",
+	"layout.lens": "the lens the build writes as given, for the engine to draw its lights; test_build checks its housing's boards, lamps, cells and chain",
 	"layout.lights": "the lights the build writes as given, for the engine to draw",
 	"layout.paint": "colours paint.py draws, not a shape",
 	"layout.markings": "the markings paint.py draws; their widths and spacings are checked against markings.*",
@@ -450,7 +452,7 @@ def checks(ship):
 		# of it, so it shows unbroken past the walkway from astern, and the
 		# recess's raised deck out past it at the gap's foot
 		d, floor = ship.layout["transom"]["drop"], ship.layout["transom"]["floor"]
-		parts = ship.model.parts(materials=["yellow"])
+		parts = ship.model.parts(materials=["yellow", "trim"])   # its yellow, weathered (layout.weathering's trim)
 		if "transom_fittings" not in parts:
 			raise KeyError("transom_fittings")
 		tris = parts["transom_fittings"]

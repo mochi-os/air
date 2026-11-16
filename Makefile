@@ -44,7 +44,10 @@ web/src/assets/flight.wasm: $(shell find $(world)/games/air $(world)/wasm -name 
 
 release: vendor web/dist/index.html
 	rm -f $(RELEASE)/$(APP)_*.zip
-	zip -r $(RELEASE)/$(APP)_$(VERSION).zip app.json *.star lib labels web/dist
+	# The head-tracking runtime (tracking-1.0.1, 10 MB of MediaPipe wasm and
+	# model) stays out while head tracking is parked: no code can load it, and
+	# every server downloads the zip whole. Unparking it removes the exclusion.
+	zip -r $(RELEASE)/$(APP)_$(VERSION).zip app.json *.star lib labels web/dist -x 'web/dist/tracking-1.0.1/*'
 	# Tagged by claude/scripts/commit.sh when the version bump is committed:
 	# tagging here runs before that commit, so the tag named the one before it.
 

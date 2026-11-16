@@ -33,7 +33,7 @@ python3 -I views.py    # true-scale top, side and front silhouettes from the HAT
   each inch of station, registered on the nose apex (FS 60.5, WL 100) and moved in by half the drawn line.
 
 ```
-blender -b --factory-startup --python-exit-code 1 -P build.py -- OUT.glb OUT.json FEATURES.json [--draft]   # under the probe.slice memory cap
+blender -b --factory-startup --python-exit-code 1 -P build.py -- OUT.glb OUT.json FEATURES.json [--draft] [--cache DIR]   # under the probe.slice memory cap
 python3 -I check.py OUT.glb OUT.json
 python3 -I outline.py OUT.glb [OVERLAY.png] [--threshold INCHES]
 ```
@@ -115,22 +115,43 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   the throat, and the paint gives the flaps bare metal outside, the divergent flaps' cooling holes and a dark
   ring of brackets at the exit (`layout.paint.nozzle`). Flush panels (the speedbrake, the gear doors) are
   cut from the fuselage's own built skin (`cut()`, between stations and buttlines or inside a convex plan
-  outline) and offset off every facet; parts that stow inside it (the gear, the ladder in the LEX) are placed
-  by ray casts on the built parts (`built()`). The gear stands where the photos put it (`layout.gear` legs and
+  outline) and offset off every facet; once the airframe is built, the skin under each door is cut away and a
+  well stands behind the opening (`wells()`, `layout.wells`): each gear bay, the speedbrake's and the probe's,
+  walls and a roof standing on the skin, sized to hold the parts that stow there, its faces turned in
+  (`node(inside=True)`: `tidy()` turns every face out, and an open box's out is away from its bay). The
+  cut is made last, after everything that drapes on or casts at the closed skin. Parts that stow inside it
+  (the gear) are placed by ray casts on the built parts (`built()`). The gear stands where the photos put it (`layout.gear` legs and
   doors): each main leg a post down to a trailing arm's pivot, the arm carrying the wheel (its turn about the
-  pivot the leg's compression), a side brace and a shock absorber; the nose leg a vertical post, the piston
-  and the trailing axle, a drag brace and the launch bar raised, with the landing lamp and the approach lights' box on the post's front. The braces fold as the gear retracts, which
-  one rigid part cannot, so they are shown only with the gear down (a "show" joint). Each door, hinged on the
+  pivot the leg's compression), a shock absorber, a side brace folding at a knee and the planing mechanism's
+  connecting link and bell crank; the leg swings aft about one trunnion axis, its shock drawn in and its axle
+  turned a quarter so the wheel lies flat in the bay (`layout.motion.stowed`, `main_members()`). The nose leg is a
+  vertical post, the piston and the trailing axle, a telescopic drag brace and the launch bar raised, with the
+  landing lamp and the approach lights' box on the post's front. Each door, hinged on the
   skin, opens by the angle that brings its free edge's ends nearest the photos', and closes as long along the
   skin as the photos show it open. The third
   output, the features file, names points and curves on the model with the node each rides on, for the photo
-  match. `--draft` leaves out the paint bake (seconds instead of minutes).
+  match. `--draft` leaves out the paint bake (seconds instead of minutes). `--cache DIR` keeps the atlases'
+  UVs and bakes between builds (`../cache.py`): the jet's under a key of every part's faces, the stencils'
+  frames, the atlas's layout, the nozzles' flaps and the code that unwraps and bakes; the stores' under their
+  own faces, the airframe's within 13 in of them and that reach, their atlas's size and their code. Both keys
+  are taken before either bakes. A build whose key an entry holds takes the UVs and bakes from it and makes
+  the model a cold build makes, byte for byte: a painted build of 11 min takes 51 s when nothing the bakes
+  come from changed (the paint's colours, panels and stencils' lettering, the points), and a change to the
+  stores alone bakes only theirs (40 s). An entry is about 50 MB; the three latest made or used of each
+  atlas are kept. `--facts FILE` builds from another facts file, and `--keys FILE` writes the two keys from a
+  draft and stops. `test_build.py` holds each key to what it comes from on drafts (`KeyTest`, about 8 min)
+  and the cache to the cold build (`CacheTest`, about 15 min), and the wing's flex morph at rest unweighted.
 - **`check.py`** - the facts check: measures the built model back against every `facts.json` entry, posed
   where the entry needs it, and fails outside each tolerance; entries it does not measure are listed in
   `EXEMPT` with the reason, and `test_check.py` fails on an entry that is neither. Shape checks (`shape.*`)
   cover what no number does: the LEX running into the wing with no step; every stowed part, and the
-  cockpit, inside the airframe at rest (`STOWED`: a ray each way along each axis meets it); each flush panel
-  0.15 in off the skin along its normal, with no skin poking through (`FLUSH`); each left part the mirror
+  cockpit, inside the airframe at rest (`STOWED`: a ray each way along each axis meets it; `HULL` holds the
+  parts on the skin too, since the hidden faces under them are gone); the skin every check measures closed,
+  each opening by its door's outer face moved back to the skin it was cut from (`plugs()`), and each closed
+  door's outline meeting the skin round its opening (`FLUSH`, `rim()`); each well open under its doors,
+  no two of its doors closing on each other (`stacked()`), its faces turned toward its opening, holding its stowed parts, inside the airframe and
+  holding no other part (`layout.wells`); the gear in its finishes and each tyre's hub its share of the radius
+  (`paint.gear`, `layout.gear`), and with the atlas the legs lit as they stand gear down; each left part the mirror
   image of its right twin, at rest and gear down; parts lying against each other (`SEAMS`: the inlets, the
   LEX and its fairing, the wing root, the fuselage) never crossing back and forth where they show; nothing
   poking through the LEX's fairing, which covers the wing's root end; the fuselage's store mounts on the
@@ -172,8 +193,8 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   ...), in Workbench: the rig contract's check that every joint turns, slides or shows as its keys say.
 
 ```
-python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --check --overlays DIR --cameras CAMERAS.json
-python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json SKY
+python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --check --overlays DIR --cameras CAMERAS.json --jobs 4
+python3 -I ../verify/skyline.py photos.json OUT.glb OUT.json CAMERAS.json SKY --jobs 4
 blender -b --factory-startup --python-exit-code 1 -P ../verify/view.py -- OUT.glb OUT.json CAMERAS.json RENDERS
 python3 -I ../verify/photos.py photos.json OUT.glb OUT.json FEATURES.json --sheets RENDERS SHEETS
 python3 -I ../verify/page.py photos.json CAMERAS.json SKY SHEETS GATE.txt PAGE --kicker "F/A-18C · Air" --name "Hornet shape review"
@@ -181,6 +202,16 @@ blender -b --factory-startup --python-exit-code 1 -P render.py -- OUT.glb OUT.js
 python3 -I tips.py photos.json CAMERAS.json OUT.glb OUT.json FEATURES.json --photos ID,... [--drop ID:MARK,...] [--neutral] [--rotate]
 python3 -I test_check.py
 ```
+
+The facts check, the outline check, `test_check.py` and the photo gate run side by side, the sky check after
+the gate whose cameras it reads: 335 s for them all on this machine, against 500 s one after another.
+
+Before it paints, the build removes the faces no view can see (`../hidden.py`): each mesh cut into the triangles
+it is drawn as, then every triangle lying inside or against another part that moves with it, judged part by part
+on what each rides (a surface, a door, a store the loadout shows, a mesh with shape keys each its own). They are
+the skin under the windscreen's and canopy sill's fittings and under the fins' root fairings, the fairings' caps
+inside the fins, the pilot inside the seat and the like: about 2,100 triangles, drawn and painted for nothing.
+`check.py`'s `shape.hidden` holds the build to none.
 
 The build also unwraps every part into one atlas and bakes its ambient occlusion in Cycles (`paint.png`
 beside OUT.glb), the shading the paint is laid over. Faces of more than four corners are triangulated first (a
@@ -191,7 +222,15 @@ upper grey or, facing down, the lower (`layout.paint`, sampled in the reference 
 atlas is about 0.47 in on the jet: the skin under each stencil gets its own island four times as dense
 (`stencil_islands()`), and the panel lines, 0.4 in wide, shade each texel by the share of it they cover. The
 slot along each LEX's root (`layout.lex` slot), an opening, is painted the same way as a dark band 3 in wide
-until the paint is traced.
+until the paint is traced. The landing gear takes finishes of its own, materials sharing the atlas
+(`layout.paint.gear`, `ATLASED`): white for the legs, braces, the nose hubs, the bays and the doors' inner faces
+(`cut(inside=)`), rubber for the tyres, chrome for the polished pistons and the planing link's rod, and the main
+hubs' grey (`tyre()` closes each wheel with a hub `layout.gear.tyres` sizes); a bake of each texel's material
+picks its colour, shaded, with no panel lines or stencils. What is seen only open (the gear, its doors and bays,
+the speedbrake, the probe and their wells, `exposed()`) takes its occlusion from a second bake with the gear down,
+the speedbrake up and the probe out (`OPENED`, `posed()`): baked stowed behind closed doors it sat at the
+occlusion's floor, sRGB 32, 37, 42 whatever its colour. The rest is shaded at rest, so nothing hanging open
+shadows the belly it stows against.
 
 Our model's distant stages wait until the model is finished (the user, 2026-11-02): the first set was
 deleted. These scripts stay for then, building from the painted model (the old model's own pipeline is below):
@@ -240,7 +279,20 @@ LAU-7s, each a node named for its station (`pylon_2`, `rail_8a`, `launcher_8b`, 
 is a `show` joint on the drive `stores`, hidden at rest; a photo's pose shows the ones it carries (`"joints":
 {"tank_7": 1}`), and the engine those its loadout carries (`web/src/game/hang.ts`). The points file's `stores` lists
 them and each hardpoint's `rounds` where its missiles hang. Their places are the photos' (`facts.json`
-`layout.stores`), their sizes the sources' (`stores`). The missiles are built apart (`../missiles`).
+`layout.stores`), their sizes the sources' (`stores`). The missiles are built apart (`../missiles`). The wingtip
+rails carry the launcher adapter's two housings, one above the rail and one below, each with a formation strip
+flush on its outboard face where the photos put it (`layout.strips` `tip` and `undertip`, `formation_tip_left`,
+`formation_undertip_right`), parallel to the rail at the gaps the photos show to its edges (`gap`, checked); the
+housings' sizes are by eye.
+
+The stores carry an atlas of their own (`layout.stores.paint`, `paint_stores()` in `build.py`, painted by
+`finish.py`, a JPEG): unwrapped apart from the airframe's, its ambient occlusion baked in layers, each part with
+only the parts it is always shown with (the pylons alone, a rack or a tank under its pylon, a rail or a LAU-127
+beside its rack), so no part carries the shadow of one the loadout can leave off; then the airframe's lower grey
+under that shading, the missiles' calibrated wear, and the 330-gallon tanks' joint rings and filler cap as the
+photos show them. `check.py` reads it back through the station 7 tank's UVs (`paint.stores`). Every store part touches what it
+hangs from and every round its rail (`shape.attached`: a pylon on the wing, a rack or a tank on its pylon, a side rail
+on its rack, each round hung from its seat as the engine hangs it, by the shipped missiles), within 0.1 in.
 
 ## Factory-fresh paint
 

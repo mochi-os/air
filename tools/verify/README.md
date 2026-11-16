@@ -120,7 +120,7 @@ weights a mesh's glTF morph targets by its joint's `morphs`, sparse accessors in
 joints (a turn about the axis, then a slide along `direction`, keys `[input, turn, slide]`), so the outlines,
 the sky check, the bundle's carried marks and `view.py`'s renders all follow a bent wing. Then:
 
-    python3 -I photos.py CATALOGUE MODEL.glb POINTS.json FEATURES.json --overlays DIR --cameras CAMERAS.json
+    python3 -I photos.py CATALOGUE MODEL.glb POINTS.json FEATURES.json --overlays DIR --cameras CAMERAS.json [--jobs N]
 
 solves every photo's camera (focal length, pose, one radial distortion term) and every marked point at once
 (`camera.Bundle`), with the anchors as priors and a robust loss for stray marks. The model's own positions
@@ -134,6 +134,10 @@ only start the solve. It reports:
   point, so it is measured at the line's nearest point to the model's and its miss is the part the photo
   sees, across the line;
 - how far the photos pull each anchor: a large pull means the citation or the marks are wrong;
+- each point a photo files under `aside` (a store's silhouette ends: Pitfalls), triangulated on the solved
+  cameras apart from the solve, each mark carried from its photo's pose, a left and right pair as one point,
+  each photo weighed by its sigma or its fit, whichever is looser; reported as the points are, `loose` where one
+  photo sees it. The gate does not judge them;
 - each traced edge's distance from the posed model's silhouette (signed: + where the model stands outside the
   photo's edge), or from only the parts its `"parts"` names (an edge seen in front of the rest of the model), or
   from one of the build's curves.
@@ -152,7 +156,12 @@ outline for weeks, and the user found the shape wrong before any check did.
 
 ### 5a. The outline against the sky: every photo, no tracing
 
-    python3 -I skyline.py CATALOGUE MODEL.glb POINTS.json CAMERAS.json OUT_DIR
+    python3 -I skyline.py CATALOGUE MODEL.glb POINTS.json CAMERAS.json OUT_DIR [--jobs N]
+
+`--jobs N` (here and in `photos.py`) runs the work that is each photo's alone in N processes: the sky check's
+photos, the photo gate's starting cameras and traced edges (the shared solve stays one). The files and the
+report are the same as one process writes, byte for byte (`test_skyline.py`, `test_photos.py`); on the
+F/A-18C's 22 photos four jobs take the sky check from 269 s to 128 s and the gate from 196 s to 160 s.
 
 Through each camera `photos.py --cameras` solved, it walks the posed model's whole silhouette and, wherever
 the photo shows sky beyond it, finds the jet's own edge: walking in from the sky (fitted as a line, since it
@@ -293,6 +302,41 @@ sketch to several inches. Say which in the facts table.
 
 What went wrong on the F/A-18C, each a rule now:
 
+- **A coordinate along the sight line is loose, however many rays.** The F/A-18C's outer main gear door,
+  triangulated open from front-quarter and head-on photos (6 rays over 55 degrees), put its front edge at FS 505;
+  cast closed onto the skin from three views from below it reads FS 498-502, and the steepest of them moves only
+  0.3 in per inch of skin height. In views from ahead a station lies along the sight line: the two candidates
+  were 8-15 px apart. Take each coordinate from the views that fix it, and check how far a cast moves per inch
+  of the surface it lands on before trusting it.
+- **A surface no view's outline crosses is unchecked, however good the drawing it came from.** The F/A-18C's
+  belly between its nacelles came from a fit to a wind-tunnel model's views, which no side view and no outline
+  from below can see: it was hollowed 6-8 in too deep for months. Features on it (drains, a grille, holes, a
+  pin) triangulated between views from ahead-below and behind-below (75-90 degrees apart) put it nearly flat,
+  level with the doors beside it. List the surfaces that never reach an outline, and mark points on them.
+- **A cast lands on the model's surface, so a wrong surface makes a wrong cast agree with itself.** Casts of
+  the inner gear doors' corners onto the build sat on its hollow at WL 85; triangulated, the same corners read
+  WL 75.5. When casts from views close together disagree with a wide-angle triangulation, believe the
+  triangulation and suspect the surface.
+- **A stowed pose fitted inside a hull alone can sit anywhere inside it.** The hull is a shell: the F/A-18C's
+  signed-off stowed wheels sat at WL 100-117 by the engine faces, where the intake ducts are, and a search for
+  the most room folded the legs up into the fuselage's middle. Bound the search by the bay's own walls and
+  ceiling, and say which of them no source gives.
+- **Name a mechanism's members from an engineering source, then place each one in the photos.** A thesis
+  and the parts catalogue settled that the F/A-18C's main leg swings without turning about its post, and that
+  only the axle turns, driven by a rigid connecting link: the stowed pose solved with a twisted leg was wrong.
+  But taking the photographed "side brace" for that link was wrong too: marked across five photos, it climbs
+  inboard into the bay as the side brace does, and the link is a separate tube 5 in outboard of the post.
+  Match each photographed member to the source's by where it runs, not by its look.
+
+- **Cut each photo's ray at the part before trusting a triangulated end.** The F/A-18C's wingtip LAU-7 read
+  113 in long against its cited 110 because one camera, at its frame's edge, put the front 6 in forward of six
+  others and pulled the solution with it; the leave-one-out spread showed it, and so did each photo's ray cut at
+  the rail's known buttline (the coordinate side views fix worst), which put six within 2 in and the two outliers
+  well clear. Leave such a mark out in the catalogue with its reason in the photo's notes, not by widening a sigma.
+- **A relation read within one photo beats two triangulated points.** The F/A-18C's upper wingtip formation
+  strip triangulated 0.8 in low, within its rays' misses, which hid half of it behind the rail every photo shows it
+  clear of; its lower edge lies on the rail's top edge in each photo, a reading no camera solve enters. Place a
+  part by such an edge-to-edge gap to the part it abuts, record the gap as a fact, and check it on the build.
 - **Judge the outline against sky only, not any even background.** Taking any background even enough beyond
   the edge (trees, hillsides, tarmac), with the walk's evenness, contrast and sharpness the only tests, was
   tried on the F/A-18C's 29 photos (2026-11-04): those places missed by a median of 1.89 in against 0.71 on sky,
@@ -302,8 +346,8 @@ What went wrong on the F/A-18C, each a rule now:
 - **Keep a store's marks out of the shared solve.** A tank's tips and a pylon's nose are silhouette ends, not
   fixed corners, and a mark on one ties the cameras that see it as firmly as a mark on a seam. On the F/A-18C
   (2026-11-08) 103 store marks over 17 photos pulled the main axles 2.2 in low and the wingtip corners 1.5 in off,
-  past the gate. File them under the photo's `aside`, triangulate them on the solved cameras apart, and judge
-  each store by its outline (below).
+  past the gate. File them under the photo's `aside` (the match triangulates them on the solved cameras apart and
+  reports each beside the model's), and judge each store by its outline (below).
 - **Judge a part seen in front of the rest by its own outline.** An edge traced where a store stands before the
   fuselage is no edge of the whole model's silhouette: against it the F/A-18C's pylons and tanks read 9-40 in off,
   against their own parts' (an edge's `"parts"`) 0.2-1.4 in. A photo's pose shows the stores it carries

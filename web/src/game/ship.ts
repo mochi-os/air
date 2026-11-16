@@ -39,6 +39,7 @@ export interface Contract {
   lens?: Lens
   lights?: Record<string, Lights>
   parking?: { x: number; z: number; heading: number }
+  vehicles?: Vehicle[]
   joints?: Record<string, Joint>
   elevators: { number: number; side: string; outline: Plan[] }[]
   texture: { x: [number, number]; z: [number, number] }
@@ -51,22 +52,36 @@ export interface Contract {
 }
 
 // The lens: its cell column's centre at datum height, the way it faces, its
-// cells and their pitch, and its datum, cut and wave-off lights
+// cells and their pitch, and its datum, cut and wave-off lights; housed when
+// the model carries its housing, so the engine draws only the lights
 export interface Lens {
   position: Point
   facing: Point
   cells: number
   pitch: number
   lights: { datum: Point[]; cut: Point[]; waveoff: Point[] }
+  housed?: boolean
 }
 
 // A group of the ship's lights: where each stands, its colour's name and
 // which of the engine's groups lights it (recovery, outline, navigation,
-// flood)
+// flood, beacon, status: see lit). A beacon's or status light's colour is the
+// red its lamps at positions show, and green where its green lamps stand,
+// beside them, or with them when not given
 export interface Lights {
   positions: Point[]
   colour: string
   kind: string
+  green?: Point[]
+}
+
+// A vehicle parked on the deck as the flight core collides with it: its
+// kind, its footprint in the ship's plan and the height of its top over the
+// waterline
+export interface Vehicle {
+  kind: string
+  outline: Plan[]
+  top: number
 }
 
 // A rigged part of the model (the plan's contract): it slides along its axis or
@@ -112,6 +127,7 @@ export interface Layout {
   lens?: Lens
   lights: Record<string, Lights>
   parking?: { x: number; z: number; heading: number }
+  vehicles: Vehicle[]
   joints: Record<string, Joint>
   // followers: each joint some others follow, and those joints, by name
   followers: Record<string, string[]>
@@ -159,6 +175,116 @@ export function raising(ship: Layout): number {
   for (const [name, joint] of Object.entries(ship.joints))
     if (DEFLECTOR.test(name) && joint.keys.length) most = Math.max(most, joint.keys[joint.keys.length - 1][0])
   return most
+}
+
+// meatball is what the lens shows an eye at a point in the ship's frame, as
+// the game draws it for the pilot's (engine.ts update_ols): its datum lights
+// lit to an eye astern of the touchdown, within 7 km and 40° either side of
+// the approach; and on an approach (40 m to 5 km out, above the deck) the
+// ball's height on the cell column, from the hook's deviation off the 3.5°
+// glideslope to the touchdown (the hook 4 m under the eye and 9 m aft): 0.8°
+// takes it to the column's end, and it turns red 0.7° low. The touchdown is
+// halfway between the wire before the target and the target, on the landing
+// line. Its cut lights stay dark: the LSO lights them only for signals given
+// without the radio (LSO NATOPS 4.2.4 and 6.4: under EMCON or to a jet without
+// one, his control at the ball call and power; the bingo with the wave-off
+// lights), and the game's LSO talks
+export function meatball(
+  ship: Layout,
+  eye: Point
+): { lit: boolean; ball: { height: number; low: boolean } | null } {
+  const lens = ship.lens
+  if (!lens) return { lit: false, ball: null }
+  const [aft, forward] = ship.landing.line
+  const { wires, target } = ship.landing
+  const x = target > 1 ? (wires[target - 2] + wires[target - 1]) / 2 : wires[0]
+  const z =
+    aft[1] + ((forward[1] - aft[1]) * (x - aft[0])) / (forward[0] - aft[0])
+  const length = Math.hypot(aft[0] - forward[0], aft[1] - forward[1])
+  const [ax, az] = [
+    (aft[0] - forward[0]) / length,
+    (aft[1] - forward[1]) / length,
+  ]
+  const [rx, rz] = [eye[0] - x, eye[2] - z]
+  const along = rx * ax + rz * az
+  const distance = Math.hypot(rx, rz)
+  const lit =
+    along > 10 &&
+    distance < 7000 &&
+    Math.abs(-rx * az + rz * ax) < along * Math.tan((40 * Math.PI) / 180)
+  if (distance <= 40 || distance >= 5000 || along <= 40 || eye[1] <= ship.deck)
+    return { lit, ball: null }
+  const deviation =
+    (Math.atan2(eye[1] - ship.deck - 4, Math.max(along + 9, 1)) * 180) /
+      Math.PI -
+    3.5
+  const travel = (lens.cells * lens.pitch) / 2
+  return {
+    lit,
+    ball: {
+      height:
+        lens.position[1] + Math.max(-1, Math.min(1, deviation / 0.8)) * travel,
+      low: deviation < -0.7,
+    },
+  }
+}
+
+// The deck as the ship's lights show it: dark from dusk to dawn (the game's
+// night); closed while she turns, or steams away from the wind, and takes no
+// one; and aboard, where the player's jet stands on her deck in her frame
+// (x, z), or null
+export interface Deck {
+  dark: boolean
+  closed: boolean
+  aboard: Plan | null
+}
+
+// LANDING is the landing area's half-width: its outer edge stripes' outer
+// edges, 40 ft either side of the centreline (NAVAIR 51-50AAA-2 WP 006 04,
+// which the Ford's measured stripes match within 3 cm)
+const LANDING = 12.192
+
+// foul is whether the deck is foul (CV NATOPS 00-80T-105, 2004, 5.5): closed,
+// or the player's jet in the landing area, within its half-width of the
+// landing line and between the line's ends
+export function foul(ship: Layout, deck: Deck): boolean {
+  if (deck.closed) return true
+  if (!deck.aboard) return false
+  const [[ax, az], [bx, bz]] = ship.landing.line
+  const length = Math.hypot(bx - ax, bz - az)
+  const [ux, uz] = [(bx - ax) / length, (bz - az) / length]
+  const [rx, rz] = [deck.aboard[0] - ax, deck.aboard[1] - az]
+  const along = rx * ux + rz * uz
+  return along >= 0 && along <= length && Math.abs(rz * ux - rx * uz) <= LANDING
+}
+
+// lit is the colour a group of the ship's lights shows for the deck, or null
+// while it is out (CV NATOPS 00-80T-105, 2004, and LSO NATOPS 00-80T-104):
+// - recovery, the landing area's lights, the drop line and the elevators'
+//   edges: at night while the deck is open, out while it is closed (the
+//   closed-deck signal, Figure 5-9), lit while it is only foul (5.5)
+// - outline, the blue deck-edge lights, and navigation: all night
+// - flood, the island's floods: at night while the player's jet is aboard,
+//   work lights doused for the flight operations around it
+// - beacon, the island's rotating beacons, and status, the deck status
+//   lights: day and night, green for a clear deck and red for a foul one.
+//   PriFly turns the beacons green to clear a launch (4.2) and the deck is
+//   foul while they are red (5.5); the arresting gear officer sets the status
+//   lights (LSO NATOPS 6.4.1)
+export function lit(lights: Lights, ship: Layout, deck: Deck): string | null {
+  switch (lights.kind) {
+    case 'recovery':
+      return deck.dark && !deck.closed ? lights.colour : null
+    case 'outline':
+    case 'navigation':
+      return deck.dark ? lights.colour : null
+    case 'flood':
+      return deck.dark && deck.aboard ? lights.colour : null
+    case 'beacon':
+    case 'status':
+      return foul(ship, deck) ? lights.colour : 'green'
+  }
+  return null
 }
 
 // STATIONS is how many stations the waterline is given at, stern to stem: the
@@ -217,7 +343,7 @@ export function layout(c: Contract): Layout {
       target: c.landing.target,
     },
     ols: c.lens
-      ? { x: c.lens.position[0], z: c.lens.position[2], model: false }
+      ? { x: c.lens.position[0], z: c.lens.position[2], model: !!c.lens.housed }
       : { x: 0, z: 0, model: false },
     elevators: c.elevators.map((e) => {
       // the platform's outboard side, along the deck's edge: its two points
@@ -234,6 +360,7 @@ export function layout(c: Contract): Layout {
     texture: { x: c.texture.x, z: c.texture.z },
     ...(c.lens ? { lens: c.lens } : {}),
     lights: c.lights ?? {},
+    vehicles: c.vehicles ?? [],
     ...(c.parking ? { parking: c.parking } : {}),
     joints: c.joints ?? {},
     followers: followers(c.joints ?? {}),

@@ -489,7 +489,7 @@ describe('the carrier under way in the engine', () => {
 
   it('places what follows the jet on the deck in the frame of the rig it hangs from', () => {
     expect(lift('update_shuttles')).toMatch(/rig_local\(s\.mesh\.position\)\.y=s\.home\.y;/)
-    expect(lift('update_wire_drag')).toMatch(/const h=rig_local\(_wireApex\.set\(hx,hy,hz\)\); hx=h\.x; hz=h\.z;[^\n]*\n\tseg_between\(o\.vsegs\[0\]/)
+    expect(lift('update_wire_drag')).toMatch(/const h=rig_local\(_wireApex\.set\(hx,hy,hz\)\); hx=h\.x; hz=h\.z;[^\n]*\n\t\tseg_between\(w\.vsegs\[0\]/)
   })
 
   it('draws remote jets on the deck where the ship is', () => {

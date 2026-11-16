@@ -528,11 +528,12 @@ describe('the fuel low BIT', () => {
 })
 
 // The FCS status display against figure 2-16 (C/D) and 2.8.4.7. The core's words:
-// STAB 0/1, AIL 2/3, RUD 4, LEF 5, TEF 6, jams from 10 in the harness's layout.
+// STAB 0/1, AIL 2/3, RUD 4, LEF 5, the flap readout 6, TEF 7/8, jams from 10 in the
+// harness's layout.
 function fcspage(words: number[], o: { gross?: number; fuel?: number; aoa?: number; jams?: number[]; reference?: string } = {}): Drawn {
   const out = [...words.map((w) => w * Math.PI / 180), 0, 0, 0]
   for (const j of o.jams ?? []) out[10 + j] = 0.9
-  return page('ddi_fcs', `const STATE={ stabilator:0, flaperon:2, rudder:4, slat:5, flap:6, jam:10 }, last_out=${JSON.stringify(out)}; ${/\nconst TEF_FULL=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flap_shown')} ${lift('droop_shown')}
+  return page('ddi_fcs', `const STATE={ stabilator:0, aileron:2, rudder:4, slat:5, flap:6, trailing:7, jam:10 }, last_out=${JSON.stringify(out)};
     const ownship={ aoa:${o.aoa ?? 4.2}, gauges:{ fuelRaw:${o.fuel ?? 9000}, externalRaw:0 } }, gross_weight=()=>${o.gross ?? 30000}, reference=${JSON.stringify(o.reference ?? 'auto')};`)
 }
 describe('the FCS status display', () => {
@@ -551,17 +552,17 @@ describe('the FCS status display', () => {
     expect(texts(d).some((s) => /^(SPD BRK|TRIM|ROLL) |°|^-\d/.test(s))).toBe(false)
   })
 
-  // The flight core's flap is a camber model, 26° at FULL and two thirds of it at HALF (fa18c.go): the display
-  // writes the jet's angles for them (2.8.3).
-  it('writes the jet\'s flap angle: 45 at FULL and 30 at HALF', () => {
-    const tef = (core: number) => fcspage([0, 0, core, core, 0, 12, core]).text.find((t) => t[1] === 190 && t[2] === 80)?.[0]
-    expect([tef(26), tef(26 * 2 / 3), tef(13), tef(0)]).toEqual(['45', '30', '23', '0'])
+  // The core reports each flap and each aileron as the jet sets it (2.8.3): 45 and 42 at FULL, 30 and 30 at
+  // HALF, the ailerons' droop and roll together, and in AUTO the flaps' own share of the roll.
+  it('writes each flap\'s angle as the core reports it', () => {
+    const tef = (left: number, right: number) => { const d = fcspage([0, 0, 0, 0, 0, 12, 0, left, right]); return [190, 314].map((x) => d.text.find((t) => t[1] === x && t[2] === 80)?.[0]) }
+    expect(tef(45, 45)).toEqual(['45', '45']); expect(tef(30, 30)).toEqual(['30', '30']); expect(tef(12, 4)).toEqual(['12', '4']); expect(tef(0, 0)).toEqual(['0', '0'])
   })
-  it('writes the ailerons drooped with the flaps, 42 at FULL and 30 at HALF, each with its own deflection on top', () => {
-    const ail = (core: number, left = 0, right = 0) => { const d = fcspage([0, 0, core + left, core + right, 0, 12, core]); return [190, 314].map((x) => d.text.find((t) => t[1] === x && t[2] === 128)?.[0]) }
-    expect(ail(26)).toEqual(['42', '42']); expect(ail(26 * 2 / 3)).toEqual(['30', '30']); expect(ail(0)).toEqual(['0', '0'])
-    expect(ail(26, 10, -10)).toEqual(['52', '32']) // a roll command over the droop
-    expect(ail(0, 15, -15)).toEqual(['15', '15'])
+  it('writes each aileron\'s angle, its droop and roll together, as the core reports it', () => {
+    const ail = (left: number, right: number) => { const d = fcspage([0, 0, left, right, 0, 12, 0, 45, 45]); return [190, 314].map((x) => d.text.find((t) => t[1] === x && t[2] === 128)?.[0]) }
+    expect(ail(42, 42)).toEqual(['42', '42']); expect(ail(30, 30)).toEqual(['30', '30']); expect(ail(0, 0)).toEqual(['0', '0'])
+    expect(ail(45, 32)).toEqual(['45', '32']) // a roll command over the droop
+    expect(ail(15, -15)).toEqual(['15', '15'])
   })
   it('points each arrow the way the surface has gone from neutral', () => {
     const d = fcspage(words)

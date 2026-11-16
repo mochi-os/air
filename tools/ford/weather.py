@@ -12,7 +12,8 @@
 #   dishing in the height map, the seams a shade darker;
 # - streaks down from the group's fittings, rust or dirty water, and the
 #   runs the photos show where they show them, each face's streaks as heavy
-#   as its photos';
+#   as its photos', and rust stains where the photos show them on surfaces a
+#   run cannot follow (a rope's chafe in a chock's throat);
 # - grime toward the deck and the waterline, and walking surfaces darker;
 # - wear by zone: each texel's level of wear (0 almost clean, 1 the most
 #   worn), from the group's zones, scaling the paint's blotching, its grime
@@ -21,11 +22,14 @@
 # - the baked occlusion multiplied in.
 # Everything is seeded, so a build gives the same texture every time.
 #
-# layout.weathering: {"samples": n, "grey": [r, g, b] (linear), "rust": [r, g, b],
+# layout.weathering: {"samples": n, "condition": the share of the photographed wear
+#   and streaks every group shows (1, or less for a cleaner ship), "grey": [r, g, b] (linear), "rust": [r, g, b],
 #   "dirt": [r, g, b] (sRGB), "groups": [{"material", "meshes", "size", "plates":
 #   {"height", "width", "origin"}, "frames": spacing, "touchups": share of cells, "streaks": {"spacing",
 #   "length": [min, max], "rust"}, "grey": [r, g, b] (the group's own paint), "runs": [{"top": [x, y, z],
 #   "length", "width", "rust": bool, "weight"}], "regions": [{"box": [[x, y, z], [x, y, z]], "streaks": factor}],
+#   "stains": [{"box": [[x, y, z], [x, y, z]], "soft": metres, "rust": weight}] (rust over every face in the box, mottled,
+#   its edges blended over `soft`),
 #   "decks": [{"box": [[x, y, z], [x, y, z]], "colour": [r, g, b] (linear), "dirt": {"mottle": [[scale, spread], ...],
 #   "patches": {"scale", "share", "darkening"}, "grain": relief, "seams": {"along", "across", "width", "lift", "origin": [x, z]}}}]:
 #   walking surfaces in a box their own non-skid, dirtied, its plates' seams lighter}],
@@ -272,6 +276,24 @@ def streaks(p, n, sources, spec, seed, runs=()):
 	return rust, dirt
 
 
+def stains(p, boxes, seed):
+	# Rust over every face in each box, whichever way it faces (a run follows
+	# a wall down; a chock's throat and lips face every way), mottled, its
+	# edges blended over `soft` metres, at its weight
+	rust = np.zeros(len(p))
+	for k, stain in enumerate(boxes):
+		low, high = np.asarray(stain["box"], float)
+		depth = np.minimum(p - low, high - p).min(axis=1)
+		t = np.clip(depth / stain.get("soft", 0.1) + 0.5, 0, 1)
+		member = t * t * (3 - 2 * t)
+		inside = member > 0
+		if not inside.any():
+			continue
+		mottle = np.clip(0.7 + 0.3 * noise(p[inside], 0.08, seed + 140 + k) / NOISE, 0.25, 1)   # never bare inside
+		rust[inside] = np.maximum(rust[inside], stain["rust"] * member[inside] * mottle)
+	return rust
+
+
 def wear_level(p, n, group):
 	# Each texel's wear, 0 to 1: the group's level, then each zone over it in
 	# turn, a box's edges blended over `soft` metres
@@ -369,6 +391,9 @@ def texels(position, normal, ao, texel, group, facts, sources):
 	# The colour (linear RGB) and height of texels at `position`, facing
 	# `normal`, with occlusion `ao`
 	spec = facts["layout"]["weathering"]
+	# the ship's condition: the dirt (each zone's wear, the decks' grime, the
+	# streaks and the grime toward the deck) at this share of the photographed
+	condition = spec.get("condition", 1.0)
 	p = position.astype(np.float64)
 	n = normal.astype(np.float64)
 	n /= np.maximum(np.linalg.norm(n, axis=1), 1e-9)[:, None]
@@ -403,13 +428,13 @@ def texels(position, normal, ao, texel, group, facts, sources):
 		dirt, q = d.get("dirt", {}), p[inside]
 		shade = np.ones(len(q))
 		for j, (scale, spread) in enumerate(dirt.get("mottle", [])):
-			shade *= np.exp(spread * noise(q, scale, seed + 20 + 7 * k + j) / NOISE)
+			shade *= np.exp(condition * spread * noise(q, scale, seed + 20 + 7 * k + j) / NOISE)
 		patches = dirt.get("patches")
 		if patches:
 			m = noise(q, patches["scale"], seed + 40 + k) / NOISE
 			# the noise's level that share of a deck lies above (its measured quantiles)
 			cut = np.interp(patches["share"], [0.04, 0.08, 0.15, 0.25], [1.73, 1.44, 1.09, 0.72])
-			shade *= 1 - patches["darkening"] * np.clip((m - cut) / 0.4, 0, 1)
+			shade *= 1 - condition * patches["darkening"] * np.clip((m - cut) / 0.4, 0, 1)
 		# the plates' seams across it, lighter than the non-skid between them
 		seams = dirt.get("seams")
 		if seams:
@@ -417,7 +442,7 @@ def texels(position, normal, ao, texel, group, facts, sources):
 			joins = np.maximum(seam(q[:, 0] - ox, seams["along"], w), seam(q[:, 2] - oz, seams["across"], w))
 			shade *= 1 + seams["lift"] * joins
 		dirty[inside] = shade
-	level = wear_level(p, n, group)
+	level = condition * wear_level(p, n, group)
 	colour = base * (tone * dirty)[:, None]
 	colour *= (1 - 0.06 * lines)[:, None]
 	wear = group.get("wear", {})
@@ -458,7 +483,7 @@ def texels(position, normal, ao, texel, group, facts, sources):
 	deck = facts["layout"]["deck"]["height"]
 	base = deck if group["material"] == "island" else facts["layout"].get("hull", {}).get("boot", 1.0)
 	rise = np.clip(1 - (p[:, 1] - base) / 2.5, 0, 1) * (np.abs(n[:, 1]) < 0.7)
-	colour *= (1 - 0.10 * rise * (0.6 + 0.4 * noise(p * [1, 0.2, 1], 0.4, seed + 10)))[:, None]
+	colour *= (1 - 0.10 * condition * rise * (0.6 + 0.4 * noise(p * [1, 0.2, 1], 0.4, seed + 10)))[:, None]
 	# streaks
 	rust, dirt = streaks(p, n, sources, group.get("streaks", {}), seed, group.get("runs", []))
 	if wear.get("weeps"):
@@ -470,9 +495,10 @@ def texels(position, normal, ao, texel, group, facts, sources):
 		inside = np.all((p >= low) & (p <= high), axis=1)
 		rust[inside] = np.clip(rust[inside] * region["streaks"], 0, 1)
 		dirt[inside] = np.clip(dirt[inside] * region["streaks"], 0, 1)
+	rust = np.maximum(rust, stains(p, group.get("stains", []), seed))
 	rusty = np.array(spec.get("rust", [0.22, 0.07, 0.025]))
 	dirty = np.array(spec.get("dirt", [0.11, 0.11, 0.10]))
-	strength = group.get("streaks", {}).get("strength", 0.45)
+	strength = condition * group.get("streaks", {}).get("strength", 0.45)
 	colour = colour * (1 - strength * rust)[:, None] + rusty[None, :] * (strength * rust)[:, None]
 	colour = colour * (1 - 0.6 * strength * dirt)[:, None] + dirty[None, :] * (0.6 * strength * dirt)[:, None]
 	# the occlusion

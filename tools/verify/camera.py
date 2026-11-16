@@ -11,7 +11,7 @@
 #
 # A camera is 8 numbers: focal length in pixels, rotation (axis times angle),
 # translation, and k1. Camera coordinates: x right, y down, z forward.
-import math
+import math, multiprocessing
 
 import numpy as np
 
@@ -162,6 +162,11 @@ def starts(points, width):
 				yield looking(position, target, width * distance / 2)
 
 
+def solved(task):
+	# solve() on one (points, pixels, centre, width), for Bundle.initialise's workers
+	return solve(*task)
+
+
 def solve(points, pixels, centre, width, distortion=False):
 	# A camera from known points and where they fall: the best of many
 	# starts. Returns (camera, residuals (N, 2))
@@ -271,9 +276,11 @@ class Bundle:
 		priors = self.points[name]["priors"]
 		return np.linalg.solve(np.array([n for n, _, _ in priors[:3]]), np.array([o for _, o, _ in priors[:3]]))
 
-	def initialise(self, log=print):
+	def initialise(self, log=print, jobs=1):
 		# Cameras from fixed and fully-cited points, then points from those
-		# cameras, then cameras from points, until nothing more starts
+		# cameras, then cameras from points, until nothing more starts. A
+		# pass's cameras each start from the points known before the pass, so
+		# `jobs` processes solve them side by side as one does in turn
 		known = {}
 		for name in self.points:
 			if self.fixed(name):
@@ -289,15 +296,22 @@ class Bundle:
 		changed = True
 		while changed:
 			changed = False
+			ready = []
 			for k, photo in enumerate(self.photos):
 				if photo.get("camera") is not None:
 					continue
 				seen = [n for n in photo["marks"] if n in known]
 				if len(seen) >= 4:
-					c, e = solve([self.placed(photo, n, known[n]) for n in seen], [photo["marks"][n] for n in seen], photo["centre"], photo["width"])
-					photo["camera"] = c
-					changed = True
-					log(f"start: photo {k} from {len(seen)} points, rms {math.sqrt((e ** 2).sum(1).mean()):.1f} px")
+					ready.append((k, photo, seen, ([self.placed(photo, n, known[n]) for n in seen], [photo["marks"][n] for n in seen], photo["centre"], photo["width"])))
+			if jobs > 1 and len(ready) > 1:
+				with multiprocessing.get_context("fork").Pool(min(jobs, len(ready))) as pool:
+					found = pool.map(solved, [task for *_, task in ready], chunksize=1)
+			else:
+				found = [solved(task) for *_, task in ready]
+			for (k, photo, seen, _), (c, e) in zip(ready, found):
+				photo["camera"] = c
+				changed = True
+				log(f"start: photo {k} from {len(seen)} points, rms {math.sqrt((e ** 2).sum(1).mean()):.1f} px")
 			for name, p in self.points.items():
 				if name in known:
 					continue

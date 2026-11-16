@@ -173,6 +173,23 @@ class WeatherTest(unittest.TestCase):
 		self.assertLess(np.abs(x - 3.0).max(), 0.16)
 		self.assertLess(ran[change].sum(), plain[change].sum())
 
+	def test_heavier_runs_rust_deeper(self):
+		# a run's weight above 1 rusts past what a weight of 1 can (the group's
+		# streak strength caps a weight of 1), as the wells' photographed rust
+		# needs
+		run = {"top": [3.0, DECK + 5.0, 10.05], "length": 1.5, "width": 0.1}
+		plain, _ = weather.weather(wall(), GROUP, facts())
+		light, _ = weather.weather(wall(), dict(GROUP, runs=[run]), facts())
+		heavy, _ = weather.weather(wall(), dict(GROUP, runs=[dict(run, weight=2.2)]), facts())
+		change = np.abs(light - plain).sum(-1) > 1e-6
+		self.assertLess(heavy[change].sum(), light[change].sum())
+		redder = lambda c: (c[..., 0] - c[..., 2])[change].mean()
+		self.assertGreater(redder(heavy), redder(light))
+		# not capped at a run's full weight of 1: heavier still at its core
+		heavier, _ = weather.weather(wall(), dict(GROUP, runs=[dict(run, weight=3.0)]), facts())
+		core = np.unravel_index(np.argmax(np.abs(heavy - plain).sum(-1)), plain.shape[:2])
+		self.assertGreater(heavier[core][0] - heavier[core][2], heavy[core][0] - heavy[core][2] + 1e-4)
+
 	def test_regions_scale_each_faces_streaks(self):
 		# a region with no streaks leaves the window's runs out of it; one with
 		# heavier streaks darkens them further
@@ -406,16 +423,20 @@ class WeatherTest(unittest.TestCase):
 		# lower walls at the low end of the 2022-2025 broadsides' 5.4-7.3% and
 		# 2.2-3.8%, every other zone cleaner, the island's top and the mast the
 		# cleanest
-		import json
+		import copy, json
 		real = json.loads((Path(weather.HERE) / "facts.json").read_text())
 		groups = {g["material"]: g for g in real["layout"]["weathering"]["groups"]}
+		# the photographed wear is the facts' at a condition of 1; the ship
+		# shows its condition's share of it (good but not perfect, the user)
+		photographed = copy.deepcopy(real)
+		photographed["layout"]["weathering"]["condition"] = 1.0
 
-		def measured(material, x0, x1, y0, y1, z, scale):
+		def measured(material, x0, x1, y0, y1, z, scale, facts=photographed):
 			step = 0.05
 			X, Y = np.meshgrid(np.arange(x0, x1, step), np.arange(y1, y0, -step))
 			p = np.stack([X.ravel(), Y.ravel(), np.full(X.size, z)], 1)
 			n = np.tile([0.0, 0.0, np.sign(z)], (len(p), 1))
-			colour, _ = weather.texels(p, n, np.ones(len(p)), step, groups[material], real, [])
+			colour, _ = weather.texels(p, n, np.ones(len(p)), step, groups[material], facts, [])
 			lum = np.log(colour @ [0.2126, 0.7152, 0.0722]).reshape(X.shape)
 			sigma = scale / step / 2
 			r = int(3 * sigma)
@@ -446,6 +467,61 @@ class WeatherTest(unittest.TestCase):
 		self.assertLess(top, middle)
 		self.assertLess(top, 0.02)
 		self.assertLess(mast, top * 1.05)
+		condition = real["layout"]["weathering"]["condition"]
+		self.assertLess(condition, 1.0)
+		shown = measured("hull", -30, 0, 1.5, 5.5, -20, 2.0, real)
+		self.assertGreater(shown, low * (condition - 0.15))
+		self.assertLess(shown, low * (condition + 0.1))
+
+	def test_condition_cleans_the_dirt_not_the_paint(self):
+		# at a condition of 0 a worn, streaked wall is the clean wall: its
+		# plates' tones and touch-ups as they were, no wear, streaks or grime;
+		# half way, about half the darkening
+		wear = {"blotches": [[1.0, 0.05, 2.0]], "patches": {"scale": 0.8, "share": 0.15, "tint": [0.7, 0.68, 0.6], "stretch": 3.0},
+			"weeps": {"spacing": 0.5, "height": 3.0, "share": 0.5, "length": [1.0, 3.0], "width": [0.05, 0.15], "rust": 0.5}}
+		def colour(group, condition):
+			f = facts()
+			f["layout"]["weathering"]["condition"] = condition
+			return weather.weather(wall(), group, f)[0]
+		dirty, clean = dict(GROUP, level=1.0, wear=wear), dict(GROUP, level=0.0, streaks=dict(GROUP["streaks"], strength=0.0))
+		np.testing.assert_allclose(colour(dirty, 0.0), colour(clean, 0.0), atol=1e-6)
+		lum = lambda c: np.log(c @ [0.2126, 0.7152, 0.0722])
+		base = lum(colour(clean, 0.0))
+		# the mean change in log luminance, the blotches lightening as much as darkening
+		full, half = (np.abs(lum(colour(dirty, c)) - base).mean() for c in (1.0, 0.5))
+		self.assertGreater(full, 0.02)
+		self.assertGreater(half, full * 0.35)
+		self.assertLess(half, full * 0.65)
+		# the grime toward the deck goes with it, the paint high up as it was
+		low, high = np.s_[at(None, 0, DECK + 0.8)[0] :], np.s_[: at(None, 0, DECK + 3.0)[0]]
+		self.assertLess(colour(clean, 1.0)[low].mean(), colour(clean, 0.0)[low].mean() * 0.99)
+		np.testing.assert_allclose(colour(clean, 1.0)[high], colour(clean, 0.0)[high], atol=1e-6)
+		# and a deck's own dirt: at 0 the deck its clean colour
+		maps = wall()
+		maps["normal"][:] = (0.0, 1.0, 0.0)
+		box = {"box": [[0.0, DECK, 9.0], [3.0, DECK + 6.0, 11.0]], "colour": [0.30, 0.25, 0.20]}
+		dirt = {"mottle": [[2.0, 0.12]], "patches": {"scale": 0.7, "share": 0.08, "darkening": 0.4}}
+		def deck(d, condition):
+			f = facts()
+			f["layout"]["weathering"]["condition"] = condition
+			return weather.weather(maps, dict(GROUP, touchups=0.0, decks=[d]), f)[0]
+		np.testing.assert_allclose(deck(dict(box, dirt=dirt), 0.0), deck(box, 0.0), atol=1e-6)
+		self.assertFalse(np.allclose(deck(dict(box, dirt=dirt), 1.0), deck(box, 1.0)))
+
+	def test_aft_sponson_decks_lightly_marked(self):
+		# the aft sponsons' tops: their darkest marks (the darkest 1%) within
+		# 10% of their middle tone (the user, 2026-11-12: reduce the darker
+		# marks; they were 15-19% darker)
+		import json
+		real = json.loads((Path(weather.HERE) / "facts.json").read_text())
+		hull = next(g for g in real["layout"]["weathering"]["groups"] if g["material"] == "hull")
+		for deck in hull["decks"]:
+			(x0, y0, z0), (x1, y1, z1) = deck["box"]
+			X, Z = np.meshgrid(np.arange(x0 + 0.5, x1 - 0.5, 0.05), np.arange(z0 + 0.5, z1 - 0.5, 0.05))
+			p = np.stack([X.ravel(), np.full(X.size, (y0 + y1) / 2), Z.ravel()], 1)
+			colour, _ = weather.texels(p, np.tile([0.0, 1.0, 0.0], (len(p), 1)), np.ones(len(p)), 0.05, hull, real, [])
+			lum = colour @ [0.2126, 0.7152, 0.0722]
+			self.assertGreater(np.percentile(lum, 1), 0.9 * np.median(lum), deck["name"])
 
 	def test_transom_rust_where_photographed(self):
 		# the facts' runs down the lower transom (x -163.4, facing aft) at the
@@ -464,6 +540,71 @@ class WeatherTest(unittest.TestCase):
 			self.assertGreater(rust[:, column(z)].max(), 0.3, z)
 		self.assertEqual(rust[:, column(-13.25)].max(), 0.0)
 		self.assertEqual(rust[:, column(-11.5)].max(), 0.0)
+
+	def test_well_rust_where_photographed(self):
+		# the facts' runs down the starboard well 2's sill face (z 20.4805,
+		# facing out) from the comb at the photographed x 3.43, 9.82 and 18.34,
+		# weighted past 1: rust down each, none between them
+		import json
+		real = json.loads((Path(weather.HERE) / "facts.json").read_text())
+		hull = next(g for g in real["layout"]["weathering"]["groups"] if g["material"] == "hull")
+		step = 0.05
+		X, Y = np.meshgrid(np.arange(2.0, 20.0, step), np.arange(7.4, 5.0, -step))
+		p = np.stack([X.ravel(), Y.ravel(), np.full(X.size, 20.4805)], 1)
+		n = np.tile([0.0, 0.0, 1.0], (len(p), 1))
+		rust, _ = weather.streaks(p, n, [], hull.get("streaks", {}), 1, hull["runs"])
+		rust = rust.reshape(X.shape)
+		column = lambda x: int(round((x - 2.0) / step))
+		for x in (3.43, 9.82, 18.34):
+			self.assertGreater(rust[:, column(x)].max(), 1.0, x)
+		self.assertEqual(rust[:, column(12.3)].max(), 0.0)
+
+	def test_stains_rust_every_face_in_their_box(self):
+		# rust over every face in its box, a wall's and a floor's alike (a run
+		# follows walls only), its edge blended over `soft`, nothing beyond it
+		stain = {"box": [[2.0, DECK + 2.0, 9.0], [4.0, DECK + 4.0, 11.0]], "soft": 0.2, "rust": 2.0}
+		p, n = [], []
+		for normal in ([0.0, 0.0, 1.0], [0.0, 1.0, 0.0]):
+			X, Y = np.meshgrid(np.arange(0.0, 6.0, 0.05), np.arange(DECK, DECK + 6.0, 0.05))
+			p.append(np.stack([X.ravel(), Y.ravel(), np.full(X.size, 10.0)], 1))
+			n.append(np.tile(normal, (X.size, 1)))
+		p, n = np.concatenate(p), np.concatenate(n)
+		rust = weather.stains(p, [stain], 1)
+		middle = (np.abs(p[:, 0] - 3.0) < 0.5) & (np.abs(p[:, 1] - (DECK + 3.0)) < 0.5)
+		for facing in (n[:, 2] > 0.5, n[:, 1] > 0.5):
+			self.assertGreater(rust[middle & facing].mean(), 1.0)
+		beyond = (p[:, 0] < 2.0 - 0.1) | (p[:, 0] > 4.0 + 0.1) | (p[:, 1] < DECK + 2.0 - 0.1) | (p[:, 1] > DECK + 4.0 + 0.1)
+		self.assertEqual(rust[beyond].max(), 0.0)
+		edge = np.abs(p[:, 0] - 2.0) < 0.03
+		self.assertLess(rust[edge & middle.__or__(np.abs(p[:, 1] - (DECK + 3.0)) < 0.5)].max(), 2.0 * 0.6)
+		# and through the colour: the wall redder in the box, unchanged beyond
+		plain, _ = weather.weather(wall(), GROUP, facts())
+		stained, _ = weather.weather(wall(), dict(GROUP, stains=[stain]), facts())
+		redness = lambda c: c[..., 0] - c[..., 2]
+		r, c = at(None, 3.0, DECK + 3.0)
+		self.assertGreater((redness(stained) - redness(plain))[r - 5 : r + 5, c - 5 : c + 5].mean(), 0.02)
+		r, c = at(None, 5.5, DECK + 3.0)
+		np.testing.assert_array_equal(stained[r - 2 : r + 2, c - 2 : c + 2], plain[r - 2 : r + 2, c - 2 : c + 2])
+
+	def test_chock_throats_rusted_where_photographed(self):
+		# the facts' stains in the side chocks' throats, on the plating's
+		# throat walls and the chocks' lips at the slot's foot (dvids9688116),
+		# and none at the bullnose
+		import json
+		real = json.loads((Path(weather.HERE) / "facts.json").read_text())
+		groups = {g["material"]: g for g in real["layout"]["weathering"]["groups"]}
+		normal, up = np.array([0.611, -0.791, 0.0]), np.array([0.791, 0.611, 0.0])
+		for z in (-2.2, 2.2):
+			centre = np.array([163.72, 13.4, z])
+			wall = centre - normal * 0.5 - up * 0.14   # the throat's floor, halfway in
+			lip = centre - up * 0.2 + normal * 0.05   # the lip's foot at the slot
+			patch = np.stack(np.meshgrid(*[np.linspace(-0.05, 0.05, 5)] * 3), -1).reshape(-1, 3)
+			# at least the mottle's floor (a quarter of the weight) everywhere in it
+			for points, group in ((wall + patch, "hull"), (lip + patch, "chocks")):
+				self.assertGreater(weather.stains(points, groups[group]["stains"], 1).min(), 0.4, (z, group))
+		bullnose = np.array([[163.213, 13.01, 0.0]])
+		for group in ("hull", "chocks"):
+			self.assertEqual(weather.stains(bullnose, groups[group]["stains"], 1)[0], 0.0)
 
 	def test_lots_a_seed_apart_unrelated(self):
 		# the hash's values for keys one step apart in any place, the seed last

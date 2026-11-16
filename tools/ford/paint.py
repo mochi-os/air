@@ -30,8 +30,10 @@
 #     landing frame (s along layout.landing.line from its aft end, t across,
 #     + to starboard): each touchdown scattered about the engaged wire, two
 #     main-gear tracks pulled toward the centreline as the wire takes the
-#     jet, a spin-up smear, the rollout to its stop and the taxi on forward;
-#   "deflectors": each blast deflector panel's soot, a soft blob at a share
+#     jet, a spin-up smear, the rollout to its stop and the taxi on forward,
+#     all at "rubber" times the density fitted to the photo;
+#   "deflectors": each blast deflector panel's soot ("soot" times the
+#     photographed density), a soft blob at a share
 #     along it from its aft edge and across it from its port end;
 #   "spots": fluid drips, small soft dark spots scattered over the deck and
 #     the elevators outside the landing area;
@@ -41,6 +43,8 @@
 #     track covers or the blast deflectors;
 #   "forward": each blast deflector's scorch on the deck just forward of its
 #     hinge, a soft half-ellipse against it on the track's line;
+#   "condition": the share of the photographed dirt the deck shows (1, or
+#     less for a cleaner deck): everything here but the tie-downs;
 #   "taxi": tyre tracks taxiing onto each catapult from aft of its deflector,
 #     curving onto the track, turning onto each elevator, and turning off
 #     the landing area toward the parking and the bow's catapults.
@@ -278,7 +282,7 @@ def tyre_density(layout, spec, cell=0.1, parts=("smear", "rollout", "forward")):
 				lay(touch, stop, offset, lambda s: np.full(len(s), weight * spec["rollout"]))
 			if "forward" in parts:
 				lay(start, end, lambda s, side=side, lane=lane: side * half + lane + 0 * s, lambda s: np.full(len(s), weight * forward["density"]))
-	return density, ss, ts
+	return density * spec.get("rubber", 1.0), ss, ts
 
 
 def worn(image, canvas, layout):
@@ -292,6 +296,10 @@ def worn(image, canvas, layout):
 	xs = (canvas.x0 + (np.arange(width) + 0.5) / width * (canvas.x1 - canvas.x0)).astype(np.float32)
 	zs = (canvas.z0 + (np.arange(height) + 0.5) / height * (canvas.z1 - canvas.z0)).astype(np.float32)
 	rng = np.random.default_rng(wear.get("seed", 3))
+	# the deck's condition: its dirt (the mottle, the rubber, soot, scorch,
+	# drips and taxi tracks) at this share of the photographed; the tie-down
+	# fittings as they are
+	condition = wear.get("condition", 1.0)
 	def window(x0, x1, z0, z1):
 		# the texture's rows and columns over a box of deck metres
 		c0, c1 = np.searchsorted(xs, [x0, x1])
@@ -301,7 +309,7 @@ def worn(image, canvas, layout):
 	tone = np.ones((height, width), np.float32)
 	for scale, spread in wear.get("mottle", []):
 		cells = (max(2, int(round((canvas.z1 - canvas.z0) / scale))), max(2, int(round((canvas.x1 - canvas.x0) / scale))))
-		tone *= np.exp(spread * noise((height, width), cells, rng))
+		tone *= np.exp(condition * spread * noise((height, width), cells, rng))
 	lin *= tone[:, :, None]
 	density = np.zeros((height, width), np.float32)
 	# the landing area's rubber, from its grid in the landing frame
@@ -331,7 +339,7 @@ def worn(image, canvas, layout):
 			su, sw = spec["spread"]
 			rows, cols = window(x0, x1, z0, z1)
 			x, z = np.meshgrid(xs[cols], zs[rows])
-			density[rows, cols] += -math.log(1 - darkening) * np.exp(-0.5 * (((x - cx) / su) ** 2 + ((z - cz) / sw) ** 2))
+			density[rows, cols] += -spec.get("soot", 1.0) * math.log(1 - darkening) * np.exp(-0.5 * (((x - cx) / su) ** 2 + ((z - cz) / sw) ** 2))
 	if spec and spec.get("forward"):
 		# the scorch just forward of each hinge, on the track's line
 		fwd = spec["forward"]
@@ -373,6 +381,7 @@ def worn(image, canvas, layout):
 	# tyre tracks taxiing onto the catapults and the elevators
 	if wear.get("taxi"):
 		density += taxi_density(layout, wear["taxi"], canvas, (height, width))
+	density *= condition
 	# the tie-down fittings, over everything but the track covers and the deflectors
 	ties = wear.get("tiedowns")
 	if ties:
@@ -472,7 +481,7 @@ def taxi_density(layout, spec, canvas, shape):
 			ahead = start + d * rng.uniform(*turns["ahead"])
 			(x0, z0), (x1, z1) = turns["ends"][rng.integers(len(turns["ends"]))]
 			end = np.array([rng.uniform(x0, x1), rng.uniform(z0, z1)])
-			lay(start, ahead, end, turns["density"] * rng.lognormal(-0.32, 0.8), rise=turns.get("rise", 0.0))
+			lay(start, ahead, end, turns["density"] * rng.lognormal(-0.32, 0.8), turns.get("fade", 1.0), turns.get("rise", 0.0))
 	# each track the tyres' width across
 	sigma = max(1, int(round(spec.get("track", 0.3) / 2 * per_metre)))
 	k = np.exp(-0.5 * (np.arange(-3 * sigma, 3 * sigma + 1) / sigma) ** 2)

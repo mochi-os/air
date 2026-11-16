@@ -53,12 +53,12 @@ const FITMENTS: Fitment[] = [
   { name: 'tip9', station: 9, mass: 86, area: 0.05, fuel: 0, lateral: 5.94 },
   { name: 'rail2', station: 2, mass: 179, area: 0.04, fuel: 0, lateral: -3.35 },
   { name: 'twin2', station: 2, mass: 290, area: 0.06, fuel: 0, lateral: -3.35 },
-  { name: '9m2', station: 2, mass: 86, area: 0.05, fuel: 0, lateral: -3.35 },
+  { name: '9m2', station: 2, mass: 86, area: 0.05, fuel: 0, lateral: -3.5 },
   { name: '9m2a', station: 2, mass: 86, area: 0.05, fuel: 0, lateral: -3.5 },
   { name: '9m2b', station: 2, mass: 86, area: 0.05, fuel: 0, lateral: -3.2 },
   { name: 'rail8', station: 8, mass: 179, area: 0.04, fuel: 0, lateral: 3.35 },
   { name: 'twin8', station: 8, mass: 290, area: 0.06, fuel: 0, lateral: 3.35 },
-  { name: '9m8', station: 8, mass: 86, area: 0.05, fuel: 0, lateral: 3.35 },
+  { name: '9m8', station: 8, mass: 86, area: 0.05, fuel: 0, lateral: 3.5 },
   { name: '9m8a', station: 8, mass: 86, area: 0.05, fuel: 0, lateral: 3.5 },
   { name: '9m8b', station: 8, mass: 86, area: 0.05, fuel: 0, lateral: 3.2 },
   {
@@ -120,12 +120,16 @@ const FITMENTS: Fitment[] = [
   },
   { name: '120c7a', station: 7, mass: 156, area: 0.05, fuel: 0, lateral: 2.39 },
   { name: '120c7b', station: 7, mass: 156, area: 0.05, fuel: 0, lateral: 2.09 },
-  { name: '9m3', station: 3, mass: 86, area: 0.05, fuel: 0, lateral: -2.24 },
+  { name: '9m3', station: 3, mass: 86, area: 0.05, fuel: 0, lateral: -2.39 },
   { name: '9m3a', station: 3, mass: 86, area: 0.05, fuel: 0, lateral: -2.39 },
   { name: '9m3b', station: 3, mass: 86, area: 0.05, fuel: 0, lateral: -2.09 },
-  { name: '9m7', station: 7, mass: 86, area: 0.05, fuel: 0, lateral: 2.24 },
+  { name: '9m7', station: 7, mass: 86, area: 0.05, fuel: 0, lateral: 2.39 },
   { name: '9m7a', station: 7, mass: 86, area: 0.05, fuel: 0, lateral: 2.39 },
   { name: '9m7b', station: 7, mass: 86, area: 0.05, fuel: 0, lateral: 2.09 },
+  { name: 'shoulder2', station: 2, mass: 41, area: 0.01, fuel: 0, lateral: -3.2 },
+  { name: 'shoulder8', station: 8, mass: 41, area: 0.01, fuel: 0, lateral: 3.2 },
+  { name: 'shoulder3', station: 3, mass: 41, area: 0.01, fuel: 0, lateral: -2.09 },
+  { name: 'shoulder7', station: 7, mass: 41, area: 0.01, fuel: 0, lateral: 2.09 },
 ]
 const BOOK: Catalog = {
   stores: FITMENTS,
@@ -301,6 +305,8 @@ describe('mask', () => {
       expect(has(spent, name)).toBe(false)
     expect(has(spent, 'rail2')).toBe(true) // empty rails stay, with their drag
     expect(has(spent, 'pylon3')).toBe(true)
+    for (const name of ['shoulder2', 'shoulder3', 'shoulder7', 'shoulder8'])
+      expect(has(spent, name)).toBe(true)
   })
   it('keeps tanks and fixtures regardless of fired count', () => {
     const has = (m: number, name: string) =>
@@ -346,6 +352,12 @@ describe('weight', () => {
     )
     expect(w.fuel).toBe(1010)
   })
+  it('the Fox 2 singles carry their empty inboard LAU-7s', () => {
+    // 2 tips + outboard rails + inboard pylons + 4 wing AIM-9s + 4 empty LAU-7s
+    expect(weight(PRESETS.fox2, BOOK).hardware).toBe(
+      86 * 2 + 179 * 2 + 136 * 2 + 86 * 4 + 41 * 4
+    )
+  })
   it('gun weighs nothing', () => {
     expect(weight(PRESETS.gun, BOOK)).toEqual({ hardware: 0, fuel: 0 })
   })
@@ -369,6 +381,10 @@ describe('asymmetry', () => {
     expect(moment).toBeCloseTo(-(158 + 1010) * 2.24, 5)
     expect(Math.abs(moment) * 7.233).toBeGreaterThan(17000)
     expect(Math.abs(moment) * 7.233).toBeLessThan(26000)
+  })
+  it('a lone wing heater hangs outboard with its empty rail inboard', () => {
+    const lone = normalize({ 2: { fixture: 'rail', stores: ['9m'] } })
+    expect(asymmetry(lone, BOOK)).toBeCloseTo(-(179 * 3.35 + 86 * 3.5 + 41 * 3.2), 5)
   })
   it('a lone tip missile stays inside the catapult limit', () => {
     const odd = normalize({ 9: { fixture: 'rail', stores: ['9m'] } })
@@ -423,6 +439,14 @@ describe('entries', () => {
   it('a bare pylon is hardware only', () => {
     expect(entries(3, { fixture: 'pylon', stores: [''] })).toEqual(['pylon3'])
   })
+  it('a single AIM-9 on a wing pylon carries the empty LAU-7 on its inboard shoulder', () => {
+    expect(entries(2, { fixture: 'rail', stores: ['9m'] })).toEqual(['rail2', '9m2', 'shoulder2'])
+    expect(entries(3, { fixture: 'pylon', stores: ['9m'] })).toEqual(['pylon3', '9m3', 'shoulder3'])
+    // a single AIM-120 rides the LAU-115's own rail; a twin's rails are in its own entry
+    expect(entries(8, { fixture: 'rail', stores: ['120c'] })).toEqual(['rail8', '120c8'])
+    expect(entries(7, { fixture: 'twin', stores: ['9m', ''] })).toEqual(['twin7', '9m7a'])
+    expect(entries(9, { fixture: 'rail', stores: ['9m'] })).toEqual(['tip9'])
+  })
   it('points and options describe the strip', () => {
     expect(points('twin')).toBe(2)
     expect(points('')).toBe(0)
@@ -462,7 +486,7 @@ describe('amraam (#27)', () => {
     })
     expect(lo['3'].stores).toEqual(['9m', '120c']) // a mixed pair is real carriage, kept
     expect(entries(3, lo['3'])).toEqual(['twin3', '9m3a', '120c3b'])
-    expect(entries(7, lo['7'])).toEqual(['pylon7', '9m7'])
+    expect(entries(7, lo['7'])).toEqual(['pylon7', '9m7', 'shoulder7'])
     expect(lo['5'].stores).toEqual(['']) // the centreline never carries a missile
     expect(entries(7, { fixture: 'twin', stores: ['120c', '120c'] })).toEqual([
       'twin7',

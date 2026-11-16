@@ -8,7 +8,7 @@
 // model hangs on its part. The engine and the setup preview both hang the
 // loadout through here, so the two cannot disagree.
 import * as THREE from 'three'
-import { entries, type Slot } from './stores'
+import { entries, normalize, type Slot } from './stores'
 
 export type Kind = 'aim9m' | 'aim120c'
 
@@ -61,7 +61,9 @@ export function rounds(station: number, slot: Slot): Round[] {
 // pylon, its LAU-115 when it carries a missile, each round's rail, a tank on
 // its pylon; the cheek's LAU-116. The wingtip rails are always fitted, so
 // they are never listed. A twin's empty side keeps the rail its other side's
-// round needs, a LAU-7 when both are empty.
+// round needs, a LAU-7 when both are empty. A single AIM-9 is a twin with its
+// inboard side empty: the LAU-115C/A carries its side launchers in pairs
+// (NAVEDTRA 14313 fig 15-20), so the inboard LAU-7 stays.
 export function parts(station: number, slot: Slot): string[] {
   if (station === 1 || station === 9 || !slot.fixture) return []
   if (station === 4 || station === 6) return [`ejector_${station}`]
@@ -76,7 +78,7 @@ export function parts(station: number, slot: Slot): string[] {
     const store = slot.stores[0]
     if (store === 'tank') shown.add(`tank_${station}`)
     else if (store === '9m')
-      shown.add(`rack_${station}`).add(`rail_${station}a`)
+      shown.add(`rack_${station}`).add(`rail_${station}a`).add(`rail_${station}b`)
     else if (store === '120c' || slot.fixture === 'rail')
       shown.add(`rack_${station}`)
   }
@@ -106,4 +108,59 @@ export function place(
     .fromArray(seat.mount)
     .sub(new THREE.Vector3().fromArray(mount).applyQuaternion(quaternion))
   return { position, quaternion }
+}
+
+// The points outfit reads: the jet's store parts and each hardpoint's seats
+// (fa18c.json), and each missile's own mount (its points file's).
+export interface Fittings {
+  stores: string[]
+  hardpoints: Record<string, { rounds: Record<string, Seat> }>
+  mounts: Record<Kind, number[]>
+}
+
+// origin is a node's origin at rest in the jet's frame: every part rests
+// unturned, so it is the sum of the rest positions up to the jet's root.
+function origin(node: THREE.Object3D, root: THREE.Object3D): THREE.Vector3 {
+  const at = new THREE.Vector3()
+  for (let o: THREE.Object3D | null = node; o && o !== root; o = o.parent)
+    at.add(o.position)
+  return at
+}
+
+// outfit hangs a loadout on a jet as the flight does: the store parts its
+// stations show, the rest hidden, and each round's missile, a clone of its
+// kind's model, laid on its seat beside its part. The rounds of the loadout it
+// wore before are taken away first. With no missiles yet it shows the parts.
+export function outfit(
+  jet: THREE.Object3D,
+  stores: Record<string, Slot>,
+  missiles: Record<Kind, THREE.Object3D> | null,
+  fittings: Fittings
+): void {
+  for (const old of (jet.userData.rounds as THREE.Object3D[] | undefined) ?? [])
+    old.parent?.remove(old)
+  const hung: THREE.Object3D[] = []
+  const loadout = normalize(stores)
+  const shown = new Set<string>()
+  for (let station = 1; station <= 9; station++) {
+    const slot = loadout[String(station)]
+    for (const part of parts(station, slot)) shown.add(part)
+    const seats = fittings.hardpoints[String(station)]?.rounds ?? {}
+    for (const r of rounds(station, slot)) {
+      const part = jet.getObjectByName(r.part)
+      const seat = seats[r.part]
+      if (!part?.parent || !seat || !missiles) continue
+      const piece = missiles[r.kind].clone(true)
+      const at = place(seat, fittings.mounts[r.kind])
+      piece.position.copy(at.position).sub(origin(part.parent, jet))
+      piece.quaternion.copy(at.quaternion)
+      part.parent.add(piece)
+      hung.push(piece)
+    }
+  }
+  for (const name of fittings.stores) {
+    const part = jet.getObjectByName(name)
+    if (part) part.visible = shown.has(name)
+  }
+  jet.userData.rounds = hung
 }

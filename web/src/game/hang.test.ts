@@ -8,8 +8,8 @@ import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
 
 import points from '../assets/fa18c.json'
-import { parts, place, rounds } from './hang'
-import { departed, entries, normalize, PRESETS, sequence } from './stores'
+import { outfit, parts, place, rounds, type Fittings } from './hang'
+import { departed, entries, normalize, PRESETS, sequence, SHOWCASE } from './stores'
 
 const close = (a: number, b: number) => expect(a).toBeCloseTo(b, 6)
 
@@ -35,7 +35,10 @@ describe('parts', () => {
     expect(parts(2, { fixture: 'twin', stores: ['9m', '120c'] }).sort()).toEqual(['launcher_2b', 'pylon_2', 'rack_2', 'rail_2a'])
     expect(parts(2, { fixture: 'twin', stores: ['', '120c'] }).sort()).toEqual(['launcher_2a', 'launcher_2b', 'pylon_2', 'rack_2'])
     expect(parts(2, { fixture: 'twin', stores: ['', ''] }).sort()).toEqual(['pylon_2', 'rack_2', 'rail_2a', 'rail_2b'])
-    expect(parts(8, { fixture: 'rail', stores: ['9m'] }).sort()).toEqual(['pylon_8', 'rack_8', 'rail_8a'])
+    // a single AIM-9 rides the outboard LAU-7 with the inboard one fitted and
+    // empty, on the outboard pylon's rail and the inboard pylon alike
+    expect(parts(8, { fixture: 'rail', stores: ['9m'] }).sort()).toEqual(['pylon_8', 'rack_8', 'rail_8a', 'rail_8b'])
+    expect(parts(3, { fixture: 'pylon', stores: ['9m'] }).sort()).toEqual(['pylon_3', 'rack_3', 'rail_3a', 'rail_3b'])
     expect(parts(8, { fixture: 'rail', stores: [''] }).sort()).toEqual(['pylon_8', 'rack_8'])
     expect(parts(7, { fixture: 'pylon', stores: ['tank'] }).sort()).toEqual(['pylon_7', 'tank_7'])
     expect(parts(7, { fixture: 'pylon', stores: [''] })).toEqual(['pylon_7'])
@@ -62,6 +65,85 @@ describe('parts', () => {
         }
       }
     }
+  })
+})
+
+// The setup preview and the model viewer hang the loadout through outfit.
+describe('outfit', () => {
+  const nine = { kind: 'aim9m', mount: [0.2, -0.6, 3.4], forward: [1, 0, 0], up: [0, 1, 0] }
+  const tip = { kind: 'aim9m', mount: [1, 0.1, 5.4], forward: [1, 0, 0], up: [0, 0, -1] }
+  const fittings: Fittings = {
+    stores: ['pylon_8', 'rack_8', 'rail_8a', 'rail_8b', 'pylon_5', 'tank_5'],
+    hardpoints: { 8: { rounds: { rail_8a: nine } }, 9: { rounds: { rail_9: tip } } },
+    mounts: { aim9m: [-0.2, 0.0635, 0], aim120c: [-0.8, 0.0889, 0] },
+  }
+  const missiles = { aim9m: new THREE.Group(), aim120c: new THREE.Group() }
+  missiles.aim9m.name = 'aim9m'
+  missiles.aim120c.name = 'aim120c'
+  function jet() {
+    const root = new THREE.Group()
+    const flex = new THREE.Group()
+    flex.name = 'flex_rail_right'
+    flex.position.set(0, 0, 5)
+    const rail = new THREE.Mesh()
+    rail.name = 'rail_9'
+    rail.position.set(0, 0, 0.3)
+    flex.add(rail)
+    const pylon = new THREE.Group()
+    pylon.name = 'flex_pylon_8'
+    pylon.position.set(0.5, 0, 3.4)
+    for (const name of ['pylon_8', 'rack_8', 'rail_8a', 'rail_8b']) pylon.add(Object.assign(new THREE.Mesh(), { name }))
+    for (const name of ['pylon_5', 'tank_5']) root.add(Object.assign(new THREE.Mesh(), { name }))
+    root.add(flex, pylon)
+    return root
+  }
+  const hung = (root: THREE.Object3D) => root.children.flatMap((c) => c.children).filter((o) => o.name === 'aim9m' || o.name === 'aim120c')
+  const visible = (root: THREE.Object3D) => fittings.stores.filter((name) => root.getObjectByName(name)!.visible).sort()
+  const loadout = { 5: { fixture: 'pylon', stores: ['tank'] }, 8: { fixture: 'rail', stores: ['9m'] }, 9: { fixture: 'rail', stores: ['9m'] } }
+
+  it('shows the parts the loadout needs and lays each round on its seat beside its part', () => {
+    const root = jet()
+    outfit(root, loadout, missiles, fittings)
+    expect(visible(root)).toEqual(['pylon_5', 'pylon_8', 'rack_8', 'rail_8a', 'rail_8b', 'tank_5'])
+    const rounds = hung(root)
+    expect(rounds.map((r) => r.parent!.name).sort()).toEqual(['flex_pylon_8', 'flex_rail_right'])
+    expect(rounds).not.toContain(missiles.aim9m) // clones: the model stays shared
+    root.updateMatrixWorld(true)
+    for (const [parent, seat] of [['flex_pylon_8', nine], ['flex_rail_right', tip]] as const) {
+      const round = rounds.find((r) => r.parent!.name === parent)!
+      const mount = new THREE.Vector3(...fittings.mounts.aim9m).applyMatrix4(round.matrixWorld)
+      expect(mount.distanceTo(new THREE.Vector3(...seat.mount)), parent).toBeLessThan(1e-9)
+    }
+  })
+  it('takes the old rounds away and hides the old parts when the loadout changes', () => {
+    const root = jet()
+    outfit(root, loadout, missiles, fittings)
+    outfit(root, {}, missiles, fittings)
+    expect(hung(root)).toEqual([])
+    expect(visible(root)).toEqual([])
+  })
+  it('shows the parts alone until the missiles have loaded', () => {
+    const root = jet()
+    outfit(root, loadout, null, fittings)
+    expect(visible(root)).toEqual(['pylon_5', 'pylon_8', 'rack_8', 'rail_8a', 'rail_8b', 'tank_5'])
+    expect(hung(root)).toEqual([])
+  })
+})
+
+// The model viewer's showcase hangs every kind of store part the jet builds,
+// the centreline's pylon and tank beside the wings'.
+describe('the showcase', () => {
+  it('shows every kind of store part, each with its rounds seated', () => {
+    const doc = points as unknown as { points: { stores: string[] } }
+    const kind = (part: string) => part.replace(/_(\d)[ab]?$/, (_, station) => (station === '5' ? '_centreline' : ''))
+    const shown = new Set<string>()
+    const carried = new Set<string>()
+    for (const [station, slot] of Object.entries(SHOWCASE)) {
+      for (const part of parts(Number(station), slot)) shown.add(kind(part))
+      for (const r of rounds(Number(station), slot)) carried.add(`${r.kind} ${kind(r.part)}`)
+    }
+    expect([...shown].sort()).toEqual([...new Set(doc.points.stores.map(kind))].sort())
+    expect([...carried].sort()).toEqual(['aim120c ejector', 'aim120c launcher', 'aim120c rack', 'aim9m rail'])
   })
 })
 
