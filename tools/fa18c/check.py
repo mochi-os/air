@@ -59,6 +59,7 @@ GUESSES = {
 	"layout.motion.fold.note": (1, "user, 2026-11-12: keep the wing fold's 8 s; NATOPS gives no time"),
 	"layout.motion.swing.note": (2, "user, 2026-11-12: keep the hook's 20 deg sideways travel each way; NATOPS 2.10.5 gives no figure; user, 2026-11-13: the swing's rate 40 deg/s both ways (0.5 s from centre to either stop), the game's and the model viewer's alike"),
 	"layout.motion.bar.note": (2, "user, 2026-11-12: keep the launch bar's 1.25 s swing; NATOPS gives no time; user, 2026-11-14: the bar folds down along the post's front as the leg retracts, as far as the post and fork let it (no photo shows it in transit; raised it would stow through the cockpit floor)"),
+	"layout.motion.stroke.note": (1, "user, 2026-11-15: the gear's legs and doors stroke at a steady speed between short cushioned ends, in place of an ease over the whole stroke that left the main wheels standing flat in the open bays; the ramps' 15% share of the stroke time is Claude's estimate"),
 	"layout.motion.doors.note": (1, "user, 2026-11-12: keep the gear doors opening over the first 15% of the gear's travel; NATOPS gives only that every door stays open with the gear down"),
 	"layout.motion.hook.note": (1, "user, 2026-11-12: keep the hook's 2 s stroke, within NATOPS's 3 s down and 6 s up maxima"),
 	"layout.motion.probe.note": (1, "user, 2026-11-12: the probe door open 66 deg from dvids8025511's fit, and the probe's 28 deg swing kept; no photo shows the swing"),
@@ -233,11 +234,11 @@ class Jet:
 			raise KeyError(f"not built: {sorted(set(names) - set(parts))}")
 		return np.concatenate(chosen)
 
-	def textured(self, materials=("paint", "team"), names=None):
-		# The painted triangles at rest, in stations, waterlines and buttlines,
-		# with their corners' UVs: (triangles (N, 3, 3), UVs (N, 3, 2)); of the
-		# named parts alone if names are given
-		worlds = self.model.worlds({})
+	def textured(self, materials=("paint", "team"), names=None, drives=None):
+		# The painted triangles at rest (or posed by drives), in stations,
+		# waterlines and buttlines, with their corners' UVs: (triangles (N, 3,
+		# 3), UVs (N, 3, 2)); of the named parts alone if names are given
+		worlds = self.model.worlds(verify.pose(self.joints, drives) if drives else {})
 		tris, uvs = [], []
 		for i, n in enumerate(self.model.nodes):
 			if n["mesh"] is None or i not in worlds or (names is not None and n["name"] not in names):
@@ -2470,7 +2471,8 @@ def checks(jet):
 		k = c["housing"]
 		cut = level(k["waterlines"][1] - 0.4)
 		yield result("layout.gear", "nose housing's front", k["stations"][0], some(cut[np.abs(cut[:, 2]) < 0.5], "at the housing's top")[:, 0].min(), 0.3, "FS in")
-		yield result("layout.gear", "nose housing's back", k["stations"][1], some(cut[(np.abs(cut[:, 2]) > 1.2) & (np.abs(cut[:, 2]) < 2.0)], "beside the web")[:, 0].max(), 0.3, "FS in")
+		beside = c["web"]["thickness"] / 2 + c["fittings"]["rim"] / 2 + 0.1   # clear of the web and the rim on its faces
+		yield result("layout.gear", "nose housing's back", k["stations"][1], some(cut[(np.abs(cut[:, 2]) > beside) & (np.abs(cut[:, 2]) < beside + 0.8)], "beside the web")[:, 0].max(), 0.3, "FS in")
 		yield result("layout.gear", "nose housing's width", k["width"], 2 * np.abs(cut[:, 2]).max(), 0.3)
 		# under the post's head, its web and the trunnion's cross tube
 		below = n["trunnion"][1] - 4.0
@@ -2495,11 +2497,21 @@ def checks(jet):
 		# the web aft of the housing: its top and thickness, the pin's boss
 		k = c["web"]
 		behind = n["oleo"][0] + n["post"] / 2 + 0.2   # aft of the post
-		aft = some(upright(0.0), "on the centreline")
-		aft = aft[(aft[:, 0] > behind) & (aft[:, 1] < below)]
-		yield result("layout.gear", "nose web's top aft of the post", max(w for f, w in k["outline"] if f > behind), some(aft, "aft of the post")[:, 1].max(), 0.3, "WL in")
-		cut = level(70.0)
-		yield result("layout.gear", "nose web's thickness", k["thickness"], 2 * np.abs(some(cut[cut[:, 0] > c["housing"]["stations"][1] + 0.4], "aft of the housing at WL 70")[:, 2]).max(), 0.1)
+		# its top edge an inch aft of the post and half way from the housing to
+		# the pin, its rim riding on it: the outline crossed at each station,
+		# and a cut square to the stations there
+		edge = k["outline"] + k["outline"][:1]
+		for station in (behind + 1.0, (c["housing"]["stations"][1] + n["brace"][0]) / 2):
+			crossing = max(w0 + (w1 - w0) * (station - f0) / (f1 - f0) for (f0, w0), (f1, w1) in zip(edge, edge[1:]) if (f0 - station) * (f1 - station) < 0)
+			across = jet.cut(["gear_nose_strut"], [station, 0.0, 0.0], [1.0, 0.0, 0.0], down)
+			web_ = some(across[(np.abs(across[:, 2]) < k["thickness"] / 2 + c["fittings"]["rim"] + 0.1) & (across[:, 1] < below)], f"at FS {station:.1f}")
+			yield result("layout.gear", f"nose web's top with its rim, at FS {station:.1f}", crossing + c["fittings"]["rim"] / 2, web_[:, 1].max(), 0.15, "WL in")
+		# the plate's thickness inside it, clear of its rim, the housing and the pin's boss
+		cut = level((min(w for _, w in k["outline"]) + n["brace"][1]) / 2 + 0.5)
+		inside = cut[(cut[:, 0] > c["housing"]["stations"][1] + 0.4) & (cut[:, 0] < n["brace"][0] - k["boss"][0] / 2 - 0.3)]
+		yield result("layout.gear", "nose web's thickness", k["thickness"], 2 * np.abs(some(inside, "inside the web")[:, 2]).max(), 0.1)
+		# the rim standing off each face at the web's top edge
+		yield result("layout.gear", "nose web's rim, how far it stands off each face", c["fittings"]["rim"], 2 * float(np.abs(web_[:, 2]).max()) - k["thickness"], 0.15)
 		cut = level(n["brace"][1])
 		boss = some(cut[np.abs(cut[:, 0] - n["brace"][0]) < k["boss"][0] / 2 + 0.2], "at the pin")
 		yield result("layout.gear", "nose web's pin boss's length", k["boss"][1], 2 * np.abs(boss[:, 2]).max(), 0.1)
@@ -2910,6 +2922,88 @@ def checks(jet):
 			ribbed = t[d > m["shock"]["diameters"][1] / 2 + 0.2]
 			yield result("layout.gear", f"{leg} main shock can's ribbed collar, along it", sc["collar"], float(np.ptp(ribbed)) if len(ribbed) else 0.0, 0.1)
 			yield result("layout.gear", f"{leg} main shock can's ribbed collar, at the can's top", span * m["shock"]["collar"], float(ribbed.min()) + 0.2 if len(ribbed) else 0.0, 0.2)
+			# the castings' fittings (layout.gear legs main castings fittings):
+			# the can's lower end narrowing to its neck, across half way down
+			# the narrowing; the pivot's pin hollow, standing off the boss's
+			# outboard end, its face and its dark bore across
+			fit = mc["fittings"]
+			yield result("layout.gear", f"{leg} main shock can's lower end, half way down its narrowing", (m["shock"]["diameters"][1] + fit["neck"][0]) / 2,
+				girth([f"gear_{leg}_shock_can"], lug, axis, span - 1.5 - fit["neck"][1] / 2), 0.15)
+			face_bl = pivot[2] + sgn * (2.5 + 0.15)
+			metal_ = jet.points([f"gear_{leg}_strut"], down)
+			ring_ = metal_[(np.abs(metal_[:, 2] - face_bl) < 0.02) & (np.linalg.norm(metal_[:, :2] - pivot[:2], axis=1) < 2.0)]
+			yield result("layout.gear", f"{leg} main pivot's pin end across", fit["pin"][0], 2 * float(np.linalg.norm(ring_[:, :2] - pivot[:2], axis=1).max()) if len(ring_) else 0.0, 0.1)
+			bore = jet.model.parts(verify.pose(jet.joints, down), materials=("hub",)).get(f"gear_{leg}_strut")
+			bore = FRAME.source(bore.reshape(-1, 3)) if bore is not None else np.zeros((0, 3))
+			bore = bore[np.abs(bore[:, 2] - face_bl) < 0.1]
+			yield result("layout.gear", f"{leg} main pivot's pin end's bore across", fit["pin"][1], 2 * float(np.linalg.norm(bore[:, :2] - pivot[:2], axis=1).max()) if len(bore) else 0.0, 0.1)
+			# the bell crank's round bolt heads: its two ends along the axis it
+			# turns about (layout.motion stowed main axis), each a head's face
+			crank_ = jet.points([f"gear_{leg}_crank"], down)
+			ax = np.array(F["layout"]["motion"]["stowed"]["value"]["main"]["axis"], float) * [1, 1, -sgn]   # the left's, the right its mirror
+			ax = ax / np.linalg.norm(ax)
+			t_ = (crank_ - crank_.mean(0)) @ ax
+			for label, face in (("one", crank_[t_ > t_.max() - 0.02]), ("other", crank_[t_ < t_.min() + 0.02])):
+				flat_ = face - face.mean(0)
+				yield result("layout.gear", f"{leg} main bell crank's bolt head across, its {label} end", fit["bolt"], 2 * float(np.linalg.norm(flat_ - np.outer(flat_ @ ax, ax), axis=1).max()), 0.1)
+			# the connecting link as dvids8678626 shows it (layout.motion braces
+			# connecting): its sleeve, polished rod and rod end, each across at
+			# its middle, gear down, up its axis from the crank's pin
+			k_ = F["layout"]["motion"]["braces"]["value"]["connecting"]
+			lk = m["link"]
+			u_ = np.array(lk["direction"], float) * [1, 1, sgn]
+			u_ = u_ / np.linalg.norm(u_)
+			through = np.array(lk["through"], float) * [1, 1, sgn]
+			pin_ = through + u_ * ((k_["crank"] - through[1]) / u_[1])
+			upper, lower = lk["collars"][0][1], lk["collars"][1][1]
+			for label, w, want in (("sleeve", (k_["pin"] + upper) / 2, k_["sleeve"]), ("polished rod", (upper + lower) / 2, k_["rod"]), ("rod end", (lower + k_["crank"]) / 2, k_["end"])):
+				yield result("layout.gear", f"{leg} main connecting link's {label} across, at its middle", want, girth([f"gear_{leg}_link"], pin_, u_, (w - k_["crank"]) / u_[1], reach=2.0), 0.1)
+		# the nose collar's top band, the steering's ring gear (layout.gear legs
+		# nose castings fittings teeth): its teeth round it half way up, and
+		# its height
+		k = F["layout"]["gear"]["legs"]["nose"]["castings"]
+		t_ = k["fittings"]["teeth"]
+		middle_ = np.array([sum(k["collar"]["stations"]) / 2, 0.0, 0.0])
+		band = jet.cut(["gear_nose_strut"], [0.0, k["collar"]["waterlines"][1] - t_["height"] / 2, 0.0], [0.0, 1.0, 0.0], down)
+		r_ = np.linalg.norm((band - middle_)[:, [0, 2]], axis=1)
+		# the teeth's tips, at the ring's own radius; counted by their spacing,
+		# the median step between neighbours, as the steering block on the
+		# collar's front hides the teeth inside it
+		tips = band[(r_ > k["collar"]["width"] / 2 - 0.1) & (r_ < k["collar"]["width"] / 2 + 0.05)]
+		angles = np.sort(np.degrees(np.arctan2(tips[:, 2] - middle_[2], tips[:, 0] - middle_[0])))
+		groups = np.split(angles, np.flatnonzero(np.diff(angles) > 1.0) + 1) if len(angles) else []
+		steps = np.diff([g.mean() for g in groups])
+		yield result("layout.gear", "nose collar's ring gear's teeth, from their spacing", t_["count"], int(round(360.0 / float(np.median(steps)))) if len(steps) else 0, 0, "teeth")
+		gear_ = jet.model.parts(verify.pose(jet.joints, down), materials=("hub",)).get("gear_nose_strut")
+		gear_ = FRAME.source(gear_.reshape(-1, 3)) if gear_ is not None else np.zeros((1, 3))
+		yield result("layout.gear", "nose collar's ring gear's height", t_["height"], float(np.ptp(gear_[:, 1])), 0.05)
+		# the round bolt heads on the launch bar's pivot and the torque link's
+		# pin, on the pivot plates' outer faces, and the drag brace's clevis
+		# pin's hollow ends, its face and its bore (castings fittings)
+		nose_ = F["layout"]["gear"]["legs"]["nose"]
+		fit = k["fittings"]
+		strut_ = jet.points(["gear_nose_strut"], down)
+		for label, (f_, w_) in (("launch bar's pivot", nose_["bar"]["pivot"]), ("torque link's pin", k["link"]["to"])):
+			face_ = k["plates"]["buttline"] + 0.3 + 0.15   # the plate's outer face, and a head's standing off it
+			near = strut_[(np.abs(np.abs(strut_[:, 2]) - face_) < 0.02) & (np.hypot(strut_[:, 0] - f_, strut_[:, 1] - w_) < 1.2)]
+			yield result("layout.gear", f"nose {label}'s bolt heads across", fit["bolt"], 2 * float(np.hypot(near[:, 0] - f_, near[:, 1] - w_).max()) if len(near) else 0.0, 0.1)
+		# the axle's fork cast with its edges rounded (fittings round): its
+		# bottom at its faces lifted off its bottom on the centreline by the
+		# round, at a station clear of the piston
+		f_ = (k["fork"]["outline"][2][0] + k["fork"]["outline"][1][0]) / 2
+		q = jet.cut(["gear_nose_oleo"], [f_, 0.0, 0.0], [1.0, 0.0, 0.0], down)
+		q = q[q[:, 1] < min(w for _, w in k["fork"]["outline"]) + 2.0] if len(q) else q
+		middle_ = q[np.abs(q[:, 2]) < 0.5]
+		faces_ = q[np.abs(q[:, 2]) > k["fork"]["width"] / 2 - 0.03]
+		yield result("layout.gear", f"nose axle's fork's edges rounded, its bottom at its faces over its middle's at FS {f_:.1f}", fit["round"],
+			float(faces_[:, 1].min() - middle_[:, 1].min()) if len(middle_) and len(faces_) else 0.0, 0.05)
+		rod_ = jet.points(["gear_nose_brace_rod"], down)
+		f_, w_ = nose_["brace"][:2]
+		ends_ = rod_[np.abs(rod_[:, 2]) > np.abs(rod_[:, 2]).max() - 0.02]
+		yield result("layout.gear", "nose drag brace's clevis pin's ends across", fit["pin"][0], 2 * float(np.hypot(ends_[:, 0] - f_, ends_[:, 1] - w_).max()), 0.1)
+		bore = jet.model.parts(verify.pose(jet.joints, down), materials=("hub",)).get("gear_nose_brace_rod")
+		bore = FRAME.source(bore.reshape(-1, 3)) if bore is not None else np.zeros((1, 3))
+		yield result("layout.gear", "nose drag brace's clevis pin's bore across", fit["pin"][1], 2 * float(np.hypot(bore[:, 0] - f_, bore[:, 1] - w_).max()), 0.1)
 		# the wheels: each tyre's grooves round its tread, and its outer face's
 		# holes, bolts and cap; the main wheels' brakes on their inner faces
 		parts = jet.model.parts(verify.pose(jet.joints, down))
@@ -3565,7 +3659,7 @@ def checks(jet):
 		legs = [n for n in finishes if n.startswith("gear_") and "door" not in n and "wheel" not in n and n != "gear_nose_lamps"] + ["launch_bar", "gear_nose_lamps"]
 		if len(legs) < 20:
 			raise KeyError(f"gear: only {len(legs)} legs' parts built")
-		yield result("shape.gear", "legs' faces in neither white nor chrome", 0, sum(c for n in legs for m, c in finishes.get(n, {}).items() if m not in ("white", "chrome") and not (n == "launch_bar" and m == "rubber") and not (n.endswith("_shock") and m == "red")), 0, "faces")
+		yield result("shape.gear", "legs' faces in neither white nor chrome", 0, sum(c for n in legs for m, c in finishes.get(n, {}).items() if m not in ("white", "chrome") and not (n == "launch_bar" and m == "rubber") and not (n.endswith("_shock") and m == "red") and not (n in ("gear_left_strut", "gear_right_strut", "gear_nose_strut", "gear_nose_brace_rod") and m == "hub")), 0, "faces")
 		# the main shock absorbers' red band (layout.gear legs main castings
 		# shock band), on each shock's cap and nowhere else on the legs
 		for leg in ("left", "right"):
@@ -3600,16 +3694,39 @@ def checks(jet):
 	yield from guard("shape", "gear's finishes", gear_finishes)
 
 	# with the atlas, each leg lit as it stands gear down, not in the dark of
-	# the bay it is stowed in
+	# the bay it is stowed in: over the faces it shows, outside the bay gear
+	# down and not enclosed by the leg itself (a cylinder's end inside the
+	# casting it meets, which no light reaches), each face by its area, read
+	# at points spread over it. Five views through the photos' cameras read
+	# the faces they see at 0.93-0.96 of white; by triangle, the fittings'
+	# small faces in the castings' corners outnumber the large ones
+	barycentres = np.array([(i, j) for i in range(6) for j in range(6 - i)], float)
+	barycentres = (barycentres + 1 / 3) / 6
+	barycentres = np.c_[1 - barycentres.sum(1), barycentres]
+
 	def gear_paint():
 		image = atlas(jet.path, "white")
 		if image is None:
 			return
 		white = float(np.mean(F["layout"]["paint"]["gear"]["white"])) / 255
+		down = {"gear": 1}
+		hull = jet.points(HULL, down).reshape(-1, 3, 3)
 		for name in ("gear_right_strut", "gear_left_strut", "gear_nose_strut"):
 			_, uvs = jet.textured(("white",), [name])
-			lit = float(np.median(sample(image, uvs.mean(1)))) / white
-			yield result("paint.gear", f"{name}'s paint, of white at its median, its shading baked gear down", 1.0, lit, 0.3, "share")
+			tris, _ = jet.textured(("white",), [name], down)
+			own = jet.points([name], down).reshape(-1, 3, 3)
+			normal = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
+			area = np.linalg.norm(normal, axis=1) / 2
+			normal = normal / (2 * area[:, None] + 1e-12)
+			centre = tris.mean(1)
+			shown = ~enclosed(centre, hull) & ~(enclosed(centre + 0.05 * normal, own) & enclosed(centre - 0.05 * normal, own))
+			lit = 0.0
+			if shown.any():
+				value = sample(image, np.einsum("pk,tkc->tpc", barycentres, uvs[shown]).reshape(-1, 2)) / white
+				weight = np.repeat(area[shown], len(barycentres))
+				order = np.argsort(value)
+				lit = float(value[order][np.searchsorted(np.cumsum(weight[order]) / weight.sum(), 0.5)])
+			yield result("paint.gear", f"{name}'s paint, of white at its median by area over the faces it shows, its shading baked gear down", 1.0, lit, 0.3, "share")
 
 	yield from guard("paint", "gear's paint", gear_paint)
 
@@ -3653,6 +3770,32 @@ def checks(jet):
 			if moving:
 				abrupt.append(max(rates[moving[0]], rates[moving[-1]]) / max(rates))
 		yield result("layout.motion", "gear joints' rate at their stroke's ends, of their fastest, the most", 0.0, max(abrupt), 0.15, "share")
+		# each main leg strokes as an actuator does (layout.motion stroke):
+		# steady between short ramps, so the last fifth of its swing, where its
+		# wheel rises straight into the bay, takes no more of the stroke's time
+		# than the ramps and the steady speed give it
+		ramp = m["stroke"]["ramp"]
+		speed = 1 / (1 - ramp)
+
+		def stroked(f):
+			# as build.py's: speed rising and falling as smoothsteps over the ramps
+			gathered = lambda x: x ** 3 - x ** 4 / 2
+			if f <= ramp:
+				return speed * ramp * gathered(f / ramp)
+			if f >= 1 - ramp:
+				return 1 - speed * ramp * gathered((1 - f) / ramp)
+			return speed * (ramp / 2 + f - ramp)
+		grid = np.linspace(0, 1, 2001)
+		fifth = 1 - float(np.interp(0.8, [stroked(f) for f in grid], grid))
+		for leg in ("left", "right"):
+			keys = J[f"gear_{leg}_strut"]["keys"]
+			xs, ys = np.array([k[0] for k in keys]), np.array([k[1] for k in keys])
+			moving = np.nonzero(np.abs(np.diff(ys)) > 1e-9)[0]
+			a, b = xs[moving[0]], xs[moving[-1] + 1]
+			swing = ys[moving[-1] + 1] - ys[moving[0]]
+			reach = ys[moving[0]] + 0.8 * swing
+			at = float(np.interp(reach, ys[moving[0]:moving[-1] + 2], xs[moving[0]:moving[-1] + 2])) if swing > 0 else a
+			yield result("layout.motion", f"{leg} main leg's last fifth of its swing, its share of the stroke's time", fifth, (b - at) / (b - a), 0.02, "share")
 		wraps = sum(1 for j in J.values() if j["motion"] == "rotate" and len(j.get("keys", [])) > 2 and isinstance(j["keys"][0][1], (int, float))
 			for a, b in zip(j["keys"], j["keys"][1:]) if abs(b[1] - a[1]) > math.pi)
 		yield result("layout.motion", "sampled schedules' turns of over a half turn between neighbouring keys", 0, wraps, 0, "keys")

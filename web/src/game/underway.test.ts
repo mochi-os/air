@@ -373,6 +373,7 @@ describe('spotting on the catapult under way', () => {
     const ownship={ flown:true, grounded:true, speed:${speed}, throttle:0, pos:{ x:-18457, y:22.4, z:7484 }, vel_dir:{ x:1, y:0, z:0 }, q:{ w:1, x:0, y:0, z:0 }, gearTarget:0 };
     const mission_start=()=>"carrier", flight_get=()=>b, flight_set=(state)=>{ sent=Array.from(state); }, sync_core=()=>{}, ground_height=()=>19.94, stance_of=()=>2.46, FUEL=()=>4000, stores_book=null;
     const flight_footing=(x,y,z)=>{ asked=[x,y,z]; return { x:2.44, y:0, z:-0.89 }; };   // the deck's own velocity where the jet sits
+    const flight_stores=()=>{}, own_mask=()=>0, rested=()=>false, seated=()=>{};   // the loadout and the stance (#188): no centre or rest in this stand-in core
     ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flight_push')}
     flight_push(); return { velocity:sent.slice(3,6), asked };`)() as { velocity: number[]; asked: number[] }
   it("hands the core a jet spotted on the deck moving with her deck, not at rest over the sea", () => {

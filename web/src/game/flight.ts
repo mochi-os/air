@@ -73,8 +73,10 @@ export const STATE = {
   power: 129, // achieved spool fraction across the airframe's engines
   stage: 130, // achieved reheat stage
   spin: 131, // the spin recovery display's stick direction: -1 STICK LEFT, +1 STICK RIGHT, 0 no display (NATOPS 2.8.2.6.2)
+  center: 132, // x y z: the centre of mass from the datum, body axes (m) - position is the centre, and the airframe is drawn and placed from its datum, position less the attitude's turn of this (#188)
+  rest: 135, // height pitch: how the jet stands at rest on level ground under its weight now, the datum's height (m) and the pitch (rad, nose up) - where a ground spawn is placed (#188)
 } as const
-const EXTRA = 8
+const EXTRA = 13
 
 const DT = 1 / 240 // the core's step: what the server and multiplayer prediction always fly
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms

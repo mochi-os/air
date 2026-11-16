@@ -450,6 +450,7 @@ describe("the carrier's ship file", () => {
       const ownship={ launching:false, pos:{ x:37, z:4.6 }, fwd:{ x:Math.cos(5*D2R), z:-Math.sin(5*D2R) } }, on_cat_spot=()=>cat_idx;
       const AIRCRAFT_MODELS={ fa18c:{ nose:5.3 } }, own_aircraft=()=>'fa18c', carrier_fore_aft=(x,z)=>x, carrier_lateral=(x,z)=>z;
       const ship_joint=(name,value)=>{ set[name]=value; }, ship_joint_max=(name)=>name==='catapult_console_bow'?1.3:name==='catapult_console_waist'?0.7:90;
+      const datum=(st)=>st.pos;   // the jet's datum (#188): this stand-in has no centre of mass off it
       ${lift('update_shuttles')} update_shuttles();`
     )
     run(set, 0)

@@ -228,7 +228,7 @@ function fire_press(side){ secured[side]=!secured[side]; }   // #54: the DUMP sw
 const dev_nudge={fa:0,lat:0,hd:0};   // dev measuring-cursor offset from the nose wheel (I/K fore-aft, J/L port-stbd, U/O heading while parked); the readout and Ctrl+C include it
 function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nudge offset) in carrier-local coordinates — the same frame AND reference point as the shuttle table (a value can be compared with or pasted as a cat spot directly)
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
-	const nx=ownship.pos.x+ownship.fwd.x*nose, nz=ownship.pos.z+ownship.fwd.z*nose;
+	const o=datum(ownship), nx=o.x+ownship.fwd.x*nose, nz=o.z+ownship.fwd.z*nose;
 	const fa=carrier_fore_aft(nx,nz)+dev_nudge.fa, lat=carrier_lateral(nx,nz)+dev_nudge.lat;
 	const hd=Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)*180/Math.PI+dev_nudge.hd;   // heading in the deck frame (0 = down the bow, + = port), from the forward vector through the inverse frame
 	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2)+" · ford "+model_stamp(ford_model_url);   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -2124,7 +2124,7 @@ function exterior_load_factor(st){
 	if(st===ownship) return (ownship.gload??1)*(1-THREE.MathUtils.clamp(st.squish??0,0,1));
 	if(st===bandit&&bandit_words) return bandit_words[STATE.nz]??1;
 	const under=st.pos?ground_height(st.pos.x,st.pos.z):-1e9;
-	return under>-1e8&&st.pos.y<under+stance_of(st.group&&st.group.userData.hasModel)+0.5?0:1; }
+	return under>-1e8&&datum(st).y<under+stance_of(st.group&&st.group.userData.hasModel)+0.5?0:1; }
 // exterior_pose drives our own model's joints from the jet's state (joints.ts; claude/plans/air-fa18c.md, Joints):
 // the flight controls from the core's surfaces, held where a jet sends none as the old rig held them (neutral
 // stabilators and rudders, the flaps and leading edges drooped with the gear down), the mechanisms from their 0..1
@@ -2135,7 +2135,7 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 	if(g.userData.player) airframe_show(g);   // the view picks the pilot's airframe
 	const s=st.surfaces, down=1-THREE.MathUtils.clamp(st.gear??1,0,1), toe=s&&s.toe!==undefined?s.toe:MOTION.toe*D2R*(st.squish??0), clamp=THREE.MathUtils.clamp;   // the core's toe-in where it flies the jet, its weight-on-the-wheels setting otherwise
 	let hook=clamp(st.hook??0,0,1);
-	if(hook>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8&&st.pos.y<=surf+stance_of(g.userData.hasModel)+0.6) hook=Math.min(hook,x.deck??HOOK_DECK_CAP); }   // the claw rests ON the deck, not through it
+	if(hook>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8&&datum(st).y<=surf+stance_of(g.userData.hasModel)+0.6) hook=Math.min(hook,x.deck??HOOK_DECK_CAP); }   // the claw rests ON the deck, not through it
 	const own=st===ownship, spool=own?(ownship.spool??0.8):0.8, stage=own?(ownship.stage??0):Math.max(...burners(st));
 	const open=Math.max(clamp((0.7-spool)/0.55,0,1),clamp(stage,0,1));   // F404 exit area: open at idle, closed by military, opening with the reheat stage
 	const load=exterior_load_factor(st), legs=x.legs||[];
@@ -6659,9 +6659,17 @@ function local_offset(st,x,y,z){ const right=new THREE.Vector3().crossVectors(st
 // speed. Anything that looks FROM the ownship or records where it was reads
 // this, never ownship.pos.
 const _shown=new THREE.Vector3();
-function presented(st){ if(st===ownship&&MULTIPLAYER) return _shown.copy(st.pos).add(render_offset);
-	if(st===ownship&&slowed()){ const d=flight_debt(); return _shown.set(st.pos.x+(st.velx||0)*d,st.pos.y+(st.vely||0)*d,st.pos.z+(st.velz||0)*d); }   // slow motion: where the jet has flown since its last step (smooth_poses)
-	return st.pos; }
+function presented(st){ const at=datum(st);
+	if(st===ownship&&MULTIPLAYER) return _shown.copy(at).add(render_offset);
+	if(st===ownship&&slowed()){ const d=flight_debt(); return _shown.set(at.x+(st.velx||0)*d,at.y+(st.vely||0)*d,at.z+(st.velz||0)*d); }   // slow motion: where the jet has flown since its last step (smooth_poses)
+	return at; }
+// datum is where a jet's airframe is drawn and placed from (#188): the core's position is its centre of mass,
+// which its fuel and stores move about the datum - st.center, body axes from the datum, as the core reports it
+// (STATE.center) - so the datum is the position less the attitude's turn of the centre. Another player's jet
+// arrives at its datum (the server packs it so) and has no centre of its own.
+const _datum=new THREE.Vector3();
+function datum(st,out=_datum){ const c=st.center; out.copy(st.pos); if(!c) return out;
+	return out.addScaledVector(st.fwd,-c.x).addScaledVector(st.up||world_up,-c.y).addScaledVector(st.right,-c.z); }
 // The world steps the jets and the missiles at fixed intervals, and slow motion
 // stretches each over several frames, so a jet drawn at its last step stutters:
 // at ¼× and 120 fps the bandit's 1/60 s step lasts eight frames. Slowed, each is
@@ -6670,7 +6678,7 @@ function presented(st){ if(st===ownship&&MULTIPLAYER) return _shown.copy(st.pos)
 function slowed(){ return !MULTIPLAYER&&!playback&&compression<1; }
 function smooth_poses(){ if(!slowed()) return;
 	ownship.group.position.copy(presented(ownship));
-	if(bandit&&bandit.group) bandit.group.position.set(bandit.pos.x+(bandit.velx||0)*bandit_acc,bandit.pos.y+(bandit.vely||0)*bandit_acc,bandit.pos.z+(bandit.velz||0)*bandit_acc);
+	if(bandit&&bandit.group){ const at=datum(bandit); bandit.group.position.set(at.x+(bandit.velx||0)*bandit_acc,at.y+(bandit.vely||0)*bandit_acc,at.z+(bandit.velz||0)*bandit_acc); }
 	for(const m of missiles) if(m.active&&m.mesh) m.mesh.position.set(m.px+m.vx*missile_acc,m.py+m.vy*missile_acc,m.pz+m.vz*missile_acc); }
 function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||new THREE.Vector3().crossVectors(st.fwd,world_up).normalize();
 	return presented(st).clone().addScaledVector(st.fwd,x).addScaledVector(up,y).addScaledVector(right,z); }
@@ -7767,14 +7775,14 @@ function update_shuttles(){   // the hooked cat's shuttle rides with the jet's l
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
 	if(carrier_shuttles[0]?.joint){   // the model's own: each slides from battery along its track, the hooked one under the nose wheel
 		for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i]; let travel=0;
-			if(i===active){ const wx=ownship.pos.x+ownship.fwd.x*nose, wz=ownship.pos.z+ownship.fwd.z*nose, h=s.cat.heading*D2R;
+			if(i===active){ const o=datum(ownship), wx=o.x+ownship.fwd.x*nose, wz=o.z+ownship.fwd.z*nose, h=s.cat.heading*D2R;
 				travel=(carrier_fore_aft(wx,wz)-s.cat.x)*Math.cos(h)-(carrier_lateral(wx,wz)-s.cat.z)*Math.sin(h); }
 			ship_joint(s.joint,THREE.MathUtils.clamp(travel,0,ship_joint_max(s.joint))); }
 		ship_joint("catapult_console_bow",active===0||active===1?ship_joint_max("catapult_console_bow"):0);   // each control station stands up while its catapults are manned: the bow's for 1 and 2,
 		ship_joint("catapult_console_waist",active===2||active===3?ship_joint_max("catapult_console_waist"):0);   // the waist's for 3 and 4
 		return; }
 	for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i];
-		if(i===active){ s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), 0, ownship.pos.z+ownship.fwd.z*(nose+0.28)); rig_local(s.mesh.position).y=s.home.y; }   // found in the world, placed on the rig the shuttles hang from
+		if(i===active){ const o=datum(ownship); s.mesh.position.set(o.x+ownship.fwd.x*(nose+0.28), 0, o.z+ownship.fwd.z*(nose+0.28)); rig_local(s.mesh.position).y=s.home.y; }   // found in the world, placed on the rig the shuttles hang from
 		else s.mesh.position.copy(s.home); }
 }
 function update_jbds(dt){   // the hooked cat's deflector rises through run-up and the stroke, drops once the jet is away (matches are air-start: only our own jet stands on a catapult)
@@ -7813,7 +7821,7 @@ function update_aircraft_lights(){
 	for(const p of aircraft_lights.landing) p.visible=land;
 	for(const p of aircraft_lights.strobe){ p.visible=strobe; p.material.opacity=exterior.strobe==="dim"?0.35:1; }
 	const spot=aircraft_lights.spot; spot.visible=land;   // the landing-light beam lights whatever it points at (kept in the scene so it works in first-person, where the aircraft group is hidden)
-	if(land){ const n=aircraft_lights.nose; spot.position.copy(ownship.pos).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
+	if(land){ const n=aircraft_lights.nose; spot.position.copy(datum(ownship)).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
 		aircraft_lights.spotTarget.position.copy(ownship.pos).addScaledVector(ownship.fwd,70).addScaledVector(ownship.up,-15); }   // aim forward + ~12° down
 }
 function approach_deviation(){   // shared by the HUD ICLS needles and the ADI page's bars: one computation, one truth
@@ -10459,7 +10467,7 @@ function on_cat_spot(){   // which catapult the aircraft is parked on, lined up 
 	if(ownship.launching) return -1;
 	const fh=Math.hypot(ownship.fwd.x,ownship.fwd.z)||1;
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
-	const nx=ownship.pos.x+ownship.fwd.x/fh*nose, nz=ownship.pos.z+ownship.fwd.z/fh*nose;   // the nose-gear point — the shuttle datum
+	const o=datum(ownship), nx=o.x+ownship.fwd.x/fh*nose, nz=o.z+ownship.fwd.z/fh*nose;   // the nose-gear point — the shuttle datum
 	for(let i=0;i<SHIP.catapults.length;i++){
 		const cs=cat_spot(i); if(Math.hypot(nx-cs.x,nz-cs.z)>CAT_POS_TOL) continue;
 		const hd=SHIP.catapults[i].heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd), cfx=fx*CARRIER_C+fz*CARRIER_S, cfz=-fx*CARRIER_S+fz*CARRIER_C;   // this cat's launch heading in world
@@ -10926,7 +10934,7 @@ function playback_own(pose,dt){
 	ownship.throttle=lever; ownship.burner=heat; flap_select=n("Flaps",flap_select)|0; ownship.hookTarget=n("Hook",0); ownship.rounds=n("Rounds",ownship.rounds??0);
 	last_controls={ pitch:n("Stick",0), roll:n("Lateral",0), yaw:n("Pedal",0), override:n("Override",0)>0 }; input.yaw=last_controls.yaw; hotas.pedals=input.yaw; hotas.paddle=last_controls.override;   // the hands: the cockpit's stick draws them, and the pedal steers the nosewheel
 	playback_loadout(p);
-	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
+	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(datum(ownship));
 	shed_panels(ownship,o);
 	const firing=playback_burst(pose);
 	fire_gun(ownship,null,"own",dt,firing);
@@ -11096,6 +11104,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.altitude=theatre.frame.altitude(ownship.pos);   // the height over the sea: the frame's y, less the curve between the jet and the frame's anchor
 	ownship.q.set(out[STATE.attitude+1],out[STATE.attitude+2],out[STATE.attitude+3],out[STATE.attitude]);
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
+	(ownship.center??=new THREE.Vector3()).set(out[STATE.center]||0,out[STATE.center+1]||0,out[STATE.center+2]||0);   // the centre of mass from the datum (#188): the airframe is drawn from datum()
 	ownship.velx=out[STATE.velocity]; ownship.vely=out[STATE.velocity+1]; ownship.velz=out[STATE.velocity+2];
 	ownship.speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
@@ -11162,6 +11171,23 @@ function approach_over(angle){ const p=ownship.pos, d={ x:ownship.fwd.x, z:ownsh
 		const b=flight_get(); speed=Math.hypot(b[STATE.velocity]-w.x,b[STATE.velocity+1]-w.y,b[STATE.velocity+2]-w.z)||speed; }
 	return throttle; }
 const IDLE=0.06;   // the core's idle spool (flight/propulsion.go idle): the lever commands through this floor, so a running engine is never below it
+// seated turns ownship.pos, the datum a spawn places (stance_of() is the datum's height over the surface), into the
+// core's position, the centre of mass: the datum plus the attitude's turn of the centre the core weighs for the
+// loadout and fuel it holds now (#188). Placed at the datum's stance, a loaded jet's centre fell the 0.2 m its stores
+// pull it below the datum, and its drawn tyres sank into the deck.
+const _seat=new THREE.Vector3();
+function seated(){ const o=flight_get(); ownship.pos.add(_seat.set(o[STATE.center]||0,o[STATE.center+1]||0,o[STATE.center+2]||0).applyQuaternion(ownship.q)); }
+// rested stands a ground spawn as the core rests it under its weight: the datum at its height over the surface under
+// it and the attitude pitched as its struts settle, the heading kept (#188). A constant stance is a clean jet's: a
+// loaded one, placed there, sank 3 cm as its struts took the weight.
+const _level=new THREE.Vector3(), _across=new THREE.Vector3(), _above=new THREE.Vector3(), _basis=new THREE.Matrix4();
+function rested(){ const g=ground_height(ownship.pos.x,ownship.pos.z), o=flight_get(), height=o[STATE.rest], pitch=o[STATE.rest+1]||0;
+	if(!(g>-1e8)||!(height>0)) return false;
+	ownship.pos.y=g+height;
+	_level.set(ownship.fwd.x,0,ownship.fwd.z).normalize(); _across.crossVectors(_level,world_up).normalize();
+	ownship.fwd.copy(_level).multiplyScalar(Math.cos(pitch)).addScaledVector(world_up,Math.sin(pitch));
+	ownship.q.setFromRotationMatrix(_basis.makeBasis(ownship.fwd,_above.crossVectors(_across,ownship.fwd).normalize(),_across));
+	return true; }
 function flight_push(){   // deliver the ownship pose to the core: trimmed level flight when airborne, a composed state on the ground / in a test
 	if(!flight_active) return;
 	prev_wire=-1;
@@ -11173,19 +11199,20 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 		// level (slope 0) at 1,200 ft on the final bearing; the intercept ~3 nm ahead
 		// is the pilot's (CV-1). The trim is of the jet as loaded: the loadout goes on first, or its weight and
 		// drag arrive on the first frame and sink the hands-off start 70 m in 25 s.
-		flight_stores(own_mask());
+		flight_stores(own_mask()); seated();
 		const slope={ groove:GROOVE.slope, final:FINAL.slope }[mission_start()];   // the groove and final descend on their paths over the deck or the field (#133)
 		ownship.throttle=slope===undefined?flight_approach(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, 0, FUEL()):approach_over(slope);
 		sync_core(flight_get()); return;
 	}
 	if(!test_active && ownship.speed>50 && !ownship.grounded){
-		flight_stores(own_mask());   // trimmed as loaded, as Case II is: mounted after, the loadout's weight and drag took 14 kt and 31 m off a Case I entry in 30 s
+		flight_stores(own_mask()); seated();   // trimmed as loaded, as Case II is: mounted after, the loadout's weight and drag took 14 kt and 31 m off a Case I entry in 30 s
 		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		{ const entry=mission_start();
 			if(entry==="case1"||entry==="case3"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor back to a lever position
 				const trimmed=flight_get(); ownship.throttle=Math.max(0,Math.min(1,(trimmed[STATE.engine]-IDLE)/(1-IDLE))); } }
 		sync_core(flight_get()); return;
 	}
+	flight_stores(own_mask());   // the loadout before the state: its tanks' fuel goes into it, and its centre of mass places the jet (seated)
 	const b=flight_get();   // keep time (carrier pose, wind field) and fuel across resets
 	// ...but never the damage block: every flight_push is a fresh-airframe moment
 	// (mission start, re-spot, scenario, respawn), and a recycled snapshot carries
@@ -11210,6 +11237,9 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	b[STATE.catapult]=-1; b[STATE.stroke]=-1; b[STATE.wire]=-1;
 	b[STATE.wow]=0; b[STATE.contact]=-1;
 	b[STATE.touch]=0; b[STATE.touch+1]=0; b[STATE.touch+2]=0; b[STATE.touch+3]=0;
+	flight_set(b);   // at the datum first: the core weighs the centre and the rest for the fuel and tanks just set
+	if(ownship.speed<1&&rested()){ b[STATE.attitude]=ownship.q.w; b[STATE.attitude+1]=ownship.q.x; b[STATE.attitude+2]=ownship.q.y; b[STATE.attitude+3]=ownship.q.z; }
+	seated(); b[STATE.position]=ownship.pos.x; b[STATE.position+1]=ownship.pos.y; b[STATE.position+2]=ownship.pos.z;
 	flight_set(b); sync_core(flight_get());
 }
 function verdict(out){   // judge the core's touchdown record: crash conditions end the pass; survivable touches just record the numbers for the LSO
@@ -11217,7 +11247,7 @@ function verdict(out){   // judge the core's touchdown record: crash conditions 
 	const deck=kind===3, soft=kind===2;
 	const pitch=Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1));
 	ownship.touch={ sink, bank, t:sim_time, deck, fa:deck?carrier_fore_aft(ownship.pos.x,ownship.pos.z):0 };
-	const die=()=>{ ownship.group.position.copy(ownship.pos); crash_ownship("verdict"); return true; };
+	const die=()=>{ ownship.group.position.copy(datum(ownship)); crash_ownship("verdict"); return true; };
 	if(deck && ownship.touch.fa<-134) return die();                   // ramp strike: caught the round-down at the stern
 	if(out[STATE.extension]<0.5){                                     // belly arrival: survivable only feather-soft and level — but judged at FLYING speed: the core now lets a slide settle its nose and rest a wingtip below 20 m/s (ground handling, not a crash)
 		if(ownship.speed>20 && (sink>2 || bank>0.09 || pitch>0.21 || pitch<-0.04)) return die();
@@ -11426,13 +11456,13 @@ function fly_player(dt){
 					else if(altitude_armed[kind]&&now<set){ altitude_armed[kind]=false; altitude_called=sim_time; } } } }
 		cautions_update(dt);   // #47: keyed, view-independent — the tone lives HERE, not in draw_hud
 	}
-	if(out[STATE.contact]>=0){ flight_clear(); ownship.group.position.copy(ownship.pos); return crash_ownship("probe"); }   // crash probe: any non-permitted airframe contact
+	if(out[STATE.contact]>=0){ flight_clear(); ownship.group.position.copy(datum(ownship)); return crash_ownship("probe"); }   // crash probe: any non-permitted airframe contact
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
 	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1){ test_idle=0; _test_power=0; }   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
 	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ pass_end("bolter"); notice(translate("BOLTER"), 6); recoach(); if(mission_start()==="case3") hint(HINT.miss,{heading:ship_downwind()}); else hint(HINT.bolt,{heading:ship_downwind()}); }   // the bolter pattern is the recovery case's: 1,200' for Case III, the 600' visual pattern otherwise
 	prev_wow=ownship.grounded;
-	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
+	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(datum(ownship));
 	if(MULTIPLAYER && render_offset.lengthSq()>1e-8){ render_offset.multiplyScalar(Math.max(0,1-dt*7)); ownship.group.position.add(render_offset); }   // the correction shows as a ~150 ms visual decay, never a physics change
 	check_collisions(dt);
 }
@@ -11460,7 +11490,7 @@ function fly_bandit(dt){
 			const steps=Math.min(4,Math.floor((fly_bandit.debt=(fly_bandit.debt||0)+dt)*60)); fly_bandit.debt-=steps/60;
 			let w=null; for(let s=0;s<steps;s++){ const one=bandit_coast(bandit.lean); if(!one) break; w=one; }
 			if(w){ bandit_words=w;
-				bandit.pos.set(w[0],w[1],w[2]);
+				bandit.pos.set(w[0],w[1],w[2]); (bandit.center??=new THREE.Vector3()).set(w[STATE.center]||0,w[STATE.center+1]||0,w[STATE.center+2]||0);
 				bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
 				bandit.speed=Math.hypot(w[3],w[4],w[5]);
 				bandit.spools=[w[STATE.engine],w[STATE.engine+2]]; bandit.reheats=[w[STATE.engine+1],w[STATE.engine+3]]; bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);
@@ -11469,7 +11499,7 @@ function fly_bandit(dt){
 				(bandit.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(_q);
 				(bandit.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(_q);
 				bandit.group.quaternion.copy(_q);
-				bandit.group.position.copy(bandit.pos); }
+				bandit.group.position.copy(datum(bandit)); }
 			return;
 		}
 		return fly_bandit_stricken(dt);
@@ -11501,7 +11531,7 @@ function fly_bandit(dt){
 			if(loosed) launch_bandit_round();   // an AMRAAM left the bandit's rail in ANY substep: the client owns the round from here, same core the player's shots fly
 			if(heated) launch_bandit_heater();   // and the same for a 9M: the brain fired it, the client flies it at us
 
-			bandit.pos.set(w[0],w[1],w[2]);
+			bandit.pos.set(w[0],w[1],w[2]); (bandit.center??=new THREE.Vector3()).set(w[STATE.center]||0,w[STATE.center+1]||0,w[STATE.center+2]||0);   // the centre of mass from the datum (#188)
 			bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
 			bandit.speed=Math.hypot(w[3],w[4],w[5]);
 			bandit.spools=[w[STATE.engine],w[STATE.engine+2]]; bandit.reheats=[w[STATE.engine+1],w[STATE.engine+3]]; bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);   // achieved reheat: the flare-seduction burner factor reads it
@@ -11513,7 +11543,7 @@ function fly_bandit(dt){
 			(bandit.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(_q);
 			(bandit.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(_q);
 			bandit.group.quaternion.copy(_q);
-			bandit.group.position.copy(bandit.pos);
+			bandit.group.position.copy(datum(bandit));
 			if(bandit.merging&&(bandit.pos.distanceTo(ownship.pos)<500||bandit.fwd.dot(_v.subVectors(ownship.pos,bandit.pos))<0)) bandit.merging=false;   // keep the merge flag honest for the SP weapons hold
 			if(step.flare){ dispense_flare(bandit); bandit.flared_at=sim_time; bandit_dispensed++; }
 			if(step.chaff){ dispense_chaff(bandit); }   // the split programme (#43): a bloom for the player's AMRAAM, no flare and no flared_at
@@ -11605,7 +11635,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		switch(r.drive){
 		case "gear": f=1-THREE.MathUtils.clamp(st.gear??1,0,1); break;   // st.gear: 1 = up; the rig scrubs extension. Weight-on-wheels compression is NOT a fixed squat fraction here any more: it is per-leg, load-aware and measured against the surface under each tyre (#203), applied to the wheels below
 		case "hook": { f=THREE.MathUtils.clamp(st.hook??0,0,1);
-			if(f>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8 && st.pos.y<=surf+stance_of(g.userData.hasModel)+0.6) f=Math.min(f,HOOK_DECK_CAP); }   // claw rests ON the deck, not through it
+			if(f>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8 && datum(st).y<=surf+stance_of(g.userData.hasModel)+0.6) f=Math.min(f,HOOK_DECK_CAP); }   // claw rests ON the deck, not through it
 			break; }
 		case "speedbrake": f=THREE.MathUtils.clamp(st.speedbrake??0,0,1); break;
 		case "probe": f=THREE.MathUtils.clamp(st.probe??0,0,1); break;
@@ -12008,7 +12038,7 @@ function reset_ownship(){
 	flap_select=(st==="case2"||st==="groove"||st==="final")?2:wheels?1:0;   // HALF on the runway and the cat: NATOPS takes off on HALF flap and charts the launch trim for HALF (8.2.5), and the jet is handed over configured for it exactly as Case II is handed over on FULL. The core already flies the takeoff droop and the PA gains from its own on-the-wheels latch (flight/fcs.go halfleg), so this changes no handling on the roll — it makes the switch say what the jet is doing, and it makes the lineup hint a checklist item rather than a gesture. The clean-up passing 250 knots returns it to AUTO, which is what releases the latch.
 	// The flap switch otherwise follows the same established/clean split, and resets between missions — it selects the pitch law now (#86), so a FULL left over from a previous flight would fly a clean spawn on the approach law. On deck AUTO is right: the core latches the HALF-flap takeoff configuration itself while on the wheels
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
-	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
+	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(datum(ownship));
 	if(st==="joust"){   // joust_place put the bandit at its end
 		bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
 		bandit_brain=false; fly_bandit.tried=false;   // the wasm brain arms lazily in fly_bandit once the core is ready (#125 phase 2)
@@ -12637,7 +12667,7 @@ function draw_hud(){
 			const needle=new THREE.Mesh(new THREE.BoxGeometry(2.4,0.02,0.06),cmat); needle.position.x=1.2; needle.renderOrder=999; dev_cursor.add(needle);   // heading needle: U/O rotate it; lay it along the painted track line to read the true heading
 			dev_cursor.traverse(o=>{ o.frustumCulled=false; }); scene.add(dev_cursor); }
 		{ const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
-			const bx=ownship.pos.x+ownship.fwd.x*nose+dev_nudge.fa*CARRIER_C+dev_nudge.lat*CARRIER_S, bz=ownship.pos.z+ownship.fwd.z*nose-dev_nudge.fa*CARRIER_S+dev_nudge.lat*CARRIER_C;
+			const o=datum(ownship), bx=o.x+ownship.fwd.x*nose+dev_nudge.fa*CARRIER_C+dev_nudge.lat*CARRIER_S, bz=o.z+ownship.fwd.z*nose-dev_nudge.fa*CARRIER_S+dev_nudge.lat*CARRIER_C;
 			const hd=(Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)+dev_nudge.hd*D2R);
 			const dfa=Math.cos(hd), dla=-Math.sin(hd);   // deck-frame heading (+ = port) -> world direction, same transform as the offset
 			const dx2=dfa*CARRIER_C+dla*CARRIER_S, dz2=-dfa*CARRIER_S+dla*CARRIER_C;
@@ -13910,7 +13940,7 @@ function apply_own_state(state,reset=true){ if(!state||!state.position) return;
 	if(reset){ ownship.throttle=0.85;
 		ownship.gearTarget=1; ownship.gear=1; ownship.hookTarget=0; ownship.hook=0; ownship.speedbrakeTarget=0; }
 	ownship.grounded=false; ownship.trapped=false; ownship.launching=false;
-	ownship.group.position.copy(ownship.pos); ownship.group.quaternion.copy(ownship.q); }
+	ownship.group.position.copy(datum(ownship)); ownship.group.quaternion.copy(ownship.q); }
 function net_event(e){ const slot=Number(e.slot);
 	switch(e.kind){
 	case "kill":
@@ -14250,7 +14280,7 @@ addEventListener("pointerdown",()=>{ audio_gesture(); try{ window.focus(); }catc
 function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 	camera.position.set(CARRIER.x+Math.cos(a)*r, CARRIER.deckY+70, CARRIER.z+Math.sin(a)*r);
 	camera.up.set(0,1,0); camera.lookAt(CARRIER.x,CARRIER.deckY+12,CARRIER.z);
-	ownship.group.visible=true; ownship.group.position.copy(ownship.pos); ownship.group.quaternion.copy(ownship.q); bandit.group.visible=false; }
+	ownship.group.visible=true; ownship.group.position.copy(datum(ownship)); ownship.group.quaternion.copy(ownship.q); bandit.group.visible=false; }
 
 const clock=new THREE.Clock();
 // simulate advances the world by the frame's share of sim time: compression ×

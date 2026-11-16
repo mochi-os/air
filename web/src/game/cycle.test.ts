@@ -8,9 +8,9 @@ import { describe, expect, it } from 'vitest'
 
 import fa18c_points from '../assets/fa18c.json'
 import * as THREE from 'three'
-import { engine, fa18c, nozzle, rises, spin, STILL, stroke } from './cycle'
+import { engine, fa18c, flight, nozzle, rises, STILL, stroke } from './cycle'
 import { rig, type Joint } from './joints'
-import { PACE, REACH } from './oleo'
+import { PACE } from './oleo'
 
 const DEGREE = Math.PI / 180
 const LEGS = { nose: 1, left: 0.4, right: 0.5 } // each leg's wheel rise per unit of its oleo drive, for these tests
@@ -81,20 +81,70 @@ describe('stroke', () => {
   })
 })
 
-describe('spin', () => {
-  it('turns one way for its seconds, then back the other way', () => {
-    const m = spin(1, 2)
-    m.step(1)
-    expect(m.value).toBeCloseTo(1, 9)
-    m.step(1.5)
-    expect(m.value).toBeCloseTo(1.5, 9)
-    m.step(1.5)
-    expect(m.value).toBeCloseTo(0, 9)
+describe('a flight', () => {
+  // each leg's stance on the ground in drive, its wheel's radius, and the
+  // launch bar's stroke time, for these tests
+  const STANCE = { nose: 0.4, left: 0.8, right: 0.8 }
+  const RADIUS = { nose: 0.27, left: 0.37, right: 0.37 }
+  const BAR = 1.25
+  const GROUND = ['oleo.nose', 'oleo.left', 'oleo.right', 'steering', 'bar'] as const
+  // frames of a fresh flight over some seconds: each drive's value after each
+  const frames = (seconds: number) => {
+    const movers = flight(LEGS, STANCE, RADIUS, BAR)
+    const out: Record<string, number>[] = []
+    for (let i = 0; i < Math.round(seconds * 60); i++) {
+      for (const m of Object.values(movers)) m.step(1 / 60)
+      out.push(Object.fromEntries(Object.entries(movers).map(([drive, m]) => [drive, m.value])))
+    }
+    return out
+  }
+  const run = frames(60)
+  it('moves nothing that needs weight on the wheels with the gear travelling or stowed', () => {
+    let moving = 0
+    for (let i = 1; i < run.length; i++) {
+      if (run[i].gear === 1 && run[i - 1].gear === 1) continue
+      moving++
+      for (const drive of GROUND) expect(run[i][drive], `${drive} at frame ${i}`).toBe(0)
+      for (const leg of ['nose', 'left', 'right']) expect(run[i][`wheel.${leg}`], `wheel.${leg} at frame ${i}`).toBe(run[i - 1][`wheel.${leg}`])
+    }
+    expect(moving).toBeGreaterThan(60 * 20) // two cycles' travel and stowage
   })
-  it('reads its angle wrapped into one turn', () => {
-    const m = spin(Math.PI, 10)
-    m.step(1.5)
-    expect(m.value).toBeCloseTo(-Math.PI / 2, 9)
+  it('runs the gear 5 s each way', () => {
+    expect(run[149].gear).toBeCloseTo(0.5, 9)
+    expect(run[299].gear).toBeCloseTo(1, 9)
+    const up = run.findIndex((f, i) => i > 300 && f.gear < 1)
+    expect(run[up - 1 + 150].gear).toBeCloseTo(0.5, 2)
+    expect(run[up + 300].gear).toBeCloseTo(0, 9)
+  })
+  it("eases each oleo to its stance on touchdown at the engine's pace, and out again on lift-off", () => {
+    const touch = run.findIndex((f) => f['oleo.nose'] > 0)
+    for (const leg of ['nose', 'left', 'right'] as const) {
+      // PACE metres a second of its wheel's rise, by its rise a unit of drive
+      const pace = PACE / LEGS[leg]
+      expect(run[touch + 1][`oleo.${leg}`] - run[touch][`oleo.${leg}`], leg).toBeCloseTo(pace / 60, 9)
+      expect(Math.max(...run.map((f) => f[`oleo.${leg}`])), leg).toBeCloseTo(STANCE[leg], 9)
+      const lift = run.findIndex((f, i) => i > touch && f[`oleo.${leg}`] < STANCE[leg] && run[i - 1][`oleo.${leg}`] === STANCE[leg])
+      expect(run[lift][`oleo.${leg}`] - run[lift + 1][`oleo.${leg}`], leg).toBeCloseTo(pace / 60, 9)
+    }
+  })
+  it('steers the nosewheel to each stop and lowers and raises the launch bar on the ground', () => {
+    expect(Math.max(...run.map((f) => f.steering))).toBeCloseTo(75 * DEGREE, 2)
+    expect(Math.min(...run.map((f) => f.steering))).toBeCloseTo(-75 * DEGREE, 2)
+    expect(Math.max(...run.map((f) => f.bar))).toBe(1)
+    // the slew no faster than the engine's 0.4 rad/s, the bar than its stroke
+    for (let i = 1; i < run.length; i++) {
+      expect(Math.abs(run[i].steering - run[i - 1].steering)).toBeLessThanOrEqual(0.4 / 60 + 1e-9)
+      expect(Math.abs(run[i].bar - run[i - 1].bar)).toBeLessThanOrEqual(1 / BAR / 60 + 1e-9)
+    }
+  })
+  it('rolls each wheel at a taxi from touchdown, at its own radius', () => {
+    const touch = run.findIndex((f) => f['oleo.nose'] > 0)
+    const after = run[touch + 6]
+    const before = run[touch - 1]
+    for (const leg of ['nose', 'left', 'right'] as const) {
+      const turned = (5.1 * (7 / 60)) / RADIUS[leg]
+      expect(after[`wheel.${leg}`] - before[`wheel.${leg}`], leg).toBeCloseTo(turned, 6)
+    }
   })
 })
 
@@ -161,10 +211,8 @@ describe('the F/A-18C', () => {
     const { seconds, canopy } = (fa18c_points as unknown as { motion: { seconds: Record<string, number>; canopy: { unlatch: number; fall: number; lock: number } } }).motion
     expect(read('gear', 2.5)).toBeCloseTo(0.5, 9)
     expect(read('gear', 5)).toBeCloseTo(1, 9)
-    expect(read('gear', 7.5)).toBeCloseTo(0.5, 9)
-    expect(read('gear', 10)).toBeCloseTo(0, 9)
     expect(read('speedbrake', 2.5)).toBeCloseTo(1, 9)
-    for (const drive of ['probe', 'bar', 'fold', 'hook', 'scoop']) {
+    for (const drive of ['probe', 'fold', 'hook', 'scoop']) {
       expect(read(drive, seconds[drive] / 2), drive).toBeCloseTo(0.5, 9)
       expect(read(drive, seconds[drive]), drive).toBeCloseTo(1, 9)
     }
@@ -190,16 +238,24 @@ describe('the F/A-18C', () => {
     expect(read('slat', (25 * DEGREE) / 0.6)).toBeCloseTo(25 * DEGREE, 9)
     expect(read('rudder', 0.4)).toBeCloseTo(30 * DEGREE, 9)
     expect(read('rudder', 1.2)).toBeCloseTo(-30 * DEGREE, 9)
-    expect(read('steering', (75 * DEGREE) / 0.4)).toBeCloseTo(75 * DEGREE, 9)
   })
   it("slews the nosewheel's steering as the engine does", () => {
     expect(source).toContain('st.steer=(st.steer??0)+THREE.MathUtils.clamp(target-(st.steer??0),-0.4*dt,0.4*dt);')
   })
-  it('lifts each wheel on its oleo as far and as fast as the engine draws it', () => {
-    expect(read('oleo.nose', REACH / PACE)).toBeCloseTo(REACH / LEGS.nose, 9)
-    expect(read('oleo.left', REACH / PACE)).toBeCloseTo(REACH / LEGS.left, 9)
-    expect(read('oleo.right', REACH / PACE / 2)).toBeCloseTo(REACH / LEGS.right / 2, 9)
-    expect(read('oleo.right', (2 * REACH) / PACE)).toBeCloseTo(0, 9)
+  it("compresses each oleo to its stance on the ground, and strokes the launch bar at its time, from the points file", () => {
+    const { points, motion: timing } = fa18c_points as unknown as { points: { gear: Record<'nose' | 'left' | 'right', { static: number }> }; motion: { seconds: { bar: number } } }
+    const motion = fa18c(LEGS)
+    const most = { nose: 0, left: 0, right: 0 }
+    let bar = 0
+    let swing = 0
+    for (let i = 0; i < 60 * 30; i++) {
+      motion.step(1 / 60)
+      for (const leg of ['nose', 'left', 'right'] as const) most[leg] = Math.max(most[leg], motion.value(`oleo.${leg}`, '')!)
+      swing = Math.max(swing, Math.abs(motion.value('bar', '')! - bar))
+      bar = motion.value('bar', '')!
+    }
+    for (const leg of ['nose', 'left', 'right'] as const) expect(most[leg], leg).toBeCloseTo(points.gear[leg].static, 9)
+    expect(swing).toBeCloseTo(1 / timing.seconds.bar / 60, 9)
   })
   it("measures each leg's wheel rise per unit of its oleo drive with the gear down", () => {
     // a leg that swings down on the gear drive, its oleo sliding its wheel
@@ -226,12 +282,19 @@ describe('the F/A-18C', () => {
     expect(legs.left).toBeCloseTo(0.3, 6)
     expect(legs.right).toBeCloseTo(0.3, 6)
   })
-  it('rolls each wheel at its own radius', () => {
+  it("rolls each wheel at its own radius in the points file", () => {
     const { gear } = (fa18c_points as unknown as { points: { gear: Record<string, { radius: number }> } }).points
     const motion = fa18c(LEGS)
+    let touched = 0
+    for (let i = 0; i < 60 * 10 && !touched; i++) {
+      motion.step(1 / 60)
+      if (motion.value('oleo.nose', '')! > 0) touched = i
+    }
+    const nose = motion.value('wheel.nose', '')!
+    const left = motion.value('wheel.left', '')!
     motion.step(0.1)
-    expect(motion.value('wheel.nose', '')).toBeCloseTo((5.1 * 0.1) / gear.nose.radius, 6)
-    expect(motion.value('wheel.left', '')).toBeCloseTo((5.1 * 0.1) / gear.left.radius, 6)
+    expect(motion.value('wheel.nose', '')! - nose).toBeCloseTo((5.1 * 0.1) / gear.nose.radius, 6)
+    expect(motion.value('wheel.left', '')! - left).toBeCloseTo((5.1 * 0.1) / gear.left.radius, 6)
   })
   it('swings the hook through its travel each way at the game\'s rate', () => {
     const { swing, seconds } = (fa18c_points as unknown as { motion: { swing: number; seconds: { swing: number } } }).motion

@@ -302,6 +302,11 @@ sketch to several inches. Say which in the facts table.
 
 What went wrong on the F/A-18C, each a rule now:
 
+- **A few photos solved alone can float.** `photos.py --only` with three gear-down approach photos fitted
+  every mark to 2-3 px, yet a fin tip projected 500 px off its own mark and the wheels 45 in off: uncited
+  points (fin tips, antennas) are measured by the bundle, and three photos leave them and the cameras' scale
+  free together. Solve with the whole catalogue before projecting anything through a camera, and project a
+  cited point and an uncited one first as a check.
 - **A coordinate along the sight line is loose, however many rays.** The F/A-18C's outer main gear door,
   triangulated open from front-quarter and head-on photos (6 rays over 55 degrees), put its front edge at FS 505;
   cast closed onto the skin from three views from below it reads FS 498-502, and the steepest of them moves only

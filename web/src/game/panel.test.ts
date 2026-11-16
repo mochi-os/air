@@ -130,6 +130,7 @@ describe('the electrical power panel (#21, #116)', () => {
     let flight_active=true, prev_wire=0, test_active=false, sent=null, cold_start=${cold}; const b=new Float64Array(117); b.fill(${rundown},110,114);
     const ownship={ flown:true, grounded:true, speed:0, throttle:${throttle}, pos:{ x:0, y:10, z:0 }, vel_dir:{ x:1, y:0, z:0 }, q:{ w:1, x:0, y:0, z:0 }, gearTarget:0 };
     const mission_start=()=>"runway", flight_get=()=>b, flight_set=(state)=>{ sent=Array.from(state); }, sync_core=()=>{}, ground_height=()=>0, stance_of=()=>2, FUEL=()=>4000, stores_book=null, flight_footing=()=>({ x:0, y:0, z:0 });
+    const flight_stores=()=>{}, own_mask=()=>0, rested=()=>false, seated=()=>{};   // the loadout and the stance (#188): no centre or rest in this stand-in core
     ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flight_push')}
 } flight_push(); return [...sent.slice(14,18),...sent.slice(110,114)];`)() as number[] // the lift stops at the function's own closing brace, which stands alone
   it('hands a ground start its engines turning: both generators on the line from the first frame', () => {
@@ -142,7 +143,7 @@ describe('the electrical power panel (#21, #116)', () => {
     expect(source).toMatch(/if\(!test_active && ownship\.speed>50 && !ownship\.grounded\)\{\n\t\tflight_stores\(own_mask\(\)\);[^\n]*\n\t\tflight_level\(/)
   })
   it('trims a Case II start with its loadout on (#132)', () => {
-    expect(source).toMatch(/\(mission_start\(\)==="case2"\|\|mission_start\(\)==="groove"\|\|mission_start\(\)==="final"\)\)\{\n(?:\t\t\/\/[^\n]*\n)*\t\tflight_stores\(own_mask\(\)\);\n\t\tconst slope=\{ groove:GROOVE\.slope, final:FINAL\.slope \}\[mission_start\(\)\];[^\n]*\n\t\township\.throttle=slope===undefined\?flight_approach\(ownship\.pos\.x,ownship\.pos\.y,ownship\.pos\.z, ownship\.fwd\.x,ownship\.fwd\.z, 0, FUEL\(\)\):approach_over\(slope\);/) // Case II level; the groove and final on their paths over the surface, through the wind (#133)
+    expect(source).toMatch(/\(mission_start\(\)==="case2"\|\|mission_start\(\)==="groove"\|\|mission_start\(\)==="final"\)\)\{\n(?:\t\t\/\/[^\n]*\n)*\t\tflight_stores\(own_mask\(\)\); seated\(\);\n\t\tconst slope=\{ groove:GROOVE\.slope, final:FINAL\.slope \}\[mission_start\(\)\];[^\n]*\n\t\township\.throttle=slope===undefined\?flight_approach\(ownship\.pos\.x,ownship\.pos\.y,ownship\.pos\.z, ownship\.fwd\.x,ownship\.fwd\.z, 0, FUEL\(\)\):approach_over\(slope\);/) // Case II level; the groove and final on their paths over the surface, through the wind (#133)
   })
   it('hands a cold and dark start both engines stopped (#133)', () => {
     expect(pushed(0.5, true)).toEqual([0, 0, 0, 0, 1, 1, 1, 1])

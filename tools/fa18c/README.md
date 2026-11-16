@@ -138,16 +138,21 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   clevis holding the shock's top (its outboard cheek a lug round the pin, the connecting link passing outboard
   of the casting), the tapered arm with its flange and its brake line in a coiled guard, the planing rod riding
   the arm from a pin on the pivot's axis to the axle's fitting, the shock's white cap with its red band over
-  the polished body and the can's ribbed collar), and each wheel's face from the side photos (`layout.gear` tyres:
+  the polished body and the can's ribbed collar, the can narrowing to its neck; the connecting link a white
+  sleeve, a polished rod between two lock collars and a white rod end), and the fittings read off them face on
+  (castings fittings: the pivot's and the shock's top pins hollow, the bell crank's round bolt heads, the
+  castings' edges rounded, `hollow()`, `stud()`, `filleted()`; their heights off the faces they sit on are
+  `STANDOFF`, which the photos, seeing them face on, cannot give), and each wheel's face from the side photos (`layout.gear` tyres:
   the tread's grooves, the rim's flange round a recessed disc with the main wheels' lightening holes, the bolt
   circle, the cap and axle nut; the main wheels' brakes on their inner faces, `tyre()`). Each leg's `full` in
   the points file is the oleo drive with the leg fully in (the main shock's body meeting its can's end, the
   nose piston its post's head), the most the engine pushes it. The nose leg is a
   vertical post hung from its trunnion on a yoke, with its castings traced from the side photos (`layout.gear`
-  legs nose castings: the steering housing, the collar, the steering block, the web out to the drag brace's pin,
-  notched where the stowed rod lies (`notched()`), the torque link's bosses and links), the piston, the axle's
+  legs nose castings: the steering housing, the collar with the steering's bronze ring gear its top band, the
+  steering block, the web out to the drag brace's pin with a raised rim round it, notched where the stowed rod
+  lies (`notched()`), the torque link's bosses and links, round bolt heads on the pivot plates), the piston, the axle's
   fork, the holdback bar and its spring, the drag brace (the retraction actuator: its cylinder turning about
-  its pin in the airframe, the rod sliding out of it to a clevis on the web's pin, and the strip that closes
+  its pin in the airframe, the rod sliding out of it to a clevis on the web's pin, hollow, and the strip that closes
   its slot in the skin, `actuator()`), the launch bar (a flat bar with its black band and the head the shuttle
   takes) raised, and the landing lamp and the approach lights' box on the post's front. The leg rests as it
   hangs in flight, the oleo out by its extension; the oleo drive pushes it in, and the stance the photos show
@@ -156,7 +161,8 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   skin, opens by the angle that brings its free edge's ends nearest the photos', and closes as long along the
   skin as the photos show it open (the forward nose doors to the centreline, where the leg passes). The gear's
   joints move in sequence (`sequenced()`): the doors open over the first share of the drive and hold, then
-  the legs and all they carry move over the rest, each phase eased in and out. The third
+  the legs and all they carry move over the rest, each phase stroking as an actuator does (`stroked()`,
+  `layout.motion stroke`): gathering speed over a short share of its time, steady, then easing to a stop. The third
   output, the features file, names points and curves on the model with the node each rides on, for the photo
   match. `--draft` leaves out the paint bake (seconds instead of minutes). `--cache DIR` keeps the atlases'
   UVs and bakes between builds (`../cache.py`): the jet's under a key of every part's faces, the stencils'
