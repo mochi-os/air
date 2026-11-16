@@ -12,9 +12,13 @@
 #
 # Its paint is an atlas (layout.atlas texels a side) baked over every part
 # but the seeker's glass: ambient occlusion, the materials' colours and the
-# markings and wear paint.py lays over them; --draft leaves it out.
+# markings and wear paint.py lays over them; --draft leaves it out. --cache DIR
+# keeps the atlas's UVs and bakes there between builds, under a key of
+# everything they come from (../cache.py), and takes them from there when
+# nothing they come from has changed. --facts FILE builds from another facts
+# file.
 #
-# usage: blender -b --factory-startup -P build.py -- MISSILE OUT.glb OUT.json [--draft]   (MISSILE: aim9m or aim120c)
+# usage: blender -b --factory-startup -P build.py -- MISSILE OUT.glb OUT.json [--draft] [--cache DIR] [--facts FILE]   (MISSILE: aim9m or aim120c)
 import json, math, sys, tempfile
 from pathlib import Path
 
@@ -25,8 +29,24 @@ from mathutils import Vector
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(HERE.parent))
 import paint as painting  # noqa: E402
-FACTS = json.loads((HERE / "facts.json").read_text())
+import cache  # noqa: E402
+import hidden  # noqa: E402
+ARGS = sys.argv[sys.argv.index("--") + 1 :]
+
+
+def option(name):
+	# An option's value (--name VALUE), taken out of ARGS; None if not given
+	if name not in ARGS:
+		return None
+	i = ARGS.index(name)
+	value = ARGS[i + 1]
+	del ARGS[i : i + 2]
+	return value
+
+
+FACTS = json.loads(Path(option("--facts") or HERE / "facts.json").read_text())
 INCH = 0.0254
 SIDES = 24
 # A joint driven straight in radians, half a turn either way
@@ -49,7 +69,7 @@ def value(entry):
 	return entry["value"] if isinstance(entry, dict) and "value" in entry else entry
 
 
-MISSILE = sys.argv[sys.argv.index("--") + 1]
+MISSILE = ARGS[0]
 SPEC = FACTS[MISSILE]
 LAYOUT = {k: value(v) for k, v in FACTS["layout"][MISSILE].items() if k not in ("about", "note")}
 LENGTH = value(SPEC["length"])
@@ -151,15 +171,41 @@ def paint_at(station):
 	return "paint"
 
 
+# How far inside a cut fitting's edges the body's skin is cut, inches: far
+# enough that the skin's edge is inside the fitting, not on its side
+INSET = 0.05
+
+
+def covered():
+	# The body's skin a fitting laid along it covers (a harness cover: its
+	# layout entry `"cut": true`), as the rolls just inside its sides and the
+	# stations just inside its ends, where the body is cut so that the skin
+	# under it is whole faces, which cull() then removes
+	rolls, stations = set(), set()
+	for spec in LAYOUT.get("fittings", []):
+		if not spec.get("cut"):
+			continue
+		half = math.degrees(math.asin((spec["width"] / 2 - INSET) / RADIUS))
+		rolls |= {(spec.get("roll", 0.0) + side * half) % 360 for side in (-1, 1)}
+		feet = [s for s, r in spec["profile"] if abs(r - RADIUS) < 1e-6]
+		stations |= {min(feet) + INSET, max(feet) - INSET}
+	return rolls, stations
+
+
 def body():
 	# The body of revolution: the profile's (station, radius) knots, a ring at
 	# each, closed at the nose by its point and at the tail by a flat end;
 	# the glass ahead of layout.dome, a radome's white ahead of its end, the
 	# bands where layout.bands puts them
 	profile = [tuple(k) for k in LAYOUT["profile"]]
-	# rings at the bands' edges too, so a band ends on a ring
+	# SIDES meridians round, and one inside each side of a cut fitting
+	extra, under = covered()
+	rolls = sorted({360 * i / SIDES for i in range(SIDES)} | extra)
+	n = len(rolls)
+	# rings at the bands' edges too, so a band ends on a ring, and inside a
+	# cut fitting's ends
 	cuts = sorted({s for band in LAYOUT.get("bands", []) for s in band[:2]} | ({LAYOUT["dome"]} if "dome" in LAYOUT else set())
-		| ({LAYOUT["radome"]["end"]} if "radome" in LAYOUT else set()))
+		| ({LAYOUT["radome"]["end"]} if "radome" in LAYOUT else set()) | under)
 	knots = sorted(set(profile) | {(s, radius_at(profile, s)) for s in cuts if profile[0][0] < s < profile[-1][0]})
 	vertices, faces, paints = [], [], []
 	rings = []
@@ -169,9 +215,9 @@ def body():
 			vertices.append(point(s))
 			continue
 		ring = []
-		for i in range(SIDES):
+		for roll in rolls:
 			ring.append(len(vertices))
-			vertices.append(point(s, r, 360 * i / SIDES))
+			vertices.append(point(s, r, roll))
 		rings.append(ring)
 	for (s0, _), (s1, _), a, b in zip(knots, knots[1:], rings, rings[1:]):
 		if "dome" in LAYOUT and s1 <= LAYOUT["dome"] + 1e-6:
@@ -180,8 +226,8 @@ def body():
 			paint = "radome"
 		else:
 			paint = paint_at((s0 + s1) / 2)
-		for i in range(SIDES):
-			j = (i + 1) % SIDES
+		for i in range(n):
+			j = (i + 1) % n
 			if len(a) == 1:
 				faces.append((a[0], b[j], b[i]))
 			elif len(b) == 1:
@@ -199,11 +245,11 @@ def body():
 		nozzle = LAYOUT["nozzle"]
 		inner = []
 		for s, r in ((end, nozzle["exit"]), (end - nozzle.get("depth", 3.0), nozzle.get("throat", nozzle["exit"] * 0.6))):
-			inner.append([len(vertices) + i for i in range(SIDES)])
-			vertices.extend(point(s, r, 360 * i / SIDES) for i in range(SIDES))
+			inner.append([len(vertices) + i for i in range(n)])
+			vertices.extend(point(s, r, roll) for roll in rolls)
 		for a, b, paint in ((last, inner[0], "paint"), (inner[0], inner[1], "liner" if "liner" in nozzle else "metal")):
-			for i in range(SIDES):
-				j = (i + 1) % SIDES
+			for i in range(n):
+				j = (i + 1) % n
 				faces.append((a[i], a[j], b[j], b[i]))
 				paints.append(paint)
 		faces.append(tuple(reversed(inner[1])))
@@ -221,17 +267,34 @@ def radius_at(profile, s):
 	return profile[-1][1]
 
 
-def slab(outline, roll, thickness, offset=0.0):
+def slab(outline, roll, thickness, offset=0.0, caps=None):
 	# A planform (station, distance off the axis) as a slab in the plane
-	# through the axis at `roll`, `thickness` inches thick, its middle
-	# `offset` inches along the plane's normal (toward the missile's port
-	# side for an upper right fin, layout's face 1)
+	# through the axis at `roll`, `thickness` inches thick (or a thickness
+	# at each corner, its faces then split into the planar `caps`, lists of
+	# the outline's corners), its middle `offset` inches along the plane's
+	# normal (toward the missile's port side for an upper right fin, layout's
+	# face 1)
 	a = math.radians(roll)
 	normal = Vector((0, -math.cos(a), -math.sin(a)))
 	n = len(outline)
-	vertices = [point(s, r, roll) + normal * ((offset + side * thickness / 2) * INCH) for side in (1, -1) for s, r in outline]
-	faces = [tuple(range(n)), tuple(range(2 * n - 1, n - 1, -1))] + [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
+	widths = thickness if isinstance(thickness, (list, tuple)) else [thickness] * n
+	vertices = [point(s, r, roll) + normal * ((offset + side * t / 2) * INCH) for side in (1, -1) for (s, r), t in zip(outline, widths)]
+	caps = caps or [list(range(n))]
+	faces = [tuple(cap) for cap in caps] + [tuple(n + i for i in reversed(cap)) for cap in caps] + [(i, (i + 1) % n, n + (i + 1) % n, n + i) for i in range(n)]
 	return vertices, faces
+
+
+def wedge(spec):
+	# A fin whose section is a wedge (layout's section): `leading` inches
+	# thick at its leading edge, thickening to `full` over `run` inches aft
+	# of it and full to its trailing edge, its outline's corners leading
+	# root, leading tip, trailing tip, trailing root; as an outline with the
+	# run's line between, each corner's thickness and the two planar caps
+	(lr, lt, tt, tr), sec = spec["outline"], spec["section"]
+	run = sec["run"]
+	outline = [lr, lt, [lt[0] + run, lt[1]], tt, tr, [lr[0] + run, lr[1]]]
+	thickness = [sec["leading"], sec["leading"]] + [sec["full"]] * 4
+	return outline, thickness, [[0, 1, 2, 5], [5, 2, 3, 4]]
 
 
 def fin(kind, which, spec, parent=None):
@@ -239,7 +302,11 @@ def fin(kind, which, spec, parent=None):
 	# plane through the axis at its roll; a movable fin is its own node on its
 	# hinge, turning about the radial line there
 	roll = ROLLS[which]
-	vertices, faces = slab(spec["outline"], roll, spec["thickness"])
+	if "section" in spec:
+		outline, thickness, caps = wedge(spec)
+		vertices, faces = slab(outline, roll, thickness, caps=caps)
+	else:
+		vertices, faces = slab(spec["outline"], roll, spec["thickness"])
 	name = f"{kind}_{which}"
 	hinge = point(spec["hinge"], RADIUS, roll) if "hinge" in spec else None
 	node(name, parent=parent, hinge=hinge, mesh=(vertices, faces))
@@ -458,21 +525,21 @@ def fittings():
 		node("fittings", mesh=(vertices, faces, paints))
 
 
-def lugs():
-	# The launch lugs on top: small blocks the launcher's rail carries, where
-	# layout gives no fittings for them
-	if not LAYOUT.get("lugs") or "fittings" in LAYOUT:
-		return
-	l, w, h = (value(LAYOUT["lug"][k]) for k in ("length", "width", "height"))
-	vertices, faces = [], []
-	for s in LAYOUT["lugs"]:
-		base = len(vertices)
-		for ds in (-l / 2, l / 2):
-			for dz in (-w / 2, w / 2):
-				for dy in (RADIUS - 0.2, RADIUS + h):
-					vertices.append(Vector(((CG - s - ds) * INCH, -dz * INCH, dy * INCH)))
-		faces += [tuple(base + i for i in f) for f in ((0, 1, 3, 2), (4, 6, 7, 5), (0, 2, 6, 4), (1, 5, 7, 3), (0, 4, 5, 1), (2, 3, 7, 6))]
-	node("lugs", mesh=(vertices, faces), paint="metal")
+def rider(obj):
+	# The joint a part moves with (its own or its nearest moving ancestor's),
+	# or None for the missile's rigid frame: hidden.py's group
+	while obj is not None:
+		if obj.name in JOINTS:
+			return obj.name
+		obj = obj.parent
+	return None
+
+
+def cull():
+	# Removes the faces no view can see: inside another part or against one
+	# that moves with it (hidden.py), such as the fittings' feet sunk in the
+	# body, the wings' roots and the skin under the harness cover
+	hidden.remove([o for o in bpy.data.objects if o.type == "MESH"], rider)
 
 
 # The longest piece of the body's skin one island of the atlas holds, inches
@@ -510,8 +577,10 @@ def unwrap(parts):
 		stations = [CG - (v.co.x + origin.x) / INCH for v in face.verts]
 		if max(stations) - min(stations) < 1e-4:
 			continue
-		middle = CG - centre.x / INCH
-		start = next((a for a, b in pieces if a <= middle <= b), 0.0)
+		# the piece its forward edge lies in, so the triangles of a face cut
+		# across a piece's end stay in one island
+		front = min(stations) + 1e-6
+		start = next((a for a, b in pieces if a <= front < b), pieces[-1][0])
 		turn = math.degrees(math.atan2(-centre.y, centre.z)) % 360
 		quarter = (math.floor((turn + 45) / 90) * 90 - 45) % 360
 		for loop in face.loops:
@@ -529,7 +598,7 @@ def unwrap(parts):
 
 def baked(kind, size, parts, emit=None, **options):
 	# One bake into a float image the size of the atlas, as an array (rows
-	# from the atlas's bottom, as Blender keeps them). emit: per material,
+	# from the atlas's bottom, float32, as Blender keeps them). emit: per material,
 	# a function making the shader whose emission is baked
 	image = bpy.data.images.new(kind, size, size, alpha=False, float_buffer=True)
 	image.colorspace_settings.name = "Non-Color"
@@ -547,7 +616,9 @@ def baked(kind, size, parts, emit=None, **options):
 			links.new(emission.outputs["Emission"], nodes["Material Output"].inputs["Surface"])
 			temporary.append(emission)
 	bpy.ops.object.bake(type="EMIT" if emit else kind, use_clear=True, margin=8, **options)
-	pixels = np.array(image.pixels[:]).reshape(size, size, 4)
+	pixels = np.empty(len(image.pixels), np.float32)
+	image.pixels.foreach_get(pixels)
+	pixels = pixels.reshape(size, size, 4)
 	for m in MATERIALS.values():
 		nodes = m.node_tree.nodes
 		for n in [n for n in nodes if n in temporary or n.name.startswith(("RGB", "Geometry", "Object Info"))]:
@@ -557,43 +628,41 @@ def baked(kind, size, parts, emit=None, **options):
 	return pixels
 
 
-def paint():
+def paint(folder=None, keep=None):
 	# The atlas: every part's UVs unique, Cycles' bakes of the ambient
 	# occlusion, the materials' colours, each texel's place and normal and the
-	# part it lies on, then paint.py's colour over them, saved as the base
-	# colour of every material but the glass
+	# part it lies on (bakes()), then paint.py's colour over them, saved as the
+	# base colour of every material but the glass. With a cache folder, the
+	# UVs and bakes come from there when a build has seen everything they come
+	# from (../cache.py); with `keep`, the bakes are saved there too
 	size = LAYOUT["atlas"]
 	parts = [o for o in bpy.data.objects if o.type == "MESH"]
 	for o in parts:
 		o.pass_index = painting.PARTS["body"] if o.name == "body" else painting.PARTS["fin"] if o.name.startswith(("wing_", "fin_", "canard_")) \
 			else painting.PARTS["fittings"] if o.name == "fittings" else painting.PARTS["metal"]
-	unwrap(parts)
-	scene = bpy.context.scene
-	scene.render.engine = "CYCLES"
-	scene.cycles.device = "CPU"
-	scene.cycles.samples = 32
-	scene.world = scene.world or bpy.data.worlds.new("world")
-	scene.world.light_settings.distance = 4 * INCH   # ambient occlusion within the fins' and fittings' reach, not the far side of the body
-	shade = baked("AO", size, parts)[..., 0]
-	normal = baked("NORMAL", size, parts, normal_space="OBJECT")[..., :3] * 2 - 1
-	scene.cycles.samples = 1
-
-	def colour(m, nodes):
-		rgb = nodes.new("ShaderNodeRGB")
-		rgb.outputs[0].default_value = COLOURS[m.name]
-		return rgb.outputs[0]
-
-	albedo = baked("albedo", size, parts, emit=colour)[..., :3]
-	where = baked("where", size, parts, emit=lambda m, nodes: nodes.new("ShaderNodeNewGeometry").outputs["Position"])[..., :3]
-	part = baked("part", size, parts, emit=lambda m, nodes: nodes.new("ShaderNodeObjectInfo").outputs["Object Index"])[..., 0]
+	# the bakes' key: every part's faces, what the unwrap lays the body's skin
+	# by (its pieces' ends; the stations it reads off the vertices hang on the
+	# centre of gravity no more than the faces do), the colours and part
+	# indices baked, and the code that unwraps and bakes
+	key = cache.Key(MISSILE)
+	key.meshes(parts)
+	key.add([size, LENGTH, PIECE, sorted(LAYOUT.get("markings", {}).get("seams", []))],
+		{name: list(c) for name, c in COLOURS.items()}, {o.name: o.pass_index for o in parts})
+	key.code(bakes, baked, unwrap)
+	made = cache.fetch(folder, MISSILE, key, parts, lambda: bakes(parts, size))
+	shade = made["shade"].astype(np.float64)
+	normal = made["normal"].astype(np.float64) * 2 - 1
+	albedo = made["albedo"].astype(np.float64)
+	where = made["where"].astype(np.float64)
+	part = made["part"].astype(np.float64)
 	covered = np.abs(np.linalg.norm(normal, axis=-1) - 1) < 0.1
 	steps = []
 	for a, b in ((where[:, 1:], where[:, :-1]), (where[1:], where[:-1])):
 		d = np.linalg.norm(a - b, axis=-1)
 		steps.append(d[(d > 0) & (d < 0.01)])
 	texel = float(np.median(np.concatenate(steps))) / INCH   # the atlas's usual texel on the missile, inches
-	if "--bakes" in sys.argv:   # the bakes kept for a look at the paint without Blender: --bakes FILE.npz
-		np.savez_compressed(sys.argv[sys.argv.index("--bakes") + 1], albedo=albedo, shade=shade, where=where, normal=normal, part=part, texel=texel, centre=CG)
+	if keep:   # the bakes kept for a look at the paint without Blender: --bakes FILE.npz
+		np.savez_compressed(keep, albedo=albedo, shade=shade, where=where, normal=normal, part=part, texel=texel, centre=CG)
 	out = painting.colour(dict(LAYOUT, wear=value(FACTS["layout"]["wear"])), CG, albedo, shade, where, normal,
 		np.rint(part).astype(int), np.full(shade.shape, texel))
 	# texels no part covers: the paint, so the atlas's smaller mip levels bleed no black into the edges
@@ -615,9 +684,36 @@ def paint():
 		m.node_tree.links.new(texture.outputs["Color"], nodes["Principled BSDF"].inputs["Base Color"])
 
 
+def bakes(parts, size):
+	# The atlas's UVs (unwrap()) and Cycles' bakes on them, as their pixels
+	# (rows from the atlas's bottom): the ambient occlusion, the normals in
+	# the missile's axes, each material's colour, each texel's place and the
+	# part it lies on (its pass index)
+	unwrap(parts)
+	scene = bpy.context.scene
+	scene.render.engine = "CYCLES"
+	scene.cycles.device = "CPU"
+	scene.cycles.samples = 32
+	scene.world = scene.world or bpy.data.worlds.new("world")
+	scene.world.light_settings.distance = 4 * INCH   # ambient occlusion within the fins' and fittings' reach, not the far side of the body
+	shade = baked("AO", size, parts)[..., 0]
+	normal = baked("NORMAL", size, parts, normal_space="OBJECT")[..., :3]
+	scene.cycles.samples = 1
+
+	def colour(m, nodes):
+		rgb = nodes.new("ShaderNodeRGB")
+		rgb.outputs[0].default_value = COLOURS[m.name]
+		return rgb.outputs[0]
+
+	albedo = baked("albedo", size, parts, emit=colour)[..., :3]
+	where = baked("where", size, parts, emit=lambda m, nodes: nodes.new("ShaderNodeNewGeometry").outputs["Position"])[..., :3]
+	part = baked("part", size, parts, emit=lambda m, nodes: nodes.new("ShaderNodeObjectInfo").outputs["Object Index"])[..., 0]
+	return {"shade": shade, "normal": normal, "albedo": albedo, "where": where, "part": part}
+
+
 def main():
-	rest = sys.argv[sys.argv.index("--") + 2 :]
-	out = [a for i, a in enumerate(rest) if not a.startswith("--") and (i == 0 or rest[i - 1] != "--bakes")]
+	folder, keep = option("--cache"), option("--bakes")
+	out = [a for a in ARGS[1:] if not a.startswith("--")]
 	bpy.ops.wm.read_factory_settings(use_empty=True)
 	body()
 	for kind in ("canards", "wings", "fins"):
@@ -628,10 +724,11 @@ def main():
 			fin(kind[:-1], which, spec)
 			if kind == "wings" and "rollerons" in LAYOUT:
 				rolleron(which, LAYOUT["rollerons"])
-	lugs()
 	fittings()
+	if "--whole" not in sys.argv:   # --whole keeps them: every part a closed solid, for test_build's probes
+		cull()
 	if "--draft" not in sys.argv:
-		paint()
+		paint(folder, keep)
 	bpy.ops.export_scene.gltf(filepath=out[0], export_format="GLB", export_yup=True, use_selection=False,
 		export_apply=False, export_animations=False, export_extras=False)
 	# where the missile sits on its launcher: the top of the body at the

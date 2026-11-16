@@ -68,6 +68,11 @@ function ease(current: number, target: number, dt: number, rate: number): number
   return current + Math.sign(delta) * step
 }
 
+// REACH is how far, in metres, a drawn wheel may be lifted off its authored
+// place, and PACE how fast the lift moves, m/s (oleo's defaults)
+export const REACH = 0.25
+export const PACE = 3
+
 // oleo returns the next vertical offset, in metres, for one drawn wheel.
 //
 // `bottom` is the tyre's lowest point in world y WITH the current offset
@@ -86,8 +91,8 @@ export function oleo(
   ground: number,
   current: number,
   dt: number,
-  reach = 0.25,
-  rate = 3,
+  reach = REACH,
+  rate = PACE,
 ): number {
   if (!Number.isFinite(bottom) || !Number.isFinite(ground) || ground < -1e7)
     return ease(current, 0, dt, rate) // no surface under this wheel

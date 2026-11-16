@@ -17,20 +17,44 @@
 # (verify/photos.py) and the facts check compare.
 #
 # --draft leaves out the paint (the atlas and its ambient-occlusion bake), for
-# quick looks at the shape.
+# quick looks at the shape. --cache DIR keeps the atlases' UVs and bakes there
+# between builds, each under a key of everything it comes from (../cache.py),
+# and takes them from there when nothing they come from has changed: the jet's
+# and the stores' each on its own. --facts FILE builds from another facts file.
+# --keys FILE writes the keys the atlases would bake under, and stops.
 #
-# usage: blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.json [FEATURES.json] [--draft]
-import json, math, sys
+# usage: blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.json [FEATURES.json] [--draft] [--cache DIR] [--facts FILE] [--keys FILE]
+import json, math, re, sys
+from contextlib import contextmanager
 from pathlib import Path
 
 import bmesh
 import numpy as np
 import bpy
-from mathutils import Matrix, Vector
+from mathutils import Matrix, Quaternion, Vector
+from mathutils.geometry import tessellate_polygon
 from mathutils.bvhtree import BVHTree
 
 HERE = Path(__file__).resolve().parent
-FACTS = json.loads((HERE / "facts.json").read_text())
+sys.path.insert(0, str(HERE.parent))
+sys.path.insert(0, str(HERE))
+import cache  # noqa: E402
+import finish  # noqa: E402
+import hidden  # noqa: E402
+ARGS = sys.argv[sys.argv.index("--") + 1 :] if "--" in sys.argv else []
+
+
+def option(name):
+	# An option's value (--name VALUE), taken out of ARGS; None if not given
+	if name not in ARGS:
+		return None
+	i = ARGS.index(name)
+	value = ARGS[i + 1]
+	del ARGS[i : i + 2]
+	return value
+
+
+FACTS = json.loads(Path(option("--facts") or HERE / "facts.json").read_text())
 LAYOUT = FACTS["layout"]
 # Traced by views.py from the NASA figures (run fetch.py and views.py first)
 TRACED = json.loads((HERE / "references" / "sections.json").read_text())["sections"]
@@ -204,12 +228,23 @@ def outward(mesh):
 
 
 def merge(pieces):
-	vertices, faces = [], []
-	for vs, fs in pieces:
+	# Meshes as one; a piece may carry a finish per face (a material's name,
+	# None for the node's own), and then so does the whole
+	vertices, faces, finishes = [], [], []
+	for piece in pieces:
+		vs, fs = piece[0], piece[1]
 		offset = len(vertices)
 		vertices += vs
 		faces += [tuple(i + offset for i in f) for f in fs]
+		finishes += piece[2] if len(piece) > 2 else [None] * len(fs)
+	if any(finishes):
+		return vertices, faces, finishes
 	return vertices, faces
+
+
+def finished(mesh, name):
+	# A mesh with every face in one finish
+	return mesh[0], mesh[1], [name] * len(mesh[1])
 
 
 class Bend:
@@ -270,7 +305,9 @@ MATERIALS = {}
 # in dvids9820808 (the engine lights them at night); burner the afterburner
 # duct's soot, sRGB about 28 (the engine sets its glow); stores the pylons',
 # tanks' and launchers' grey, the airframe's lower grey (layout.paint lower:
-# the real ones carry the airframe's paint), plain: they stay out of the atlas
+# the real ones carry the airframe's paint), plain: they stay out of the atlas.
+# The landing gear's finishes (layout.paint gear: white, rubber, chrome, hub)
+# share the paint's atlas: their colour, shaded, in place of the greys
 def linear(srgb):
 	c = np.asarray(srgb, float) / 255
 	return tuple(float(v) for v in np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)) + (1,)
@@ -278,7 +315,9 @@ def linear(srgb):
 
 COLOURS = {"paint": (0.42, 0.45, 0.48, 1), "team": (0.42, 0.45, 0.48, 1), "glass": (0.1, 0.12, 0.14, 0.4),
 	"lights": (0.34, 0.35, 0.32, 1), "burner": (0.012, 0.011, 0.010, 1), "display": (0.05, 0.08, 0.05, 1),
-	"stores": linear(LAYOUT["paint"]["lower"])}
+	"stores": linear(LAYOUT["paint"]["lower"]), "red": linear(LAYOUT["scoop"]["red"])}
+COLOURS.update({name: linear(c) for name, c in LAYOUT["paint"]["gear"].items()})
+ATLASED = ("paint", "team") + tuple(LAYOUT["paint"]["gear"])   # the materials the atlas paints
 
 
 def material(name):
@@ -305,17 +344,20 @@ BENDING = {}   # each wing's bend under load, for the stores hung under it
 TOPLINE, KEELLINE = [], []
 
 
-def node(name, parent=None, hinge=None, mesh=None, paint="paint"):
+def node(name, parent=None, hinge=None, mesh=None, paint="paint", inside=False):
 	# An object at `hinge` (world space). Its mesh's vertices are given in
 	# world space and stored relative to the hinge. Every ancestor rests
 	# unrotated, so a child's location is its hinge less its parent's.
+	# `inside`: an open shell seen from within (a well), its faces turned in
+	# once tidy() has turned them out
 	if hinge is None:
 		hinge = HINGES[parent].copy() if parent else Vector()
 	data = None
 	if mesh:
-		# a mesh is (vertices, faces), or (vertices, faces, a material per face)
+		# a mesh is (vertices, faces), or (vertices, faces, a material per face,
+		# None for `paint`)
 		vertices, faces = mesh[0], mesh[1]
-		paints = mesh[2] if len(mesh) > 2 else [paint] * len(faces)
+		paints = [n or paint for n in mesh[2]] if len(mesh) > 2 else [paint] * len(faces)
 		data = bpy.data.meshes.new(name)
 		data.from_pydata([v - hinge for v in vertices], [], faces)
 		names = sorted(set(paints))
@@ -325,6 +367,8 @@ def node(name, parent=None, hinge=None, mesh=None, paint="paint"):
 			polygon.material_index = names.index(n)
 		data.validate()
 		tidy(data)
+		if inside:
+			data.flip_normals()
 	obj = bpy.data.objects.new(name, data)
 	bpy.context.scene.collection.objects.link(obj)
 	if parent:
@@ -399,6 +443,7 @@ def bent(name, bend):
 	hinge = HINGES[name]
 	obj.shape_key_add(name="Basis", from_mix=False)
 	key = obj.shape_key_add(name="flex", from_mix=False)
+	key.value = 0.0   # at rest: Blender 5 weights a new key 1, which bent every view and bake to 1 g
 	for i, v in enumerate(obj.data.vertices):
 		p = v.co + hinge
 		key.data[i].co = v.co + R.transposed() @ (bend.moved(p) - (R @ p + t))
@@ -478,7 +523,7 @@ def wing(side):
 		bent(joint_name, bend)
 
 	hinged(f"flap_leading_inner_{name}", spans["lef"]["inner"], inner_lef, (0, inner_lef), FORWARD, DOWN, "slat")
-	hinged(f"flap_trailing_{name}", spans["tef"], 1 - tef, (1 - tef, 1), AFT, DOWN, f"flaperon.{name}")
+	hinged(f"flap_trailing_{name}", spans["tef"], 1 - tef, (1 - tef, 1), AFT, DOWN, f"trailing.{name}")
 	# The outer panel folds about the fold line, carrying its flap and aileron,
 	# as far as the photos fold it (layout.fold): NATOPS's folded span holds at
 	# any angle past 90 deg, where the panel's foot stands outermost
@@ -493,7 +538,7 @@ def wing(side):
 	node(f"wing_outer_{name}", parent=f"wing_{name}", hinge=a, paint="team", mesh=outer)
 	bent(f"wing_outer_{name}", bend)
 	hinged(f"flap_leading_outer_{name}", spans["lef"]["outer"], outer_lef, (0, outer_lef), FORWARD, DOWN, "slat", parent=f"wing_{name}")
-	hinged(f"aileron_{name}", spans["aileron"], 1 - aileron, (1 - aileron, 1), AFT, DOWN, f"flaperon.{name}", parent=f"wing_{name}")
+	hinged(f"aileron_{name}", spans["aileron"], 1 - aileron, (1 - aileron, 1), AFT, DOWN, f"aileron.{name}", parent=f"wing_{name}")
 	SURFACES[f"wing_{name}"] = surface
 	BENDING[name] = bend
 	LANDMARKS[f"wingtip_leading_{name}"] = surface.point(semispan, 0)
@@ -1570,14 +1615,14 @@ def canopy(stations, rings):
 		kinds += [kind] * len(pieces)
 	node("fuselage", mesh=(vertices_, split, kinds))
 	node("windscreen", mesh=mesh(groups["windscreen"]))
-	# The canopy slides 1.5 in aft to unlatch (NATOPS 2.15.1), then swings up
-	# about its aft hinge. The opening angle is provisional until the canopy-
-	# open photos of BuNo 165221 are matched.
+	# The canopy slides aft to unlatch (NATOPS 2.15.1), then swings up about
+	# its aft hinge (layout.motion canopy)
+	motion = LAYOUT["motion"]["canopy"]["value"]
 	hinge = at(back + 1.0, layout["aft"]["waterline"] - 4.0, 0)
 	node("canopy_slide", hinge=hinge)
-	joint("canopy_slide", AFT, AFT, AFT, "canopy", [[0, 0], [0.08, 1.5 * INCH], [1, 1.5 * INCH]], motion="slide")
+	joint("canopy_slide", AFT, AFT, AFT, "canopy", [[0, 0], [motion["unlatch"], motion["slide"] * INCH], [1, motion["slide"] * INCH]], motion="slide")
 	node("canopy", parent="canopy_slide", hinge=hinge, mesh=mesh(groups["canopy"]))
-	joint("canopy", PORT, FORWARD, UP, "canopy", [[0, 0], [0.08, 0], [1, math.radians(45)]])
+	joint("canopy", PORT, FORWARD, UP, "canopy", [[0, 0], [motion["unlatch"], 0], [1, math.radians(motion["open"])]])
 	# Features: the frame's corners and the sill on each side (the column
 	# SILL steps down from the top; the port half runs back up the ring)
 	index = {round(st, 1): r for r, st in enumerate(stations)}
@@ -1713,22 +1758,21 @@ AFT_STATIONS = [412, 420, 435, 450, 470, 490, 510, 530, 550, 570, 590, 610, 630,
 
 def polar(points, centre, angles):
 	# A half-outline (top to keel) resampled at the angles round centre: along
-	# each ray, its farthest crossing
+	# each ray, its farthest crossing (every segment at once, the same sums on
+	# each as one at a time)
 	out = []
-	segments = list(zip(points, points[1:]))
+	ends = np.asarray(points, float)
+	ex, ey = ends[1:, 0] - ends[:-1, 0], ends[1:, 1] - ends[:-1, 1]
+	ox, oy = ends[:-1, 0] - centre[0], ends[:-1, 1] - centre[1]
 	for theta in angles:
 		d = (math.sin(theta), math.cos(theta))
-		best = 0.0
-		for (x0, y0), (x1, y1) in segments:
-			ex, ey = x1 - x0, y1 - y0
-			den = d[0] * ey - d[1] * ex
-			if abs(den) < 1e-12:
-				continue
-			ox, oy = x0 - centre[0], y0 - centre[1]
+		den = d[0] * ey - d[1] * ex
+		crossed = np.abs(den) >= 1e-12
+		with np.errstate(divide="ignore", invalid="ignore"):
 			t = (ox * ey - oy * ex) / den
 			u = (ox * d[1] - oy * d[0]) / den
-			if -1e-9 <= u <= 1 + 1e-9 and t > best:
-				best = t
+		hit = crossed & (u >= -1e-9) & (u <= 1 + 1e-9) & (t > 0.0)
+		best = float(t[hit].max()) if hit.any() else 0.0
 		if theta in (0.0, math.pi) or best == 0.0:
 			# the centreline: the outline's own end, which the ray may graze
 			end = points[0] if theta < 1 else points[-1]
@@ -1959,9 +2003,16 @@ def exit_distance(centre, half, exponent, origin, direction, reach=120.0):
 	# centre, below it), or {"in", "out", "sign"}, the half-widths inboard and
 	# outboard (outboard where dx has the sign), with the exponent then
 	# {"in", "out"} too
+	return exit_distances(centre, half, exponent, origin, [direction], reach)[0]
+
+
+def exit_distances(centre, half, exponent, origin, directions, reach=120.0):
+	# exit_distance() along each of the rays from origin in `directions` at
+	# once (the same sums on each sample, so the same distances)
 	t = np.linspace(0.0, reach, 961)
-	x = origin[0] + direction[0] * t - centre[0]
-	y = origin[1] + direction[1] * t - centre[1]
+	d = np.asarray(directions, float).reshape(-1, 2)
+	x = origin[0] + d[:, :1] * t - centre[0]
+	y = origin[1] + d[:, 1:] * t - centre[1]
 	b = np.where(y > 0, half[1], half[-1])
 	if isinstance(half[0], dict):
 		out = x * half[0]["sign"] > 0
@@ -1970,9 +2021,8 @@ def exit_distance(centre, half, exponent, origin, direction, reach=120.0):
 	else:
 		a = np.where(y > 0, half[0][0], half[0][1]) if isinstance(half[0], tuple) else half[0]
 	inside = np.abs(x / a) ** exponent + np.abs(y / b) ** exponent <= 1.0
-	if not inside.any():
-		return 0.0
-	return float(t[np.nonzero(inside)[0][-1]])
+	last = len(t) - 1 - np.argmax(inside[:, ::-1], axis=1)
+	return [float(t[k]) if hit else 0.0 for k, hit in zip(last.tolist(), inside.any(axis=1).tolist())]
 
 
 def engine_buttline(station):
@@ -2128,11 +2178,11 @@ def union_ring(station, angles=None, sided=True):
 					# deck's own taper with no kink
 					wide = -math.log(math.exp(-wide) + math.exp(-DECK_SIDE))
 				parts.append(((0.0, w), (wide, deck - w, DECK_BELOW), DECK_EXPONENT))
+		directions = [(math.sin(theta), math.cos(theta)) for theta in turns]
+		reaches = list(zip(*(exit_distances(c, h, n, centre, directions) for c, h, n in parts)))
 		ring = []
-		for theta in turns:
-			direction = (math.sin(theta), math.cos(theta))
-			reaches = [exit_distance(c, h, n, centre, direction) for c, h, n in parts]
-			r = sum(x ** 10 for x in reaches) ** 0.1
+		for direction, each in zip(directions, reaches):
+			r = sum(x ** 10 for x in each) ** 0.1
 			ring.append((centre[0] + direction[0] * r, centre[1] + direction[1] * r))
 		return ring
 
@@ -2147,6 +2197,11 @@ def union_ring(station, angles=None, sided=True):
 		side = assembled(width)
 		ring = [(x0 + (x1 - x0) * weight, y0 + (y1 - y0) * weight) for (x0, y0), (x1, y1) in zip(ring, side)]
 	ring = doored(station, ring)
+	if sided:
+		# the band on the sided outline alone: the columns are spaced along
+		# the unsided one (along()), and shortened by the tunnel's walls it
+		# moved every column round the section, the upper skin's with them
+		ring = floored(station, centre, ring)
 	shape = bay(station, centre, ring) if sided else None
 	if angles is DENSE:
 		BAYS[(round(station, 4), sided)] = shape
@@ -2240,6 +2295,45 @@ def doored(station, ring):
 		across = ease((abs(x) - inner) / 4.0) * ease((outer - abs(x)) / 4.0)
 		height = 1.0 - ease((y - own) / band)
 		out.append((x, y - depth * across * height))
+	return out
+
+
+def floored(station, centre, ring):
+	# layout.band: between the nacelles the photos see the belly as a nearly
+	# flat band level with the main gear inner doors' inboard edges, crowned on
+	# the centreline, where the HATP fit hollowed a tunnel 6-8 in deeper. Under
+	# the nacelles' inner halves (out to the band's reach) the outline takes a
+	# line across the buttlines through the band's centre, the doors' inboard
+	# edges where they run and the outline's own height at the reach, a
+	# monotone cubic, mirrored so the crown is level; eased in from the
+	# forebody and out to the tail over the band's fades, the edge held past
+	# its ends (a knot that came and went with the station creased the skin
+	# 6 deg there). Ahead of the first drain the centre runs on from the
+	# forebody's keel (layout.belly)
+	band = LAYOUT["band"]
+	f0, f1, f2, f3 = band["fade"]
+	if not f0 < station < f3:
+		return ring
+	weight = ease((station - f0) / (f1 - f0)) if station < f1 else ease((f3 - station) / (f3 - f2)) if station > f2 else 1.0
+	reach = band["reach"]
+	# the lower outline: below the nacelles' centre line (the core's mid-height
+	# lies above the nacelles' tops aft, which lie inside the reach)
+	below = nacelle_at(station)[1]
+	lower = [(x, y) for x, y in ring if y < below]
+	# the outline's own height at the reach: the lowest crossing of that buttline
+	crossings = [y0 + (y1 - y0) * (reach - x0) / (x1 - x0) for (x0, y0), (x1, y1) in zip(lower, lower[1:]) if (x0 - reach) * (x1 - reach) <= 0 and x0 != x1]
+	if not crossings:
+		return ring
+	edge = min(crossings)
+	floor = band["floor"]
+	b = smooth([(k[0], k[1]) for k in floor], station)
+	w = smooth([(k[0], k[2]) for k in floor], station)
+	knots = [(0.0, smooth([tuple(k) for k in band["centre"]], station)), (b, w), (-b, w), (reach, edge), (-reach, edge)]
+	out = []
+	for x, y in ring:
+		if y < below and abs(x) < reach:
+			y += (smooth(knots, abs(x)) - y) * weight
+		out.append((x, y))
 	return out
 
 
@@ -2347,9 +2441,8 @@ def lamps():
 	# lights): the strips on the fins' and the nacelles' outboard faces, the
 	# strobes' lenses on the fins' faces, the position lights' on the LEX's
 	# edges and the white one closing the right fin's upper pod, each flush
-	# on what it stands on. The tip launchers' strips stand on the launchers
-	# (stores, step 5) and the lights at the wing's fold on a fairing the
-	# build does not carry: those stay points. Lenses' sizes are estimated
+	# on what it stands on. The tip launchers' strips are built with the
+	# launchers (stores()). Lenses' sizes are estimated
 	strips, points = LAYOUT["strips"], LAYOUT["lights"]["points"]
 	lens = 2.0   # in across a lens, estimated
 	for side in (-1, 1):
@@ -2677,9 +2770,10 @@ def pod(front, back, radius, sides=14):
 	return loft(rings)
 
 
-def tyre(centre, axis, radius, width, hub=0.55, sides=28):
+def tyre(centre, axis, radius, width, hub, finish, sides=28):
 	# A tyre and wheel: a rounded tread round the axis, its sidewalls
-	# dished in to the hub
+	# dished in to the hub, `hub` of the tyre's radius (layout.gear tyres),
+	# whose two faces close it, in their `finish`; the tyre in rubber
 	axis = axis.normalized()
 	u = axis.orthogonal().normalized()
 	v = axis.cross(u)
@@ -2691,15 +2785,23 @@ def tyre(centre, axis, radius, width, hub=0.55, sides=28):
 		a = 2 * math.pi * i / sides
 		radial = u * math.cos(a) + v * math.sin(a)
 		rings.append([centre + radial * d + axis * z for d, z in profile])
-	# a closed torus: loft round the circle, then close the seam
+	# the tread and sidewalls lofted round the circle, then each hub's face a
+	# fan from its middle to the sidewall's inner ring
 	vertices = [p for ring in rings for p in ring]
 	n = len(profile)
 	faces = []
 	for i in range(sides):
 		a, b = i * n, ((i + 1) % sides) * n
 		faces += [(a + j, a + j + 1, b + j + 1, b + j) for j in range(n - 1)]
-		faces.append((a + n - 1, a, b, b + n - 1))
-	return vertices, faces
+	finishes = ["rubber"] * len(faces)
+	for j, z in ((0, -w * 0.7), (n - 1, w * 0.7)):
+		middle = len(vertices)
+		vertices.append(centre + axis * z)
+		for i in range(sides):
+			a, b = i * n + j, ((i + 1) % sides) * n + j
+			faces.append((middle, b, a) if j == 0 else (middle, a, b))
+			finishes.append(finish)
+	return vertices, faces, finishes
 
 
 def plate(corner, along, across, thickness):
@@ -2730,7 +2832,7 @@ def chain(joints):
 
 
 def rested(mesh, undo):
-	return [undo @ v for v in mesh[0]], mesh[1]
+	return ([undo @ v for v in mesh[0]], *mesh[1:])
 
 
 def built(names):
@@ -2757,7 +2859,231 @@ def crossings(tree, start, direction):
 		travelled += 1e-5
 
 
-SHOWN = [[0, 0], [0.95, 0], [1, 1]]   # a part shown only with its drive nearly full: the gear's folding braces
+STROKE = [round(k / 24, 4) for k in range(25)]   # the gear drive's samples for the braces' solved keys
+BRACES = []   # the gear's braces, built once the whole airframe is (braces())
+# Each well's opening in the skin, cut once the airframe is built (wells()):
+# {well: {"below": bool, "pieces": [a door's plan outline, [[FS, BL], ...]]}}
+# for the doors and the speedbrake, as cut() copied them; the probe's is its
+# door's stations and angles, {"probe": {"shell": (from, to, upper, lower)}}
+OPENINGS = {}
+
+
+def turning(hinge, axis, angle):
+	# A turn by `angle` about `axis` through `hinge`
+	return Matrix.Translation(hinge) @ Matrix.Rotation(angle, 4, axis) @ Matrix.Translation(-hinge)
+
+
+def placed(name, drives):
+	# A node's move from rest under the drives ({drive: value}): its own and
+	# its ancestors' joints, each about or along its axis through its hinge as
+	# it rests (every node rests unrotated)
+	move, obj = Matrix.Identity(4), NODES[name]
+	while obj is not None:
+		j = JOINTS.get(obj.name)
+		if j and j["motion"] in ("rotate", "slide"):
+			axis = Vector((j["axis"][0], -j["axis"][2], j["axis"][1]))
+			value = interp(j["keys"], drives.get(j["drive"], 0.0))
+			move = (turning(HINGES[obj.name], axis, value) if j["motion"] == "rotate" else Matrix.Translation(axis.normalized() * value)) @ move
+		obj = obj.parent
+	return move
+
+
+def enclosed(tree, p):
+	# Whether a point is enclosed by a tree's surfaces: a ray along each axis,
+	# both ways, meets one (check.py's enclosed())
+	return all(tree.ray_cast(p, d)[0] is not None for d in (FORWARD, AFT, PORT, -PORT, UP, DOWN))
+
+
+def room(skin, parts, a, b, radius, skip=0.0):
+	# The least room round a tube of the given radius from a to b, in: to the
+	# skin, as far outside it as it stands where it leaves it, and to the other
+	# parts (trees); `skip` the share of its length at a left out, where it is
+	# pinned to what it rides
+	least = math.inf
+	for k in range(9):
+		p = a.lerp(b, skip + (1 - skip) * k / 8)
+		gap = skin.find_nearest(p)[3] / INCH
+		least = min(least, gap - radius if enclosed(skin, p) else -gap - radius)
+		for tree in parts:
+			least = min(least, tree.find_nearest(p)[3] / INCH - radius)
+	return least
+
+
+def scoop():
+	# The FCS ram air scoop (layout.scoop): a can under the right LEX whose end
+	# is the round cap the photos see flush in its sub-panel, and which AV COOL
+	# EMERG swings out about a hinge at the cap's aft edge until its mouth
+	# faces forward (layout.motion scoop, NATOPS 2.16.7). Its body red, its
+	# end the airframe's paint
+	s, m = LAYOUT["scoop"], LAYOUT["motion"]["scoop"]["value"]
+	skin = built(["fuselage"])
+	cap, normal = skin.find_nearest(at(*s["cap"]))[:2]
+	normal = normal.normalized()
+	if normal.y > 0:
+		normal = -normal   # outward, to starboard
+	forward = (FORWARD - normal * FORWARD.dot(normal)).normalized()
+	radius = s["diameter"] / 2
+	centre = cap + normal * (0.05 * INCH)   # standing just proud of the skin, as the flush doors do
+	hinge = centre - forward * (radius * INCH)
+	vertices, faces = cylinder(centre, centre - normal * (s["length"] * INCH), radius, sides=16)
+	node("scoop", hinge=hinge, mesh=(vertices, faces, ["red"] * 16 + ["paint", "red"]))
+	joint("scoop", forward.cross(normal), -normal, forward, "scoop", [[0, 0], [1, round(math.radians(m["travel"]), 4)]])
+	MARKS["scoop_cap"] = (centre, "scoop")
+
+
+def drag_brace(pin, top, undo, skin, parts):
+	# The nose leg's drag brace (decision 17), telescopic (layout.gear): the
+	# tube the photos see from its pin on the post up to where it enters the
+	# bay, and a hidden rod on from there to a pin in the airframe, straight
+	# with the gear down and drawn out of the tube as the leg swings forward.
+	# The rod is the shortest that keeps its tip in the tube with the gear down
+	# and reaches into it layout.motion braces' overlap at full stretch, with
+	# both inside the skin stowed and the rod inside it with the gear down: a
+	# longer rod buys under 0.05 in of room an inch, so the most room has no
+	# end short of the fuselage's top.
+	length = (top - pin).length
+	w = (top - pin).normalized()
+	rest = undo @ pin
+	carry = [placed("gear_nose_strut", {"gear": d}) for d in STROKE]
+	feet = [c @ rest for c in carry]
+	b = LAYOUT["motion"]["braces"]["value"]
+	tube, rod, overlap = 1.9, b["rod"] / 2, b["overlap"] * INCH
+	best = None
+	for hidden in range(0, 41):
+		end = top + w * (hidden * INCH)
+		reach = max((end - f).length for f in feet) - length + overlap
+		if reach > min((end - f).length for f in feet) - 2 * INCH:
+			continue   # the rod's tip would leave the tube's bottom
+		terms = (room(skin, parts, rest, rest + (end - rest).normalized() * length, tube, 0.15),
+			room(skin, parts, end, end + (rest - end).normalized() * reach, rod), room(skin, [], top, end, rod, 0.15) if hidden else math.inf)
+		if min(terms) > 0:
+			best = (min(terms), hidden, end, reach, terms)
+			break
+	score, hidden, end, reach, terms = best
+	print(f"nose drag brace: rod's pin {hidden} in above the tube's top, the rod {reach / INCH:.1f} in long, {score:.2f} in of room at its least",
+		"(tube stowed, rod stowed, rod hidden gear down:", ", ".join(f"{t:.2f}" for t in terms) + ")")
+	axis = undo.to_3x3() @ PORT
+	toward = (end - rest).normalized()
+	node("gear_nose_brace", parent="gear_nose_strut", hinge=rest, mesh=cylinder(rest, rest + toward * length, tube, 1.4), paint="white")
+	targets = [(c.to_3x3().inverted() @ (end - f)).normalized() for c, f in zip(carry, feet)]
+	joint("gear_nose_brace", axis, toward, axis.cross(toward), "gear",
+		[[d, round(math.atan2(axis.dot(toward.cross(v)), toward.dot(v)), 4)] for d, v in zip(STROKE, targets)])
+	down = (rest - end).normalized()
+	node("gear_nose_brace_upper", hinge=end, mesh=cylinder(end, end + down * reach, rod), paint="white")
+	joint("gear_nose_brace_upper", axis, down, axis.cross(down), "gear",
+		[[d, round(math.atan2(axis.dot(down.cross((f - end).normalized())), down.dot((f - end).normalized())), 4)] for d, f in zip(STROKE, feet)])
+
+
+def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing, strut_undo):
+	# A main leg's side brace and connecting link (layout.gear legs main,
+	# layout.motion braces), each between a pin in the structure and a point
+	# riding the leg, at each of the gear's steps. The leg turns about the
+	# trunnion's axis by the swing times one less the gear; the brace's halves,
+	# the link and the bell crank hinge about axes along it, so that turn
+	# keeps each in its plane square to the axis and their ends meet exactly
+	m, b = LAYOUT["gear"]["legs"]["main"], LAYOUT["motion"]["braces"]["value"]
+	steps = [k / 20 for k in range(21)]
+	n = axis.normalized()
+
+	def carry(p, t):
+		return trunnion + Matrix.Rotation(swing * (1 - t), 3, n) @ (p - trunnion)
+
+	def flat(v):
+		return v - n * v.dot(n)
+
+	def angle(u, v):
+		u, v = flat(u), flat(v)
+		return math.atan2(n.dot(u.cross(v)), u.dot(v))
+
+	def on(start, direction, waterline):
+		# where a line reaches a waterline (the model's z is up)
+		return start + direction * ((waterline - 105.0) * INCH - start.z) / direction.z
+
+	def meet(origin, target, first, second, sense):
+		# where two members from origin and target meet, square to the axis:
+		# first's length from origin, second's from target, in the plane, the
+		# joint to one side
+		q = flat(target - origin)
+		d = min(q.length, first + second - 1e-9)
+		x = (d * d + first * first - second * second) / (2 * d)
+		h = math.sqrt(max(first * first - x * x, 0.0))
+		u = q.normalized()
+		return origin + u * x + n.cross(u) * (sense * h)
+
+	# The side brace folds at its knee: its lower half from the bolt on the
+	# post's lower casting, its upper on up its axis to the pin, straight
+	# with the gear down
+	bolt = at(m["brace"][1][0], m["brace"][1][1], side * m["brace"][1][2])
+	seen = at(m["brace"][0][0], m["brace"][0][1], side * m["brace"][0][2])
+	pin = on(bolt, (seen - bolt).normalized(), b["side"]["pin"])
+	straight = bolt + (pin - bolt) * b["side"]["knee"]
+	rise = n * (straight - pin).dot(n)   # the knee's offset along the axis, which no turn changes
+	upper, lower = flat(straight - pin).length, flat(bolt - straight).length
+	bolts = [carry(bolt, t) for t in steps]
+	radius = b["link"] / 2
+
+	def folded(sense):
+		return [meet(pin, q, upper, lower, sense) + rise for q in bolts]
+	knees = max((folded(sense) for sense in (1, -1)), key=lambda k: min(room(skin, [], pin, k[0], radius), room(skin, [], k[0], bolts[0], radius, 0.15)))
+	k0, q0 = knees[0], bolts[0]
+	off = max((k + (q - k) - q).length for k, q in zip(knees, bolts))
+	print(f"{leg} side brace: halves {(straight - pin).length / INCH:.1f} and {(bolt - straight).length / INCH:.1f} in, its knee turning {math.degrees(abs(angle(k0 - pin, knees[-1] - pin))):.0f} deg")
+	node(f"{leg}_brace_upper", hinge=pin, mesh=cylinder(pin, k0, radius), paint="white")
+	joint(f"{leg}_brace_upper", n, flat(k0 - pin), n.cross(flat(k0 - pin)), "gear", [[t, round(angle(k0 - pin, k - pin), 4)] for t, k in zip(steps, knees)])
+	node(f"{leg}_brace", parent=f"{leg}_brace_upper", hinge=k0, mesh=cylinder(k0, q0, radius), paint="white")
+	joint(f"{leg}_brace", n, flat(q0 - k0), n.cross(flat(q0 - k0)), "gear",
+		[[t, round(angle(q0 - k0, q - k) - angle(k0 - pin, k - pin), 4)] for t, k, q in zip(steps, knees, bolts)])
+	MARKS[f"brace_bolt_{name}"] = (q0, f"{leg}_brace")
+	# The connecting link, rigid, from its pin in the structure down its axis
+	# to the bell crank's pin; the crank, on a bracket off the arm's pivot
+	# boss with its arm square to the link, turns to hold the link's length
+	# as the leg swings (the turn the planing link carries to the axle)
+	link = m["link"]
+	direction = Vector((-link["direction"][0], -side * link["direction"][2], link["direction"][1])).normalized()
+	through = at(link["through"][0], link["through"][1], side * link["through"][2])
+	top, crank_pin = on(through, direction, b["connecting"]["pin"]), on(through, direction, b["connecting"]["crank"])
+	across = n.cross(flat(direction)).normalized()
+	if (crank_pin + across - pivot).length > (crank_pin - across - pivot).length:
+		across = -across   # toward the arm's pivot
+	centre = crank_pin + across * (b["connecting"]["arm"] * INCH)
+	length, height = flat(top - crank_pin).length, (top - crank_pin).dot(n)
+
+	def held(t, guess):
+		# the crank's turn that holds the link's length at gear t, near a guess
+		def gap(phi):
+			return flat(carry(centre + Matrix.Rotation(phi, 3, n) @ (crank_pin - centre), t) - top).length - length
+		lo, hi = guess - 1.0, guess + 1.0
+		if gap(lo) * gap(hi) > 0:
+			raise SystemExit(f"{leg} connecting link: the crank cannot hold its length at gear {t}")
+		while hi - lo > 1e-7:
+			mid = (lo + hi) / 2
+			lo, hi = (lo, mid) if gap(lo) * gap(mid) <= 0 else (mid, hi)
+		return (lo + hi) / 2
+	phis = [0.0]
+	for t in reversed(steps[:-1]):
+		phis.append(held(t, phis[-1]))
+	phis = list(reversed(phis))   # by step, gear 0 to 1
+	pins = [carry(centre + Matrix.Rotation(phi, 3, n) @ (crank_pin - centre), t) for t, phi in zip(steps, phis)]
+	print(f"{leg} connecting link: {(top - crank_pin).length / INCH:.1f} in, its crank's arm {(crank_pin - centre).length / INCH:.1f} in turning {math.degrees(max(phis) - min(phis)):.1f} deg")
+	node(f"{leg}_link", hinge=top, mesh=cylinder(top, pins[0], b["connecting"]["diameter"] / 2), paint="chrome")
+	joint(f"{leg}_link", n, flat(pins[0] - top), n.cross(flat(pins[0] - top)), "gear", [[t, round(angle(pins[0] - top, p - top), 4)] for t, p in zip(steps, pins)])
+	collar = (on(through, direction, link["collars"][0][1]) - top).length
+	MARKS[f"link_collar_{name}"] = (top + (pins[0] - top).normalized() * collar, f"{leg}_link")
+	# the crank: a bar from its boss to the link's pin, riding the leg, at
+	# rest turned as with the gear stowed
+	rest_pin = centre + Matrix.Rotation(phis[0], 3, n) @ (crank_pin - centre)
+	node(f"{leg}_crank", parent=f"{leg}_strut", hinge=strut_undo @ centre,
+		mesh=rested(merge([cylinder(centre, rest_pin, 0.8), cylinder(centre - n * (1.0 * INCH), centre + n * (1.0 * INCH), 1.3)]), strut_undo), paint="white")
+	arm = strut_undo.to_3x3() @ flat(rest_pin - centre)
+	joint(f"{leg}_crank", n, arm, n.cross(arm), "gear", [[t, round(phi - phis[0], 4)] for t, phi in zip(steps, phis)])
+	# the post's lower casting's fittings, riding the post: a lug out to the
+	# side brace's bolt with the bolt's boss along the axis the brace turns
+	# about, and the crank's bracket from the pivot boss (within its length,
+	# gear()) out to the crank's pin
+	root = trunnion + (fork - trunnion).normalized() * (bolt - trunnion).dot((fork - trunnion).normalized())
+	base = pivot + out * max(-4.5 * INCH, min(2.5 * INCH, (centre - pivot).dot(out)))
+	node(f"{leg}_casting", parent=f"{leg}_strut", hinge=strut_undo @ centre, mesh=rested(merge([cylinder(root, bolt, 1.0),
+		cylinder(bolt - n * (1.2 * INCH), bolt + n * (1.2 * INCH), 1.2), cylinder(base, centre, 1.0)]), strut_undo), paint="white")
 
 
 def gear():
@@ -2788,48 +3114,107 @@ def gear():
 		fork = pivot - out * (3.0 * INCH) + UP * (1.5 * INCH)
 		extended = (fork - top).normalized()
 		trunnion = top - extended * (8.0 * INCH)
-		# stowed aft, 19 deg inboard and 3 deg up: the most room round the
-		# post and wheel inside the nacelle, the wheel within 14 deg of flat
-		inboard, up = math.radians(19), math.radians(3)
-		stowed = Vector((-math.cos(up) * math.cos(inboard), side * math.cos(up) * math.sin(inboard), math.sin(up)))
-		swing = math.acos(max(-1.0, min(1.0, stowed.dot(extended))))
-		axis = stowed.cross(extended).normalized()
-		# post swing, then a quarter turn about the post that stands the
-		# wheel up from lying flat in the nacelle, each side the mirror of the other
-		frames = chain([(trunnion, axis, swing), (trunnion, -side * extended, math.pi / 2)])
-		strut_undo, twist_undo = frames[0][2], frames[1][2]
-		node(f"{leg}_strut", hinge=trunnion, mesh=rested(merge([cylinder(trunnion, fork, m["post"] / 2),
-			cylinder(pivot - out * (4.5 * INCH), pivot + out * (2.5 * INCH), 2.0)]), strut_undo))
-		joint(f"{leg}_strut", frames[0][1], AFT, extended, "gear", [[0, 0], [1, swing]])
-		# the side brace, which folds as the leg retracts: one rigid part
-		# cannot, so it is shown only with the gear down
-		brace = [at(f, w, side * b) for f, w, b in m["brace"]]
-		node(f"{leg}_brace", parent=f"{leg}_strut", hinge=strut_undo @ brace[0], mesh=rested(cylinder(brace[0], brace[1], 0.9), strut_undo))
-		joint(f"{leg}_brace", UP, UP, UP, "gear", SHOWN, motion="show")
-		node(f"{leg}_twist", parent=f"{leg}_strut", hinge=frames[1][0])
-		joint(f"{leg}_twist", frames[1][1], Vector((0, 0, 1)), Vector((0, 0, 1)), "gear", [[0, 0], [1, math.pi / 2]])
-		# the trailing arm, from the pivot back to the wheel's inboard face:
-		# the leg's compression turns it about the pivot, the axle rising by
-		# the oleo drive's metres
+		# Stowed as Grandmont 2009 has the mechanism (layout.motion stowed):
+		# the whole leg turns about one trunnion axis, never about its post;
+		# the shrink link draws the shock absorber in, turning the trailing
+		# arm up about its pivot; the axle and wheel turn a quarter about an
+		# axis at the arm's end. The facts give the left leg in stations,
+		# waterlines and buttlines, the right its mirror; the model's frame
+		# reflects them, so an axis (a, b, c) there is (a, c, -b) here
+		stow = LAYOUT["motion"]["stowed"]["value"]["main"]
+
+		def turned(v):
+			x, w, b = v if side < 0 else (-v[0], -v[1], v[2])
+			return Vector((x, b, -w)).normalized()
 		face = axle - out * (g["tyres"]["main"]["width"] / 2 * INCH)
-		eye = pivot.lerp(face, m["shock"][1])
-		shock_top = at(m["shock"][0][0], m["shock"][0][1], side * m["shock"][0][2])
-		gland = shock_top.lerp(eye, 0.45)
-		# the shock absorber, from the airframe to the arm, shown with the gear
-		# down as the brace is
-		node(f"{leg}_shock", parent=f"{leg}_twist", hinge=twist_undo @ shock_top,
-			mesh=rested(merge([cylinder(shock_top, gland, 1.3), cylinder(gland, eye, 1.8)]), twist_undo))
-		joint(f"{leg}_shock", UP, UP, UP, "gear", SHOWN, motion="show")
-		turn = twist_undo.to_3x3()
-		node(f"{leg}_oleo", parent=f"{leg}_twist", hinge=twist_undo @ pivot, mesh=rested(cylinder(pivot, face, 2.6, 1.8), twist_undo))
-		joint(f"{leg}_oleo", turn @ out, turn @ (face - pivot), turn @ UP, f"oleo.{name}", [[0, 0], [1, round(1 / (face - pivot).length, 4)]])
-		wheel_axis = out
-		node(f"{leg}_wheel", parent=f"{leg}_oleo", hinge=twist_undo @ axle, mesh=rested(tyre(axle, wheel_axis, main_r, g["tyres"]["main"]["width"]), twist_undo))
+		shock = m["shock"]
+		shock_top, eye = (at(f, w, side * b) for f, w, b in shock["ends"])
+		reach = (face - pivot).length
+		lever = out if out.cross(face - pivot).dot(UP) > 0 else -out
+		# the arm's turn that draws the shock absorber in by the shrink
+		length, lo, hi = (eye - shock_top).length, 0.0, 1.2
+		for _ in range(60):
+			mid = (lo + hi) / 2
+			lo, hi = (mid, hi) if (pivot + Matrix.Rotation(mid, 3, lever) @ (eye - pivot) - shock_top).length > length - stow["shrink"] * INCH else (lo, mid)
+		shrink = (lo + hi) / 2
+		drawn = Matrix.Rotation(shrink, 3, lever)
+		swing, quarter = math.radians(stow["swing"]), math.pi / 2
+		# the axle's axis with the arm drawn up, as it lies with the arm down
+		turn_axis = drawn.inverted() @ turned(stow["turn"])
+		frames = chain([(trunnion, turned(stow["axis"]), -swing), (pivot, lever, -shrink), (eye, turn_axis, -quarter)])
+		strut_undo, shrink_undo, axle_undo = (f[2] for f in frames)
+		boss = cylinder(pivot - out * (4.5 * INCH), pivot + out * (2.5 * INCH), 2.0)
+		node(f"{leg}_strut", hinge=trunnion, mesh=rested(merge([cylinder(trunnion, fork, m["post"] / 2), boss]), strut_undo), paint="white")
+		stowed_post = strut_undo.to_3x3() @ extended
+		joint(f"{leg}_strut", frames[0][1], stowed_post, extended, "gear", [[0, 0], [1, round(swing, 4)]])
+		# the shrink link's turn of the arm, and the leg's own compression on
+		# the ground (the oleo drive's metres over the arm's length) below it
+		node(f"{leg}_shrink", parent=f"{leg}_strut", hinge=frames[1][0])
+		rest_turn = shrink_undo.to_3x3()
+		joint(f"{leg}_shrink", frames[1][1], rest_turn @ (eye - pivot), strut_undo.to_3x3() @ (eye - pivot), "gear", [[0, 0], [1, round(shrink, 4)]])
+		node(f"{leg}_oleo", parent=f"{leg}_shrink", hinge=frames[1][0], mesh=rested(cylinder(pivot, eye, 2.6, 2.2), shrink_undo), paint="white")
+		joint(f"{leg}_oleo", rest_turn @ lever, rest_turn @ (face - pivot), rest_turn @ UP, f"oleo.{name}", [[0, 0], [1, round(1 / reach, 4)]])
+		# the axle's stub, from the arm's end out to the wheel's inboard face,
+		# turning a quarter with the wheel on it
+		node(f"{leg}_axle", parent=f"{leg}_oleo", hinge=frames[2][0], mesh=rested(cylinder(eye, face, 2.2, 1.8), axle_undo), paint="white")
+		joint(f"{leg}_axle", frames[2][1], axle_undo.to_3x3() @ (axle - eye), shrink_undo.to_3x3() @ (axle - eye), "gear", [[0, 0], [1, round(quarter, 4)]])
+		wheel_turn = axle_undo.to_3x3()
+		node(f"{leg}_wheel", parent=f"{leg}_axle", hinge=axle_undo @ axle,
+			mesh=rested(tyre(axle, out, main_r, g["tyres"]["main"]["width"], g["tyres"]["main"]["hub"], "hub"), axle_undo))
 		# the hub's outer face, where a photo shows the wheel's centre
-		MARKS[f"axle_main_{name}"] = (twist_undo @ (axle + wheel_axis * (g["tyres"]["main"]["width"] * 0.35 * INCH)), f"{leg}_wheel")
+		MARKS[f"axle_main_{name}"] = (axle_undo @ (axle + out * (g["tyres"]["main"]["width"] * 0.35 * INCH)), f"{leg}_wheel")
 		# its centre, where a head-on photo shows the middle of the tyre
-		MARKS[f"wheel_main_{name}"] = (twist_undo @ axle, f"{leg}_wheel")
-		joint(f"{leg}_wheel", turn @ wheel_axis, Vector((0, 0, -1)), FORWARD, f"wheel.{name}", IDENTITY)
+		MARKS[f"wheel_main_{name}"] = (axle_undo @ axle, f"{leg}_wheel")
+		joint(f"{leg}_wheel", wheel_turn @ out, Vector((0, 0, -1)), FORWARD, f"wheel.{name}", IDENTITY)
+		# the shock absorber, from a lug on the post's top casting down to an
+		# eye on the arm: as the shrink link draws the arm up its body turns
+		# about the lug to follow the eye and a sleeve slides its can up over
+		# the body (the gear drive); on the ground the leg's compression does
+		# the same (the oleo drive; the two never move at once)
+		arm = eye - shock_top
+		drawn_eye = pivot + drawn @ (eye - pivot)
+
+		def toward(e, ref, axis):
+			# the turn about `axis` that aims the body from ref at e, in the
+			# plane square to the axis
+			a, c = ref - axis * ref.dot(axis), (e - shock_top) - axis * (e - shock_top).dot(axis)
+			return math.atan2(axis.dot(a.cross(c)), a.dot(c))
+		bend_in = arm.cross(drawn_eye - shock_top).normalized()
+		aim_in = Matrix.Translation(shock_top) @ Matrix.Rotation(toward(drawn_eye, arm, bend_in), 4, bend_in) @ Matrix.Translation(-shock_top)
+		body_undo = strut_undo @ aim_in
+		body_turn = body_undo.to_3x3()
+		steps = [k / 10 for k in range(11)]
+		eyes_in = [pivot + Matrix.Rotation(shrink * (1 - g_), 3, lever) @ (eye - pivot) for g_ in steps]
+		node(f"{leg}_shock_aim", parent=f"{leg}_strut", hinge=strut_undo @ shock_top)
+		aim_keys = [[g_, round(abs(toward(e, drawn_eye - shock_top, bend_in)), 4)] for g_, e in zip(steps, eyes_in)]
+		joint(f"{leg}_shock_aim", strut_undo.to_3x3() @ bend_in, body_turn @ arm, strut_undo.to_3x3() @ arm, "gear", aim_keys)
+		travel = [round(0.05 * k, 2) for k in range(13)]   # the oleo drive, m: the struts' 0.5 m travel and past it
+		eyes = [pivot + Matrix.Rotation(d / reach, 3, lever) @ (eye - pivot) for d in travel]
+		bend = arm.cross(eyes[-1] - shock_top).normalized()
+		if bend.cross(arm).dot(eyes[-1] - eye) < 0:
+			bend = -bend
+		collar = shock_top.lerp(eye, shock["collar"])
+		body, can = (w / 2 for w in shock["diameters"])
+		node(f"{leg}_shock", parent=f"{leg}_shock_aim", hinge=strut_undo @ shock_top, mesh=rested(cylinder(shock_top, collar, body), body_undo), paint="white")
+		joint(f"{leg}_shock", body_turn @ bend, body_turn @ arm, body_turn @ (eyes[-1] - eye), f"oleo.{name}",
+			[[d, round(toward(e, arm, bend), 4)] for d, e in zip(travel, eyes)])
+		# the can drawn up the body by the shrink at rest, the sleeve letting it
+		# back down as the arm lowers
+		drawn_length = (drawn_eye - shock_top).length
+		up_body = -arm.normalized()
+		sleeve = Matrix.Translation(up_body * (length - drawn_length))
+		node(f"{leg}_shock_sleeve", parent=f"{leg}_shock", hinge=body_undo @ (sleeve @ eye))
+		joint(f"{leg}_shock_sleeve", body_turn @ arm, body_turn @ arm, body_turn @ arm, "gear",
+			[[g_, round((e - shock_top).length - drawn_length, 4)] for g_, e in zip(steps, eyes_in)], motion="slide")
+		end = eye - arm.normalized() * (1.5 * INCH)
+		node(f"{leg}_shock_can", parent=f"{leg}_shock_sleeve", hinge=body_undo @ (sleeve @ eye),
+			mesh=rested(merge([cylinder(collar, end, can), cylinder(end, eye, 1.5)]), body_undo @ sleeve), paint="white")
+		joint(f"{leg}_shock_can", body_turn @ arm, body_turn @ arm, body_turn @ -arm, f"oleo.{name}",
+			[[d, round(arm.length - (e - shock_top).length, 4)] for d, e in zip(travel, eyes)], motion="slide")
+		# the side brace and the planing mechanism's connecting link, solved
+		# once the whole airframe is built (main_members())
+		BRACES.append(lambda skin, leg=leg, name=name, side=side, out=out, pivot=pivot, trunnion=trunnion, fork=fork, axis=turned(stow["axis"]), swing=swing, strut_undo=strut_undo:
+			main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing, strut_undo))
 	# The nose leg: a vertical post, the polished piston below it and the
 	# axle trailing behind; it retracts forward; twin wheels; the drag brace
 	# up and aft into the bay; the launch bar raised in front
@@ -2841,7 +3226,8 @@ def gear():
 	extended = DOWN
 	# stowed forward and 6 deg up, the twin wheels clear of the forebody's
 	# lower skin either side of the bay
-	stowed = (FORWARD * math.cos(math.radians(6)) + UP * math.sin(math.radians(6))).normalized()
+	rise = math.radians(LAYOUT["motion"]["stowed"]["value"]["nose"])
+	stowed = (FORWARD * math.cos(rise) + UP * math.sin(rise)).normalized()
 	swing = math.acos(max(-1.0, min(1.0, stowed.dot(extended))))
 	axis = stowed.cross(extended).normalized()
 	frames = chain([(trunnion, axis, swing)])
@@ -2852,34 +3238,37 @@ def gear():
 	reach = (95 - n["brace"][1]) / math.cos(lean)
 	bar_pivot, bar_tip = at(*n["bar"]["pivot"], 0), at(*n["bar"]["tip"], 0)
 	node("gear_nose_strut", hinge=trunnion, mesh=rested(merge([cylinder(trunnion, top, n["post"] / 2),
-		cylinder(at(column, n["bar"]["pivot"][1], 1.6), at(column, n["bar"]["pivot"][1], -1.6), 1.6)]), undo))
+		cylinder(at(column, n["bar"]["pivot"][1], 1.6), at(column, n["bar"]["pivot"][1], -1.6), 1.6)]), undo), paint="white")
 	joint("gear_nose_strut", frames[0][1], stowed, extended, "gear", [[0, 0], [1, swing]])
-	# the drag brace up and aft into the bay, which folds as the leg retracts:
-	# shown with the gear down
-	node("gear_nose_brace", parent="gear_nose_strut", hinge=undo @ pin,
-		mesh=rested(cylinder(pin, pin + (AFT * math.sin(lean) + UP * math.cos(lean)) * (reach * INCH), 1.9, 1.4), undo))
-	joint("gear_nose_brace", UP, UP, UP, "gear", SHOWN, motion="show")
 	# the piston from the post's foot to the axle's fitting, which trails aft to the axle
 	foot = at(column, g["axles"]["nose"] + 1.5, 0)
-	node("gear_nose_oleo", parent="gear_nose_strut", hinge=trunnion, mesh=rested(merge([cylinder(top, foot, n["piston"] / 2),
-		cylinder(foot, axle, 1.6)]), undo))
+	node("gear_nose_oleo", parent="gear_nose_strut", hinge=trunnion, mesh=rested(merge([finished(cylinder(top, foot, n["piston"] / 2), "chrome"),
+		cylinder(foot, axle, 1.6)]), undo), paint="white")
 	joint("gear_nose_oleo", undo.to_3x3() @ UP, UP, UP, "oleo.nose", down, motion="slide")
 	node("gear_nose_steering", parent="gear_nose_oleo", hinge=undo @ trunnion)
 	joint("gear_nose_steering", undo.to_3x3() @ extended, PORT, -PORT, "steering", IDENTITY)
-	wheels = merge([tyre(axle + Vector((0, s * offset * INCH, 0)), PORT, nose_r, g["tyres"]["nose"]["width"]) for s in (-1, 1)] +
+	wheels = merge([tyre(axle + Vector((0, s * offset * INCH, 0)), PORT, nose_r, g["tyres"]["nose"]["width"], g["tyres"]["nose"]["hub"], "white") for s in (-1, 1)] +
 		[cylinder(axle + Vector((0, -6 * INCH, 0)), axle + Vector((0, 6 * INCH, 0)), 1.2)])
-	node("gear_nose_wheel", parent="gear_nose_steering", hinge=undo @ axle, mesh=rested(wheels, undo))
+	node("gear_nose_wheel", parent="gear_nose_steering", hinge=undo @ axle, mesh=rested(wheels, undo), paint="white")
 	for side in (-1, 1):
 		MARKS[f"axle_nose_{side_name(side)}"] = (undo @ (axle + Vector((0, -side * (offset + g["tyres"]["nose"]["width"] * 0.35) * INCH, 0))), "gear_nose_wheel")
 		MARKS[f"wheel_nose_{side_name(side)}"] = (undo @ (axle + Vector((0, -side * offset * INCH, 0))), "gear_nose_wheel")
 	joint("gear_nose_wheel", undo.to_3x3() @ PORT, Vector((0, 0, -1)), FORWARD, "wheel.nose", IDENTITY)
+	top = pin + (AFT * math.sin(lean) + UP * math.cos(lean)) * (reach * INCH)
+	BRACES.append(lambda skin, top=top, undo=undo: drag_brace(pin, top, undo, skin, [built(["gear_nose_wheel", "gear_nose_oleo"])]))
 	# The launch bar: raised as the photos show it, lowered forward until its
-	# tip meets the shuttle 3 in above the deck
+	# tip rests on the deck (layout.motion bar)
 	length = (bar_tip - bar_pivot).length / INCH
 	ground = g["axles"]["nose"] - nose_r
 	raised = math.atan2((bar_tip - bar_pivot).z, (bar_tip - bar_pivot).x)
-	lowered = -math.asin(min(1.0, (n["bar"]["pivot"][1] - ground - 3.0) / length))
-	node("launch_bar", parent="gear_nose_strut", hinge=undo @ bar_pivot, mesh=rested(cylinder(bar_pivot, bar_tip, 1.6, 1.2, sides=8), undo))
+	tip = 1.2   # the bar's radius at its tip, in
+	# its end ring's lowest point on the deck: the axis stands the radius
+	# times the cosine of the bar's slope above it
+	drop = n["bar"]["pivot"][1] - ground - LAYOUT["motion"]["bar"]["value"]["deck"]
+	lowered = -math.asin(min(1.0, drop / length))
+	for _ in range(8):
+		lowered = -math.asin(min(1.0, (drop - tip * math.cos(lowered)) / length))
+	node("launch_bar", parent="gear_nose_strut", hinge=undo @ bar_pivot, mesh=rested(cylinder(bar_pivot, bar_tip, 1.6, tip, sides=8), undo), paint="white")
 	joint("launch_bar", undo.to_3x3() @ PORT, undo.to_3x3() @ (bar_tip - bar_pivot), undo.to_3x3() @ DOWN, "bar", [[0, 0], [1, round(raised - lowered, 4)]])
 	MARKS["launch_bar_tip"] = (undo @ bar_tip, "launch_bar")
 	# The strut's lamps (layout.lights gear, natops 2.6.1.5-6): the landing
@@ -2914,18 +3303,26 @@ def gear():
 	for k in (1, 0, -1):
 		centre = middle + UP * (k * a_["spacing"] * INCH)
 		lenses.append(cylinder(centre, centre - facing * (0.4 * INCH), a_["lens"] / 2))
-	node("gear_nose_lamps", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(housing), undo))
+	node("gear_nose_lamps", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(housing), undo), paint="white")
 	node("lamp_gear_nose", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(lenses), undo), paint="lights")
 
-	def door(node_name, outline, hinge, targets, below=True, curve=None):
+	def door(node_name, well, outline, hinge, targets, below=True, curve=None, corners=None, pairs=None):
 		# A door cut from the skin inside its plan outline ([FS, BL]), hinged
 		# on the skin along `hinge` (two [FS, BL] ends), opened with the gear
 		# by the angle that brings its far edge's ends nearest the photos'
 		# (targets, [FS, WL, BL] each: an open edge's ends, or its one marked
 		# corner). `curve` names its free edge in the features file, an inch
-		# apart along the hinge, for the photos' traces of it
-		mesh = merge([cut(None, None, below=below, outline=piece) for piece in outline])
-		h0, h1 = (draped(belly, f, b, below=below, out=0.15) for f, b in hinge)
+		# apart along the hinge, for the photos' traces of it; `corners` its
+		# closed outline's corners ({mark: [FS, BL]}), on the door, for the
+		# gear-up photos' seams
+		# A hinge end given as [FS, WL, BL] is where the photos fix the axis
+		# (off the skin, inside it); `pairs` fits the turn to named closed
+		# corners ([FS, BL]) and where the photos put each open ([FS, WL, BL])
+		mesh = merge([cut(None, None, below=below, outline=piece, inside="white") for piece in outline])
+		OPENINGS.setdefault(well, {"below": below, "pieces": []})["pieces"] += outline
+		for mark, (f, b) in (corners or {}).items():
+			MARKS[mark] = (draped(belly, f, b, below=below, out=0.15), node_name)
+		h0, h1 = (at(*h) if len(h) == 3 else draped(belly, h[0], h[1], below=below, out=0.15) for h in hinge)
 		axis = (h1 - h0).normalized()
 
 		def off(v):
@@ -2934,9 +3331,13 @@ def gear():
 
 		reach = max(off(v) for v in mesh[0])
 		edge = [v for v in mesh[0] if off(v) > reach - 0.5 * INCH]
-		goals = [at(*t) for t in targets]
-		# for each target the far edge's point nearest it along the hinge
-		ends = [min(edge, key=lambda v: abs((v - g).dot(axis))) for g in goals]
+		if pairs:
+			ends = [draped(belly, f, b, below=below, out=0.15) for (f, b), _ in pairs]
+			goals = [at(*t) for _, t in pairs]
+		else:
+			goals = [at(*t) for t in targets]
+			# for each target the far edge's point nearest it along the hinge
+			ends = [min(edge, key=lambda v: abs((v - g).dot(axis))) for g in goals]
 
 		def miss(turn):
 			R = Matrix.Rotation(turn, 3, axis)
@@ -2946,7 +3347,8 @@ def gear():
 		closed = ends[0] - h0
 		opened = Matrix.Rotation(turn, 3, axis) @ closed
 		node(node_name, hinge=h0, mesh=mesh)
-		joint(node_name, axis, closed, opened, "gear", [[0, 0], [0.15, round(abs(turn), 4)], [1, round(abs(turn), 4)]])
+		share = LAYOUT["motion"]["doors"]["value"]["open"]
+		joint(node_name, axis, closed, opened, "gear", [[0, 0], [share, round(abs(turn), 4)], [1, round(abs(turn), 4)]])
 		if curve:
 			bins = {}
 			for v in edge:
@@ -2971,8 +3373,8 @@ def gear():
 
 	# The nose bay's doors, open while the leg is down (NATOPS 2.10.1): a
 	# forward door each side hinged along the bay's sides, closing toward the
-	# centreline; behind them a long door and a short aft one on the right,
-	# hinged beside the centreline and closing across it
+	# centreline; behind them a long door hinged right of the centreline and
+	# closing across it, to its closed free edge (the views from below)
 	# (the marks' buttlines are the open doors' outer faces, standing off the
 	# skin: each hinge end is on the skin at its mark's height, the free
 	# edge's end moved in by as much)
@@ -2991,45 +3393,54 @@ def gear():
 		edges = [[f, w, side * (b - (mark - on))] for (f, w, b), (_, on, mark) in zip(d["edge"], ends)]
 		reach0 = across(f0, side * b0, opened([f0, side * b0], [0, edges[0][1], edges[0][2]]), 0.0)
 		reach1 = across(f1, side * b1, opened([f1, side * b1], [0, edges[1][1], edges[1][2]]), 0.0)
-		door(f"gear_nose_door_{side_name(side)}", [[[f0, side * b0], [f1, side * b1], [f1, reach1], [f0, reach0]]],
-			[[f0, side * b0], [f1, side * b1]], edges, curve=f"door_nose_forward_edge_{side_name(side)}")
-	for key in ("long", "aft"):
-		d = doors[key]
-		(f0, b0), (f1, b1) = d["hinge"]
-		(e0, _, _), (e1, _, _) = d["edge"]
-		reach0 = across(f0, b0, opened([f0, b0], d["edge"][0]), -20.0)
-		reach1 = across(f1, b1, opened([f1, b1], d["edge"][1]), -20.0)
-		door(f"gear_nose_door_{key}", [[[f0, b0], [f1, b1], [e1, reach1], [e0, reach0]]], [[f0, b0], [f1, b1]], d["edge"])
+		n = f"gear_nose_door_{side_name(side)}"
+		door(n, "nose", [[[f0, side * b0], [f1, side * b1], [f1, reach1], [f0, reach0]]],
+			[[f0, side * b0], [f1, side * b1]], edges, curve=f"door_nose_forward_edge_{side_name(side)}",
+			corners={f"{n}_front_outboard": [f0, side * b0], f"{n}_aft_outboard": [f1, side * b1], f"{n}_aft_inboard": [f1, reach1], f"{n}_front_inboard": [f0, reach0]})
+	d = doors["long"]
+	(f0, b0), (f1, b1) = d["hinge"]
+	(e0, r0), (e1, r1) = d["free"]
+	n = "gear_nose_door_long"
+	door(n, "nose", [[[f0, b0], [f1, b1], [e1, r1], [e0, r0]]], [[f0, b0], [f1, b1]], d["edge"],
+		corners={f"{n}_front_right": [f0, b0], f"{n}_aft_right": [f1, b1], f"{n}_aft_left": [e1, r1], f"{n}_front_left": [e0, r0]})
 	# Each main leg's doors in the blister under its nacelle (layout.nacelle
 	# door), each hanging straight down when open: the inner hinged along the
 	# blister's inner edge, the outer along its outer edge outboard of the leg
 	for side in (-1, 1):
 		name = side_name(side)
-		# the outer door as tall, closed, along the skin from its hinge as the
-		# photos' front edge is open
+		# the outer door from its hinge in to the middle seam, closed as the
+		# views from below put them
 		d = doors["outer"]
 		f0, f1, b = d["hinge"]
-		tall = d["front"][0][1] - d["front"][1][1]
-		h = draped(belly, f0, side * b, below=True)
-		inner = b - 0.5
-		while inner > 16 and (draped(belly, f0, side * inner, below=True) - h).length < tall * INCH:
-			inner -= 0.25
-		# the inner door: forward of the outer door out to its front's
-		# outboard corner, aft of it a strip meeting the outer door's inner
-		# edge; cut as two convex pieces
-		e = doors["inner"]
-		g0, g1, c = e["hinge"]
-		(a0, _), (a1, _), (tip_f, tip_b) = e["outline"]
-		meet = [f0, side * (inner - 0.1)]
-		pieces = [[[a0, side * c], [f0, side * c], meet, [tip_f, side * tip_b]], [[f0, side * c], [a1, side * c], [a1, side * (inner - 0.1)], meet]]
-		door(f"gear_door_inner_{name}", pieces, [[g0, side * c], [g1, side * c]], [[e["low"][0], e["low"][1], side * c]])
-		door(f"gear_door_outer_{name}", [[[f0, side * b], [f1, side * b], [f1, side * inner], [f0, side * inner]]], [[f0, side * b], [f1, side * b]],
-			[[d["front"][1][0], d["front"][0][1] - tall, side * b]])
+		inner = d["seam"]
+		# the inner door's two panels and the outer door, closed as the views
+		# from below put them, each turned open about the axis the gear-down
+		# photos fit (layout.gear doors): the forward panel about an axis
+		# inside the skin, skewed to the centreline; the strip aft of it about
+		# its own inboard edge; the outer door about an axis outboard of its edge
+		def plan(points):
+			return [[fs, side * bl] for fs, bl in points]
+
+		def axis_(points):
+			return [[q[0], q[1], side * q[2]] if len(q) == 3 else [q[0], side * q[1]] for q in points]
+
+		def fitted(free):
+			return [([fs, side * bl], [tf, tw, side * tb]) for (fs, bl), (tf, tw, tb) in free]
+
+		e = doors["inner"]["forward"]
+		door(f"gear_door_inner_{name}", f"main_{name}", [plan(e["outline"])], axis_(e["hinge"]), None, pairs=fitted(e["free"]),
+			corners={f"gear_door_inner_{k}_{name}": [fs, side * bl] for k, (fs, bl) in zip(("front_inboard", "front_outboard", "bend", "aft_outboard", "aft_inboard"), e["outline"])})
+		e = doors["inner"]["strip"]
+		door(f"gear_door_strip_{name}", f"main_{name}", [plan(e["outline"])], axis_(e["hinge"]), None, pairs=fitted(e["free"]),
+			corners={f"gear_door_strip_{k}_{name}": [fs, side * bl] for k, (fs, bl) in zip(("front_inboard", "front_outboard", "aft_outboard", "aft_inboard"), e["outline"])})
+		door(f"gear_door_outer_{name}", f"main_{name}", [[[f0, side * b], [f1, side * b], [f1, side * inner], [f0, side * inner]]], axis_(d["axis"]), None, pairs=fitted(d["free"]),
+			corners={f"gear_door_outer_front_outboard_{name}": [f0, side * b], f"gear_door_outer_aft_outboard_{name}": [f1, side * b],
+				f"gear_door_outer_aft_inboard_{name}": [f1, side * inner], f"gear_door_outer_front_inboard_{name}": [f0, side * inner]})
 
 
 def mechanisms():
-	# The arresting hook, the refuelling probe and its door, the speedbrake
-	# and the boarding ladder. Placements are provisional: the hook's pivot is
+	# The arresting hook, the refuelling probe and its door and the
+	# speedbrake. Placements are provisional: the hook's pivot is
 	# located on the reference photo dvids9820808 (FS 641, WL 80); the rest
 	# wait on photos that show them open.
 	# The keel under the centreline (layout.keel): a narrow wedge from where
@@ -3113,8 +3524,10 @@ def mechanisms():
 	rings = [[shell(st, th, 0.15) for th in angles] + [shell(st, th, -0.1) for th in reversed(angles)] for st in stations]
 	a, b = shell(start, lower, 0.15), shell(end, lower, 0.15)
 	node("probe_door", hinge=a, mesh=loft(rings))
+	OPENINGS["probe"] = {"shell": (start, end, upper, lower)}
+	motion = LAYOUT["motion"]["probe"]["value"]
 	joint("probe_door", b - a, shell((start + end) / 2, upper, 0.15) - shell((start + end) / 2, lower, 0.15), -PORT, "probe",
-		[[0, 0], [0.25, math.radians(80)], [1, math.radians(80)]])
+		[[0, 0], [motion["opening"], math.radians(motion["door"])], [1, math.radians(motion["door"])]])
 	middle = (upper + lower) / 2
 	# its lower corners, the crispest in a photo
 	MARKS["probe_door_front"] = (shell(start, lower, 0.15), "probe_door")
@@ -3124,49 +3537,211 @@ def mechanisms():
 	root, tip = shell(end - 2, middle, -3.5), shell(start + 3, middle, -3.5)
 	PROBE[:] = [tip]
 	node("probe", hinge=root, mesh=merge([cylinder(root, tip, 2.2, 1.9), cylinder(tip, tip + FORWARD * (2 * INCH), 1.9, 1.2)]))
-	joint("probe", UP + PORT * 0.4, FORWARD, -PORT, "probe", [[0, 0], [0.25, 0], [1, math.radians(28)]])
+	joint("probe", UP + PORT * 0.4, FORWARD, -PORT, "probe", [[0, 0], [motion["opening"], 0], [1, math.radians(motion["swing"])]])
 	# Speedbrake: the dorsal panel between the fins, on the spine's skin,
 	# hinged at its forward edge (layout.speedbrake)
 	sb = LAYOUT["speedbrake"]
 	front, back, half = sb["front"], sb["back"], sb["half"]
 	skin_tree = built(["fuselage"])
 	node("speedbrake", hinge=draped(skin_tree, front, 0, out=0.15), mesh=cut((front, back), (-half, half)))
+	OPENINGS["speedbrake"] = {"below": False, "pieces": [[[front, -half], [back, -half], [back, half], [front, half]]]}
 	joint("speedbrake", PORT, AFT, UP, "speedbrake", [[0, 0], [1, math.radians(60)]])
 
 
-def ladder():
-	# The boarding ladder, stowed in its well under the left LEX and rotating
-	# down from its forward beam (NATOPS 2.15.2). The LEX is 2-3 in deep
-	# there, so each rail runs straight on the line that leaves it the most
-	# room between the LEX's lower and upper skins
-	front, length, rails, radius = 300, 92, (-26.0, -38.0), 0.45
-	tree = built(["fuselage", "lex_left"])
-	stations = [front + length * i / 23 for i in range(24)]
-	ends = []
-	for bl in rails:
-		skins = []
-		for st in stations:
-			hits = crossings(tree, at(st, 60, bl), UP)
-			if len(hits) < 2:
-				raise SystemExit(f"ladder: no LEX over BL {bl} at FS {st:.0f}")
-			skins.append((60 + hits[0], 60 + hits[1]))
-		best = None
-		for i in range(61):
-			w0 = skins[0][0] + (skins[0][1] - skins[0][0]) * i / 60
-			for j in range(61):
-				w1 = skins[-1][0] + (skins[-1][1] - skins[-1][0]) * j / 60
-				room = min(min(w - lo, hi - w) for (lo, hi), w in zip(skins, (w0 + (w1 - w0) * k / 23 for k in range(24))))
-				if best is None or room > best[0]:
-					best = (room, w0, w1)
-		if best[0] < radius + 0.1:
-			raise SystemExit(f"ladder: its BL {bl} rail has {best[0]:.2f} in of room in the LEX")
-		ends.append((at(front, best[1], bl), at(front + length, best[2], bl)))
-	(a0, a1), (b0, b1) = ends
-	pieces = [cylinder(a0, a1, radius), cylinder(b0, b1, radius)]
-	pieces += [cylinder(a0.lerp(a1, k * 11 / length), b0.lerp(b1, k * 11 / length), 0.35) for k in range(1, 9)]
-	beam = (a0 + b0) / 2
-	node("ladder", hinge=beam, mesh=merge(pieces))
-	joint("ladder", a0 - b0, AFT, DOWN, "ladder", [[0, 0], [1, math.radians(68)]])
+def wells():
+	# The wells behind the openings (layout.wells): each main gear's bay, the
+	# nose gear's, the speedbrake's and the probe's, a box of walls and a roof
+	# standing on the closed skin; then each opening cut from the skin, the
+	# faces cut() copied for each door, so a closed door fills its own hole.
+	# Every material is two-sided, so the skin's inside shows where a well
+	# reaches past its opening. check.py holds every face inside the airframe
+	w = LAYOUT["wells"]
+	tree = built(["fuselage"])
+	rows, across = 8, 8
+
+	def height(station, buttline, below):
+		# the skin's waterline at a station and buttline, its lower surface
+		# seen from below or its upper from above
+		hit = tree.ray_cast(at(station, -100.0 if below else 300.0, buttline), UP if below else DOWN)[0]
+		if hit is None:
+			raise SystemExit(f"wells: no skin at FS {station:.1f}, BL {buttline:.1f}")
+		return hit.z / INCH + ORIGIN["waterline"]
+
+	def column(station, buttline, bottom, top):
+		# a wall from the skin to the roof
+		return [at(station, bottom + (top - bottom) * k / rows, buttline) for k in range(rows + 1)]
+
+	def section(station, segment, below, depth):
+		# a ring round the well's section: up the low wall, across the roof,
+		# down the high wall; its two ends on the skin
+		_, _, lo, hi, roof = segment
+		top = (lambda bl: height(station, bl, below) - depth) if depth else (lambda bl: roof)
+		low = column(station, lo, height(station, lo, below), top(lo))
+		high = column(station, hi, height(station, hi, below), top(hi))
+		roof_ = [at(station, top(lo + (hi - lo) * j / across), lo + (hi - lo) * j / across) for j in range(1, across)]
+		return low + roof_ + list(reversed(high))
+
+	def bottom(station, b0, b1, below):
+		# the skin across a section between two buttlines, ends left out
+		n = max(2, math.ceil(abs(b1 - b0)))
+		return [at(station, height(station, b0 + (b1 - b0) * j / n, below), b0 + (b1 - b0) * j / n) for j in range(1, n)]
+
+	def cap(station, ring, inner, below):
+		# a section's end wall, less the smaller section it opens into
+		lo, hi = -ring[0].y / INCH, -ring[-1].y / INCH
+		if inner is None:
+			outline = ring + list(reversed(bottom(station, lo, hi, below)))
+		else:
+			i0, i1 = -inner[0].y / INCH, -inner[-1].y / INCH
+			outline = ring + bottom(station, hi, i1, below) + list(reversed(inner)) + bottom(station, i0, lo, below)
+		triangles = tessellate_polygon([outline])
+		return outline, [tuple(t) for t in triangles]
+
+	def box(segments, below, depth=0.0):
+		# the well's walls, roof and end walls over its segments ([FS from, FS
+		# to, BL low, BL high, roof WL]), each opening into the next, the
+		# larger's end wall round the smaller
+		vertices, faces = [], []
+
+		def add(points, polys):
+			base = len(vertices)
+			vertices.extend(points)
+			faces.extend(tuple(base + i for i in f) for f in polys)
+
+		rings = []
+		for segment in segments:
+			f0, f1 = segment[0], segment[1]
+			n = max(2, math.ceil((f1 - f0) / 2.0))
+			strip = [section(f0 + (f1 - f0) * i / n, segment, below, depth) for i in range(n + 1)]
+			m = len(strip[0])
+			for a, b in zip(strip, strip[1:]):
+				add(a + b, [(j, j + 1, m + j + 1, m + j) for j in range(m - 1)])
+			rings.append(strip)
+		add(*cap(segments[0][0], rings[0][0], None, below))
+		add(*cap(segments[-1][1], rings[-1][-1], None, below))
+		within = lambda inner, outer: outer[2] <= inner[2] and inner[3] <= outer[3] and (inner[4] <= outer[4] if below else inner[4] >= outer[4])
+		for (a, b), (ra, rb) in zip(zip(segments, segments[1:]), zip(rings, rings[1:])):
+			if within(b, a):
+				add(*cap(a[1], ra[-1], rb[0], below))
+			elif within(a, b):
+				add(*cap(a[1], rb[0], ra[-1], below))
+			else:
+				raise SystemExit(f"wells: the sections either side of FS {a[1]} do not nest")
+		return vertices, faces
+
+	def holds(segments, outline, name):
+		# every corner of the opening lies within the well's plan
+		for f, b in outline:
+			if not any(sg[0] - 0.05 <= f <= sg[1] + 0.05 and sg[2] - 0.05 <= b <= sg[3] + 0.05 for sg in segments):
+				raise SystemExit(f"wells: {name}'s opening corner FS {f:.2f}, BL {b:.2f} lies outside its well")
+
+	built_ = {}
+	for side in (-1, 1):
+		name = f"main_{side_name(side)}"
+		segments = [[f0, f1, lo, hi, roof] if side > 0 else [f0, f1, -hi, -lo, roof] for f0, f1, lo, hi, roof in w["main"]]
+		built_[name] = (segments, True, 0.0)
+	built_["nose"] = (w["nose"], True, 0.0)
+	built_["speedbrake"] = (w["speedbrake"]["segments"], False, w["speedbrake"]["depth"])
+	for name, (segments, below, depth) in built_.items():
+		for piece in OPENINGS[name]["pieces"]:
+			holds(segments, piece, name)
+		node(f"well_{name}", mesh=box(segments, below, depth), paint="paint" if name == "speedbrake" else "white", inside=True)
+	# the probe's: a trough under its door, the skin's own section moved in,
+	# starting a tenth of an inch under the skin and as far past the door's
+	# edges, so its top lies hidden under the rim of the hole
+	start, end, upper, lower = OPENINGS["probe"]["shell"]
+	depth = w["probe"]["depth"]
+	shell = lambda st, th, out: at(st, *reversed(skin(st, th, out)))
+	over = 0.1
+	reach = lambda st: over / math.hypot(*(a - b for a, b in zip(skin(st, (upper + lower) / 2), half_ring(st)[0])))
+	start, end = start - over, end + over
+	stations = [start + (end - start) * i / 14 for i in range(15)]
+	rings = []
+	for st in stations:
+		top, bottom = upper - reach(st), lower + reach(st)
+		angles = [top + (bottom - top) * j / 6 for j in range(7)]
+		rings.append([shell(st, top, -over - (depth - over) * k / 4) for k in range(5)] + [shell(st, th, -depth) for th in angles[1:-1]] +
+			[shell(st, bottom, -over - (depth - over) * k / 4) for k in range(4, -1, -1)])
+	vertices, faces = [v for r in rings for v in r], []
+	m = len(rings[0])
+	for i in range(len(rings) - 1):
+		faces += [(i * m + j, i * m + j + 1, (i + 1) * m + j + 1, (i + 1) * m + j) for j in range(m - 1)]
+	for ring, st in ((rings[0], start), (rings[-1], end)):
+		top, bottom = upper - reach(st), lower + reach(st)
+		outline = ring + [shell(st, top + (bottom - top) * j / 6, -over) for j in range(5, 0, -1)]
+		base = len(vertices)
+		vertices += outline
+		faces += [tuple(base + i for i in t) for t in tessellate_polygon([outline])]
+	node("well_probe", mesh=(vertices, faces), inside=True)
+	opened()
+
+
+def opened():
+	# Cuts each opening from the fuselage's skin: for a door cut from the skin
+	# (cut()), the faces inside its plan outline on its side, split along the
+	# outline's planes as cut() split them; for the probe's, the faces inside
+	# its door's stations and angles, split along the planes through its
+	# edges' ends and the section's centre
+	obj = NODES["fuselage"]
+	bm = bmesh.new()
+	bm.from_mesh(obj.data)
+	bmesh.ops.translate(bm, verts=bm.verts, vec=HINGES["fuselage"])
+
+	def split(planes, facing, near):
+		for point, normal in planes:
+			bm.normal_update()
+			faces = [f for f in bm.faces if f.normal.dot(facing) > 0 and near(f)]
+			geom = faces + list({e for f in faces for e in f.edges}) + list({v for f in faces for v in f.verts})
+			bmesh.ops.bisect_plane(bm, geom=geom, plane_co=point, plane_no=normal)
+		bm.normal_update()
+		gone = [f for f in bm.faces if f.normal.dot(facing) >= 0.3 and near(f) and all((f.calc_center_median() - p).dot(n) < 0 for p, n in planes)]
+		bmesh.ops.delete(bm, geom=gone, context="FACES")
+		return len(gone)
+
+	removed = {}
+	for name, o in OPENINGS.items():
+		if "pieces" in o:
+			facing = DOWN if o["below"] else UP
+			for piece in o["pieces"]:
+				corners = [at(f, 0, b) for f, b in piece]
+				x0, x1 = min(c.x for c in corners) - 0.02, max(c.x for c in corners) + 0.02
+				y0, y1 = min(c.y for c in corners) - 0.02, max(c.y for c in corners) + 0.02
+				near = lambda f: max(v.co.x for v in f.verts) >= x0 and min(v.co.x for v in f.verts) <= x1 and max(v.co.y for v in f.verts) >= y0 and min(v.co.y for v in f.verts) <= y1
+				removed[name] = removed.get(name, 0) + split(sides(piece), facing, near)
+		else:
+			# in six pieces along the stations, each edge a plane through its
+			# ends and the section's centre, moved in by as far as the door's
+			# curved edge strays from it there, so the hole never reaches past
+			# the closed door
+			start, end, upper, lower = o["shell"]
+			shell = lambda st, th: at(st, *reversed(skin(st, th, 0.0)))
+			cuts = [start + (end - start) * i / 6 for i in range(7)]
+			worst, removed[name] = 0.0, 0
+			for s0, s1 in zip(cuts, cuts[1:]):
+				middle = (s0 + s1) / 2
+				centre = half_ring(middle)[0]
+				axis = at(middle, centre[1], centre[0])
+				planes = [(at(s0, 0, 0), FORWARD), (at(s1, 0, 0), AFT)]
+				for th, other in ((upper, lower), (lower, upper)):
+					a, b = shell(s0, th), shell(s1, th)
+					normal = (b - a).cross(axis - a).normalized()
+					if normal.dot(shell(middle, other) - a) > 0:
+						normal = -normal
+					stray = max(abs((shell(s0 + (s1 - s0) * i / 8, th) - a).dot(normal)) for i in range(9))
+					planes.append((a - normal * stray, normal))
+					worst = max(worst, stray / INCH)
+				outward = (shell(middle, (upper + lower) / 2) - axis).normalized()
+				lo, hi = at(s1 + 1, 0, 0).x, at(s0 - 1, 0, 0).x
+				near = lambda f, lo=lo, hi=hi: lo <= f.calc_center_median().x <= hi and f.calc_center_median().y < 0
+				removed[name] += split(planes, outward, near)
+			print(f"wells: the probe door's edges stray from their planes by {worst:.3f} in at most, the hole kept inside them")
+	# the cuts' slivers of no area, whose normals no facing test can read
+	bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.calc_area() < 1e-10], context="FACES_ONLY")
+	bmesh.ops.translate(bm, verts=bm.verts, vec=-HINGES["fuselage"])
+	bm.to_mesh(obj.data)
+	bm.free()
+	obj.data.update()
+	print("wells: skin faces cut away:", json.dumps(removed))
 
 
 def surface_angle(station, waterline, side):
@@ -3198,11 +3773,26 @@ def draped(tree, station, buttline, below=False, out=0.0):
 	return hit - normal * (math.copysign(1, normal.dot(direction)) * out * INCH)
 
 
-def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None):
+def sides(outline):
+	# A convex plan outline's ([FS, BL] corners) edges, each as its vertical
+	# plane (a point, its normal pointing away from the middle)
+	corners = [at(f, 0, bl) for f, bl in outline]
+	middle = sum(corners, Vector()) / len(corners)
+	planes = []
+	for c0, c1 in zip(corners, corners[1:] + corners[:1]):
+		normal = (c1 - c0).cross(UP).normalized()
+		if normal.dot(c0 - middle) < 0:
+			normal = -normal
+		planes.append((c0, normal))
+	return planes
+
+
+def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None, inside=None):
 	# A thin panel cut from the built fuselage's own skin between two
 	# stations and two buttlines, or inside a convex plan `outline` of
 	# [FS, BL] corners, on its top or its bottom: its outer face `proud` off
-	# every facet, its inner `under` beneath, its edges closed
+	# every facet, its inner `under` beneath, its edges closed; with `inside`,
+	# its inner face and edges in that finish
 	bm = bmesh.new()
 	bm.from_mesh(NODES["fuselage"].data)
 	bmesh.ops.translate(bm, verts=bm.verts, vec=HINGES["fuselage"])
@@ -3210,15 +3800,7 @@ def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None):
 		(front, back), ys = stations, sorted(-b * INCH for b in buttlines)
 		planes = ((at(front, 0, 0), FORWARD), (at(back, 0, 0), AFT), (Vector((0, ys[1], 0)), PORT), (Vector((0, ys[0], 0)), -PORT))
 	else:
-		# each edge's vertical plane, its normal pointing away from the middle
-		corners = [at(f, 0, bl) for f, bl in outline]
-		middle = sum(corners, Vector()) / len(corners)
-		planes = []
-		for c0, c1 in zip(corners, corners[1:] + corners[:1]):
-			normal = (c1 - c0).cross(UP).normalized()
-			if normal.dot(c0 - middle) < 0:
-				normal = -normal
-			planes.append((c0, normal))
+		planes = sides(outline)
 	for point, normal in planes:
 		bmesh.ops.bisect_plane(bm, geom=bm.verts[:] + bm.edges[:] + bm.faces[:], plane_co=point, plane_no=normal, clear_outer=True)
 	bm.normal_update()
@@ -3231,11 +3813,14 @@ def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None):
 	vertices = [v.co + v.normal * (proud * INCH) for v in bm.verts] + [v.co - v.normal * (under * INCH) for v in bm.verts]
 	faces = [tuple(index[v] for v in f.verts) for f in bm.faces]
 	faces += [tuple(n + index[v] for v in reversed(f.verts)) for f in bm.faces]
+	outer = len(bm.faces)
 	for e in bm.edges:
 		if len(e.link_faces) == 1:
 			a, b = (index[v] for v in e.verts)
 			faces.append((a, b, n + b, n + a))
 	bm.free()
+	if inside:
+		return vertices, faces, [None] * outer + [inside] * (len(faces) - outer)
 	return vertices, faces
 
 
@@ -3573,25 +4158,15 @@ ATLAS = 2048
 STRIP = 0.03   # the atlas's share, along its right side, left free for faces unfolded after packing
 
 
-def paint(directory):
-	# Unique UVs for every part in one atlas, then the paint: ambient
-	# occlusion baked in Cycles as the shading every skin is laid over (#8),
-	# times the paint's grey. Writes the atlas beside the model.
-	# the stores stay out: plain grey, no atlas, and hidden from the bake, so
-	# a pylon or a tank the loadout leaves off casts no shadow on the wing
+def painted_parts():
+	# The meshes the paint covers, as the bakes see them: the stores, which
+	# take an atlas of their own, and the rest. In the rest, faces of more
+	# than four corners in triangles (as the export writes them): a long,
+	# bent cap (a loft's end, fin_root's over the fin's root chord) laid flat
+	# in one piece overlapped itself, wherever it was put. No vertex is
+	# added, so a mesh's shape keys (the wing's flex) stand as they were
 	stored = [o for o in bpy.data.objects if o.type == "MESH" and o.material_slots and all(s.material and s.material.name == "stores" for s in o.material_slots)]
-	for o in stored:
-		o.hide_render = True
 	parts = [o for o in bpy.data.objects if o.type == "MESH" and o not in stored]
-	bpy.ops.object.select_all(action="DESELECT")
-	for o in parts:
-		o.select_set(True)
-	bpy.context.view_layer.objects.active = parts[0]
-	# faces of more than four corners in triangles (as the export writes them):
-	# a long, bent cap (a loft's end, fin_root's over the fin's root chord)
-	# laid flat in one piece overlapped itself, wherever it was put. No vertex
-	# is added, so a mesh's shape keys (the wing's flex) stand as they were
-	import bmesh
 	for o in parts:
 		if any(len(f.vertices) > 4 for f in o.data.polygons):
 			mesh = bmesh.new()
@@ -3599,85 +4174,66 @@ def paint(directory):
 			bmesh.ops.triangulate(mesh, faces=[f for f in mesh.faces if len(f.verts) > 4])
 			mesh.to_mesh(o.data)
 			mesh.free()
-	bpy.ops.object.mode_set(mode="EDIT")
-	bpy.ops.mesh.select_all(action="SELECT")
-	bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.002, scale_to_bounds=False)
-	bpy.ops.object.mode_set(mode="OBJECT")
-	stencil_islands(parts)
-	unfolded(parts)
-	bpy.ops.object.mode_set(mode="EDIT")
-	bpy.ops.mesh.select_all(action="SELECT")
-	bpy.ops.uv.pack_islands(rotate=True, margin=0.002)
-	bpy.ops.object.mode_set(mode="OBJECT")
-	# faces the packed atlas lays over others at a texel's centre (a sliver at
-	# FS 436-440, two vertices 0.4 in apart within 0.1 texel, which no edge
-	# test sees): laid into a strip the packed islands leave free (packed
-	# again instead, each pass found new ones: 9, 8, 6, 6 faces)
-	for o in parts:
-		for loop in o.data.uv_layers.active.data:
-			loop.uv = loop.uv * (1 - STRIP)
-	strip = {"left": 1 - STRIP, "right": 1.0, "x": 0.0, "y": 0.0, "row": 0.0}
-	for _ in range(8):
-		if not unfolded(parts, ATLAS, strip):
-			break
-	else:
-		raise SystemExit("faces still lie over others on the packed atlas")
+	return stored, parts
+
+
+def jet_key(parts, frames):
+	# The jet's bakes' key: every part's faces (each lies within the
+	# occlusion's reach of the rest), the stencils' frames on the built skin,
+	# the atlas's layout, the nozzles' parts, the finishes, the open pose's
+	# joints and drives and the code that unwraps and bakes
+	key = cache.Key("paint")
+	key.meshes(parts)
+	key.add([[spec, list(c), list(a), list(u), list(n)] for spec, c, a, u, n in frames], [ATLAS, STRIP, STENCIL_DENSITY, STENCIL_MARGIN], sorted(NOZZLE_PARTS))
+	key.add(list(ATLASED), sorted(OPENED.items()), sorted([n, j] for n, j in JOINTS.items() if j.get("drive") in OPENED), sorted(o.name for o in parts if exposed(o.name)))
+	key.code(bakes, texels, stencil_islands, flattened, unfolded, posed, keyed, exposed)
+	return key
+
+
+def store_key(stored, parts):
+	# The stores' bakes' key: their own faces, the airframe's within the
+	# occlusion's reach of them (the wing over a pylon, not the nose) and the
+	# reach, the atlas's size and the code that unwraps and bakes
+	key = cache.Key("stores")
+	key.meshes(stored)
+	key.surroundings(stored, parts, STORE_REACH * INCH, INCH)
+	key.add(LAYOUT["stores"]["paint"]["atlas"])
+	key.code(store_bakes, store_kind, texels)
+	return key
+
+
+def paint(directory, folder=None):
+	# Unique UVs for every part in one atlas, then the paint: ambient
+	# occlusion baked in Cycles as the shading every skin is laid over (#8),
+	# times the paint's grey. Writes the atlas beside the model. With a cache
+	# folder, the UVs and bakes come from there when a build has seen
+	# everything they come from (bakes(), ../cache.py); both keys are taken
+	# first, on the meshes as built, since baking leaves them changed.
+	# the stores stay out: plain grey, no atlas, and hidden from the bake, so
+	# a pylon or a tank the loadout leaves off casts no shadow on the wing
+	stored, parts = painted_parts()
+	for o in stored:
+		o.hide_render = True
+	frames = stencil_frames()
+	keys = jet_key(parts, frames), store_key(stored, parts)
 	image = bpy.data.images.new("paint", ATLAS, ATLAS, alpha=False)
 	for m in MATERIALS.values():
 		nodes = m.node_tree.nodes
 		texture = nodes.new("ShaderNodeTexImage")
 		texture.image = image
 		nodes.active = texture
-	scene = bpy.context.scene
-	scene.render.engine = "CYCLES"
-	scene.cycles.samples = 48
-	scene.cycles.device = "CPU"
-	scene.render.bake.margin = 6
-	bpy.ops.object.bake(type="AO", use_clear=True)
-	shade = np.array(image.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., 0]
+	baked = cache.fetch(folder, "paint", keys[0], parts, lambda: bakes(parts, frames))
+	for m in MATERIALS.values():
+		next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE").image = image
+	shade = baked["shade"].astype(np.float64)
 	# The two greys (layout.paint): each texel's surface normal, baked in the
 	# objects' own axes (every node rests unrotated, so they are the jet's),
 	# picks the upper grey or, facing down, the lower
-	normals = bpy.data.images.new("normals", ATLAS, ATLAS, alpha=False, float_buffer=True)
-	normals.colorspace_settings.name = "Non-Color"
-	for m in MATERIALS.values():
-		next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE").image = normals
-	bpy.ops.object.bake(type="NORMAL", normal_space="OBJECT", use_clear=True)
-	normal = np.array(normals.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., :3] * 2 - 1
+	normal = baked["normal"].astype(np.float64) * 2 - 1
 	up = normal[..., 2]
 	covered = np.abs(np.linalg.norm(normal, axis=-1) - 1) < 0.1   # texels the bake reached: a unit normal
-	# Each texel's place on the jet: a temporary shader emits its position
-	positions = bpy.data.images.new("positions", ATLAS, ATLAS, alpha=False, float_buffer=True)
-	positions.colorspace_settings.name = "Non-Color"
-	scene.cycles.samples = 1
-	temporary = []
-	for m in MATERIALS.values():
-		nodes, links = m.node_tree.nodes, m.node_tree.links
-		next(n for n in nodes if n.type == "TEX_IMAGE").image = positions
-		geometry, emission = nodes.new("ShaderNodeNewGeometry"), nodes.new("ShaderNodeEmission")
-		links.new(geometry.outputs["Position"], emission.inputs["Color"])
-		links.new(emission.outputs["Emission"], nodes["Material Output"].inputs["Surface"])
-		temporary.append((m, geometry, emission))
-	bpy.ops.object.bake(type="EMIT", use_clear=True)
-	where = np.array(positions.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., :3]
-	# and which texels are the nozzles' flaps: their objects' index emitted
-	for o in parts:
-		o.pass_index = 1 if o.name in NOZZLE_PARTS else 0
-	indices = []
-	for m, geometry, emission in temporary:
-		index = m.node_tree.nodes.new("ShaderNodeObjectInfo")
-		m.node_tree.links.new(index.outputs["Object Index"], emission.inputs["Color"])
-		indices.append((m, index))
-	bpy.ops.object.bake(type="EMIT", use_clear=True)
-	nozzle = np.array(positions.pixels[:]).reshape(ATLAS, ATLAS, 4)[..., 0] > 0.5
-	for m, index in indices:
-		m.node_tree.nodes.remove(index)
-	for m, geometry, emission in temporary:
-		nodes = m.node_tree.nodes
-		nodes.remove(geometry)
-		nodes.remove(emission)
-		m.node_tree.links.new(nodes["Principled BSDF"].outputs["BSDF"], nodes["Material Output"].inputs["Surface"])
-		next(n for n in nodes if n.type == "TEX_IMAGE").image = image
+	where = baked["where"].astype(np.float64)
+	nozzle = baked["nozzle"]
 	p = LAYOUT["paint"]
 	upper, lower = np.array(p["upper"]) / 255, np.array(p["lower"]) / 255
 	start, end = p["turn"]
@@ -3716,20 +4272,311 @@ def paint(directory):
 	dv = (along * rows % 1 - 0.5) * (NOZZLE["exit"] - NOZZLE_WAIST[0]) / rows
 	tint = np.where((divergent & (np.hypot(du, dv) < hole))[..., None], dark, tint)
 	colour = np.where(nozzle[..., None], tint * (0.4 + 0.6 * shade[..., None]), colour)
+	# the landing gear's finishes (layout.paint gear), shaded, with no panel
+	# lines or stencils
+	finish = baked["finish"]
+	for k, name in enumerate(ATLASED):
+		if name in p["gear"]:
+			colour = np.where((finish == k + 1)[..., None], np.array(p["gear"][name]) / 255 * (0.4 + 0.6 * shade[..., None]), colour)
 	pixels = np.concatenate([colour, np.ones((ATLAS, ATLAS, 1))], -1)
 	image.pixels[:] = pixels.ravel()
 	image.filepath_raw = str(Path(directory) / "paint.png")
 	image.file_format = "PNG"
 	image.save()
 	for name, m in MATERIALS.items():
-		if name in ("paint", "team"):
+		if name in ATLASED:
 			nodes = m.node_tree.nodes
 			texture = next(n for n in nodes if n.type == "TEX_IMAGE")
 			m.node_tree.links.new(texture.outputs["Color"], nodes["Principled BSDF"].inputs["Base Color"])
 		else:
 			m.node_tree.nodes.remove(next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE"))
+	paint_stores(stored, keys[1], folder)
+
+
+def texels(image):
+	# An image's pixels as Blender keeps them (rows from its bottom, RGBA)
+	out = np.empty(len(image.pixels), np.float32)
+	image.pixels.foreach_get(out)
+	return out.reshape(image.size[1], image.size[0], 4)
+
+
+# What the bake shades as it stands open, gear down, speedbrake up and probe
+# out: the gear, its doors and bays, the speedbrake and the probe, their doors
+# and wells (exposed()). Baked where they rest, stowed behind closed doors, they sit in
+# the dark; the rest of the airframe is shaded at rest, so nothing hanging
+# open shadows the belly it is stowed against
+OPENED = {"gear": 1.0, "speedbrake": 1.0, "probe": 1.0}
+
+
+def exposed(name):
+	return name.startswith(("gear_", "well_")) or name in ("launch_bar", "speedbrake", "probe", "probe_door")
+
+
+def keyed(keys, x):
+	# a schedule's value at x: its keys read piecewise linearly, held at the ends
+	if x <= keys[0][0]:
+		return keys[0][1]
+	for (x0, y0), (x1, y1) in zip(keys, keys[1:]):
+		if x <= x1:
+			return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+	return keys[-1][1]
+
+
+@contextmanager
+def posed(drives):
+	# Every joint that turns or slides moved to its drive's value through its
+	# keys, as the engine moves it (render.py), and back to rest after
+	moved = []
+	for name, j in JOINTS.items():
+		if j["motion"] not in ("rotate", "slide") or j["drive"] not in drives:
+			continue
+		value = keyed(j["keys"], drives[j["drive"]])
+		obj = NODES[name]
+		moved.append((obj, obj.rotation_mode, obj.matrix_basis.copy()))
+		axis = Vector((j["axis"][0], -j["axis"][2], j["axis"][1]))   # glTF to Blender
+		if j["motion"] == "rotate":
+			obj.rotation_mode = "QUATERNION"
+			obj.rotation_quaternion = obj.rotation_quaternion @ Quaternion(axis, value)
+		else:
+			obj.location += axis * value
+	bpy.context.view_layer.update()
+	try:
+		yield
+	finally:
+		for obj, mode, basis in reversed(moved):
+			obj.rotation_mode = mode
+			obj.matrix_basis = basis
+		bpy.context.view_layer.update()
+
+
+def bakes(parts, frames):
+	# The atlas's UVs and what Cycles bakes on them, each material's texture
+	# node the target: every part unwrapped, the skin under the stencils (at
+	# their frames) on islands of its own, faces folding over others on
+	# theirs, all packed; then the ambient occlusion, the normals in the
+	# objects' axes, each texel's place on the jet, which texels are the
+	# nozzles' flaps, and each texel's finish (layout.paint gear), as the
+	# bakes' pixels (rows from the atlas's bottom); the occlusion of what is
+	# seen open (exposed()) baked open
+	bpy.ops.object.select_all(action="DESELECT")
+	for o in parts:
+		o.select_set(True)
+	bpy.context.view_layer.objects.active = parts[0]
+	bpy.ops.object.mode_set(mode="EDIT")
+	bpy.ops.mesh.select_all(action="SELECT")
+	bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.002, scale_to_bounds=False)
+	bpy.ops.object.mode_set(mode="OBJECT")
+	stencil_islands(parts, frames)
+	unfolded(parts)
+	bpy.ops.object.mode_set(mode="EDIT")
+	bpy.ops.mesh.select_all(action="SELECT")
+	bpy.ops.uv.pack_islands(rotate=True, margin=0.002)
+	bpy.ops.object.mode_set(mode="OBJECT")
+	# faces the packed atlas lays over others at a texel's centre (a sliver at
+	# FS 436-440, two vertices 0.4 in apart within 0.1 texel, which no edge
+	# test sees): laid into a strip the packed islands leave free (packed
+	# again instead, each pass found new ones: 9, 8, 6, 6 faces)
+	for o in parts:
+		for loop in o.data.uv_layers.active.data:
+			loop.uv = loop.uv * (1 - STRIP)
+	strip = {"left": 1 - STRIP, "right": 1.0, "x": 0.0, "y": 0.0, "row": 0.0}
+	for _ in range(8):
+		if not unfolded(parts, ATLAS, strip):
+			break
+	else:
+		raise SystemExit("faces still lie over others on the packed atlas")
+	targets = [next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE") for m in MATERIALS.values()]
+	occlusion = bpy.data.images.new("occlusion", ATLAS, ATLAS, alpha=False)
+	for target in targets:
+		target.image = occlusion
+	scene = bpy.context.scene
+	scene.render.engine = "CYCLES"
+	scene.cycles.samples = 48
+	scene.cycles.device = "CPU"
+	scene.render.bake.margin = 6
+	bpy.ops.object.bake(type="AO", use_clear=True)
+	shade = texels(occlusion)[..., 0]
+	with posed(OPENED):
+		bpy.ops.object.bake(type="AO", use_clear=True)
+	open_ = texels(occlusion)[..., 0]
+	normals = bpy.data.images.new("normals", ATLAS, ATLAS, alpha=False, float_buffer=True)
+	normals.colorspace_settings.name = "Non-Color"
+	for target in targets:
+		target.image = normals
+	bpy.ops.object.bake(type="NORMAL", normal_space="OBJECT", use_clear=True)
+	normal = texels(normals)[..., :3]
+	# Each texel's place on the jet: a temporary shader emits its position
+	positions = bpy.data.images.new("positions", ATLAS, ATLAS, alpha=False, float_buffer=True)
+	positions.colorspace_settings.name = "Non-Color"
+	scene.cycles.samples = 1
+	temporary = []
+	for m, target in zip(MATERIALS.values(), targets):
+		nodes, links = m.node_tree.nodes, m.node_tree.links
+		target.image = positions
+		geometry, emission = nodes.new("ShaderNodeNewGeometry"), nodes.new("ShaderNodeEmission")
+		links.new(geometry.outputs["Position"], emission.inputs["Color"])
+		links.new(emission.outputs["Emission"], nodes["Material Output"].inputs["Surface"])
+		temporary.append((m, geometry, emission))
+	bpy.ops.object.bake(type="EMIT", use_clear=True)
+	where = texels(positions)[..., :3]
+	# which texels are the nozzles' flaps and which are seen open: their
+	# objects' index emitted
+	for o in parts:
+		o.pass_index = 1 if o.name in NOZZLE_PARTS else 2 if exposed(o.name) else 0
+	indices = []
+	for m, geometry, emission in temporary:
+		index = m.node_tree.nodes.new("ShaderNodeObjectInfo")
+		m.node_tree.links.new(index.outputs["Object Index"], emission.inputs["Color"])
+		indices.append((m, index))
+	bpy.ops.object.bake(type="EMIT", use_clear=True)
+	kind = np.rint(texels(positions)[..., 0])
+	nozzle = kind == 1
+	shade = np.where(kind == 2, open_, shade)
+	for m, index in indices:
+		m.node_tree.nodes.remove(index)
+	# and each texel's finish: 1 and up for ATLASED's, 0 for the rest
+	for m, index in indices:
+		value = m.node_tree.nodes.new("ShaderNodeValue")
+		value.outputs[0].default_value = float(ATLASED.index(m.name) + 1) if m.name in ATLASED else 0.0
+		m.node_tree.links.new(value.outputs[0], next(e for n, g, e in temporary if n == m).inputs["Color"])
+	bpy.ops.object.bake(type="EMIT", use_clear=True)
+	finish = np.rint(texels(positions)[..., 0]).astype(np.int8)
+	for m, _ in indices:
+		m.node_tree.nodes.remove(next(n for n in m.node_tree.nodes if n.type == "VALUE"))
+	for m, geometry, emission in temporary:
+		nodes = m.node_tree.nodes
+		nodes.remove(geometry)
+		nodes.remove(emission)
+		m.node_tree.links.new(nodes["Principled BSDF"].outputs["BSDF"], nodes["Material Output"].inputs["Surface"])
+	for target in targets:
+		target.image = None
+	for made in (occlusion, normals, positions):
+		bpy.data.images.remove(made)
+	return {"shade": shade, "normal": normal, "where": where, "nozzle": nozzle, "finish": finish}
+
+
+# The ambient occlusion's reach on the stores, inches: a rack shaded by its
+# pylon and the wing over it, not by a tank on the next station
+STORE_REACH = 12.0
+
+
+def store_kind(o):
+	# A store part's kind, from its name: the wingtip rails are tips
+	return "tip" if re.fullmatch(r"rail_[19]", o.name) else o.name.split("_")[0]
+
+
+def paint_stores(stored, key, folder=None):
+	# The stores' own atlas (layout.stores.paint): every part's UVs unique,
+	# the ambient occlusion baked in layers (store_bakes()), then finish.py's
+	# paint, as JPEG; the UVs and bakes from the cache folder when it holds an
+	# entry under the key (store_key())
+	spec = LAYOUT["stores"]["paint"]
+	size = spec["atlas"]
+	scene = bpy.context.scene
+	scene.world = scene.world or bpy.data.worlds.new("world")
 	for o in stored:
 		o.hide_render = False
+	material = MATERIALS["stores"]
+	nodes, links = material.node_tree.nodes, material.node_tree.links
+	target = nodes.new("ShaderNodeTexImage")
+	nodes.active = target
+	baked = cache.fetch(folder, "stores", key, stored, lambda: store_bakes(stored, size, target))
+	for o in stored:
+		o.hide_render = False
+	part = baked["part"].astype(int)
+	where = baked["where"].astype(np.float64)
+	occlusion = baked["occlusion"].astype(np.float64)
+	covered = part > 0
+	inches = texel_size(where, covered) / INCH
+	frames = [FRAMES.get(o.name, {"kind": store_kind(o), "nose": [0, 0, 0], "axis": [-1, 0, 0], "up": [0, 0, 1]}) for o in stored]
+	grey = np.array(LAYOUT["paint"]["lower"]) / 255
+	# the wingtip LAU-7's light ends: its cap to the cap's joint and its cone
+	# from the cone's base (layout.stores.rails.tip)
+	tip = STORES["rails"]["tip"]
+	spec = dict(spec, tip=dict(spec["tip"], light=[tip["cap"], float(np.linalg.norm(np.subtract(tip["aft"], tip["front"]))) - tip["cone"]]))
+	out = finish.colour(spec, grey, occlusion, where, part, frames, inches)
+	out[~covered] = grey
+	from PIL import Image
+	import tempfile
+	path = Path(tempfile.mkdtemp()) / "stores.jpg"
+	Image.fromarray((out[::-1] * 255 + 0.5).astype(np.uint8)).save(path, "JPEG", quality=90, subsampling=0)
+	image = bpy.data.images.load(str(path))
+	image.pack()
+	image.name = "stores"
+	target.image = image
+	links.new(target.outputs["Color"], nodes["Principled BSDF"].inputs["Base Color"])
+
+
+def store_bakes(stored, size, target):
+	# The stores' UVs and what Cycles bakes on them into `target` (the stores
+	# material's texture node): the part each texel lies on (its index in
+	# `stored`, from 1), its place, and the ambient occlusion in layers, each
+	# part with only the parts it is always shown with (a rack under its
+	# pylon, a rail beside its rack: never a tank's shadow on a pylon the
+	# loadout may show bare, nor a LAU-127's on the LAU-7 that takes its
+	# place). The airframe stands in every layer, so the wing shades its pylons
+	scene = bpy.context.scene
+	scene.render.engine = "CYCLES"
+	scene.cycles.device = "CPU"
+	bpy.ops.object.select_all(action="DESELECT")
+	for o in stored:
+		o.select_set(True)
+	bpy.context.view_layer.objects.active = stored[0]
+	bpy.ops.object.mode_set(mode="EDIT")
+	bpy.ops.mesh.select_all(action="SELECT")
+	bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.002, scale_to_bounds=False)
+	bpy.ops.uv.pack_islands(rotate=True, rotate_method="AXIS_ALIGNED", margin=0.006)
+	bpy.ops.object.mode_set(mode="OBJECT")
+	nodes, links = MATERIALS["stores"].node_tree.nodes, MATERIALS["stores"].node_tree.links
+
+	def bake(kind, shown, baked, emit=None, **options):
+		image = bpy.data.images.new(kind, size, size, alpha=False, float_buffer=True)
+		image.colorspace_settings.name = "Non-Color"
+		target.image = image
+		for o in stored:
+			o.hide_render = o not in shown and o not in baked
+		bpy.ops.object.select_all(action="DESELECT")
+		for o in baked:
+			o.select_set(True)
+		bpy.context.view_layer.objects.active = baked[0]
+		made = []
+		if emit:
+			# emit: makes the node whose output socket is baked by emission
+			emission = nodes.new("ShaderNodeEmission")
+			source = emit(nodes)
+			links.new(source, emission.inputs["Color"])
+			links.new(emission.outputs["Emission"], nodes["Material Output"].inputs["Surface"])
+			made = [emission, source.node]
+		bpy.ops.object.bake(type="EMIT" if emit else kind, use_clear=True, margin=0, **options)
+		out = texels(image)
+		for n in made:
+			nodes.remove(n)
+		links.new(nodes["Principled BSDF"].outputs["BSDF"], nodes["Material Output"].inputs["Surface"])
+		bpy.data.images.remove(image)
+		return out
+
+	for i, o in enumerate(stored):
+		o.pass_index = i + 1
+	scene.cycles.samples = 1
+	part = np.rint(bake("part", stored, stored, emit=lambda n: n.new("ShaderNodeObjectInfo").outputs["Object Index"])[..., 0]).astype(np.int32)
+	where = bake("where", stored, stored, emit=lambda n: n.new("ShaderNodeNewGeometry").outputs["Position"])[..., :3]
+	# the layers, each baked with the parts it is always shown with
+	first = [o for o in stored if store_kind(o) in ("pylon", "ejector", "tip")]
+	racks = [o for o in stored if store_kind(o) == "rack"]
+	layers = [(first, first), (racks, first), ([o for o in stored if store_kind(o) == "tank"], first),
+		([o for o in stored if store_kind(o) == "rail"], first + racks), ([o for o in stored if store_kind(o) == "launcher"], first + racks)]
+	reach = scene.world.light_settings.distance
+	scene.world.light_settings.distance = STORE_REACH * INCH
+	scene.cycles.samples = 48
+	occlusion = np.ones((size, size), np.float32)
+	for baked, shown in layers:
+		if not baked:
+			continue
+		shade = bake("AO", shown, baked)[..., 0]
+		mine = np.isin(part, [stored.index(o) + 1 for o in baked])
+		occlusion[mine] = shade[mine]
+	scene.world.light_settings.distance = reach
+	return {"part": part, "where": where, "occlusion": occlusion}
 
 
 def texel_size(where, covered):
@@ -3861,12 +4708,13 @@ def stencil_frames():
 	return out
 
 
-def stencil_islands(parts):
-	# The skin under each stencil on its own UV island, STENCIL_DENSITY times
-	# as dense as smart_project left the rest and laid flat in the stencil's
-	# plane, before the islands are packed: at the atlas's own texel (about 6
-	# mm) lettering half an inch high read as speckle. A face joins a
-	# stencil's island with a corner within STENCIL_MARGIN of it, facing its
+def stencil_islands(parts, frames):
+	# The skin under each stencil (frames: stencil_frames()) on its own UV
+	# island, STENCIL_DENSITY times as dense as smart_project left the rest
+	# and laid flat in the stencil's plane, before the islands are packed: at
+	# the atlas's own texel (about 6 mm) lettering half an inch high read as
+	# speckle. A face joins a stencil's island with a corner within
+	# STENCIL_MARGIN of it, facing its
 	# way and within 2 in of its plane: the LEX's root, lying under the warning
 	# box's margin, took the same place on the island and the bake wrote it
 	# over the box's corner
@@ -3878,7 +4726,7 @@ def stencil_islands(parts):
 			mapped += abs(sum(a.x * b.y - b.x * a.y for a, b in zip(q, q[1:] + q[:1]))) / 2
 			area += f.area
 	scale = math.sqrt(mapped / area) * STENCIL_DENSITY   # UV units per metre on the islands
-	for k, (spec, centre, across, up, normal) in enumerate(stencil_frames()):
+	for k, (spec, centre, across, up, normal) in enumerate(frames):
 		reach = [(s / 2 + STENCIL_MARGIN) * INCH for s in spec["size"]]
 		joined = 0
 		for o in parts:
@@ -4128,6 +4976,7 @@ def stencils(where, covered, size):
 # with it. Where each part carries its missile goes in the points file's
 # hardpoints (ROUNDS).
 STORE_PARTS = []   # every hidden store part's node
+FRAMES = {}   # each store part's axis frame for its paint (finish.py)
 ROUNDS = {}   # station number to {part: the round it carries: mount, forward, up}
 MISSILES = json.loads((HERE.parent / "missiles" / "facts.json").read_text())
 SHOW = [[0, 0], [1, 1]]
@@ -4154,9 +5003,11 @@ def square(forward, up):
 	return f, (up - f * up.dot(f)).normalized()
 
 
-def rounded_ring(centre, f, u, width, height, rounding=1.0, n=4):
+def rounded_ring(centre, f, u, width, height, rounding=1.0, n=4, groove=None):
 	# A rounded rectangle across f: `height` inches along u, `width` across
-	# both, its corners rounded by `rounding` of the smaller half
+	# both, its corners rounded by `rounding` of the smaller half. groove:
+	# (height, depth) inches, a channel sunk into its -u face (the face a
+	# launcher's round hangs on), kept inside that face's flat
 	s = f.cross(u)
 	hw, hh = max(width, 0.05) * INCH / 2, max(height, 0.05) * INCH / 2
 	r = min(hw, hh) * rounding
@@ -4165,6 +5016,11 @@ def rounded_ring(centre, f, u, width, height, rounding=1.0, n=4):
 		for k in range(n + 1):
 			a = math.radians(start + 90 * k / n)
 			ring.append(centre + s * (cx + r * math.cos(a)) + u * (cy + r * math.sin(a)))
+		if groove and start == 180:
+			half = min(groove[0] * INCH / 2, hw - r - 0.05 * INCH)
+			depth = min(groove[1] * INCH, hh)
+			for x, y in ((-half, 0.0), (-half, depth), (half, depth), (half, 0.0)):
+				ring.append(centre + s * x + u * (y - hh))
 	return ring
 
 
@@ -4174,9 +5030,13 @@ def round_ring(centre, f, u, radius, sides=24):
 	return [centre + (u * math.cos(2 * math.pi * i / sides) + s * math.sin(2 * math.pi * i / sides)) * r for i in range(sides)]
 
 
-def store(name, mesh, parent=None, hinge=None, shown=False):
-	# a store part: its node, hidden by its show joint unless always fitted
+def store(name, mesh, parent=None, hinge=None, shown=False, frame=None):
+	# a store part: its node, hidden by its show joint unless always fitted;
+	# frame (nose, tail and up, the part's own axis) places its paint
 	node(name, parent=parent, hinge=hinge, mesh=mesh, paint="stores")
+	if frame:
+		nose, tail, up = frame
+		FRAMES[name] = {"kind": name.split("_")[0], "nose": list(nose), "axis": list((tail - nose).normalized()), "up": list(up.normalized())}
 	if not shown:
 		JOINTS[name] = {"motion": "show", "drive": "stores", "keys": SHOW}
 		STORE_PARTS.append(name)
@@ -4191,6 +5051,33 @@ def tank_mesh(nose, tail):
 	f, u = square(-axis, UP)
 	knots = sorted({s for s, _ in profile} | {float(s) for s in range(0, int(profile[-1][0]) + 1, 5)})
 	return loft([round_ring(nose + axis.normalized() * (s * scale * INCH), f, u, interp(profile, s)) for s in knots])
+
+
+def tank_top(station):
+	# The wing tank's top at a station (the photos' tank, layout.stores.tank:
+	# its axis from nose to tail, its profile stretched to that length)
+	tank = STORES["tank"]
+	nose, tail = Vector(tank["nose"]), Vector(tank["tail"])
+	k = (station - nose.x) / (tail.x - nose.x)
+	profile = tank["profile"]
+	return nose.y + k * (tail.y - nose.y) + interp(profile, k * profile[-1][0])
+
+
+def seated_bottom(bottom):
+	# The inboard pylon's bottom (the outboard's moved to its own nose, never
+	# traced) brought down onto its tank, which the photos trace within half
+	# an inch and which hangs against it: on the tank's top from behind the
+	# pylon's nose (which the photos place) to the tank's crest, then easing
+	# back to the pylon's own line at its tail as the tank's tail cone falls
+	# away from it
+	stations = [s for s, _ in bottom[1:]]
+	crest = max(stations, key=tank_top)
+	drop = interp(bottom, crest) - tank_top(crest)
+	last = bottom[-1][0]
+	out = [bottom[0]]
+	for s, w in bottom[1:]:
+		out.append((s, tank_top(s) - 0.05 if s <= crest else w - drop * (last - s) / (last - crest)))
+	return out
 
 
 def wing_low(side, station, buttline):
@@ -4227,17 +5114,94 @@ def pylon_mesh(side, nose, tail, front, bottom, width, top=None):
 	return loft(rings)
 
 
-def box_mesh(front, f, u, length, width, height, fairing, tail=4.0, tip=0.3):
-	# A launcher or rack: a rounded box `length` aft from its front, its
-	# forward fairing growing from `tip` of its section over `fairing` inches,
-	# its aft end closing to 0.7 over `tail`
-	stations = sorted({0.0, 0.5, 1.5} | {fairing * k / 6 for k in range(7)} | {float(t) for t in range(int(fairing) + 6, int(length - tail), 12)} | {length - tail, length})
+def box_pylon(front, back, bottom, width, corner, top, taper, round_=0.0):
+	# A boxed pylon on the centreline (the SUU-62): its leading edge along
+	# `front` ([FS, WL] pairs, its lower end to its root), narrow and rounded,
+	# its sides closing to it in straight lines over `taper` inches from the
+	# edge's middle station; behind that flat sides at their full width to an
+	# upright aft face at `back`, its sections' corners rounded by `corner`;
+	# its bottom flat at `bottom` WL, rising into the aft face round a corner
+	# of radius `round_`; its top 1.5 in inside `top(FS)`
+	line = sorted(front)
+	start = line[0][0]
+	lead = (line[0][0] + line[-1][0]) / 2
+	stations = [start + 0.15, start + 0.6] + [lead + taper * k / 4 for k in range(5)] + [line[-1][0] + d for d in (0.0, 0.5)]
+	stations += list(range(int(line[-1][0]) + 6, int(back - round_) - 1, 6))
+	stations += [back - round_ * math.sin(math.pi / 2 * k / 6) for k in range(7)] if round_ else [back]
+	stations = sorted(set(stations))
 	rings = []
-	for t in stations:
-		grow = tip + (1 - tip) * math.sin(min(t / fairing, 1.0) * math.pi / 2) if fairing else 1.0
-		shrink = 1.0 - 0.3 * max(0.0, (t - (length - tail)) / tail) if tail else 1.0
-		k = grow * shrink
-		rings.append(rounded_ring(front - f * (t * INCH), f, u, width * k, height * k, rounding=0.45))
+	for s in stations:
+		low = max(bottom, interp(line, s)) if s <= line[-1][0] else bottom
+		if round_ and s > back - round_:
+			# the bottom's rise round the aft corner
+			low += round_ - math.sqrt(max(0.0, round_ * round_ - (s - (back - round_)) ** 2))
+		high = top(s) + 1.5
+		edge = min(1.0, max(0.15, (s - lead) / taper))
+		rings.append(rounded_ring(at(s, (low + high) / 2, 0.0), FORWARD, UP, width * edge, max(high - low, 0.1), rounding=corner + (1 - corner) * (1 - edge)))
+	return loft(rings)
+
+
+def box_mesh(front, f, u, length, width, height, fairing, tail=4.0, tip=0.3, anchor=0.0, close=0.7, ogive=False, groove=None, rounding=0.45, faces=None, power=None):
+	# A launcher or rack: a box `length` aft from its front, its corners
+	# rounded by `rounding` of its smaller half, its forward fairing growing
+	# from `tip` of its section (or [width, height] tips) over `fairing`
+	# inches, its aft end closing to
+	# `close` over `tail`, straight, or with ogive a rounded cone, the
+	# sections rounding toward round as they shrink, and with `power` p
+	# closing as (1 - v)^p over it (the photos' fine cone to a point, the
+	# last ring a hundredth of the section); its sections shrink
+	# toward its middle, or with anchor 1 toward its +u face, that face's line
+	# straight (a LAU-115 under its pylon), with -1 toward its -u face (a
+	# launcher's face its round slides along); groove, a channel along its
+	# -u face (rounded_ring), fading out where the ends shrink. faces: its
+	# +u and -u faces closing to the tip each over its own run ([plus, minus]
+	# inches) and the tip standing `at` of its height up from the -u face
+	# ({"runs": [plus, minus], "at": share}); the width still over `fairing`
+	stations = {0.0, 0.5, 1.5} | {fairing * k / 6 for k in range(7)} | {float(t) for t in range(int(fairing) + 6, int(length - tail), 12)} | {length - tail, length}
+	if faces:
+		stations |= {run * k / 6 for run in faces["runs"] for k in range(7)}
+	if ogive:
+		stations |= {length - tail * k / 6 for k in range(7)}
+	if power:
+		stations |= {length - tail * k / 16 for k in range(17)}
+	rings = []
+	tips = tip if isinstance(tip, (list, tuple)) else (tip, tip)
+	for t in sorted(stations):
+		grow = [a + (1 - a) * math.sin(min(t / fairing, 1.0) * math.pi / 2) if fairing else 1.0 for a in tips]
+		v = max(0.0, (t - (length - tail)) / tail) if tail else 0.0
+		if power:
+			shrink = max(0.01, close + (1 - close) * (1 - min(v, 1.0)) ** power)
+		else:
+			shrink = close + (1 - close) * math.cos(v * math.pi / 2) if ogive else 1.0 - (1 - close) * v
+		kw, kh = grow[0] * shrink, grow[1] * shrink
+		lift = u * (anchor * (height - height * kh) / 2 * INCH)
+		if faces:
+			# the -u face's line and the +u face's, as shares of the height up
+			# from the -u face, each easing from the tip's over its own run
+			ease = [math.sin(min(t / run, 1.0) * math.pi / 2) if run else 1.0 for run in faces["runs"]]
+			low = (faces["at"] - tips[1] / 2) * (1 - ease[1])
+			high = faces["at"] + tips[1] / 2 + (1 - faces["at"] - tips[1] / 2) * ease[0]
+			kh = (high - low) * shrink
+			lift = u * (((high + low) / 2 - 0.5) * height * INCH)
+		k = min(kw, kh)
+		channel = (groove[0] * kw, groove[1] * min(1.0, max(0.0, (k - 0.85) / 0.15))) if groove else None
+		rings.append(rounded_ring(front - f * (t * INCH) + lift, f, u, width * kw, height * kh, rounding=rounding + ((0.95 - rounding) * (1 - k) if ogive else 0.0), groove=channel))
+	return loft(rings)
+
+
+def casing(side, stations, waterlines, buttlines, keep="low", ends=0.3, chamfer=2.0):
+	# A box at a wingtip along the jet's axis: stations [FS] front and back,
+	# waterlines low and high, buttlines inboard and outboard (on the right;
+	# mirrored on `side`), its fore and aft ends chamfered down to `ends` of
+	# its height over up to `chamfer` inches, keeping the edge on the `keep`
+	# side (low or high) whole
+	(s0, s1), (w0, w1), (b0, b1) = stations, waterlines, buttlines
+	inward = Vector((0, side, 0))
+	t = min(chamfer, (s1 - s0) / 4)
+	rings = []
+	for station, k in ((s0, ends), (s0 + t, 1.0), (s1 - t, 1.0), (s1, ends)):
+		low, high = (w0, w0 + (w1 - w0) * k) if keep == "low" else (w1 - (w1 - w0) * k, w1)
+		rings.append(rounded_ring(at(station, (low + high) / 2, side * (b0 + b1) / 2), FORWARD, inward, high - low, b1 - b0, rounding=0.25))
 	return loft(rings)
 
 
@@ -4269,17 +5233,73 @@ def stores():
 		surface = SURFACES[f"wing_{name}"]
 		tip, outboard, inboard, cheek = (1, 2, 3, 4) if side < 0 else (9, 8, 7, 6)
 		# The wingtip LAU-7, turned on its side with its round outboard of it,
-		# riding the outer panel's bend and fold
+		# riding the outer panel's bend and fold: a blunt cap forward (nose)
+		# and a long fine cone aft to a point (taper), the photos' profiles,
+		# the channel the round slides in along its outboard face
+		# (layout.stores.rails.tip)
 		front, aft = fwb(rails["tip"]["front"], side), fwb(rails["tip"]["aft"], side)
 		f, u = square(front - aft, Vector((0, side, 0)))   # u away from the round: inboard
 		flex_joint(f"flex_rail_{name}", bend, surface.point(surface.length, 0.5), parent=f"wing_{name}")
-		rail = box_mesh(front, f, u, (front - aft).length / INCH, value(lau7["width"]), value(lau7["height"]), 16.0)
-		# the fittings bolting it to the wingtip: a strip across the gap from
-		# the tip's edge to the rail's inboard face, along the rail's middle
-		reach = abs(front.y) / INCH - value(lau7["height"]) / 2 - surface.length
-		middle = front - f * (40 * INCH)
-		strip = box_mesh(middle + u * ((value(lau7["height"]) / 2 + reach / 2) * INCH), f, u, 50.0, 2.5, reach + 1.0, 4.0, tail=4.0, tip=0.6)
-		store(f"rail_{tip}", merge([rail, strip]), parent=f"flex_rail_{name}", hinge=front, shown=True)
+		nose, taper = rails["tip"]["nose"], rails["tip"]["taper"]
+		rail = box_mesh(front, f, u, (front - aft).length / INCH, value(lau7["width"]), value(lau7["height"]), nose["run"],
+			tail=rails["tip"]["cone"], tip=nose["tip"], close=taper["close"], ogive=True, power=taper["power"], groove=rails["tip"]["channel"])
+		# the fairing joining it to the wingtip (layout.stores.rails.tip.adapter):
+		# along the tip's chord, the rail's top carried in level to the step
+		# where the photos from above put the upper housing's outboard face,
+		# rising from there to the wing's top at its edge; below, a ruled face
+		# from the rail's bottom inboard edge up to the wing's lower edge
+		adapter = rails["tip"]["adapter"]
+		wing = built([f"wing_outer_{name}", f"flap_leading_outer_{name}", f"aileron_{name}"])   # the tip's whole chord
+		def along(station):
+			# the rail's axis at a station: its buttline and waterline
+			k = (station - rails["tip"]["front"][0]) / (rails["tip"]["aft"][0] - rails["tip"]["front"][0])
+			return [rails["tip"]["front"][i] + k * (rails["tip"]["aft"][i] - rails["tip"]["front"][i]) for i in (1, 2)]
+		def edge(station, below):
+			# the wingtip's surface just inboard of its edge, WL
+			start = fwb([station, 60.0 if below else 160.0, adapter["edge"] - 0.3], side)
+			hit = wing.ray_cast(start, UP if below else -UP)[0]
+			if hit is None:
+				raise SystemExit(f"no wingtip surface at FS {station:.1f}")
+			return hit.z / INCH + ORIGIN["waterline"]
+		rings = []
+		for k in range(adapter["steps"] + 1):
+			station = adapter["chord"][0] + 0.3 + (adapter["chord"][1] - adapter["chord"][0] - 0.6) * k / adapter["steps"]   # just inside the tip's edges
+			wl, bl = along(station)
+			top, bottom = wl + value(lau7["width"]) / 2, wl - value(lau7["width"]) / 2
+			face = bl - value(lau7["height"]) / 2 + 0.3   # 0.3 in inside the rail
+			rings.append([fwb([station, w, b], side) for w, b in ((edge(station, False), adapter["edge"] - 0.3), (top - 0.15, adapter["step"]), (top - 0.15, face),
+				(bottom + 0.15, face), (bottom + 0.15, adapter["step"]), (edge(station, True), adapter["edge"] - 0.3))])
+		fairing = outward(loft(rings))
+		# the formation lights' housings, each a plate framing its strip, the
+		# rim, ends and slope as the side photos show them round the windows:
+		# the upper standing on the fairing's top at the rail's level, the
+		# lower its mirror, hanging from the fairing's underside, its top
+		# reaching up into the underside where that rises to the tip's edge
+		strips, housing = LAYOUT["strips"], adapter["housings"]
+		def underside(station, buttline):
+			# the fairing's underside at a station and buttline, WL: level with
+			# the rail's bottom out to the step, then rising to the tip's edge
+			bottom = along(station)[0] - value(lau7["width"]) / 2 + 0.15
+			k = min(1.0, max(0.0, (adapter["step"] - buttline) / (adapter["step"] - adapter["edge"] + 0.3)))
+			return bottom + k * (edge(station, True) - bottom)
+		def frame(key, above):
+			(f0, w0, b0), (f1, w1, b1) = sorted(strips[key])
+			face = (abs(b0) + abs(b1)) / 2
+			edge_ = lambda w: w + (1 if above else -1) * (strips["width"] / 2 + housing["rim"])
+			if above:
+				base_ = lambda f: along(f)[0] + value(lau7["width"]) / 2 - 0.3
+			else:
+				base_ = lambda f: underside(f, face - housing["thick"]) + 0.1
+			outer = [(f0 - housing["end"], edge_(w0)), (f1 + housing["end"], edge_(w1))]
+			drop = [abs(w - base_(f)) for f, w in outer]
+			base = [(outer[0][0] - drop[0], base_(outer[0][0] - drop[0])), (outer[1][0] + drop[1], base_(outer[1][0] + drop[1]))]
+			outline = [base[0], outer[0], outer[1], base[1]]
+			return outward(loft([[fwb([f, w, b], side) for f, w in outline] for b in (face - housing["thick"], face)]))
+		upper, lower = frame("tip", True), frame("undertip", False)
+		store(f"rail_{tip}", merge([rail, fairing, upper, lower]), parent=f"flex_rail_{name}", hinge=front, shown=True, frame=(front, aft, u))
+		inward = Vector((0, side, 0))
+		for key, housing in (("tip", upper), ("undertip", lower)):
+			node(f"formation_{key}_{name}", parent=f"flex_rail_{name}", mesh=flush(BVHTree.FromPolygons(*housing), strips[key], side, strips["width"], inward), paint="lights")
 		MARKS[f"rail_tip_front_{name}"] = (front, f"rail_{tip}")
 		MARKS[f"rail_tip_aft_{name}"] = (aft, f"rail_{tip}")
 		# its AIM-9M on the photos' round axis, the nose 8.9 in ahead of the
@@ -4296,10 +5316,12 @@ def stores():
 			nose_, tail_ = moved(py["nose"]), moved(py["tail"])
 			front_ = [(s + delta.x, w + delta.y) for s, w in py["front"]]
 			bottom_ = [(s + delta.x, w + delta.y) for s, w in py["bottom"]]
+			if station == inboard:
+				bottom_ = seated_bottom(bottom_)
 			root = surface.point(abs(nose_[2]), 0.5)
 			flex = f"flex_pylon_{station}"
 			flex_joint(flex, bend, root)
-			store(f"pylon_{station}", pylon_mesh(side, nose_, tail_, front_, bottom_, py["width"]), parent=flex)
+			store(f"pylon_{station}", pylon_mesh(side, nose_, tail_, front_, bottom_, py["width"]), parent=flex, frame=(fwb(nose_, side), fwb(tail_, side), UP))
 			position = "outboard" if station == outboard else "inboard"
 			MARKS[f"pylon_{position}_nose_{name}"] = (fwb(nose_, side), f"pylon_{station}")
 			if station == outboard:
@@ -4316,10 +5338,24 @@ def stores():
 			start = middle - length / 2
 			top = interp(bottom_, start)
 			rack_front = at(start, top - value(lau115["height"]) / 2, bl(start) * side)
-			store(f"rack_{station}", box_mesh(rack_front, axis_f, UP, length, value(lau115["width"]), value(lau115["height"]), 9.0, tip=0.45),
-				parent=flex, hinge=rack_front)
-			# a single AIM-120 on the LAU-115's own rail, centred under it
-			below = interp(bottom_, middle) - value(lau115["height"]) - 0.6 - value(MISSILES["aim120c"]["diameter"]) / 2
+			rack = STORES["rack"]
+			store(f"rack_{station}", box_mesh(rack_front, axis_f, UP, length, value(lau115["width"]), value(lau115["height"]), rack["fairing"], tip=rack["tip"],
+				anchor=1.0, rounding=rack["corner"]),
+				parent=flex, hinge=rack_front, frame=(rack_front, rack_front - axis_f * (length * INCH), UP))
+			if station == outboard:
+				# the LAU-115's front and aft lower corners and its front's top,
+				# where its fairing meets the pylon (marking.md); its sections
+				# hang from its top line, the pylon's bottom
+				height = value(lau115["height"])
+				top_ = rack_front + UP * (height / 2 * INCH)
+				MARKS[f"rack_outboard_front_{name}"] = (top_ - UP * (height * 0.45 * INCH), f"rack_{station}")
+				MARKS[f"rack_outboard_root_front_{name}"] = (top_, f"rack_{station}")
+				MARKS[f"rack_outboard_aft_{name}"] = (top_ - axis_f * (length * INCH) - UP * (height * 0.7 * INCH), f"rack_{station}")
+			# a single AIM-120 on the LAU-115's own rail, centred under it: under
+			# its bottom at its middle (its top runs straight from its front,
+			# where the pylon's bottom curves over a tank)
+			rack_top = (rack_front.z - axis_f.z * (middle - start) * INCH) / INCH + ORIGIN["waterline"] + value(lau115["height"]) / 2
+			below = rack_top - value(lau115["height"]) - 0.6 - value(MISSILES["aim120c"]["diameter"]) / 2
 			under = at(middle, below, bl(middle) * side)
 			nose = under + axis_f * ((middle - twin["a"][0]) * INCH)
 			ROUNDS.setdefault(station, {})[f"rack_{station}"] = round_at(nose, axis_f, UP, "aim120c")
@@ -4330,10 +5366,27 @@ def stores():
 				on_axis = n120 - axis_f * (tip_ - n120).dot(-axis_f)
 				down = on_axis - tip_
 				_, toward = square(axis_f, down)
-				store(f"launcher_{station}{point}", box_mesh(tip_, axis_f, -toward, value(lau127["length"]), value(lau127["width"]), value(lau127["height"]), 14.0),
-					parent=flex, hinge=tip_)
-				store(f"rail_{station}{point}", box_mesh(tip_, axis_f, -toward, value(lau7["length"]), value(lau7["width"]), value(lau7["height"]), 14.0),
-					parent=flex, hinge=tip_)
+				# the fitting joining a rail to the LAU-115's side: the photos put the
+				# rails' fronts 15.8 in apart, wider than the LAU-115's 7 in body
+				# and the rails' halves, the real rails hanging from its shoulder
+				# adapters. A block from just inside the LAU-115's side to the
+				# rail's middle, its top half, along the length the two share; part
+				# of the rail, shown with it
+				def fitting(length):
+					s0 = max(start, fronts[point][0]) + 3.0
+					s1 = min(start + value(lau115["length"]), fronts[point][0] + length) - 3.0
+					mid = (s0 + s1) / 2
+					rail_at = tip_ - axis_f * ((mid - fronts[point][0]) * INCH)
+					centre = at(mid, 0.0, bl(mid) * side).y
+					edge = centre + math.copysign((value(lau115["width"]) / 2 - 0.3) * INCH, rail_at.y - centre)
+					front = Vector((at(s0, 0.0, 0.0).x, (edge + rail_at.y) / 2, rail_at.z + 1.5 * INCH))
+					return box_mesh(front, FORWARD, UP, s1 - s0, abs(rail_at.y - edge) / INCH, 3.0, 0.0, tail=0.0)
+				body = rails["launcher"]
+				store(f"launcher_{station}{point}", merge([box_mesh(tip_, axis_f, -toward, value(lau127["length"]), value(lau127["width"]), value(lau127["height"]), body["fairing"],
+					tip=body["tip"], rounding=body["corner"], faces=body["faces"]),
+					fitting(value(lau127["length"]))]), parent=flex, hinge=tip_, frame=(tip_, tip_ - axis_f * (value(lau127["length"]) * INCH), -toward))
+				store(f"rail_{station}{point}", merge([box_mesh(tip_, axis_f, -toward, value(lau7["length"]), value(lau7["width"]), value(lau7["height"]), 14.0, groove=rails["tip"]["channel"]),
+					fitting(value(lau7["length"]))]), parent=flex, hinge=tip_, frame=(tip_, tip_ - axis_f * (value(lau7["length"]) * INCH), -toward))
 				ROUNDS[station][f"launcher_{station}{point}"] = round_at(n120, axis_f, -toward, "aim120c")
 				# an AIM-9M on the LAU-7 there: its axis 5.0 in from the rail's,
 				# toward the round, as on the wingtip; its nose 8.9 in ahead
@@ -4341,17 +5394,22 @@ def stores():
 				ROUNDS[station][f"rail_{station}{point}"] = round_at(n9, axis_f, -toward, "aim9m")
 				if station == outboard:
 					MARKS[f"rail_outboard_{'outer' if point == 'a' else 'inner'}_front_{name}"] = (tip_, f"launcher_{station}{point}")
+					# the aft ends: a LAU-7's (rail) and a LAU-127's (launcher), from the same front
+					side_ = 'outer' if point == 'a' else 'inner'
+					MARKS[f"rail_outboard_{side_}_aft_{name}"] = (tip_ - axis_f * (value(lau7["length"]) * INCH), f"rail_{station}{point}")
+					MARKS[f"launcher_outboard_{side_}_aft_{name}"] = (tip_ - axis_f * (value(lau127["length"]) * INCH), f"launcher_{station}{point}")
 			if station == inboard:
 				# the 330-gallon tank, from the photos' nose and tail
 				n, t = fwb(STORES["tank"]["nose"], side), fwb(STORES["tank"]["tail"], side)
-				store(f"tank_{station}", tank_mesh(n, t), parent=flex)
+				store(f"tank_{station}", tank_mesh(n, t), parent=flex, frame=(n, t, UP))
 				MARKS[f"tank_inboard_nose_{name}"] = (n, f"tank_{station}")
 				MARKS[f"tank_inboard_tail_{name}"] = (t, f"tank_{station}")
 		# The cheek station's LAU-116 and its AIM-120, canted 45 deg toward the
-		# fuselage on it (dvids9380790)
+		# fuselage on it (dvids9380790), the round on the line from its tail to
+		# its nose as the photos measure them
 		nose = fwb(rounds["cheek"]["nose"], side)
 		up = (UP + Vector((0, side, 0))).normalized()   # up and inboard
-		f, u = square(FORWARD, up)
+		f, u = square((nose - fwb(rounds["cheek"]["tail"], side)).normalized(), up)
 		round_ = round_at(nose, f, u, "aim120c")
 		ROUNDS[cheek] = {f"ejector_{cheek}": round_}
 		station, radius = missile_mount("aim120c")
@@ -4360,20 +5418,62 @@ def stores():
 		middle = (min(lugs) + max(lugs)) / 2
 		hooks = nose - f * (middle * INCH) + u * ((radius + value(lau116["height"]) / 2) * INCH)
 		front = hooks + f * (value(lau116["length"]) / 2 * INCH)
-		store(f"ejector_{cheek}", box_mesh(front, f, u, value(lau116["length"]), value(lau116["width"]), value(lau116["height"]), 4.0, tip=0.8), hinge=front)
+		# behind it, over the round's aft end, the box the photos show running on
+		# to a chamfered aft face (layout.stores.rounds.cheek.fairing): standing
+		# off the nacelle's side, its outboard face upright, its bottom just over
+		# the round, its top level, its inboard face in the nacelle and turning
+		# outboard over its aft end to its aft edge
+		fairing = rounds["cheek"]["fairing"]
+		edge = fairing["edge"]
+		tail_, nose_ = rounds["cheek"]["tail"], rounds["cheek"]["nose"]
+		def over(station):
+			# its bottom, WL, at a station: the round's top and the clearance
+			k = (station - nose_[0]) / (tail_[0] - nose_[0])
+			return nose_[1] + k * (tail_[1] - nose_[1]) + value(MISSILES["aim120c"]["diameter"]) / 2 + fairing["clear"]
+		begin = ORIGIN["station"] - (front - f * (value(lau116["length"]) * INCH)).x / INCH - 2.0   # 2 in inside the LAU-116
+		turn = edge[0] - fairing["chamfer"]
+		rings = []
+		for station in [begin, (begin + turn) / 2, turn, edge[0] - fairing["chamfer"] / 2, edge[0]]:
+			deep = fairing["depth"] * min(1.0, max(0.06, (edge[0] - station) / fairing["chamfer"]))
+			low, high = over(station), fairing["top"]
+			rings.append([fwb([station, w, b], side) for w, b in ((low, edge[1]), (high, edge[1]), (high, edge[1] - deep), (low, edge[1] - deep))])
+		store(f"ejector_{cheek}", merge([box_mesh(front, f, u, value(lau116["length"]), value(lau116["width"]), value(lau116["height"]), 4.0, tip=0.8),
+			outward(loft(rings))]), hinge=front, frame=(front, front - f * (value(lau116["length"]) * INCH), u))
+		# the LAU-116's exposed lower face's front, on its middle line, the face
+		# toward the round; the fairing's aft edge's middle (marking.md)
+		MARKS[f"ejector_front_{name}"] = (front - u * (value(lau116["height"]) / 2 * INCH) * 0.8, f"ejector_{cheek}")
+		MARKS[f"ejector_aft_{name}"] = (fwb([edge[0], (over(edge[0]) + fairing["top"]) / 2, edge[1]], side), f"ejector_{cheek}")
 	# The centreline: the SUU-62 on the belly and its tank, level
 	centre = STORES["centre"]
 	n = at(*centre["nose"])
 	length = (Vector(STORES["tank"]["tail"]) - Vector(STORES["tank"]["nose"])).length
 	t = n + AFT * (length * INCH)
-	store("tank_5", tank_mesh(n, t))
+	store("tank_5", tank_mesh(n, t), frame=(n, t, UP))
 	MARKS["tank_centre_nose"] = (n, "tank_5")
 	profile = STORES["tank"]["profile"]
 	line = STORES["centreline"]
 	tank_top = lambda s: centre["nose"][1] + interp(profile, s - centre["nose"][0])
-	store("pylon_5", pylon_mesh(1, [line["front"], tank_top(line["front"]) - 1.0, 0.0], [line["back"], tank_top(line["back"]) - 1.0, 0.0],
-		[(line["front"], tank_top(line["front"]) - 1.0), (line["front"] + 6, keel_at(line["front"] + 6) + 1.5)],
-		[(s, tank_top(s) - 1.0) for s in range(int(line["front"]), int(line["back"]) + 1, 4)], py["width"], top=lambda s: keel_at(s)))
+	# a flat-sided box behind its narrow rounded leading edge, that edge as
+	# the photos measure it from its lower end above the tank up to the belly,
+	# its bottom flat at that lower end, the tank hanging from sway braces
+	# under it (layout.stores.centreline)
+	low, high = (line["front"], line["bottom"]), (line["top"], keel_at(line["top"]))
+	# each brace a pad 2 in long on either side, from 0.5 in inside the
+	# pylon's bottom to 0.1 in inside the tank's skin there
+	pads = []
+	for station in line["braces"]:
+		radius = tank_top(station) - centre["nose"][1]
+		for across in (-3.0, 3.0):
+			seat = centre["nose"][1] + math.sqrt(radius * radius - across * across) - 0.1
+			top = line["bottom"] + 0.5
+			pads.append(box_mesh(at(station - 1.0, (seat + top) / 2, across), FORWARD, UP, 2.0, 1.5, top - seat, 0.0, tail=0.0))
+	store("pylon_5", merge([box_pylon([low, high], line["back"], line["bottom"], line["width"], line["corner"], keel_at, line["taper"], line["round"])] + pads),
+		frame=(at(low[0], low[1], 0.0), at(line["back"], line["bottom"], 0.0), UP))
+	# the SUU-62's ends low down and where its edges meet the belly (marking.md)
+	MARKS["pylon_centre_nose"] = (at(low[0], low[1], 0.0), "pylon_5")
+	MARKS["pylon_centre_tail"] = (at(line["back"], line["bottom"], 0.0), "pylon_5")
+	MARKS["pylon_centre_root_front"] = (at(high[0], high[1], 0.0), "pylon_5")
+	MARKS["pylon_centre_root_aft"] = (at(line["back"], keel_at(line["back"]), 0.0), "pylon_5")
 
 
 def points():
@@ -4446,8 +5546,32 @@ def keel_at(station):
 	return between([(456 - v.x / INCH, ORIGIN["waterline"] + v.z / INCH) for v in KEELLINE], station)
 
 
+def rider(obj):
+	# What a part moves with, for hidden.py's groups: the joint it rides (its
+	# own or its nearest moving ancestor's: a surface, a door, a store the
+	# loadout shows); a part with shape keys (the wing's flex) is its own,
+	# since a bend can bare what it hides at rest; None for the rigid frame
+	while obj is not None:
+		if obj.name in JOINTS:
+			return obj.name
+		if obj.data is not None and getattr(obj.data, "shape_keys", None):
+			return obj.name
+		obj = obj.parent
+	return None
+
+
+def cull():
+	# Removes the faces no view can see: inside another part or against one
+	# that moves with it (hidden.py), such as the skin under the windscreen's
+	# and canopy sill's fittings, the fin roots' caps inside the fins and the
+	# pilot inside the seat
+	counts = hidden.remove([o for o in bpy.data.objects if o.type == "MESH"], rider)
+	print("hidden faces removed:", sum(counts.values()))
+
+
 def main():
-	args = sys.argv[sys.argv.index("--") + 1 :]
+	folder, keys = option("--cache"), option("--keys")
+	args = ARGS
 	out = [a for a in args if not a.startswith("--")]
 	bpy.ops.wm.read_factory_settings(use_empty=True)
 	widths = fuselage()
@@ -4466,16 +5590,35 @@ def main():
 		fractions["rudder"] = fin(side)
 	for side in (-1, 1):
 		lex(side, widths)
-	ladder()
+	# the gear's braces, solved for room inside the whole airframe (check.py's
+	# hull: the stowed parts lie inside it)
+	skin = built(["fuselage", "lex_left", "lex_right", "inlet_left", "inlet_right", "wing_inner_left", "wing_inner_right", "canopy", "windscreen", "fin_left", "fin_right"])
+	for brace in BRACES:
+		brace(skin)
+	scoop()
 	lamps()
 	stores()
 	print("chord fractions:", json.dumps(fractions, default=lambda x: round(x, 3)))
 	located = points()
+	wells()
+	cull()
+	if keys:
+		# the keys the atlases would bake under, and nothing more (test_build.py)
+		stored, parts = painted_parts()
+		Path(keys).write_text(json.dumps({"paint": jet_key(parts, stencil_frames()).hex(), "stores": store_key(stored, parts).hex()}))
+		return
 	if "--draft" not in args:
-		paint(Path(out[0]).parent)
+		paint(Path(out[0]).parent, folder)
 	bpy.ops.export_scene.gltf(filepath=out[0], export_format="GLB", export_yup=True, use_selection=False,
 		export_apply=False, export_animations=False, export_extras=False)
+	# the mechanisms' stroke times (the hook's swing from centre to either
+	# stop), the rudders' toe-in and the hook's sideways travel each way, for
+	# the engine (layout.motion)
+	m = {k: v["value"] for k, v in LAYOUT["motion"].items() if isinstance(v, dict)}
+	motion = {"seconds": {k: m[k]["seconds"] for k in ("canopy", "probe", "bar", "fold", "hook", "scoop", "swing")}, "toe": m["toe"], "swing": m["swing"]["travel"],
+		"canopy": {k: m["canopy"][k] for k in ("unlatch", "fall", "lock")}}   # the closing's own phases: the opening's are its stroke and the slide's share
 	document = {"frame": {"origin": {"station": ORIGIN["station"], "waterline": ORIGIN["waterline"], "buttline": 0}},
+		"motion": motion,
 		"joints": dict(sorted(JOINTS.items())),
 		"points": {**located, "landmarks": {name: exported(point) for name, point in sorted(LANDMARKS.items())}}}
 	Path(out[1]).write_text(json.dumps(document, indent="\t") + "\n")

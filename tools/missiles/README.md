@@ -35,7 +35,11 @@ own launchers, racks and pylons are part of `fa18c.glb` (../fa18c), not these.
   flange), a box with its top corners rounded seen from the side (the C-hangers), a level plate with rounded
   corners and holes (the aft shoe's flange) or a round post, mirrored to the other side where the missile is
   symmetric, and `bevel`led where the part is machined; a rolleron's flap, bearing bracket, tip block and toothed
-  wheel; a nozzle's liner recessed in the aft face.
+  wheel; a nozzle's liner recessed in the aft face. A fitting laid along the body (`"cut": true`, the harness
+  cover) cuts the body's skin just inside its sides and ends, so the skin under it is whole faces. Then the faces
+  no view can see go (`../hidden.py`): inside or against another part that moves with them, such as the fittings'
+  feet sunk in the body, the fixed wings' roots and the skin under the harness cover; a movable fin's root stays,
+  since turned it stands off the body.
 - `paint.py`: the paint over the atlas's bakes, plain numpy and Pillow: the joints, screw rows, stencils, placards,
   symbols, covers and ports of `layout.markings`, each given for the left side as (station, arc round the surface
   from the side's middle) and painted on the right mirrored, its lettering upright with the lugs up, reading aft on
@@ -46,7 +50,7 @@ own launchers, racks and pylons are part of `fa18c.glb` (../fa18c), not these.
 
 ## Build
 
-    blender -b --factory-startup --python-exit-code 1 -P build.py -- aim9m OUT.glb OUT.json [--draft] [--bakes BAKES.npz]
+    blender -b --factory-startup --python-exit-code 1 -P build.py -- aim9m OUT.glb OUT.json [--draft] [--bakes BAKES.npz] [--cache DIR]
     python3 -I check.py aim9m OUT.glb OUT.json
 
 The build paints an atlas (`layout.atlas` texels a side, the base colour of every material but the glass): the
@@ -54,7 +58,11 @@ body's skin unrolled in pieces between its joints and the fins' rolls, every oth
 Cycles' bakes of ambient occlusion, normals, and by emission each material's colour, each texel's place and the part
 it lies on, and `paint.py` over them, saved as JPEG (quality 90, full colour resolution: a quarter of PNG's size,
 the mottle and grain being what PNG compresses worst). That takes one to two minutes; `--draft` leaves it out, and `--bakes` keeps the
-bakes for a look at the paint without Blender.
+bakes for a look at the paint without Blender. `--cache DIR` keeps the atlas's UVs and bakes between builds (`../cache.py`),
+under a key of every part's faces, what the unwrap lays the body's skin by, the colours and part indices baked, and the code:
+a build whose parts are unchanged takes them from there (the AIM-9M in 4 s instead of 26, the AIM-120C in 45 instead of 150, most
+of it `paint.py`'s), and makes the model a cold build makes, byte for byte. `--facts FILE` builds from another facts file. `--whole` keeps the hidden faces, every part a closed solid, for
+`test_build.py`'s probes.
 
 Run Blender under `systemd-run --user --scope --slice=probe.slice -p MemoryMax=6G -p MemorySwapMax=0`. The frame:
 x forward along the missile, y up toward its lugs, z to its right, metres, origin on the axis at the centre of gravity.
@@ -72,5 +80,9 @@ file to the public repository's history every time.
     python3 -I test_build.py
 
 `test_build.py` builds the AIM-120C with Blender (run it under the memory cap above) and probes its hooks, points
-the layout makes solid and points it leaves empty, by the built mesh's winding number; and its paint, by the atlas
-the body's own UVs show where the markings and joints are.
+the layout makes solid and points it leaves empty, by the winding number of a draft built `--whole` (the shipped
+build leaves the solids open where they meet); its paint, by the atlas the body's own UVs show where the markings
+and joints are; and that the shipped build keeps no face no view can see, which the whole draft shows the check
+finding. `../test_hidden.py` tests the hidden-face test itself on boxes, in Blender:
+
+    blender -b --factory-startup --python-exit-code 1 -P ../test_hidden.py

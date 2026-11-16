@@ -73,7 +73,8 @@ export function options(station: number, fixture: string): string[] {
 // entries names the catalog entries a station's slot attaches: the fixture
 // hardware (tips: none — the integral rail lives in the empty weight), then
 // one entry per occupied point. Twin points map outer first ("a"), matching
-// the firing order.
+// the firing order. A single AIM-9 on a wing pylon adds the empty LAU-7 on
+// its inboard shoulder (the LAU-115C/A carries its side launchers in pairs).
 export function entries(station: number, slot: Slot): string[] {
   const out: string[] = []
   if (station === 1 || station === 9) {
@@ -87,6 +88,8 @@ export function entries(station: number, slot: Slot): string[] {
     if (slot.stores[1]) out.push(slot.stores[1] + station + 'b')
   } else if (slot.stores[0]) {
     out.push(slot.stores[0] + station) // any occupied single point: 9m2, 120c4, tank3, 9m7...
+    if (slot.stores[0] === '9m' && station !== 4 && station !== 5 && station !== 6)
+      out.push('shoulder' + station)
   }
   return out
 }
@@ -144,6 +147,22 @@ export const PRESETS: Record<string, Loadout> = {
     9: { fixture: 'rail', stores: ['9m'] },
   }),
 }
+
+// SHOWCASE hangs each kind of store the jet carries, for the model viewer: a
+// twin with an AIM-9M on its LAU-7 and an AIM-120C on its LAU-127, a LAU-115
+// with its own AIM-120C and another with an AIM-9M on its LAU-7, both cheeks'
+// LAU-116s (one empty), a wing tank and the centreline tank on their pylons.
+export const SHOWCASE: Loadout = normalize({
+  1: { fixture: 'rail', stores: ['9m'] },
+  2: { fixture: 'twin', stores: ['9m', '120c'] },
+  3: { fixture: 'pylon', stores: ['120c'] },
+  4: { fixture: 'rail', stores: ['120c'] },
+  5: { fixture: 'pylon', stores: ['tank'] },
+  6: { fixture: 'rail', stores: [''] },
+  7: { fixture: 'pylon', stores: ['tank'] },
+  8: { fixture: 'rail', stores: ['9m'] },
+  9: { fixture: 'rail', stores: ['9m'] },
+})
 
 // The internal fuel each preset loads, in pounds (decided 2026-10-12): a
 // round figure just above the most that leaves the fit at the weight the

@@ -24,6 +24,16 @@ def at(image, x, z):
 	return list(image.getpixel((int((x + 10) / 20 * 200), int((z + 5) / 10 * 100))))
 
 
+def inside(point, outline):
+	# a plan point in a polygon (even-odd)
+	x, z = point
+	result = False
+	for (ax, az), (bx, bz) in zip(outline, outline[1:] + outline[:1]):
+		if (az > z) != (bz > z) and x < ax + (z - az) * (bx - ax) / (bz - az):
+			result = not result
+	return result
+
+
 class Paint(unittest.TestCase):
 	def render(self, *markings):
 		return paint.render({**LAYOUT, "markings": list(markings)})
@@ -136,6 +146,13 @@ class Paint(unittest.TestCase):
 		self.assertAlmostEqual(panel.min() / grey, 0.2, delta=0.03)
 		self.assertTrue(np.allclose(lin[:, col(0.2) :], grey, atol=1e-4))     # forward of the panel
 		self.assertTrue(np.allclose(lin[: row(-3.2), :], grey, atol=1e-4))    # to port of it
+		# at a share of its density: half the soot, the core's share the square root
+		half = {**worn, "wear": {"deflectors": {**worn["wear"]["deflectors"], "soot": 0.5}}}
+		lighter = paint.linear(np.asarray(paint.render(half), np.float32))[..., 1][row(-2.9) : row(2.9), col(-3.9) : col(-0.1)]
+		self.assertAlmostEqual(lighter.min() / grey, 0.2 ** 0.5, delta=0.03)
+		# the facts' soot lighter than photographed (the user, 2026-11-12)
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		self.assertLess(layout["wear"]["deflectors"]["soot"], 1.0)
 
 	def test_spots_on_the_deck_and_out_of_the_clear_area(self):
 		clear = [[-10, -5], [0, -5], [0, 5], [-10, 5]]
@@ -162,8 +179,11 @@ class Paint(unittest.TestCase):
 		# (the shoulders past the touchdown zone held at 1, their reference
 		# strip there darker than they are)
 		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
-		spec = layout["wear"]["tyres"]
+		# fitted at the photographed density, the deck showing `rubber` of it (lighter: the user)
+		self.assertLess(layout["wear"]["tyres"]["rubber"], 1.0)
+		spec = dict(layout["wear"]["tyres"], rubber=1.0)
 		grid, ss, ts = paint.tyre_density(layout, spec)
+		np.testing.assert_allclose(paint.tyre_density(layout, layout["wear"]["tyres"])[0], grid * layout["wear"]["tyres"]["rubber"])
 		share = np.exp(-grid)
 		S, T = np.meshgrid(ss, ts)
 		misses = []
@@ -213,24 +233,30 @@ class Paint(unittest.TestCase):
 		self.assertLess(np.abs(np.diff(centre)).max(), 0.02)
 		self.assertGreater(abs(centre[-1] - centre[0]), 0.05)   # it does slant, by less than a cell over the run
 
-	def test_heavy_landings_stand_out_as_streaks(self):
-		# each landing's own weight of rubber: across the band at the wires its
-		# fine contrast (less a metre's running mean) half again what alike
-		# landings leave
+	def test_many_light_landings_leave_an_even_band(self):
+		# lighter marks from many tyres, not heavy ones from a few (the user,
+		# 2026-11-12): across the band at the wires its fine contrast (less a
+		# metre's running mean) under half what 400 landings of four times
+		# the rubber each, their weights varying 0.9, left
 		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
 		spec = layout["wear"]["tyres"]
-		def contrast(variation):
-			grid, ss, ts = paint.tyre_density(layout, dict(spec, variation=variation))
+		self.assertGreaterEqual(spec["landings"], 1000)
+		def contrast(spec):
+			grid, ss, ts = paint.tyre_density(layout, spec)
 			across = np.exp(-grid[:, (ss >= 60) & (ss < 62)]).mean(1)
 			fine = across - np.convolve(across, np.ones(11) / 11, mode="same")
 			return np.std(fine[np.abs(ts + 0.5) < 4])
-		self.assertGreater(contrast(spec["variation"]), 1.4 * contrast(0.0))
+		k = spec["landings"] / 400
+		few = dict(spec, landings=400, variation=0.9, rollout=spec["rollout"] * k, smear=dict(spec["smear"], density=spec["smear"]["density"] * k),
+			forward=dict(spec["forward"], density=spec["forward"]["density"] * k))
+		self.assertLess(contrast(spec), 0.5 * contrast(few))
 
 	def test_tyre_band_rounded_at_its_aft_edge(self):
 		# where the band begins, line by line across it: aftmost on the
 		# centreline, later the farther off it (the photo's rounded edge, not
 		# a straight one across)
 		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		layout["wear"]["tyres"]["rubber"] = 1.0   # the band's shape at the photographed density
 		spec = layout["wear"]["tyres"]
 		grid, ss, ts = paint.tyre_density(layout, spec)
 		share = np.exp(-grid)
@@ -249,6 +275,7 @@ class Paint(unittest.TestCase):
 	def test_tyre_band_tapers(self):
 		# wide at the touchdown, narrow past the wires, clean aft of the touchdown
 		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		layout["wear"]["tyres"]["rubber"] = 1.0   # the band's shape at the photographed density
 		grid, ss, ts = paint.tyre_density(layout, layout["wear"]["tyres"])
 		width = lambda s0: (np.exp(-grid[:, (ss >= s0) & (ss < s0 + 10)]).mean(1) < 0.85).sum() * (ts[1] - ts[0])
 		self.assertGreater(width(55), 8.0)
@@ -277,6 +304,80 @@ class Paint(unittest.TestCase):
 		self.assertGreater(lin[int(1 / 10 * 100) :, int(14.6 / 20 * 200) : int(18.4 / 20 * 200)].min(), 0.98)   # none on the panel
 		self.assertGreater(lin[int(8.7 / 10 * 100) :, int(10.5 / 20 * 200) :].min(), 0.98)   # none off the deck, past z 3.5
 		self.assertLess(self.at_lin(lin, -4.0, 4.0), 0.7)     # on the elevator
+
+	def test_deck_covers_are_filled(self):
+		# the barricade's trays and hatches and the bow's hatch (facts.json): each a filled cover, its rim, its frame
+		# where it has one and its centre nested in turn, none drawn as a bare outline, no tie-down fitting on it
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		marks = {m["name"]: m for m in layout["markings"]}
+		covers = [n[: -len("_cover")] for n in marks if n.endswith("_cover")]
+		self.assertEqual(len(covers), 6, covers)
+		self.assertFalse([n for n in covers if n in marks], "a cover's old outline is still drawn")
+		self.assertIn("_cover", layout["wear"]["tiedowns"]["clear_suffixes"])
+		texture = layout["deck"]["texture"]
+		canvas = paint.Canvas(texture, 1)
+		image = np.asarray(paint.render(layout), np.float32)
+		for name in covers:
+			rings = [marks[name + "_cover"]] + [marks[name + s] for s in ("_cover_frame", "_cover_centre") if name + s in marks]
+			for outer, inner in zip(rings, rings[1:]):
+				for x, z in inner["outline"]:
+					self.assertTrue(inside((x, z), outer["outline"]), (name, inner["name"]))
+			# the centre's middle wears the centre's colour, worn but not dotted: within the wear's spread of it, and no
+			# texel of the centre darker than a tie-down fitting leaves one
+			centre = rings[-1]
+			o = np.array(centre["outline"])
+			points = [(x, z) for x in np.linspace(o[:, 0].min(), o[:, 0].max(), 40) for z in np.linspace(o[:, 1].min(), o[:, 1].max(), 20)
+				if inside((x, z), centre["outline"])]
+			self.assertGreater(len(points), 5, name)
+			got = np.median([paint.linear(image[int(canvas.pixel(p)[1]), int(canvas.pixel(p)[0])]) for p in points], axis=0)
+			want = paint.linear(np.array(centre["colour"], np.float32))
+			np.testing.assert_allclose(got / want, 1.0, atol=0.35, err_msg=name)
+		# no fitting on a cover: the darkest texel inside each cover against its centre's colour, with the lattice and
+		# without it (the same layout less its tie-downs), differ by less than a fitting's darkening
+		plain = np.asarray(paint.render({**layout, "wear": {k: w for k, w in layout["wear"].items() if k != "tiedowns"}}), np.float32)
+		ratio = paint.linear(image[..., 1] + 0.5) / paint.linear(plain[..., 1] + 0.5)
+		from PIL import Image, ImageDraw
+		for name in covers:
+			mask = Image.new("L", (ratio.shape[1], ratio.shape[0]), 0)
+			ImageDraw.Draw(mask).polygon([canvas.pixel(p) for p in marks[name + "_cover"]["outline"]], fill=255)
+			inner = np.asarray(mask.filter(__import__("PIL.ImageFilter", fromlist=["MinFilter"]).MinFilter(7))) > 0   # a fitting's width in from its edge, where one beside it still reaches
+			self.assertGreater(inner.sum(), 4, name)
+			self.assertGreater(ratio[inner].min(), 0.9, name)
+
+	def test_ramp_over_the_round_down(self):
+		# the ramp at the stern as the 2022-23 photos show it (facts.json): white over the round-down aft of the stripe
+		# to the deck's edge, light grey along the edge either side of it, the plain deck forward of that grey, and
+		# the centreline's yellow over the white to the edge
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		marks = {m["name"]: m for m in layout["markings"]}
+		canvas = paint.Canvas(layout["deck"]["texture"], 1)
+		image = np.asarray(paint.render(layout), np.float32)
+		(ax, az), (bx, bz) = layout["deck"]["round"]["edge"]
+		edge = lambda z: ax + (z - az) / (bz - az) * (bx - ax)
+		def wears(x, z, colour, name):
+			# the median of the texels within 0.15 m against the colour, in linear light, within the wear's spread
+			c, r = canvas.pixel((x, z)); patch = image[int(r) - 2:int(r) + 3, int(c) - 2:int(c) + 3].reshape(-1, 3)
+			got = np.median(paint.linear(patch), axis=0)
+			np.testing.assert_allclose(got / paint.linear(np.array(colour, np.float32)), 1.0, atol=0.3, err_msg=name)
+		white, light, deck = marks["ramp"]["colour"], marks["ramp_port"]["colour"], layout["paint"]["deck"]
+		for z in (10, 16):
+			wears(edge(z) + 0.4, z, white, f"the round-down at z {z}, between the stripe and the edge")
+		wears(edge(-10) + 1.0, -10, light, "the port strip")
+		wears(edge(-6) + 2.5, -6, deck, "forward of the port strip")
+		wears(edge(20.5) + 1.5, 20.5, light, "the starboard end")
+		# the outline traced on the 2023 overhead: the white out to z -5.2 and 19.9 a metre in from the edge, the
+		# starboard grey 4.55 deep and the plain deck beyond it
+		wears(edge(-5.1) + 1.0, -5.1, white, "the white's port end")
+		wears(edge(19.75) + 1.0, 19.75, white, "the white's starboard end")
+		wears(edge(21) + 4.0, 21, light, "the starboard grey, 4 m in")
+		wears(edge(21) + 5.2, 21, deck, "forward of the starboard grey")
+		# the gutters' grates at the edge, the light grey either side of the starboard one
+		wears(edge(20.6) + 0.05, 20.6, marks["grate_starboard"]["colour"], "the starboard grate")
+		wears(edge(-14.0) + 0.05, -14.0, marks["grate_port"]["colour"], "the port grate")
+		wears(edge(21.5) + 0.05, 21.5, light, "outboard of the starboard grate")
+		(cx, cz), (dx, dz) = marks["centreline"]["points"]
+		x = edge(cz) + 0.4
+		wears(x, cz + (x - cx) / (dx - cx) * (dz - cz), marks["centreline_yellow_1"]["colour"], "the centreline over the white")
 
 	def test_scorch_forward_of_the_hinge(self):
 		# darkest just forward of the hinge on the track's line, none aft of it,
@@ -343,16 +444,116 @@ class Paint(unittest.TestCase):
 		start = np.s_[row(-4.2) : row(-1.8), col(-4.5) : col(-1.5)]
 		faded = paint.taxi_density(layout, {**taxi, "turns": {**turns, "rise": 0.5}}, canvas, (100, 200))[start].sum()
 		self.assertLess(faded, grid[start].sum() * 0.5)
+		# and fading out over their last share, thinning to nothing rather than stopping
+		destination = np.s_[row(1.5) : row(4.5), col(3.5) : col(6.5)]
+		ended = paint.taxi_density(layout, {**taxi, "turns": {**turns, "fade": 0.5}}, canvas, (100, 200))[destination].sum()
+		self.assertLess(ended, grid[destination].sum() * 0.3)
+
+	def test_condition_cleans_the_deck_but_not_its_fittings(self):
+		# the deck's dirt (its mottle and drips here) at the condition's share
+		# of its optical density, none at 0; the tie-down fittings as they are
+		layout = {**LAYOUT, "deck": {**LAYOUT["deck"], "outline": [[-10, -5], [10, -5], [10, 5], [-10, 5]]}, "markings": []}
+		dirt = {"seed": 4, "mottle": [[2.0, 0.06]], "spots": {"count": 30, "size": [0.6, 0.9], "darkening": [0.4, 0.5]}}
+		density = lambda condition: -np.log(np.clip(self.lin_green({**layout, "wear": {**dirt, "condition": condition}}), 1e-6, None))
+		full, half, none = density(1.0), density(0.5), density(0.0)
+		dark = full > 0.2
+		self.assertTrue(dark.any())
+		self.assertAlmostEqual(float(half[dark].mean() / full[dark].mean()), 0.5, delta=0.05)
+		self.assertLess(np.abs(none).max(), 0.01)
+		ties = {"origin": [0.0, 0.0], "along": 4.0, "across": 4.0, "diameter": 0.4, "darkening": 0.5}
+		fittings = lambda condition: self.lin_green({**layout, "wear": {"condition": condition, "tiedowns": ties}})
+		np.testing.assert_array_equal(fittings(0.3), fittings(1.0))
+		self.assertLess(self.at_lin(fittings(0.3), 0.0, 0.0), 0.7)
+
+	def test_rubber_runs_on_over_the_wires(self):
+		# the facts' landings touch down scattered about each wire's point, so
+		# the three wires' bands run into one, as the 2023 overhead shows the
+		# rubber unbroken over every wire: nowhere lighter at a wire than a few
+		# metres either side (1.5 m of scatter left it 0.13 lighter at wire 1)
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		grid, ss, ts = paint.tyre_density(layout, layout["wear"]["tyres"])
+		share = np.exp(-grid[np.abs(ts) < 6]).mean(0)
+		at = lambda s: share[(ss >= s - 0.5) & (ss < s + 0.5)].mean()
+		origin, along, _ = paint.frame_of(layout)
+		for number, s in paint.wires_along(layout, origin, along).items():
+			self.assertLess(at(s), np.mean([at(s + o) for o in (-4, -3, 3, 4)]) + 0.02, f"wire {number}")
+
+	def test_turns_off_where_the_overhead_shows_them(self):
+		# the facts' turns off the landing area where the 2023 overhead's swirl
+		# lies: from its forward stretch (x -10 to 20), between the centreline
+		# and just past the starboard foul line, round toward the bow's
+		# catapults, and none crossing the waist to the island's side
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		taxi = {**layout["wear"]["taxi"], "catapults": None, "elevators": None}
+		canvas = paint.Canvas(layout["deck"]["texture"], 1)
+		x0, x1 = layout["deck"]["texture"]["x"]
+		z0, z1 = layout["deck"]["texture"]["z"]
+		shape = (int((z1 - z0) * 4), int((x1 - x0) * 4))
+		grid = paint.taxi_density(layout, taxi, canvas, shape)
+		rows, cols = np.nonzero(grid > 1e-3)
+		x, z = x0 + (cols + 0.5) / 4, z0 + (rows + 0.5) / 4
+		self.assertTrue(len(x))
+		self.assertGreater(x.min(), -20)
+		self.assertLess(x.max(), 35)
+		self.assertLess(z.max(), 0)
+
+	def test_turn_offs_clear_of_the_catapult_tracks(self):
+		# the tracks of aircraft turning off the landing area end, faded,
+		# short of those taxiing onto the catapults: no mark of the one within
+		# 5 m of a mark of the other (the user, 2026-11-12)
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		taxi = layout["wear"]["taxi"]
+		canvas = paint.Canvas(layout["deck"]["texture"], 1)
+		x0, x1 = layout["deck"]["texture"]["x"]
+		z0, z1 = layout["deck"]["texture"]["z"]
+		shape = (int((z1 - z0) * 4), int((x1 - x0) * 4))
+		turns = paint.taxi_density(layout, {**taxi, "catapults": None, "elevators": None}, canvas, shape) > 0.02
+		cats = paint.taxi_density(layout, {**taxi, "turns": None, "elevators": None}, canvas, shape) > 0.02
+		self.assertTrue(turns.any() and cats.any())
+		from PIL import Image as I, ImageFilter
+		near = np.asarray(I.fromarray((cats * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(41))) > 0   # 5 m either way at 4 px a metre
+		self.assertFalse((near & turns).any())
 
 	def test_round_down_white_from_where_photographed(self):
-		# the facts' ramp: white from z -5.0 to starboard, light grey to port,
-		# the two meeting there on one line
+		# the facts' ramp: the stripe white from z -5.293 to starboard (its ends where the 2022-23 photos' white ends),
+		# the round-down aft of it white from its aft corners, and light grey to either side, each strip meeting the
+		# stripe on the stripe's own end, square to it
 		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
-		ramps = {m["name"]: m for m in layout["markings"] if m["name"] in ("ramp", "ramp_port")}
-		self.assertEqual(ramps["ramp_port"]["points"][-1], ramps["ramp"]["points"][0])
-		self.assertAlmostEqual(ramps["ramp"]["points"][0][1], -5.0)
+		ramps = {m["name"]: m for m in layout["markings"] if m["name"].startswith("ramp")}
+		self.assertEqual(set(ramps), {"ramp", "ramp_port", "ramp_aft", "ramp_starboard"})
+		(px, pz), (qx, qz) = ramps["ramp"]["points"]
+		self.assertAlmostEqual(pz, -5.293)
 		self.assertEqual(ramps["ramp"]["colour"], layout["paint"]["white"])
-		self.assertLess(sum(ramps["ramp_port"]["colour"]), sum(ramps["ramp"]["colour"]) * 0.9)
+		self.assertEqual(ramps["ramp_aft"]["colour"], layout["paint"]["white"])
+		length = np.hypot(qx - px, qz - pz); u = np.array([qx - px, qz - pz]) / length
+		for name, end, along in (("ramp_port", (px, pz), 0.0), ("ramp_starboard", (qx, qz), length)):
+			self.assertLess(sum(ramps[name]["colour"]), sum(ramps["ramp"]["colour"]) * 0.9, name)
+			for point in ramps[name]["outline"][:2]:
+				self.assertAlmostEqual(float((np.array(point) - np.array([px, pz])) @ u), along, delta=0.002, msg=name)
+		# the white over the round-down starts at the stripe's aft corners
+		w = np.array([u[1], -u[0]]) * ramps["ramp"]["width"] / 2; w = w if w[0] > 0 else -w
+		np.testing.assert_allclose(ramps["ramp_aft"]["outline"][:2], [np.array([px, pz]) - w, np.array([qx, qz]) - w], atol=0.002)
+
+	def test_edge_stripes_meet_the_ramp(self):
+		# the landing area's four edge stripes start on the ramp stripe's centre line, so each runs into it as the 2022-23
+		# photos show; the port two had all started at x -159.8 with the others, 2.4-2.9 m short of the angled stripe, and
+		# the deck there, 1.5 m aft of that old start along each, is now their white
+		layout = json.loads((Path(paint.HERE) / "facts.json").read_text())["layout"]
+		marks = {m["name"]: m for m in layout["markings"]}
+		(px, pz), (qx, qz) = marks["ramp"]["points"]
+		u = np.array([qx - px, qz - pz]) / np.hypot(qx - px, qz - pz)
+		for name in ("edge_port_inner", "edge_port_outer", "edge_starboard_inner", "edge_starboard_outer"):
+			off = np.array(marks[name]["points"][0]) - np.array([px, pz])
+			self.assertAlmostEqual(float(off[0] * u[1] - off[1] * u[0]), 0.0, delta=0.002, msg=name)
+		canvas = paint.Canvas(layout["deck"]["texture"], 1)
+		image = np.asarray(paint.render(layout), np.float32)
+		for name in ("edge_port_inner", "edge_port_outer"):
+			start, end = (np.array(p, float) for p in marks[name]["points"][:2])
+			v = (end - start) / np.linalg.norm(end - start)
+			x, z = start + v * (-161.3 - start[0]) / v[0]
+			c, r = canvas.pixel((x, z)); patch = image[int(r) - 1:int(r) + 2, int(c) - 1:int(c) + 2].reshape(-1, 3)
+			got = np.median(paint.linear(patch), axis=0)
+			np.testing.assert_allclose(got / paint.linear(np.array(marks[name]["colour"], np.float32)), 1.0, atol=0.3, err_msg=name)
 
 	def test_unknown_kind(self):
 		with self.assertRaises(ValueError):

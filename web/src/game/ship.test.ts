@@ -3,7 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { describe, expect, it } from 'vitest'
-import { type Contract, deflectors, followers, layout, raising, STATIONS, stations } from './ship'
+import { type Contract, type Deck, deflectors, followers, foul, layout, lit, meatball, raising, STATIONS, stations } from './ship'
 
 // A small deck: a landing line angled to port, one wire whose pendant runs
 // between sheaves 16 m to port and 18 to starboard of where it crosses the
@@ -146,6 +146,29 @@ describe('layout', () => {
     expect(read.elevators).toEqual([{ aft: -62, forward: -38, side: -1 }])
   })
 
+  it('leaves a housed lens to the model: the engine draws only its lights', () => {
+    expect(
+      layout({ ...contract, lens: { ...contract.lens!, housed: true } }).ols
+    ).toEqual({ x: -20, z: -28, model: true })
+  })
+
+  it("passes the deck's vehicles through as the core collides with them, and none where the file has none", () => {
+    const tractor = {
+      kind: 'tractor',
+      outline: [
+        [38.5, 9.0],
+        [41.5, 9.0],
+        [41.5, 11.0],
+        [38.5, 11.0],
+      ] as [number, number][],
+      top: 20.6,
+    }
+    expect(layout({ ...contract, vehicles: [tractor] }).vehicles).toEqual([
+      tractor,
+    ])
+    expect(read.vehicles).toEqual([])
+  })
+
   it('gives the waterline at evenly spaced stations, closing to nothing at the stem', () => {
     const w = read.waterline!
     expect([w.stern, w.stem, w.sides.length]).toEqual([-90, 95, STATIONS])
@@ -205,5 +228,145 @@ describe('layout', () => {
     expect(deflectors(ship, 1.5)).toEqual({ catapult_1_deflector: 0.8, catapult_1_deflector_crank: 1.6, catapult_2_deflector: 0.8 })
     expect(raising(ship)).toBe(1.5)   // the slowest deflector's raise, not the shuttle's or the console's travel
     expect(raising(layout(contract))).toBe(0)
+  })
+})
+
+describe('meatball', () => {
+  // The fixture's one wire is its target: the touchdown where it crosses the
+  // landing line. An eye placed along the approach (aft along the line), to
+  // its side and up.
+  const ship = layout(contract)
+  const [aft, forward] = ship.landing.line
+  const x = ship.landing.wires[0]
+  const z =
+    aft[1] + ((forward[1] - aft[1]) * (x - aft[0])) / (forward[0] - aft[0])
+  const length = Math.hypot(aft[0] - forward[0], aft[1] - forward[1])
+  const a = [(aft[0] - forward[0]) / length, (aft[1] - forward[1]) / length]
+  const eye = (
+    along: number,
+    across: number,
+    height: number
+  ): [number, number, number] => [
+    x + a[0] * along - a[1] * across,
+    height,
+    z + a[1] * along + a[0] * across,
+  ]
+  // the eye's height that puts the hook (4 m under it, 9 m aft) a number of
+  // degrees off the 3.5° glideslope
+  const on = (along: number, off = 0) =>
+    ship.deck + 4 + Math.tan(((3.5 + off) * Math.PI) / 180) * (along + 9)
+  const travel = (12 * 0.165) / 2
+
+  it('centres the ball on the datum for a hook on the glideslope, the datum lit', () => {
+    const seen = meatball(ship, eye(800, 0, on(800)))
+    expect(seen.lit).toBe(true)
+    expect(seen.ball?.height).toBeCloseTo(18.9, 6)
+    expect(seen.ball?.low).toBe(false)
+  })
+
+  it('takes the ball to the column end at 0.8°, and turns it red past 0.7° low', () => {
+    expect(meatball(ship, eye(800, 0, on(800, 0.4))).ball?.height).toBeCloseTo(
+      18.9 + travel / 2,
+      6
+    )
+    expect(meatball(ship, eye(800, 0, on(800, 2))).ball?.height).toBeCloseTo(
+      18.9 + travel,
+      6
+    )
+    const low = meatball(ship, eye(800, 0, on(800, -0.75))).ball
+    expect(low?.low).toBe(true)
+    expect(low?.height).toBeCloseTo(18.9 - (travel * 0.75) / 0.8, 6)
+    expect(meatball(ship, eye(800, 0, on(800, -0.65))).ball?.low).toBe(false)
+  })
+
+  it('lights the datum only in the wedge astern, and shows the ball only on an approach', () => {
+    expect(
+      meatball(ship, eye(800, 800 * Math.tan((39 * Math.PI) / 180), 200)).lit
+    ).toBe(true)
+    expect(
+      meatball(ship, eye(800, 800 * Math.tan((41 * Math.PI) / 180), 200)).lit
+    ).toBe(false)
+    expect(meatball(ship, eye(-300, 0, 200))).toEqual({
+      lit: false,
+      ball: null,
+    }) // ahead of the touchdown
+    expect(meatball(ship, eye(30, 0, 25)).ball).toBeNull() // within 40 m
+    expect(meatball(ship, eye(6000, 0, 400))).toEqual({ lit: true, ball: null }) // past 5 km, inside 7
+    expect(meatball(ship, eye(800, 0, ship.deck - 1)).ball).toBeNull() // under the deck
+  })
+})
+
+describe('lit', () => {
+  // The fixture's landing line runs from (-90, 0) to (10, -10): a point a
+  // distance along it and across it, to starboard
+  const ship = layout(contract)
+  const [[ax, az], [bx, bz]] = ship.landing.line
+  const length = Math.hypot(bx - ax, bz - az)
+  const [ux, uz] = [(bx - ax) / length, (bz - az) / length]
+  const at = (along: number, across: number): [number, number] => [
+    ax + ux * along - uz * across,
+    az + uz * along + ux * across,
+  ]
+  const deck = (d: Partial<Deck>): Deck => ({
+    dark: true,
+    closed: false,
+    aboard: null,
+    ...d,
+  })
+  const group = (kind: string, colour: string) => ({
+    positions: [],
+    colour,
+    kind,
+  })
+
+  it('lights the recovery aids at night while the deck is open, and puts them out when it closes', () => {
+    const recovery = group('recovery', 'white')
+    expect(lit(recovery, ship, deck({}))).toBe('white')
+    expect(lit(recovery, ship, deck({ closed: true }))).toBeNull()
+    expect(lit(recovery, ship, deck({ aboard: at(50, 0) }))).toBe('white') // foul only: lit
+    expect(lit(recovery, ship, deck({ dark: false }))).toBeNull()
+  })
+
+  it('burns the outline and the navigation lights all night, open or closed', () => {
+    for (const kind of ['outline', 'navigation']) {
+      expect(lit(group(kind, 'blue'), ship, deck({ closed: true }))).toBe(
+        'blue'
+      )
+      expect(lit(group(kind, 'blue'), ship, deck({ dark: false }))).toBeNull()
+    }
+  })
+
+  it('lights the floods only at night with the jet aboard', () => {
+    const flood = group('flood', 'green')
+    expect(lit(flood, ship, deck({ aboard: [60, 20] }))).toBe('green')
+    expect(lit(flood, ship, deck({}))).toBeNull()
+    expect(lit(flood, ship, deck({ dark: false, aboard: [60, 20] }))).toBeNull()
+  })
+
+  it('shows the beacons and the status lights green on a clear deck and red on a foul one, by day too', () => {
+    for (const kind of ['beacon', 'status']) {
+      const signal = group(kind, 'red')
+      expect(lit(signal, ship, deck({ dark: false }))).toBe('green')
+      expect(lit(signal, ship, deck({ closed: true }))).toBe('red')
+      expect(lit(signal, ship, deck({ dark: false, aboard: at(50, 0) }))).toBe(
+        'red'
+      )
+      expect(lit(signal, ship, deck({ aboard: [60, 20] }))).toBe('green') // aboard, off the landing area
+    }
+  })
+
+  it("fouls the deck with the jet within the landing area's 40 ft of the line, between its ends", () => {
+    expect(foul(ship, deck({ aboard: at(50, 12.1) }))).toBe(true)
+    expect(foul(ship, deck({ aboard: at(50, -12.1) }))).toBe(true)
+    expect(foul(ship, deck({ aboard: at(50, 12.3) }))).toBe(false)
+    expect(foul(ship, deck({ aboard: at(1, 0) }))).toBe(true)
+    expect(foul(ship, deck({ aboard: at(-1, 0) }))).toBe(false) // aft of the ramp
+    expect(foul(ship, deck({ aboard: at(length + 1, 0) }))).toBe(false) // past the line's forward end
+    expect(foul(ship, deck({ closed: true }))).toBe(true)
+    expect(foul(ship, deck({}))).toBe(false)
+  })
+
+  it('lights no group of a kind it does not know', () => {
+    expect(lit(group('parking', 'white'), ship, deck({}))).toBeNull()
   })
 })

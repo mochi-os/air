@@ -19,7 +19,7 @@ import { reading as carrier_reading } from './wake'
 import type { Fitment } from './stores'
 
 // Encoded state layout (float64 words).
-export const SIZE = 121 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78) + pitch-damper washout + PA trim datum + buffet + roll-trim datum + wing and centreline external fuel + the spin recovery latch + the inflight IDLE stop's latch + each engine's rundown below idle (each appended LAST so no earlier index moved)
+export const SIZE = 124 // 57 base + 40 element losses + 8 channel jams + lost mass + 3 gear-leg damages (#78) + pitch-damper washout + PA trim datum + buffet + roll-trim datum + wing and centreline external fuel + the spin recovery latch + the inflight IDLE stop's latch + each engine's rundown below idle + the trailing-edge flaps and the rudder toe-in (each appended LAST so no earlier index moved)
 export const STATE = {
   position: 0, // x y z
   velocity: 3,
@@ -28,10 +28,10 @@ export const STATE = {
   fuel: 13,
   engine: 14, // spool, reheat × 4 slots (airframes declare 0..4)
   stabilator: 22, // left right
-  flaperon: 24,
+  aileron: 24, // left right, rad, + trailing edge down: the droop and the roll command
   rudder: 26,
   slat: 27,
-  flap: 28,
+  flap: 28, // the trailing-edge flaps' commanded schedule, rad (a readout)
   speedbrake: 29,
   demand: 33,
   normal: 34,
@@ -48,29 +48,31 @@ export const STATE = {
   leak: 49, // fuel loss, kg/s
   drag: 50, // added parasitic drag area, m² (dents, strikes)
   element: 57, // per-element loss 0..1 × 40 (zero = pristine)
-  jam: 97, // per-channel restriction 0..1 × 8 (stabL, stabR, flapL, flapR, rudder, slat, brake)
+  jam: 97, // per-channel restriction 0..1 × 8 (stabilator left and right, wing left and right (ailerons and flaps), rudder, slat, brake)
   gear_harm: 106, // per-strut damage 0..1 × 3 (nose, left, right) — tyre blown past 0.3, leg folded past 0.7 (#78)
   loss: 105, // shed structure mass, kg
   datum: 110, // PA trim bias, rad of alpha (the pitch trim switch, landing configuration)
   buffet: 111, // aerodynamic buffet intensity 0..1 — the seat-of-pants shake cue
-  bank: 112, // roll-trim datum, differential-flaperon stick fraction (the hat's roll half)
+  bank: 112, // roll-trim datum, a standing roll command, stick fraction (the hat's roll half)
   wing: 113, // external fuel in the wing pylon tanks, kg (#17, #18): transfers into the internal tanks as the EXT TANKS WING switch allows
   centre: 114, // external fuel in the centreline tank, kg, under the EXT TANKS CTR switch
   recovery: 115, // spin recovery mode engaged, 0 or 1 (NATOPS 2.8.2.6): the display reads SPIN MODE ENGAGED
   retracted: 116, // the inflight IDLE stop retracted at 5 g, 0 or 1 (NATOPS 2.1.1.7.2): the throttles reach ground idle airborne
   rundown: 117, // how far each engine's rotor has run down below ground idle × 4 (#133): 0 lit and at idle or above, 1 stopped
+  trailing: 121, // the trailing-edge flaps, left right, rad, + trailing edge down
+  toe: 123, // the rudders' toe-in, rad, + both trailing edges inboard
   // Instrument tail appended by frame()/get() — starts at flight.Size (encode.go),
   // so it moves whenever the encoded state grows. #78's three gear words pushed
   // Size to 109 and this tail was left at 106, silently reading gear damage as
   // alpha/nz and nz as the throttle spool (#133 found it via a dead CAS box).
-  alpha: 121,
-  beta: 122,
-  nz: 123,
-  mach: 124,
-  cas: 125,
-  power: 126, // achieved spool fraction across the airframe's engines
-  stage: 127, // achieved reheat stage
-  spin: 128, // the spin recovery display's stick direction: -1 STICK LEFT, +1 STICK RIGHT, 0 no display (NATOPS 2.8.2.6.2)
+  alpha: 124,
+  beta: 125,
+  nz: 126,
+  mach: 127,
+  cas: 128,
+  power: 129, // achieved spool fraction across the airframe's engines
+  stage: 130, // achieved reheat stage
+  spin: 131, // the spin recovery display's stick direction: -1 STICK LEFT, +1 STICK RIGHT, 0 no display (NATOPS 2.8.2.6.2)
 } as const
 const EXTRA = 8
 

@@ -54,7 +54,8 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
 - **`weather.py`** - one weathered atlas (decision 17) from the maps the build bakes for a group of meshes
   (`layout.weathering.groups`): the haze grey shifting plate to plate with touch-ups and mottling, the plates'
   seams and frames as grooves in a height map, streaks of rust or dirty water from the group's fittings and the
-  runs the photos measure (`runs`), each face's streaks as heavy as its photos' (`regions`), grime toward the
+  runs the photos measure (`runs`), each face's streaks as heavy as its photos' (`regions`), rust over every face
+  in a box where a run cannot follow (`stains`: a rope's chafe in a chock's throat), grime toward the
   deck or the waterline, walking surfaces darker, the occlusion multiplied in. Over that, wear by zone: each
   texel's level, 0 almost clean to 1 the most worn, from the group's `level` and its `zones` (boxes, soft-edged,
   and facings), scales the paint's blotching (stretched up the walls), grime patches, rust and dirty water
@@ -63,7 +64,13 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
   hull's lower walls the most worn, then the transom, the undersides, the island's lowest storeys, the flare
   and the sponsons, the rest of the island, its top and the mast, and the radomes almost clean. A group takes
   over the grey, or the paint it names (`from`: the island's radomes, `domes`, in their own white; the boot top,
-  `boot`, in its black, colour only: `flat`).
+  `boot`, in its black, colour only: `flat`; the bow's chocks, the coaming, the sheaves and their arms each in
+  theirs). The bake poses the joints in `layout.weathering.raised` at their keys' end (the blast deflectors
+  raised, as they are seen), so their occlusion is the pose's, and puts them back to rest for export; the pose
+  reaches the cache's key through the faces it moves, so only the atlases near them re-bake. After the bake each
+  mesh keeps one UV layer (`single_layers()`): where it wears the deck's paint or the lettering beside an
+  atlas, the atlas layer (made as a copy of the other) holds both and the other goes, since the engine puts
+  each material's images back by name on the first UV set.
 - **`build.py`** - the model in the plan's Contract: true metres, x forward, y up, z starboard, the origin on
   the centreline at the deployed waterline midway along the flight deck.
   - The deck wears `paint.py`'s texture and the lettering's plates `letters.py`'s, which the build runs
@@ -127,18 +134,52 @@ blender -b --factory-startup --python-use-system-env -P build.py -- OUT.glb OUT.
     midbody's) up the wall standing under it. Along a quarter (`hull.quarters`, from its wall's forward end to
     the transom) the section runs from the knuckle out through the quarter's measured points, straight between
     its sections, to the wall's foot, or under a sponson to the sponson's bottom at its inboard edge; it ends
-    square at both ends, and its aft end's knuckle and knee are landmarks. A section stands at every corner of
+    square at both ends, and its aft end's knuckle and knee are landmarks. Where the side steps out of the
+    flare (`hull.profiles`: on each side, stretches of measured sections, a ledge, a face, a recessed wall) the
+    section runs from the knuckle through the profile's points, straight between its sections (a shorter one's
+    last point repeated), and on from its last point to the gallery's foot at the deck's edge as the flare
+    does; each stretch ends square, the flare between them. What hangs on the sides clear of the sponsons
+    (`hull.details`, `shape()`s: the frame in the starboard bay aft of the island) is built with the
+    sponsons. The open decks in the sides (`hull.decks`: each an `outline` on the face whose plan line is
+    `face`, cut `depth` in) are pierced into the hull once it is made (`pierce()`): its faces lying in that
+    plane round the opening taken out and filled again round it, and from the opening's edge walls, a floor
+    and a back run in, so nothing else of the mesh changes (Blender's exact boolean rebuilt faces far from
+    its cut, and not the same way from run to run). A section stands at every corner of
     the deck's edge and every knot of the knuckle and the gallery, so the flare is flat between them and creases only there, and either
     side of a square step in the deck's edge (the starboard quarter's notch), so the hull steps square under
     it; where
     `hull.flare` gives creases that slant (the angled deck's), flat facets between them take the sections'
-    place; the blisters on the hull side under the elevators (`hull.blisters`) stand out from it. It is symmetric below the knuckles, wears `antifouling` below the band's top, `boot` up to the
+    place; the blisters on the hull side under the elevators (`hull.blisters`) stand out from it, a square one
+    ribbed upright (`ribs`). Under each
+    deck-edge elevator the flare is cut away to its well (`elevators[].well`): the section runs out along the
+    flare only as far as the well's wall, which stands on the flare there and rises to the deck's underside,
+    along the hull side between the rails the platform runs on (`rails`) and at each end parallel to the
+    platform's own; the platform slides down to the hangar deck (`hangar`), and the hangar door's aperture
+    (`opening`) is a hole through the side's plating, `depth` its thickness, and behind it a rectangular room
+    (`room`), so the space runs on behind the hole's rounded corners: larger than the hole, its floor 5 cm under
+    the sill (the plating's grey, walked on and shaded by the weathering, or its own `floor` paint), `beams`
+    under its ceiling. Its door (`door`) is
+    shut at the room's back, 5 cm in front of it (the node `doors`, weathered with the hull): the room's
+    rectangle cut square `gap` [aft, forward] short of its ends, in two equal leaves a `seam` apart, a fitting on
+    the seam; the fitting and the doorway's forward end are landmarks.
+    `pierce()` lays a hole's `floor` paint on its lowest edges by height. Each well's rails (`rail`) are channels on its
+    wall centred on their x (flanges, a web and slots closed at the wall, all grey for the weathering's occlusion
+    to shade, a foot bar), the well running half a rail past them;
+    under a doorway's sill (`sill`) a curb with posts, or the threshold's comb of dark gaps (the node `wells`). It is symmetric below the knuckles; under the waterline a height that is a share of the
+    way from the keel up reads each station that share of the way up from its own keel (where the keel rises
+    aft, the flat bottom and the bilge carry on between stations), the keel a monotone cubic through the
+    stations' keels, the rings below the waterline at shares of that depth closest at the bilge, one on the
+    waterline. It wears `antifouling` below the band's top (an edge cut level into the finished hull), `boot` up to the
     boot top, and ahead of its last station runs each height straight to the bow's forward edge: the stem's
     front (`hull.front`, its half-width by height, rising into the face's bottom edge, a section at each
     knot of the stem it rises past and where it rises through the boot top), or above it the bow's flat face
-    (`hull.face`); the sections ahead take the front or the face as their flat bottom. In plan the front's
+    (`hull.face`, its mooring openings `chocks`: each a cast rim (`lip()`, a half-ellipse section from the
+    opening out to its outer radius, rolling over into a barrel inside, shaded smooth, the node `chocks`)
+    round a throat pierced `depth` into the bow); the sections ahead take the front or the face as their flat bottom. In plan the front's
     corners turn into the sides round a quarter circle (`hull.fillet`, or the front's whole half-width where
-    that is less), with sections behind the stem's upright foot to draw it. Over the bow's shoulders
+    that is less), with sections behind the stem's upright foot to draw it; under the face the rounding
+    eases out over `hull.fade`, with sections to draw that too, so the corners meet the face's creases with
+    no fold. Over the bow's shoulders
     (`hull.shoulders`, [start, full]) the flare between the knuckle and the gallery's foot follows the
     stations' points above the knuckle, at their heights: in full forward of `full`, straight aft of `start`,
     and between the two easing (smoothstep) from the straight line out to them; aft of `start` those points
@@ -254,10 +295,12 @@ lattice, and the taxi tracks onto a catapult (faded where they join it) and an e
 area (faded in where they leave it).
 
 `test_weather.py` weathers a plain wall's maps: the seams darker and grooved, the plates' tones, touch-ups,
-streaks only below a sill, measured runs where they are put, regions scaling a face's streaks, a group's own
+streaks only below a sill, measured runs where they are put, a heavier run rusting deeper and uncapped,
+regions scaling a face's streaks, a group's own
 paint, walking surfaces, the occlusion, the grime toward the deck, and the sources at the lamps and the
 radomes' seams, and a deck of its own non-skid (the stern's lower decks) with its plates' seams lighter; the
-transom's rust where the photo puts it; the wear by zone (each zone over the
+transom's rust where the photo puts it; the starboard well's sill rust where its photo puts it, weighted
+past 1; the wear by zone (each zone over the
 last, its edges soft, its facings), the worn wall blotchier as the level rises and its blotches long up the
 wall, grime patches darker and browner, weeps down walls only, rusting and as many as the wear says, the scum
 line just above the boot top, scuffs long fore and aft, none of them on an unworn wall; the facts' wear
@@ -289,6 +332,18 @@ the deck; a new sighting in the game becomes a ray here first.
   each of the front's knots, and a quarter's wall inside the deck's edge;
 - a quarter's section under its wall and under its sponson, its square ends, its landmarks, and the hull
   still closed;
+- a profile's section through its points and on to the gallery's foot, a short section's last point
+  repeated, its square ends, the flare between two, and the hull still closed; the hull's side details
+  built with the sponsons; an open deck pierced into a profile's face to its back, floor and ceiling, its
+  raked end, on either side;
+- a well's hangar door pierced through its wall into the hangar behind it, its back dark, its floor
+  under the sill, the wall standing in the door's rounded corners; its door shut at the room's
+  back, filling its rectangle short of its ends by its gaps, the room's back seen past them and through
+  the seam, the fitting on the seam, and their landmarks; the room rectangular behind the hole's rounded corners,
+  its floor dark and not its ceiling, its beams its whole length a third and two thirds through it; its rails' flanges, web, slots, foot and top, the well half a
+  rail past them; the sill's curb, posts and comb; a square blister's ribs, and none on a round one;
+- the bow face's chocks: each rim's crown halfway out and its height, its throat its depth deep, dark at
+  the back, and the face beside it;
 - the bow's shoulders: the flare through the station's points in full, the eased share between the
   straight line and them (none at their start, all at full), held out ahead of the last station by the
   share squared, straight aft of them, smooth, and the hull closed with their points under a wall and along
@@ -330,5 +385,13 @@ the deck; a new sighting in the game becomes a ray here first.
   nothing stands aft of it, the fascia along the cut's sides standing out into the cut and none on the ledge's edge, the
   railing in two lines; a railing bent round a corner, its posts evenly along the whole of it;
 - the weathered atlases: each group's colour and normal maps at its size, its faces in its material with UVs,
-  the radomes their own group, and only the group's faces in its atlas; the boot top's colour alone;
+  the radomes their own group, and only the group's faces in its atlas; the boot top's colour alone; the
+  deflector baked raised (its pit's walls open, read through the UV set the material names) and exported at
+  rest; the pit's walls and floor facing into it; the cache re-baking only the deflector's atlas when it is
+  baked lowered;
+- one UV set a mesh, every textured material reading it, the deflector's deck tiles keeping the deck's
+  mapping in it;
+- the run aft (`SternTest`, the fixture's transom and the station ahead drawn as the Ford's, keel strip under a
+  flat bottom): each height under the waterline reads the stations at its share of their depth, and the keel
+  bends smoothly through a station; the boot nowhere below the anti-fouling's top;
 - the ship file.

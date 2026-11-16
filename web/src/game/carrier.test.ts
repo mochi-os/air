@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import ford from '../assets/ford.json'
 import { split } from './model'
-import { type Contract, layout } from './ship'
+import { type Contract, foul, layout } from './ship'
 
 // The carrier's deck layout lives in one file beside its model, which its build
 // writes (tools/ford/build.py) and engine.ts reads through ship.ts: the
@@ -165,22 +165,182 @@ describe("the carrier's ship file", () => {
 
   it('draws every group of the lights the file gives, in a colour and a group the engine knows', () => {
     expect(source).toMatch(
-      /for\(const \[name,g\] of Object\.entries\(SHIP\.lights\)\)\{/
+      /for\(const \[name,g\] of Object\.entries\(SHIP\.lights\|\|\{\}\)\)\{/
     )
     const colours = /const COLOURS=\{ ([^}]*) \};/.exec(source)?.[1] ?? ''
     expect(Object.keys(ford.lights).length).toBeGreaterThan(5)
     for (const [name, g] of Object.entries(ford.lights)) {
       expect(colours, name).toContain(`${g.colour}:`)
-      expect(['recovery', 'outline', 'navigation', 'flood'], name).toContain(
-        g.kind
-      )
+      expect(
+        ['recovery', 'outline', 'navigation', 'flood', 'beacon', 'status'],
+        name
+      ).toContain(g.kind)
       expect(g.positions.length, name).toBeGreaterThan(0)
     }
+    // a beacon or status light turns green too
+    expect(colours).toContain('green:')
     // the lens's own lights where the file measures them
     expect(ford.lens.lights.datum.length).toBe(20)
     expect(source).toMatch(
       /const dpos=lens\?placed\(lens\.lights\.datum\):\[\];/
     )
+  })
+
+  it('draws a beacon or status light green where its green lamps stand, or at its red ones', () => {
+    expect(source).toMatch(
+      /if\(signal\) sets\.green=\[glow_points\(laid\(g\.green\?\?g\.positions,0\),COLOURS\.green,size\)\];/
+    )
+  })
+
+  it('lays the drop line on its pole, none in its gap, and the beacons and status lights where the facts put them', () => {
+    // the pole (tools/ford facts.json layout.transom.drop): x -165.3, z 7.45,
+    // 16.4 down to 11.65 and 9.0 down to 2.2; the lamps 0.15 m aft of its face
+    const drop = ford.lights.drop.positions
+    expect(drop.length).toBe(9)
+    for (const [x, y, z] of drop) {
+      expect(x).toBeCloseTo(-165.6, 6)
+      expect(z).toBeCloseTo(7.45, 6)
+      expect((y >= 11.65 && y <= 16.4) || (y >= 2.2 && y <= 9.0), `${y}`).toBe(
+        true
+      )
+    }
+    // a red and a green globe on each of the island's forward, port and aft
+    // faces, within its footprint
+    const beacon = ford.lights.beacon as {
+      positions: number[][]
+      green: number[][]
+      colour: string
+      kind: string
+    }
+    expect([beacon.kind, beacon.colour]).toEqual(['beacon', 'red'])
+    expect(beacon.green.length).toBe(beacon.positions.length)
+    expect(beacon.positions.length).toBe(3)
+    beacon.positions.forEach(([x, y, z], i) => {
+      const [gx, gy, gz] = beacon.green[i]
+      expect(Math.hypot(gx - x, gy - y, gz - z)).toBeLessThan(0.9)
+      expect(
+        x > -103 && x < -80 && z > 19 && z < 34 && y > ford.deck.height
+      ).toBe(true)
+    })
+    // the status lights, placed by rule: the LSO's windscreen and the port
+    // deck edge abeam the lens, lit red and green where they stand
+    const status = ford.lights.status as {
+      positions: number[][]
+      green?: number[][]
+      colour: string
+      kind: string
+    }
+    expect([status.kind, status.colour, status.green]).toEqual([
+      'status',
+      'red',
+      undefined,
+    ])
+    expect(status.positions.length).toBe(2)
+    for (const [, , z] of status.positions) expect(z).toBeLessThan(-35)
+  })
+
+  it("leaves the deck's vehicles out of the deck and the island, and gives the core their prisms in the ship's frame", () => {
+    // a tractor's roof is no deck to taxi onto, nor part of the island's box
+    expect(lift('build_deck_grid')).toMatch(
+      /grp\.traverse\(o=>\{ if\(!o\.isMesh\|\|!o\.geometry\.attributes\.position\) return;\n\t\tif\(\/\^vehicles\(_\\d\+\)\?\$\/\.test\(o\.name\)\) return;/
+    )
+    const world = lift('scenery')
+    expect(world).toMatch(
+      /const parked=SHIP\.vehicles\.map\(v=>\(\{ outline:v\.outline\.map\(q=>\(\{x:q\[0\], z:q\[1\]\}\)\), top:CARRIER\.height\+\(v\.top-SHIP\.deck\) \}\)\);/
+    )
+    expect(world).toMatch(
+      /prisms:\(island\?\[island\.prism\]:\[\]\)\.concat\(parked\)/
+    )
+  })
+
+  it("parks the deck's vehicles on her deck, clear of the landing area, the catapults' tracks, the parked start's taxi lane and the deck forward of it", () => {
+    expect(ship.vehicles.length).toBeGreaterThan(0)
+    // the lane the parked start taxis forward through, its wings folded
+    // (8.6 m), from behind the spot to 20 m past the island's forward end
+    const spot = ship.parking!
+    const island = Math.max(
+      ...ford.island.prisms.flatMap((p) => p.outline.map((q) => q[0]))
+    )
+    const lane = {
+      x: [spot.x - 10, island + 20],
+      z: [spot.z - 4.3, spot.z + 4.3],
+    }
+    const inside = ([x, z]: number[], outline: number[][]) => {
+      let c = false
+      for (let i = 0, j = outline.length - 1; i < outline.length; j = i++) {
+        const [xi, zi] = outline[i]
+        const [xj, zj] = outline[j]
+        if (zi > z !== zj > z && x < xi + ((z - zi) * (xj - xi)) / (zj - zi))
+          c = !c
+      }
+      return c
+    }
+    const track = ([x, z]: number[]) =>
+      Math.min(
+        ...ship.catapults.map((c) => {
+          const h = (c.heading * Math.PI) / 180
+          const [dx, dz] = [Math.cos(h), -Math.sin(h)]
+          const t = Math.max(
+            0,
+            Math.min(c.stroke, (x - c.x) * dx + (z - c.z) * dz)
+          )
+          return Math.hypot(x - (c.x + dx * t), z - (c.z + dz * t))
+        })
+      )
+    for (const v of ship.vehicles) {
+      const xs = v.outline.map((q) => q[0])
+      const zs = v.outline.map((q) => q[1])
+      for (const q of v.outline) {
+        expect(inside(q, ship.outline), `${v.kind} at ${q}`).toBe(true)
+        expect(
+          foul(ship, { dark: false, closed: false, aboard: q }),
+          `${v.kind} at ${q}`
+        ).toBe(false)
+        expect(track(q), `${v.kind} at ${q}`).toBeGreaterThan(20)
+      }
+      const overlaps =
+        Math.min(...xs) < lane.x[1] &&
+        Math.max(...xs) > lane.x[0] &&
+        Math.min(...zs) < lane.z[1] &&
+        Math.max(...zs) > lane.z[0]
+      expect(overlaps, `${v.kind} at ${v.outline}`).toBe(false)
+      // nor forward of the lane's end, where jets taxi to the catapults
+      expect(Math.max(...xs), `${v.kind} at ${v.outline}`).toBeLessThan(
+        lane.x[1]
+      )
+    }
+  })
+
+  it('lights each group as ship.ts lit says for the deck, every frame', () => {
+    const papi = lift('update_papi')
+    expect(papi).toMatch(
+      /const deck=\{ dark, closed:deck_closed, aboard:on\?\[carrier_fore_aft\(p\.x,p\.z\),carrier_lateral\(p\.x,p\.z\)\]:null \};/
+    )
+    expect(papi).toMatch(
+      /for\(const l of ship_lights\)\{ const c=ship_lit\(l\.group,SHIP,deck\); for\(const k in l\.sets\) for\(const m of l\.sets\[k\]\)\{ if\(m\.isLight\)\{ m\.visible=dark; m\.intensity=k===c\?m\.userData\.intensity:0; \} else m\.visible=k===c; \} \}/
+    )
+  })
+
+  it("has the jet aboard from where it stands, so a deck start's first frame is lit, and switches the floods' spotlights by intensity", () => {
+    // the smoothed weight-on-wheels signal begins at 0 at a deck start: the
+    // floods lit a few frames late, and a spotlight joining the scene then
+    // recompiled every lit material, a stall of most of a second
+    const papi = lift('update_papi')
+    expect(papi).toMatch(/on=under>-1e8 && p\.y-under<4;/)
+    expect(papi).not.toMatch(/squish/)
+    expect(source).toMatch(
+      /s2\.userData\.intensity=s2\.intensity; s2\.intensity=0; scene\.add\(s2\);/
+    )
+  })
+
+  it("never draws the lens's cut lights, which the LSO lights only without the radio", () => {
+    expect(source).not.toMatch(/placed\(lens\.lights\.cut\)|cutPts/)
+    const viewer = readFileSync(
+      fileURLToPath(new URL('../components/ModelViewer.tsx', import.meta.url)),
+      'utf8'
+    )
+    expect(viewer).toMatch(/points\(l\.lights\.datum,/)
+    expect(viewer).not.toMatch(/l\.lights\.cut/)
   })
 
   it('lays its deflectors across their tracks and its elevators along the deck edge', () => {
@@ -322,20 +482,33 @@ describe("the carrier's ship file", () => {
       )
     )
     // the deck's paint, the lettering, the nets, the weathered groups (the
-    // island, the hull, the island's radomes, and the anchors' hawse hoods,
-    // tan parts and rust) with their normal maps, and the boot top's colour
-    // alone
+    // island, the hull, the radomes, the anchors' hawse hoods, tan parts and
+    // rust, the white and yellow fittings, the bow's chocks, the blast
+    // deflectors, the coaming and the arresting gear's sheaves and arms) with
+    // their normal maps, and the boot top's, the panels', the raft canisters',
+    // the railings' and the deck's underside's colour alone
     expect(Object.keys(images).sort()).toEqual([
+      'arms',
       'boot',
+      'chocks',
+      'coamings',
       'corrosion',
       'deck',
+      'deflectors',
       'domes',
       'hawse',
       'hull',
       'island',
       'lettering',
       'net',
+      'panels',
+      'rafts',
+      'rails',
+      'sheaves',
       'tackle',
+      'trim',
+      'underside',
+      'vehicles',
     ])
     const head = (src: { bytes: Uint8Array }) =>
       Array.from(src.bytes.slice(0, 8))
@@ -350,6 +523,17 @@ describe("the carrier's ship file", () => {
       'hawse',
       'tackle',
       'corrosion',
+      'vehicles',
+      'trim',
+      'panels',
+      'rafts',
+      'rails',
+      'underside',
+      'chocks',
+      'deflectors',
+      'coamings',
+      'sheaves',
+      'arms',
     ]) {
       expect(images[name].base.mime, name).toBe('image/ktx2')
       expect(head(images[name].base), name).toEqual(ktx2)
@@ -358,17 +542,53 @@ describe("the carrier's ship file", () => {
       expect(images[name].normal.mime, name).toBe('image/ktx2')
       expect(head(images[name].normal), name).toEqual(ktx2)
     }
-    // the anchors' groups carry normal maps too, small enough that the
-    // packing leaves them as they are (texswap.py encodes 50 kB and up)
-    for (const name of ['hawse', 'tackle', 'corrosion']) {
+    // the anchors', the vehicles', the chocks', the deflectors', the
+    // coaming's and the arresting gear's groups carry normal maps too, small
+    // enough that the packing leaves them as they are (texswap.py encodes 50
+    // kB and up)
+    for (const name of [
+      'hawse',
+      'tackle',
+      'corrosion',
+      'vehicles',
+      'trim',
+      'chocks',
+      'deflectors',
+      'coamings',
+      'sheaves',
+      'arms',
+    ]) {
       expect(images[name].normal?.bytes.length, name).toBeGreaterThan(0)
     }
-    expect(images.boot.normal).toBeNull()
+    for (const name of ['boot', 'panels', 'rafts', 'rails', 'underside']) {
+      expect(images[name].normal, name).toBeNull()
+    }
     expect(head(images.net.base)).toEqual([137, 80, 78, 71, 13, 10, 26, 10])
     expect(images.net.base.bytes[25]).toBe(6) // the nets' holes: an image with alpha (IHDR colour type RGBA)
     expect(images.deck.base.bytes.length).not.toBe(
       images.lettering.base.bytes.length
     )
+  })
+
+  it("glazes the deck's vehicles: see-through panes over a dark room, not opaque glass", () => {
+    const bytes = readFileSync(
+      fileURLToPath(new URL('../assets/ford.glb', import.meta.url))
+    )
+    const { json } = split(
+      bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)
+    )
+    const mesh = json.meshes.find(
+      (m: { name: string }) => m.name === 'vehicles'
+    )
+    const used = mesh.primitives.map(
+      (p: { material: number }) => json.materials[p.material]
+    )
+    const names = used.map((m: { name: string }) => m.name)
+    expect(names).toContain('pane')
+    expect(names).toContain('room')
+    const pane = used.find((m: { name: string }) => m.name === 'pane')
+    expect(pane.alphaMode).toBe('BLEND')
+    expect(pane.pbrMetallicRoughness.baseColorFactor[3]).toBeLessThan(1)
   })
 
   it("measures the island's crash box and mast top from its body, not the walkways and antennas standing off it", async () => {
