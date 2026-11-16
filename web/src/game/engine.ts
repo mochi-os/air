@@ -117,6 +117,7 @@ import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, moon as sky_moon, planet as sky_planet, seen as sky_seen, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 import { subdivide } from './subdivide'
+import { MIRROR_CLEAR, MIRROR_HEIGHT, MIRROR_MARGIN, MIRROR_PIECE, MIRROR_PIECES, MIRROR_STALE, MIRROR_WIDTH, MirrorClock, mirror_aim, mirror_carried, mirror_clear, mirror_live, mirror_material, mirror_normal, mirror_pieces, mirror_setting, mirror_view, mirror_virtual } from './mirror'
 
 export type GameConfig = Record<string, unknown>
 
@@ -301,6 +302,11 @@ function screen_point(material,size){ screen_points.push({ material, size }); ma
 function screen_points_resize(){ const k=renderer.domElement.height/POINT_HEIGHT; for(const p of screen_points) p.material.size=p.size*k; }
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+// The sun's shadow map is drawn once a frame, by render_frame's first pass over the scene. Left to itself three
+// redraws it at every render of the scene: the cloud depth pass, the world and the cockpit pass, each from its own
+// camera's layers. No jet receives a shadow, so the cockpit pass's own map served nothing, and the mirrors' passes
+// would add two more.
+renderer.shadowMap.autoUpdate=false;
 const scene = new THREE.Scene(); scene.fog=new THREE.FogExp2(0xc4d6e2,0);   // the lit materials' haze: its colour the sky's horizon and its density the aerosol, set each frame (render_frame)
 // The lit materials' haze is the air's (atmosphere.ts FOG): a fragment loses what the air between its
 // height and the eye's takes over the distance between them. three's own FogExp2 squared the distance,
@@ -318,7 +324,10 @@ const camera = new THREE.PerspectiveCamera(45,1,3.0,130000);   // 45° ≈ HUD-l
 const LAYER_OWN=1;
 const cockpit_cam = new THREE.PerspectiveCamera(45,1,0.05,60);
 cockpit_cam.layers.set(LAYER_OWN);
-function layer_own_group(g){ g.traverse(o=>o.layers.set(LAYER_OWN)); }   // layers are per-object, not hierarchical: run over the whole subtree, and re-run whenever children are added
+// The mirrors' rear view draws the jet's own airframe from LAYER_MIRROR alone: a copy of the distant stage hung on
+// the ownship (mirror_jet_attach), which neither the world pass nor the cockpit pass draws.
+const LAYER_MIRROR=2;
+function layer_own_group(g){ g.traverse(o=>{ if(!o.userData.mirror) o.layers.set(LAYER_OWN); }); }   // layers are per-object, not hierarchical: run over the whole subtree, and re-run whenever children are added; the mirrors' copy keeps its own
 
 const sun = new THREE.DirectionalLight(0xfff4e0,2.4); sun.position.copy(sun_dir).multiplyScalar(4000); sun.castShadow=true;
 sun.shadow.mapSize.set(1024,1024); sun.shadow.camera.near=100; sun.shadow.camera.far=8000;
@@ -326,6 +335,7 @@ sun.shadow.camera.left=-800; sun.shadow.camera.right=800; sun.shadow.camera.top=
 scene.add(sun,sun.target); const hemi=new THREE.HemisphereLight(0xbcd6ec,0x35506a,0.9); const amb=new THREE.AmbientLight(0x405060,0.4); scene.add(hemi,amb);
 for(const o of [sun,sun.target,hemi,amb]) o.userData.framed=true;   // laid in the engine's frame, not on the earth: a move of the frame leaves the light where the local sky has it (theatre_carry)
 sun.layers.enable(LAYER_OWN); hemi.layers.enable(LAYER_OWN); amb.layers.enable(LAYER_OWN);   // lights are layer-filtered: without these the cockpit pass renders black
+sun.layers.enable(LAYER_MIRROR); hemi.layers.enable(LAYER_MIRROR); amb.layers.enable(LAYER_MIRROR);   // and the mirrors' airframe pass
 
 // ============================================================================ sky + ocean (proven)
 // The sea is drawn about one axis: its wind sea, the swell crossing it, its foam and its detail
@@ -1459,7 +1469,7 @@ function sun_follow(){ const aboard=!!carrier_model&&Math.hypot(ownship.pos.x-CA
 	sun.target.position.copy(_sun_focus); sun.position.copy(_sun_focus).addScaledVector(sun_dir,4000); sun.target.updateMatrixWorld(); }
 function render_frame(){
 	if(cfg.view==="ddi") return;   // head-down: the opaque 2D panel covers the screen — skip the world passes entirely (the sim and audio run on; set_view marks cloud history stale for the return cut)
-	sun_follow();
+	sun_follow(); renderer.shadowMap.needsUpdate=true;   // the sun placed, the frame's first pass over the scene draws its map; every later pass reuses it
 	{ const f=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion), u=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);
 		audio_listener(camera.position.x,camera.position.y,camera.position.z,f.x,f.y,f.z,u.x,u.y,u.z); }
 	// Cockpit split (#99), stateless per frame so nothing can strand a stale mask:
@@ -1470,10 +1480,7 @@ function render_frame(){
 	sky_mat.uniforms.u_dip.value=dip; cloud_mat.uniforms.uDip.value=dip;
 	air_step();   // a slice of any bake under way (air_settle)
 	sky_view_render(camera.position.y);   // the sky from this height, for everything that shows it
-	{ // the lit materials' haze takes the sky's horizon in the direction the camera faces (one colour a frame: three's fog has no per-pixel sky)
-		const f=fog_direction.set(0,0,-1).applyQuaternion(camera.quaternion); const across=Math.hypot(f.x,f.z)||1, k=Math.sqrt(1-0.03*0.03)/across;
-		const r=sky_radiance(air_tables,[f.x*k,0.03,f.z*k],camera.position.y,[sun_dir.x,sun_dir.y,sun_dir.z],air_aerosol), e=atmosphere_uniforms.u_illuminance.value;
-		scene.fog.color.setRGB(r[0]*e,r[1]*e,r[2]*e); scene.fog.density=air_aerosol; }   // the density carries the aerosol to the fog chunks (at_fog)
+	fog_toward(camera);
 	// Below an overcast deck at night everything but lights blacks out: the deck blocks the
 	// moon the night scene is lit by. Tied to the CAMERA for the sky and the deck, so a
 	// moonlit deck top seen from above stays visible; the sea and the land are always
@@ -1508,12 +1515,191 @@ function render_frame(){
 		renderer.autoClear=false; renderer.render(comp_scene,fs_cam); renderer.autoClear=true;   // blend the cloud layer over it
 		prevVP.copy(curVP); hist_valid=true; hist_write=hr;   // this frame's accumulation is next frame's history
 	} else { renderer.render(scene,camera); }
+	mirror_frame();   // before the near pass, which draws the mirrors' faces
 	if(pit){   // the near pass: ownship only, depth cleared, drawn OVER the composited world+clouds — clouds can never bleed onto the panel, and the world shows through the glass
 		cockpit_cam.position.copy(camera.position); cockpit_cam.quaternion.copy(camera.quaternion);
 		renderer.autoClear=false; renderer.clearDepth(); renderer.render(scene,cockpit_cam); renderer.autoClear=true;
 	}
 	glare_render();
 }
+// fog_toward gives the lit materials' haze the sky's horizon in the direction `view` faces (one colour a pass:
+// three's fog has no per-pixel sky).
+function fog_toward(view){
+	const f=fog_direction.set(0,0,-1).applyQuaternion(view.quaternion); const across=Math.hypot(f.x,f.z)||1, k=Math.sqrt(1-0.03*0.03)/across;
+	const r=sky_radiance(air_tables,[f.x*k,0.03,f.z*k],view.position.y,[sun_dir.x,sun_dir.y,sun_dir.z],air_aerosol), e=atmosphere_uniforms.u_illuminance.value;
+	scene.fog.color.setRGB(r[0]*e,r[1]*e,r[2]*e); scene.fog.density=air_aerosol; }   // the density carries the aerosol to the fog chunks (at_fog)
+
+// ============================================================================ mirrors
+// The canopy bow's rear-view mirrors (mirror.ts). In the cockpit view, above the lowest effects setting, each face
+// shows the scene behind the jet. The world is drawn from the mirrors' virtual eyes' mean into mirror.world, with the
+// clouds marched over it into mirror.out; the jet's own airframe, the distant stage on LAYER_MIRROR, is drawn for
+// each mirror from its own virtual eye into mirror.jets. Elsewhere, and while no face is on screen, nothing is drawn
+// and the faces keep the sky alone (mirror_bake).
+const MIRRORS_OFF=DEV_MODE&&new URLSearchParams(location.search).get("mirrors")==="0";   // &mirrors=0 (dev): the sky alone, a probe's comparison
+const mirror={ clock:new MirrorClock(), camera:new THREE.PerspectiveCamera(30,MIRROR_WIDTH/MIRROR_HEIGHT,camera.near,camera.far), piece:new THREE.PerspectiveCamera(30,1,0.05,60),
+	faces:[], pieces:[], material:null, world:null, jets:[], out:null, march:null, hist:[null,null], write:0, valid:false,   // valid: the cloud history holds an earlier update's march
+	view:new THREE.Matrix4(), inverse:new THREE.Matrix4(), previous:new THREE.Matrix4(), eye:new THREE.Vector3(),   // the update under way, for its march
+	shown:{ texture:null, view:new THREE.Matrix4(), at:-Infinity },   // the world layer the faces show
+	carried:{ views:[], turn:new THREE.Quaternion(), at:-Infinity },   // the airframe each mirror shows, and how the jet lay when it was drawn
+	turn:new THREE.Quaternion(), at:-Infinity, jitter:0, updates:0, margin:0, draws:{ world:0, jet:0 }, aims:[], fovs:[] };
+const mirror_copy=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, uniforms:{ tMap:{value:null} },
+	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+	fragmentShader:`varying vec2 vUv; uniform sampler2D tMap; void main(){ gl_FragColor=texture2D(tMap,vUv); }` });
+const mirror_copy_scene=new THREE.Scene(); mirror_copy_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),mirror_copy));
+const _mirror_point=new THREE.Vector3(), _mirror_normal=new THREE.Vector3(), _mirror_normals=new THREE.Matrix3(), _mirror_up=new THREE.Vector3(), _mirror_mean=new THREE.Vector3(),
+	_mirror_turn=new THREE.Quaternion(), _mirror_fog=new THREE.Color(), _mirror_clear=new THREE.Color(), _mirror_frustum=new THREE.Frustum(), _mirror_vp=new THREE.Matrix4(), _mirror_plane=new THREE.Plane();
+// mirror_faces_find records the player's model's mirror faces: each mesh drawn in the silvered glass, for switching
+// its material, and each separate mirror in them (mirror_pieces), the largest MIRROR_PIECES, with its vertices and
+// normals in the mesh's own frame, from which an update finds the mirror's plane and reflects the eye's sight lines.
+function mirror_faces_find(m){ mirror.faces.length=0; mirror.pieces.length=0;
+	m.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
+		const pos=o.geometry.attributes.position, nor=o.geometry.attributes.normal; if(!mirror_mats.includes(mm)||!pos||!nor) return;
+		if(Array.isArray(o.material)) o.material=o.material.slice();   // this jet's own list, so the live face shows on it alone
+		const index=o.geometry.index, group=Array.isArray(o.material)?o.geometry.groups.find(gr=>gr.materialIndex===ix):null;
+		const from=group?group.start:0, to=group?group.start+group.count:(index?index.count:pos.count), triangles=[];
+		for(let i=from;i<to;i++) triangles.push(index?index.getX(i):i);
+		for(const vertices of mirror_pieces(triangles)){
+			const points=vertices.map(v=>new THREE.Vector3().fromBufferAttribute(pos,v)), normals=vertices.map(v=>new THREE.Vector3().fromBufferAttribute(nor,v));
+			const centre=points.reduce((a,p)=>a.add(p),new THREE.Vector3()).multiplyScalar(1/points.length), normal=normals.reduce((a,n)=>a.add(n),new THREE.Vector3()).normalize();
+			mirror.pieces.push({ mesh:o, vertices, points, normals, centre, normal }); }
+		if(!mirror.material) mirror.material=mirror_material(mm.side);
+		mirror.faces.push({ mesh:o, index:ix, glass:mm }); }); });
+	mirror.pieces.sort((a,b)=>b.points.length-a.points.length); mirror.pieces.length=Math.min(mirror.pieces.length,MIRROR_PIECES); }
+// mirror_set sets the mirrors as a pilot sets his (mirror_setting), from the calibrated eye in the model's rest pose:
+// each turns about its own centre to the normal that sends the eye's sight line along its setting, so setting a set
+// mirror again turns it by nothing. The geometry is every copy of the cockpit's; its positions and normals are taken
+// out of the model's 16-bit quantisation first, where a corner turned past the quantised range would wrap round to
+// the far side.
+function mirror_set(g){ const eye=g.userData.eye; if(!eye||!mirror.pieces.length) return;
+	g.updateMatrixWorld(true);
+	const at=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0)), turn=g.getWorldQuaternion(new THREE.Quaternion());
+	for(const piece of mirror.pieces){ const geo=piece.mesh.geometry;
+		const plane=new THREE.Plane(); mirror_plane(piece,at,plane,new THREE.Vector3());
+		const centre=piece.centre.clone().applyMatrix4(piece.mesh.matrixWorld), across=g.worldToLocal(centre.clone()).z;   // metres right of the eye, which sits on the centreline
+		const toward=mirror_setting(across).applyQuaternion(turn), wanted=mirror_normal(at,centre,toward,new THREE.Vector3());
+		const local=piece.mesh.getWorldQuaternion(new THREE.Quaternion()), swing=local.clone().invert().multiply(new THREE.Quaternion().setFromUnitVectors(plane.normal,wanted)).multiply(local);
+		const unpack=name=>{ const a=geo.attributes[name]; if(a.array instanceof Float32Array&&!a.normalized&&!a.isInterleavedBufferAttribute) return a;
+			const f=new THREE.BufferAttribute(new Float32Array(a.count*3),3); for(let i=0;i<a.count;i++) f.setXYZ(i,a.getX(i),a.getY(i),a.getZ(i)); geo.setAttribute(name,f); return f; };
+		const pos=unpack("position"), nor=unpack("normal"), p=new THREE.Vector3();
+		piece.vertices.forEach((v,i)=>{ p.copy(piece.points[i]).sub(piece.centre).applyQuaternion(swing).add(piece.centre); pos.setXYZ(v,p.x,p.y,p.z); piece.points[i].copy(p);
+			p.copy(piece.normals[i]).applyQuaternion(swing); nor.setXYZ(v,p.x,p.y,p.z); piece.normals[i].copy(p); });
+		piece.normal.applyQuaternion(swing);
+		pos.needsUpdate=nor.needsUpdate=true; geo.computeBoundingSphere(); geo.computeBoundingBox(); } }
+// mirror_jet_attach hangs a copy of the distant stage on the player's jet, where stages_attach hangs another jet's,
+// for the mirrors alone: on LAYER_MIRROR, which only their rear view draws, casting no shadow, and without its
+// canopy glass (mirror_clear), which the stage paints as an opaque tint.
+const mirror_glassless=new WeakMap();   // a stage geometry -> its copy without the glass, made once
+function mirror_jet_attach(g,kind){ const far=fleet_far[kind], m=model_of(g);
+	if(!g.userData.player||g.userData.mirror_jet||!far||far==="loading"||m===g) return;
+	const inner=m.children[0]&&m.children[0].children[0]; if(!inner) return;
+	const root=far.clone(true); root.traverse(o=>{ o.userData.mirror=true; o.layers.set(LAYER_MIRROR); if(!o.isMesh) return; o.castShadow=false;
+		const geo=o.geometry, colour=geo.attributes.color; if(!colour) return;
+		if(!mirror_glassless.has(geo)){ const triangles=geo.index?Array.from({ length:geo.index.count },(_,i)=>geo.index.getX(i)):Array.from({ length:geo.attributes.position.count },(_,i)=>i);
+			const clear=geo.clone(); clear.setIndex(mirror_clear(triangles,v=>[colour.getX(v),colour.getY(v),colour.getZ(v)])); clear.userData.glass=(triangles.length-clear.index.count)/3; mirror_glassless.set(geo,clear); }
+		o.geometry=mirror_glassless.get(geo); });
+	inner.add(root);
+	const silhouette=root.getObjectByName("far"); if(silhouette) silhouette.visible=false;   // the stage drawn only far off
+	g.userData.mirror_jet={ root, up:root.getObjectByName("up"), down:root.getObjectByName("down") }; }
+function mirror_targets(){ if(mirror.world) return; const W=MIRROR_WIDTH, H=MIRROR_HEIGHT;
+	// Drawn as the canvas is: three tone-maps and encodes its lit materials only for the screen or a target it takes
+	// for an XR one, and the sky, sea and cloud shaders write display values into any target. The values are held as
+	// written, in RGBA8: three would give the texture an sRGB format but a multisampled target's renderbuffer a plain
+	// one, and WebGL resolves the one into the other only between identical formats, so the airframe never arrived.
+	const display=t=>{ t.isXRRenderTarget=true; t.texture.colorSpace=THREE.SRGBColorSpace; t.texture.internalFormat="RGBA8"; return t; };
+	mirror.world=display(new THREE.WebGLRenderTarget(W,H)); mirror.world.depthTexture=new THREE.DepthTexture(W,H);   // the depth the clouds are marched against
+	for(let k=0;k<MIRROR_PIECES;k++){ mirror.jets.push(display(new THREE.WebGLRenderTarget(MIRROR_PIECE,MIRROR_PIECE,{ samples:4 }))); mirror.carried.views.push(new THREE.Matrix4()); }   // cleared transparent: the airframe's edges resolve to their coverage
+	mirror.out=new THREE.WebGLRenderTarget(W,H,{ depthBuffer:false });   // the world with its clouds: a target apart, as the composite samples the world's depth
+	mirror.march=new THREE.WebGLMultipleRenderTargets(W,H,2,{ depthBuffer:false }); mirror.march.texture[1].minFilter=THREE.NearestFilter; mirror.march.texture[1].magFilter=THREE.NearestFilter;
+	mirror.hist=[0,1].map(()=>new THREE.WebGLRenderTarget(W,H,{ depthBuffer:false })); }
+function mirror_face_material(live){ for(const f of mirror.faces){ const want=live?mirror.material:f.glass;
+	if(Array.isArray(f.mesh.material)) f.mesh.material[f.index]=want; else f.mesh.material=want; } }
+function mirror_seen(){ _mirror_frustum.setFromProjectionMatrix(_mirror_vp.multiplyMatrices(cockpit_cam.projectionMatrix,camera.matrixWorldInverse));   // the cockpit pass's field, whose near plane, unlike the world's 3 m, lies short of the canopy bow
+	return mirror.faces.some(f=>f.mesh.visible&&_mirror_frustum.intersectsObject(f.mesh)); }
+// mirror_plane finds a mirror's plane in the world now, its normal turned toward the eye, into `plane`, and the
+// mirror's virtual eye into `out`.
+function mirror_plane(piece,eye,plane,out){ piece.mesh.updateWorldMatrix(true,false); _mirror_normals.getNormalMatrix(piece.mesh.matrixWorld);
+	_mirror_point.copy(piece.centre).applyMatrix4(piece.mesh.matrixWorld); _mirror_normal.copy(piece.normal).applyMatrix3(_mirror_normals).normalize();
+	if(_mirror_normal.dot(_mirror_mean.subVectors(eye,_mirror_point))<0) _mirror_normal.negate();
+	plane.setFromNormalAndCoplanarPoint(_mirror_normal,_mirror_point); return mirror_virtual(eye,_mirror_point,_mirror_normal,out); }
+// mirror_frame runs between the world's passes and the cockpit's: it draws whatever half of an update falls due
+// (MirrorClock) and sets the faces to the live view while a fresh one stands, or to the sky alone.
+function mirror_frame(){ const now=performance.now();
+	if(MIRRORS_OFF||!mirror_live(cfg.view,map_on,cfg.effects_quality??2)||!mirror.pieces.length||!mirror_seen()){ mirror.clock.reset(); mirror_face_material(false); return; }
+	mirror_targets();
+	const step=mirror.clock.step(now,cloud_active()), was=renderer.getRenderTarget();
+	if(step==="scene") mirror_scene(now); else if(step==="clouds") mirror_clouds(now);
+	renderer.setRenderTarget(was);
+	const live=!!mirror.shown.texture&&now-mirror.shown.at<MIRROR_STALE*1000&&now-mirror.carried.at<MIRROR_STALE*1000;
+	if(live){ const u=mirror.material.uniforms; u.tWorld.value=mirror.shown.texture; u.uWorld.value.copy(mirror.shown.view);
+		ownship.group.getWorldQuaternion(_mirror_turn);
+		for(let k=0;k<MIRROR_PIECES;k++){ const piece=mirror.pieces[k];
+			u["tJet"+k].value=mirror.jets[k].texture;
+			if(!piece){ u["uPlane"+k].value.set(0,1,0,1e9); continue; }
+			mirror_plane(piece,camera.position,_mirror_plane,_mirror_mean); u["uPlane"+k].value.set(_mirror_plane.normal.x,_mirror_plane.normal.y,_mirror_plane.normal.z,_mirror_plane.constant);
+			mirror_carried(mirror.carried.views[k],mirror.carried.turn,_mirror_turn,u["uJet"+k].value); } }
+	mirror_face_material(live); }
+// mirror_scene is an update's first half. It aims the world's rear view over the rays the mirrors reflect, from their
+// virtual eyes' mean, widened by how far the jet turned over the last update (the world layer is shown until the next
+// one lands, up to two periods on, and the rays turn with the jet meanwhile), and draws it; then it draws the
+// airframe for each mirror from that mirror's virtual eye, cut MIRROR_CLEAR short of the mirror's plane so nothing at
+// or beyond the glass shows.
+function mirror_scene(now){ const eye=camera.position, g=ownship.group, rays=[], virtual=[], planes=[];
+	for(const piece of mirror.pieces){ const plane=new THREE.Plane(), at=mirror_plane(piece,eye,plane,new THREE.Vector3()); virtual.push(at); planes.push(plane.clone().translate(plane.normal.clone().multiplyScalar(MIRROR_CLEAR)));
+		for(const p of piece.points) rays.push(_mirror_point.copy(p).applyMatrix4(piece.mesh.matrixWorld).sub(at).normalize().clone()); }   // from the virtual eye through the glass: the reflected ray
+	const centre=virtual.reduce((a,v)=>a.add(v),new THREE.Vector3()).multiplyScalar(1/virtual.length);
+	g.getWorldQuaternion(_mirror_turn);
+	const gap=(now-mirror.at)/1000, turned=2*Math.acos(Math.min(1,Math.abs(_mirror_turn.dot(mirror.turn)))), spin=gap>0&&gap<0.5?turned/gap:0;
+	mirror.margin=MIRROR_MARGIN+spin*2*mirror.clock.period/1000;
+	const cam=mirror.camera, up=_mirror_up.set(0,1,0).applyQuaternion(_mirror_turn); cam.near=camera.near; cam.far=camera.far;
+	if(!mirror_aim(cam,centre,rays,up,mirror.margin)) return;
+	mirror.turn.copy(_mirror_turn); mirror.at=now; mirror.updates++;
+	const placed=scene.matrixWorldAutoUpdate; scene.matrixWorldAutoUpdate=false;   // the frame's world pass has already placed every object: four more passes need not walk the scene again to do it
+	_mirror_fog.copy(scene.fog.color); fog_toward(cam);
+	cam.layers.set(0); renderer.setRenderTarget(mirror.world); renderer.render(scene,cam); mirror.draws.world=renderer.info.render.calls;
+	mirror_view(cam,mirror.view); mirror.inverse.copy(mirror.view).invert(); mirror.eye.copy(centre);
+	const jet=g.userData.mirror_jet, alpha=renderer.getClearAlpha(); renderer.getClearColor(_mirror_clear); renderer.setClearColor(0x000000,0);
+	if(jet){ const down=(ownship.gear??1)<0.5; if(jet.up) jet.up.visible=!down; if(jet.down) jet.down.visible=down; }
+	const piece_cam=mirror.piece; piece_cam.layers.set(LAYER_MIRROR); mirror.draws.jet=0;
+	for(let k=0;k<MIRROR_PIECES;k++){ renderer.setRenderTarget(mirror.jets[k]);
+		const piece=mirror.pieces[k], at=virtual[k];
+		if(!jet||!piece||!mirror_aim(piece_cam,at,mirror.pieces[k].points.map(p=>p.clone().applyMatrix4(piece.mesh.matrixWorld).sub(at).normalize()),up,MIRROR_MARGIN)){ renderer.clear(true,false,false); continue; }   // the distant stage still loading: the world alone
+		renderer.clippingPlanes=[planes[k]]; renderer.render(scene,piece_cam); renderer.clippingPlanes=[]; mirror.draws.jet+=renderer.info.render.calls;
+		mirror_view(piece_cam,mirror.carried.views[k]); mirror.aims[k]=piece_cam.getWorldDirection(new THREE.Vector3()).applyQuaternion(_mirror_turn.clone().invert()).toArray(); mirror.fovs[k]=piece_cam.fov; }   // where each mirror looks, in the jet's frame (dev_mirror)
+	renderer.setClearColor(_mirror_clear,alpha); scene.fog.color.copy(_mirror_fog); scene.matrixWorldAutoUpdate=placed;
+	mirror.carried.turn.copy(_mirror_turn); mirror.carried.at=now;
+	if(!mirror.clock.pending){ mirror.shown.texture=mirror.world.texture; mirror.shown.view.copy(mirror.view); mirror.shown.at=now; mirror.valid=false; } }   // no clouds: the world is the view
+// mirror_clouds is the second half, the frame after: the clouds marched against the world's depth from the view the
+// first half drew, blended into their own history, and laid over a copy of the world in mirror.out.
+function mirror_clouds(now){
+	if(!cloud_active()){ mirror.shown.texture=mirror.world.texture; mirror.shown.view.copy(mirror.view); mirror.shown.at=now; mirror.valid=false; return; }
+	const hr=1-mirror.write, u=cloud_mat.uniforms, a=acc_mat.uniforms, c=comp_mat.uniforms;
+	u.tDepth.value=mirror.world.depthTexture; u.uCamPos.value.copy(mirror.eye); u.uInvVP.value.copy(mirror.inverse); u.uJitter.value=(++mirror.jitter*0.61803398875)%1;
+	renderer.setRenderTarget(mirror.march); renderer.render(fs_scene,fs_cam);
+	a.tCur.value=mirror.march.texture[0]; a.tAux.value=mirror.march.texture[1]; a.tHist.value=mirror.hist[hr].texture; a.uTexel.value.set(1/MIRROR_WIDTH,1/MIRROR_HEIGHT);
+	a.uPrevVP.value.copy(mirror.previous); a.uInvVP.value.copy(mirror.inverse); a.uCamPos.value.copy(mirror.eye); a.uHistValid.value=mirror.valid?1:0; a.uHistory.value=cloud_history();
+	renderer.setRenderTarget(mirror.hist[mirror.write]); renderer.render(acc_scene,fs_cam);
+	mirror_copy.uniforms.tMap.value=mirror.world.texture; renderer.setRenderTarget(mirror.out); renderer.render(mirror_copy_scene,fs_cam);
+	c.tCloud.value=mirror.hist[mirror.write].texture; c.uTexel.value.set(1/MIRROR_WIDTH,1/MIRROR_HEIGHT); c.tDepthLow.value=mirror.world.depthTexture; c.tDepthHigh.value=mirror.world.depthTexture;
+	c.uNear.value=camera.near; c.uFar.value=camera.far;
+	renderer.autoClear=false; renderer.render(comp_scene,fs_cam); renderer.autoClear=true;
+	mirror.previous.copy(mirror.view); mirror.valid=true; mirror.write=hr;
+	mirror.shown.texture=mirror.out.texture; mirror.shown.view.copy(mirror.view); mirror.shown.at=now; }
+if(DEV_MODE) (globalThis as any).dev_mirror=()=>({ faces:mirror.faces.length, pieces:mirror.pieces.length, live:mirror.faces.some(f=>(Array.isArray(f.mesh.material)?f.mesh.material[f.index]:f.mesh.material)===mirror.material),
+	updates:mirror.updates, draws:mirror.draws, fov:mirror.camera.fov, glass:(j=>{ let n=0; j?.root.traverse(o=>{ if(o.isMesh) n+=o.geometry.userData.glass||0; }); return n; })(ownship.group.userData.mirror_jet), margin:mirror.margin/D2R, jet:!!ownship.group.userData.mirror_jet, clouds:mirror.valid,
+	wanted:mirror_live(cfg.view,map_on,cfg.effects_quality??2), seen:mirror.faces.length>0&&mirror_seen(),
+	aim:new THREE.Vector3(0,0,-1).applyQuaternion(mirror.camera.quaternion).applyQuaternion(ownship.group.getWorldQuaternion(new THREE.Quaternion()).invert()).toArray(), aims:mirror.aims, fovs:mirror.fovs,
+	at:mirror.pieces.map(piece=>piece.centre.clone().applyMatrix4(piece.mesh.matrixWorld).sub(camera.position).normalize().applyQuaternion(ownship.group.getWorldQuaternion(new THREE.Quaternion()).invert()).toArray()),
+	blocked:mirror.pieces.map((piece,k)=>{ const j=ownship.group.userData.mirror_jet, aim=mirror.aims[k]; if(!j||!aim) return null;   // the first airframe surface along each mirror's aim from its virtual eye: metres, and where it lies from the eye in the jet's frame
+		const g=ownship.group, turn=g.getWorldQuaternion(new THREE.Quaternion()), from=mirror_plane(piece,camera.position,new THREE.Plane(),new THREE.Vector3());
+		const cut=new THREE.Plane(); mirror_plane(piece,camera.position,cut,new THREE.Vector3()); cut.translate(cut.normal.clone().multiplyScalar(MIRROR_CLEAR));   // as the pass cuts it
+		const ray=new THREE.Raycaster(from,new THREE.Vector3(...aim).applyQuaternion(turn)); ray.layers.set(LAYER_MIRROR);
+		const hit=ray.intersectObject(j.root,true).find(h=>h.object.visible&&cut.distanceToPoint(h.point)>=0); if(!hit) return null;
+		return { distance:hit.distance, at:hit.point.clone().sub(camera.position).applyQuaternion(turn.clone().invert()).toArray() }; }) });   // aims and fovs: where each mirror looks and its field (degrees high), at: where each lies from the eye   // dev: whether the mirrors are live, wanted and on screen, how many updates and draws they make, the world view's field and margin (degrees) and where it looks in the jet's frame (forward, up, right)
+if(DEV_MODE) (globalThis as any).dev_mirror_image=(layer)=>{   // dev: a layer's last drawing as base64 RGBA rows, bottom row first: "jet0" to "jet2", or the world the faces show
+	const k=/^jet(\d)$/.exec(layer||""), t=k?mirror.jets[+k[1]]:mirror.shown.texture===mirror.out?.texture?mirror.out:mirror.world; if(!t) return null;
+	const px=new Uint8Array(t.width*t.height*4); renderer.readRenderTargetPixels(t,0,0,t.width,t.height,px);
+	let s=""; for(let i=0;i<px.length;i+=0x8000) s+=String.fromCharCode(...px.subarray(i,i+0x8000));
+	return { width:t.width, height:t.height, data:btoa(s) }; };
 
 // ============================================================================ geometry
 function merge_geometries(geos){ let total=0; const parts=geos.map(g=>(g.index?g.toNonIndexed():g)); parts.forEach(g=>total+=g.attributes.position.count);
@@ -2017,7 +2203,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	const previous=g.children.find(c=>c.userData&&c.userData.model); if(previous) g.remove(previous);   // aircraft swap: drop the old airframe
 	const outside=g.children.find(c=>c.userData&&c.userData.exterior); if(outside) g.remove(outside);   // and our own model hung beside it
 	g.userData.exterior=null; g.userData.legacy=null; g.userData.pit=null;
-	g.userData.stages=null; g.userData.stage=undefined;   // its distant stages went with it
+	g.userData.stages=null; g.userData.stage=undefined; g.userData.mirror_jet=null;   // its distant stages went with it, and the mirrors' copy
 	// No team tint on the airframe (#210): identification is the HUD box, locator
 	// line and map colours, not paint.
 	const m=loaded.proto.clone(true); m.userData.model=true;
@@ -2068,7 +2254,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 				if(Array.isArray(o.material)) o.material[ix]=pool.get(mm); else o.material=pool.get(mm); }); });
 			g.userData.glow=[...(g.userData.glow||[]),...glow.values()]; g.userData.burner=[...(g.userData.burner||[]),...burner.values()]; }
 		airframe_show(g,true); }
-	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); controls_round(g,m); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
+	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); controls_round(g,m); mirror_faces_find(m); mirror_jet_attach(g,kind); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
 		g.userData.rig=loaded.rig.map(r=>{
 			if(r.node){ const o=m.getObjectByName(r.node); if(!o) return null;
@@ -2239,7 +2425,8 @@ async function init_far_model(kind){ const spec=AIRCRAFT_MODELS[kind]; if(!spec|
 			if(p&&p.name==="far"){ const c=o.geometry.attributes.color; for(let i=0;i<c.count;i++){ albedo.r+=c.getX(i); albedo.g+=c.getY(i); albedo.b+=c.getZ(i); corners++; } } });
 		gltf.scene.userData.albedo=corners?albedo.multiplyScalar(1/corners):new THREE.Color(0.27,0.27,0.27);   // the dot's colour: the far silhouette's mean
 		fleet_far[kind]=gltf.scene;
-		for(const st of new Set([bandit,...remotes.values()])) if(st.group&&st.group.userData.hasModel===kind) stages_attach(st.group,kind); }
+		for(const st of new Set([bandit,...remotes.values()])) if(st.group&&st.group.userData.hasModel===kind) stages_attach(st.group,kind);
+		if(ownship.group.userData.hasModel===kind) mirror_jet_attach(ownship.group,kind); }   // the player's jet carries a copy for its mirrors
 	catch(e){ fleet_far[kind]=null; console.warn("aircraft model: no distant stages for "+kind+" ("+((e&&e.message)||e)+")"); } }   // without them the jet is drawn in full at every range
 // stages_attach hangs a jet's distant stages beside its model's own nodes, in the glTF scene they were
 // built in (tools/fa18c), so normalise_model's scale, centring, rotation and stance place them too.
@@ -5269,7 +5456,7 @@ function update_rails(st,count){ if(!st.group) return; const nodes=(st.racks&&st
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights();
 	{ const g=ownship.group, before=new Set(g.children);   // the eye's calibration casts at the old cockpit, drawn while it runs; the parts the cockpit build hangs on the group are the pit's, drawn with it
 		for(const o of g.userData.legacy||[]) o.visible=true;
-		calibrate_eye();
+		calibrate_eye(); mirror_set(g);   // the mirrors are set from the eye
 		if(g.userData.exterior) g.userData.pit=[...new Set([...(g.userData.pit||[]),...g.children.filter(c=>!before.has(c))])].filter(c=>c.parent===g);
 		airframe_show(g,true); }
 	assign_loadout(ownship, loadout()); assign_loadout(bandit, bandit_fit());
@@ -10304,8 +10491,9 @@ function explosion_at(x,y,z,kind){
 	debris.vx[k]=Math.cos(a)*Math.cos(e)*sp; debris.vy[k]=Math.abs(Math.sin(e))*sp*0.7+8; debris.vz[k]=Math.sin(a)*Math.cos(e)*sp;
 	debris.ttl[k]=debris.life[k]=3.5+Math.random()*3;
 	debris.r[k]=0.15;debris.g[k]=0.15;debris.b[k]=0.16; } }
-if(DEV_MODE) (globalThis as any).dev_boom=function(distance){   // #82: audition the detonation visuals — burst dead ahead of the camera
-	const d=Number(distance)||150, v=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+if(DEV_MODE) (globalThis as any).dev_boom=function(distance,az,el){   // #82: audition the detonation visuals — burst dead ahead of the camera, or az degrees left of the nose and el up in the jet's frame (a burst the mirrors see while the head stays put)
+	const d=Number(distance)||150, v=az===undefined?new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion)
+		:new THREE.Vector3(Math.cos(el*D2R)*Math.cos(az*D2R),Math.sin(el*D2R),-Math.cos(el*D2R)*Math.sin(az*D2R)).applyQuaternion(ownship.group.getWorldQuaternion(new THREE.Quaternion()));
 	explosion_at(camera.position.x+v.x*d,camera.position.y+v.y*d,camera.position.z+v.z*d); };
 if(DEV_MODE) (globalThis as any).dev_fox=function(){ return launch_missile(ownship,null); };   // #83: audition the motor trail — a ballistic 9M off the rail
 if(DEV_MODE) (globalThis as any).dev_smoke=function(){ return smoke.activeList.length; };   // #83: live smoke-pool count — the decay curve the camera cannot fake
