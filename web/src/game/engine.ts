@@ -37,7 +37,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_speed, flight_steer, flight_voyage, flight_carrier, flight_deck, flight_reframe, flight_wind, flight_footing, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
+import { flight_cruise, flight_climb, flight_power, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_speed, flight_steer, flight_voyage, flight_carrier, flight_deck, flight_reframe, flight_wind, flight_footing, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
@@ -10954,6 +10954,19 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 // line, the ball, the switches, the calls - and flies the same controls. What
 // it returns overwrites the frame's input sample AFTER read_input, so a key
 // or a stick moved while watching changes nothing; the view keys still work.
+// approach_book: the lever that holds the jet on-speed level and what each m/s
+// of sink takes off it, from the flight core's own trim for the jet as it is
+// (flight_power), read again every two seconds as the fuel burns: the book the
+// demonstration's pilot flies the approach's power from, so that it follows
+// the airframe and the stores. Null on a core without it.
+let approach_power={ at:-Infinity, book:null };
+function approach_book(){
+	if(sim_time-approach_power.at>=2||sim_time<approach_power.at){
+		approach_power.at=sim_time;
+		const level=flight_power(150,0), sloped=flight_power(150,3.5);
+		approach_power.book=level&&sloped?{ level:level.throttle, rate:(level.throttle-sloped.throttle)/(sloped.speed*Math.sin(3.5*D2R)) }:null; }
+	return approach_power.book; }
+if(DEV_MODE) (globalThis as any).dev_power=()=>approach_book();   // dev: the approach's book of power, for the probes' scripted pilots
 function demonstration_picture(){
 	const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
 	const rx=(ownship.pos.x-O.x), rz=(ownship.pos.z-O.z);
@@ -10965,7 +10978,7 @@ function demonstration_picture(){
 		roll:rates[STATE.omega]||0, rate:rates[STATE.omega+2]||0,   // body rates: roll about the nose (+ right), pitch about the right wing (+ nose up) - frames.go
 		throttle:ownship.throttle??0, gear:(ownship.gearTarget??0)<0.5, flap:flap_select, hook:(ownship.hookTarget??0)>0.5,
 		grounded:!!ownship.grounded, trapped:!!ownship.trapped, waving:!!ownship.waving, crashed:crash_t>0,   // no bolter flag: the grade is sticky until the next trap, and the pilot reads the touch itself
-		coached:!!hinted[HINT.form],
+		coached:!!hinted[HINT.form], power:approach_book(),
 		ship:{ along:rx*hx+rz*hz, starboard:-rx*hz+rz*hx, bow:SHIP.length/2, course:(Math.atan2(hx,-hz)*180/Math.PI+360)%360 },
 		groove:{ along:s.along, right:-s.lat, deviation:s.dev, slope:o?o.dy+HOOK_DROP+Math.tan(3.5*D2R)*Math.max(0,s.along+HOOK_AFT):ownship.pos.y, heading:o?(Math.atan2(-o.apx,o.apz)*180/Math.PI+360)%360:0, drift:o?way*(hx*o.apz-hz*o.apx):0 } };   // drift: the landing line's own motion to the pilot's right, her way across the angled deck   // the approach axis (apx, apz) points aft from the touchdown; the jet flies its reverse
 }

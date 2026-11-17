@@ -155,6 +155,7 @@ interface Core {
     fuel: number
   ): number
   cruise?(altitude: number, mach: number): [number, number] | string
+  power?(altitude: number, slope: number): [number, number] | string
   climb?(altitude: number): [number, number, number] | string
   clear(): string
   hulk(index: number, aircraft: string, stores?: number): boolean
@@ -1266,6 +1267,18 @@ export function flight_approach(
   fuel: number
 ): number {
   return (core?.approach(x, y, z, dx, dz, slope, fuel) as number) ?? 0
+}
+
+// flight_power reports the throttle and the true airspeed, m/s, of an
+// on-speed path of `slope` degrees below the horizon at an altitude (m), for
+// the jet as it is now - its weight, stores and damage - as flight_approach
+// would trim them: the book a scripted pilot flies the approach's power from.
+// The flying state is untouched. Null before the core is up, or on a core
+// that predates it.
+export function flight_power(altitude: number, slope: number): { throttle: number; speed: number } | null {
+  const result = core?.power?.(altitude, slope)
+  if (!Array.isArray(result) || !(result[1] > 0)) return null
+  return { throttle: result[0], speed: result[1] }
 }
 
 // flight_climb reports the best steady climb on military power at an altitude

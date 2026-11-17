@@ -807,6 +807,10 @@ describe('the pattern', () => {
     expect(c.throttle).toBeCloseTo(0.326 * tilt, 2) // the book's level flight, banked
     expect(c.throttle).toBeGreaterThan(0.37)
     const level = c.throttle
+    // With the core's book in the picture, its level flight is the lever's, banked: Fox 2's 0.41.
+    d = turning()
+    c = demonstration_step(d, outbound({ power: { level: 0.41, rate: 0.02 } }), 2)
+    expect(c.throttle).toBeCloseTo(0.41 * tilt, 2)
     // Reading slow, more power; the path is not the lever's here.
     d = turning()
     c = demonstration_step(d, outbound({ alpha: 10 }), 2)
@@ -900,6 +904,32 @@ describe('the pattern', () => {
     const settled = entering(3)
     expect(Math.abs(first - settled)).toBeGreaterThan(0.05)
     expect(middle).toBeCloseTo((first + settled) / 2, 2)
+  })
+
+  it('captures the dirty downwind\'s height gently, the lever four seconds behind: a tenth of a metre a second for each metre high', () => {
+    const asked = (above: number) => {
+      const d = demonstration_start(3)
+      d.phase = 'downwind'
+      d.configured = true
+      const pic = { heading: 250, track: 250, cas: 70, speed: 70, alpha: 8.1, flap: 2, gear: true, hook: true, altitude: 183 + above, ship: { along: 500, starboard: -2000 }, groove: { along: 300, right: -2000 } }
+      demonstration_step(d, picture(pic), 1 / 60)
+      return d.targets.vertical
+    }
+    expect(asked(30) - asked(20)).toBeCloseTo(-1.0, 2) // at 0.25 a second both asked the 4 m/s floor, and the jet dived through 600 ft
+    expect(asked(30)).toBeGreaterThan(-4)
+  })
+
+  it('meets the burble with power while the lever still has time to answer: on from 450 m, most of it by 300', () => {
+    const lever = (along: number) => {
+      const d = demonstration_start(3)
+      d.phase = 'groove'
+      d.configured = true
+      const slope = 22 + Math.tan((3.5 * Math.PI) / 180) * along
+      const pic = { heading: 61, track: 61, cas: 70, speed: 70, alpha: 8.1, flap: 2, gear: true, hook: true, vertical: -3, altitude: slope + 1, groove: { along, slope } }
+      return demonstration_step(d, picture(pic), 2).throttle
+    }
+    expect(lever(450) - lever(600)).toBeCloseTo(0, 3)
+    expect(lever(300) - lever(600)).toBeCloseTo(0.035 * 0.75, 3)
   })
 
   it('goes around on a wave-off with full power and the switches left down, then rejoins the downwind', () => {

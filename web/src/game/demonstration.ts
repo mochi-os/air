@@ -61,6 +61,7 @@ export interface Picture {
   waving: boolean // the LSO is waving this pass off
   crashed: boolean
   coached: boolean // the dirty-up line has been raised on the glass
+  power?: { level: number; rate: number } | null // the core's book: the lever on-speed level, and what each m/s of sink takes off it
   ship: {
     along: number // m ahead of the ship's origin along the hull
     starboard: number // m to starboard of the hull axis
@@ -594,9 +595,17 @@ export function demonstration_step(
 
   // The vertical-speed target: from the altitude when one is held, else the
   // phase's own rate.
+  // Dirty and slow the lever flies the path, four seconds behind, and the
+  // downwind's height worked off at 0.25 a second overshot it: the descent
+  // from a late break's 820 ft dived through 600 at 5 m/s, ballooned back to
+  // 690 on the power that met it, and began the turn there at 121 knots
+  // sinking 1,400 fpm. So the dirty downwind captures its height at 0.1, as
+  // the groove's own schedule works its height at 0.06 to 0.18; up and away
+  // the stick flies the path and takes 0.25, and the turn's start-down
+  // abeam is the hint's 200-300 fpm off the same 0.25.
   let want = vertical ?? 0
   if (altitude !== null) {
-    want = clamp((altitude - pic.altitude) * 0.25, -4, climb)
+    want = clamp((altitude - pic.altitude) * (pa && d.phase === 'downwind' ? 0.1 : 0.25), -4, climb)
     if (vertical !== null) want = Math.max(want, vertical) // the phase's rate is the fastest the height loop may descend
   }
 
@@ -616,8 +625,12 @@ export function demonstration_step(
   let throttle = d.throttle
   const speeding = cas === null ? 0 : (cas - pic.cas) * 0.035 - d.trend * 0.15 // the lever's rate toward a speed
   // The lever for a sink rate on-speed is known to a pilot before the error
-  // is: on the model the dirty jet holds level flight at about 0.326 of the
-  // lever, the 3.5° slope at 0.23, and idle sinks it 8.5 m/s (the lever
+  // is: the flight core's own trim for this jet as it is (pic.power), which
+  // follows the airframe and the stores. Written down as numbers it went
+  // stale: the flap change of 2026-11-13 took Fox 2's level flight from
+  // under the old book's 0.326 to 0.41, past what the trim can learn, and the
+  // pilot flew every groove low. A core without the book is read as before,
+  // 0.326 level and 0.23 on the slope. Idle sinks the jet 8.5 m/s (the lever
   // commands 6% of military to 100%, through ground idle). Banked, the
   // same path takes more (lift by 1/cos of the bank, the induced drag with
   // its square), so the book grows by (1/cos)^1.5 and comes back down as
@@ -642,7 +655,7 @@ export function demonstration_step(
     Math.cos(clamp(Math.abs(leading), 0, 60) * DEGREE),
     -1.5
   )
-  const book = clamp((0.326 + 0.0235 * want) * banked, 0.02, 0.6)
+  const book = clamp((pic.power ? pic.power.level + pic.power.rate * want : 0.326 + 0.0235 * want) * banked, 0.02, 0.6)
   // A sink still building past the wanted rate is met on the acceleration,
   // before the rate itself has run away: the lever's answer arrives four
   // seconds on, and waiting for the error alone put the jet 20 ft under the
@@ -659,10 +672,13 @@ export function demonstration_step(
   ) // a high ball met at 0.02 let the roll-out's excess speed ride the whole start of the groove as height, and at 0.05 a metre and a half above the aim was carried from the middle to the ramp
   // The burble: astern of the island the air sinks, more the lower the jet,
   // and the lever's answer to the sink it makes arrives too late for the
-  // ramp. A little power in close, before the sink shows, as the LSO teaches.
+  // ramp. A little power in close, before the sink shows, as the LSO teaches:
+  // on from 450 m and full by 250, since the lever's answer runs four seconds
+  // behind. Begun at 300, it arrived after the ramp and the pass settled
+  // onto the 1 wire.
   const burble =
     d.phase === 'groove'
-      ? 0.035 * clamp((300 - pic.groove.along) / 150, 0, 1)
+      ? 0.035 * clamp((450 - pic.groove.along) / 200, 0, 1)
       : 0
   if (!pa) {
     // Up and away the stick is a load: the one that holds the path in this
