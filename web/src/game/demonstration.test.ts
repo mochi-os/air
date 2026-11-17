@@ -382,7 +382,9 @@ describe('the pattern', () => {
     expect(d.targets.vertical).toBeLessThan(
       -40 * Math.tan((3.5 * Math.PI) / 180)
     ) // on the slope: its own rate, and a little more for the 3 m above the aim
-    // Wide abeam, the same arc needs less bank; tight, more.
+    // Wide abeam, the same arc needs less bank; tight, more. A fresh turn:
+    // the intercept's reach is fixed once a turn reaches it, until the next.
+    d.reach = 0
     demonstration_step(
       d,
       picture({
@@ -814,7 +816,7 @@ describe('the pattern', () => {
     // Reading slow, more power; the path is not the lever's here.
     d = turning()
     c = demonstration_step(d, outbound({ alpha: 10 }), 2)
-    expect(c.throttle - level).toBeCloseTo(1.9 * 0.06 + 1.9 * 0.01 * 2, 2) // the proportional share, and two seconds of the trim
+    expect(c.throttle - level).toBeCloseTo(1.9 * 0.06 + 1.9 * 0.01 * 2 * 0.1, 3) // the proportional share, and two seconds of the trim at a tenth: 1.9° is nearly twice what it learns from
     d = turning({ vertical: -2 })
     c = demonstration_step(d, outbound({ vertical: -2 }), 2)
     expect(c.throttle).toBeCloseTo(level, 2)
@@ -930,6 +932,57 @@ describe('the pattern', () => {
     }
     expect(lever(450) - lever(600)).toBeCloseTo(0, 3)
     expect(lever(300) - lever(600)).toBeCloseTo(0.035 * 0.75, 3)
+  })
+
+  it('learns the final turn\'s two trims from a bias, and leaves the roll-in\'s transient to the proportional terms', () => {
+    // The outbound half at 600 ft, on-speed, as the turn test flies it.
+    const outbound = (over: Omit<Partial<Picture>, 'ship' | 'groove'> = {}) =>
+      picture({ heading: 250, track: 250, cas: 72, speed: 72, alpha: 8.1, flap: 2, gear: true, hook: true, altitude: 600 * 0.3048, ship: { along: -1800, starboard: -2000 }, groove: { along: 1650, right: -2000 }, ...over })
+    const fly = (over: Omit<Partial<Picture>, 'ship' | 'groove'>, carry = 0) => {
+      const d = demonstration_start(3)
+      d.phase = 'turn'
+      d.configured = true
+      d.seated = true
+      d.lever = 0.4
+      d.vertical = over.vertical ?? 0
+      d.cas = 72
+      d.carry = carry
+      for (let i = 0; i < 300; i++) demonstration_step(d, outbound({ time: 10 + i / 60, ...over }), 1 / 60)
+      return d
+    }
+    // Three degrees slow for five seconds, as the indexer reads through a roll-in: the lever's trim learns nothing.
+    expect(fly({ alpha: 11.1 }).trim).toBe(0)
+    // A degree and a half: half the rate, 0.01 a degree a second.
+    expect(fly({ alpha: 9.6 }).trim).toBeCloseTo(1.5 * 0.01 * 5 * 0.5, 3)
+    // Sinking 2.5 m/s past the path for five seconds: the stick's trim learns nothing, and leaks what it had.
+    expect(fly({ vertical: -2.5 }, 0.05).carry).toBeCloseTo(0.05 * Math.pow(1 - 1 / 360, 300), 3)
+  })
+
+  it('hands the final turn from the arc to the intercept with the bank it had, steering for a point up the line', () => {
+    // 646 m left of the line with 60° still to turn, as seed 3 came to it in the trades.
+    const at = (remaining: number, right = -646) =>
+      picture({ heading: 61 + remaining, track: 61 + remaining, cas: 70, speed: 70, alpha: 8.1, bank: -17, flap: 2, gear: true, hook: true, altitude: 183, groove: { along: 2600, right, heading: 61, slope: 200 } })
+    const d = demonstration_start(3)
+    d.phase = 'turn'
+    d.configured = true
+    d.seated = true
+    demonstration_step(d, at(60.5), 1 / 60)
+    const arc = d.targets.bank
+    expect(d.reach).toBe(0)
+    expect(arc).toBeLessThan(-15) // the arc's bank for the circle to the line
+    demonstration_step(d, at(59.5), 1 / 60)
+    expect(d.reach).toBeCloseTo(646 / Math.tan((59.5 * Math.PI) / 180), 0)
+    expect(d.targets.heading).toBeCloseTo(61 + 59.5, 1) // the point fixed where it is the heading flown
+    expect(Math.abs(d.targets.bank - arc)).toBeLessThan(7) // its own turn, not 0.035° a metre's 23°, which stepped the bank to 35°
+    expect(d.targets.bank).toBeLessThan(-10)
+    // The reach stays fixed: 300 m off, the point asks for atan(300 / reach).
+    demonstration_step(d, at(40, -300), 1 / 60)
+    expect(d.targets.heading).toBeCloseTo(61 + (Math.atan(300 / d.reach) * 180) / Math.PI, 1)
+    // A new turn - a go-around's - fixes its own.
+    d.phase = 'downwind'
+    demonstration_step(d, picture({ heading: 250, track: 250, cas: 72, speed: 72, alpha: 8.1, flap: 2, gear: true, hook: true, altitude: 183, ship: { along: -1800, starboard: -2000 }, groove: { along: 3500, right: -2000 } }), 1 / 60)
+    expect(d.phase).toBe('turn')
+    expect(d.reach).toBe(0)
   })
 
   it('goes around on a wave-off with full power and the switches left down, then rejoins the downwind', () => {

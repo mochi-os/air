@@ -106,6 +106,20 @@ export interface Habits {
   phase: number[] // the wanders' phases, rad
 }
 
+// The final turn's stick and lever by their parts: the stick's for the path
+// (its error and the vertical acceleration's damping), for the bank's share
+// of lift, the slow trim's and the high-alpha easing's; the lever's book
+// for the bank, its slow trim and the indexer's degrees off on-speed.
+export interface Parts {
+  path: number
+  bank: number
+  carry: number
+  ease: number
+  book: number
+  trim: number
+  indexer: number
+}
+
 export interface Demonstration {
   seed: number
   habits: Habits
@@ -127,6 +141,8 @@ export interface Demonstration {
   nose: number // the approach stick's slow trim: what it takes to hold on-speed alpha against the law's own datum, -0.15..0.15
   carry: number // the final turn's stick trim: what holding its path has taken beyond the bank's share, carried into the groove's handover, -0.12..0.12
   seated: boolean // the first airborne frame has been read: the lever starts where the spawn's trim left it
+  reach: number // the final turn's intercept: how far up the landing line past its abeam point the jet steers, fixed as the arc hands over, m; 0 until then
+  parts: Parts // the final turn's stick and lever by their parts, the frame last flown in it: what the probes report when the turn goes wrong
   targets: {
     altitude: number
     vertical: number
@@ -154,7 +170,6 @@ const PATTERN_BANK = 27 // "bank 27-30°"
 const ABEAM_SINK = -(250 / 60) * FEET // "start down at 200-300 FPM"
 const NINETY_SINK = -(500 / 60) * FEET // "The 90: 450', 500 FPM"
 const TURN_START = 1300 // m short of the touchdown where the final turn begins. The arc rolls out on the line at the along it started from - its first half carries the jet a radius further astern, the second brings it back - so where the turn starts is the length of the groove: 1.3 km is the three-quarter-mile groove the book flies, and the 90 falls about 1.3 NM out. Started abeam the stern, as a go-around's re-entry once did, the roll-out came a few hundred metres out and high
-const INTERCEPT = 0.035 // degrees of intercept angle per metre off the landing line, for the last of the turn: 45° a mile out, 10° at 300 m, so the line is joined tangentially rather than crossed
 const TURN_TOTAL = 189 // degrees from the downwind to the landing heading: the reciprocal plus the angled deck
 
 // The stick's meaning, from the flight control laws (fcs.go). Up and away a
@@ -198,6 +213,14 @@ export function wrap(degrees: number): number {
   return ((((degrees + 180) % 360) + 360) % 360) - 180
 }
 
+// steady: the share of an error a slow trim learns from, all of one inside
+// `band` and none of one past twice it. A trim holds a bias, small and
+// steady; a large error is a transient the proportional terms are flying,
+// and learnt it winds the trim up against the jet the moment it passes.
+function steady(error: number, band: number): number {
+  return clamp(2 - Math.abs(error) / band, 0, 1)
+}
+
 // habits draws one pilot from the seed. Every figure sits inside what a
 // competent pass allows: the break late by up to half a kilometre, the bank
 // in the low sixties to low seventies, the pattern between 1.0 and 1.25 NM,
@@ -239,6 +262,8 @@ export function demonstration_start(seed: number): Demonstration {
     nose: 0,
     carry: 0,
     seated: false,
+    reach: 0,
+    parts: { path: 0, bank: 0, carry: 0, ease: 0, book: 0, trim: 0, indexer: 0 },
     targets: {
       altitude: WAKE_ALTITUDE,
       vertical: 0,
@@ -313,6 +338,7 @@ export function demonstration_step(
   let cas: number | null = null // m/s, the speed the throttle flies (up and away)
   let heading: number | null = null
   let bank: number | null = null // a fixed bank (the break) instead of a heading
+  let curving = 0 // degrees of bank a heading's own turn takes, flown ahead of the heading error
   let limit = 25 // the heading-hold's bank limit, degrees
   let speedbrake = 0
   let power: number | null = null // a lever position instead of a loop
@@ -395,6 +421,7 @@ export function demonstration_step(
         enter(d, 'turn', time)
         d.carry = 0
         d.trim = 0 // the turn learns its own, on the indexer
+        d.reach = 0
       }
       break
     }
@@ -411,7 +438,7 @@ export function demonstration_step(
       cas = ONSPEED_CAS
       const remaining = Math.abs(wrap(pic.heading - g.heading))
       limit = PATTERN_BANK + 8 // up to 35°: the arc is sized on the ground speed, and with the trades and her way behind it the outbound half needs 38°. Held to 30 it ran the jet a kilometre and a half aft of where the turn began, and the groove ran 3 km
-      if (remaining > 60) {
+      if (remaining > 60 && d.reach === 0) {
         // The bank the arc needs at the speed flown, to the pattern's limit:
         // on-speed alpha in a bank is a faster jet, so the arc steepens a
         // little, and a bank sized for on-speed instead let a jet ten knots
@@ -425,11 +452,32 @@ export function demonstration_step(
           Math.atan((pic.speed * pic.speed) / (9.81 * radius)) / DEGREE
         bank = -clamp(needed, 10, limit)
       } else {
-        // The last of the turn is an intercept: the angle off the landing
-        // heading shrinks with the distance still to close, so the jet
-        // joins the line rather than crossing it - an arc held to the end
-        // arrives 30° off and drifts through the LSO's 6° lineup limit.
-        heading = g.heading - clamp(pic.groove.right * INTERCEPT, -45, 45) // on the present offset and the heading: with the lead and the crab in it the roll-out came 250 m short of the line
+        // The last of the turn is an intercept: the jet steers for a point
+        // `reach` metres up the landing line past its abeam point, so the
+        // angle off the line shrinks with the distance still to close and
+        // the jet joins the line rather than crossing it - an arc held to the
+        // end arrives 30° off and drifts through the LSO's 6° lineup limit.
+        // The reach is fixed as the arc hands over, where the point it gives
+        // is the heading the jet already has, and the turn that point keeps
+        // asking for is flown as bank ahead of the heading error. A fixed
+        // 0.035° a metre asked a jet the arc had left 646 m off at 60° for
+        // 23°: the bank wanted stepped from the arc's 17° to the pattern's
+        // 35°, and the lever followed it up and down again.
+        if (d.reach === 0)
+          d.reach = clamp(
+            Math.abs(g.right) / Math.tan(Math.max(remaining, 1) * DEGREE),
+            200,
+            3000
+          )
+        const off = Math.min(
+          60,
+          Math.atan(Math.abs(g.right) / d.reach) / DEGREE
+        )
+        heading = g.heading - Math.sign(g.right) * off
+        // the point's heading turns as the jet closes the line at `drifting`
+        const turn =
+          (-d.reach / (d.reach * d.reach + g.right * g.right)) * drifting
+        curving = Math.atan((pic.speed * turn) / 9.81) / DEGREE
       }
       // The first half of the turn carries the jet AWAY from the ship, so
       // the slope is no target there: 600 ft is held (a jet still high
@@ -612,7 +660,7 @@ export function demonstration_step(
   // Bank from the heading error, or the break's fixed bank.
   let bankWant = bank ?? 0
   if (bank === null && heading !== null) {
-    bankWant = clamp(wrap(heading - pic.heading) * 2.5, -limit, limit)
+    bankWant = clamp(curving + wrap(heading - pic.heading) * 2.5, -limit, limit)
   }
   const roll = clamp(
     (bankWant - pic.bank) * (pa ? 0.045 : 0.022) - pic.roll * 0.18,
@@ -780,9 +828,14 @@ export function demonstration_step(
     // while it is still slow - a slow trim learns, leaking over six seconds
     // so it only ever holds what the path keeps asking for: on the share
     // alone a turn 15 knots fast climbed 200 fpm against a wanted descent.
+    // It learns from a path error a bias's size only: the roll-in's own sink
+    // is the proportional term's, and learnt it wound the trim to its limit,
+    // ballooned the jet 25 ft as the speed came, then wound it the other way
+    // and held the outbound half 30 ft over its height.
     if (turning)
       d.carry = clamp(
-        d.carry * (1 - dt / 6) + (want - pic.vertical) * 0.03 * dt,
+        d.carry * (1 - dt / 6) +
+          (want - pic.vertical) * 0.03 * dt * steady(want - pic.vertical, 1),
         -0.12,
         0.12
       )
@@ -819,12 +872,20 @@ export function demonstration_step(
       // A slow trim learns what the book misses on this descent in this
       // bank: on the proportional term alone the turn settled a degree fast
       // and handed the groove 155 knots, which the lever then had to idle off.
+      // It learns only an error a bias's size, as the stick's does: through
+      // the roll-in the indexer reads three degrees slow while the speed
+      // the bank wants builds, and learnt there the trim reached its 0.1 in
+      // five seconds and put the lever at 0.79.
       // And the speed's own trend damps it: power still on while the speed is
       // already building is what carries it past on-speed, so the handful
       // comes off as the speed comes up, before the indexer reads fast.
       d.idling = false
       d.trim = clamp(
-        d.trim + (pic.alpha - ONSPEED_ALPHA) * 0.01 * dt,
+        d.trim +
+          (pic.alpha - ONSPEED_ALPHA) *
+            0.01 *
+            dt *
+            steady(pic.alpha - ONSPEED_ALPHA, 1),
         -0.1,
         0.1
       )
@@ -832,6 +893,15 @@ export function demonstration_step(
         0.05,
         book + d.trim + (pic.alpha - ONSPEED_ALPHA) * INDEXER - d.trend * 0.06
       )
+      d.parts = {
+        path: pathing - d.acceleration * 0.03,
+        bank: banking,
+        carry: d.carry,
+        ease: -Math.max(0, pic.alpha - 9.8) * 0.12,
+        book,
+        trim: d.trim,
+        indexer: (pic.alpha - ONSPEED_ALPHA) * INDEXER,
+      }
       d.throttle = clamp(book + d.trim, 0.05, 1)
     } else {
       if (d.idling) d.trim = 0 // the idle regime hands over: the book value alone, until the path says otherwise
