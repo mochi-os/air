@@ -1182,9 +1182,11 @@ export function audio_geardoor(): void {
 export function audio_eject(): void {
   play('eject', 1.0)
 }
-// The alert tones sit 8 to 12 dB over the engine at full afterburner, A-weighted
-// at the output, where the voice alerts sit (voicecheck.py measures both); the
-// 250 Hz gear horn needs the most gain, since that is where the engine is.
+// The alert tones sit 7 to 10 dB over the engine at full afterburner, A-weighted
+// at the output, where the voice alerts sit (voicecheck.py measures both): the
+// caution about 7, held to the loudness the mix audit froze so the law stays
+// over it, the gear horn 9 and the law 10. The 250 Hz horn needs the most gain:
+// A-weighting takes 8.6 dB off it.
 // audio_caution sounds the master caution tone and returns its length in
 // seconds, so a compressed world can wait it out before sounding the next.
 export function audio_caution(): number {
@@ -1405,7 +1407,7 @@ export function audio_horn(active: boolean): void {
   if (!active || !context || context.state !== 'running') return
   if (now() - hornAt > 1.1) {
     hornAt = now()
-    play('horn', 5.0)
+    play('horn', 8.0) // 9 dB over the engine at full afterburner, A-weighted: a 250 Hz sine gives up 8.6 dB to the weighting, and at 5.0 it stood 5 dB clear
   }
 }
 
