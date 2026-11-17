@@ -3,7 +3,7 @@
 # Mochi Application Interface Exception - see license.txt and license-exception.md.
 #
 # usage: python3 -I test_check.py
-import json, math, re, sys, tempfile, unittest
+import json, math, re, subprocess, sys, tempfile, unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -144,6 +144,33 @@ class GeometryTest(unittest.TestCase):
 				self.assertTrue("missing" in r or {"expected", "measured", "tolerance"} <= set(r), r)
 			# a draft carries no atlas: its paint goes unchecked rather than failing
 			self.assertFalse([r for r in rows if r["fact"].startswith("paint") or r["fact"] == "layout.stencils"])
+
+	def test_only_runs_the_groups_it_names(self):
+		# --only (chosen()): the groups whose fact is named, exactly, and every
+		# group without it
+		self.assertTrue(check.chosen("layout.motion", []))
+		self.assertTrue(check.chosen("layout.motion", ["layout.motion"]))
+		self.assertTrue(check.chosen("layout", ["wing", "layout"]))
+		self.assertFalse(check.chosen("layout.motion", ["layout"]))
+		self.assertFalse(check.chosen("layout", ["layout.motion"]))
+		with tempfile.TemporaryDirectory() as d:
+			path = Path(d) / "m.glb"
+			i = 0.0254
+			glb(path, [{"name": "fuselage", "mesh": box(((456 - 500) * i, -5 * i, -10 * i), ((456 - 400) * i, 15 * i, 10 * i))}])
+			(Path(d) / "m.json").write_text(json.dumps({"joints": {}, "points": {}}))
+			jet = check.Jet(path, Path(d) / "m.json")
+			every, seen = list(check.checks(jet)), set()
+			some = list(check.checks(jet, ["overall"], seen))
+			# the one group's rows alone, the same as a whole run gives them
+			self.assertTrue(some)
+			self.assertEqual(some, [r for r in every if r["fact"].startswith("overall")])
+			# every group is seen, run or not
+			self.assertTrue({"overall", "layout.motion", "paint", "wing"} <= seen)
+			# a name no group has fails the run, naming the groups
+			run = subprocess.run([sys.executable, "-I", str(Path(check.__file__)), str(path), str(Path(d) / "m.json"), "--only", "overall,wings"], capture_output=True, text=True)
+			self.assertNotEqual(run.returncode, 0)
+			self.assertIn("--only wings: no group of that name", run.stderr)
+			self.assertIn("layout.motion", run.stderr)
 
 
 def triangles(lo, hi):

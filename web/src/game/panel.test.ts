@@ -598,7 +598,8 @@ describe('the display and lights knobs (#11, #23, #115)', () => {
 
   it('dim the AoA indexer from its knob, dark without ac power (2.13.4.8.7)', () => {
     expect(source).toMatch(/const glow=buses\.ac\?knob_level\("indexer"\):0;/)
-    expect(source).toMatch(/ind\.slow\.opacity = lit&&alpha>=8\.8\?glow:0;/)
+    expect(source).toMatch(/ind\.bands=\{ slow:lit&&alpha>=8\.8,/)
+    expect(source).toMatch(/ind\.slow\.opacity = ind\.bands\.slow\?glow:0;/)
   })
 
   it('dark the azimuth indicator without ac power', () => {

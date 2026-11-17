@@ -169,7 +169,7 @@ def posed(model, joints, drives, image):
 
 def build(model_path, points_path, parts_path, pose_path):
 	model = mod.Model(model_path)
-	joints = json.loads(Path(points_path).read_text())["joints"]
+	joints = mod.joints(json.loads(Path(points_path).read_text()))
 	image = atlas(model_path)
 	up = posed(model, joints, {}, image)
 	down = posed(model, joints, {"gear": 1}, image)

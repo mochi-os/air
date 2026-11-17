@@ -98,7 +98,7 @@ def main():
 	neutral, rotate = "--neutral" in options, "--rotate" in options
 	catalogue = json.loads(Path(args[0]).read_text())
 	model = mod.Model(args[2])
-	joints = json.loads(Path(args[3]).read_text())["joints"]
+	joints = mod.joints(json.loads(Path(args[3]).read_text()))
 	tips = Tips(catalogue, json.loads(Path(args[1]).read_text()), model, joints, ph.Features(model, joints, args[4]))
 	photos = set(value("--photos").split(",")) if value("--photos") else None
 	drop = {tuple(d.split(":")) for d in value("--drop").split(",")} if value("--drop") else set()

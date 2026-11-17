@@ -208,6 +208,23 @@ class ModelTest(unittest.TestCase):
 		# the value is the joint's own (radians), not a drive input read through the schedule
 		self.assertAlmostEqual(mod.pose(joints, {"joints": {"tab": 0.25}})["tab"][2], 0.25)
 
+	def test_gear_by_one_value(self):
+		# a points file's gear mechanisms, each on its own drive, posed by the
+		# one gear value through the retraction's timeline: at a share of it
+		# gone, each mechanism through its own part (the nose leg leading, the
+		# mains following, the doors last); a mechanism the pose names keeps
+		# its value; joints read without the timeline leave the drive unset
+		document = {"motion": {"gear": {"up": {"nose": [0.0, 0.5], "main": [0.2, 0.8], "doors": [0.8, 1.0]},
+			"down": {"doors": [0.0, 0.1], "nose": [0.1, 0.9], "main": [0.1, 1.0]}}},
+			"joints": {name: {"motion": "rotate", "axis": [0, 0, 1], "drive": f"gear.{name}", "keys": [[0, 0], [1, 1]]} for name in ("nose", "main", "doors")}}
+		joints = mod.joints(document)
+		for gear, want in ((1.0, (1, 1, 1)), (0.75, (0.5, 0.9166667, 1)), (0.3, (0, 0.1666667, 1)), (0.1, (0, 0, 0.5)), (0.0, (0, 0, 0))):
+			posed = mod.pose(joints, {"gear": gear})
+			for name, value in zip(("nose", "main", "doors"), want):
+				self.assertAlmostEqual(posed[name][2], value, places=6, msg=f"{name} at gear {gear}")
+		self.assertAlmostEqual(mod.pose(joints, {"gear": 0.0, "gear.nose": 0.25})["nose"][2], 0.25)
+		self.assertAlmostEqual(mod.pose(document["joints"], {"gear": 1.0})["nose"][2], 0.0)
+
 	def test_slide_and_show(self):
 		joints = {"flap": {"motion": "slide", "axis": [0, 1, 0], "drive": "d", "keys": [[0, 0], [1, 0.3]]},
 			"tab": {"motion": "show", "axis": [1, 0, 0], "drive": "s", "keys": [[0, 0], [1, 1]]}}

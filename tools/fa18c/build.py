@@ -2779,6 +2779,7 @@ def serrated(p0, p1, inner, outer, teeth=24):
 # inches: enough to draw its edge. The photos see these face on, which gives
 # their diameters and not their heights
 STANDOFF = 0.15
+LUG = 1.2   # the side brace's bolt boss on the post's lower casting, half its length along the bolt, in
 
 
 def hollow(end, axis, size):
@@ -2856,6 +2857,42 @@ def ring(centre, normal, radius, stock, sides=14, around=6):
 	return vertices, faces
 
 
+def casting(start, end, out, radius, flare, sides=40, rings=11):
+	# A main post's lower casting (layout.gear legs main castings flare), a
+	# loft down the post from `start` to the fork at `end`: the post's round
+	# section, `radius` in, turning into a squared one (a superellipse) the
+	# flare's diameter fore and aft and `across` it, as dvids8678626 and
+	# dvids8678629 show it; an I-section, its web sunk between a front and an
+	# aft flange by the pocket's depth over the pocket's span of its length
+	# down each side face, the pocket opening below the post and closing
+	# above the fork
+	down = (end - start).normalized()
+	side = (out - down * out.dot(down)).normalized()
+	fore = side.cross(down)
+	depth, span = flare["pocket"]
+	sections = []
+	for r in range(rings):
+		t = r / (rings - 1)
+		blend = t * t * (3 - 2 * t)
+		a = radius + (flare["diameter"] / 2 - radius) * blend
+		b = radius + (flare["across"] / 2 - radius) * blend
+		sink = depth * math.sin(math.pi * t) ** 0.6
+		centre = start + (end - start) * t
+		ring_ = []
+		for k in range(sides):
+			th = 2 * math.pi * k / sides
+			c_, s_ = math.cos(th), math.sin(th)
+			power = 2 + blend   # round at the post, squared toward the fork
+			x = a * math.copysign(abs(c_) ** (2 / power), c_)
+			y = b * math.copysign(abs(s_) ** (2 / power), s_)
+			u = abs(x) / (a * span)
+			if u < 1:
+				y = math.copysign(abs(y) - sink * math.cos(math.pi / 2 * u) ** 2, y)
+			ring_.append(centre + (fore * x + side * y) * INCH)
+		sections.append(ring_)
+	return outward(loft(sections))
+
+
 def hull(points):
 	# The convex hull of points in a plane ([(x, y), ...]), counterclockwise
 	pts = sorted(set(points))
@@ -2882,25 +2919,48 @@ def pod(front, back, radius, sides=14):
 	return loft(rings)
 
 
-def tyre(centre, axis, radius, width, hub, finish, sides=28, grooves=0, face=None, outer=1, brake=None):
-	# A tyre and wheel: a rounded tread round the axis, its sidewalls
-	# dished in to the hub, `hub` of the tyre's radius (layout.gear tyres),
-	# whose two faces close it, in their `finish`; the tyre in rubber, its
-	# tread cut by `grooves` V-grooves evenly across its flat. The wheel's
-	# face on the `outer` side along the axis (layout.gear tyres face): the
-	# rim's flange standing proud round a recessed disc carrying lightening
-	# holes, a bolt circle and the hub's cap and axle nut; on the other side
-	# a plain disc, or the brake's housing with its ring of pistons
+def tyre(centre, axis, radius, width, hub, finish, sides=28, grooves=0, face=None, outer=1, brake=None, bulge=0.45):
+	# A tyre and wheel: the tyre in rubber, its section round: each sidewall
+	# swells from the rim's bead (`hub` of the tyre's radius, at 0.7 of its
+	# width) to its full width `bulge` of the way out to the tread, then
+	# rounds over its shoulder into the tread's flat, cut by `grooves`
+	# V-grooves evenly across it (layout.gear tyres). The wheel's face on
+	# the `outer` side along the axis (layout.gear tyres face): the rim's
+	# flange standing proud of the bead, the rim's inner wall sloping down to
+	# the face's web, which carries the bolt circle and, through it, the
+	# lightening holes, open to the wheel's dark inside; the hub's boss, its
+	# three-lobed cap plate and its cap and axle nut. On the other side a
+	# plain disc, or the brake's housing with its ring of pistons.
 	axis = axis.normalized()
 	u = axis.orthogonal().normalized()
 	v = axis.cross(u)
 	r, w = radius * INCH, width * INCH / 2
+	bead = r * hub
+	widest = bead + bulge * (r - bead)
+	steps = 5
+
+	def side(sign):
+		# the bead out to the widest, then the shoulder over to the tread's
+		# edge: two quarter ellipses meeting square to the axis at the widest,
+		# each sampled at even turns of its edge (even steps round an
+		# ellipse turn sharpest at its flat end: 31 deg on the nose tyres)
+		low, high = (widest - bead, w * 0.3), (r - widest, w * 0.5)
+		out = [(bead, sign * w * 0.7)]
+		for k in range(1, steps + 1):
+			turn = math.pi / 2 * (1 - k / steps)
+			s_ = math.atan2(low[1] * math.cos(turn), low[0] * math.sin(turn))
+			out.append((widest - low[0] * math.cos(s_), sign * (w * 0.7 + low[1] * math.sin(s_))))
+		for k in range(1, steps):
+			turn = math.pi / 2 * k / steps
+			t_ = math.atan2(high[0] * math.sin(turn), high[1] * math.cos(turn))
+			out.append((widest + high[0] * math.sin(t_), sign * (w * 0.5 + high[1] * math.cos(t_))))
+		return out
 	tread = [(r, -w * 0.5)]
 	for i in range(grooves):
 		z, g = -w * 0.5 + w * (i + 1) / (grooves + 1), GROOVE["width"] * INCH / 2
 		tread += [(r, z - g), (r - GROOVE["depth"] * INCH, z), (r, z + g)]
 	tread += [(r, w * 0.5)]
-	profile = [(r * hub, -w * 0.7), (r * 0.82, -w), (r * 0.97, -w * 0.9)] + tread + [(r * 0.97, w * 0.9), (r * 0.82, w), (r * hub, w * 0.7)]
+	profile = side(-1) + tread + side(1)[::-1]
 
 	def radial(a):
 		return u * math.cos(a) + v * math.sin(a)
@@ -2914,46 +2974,112 @@ def tyre(centre, axis, radius, width, hub, finish, sides=28, grooves=0, face=Non
 		faces += [(a + j, a + j + 1, b + j + 1, b + j) for j in range(n - 1)]
 	finishes = ["rubber"] * len(faces)
 	pieces = []
+
+	def quad(f, sign):
+		return f if sign > 0 else tuple(reversed(f))
 	for j, sign in ((0, -1), (n - 1, 1)):
 		plane = centre + axis * (sign * w * 0.7)
 		normal = axis * sign
 		if face and sign == outer:
-			# the flange and the recessed disc, revolved from the sidewall's
-			# inner ring: out by the flange's 0.3 in, in across its width, down
-			# by the recess and across to the middle
 			fl, deep = face["flange"] * INCH, face["recess"] * INCH
-			steps = [(r * hub, 0.3 * INCH), (r * hub - fl, 0.3 * INCH), (r * hub - fl, -deep)]
+			bolts, holes = face["bolts"], face["holes"]
+			cap, nut = face["cap"]
+			web = plane - normal * deep
+			band = (bolts["radius"] + bolts["diameter"]) * INCH   # the rim's inner wall comes down to the web outside the bolt circle
+			boss = cap / 2 * INCH
+			# the flange out of the bead and across, the rim's inner wall
+			# sloping down to the web: rings round the axis
+			steps_ = [(bead, 0.3 * INCH), (bead - fl, 0.3 * INCH), (band, -deep)]
 			base = len(vertices)
 			for i in range(sides):
-				vertices += [plane + radial(2 * math.pi * i / sides) * d + normal * z for d, z in steps]
-			k = len(steps)
+				vertices += [plane + radial(2 * math.pi * i / sides) * d + normal * z for d, z in steps_]
+			k = len(steps_)
 			for i in range(sides):
 				a, b = i * k, ((i + 1) % sides) * k
 				ring0, ring1 = i * n + j, ((i + 1) % sides) * n + j
 				quads = [(ring0, ring1, base + b, base + a)] + [(base + a + q, base + b + q, base + b + q + 1, base + a + q + 1) for q in range(k - 1)]
-				faces += [f if sign > 0 else tuple(reversed(f)) for f in quads]
+				faces += [quad(f, sign) for f in quads]
 				finishes += [finish] * len(quads)
-			middle = len(vertices)
-			disc = plane - normal * deep
-			vertices.append(disc)
-			for i in range(sides):
-				a, b = base + i * k + k - 1, base + ((i + 1) % sides) * k + k - 1
-				faces.append((middle, a, b) if sign > 0 else (middle, b, a))
-				finishes.append(finish)
-			# the holes: dark ovals on the disc, long across the radius
-			holes = face["holes"]
-			for h in range(holes["count"]):
-				a = 2 * math.pi * (h + 0.5) / holes["count"]
-				c, rad, tan = disc + normal * (0.03 * INCH) + radial(a) * (holes["radius"] * INCH), radial(a), radial(a + math.pi / 2)
-				oval = [c + rad * (math.cos(t) * holes["size"][1] / 2 * INCH) + tan * (math.sin(t) * holes["size"][0] / 2 * INCH) for t in (2 * math.pi * q / 12 for q in range(12))]
-				pieces.append(finished((oval if sign > 0 else oval[::-1], [tuple(range(12))]), "rubber"))
-			bolts = face["bolts"]
+			outer_ring = [base + i * k + k - 1 for i in range(sides)]   # the web's outer edge, at the rim's wall's foot
+			count = holes["count"]
+			if count:
+				# the web between the boss and the rim's wall cut into one
+				# sector per hole: each sector's outline (its outer arc on
+				# the wall's foot, a radial line in, its inner arc on the
+				# boss, a radial line out) joined to its hole's oval point by
+				# point, each pair on one ray from the hole's centre, so the
+				# web meets its neighbours along shared lines; then the
+				# hole's wall down through the web and on in the dark of the
+				# wheel's inside to its floor
+				per = sides // count
+				across = 3
+				depth = holes["depth"] * INCH
+				thick = face["web"] * INCH
+				for h in range(count):
+					a0, a1 = 2 * math.pi * h / count, 2 * math.pi * (h + 1) / count
+					mid = (a0 + a1) / 2
+					c = web + radial(mid) * (holes["radius"] * INCH)
+					loop = []   # the sector's outline, (point, index or None)
+					for q in range(per + 1):
+						i = (h * per + q) % sides
+						loop.append((vertices[outer_ring[i]], outer_ring[i]))
+					for q in range(1, across + 1):
+						d = band + (boss - band) * q / (across + 1)
+						loop.append((web + radial(a1) * d, None))
+					for q in range(per, -1, -1):
+						loop.append((web + radial(a0 + (a1 - a0) * q / per) * boss, None))
+					for q in range(across, 0, -1):
+						d = band + (boss - band) * q / (across + 1)
+						loop.append((web + radial(a0) * d, None))
+					rad, tan = radial(mid), radial(mid + math.pi / 2)
+					hw, hr = holes["size"][0] / 2 * INCH, holes["size"][1] / 2 * INCH
+					top, mouth, floor_ = [], [], []
+					for point, index in loop:
+						if index is None:
+							index = len(vertices)
+							vertices.append(point)
+						top.append(index)
+						d = point - c
+						x, y = d.dot(tan), d.dot(rad)
+						t = math.atan2(y, x)
+						reach = hw * hr / math.sqrt((hr * math.cos(t)) ** 2 + (hw * math.sin(t)) ** 2)
+						edge = c + (tan * math.cos(t) + rad * math.sin(t)) * reach
+						mouth.append(len(vertices)); vertices.append(edge)
+						floor_.append(len(vertices)); vertices.append(edge - normal * thick)
+					m = len(loop)
+					low = []
+					for q in range(m):
+						low.append(len(vertices)); vertices.append(vertices[mouth[q]] - normal * depth)
+					for q in range(m):
+						q1 = (q + 1) % m
+						faces.append(quad((top[q], top[q1], mouth[q1], mouth[q]), sign)); finishes.append(finish)
+						faces.append(quad((mouth[q], mouth[q1], floor_[q1], floor_[q]), sign)); finishes.append(finish)
+						faces.append(quad((floor_[q], floor_[q1], low[q1], low[q]), sign)); finishes.append("rubber")
+					bottom = len(vertices)
+					vertices.append(c - normal * depth)
+					for q in range(m):
+						faces.append((bottom, low[q], low[(q + 1) % m]) if sign > 0 else (bottom, low[(q + 1) % m], low[q]))
+						finishes.append("rubber")
+			else:
+				# a plain web across to the boss
+				middle = len(vertices)
+				vertices.append(web)
+				for i in range(sides):
+					faces.append((middle, outer_ring[i], outer_ring[(i + 1) % sides]) if sign > 0 else (middle, outer_ring[(i + 1) % sides], outer_ring[i]))
+					finishes.append(finish)
 			for b_ in range(bolts["count"]):
-				at_ = disc + radial(2 * math.pi * b_ / bolts["count"]) * (bolts["radius"] * INCH)
+				at_ = web + radial(2 * math.pi * b_ / bolts["count"]) * (bolts["radius"] * INCH)
 				pieces.append(finished(cylinder(at_, at_ + normal * (0.35 * INCH), bolts["diameter"] / 2, sides=6), finish))
-			cap, nut = face["cap"]
-			pieces.append(finished(cylinder(disc, disc + normal * (1.2 * INCH), cap / 2, sides=16), finish))
-			pieces.append(finished(cylinder(disc + normal * (1.2 * INCH), disc + normal * (1.8 * INCH), nut / 2, sides=6), "chrome"))
+			plate_ = face.get("plate")
+			if plate_:
+				# the cap's three-lobed plate on the web, a bolt in each lobe
+				outline = [web + radial(2 * math.pi * q / 36) * ((plate_["radius"] - plate_["lobe"] * (1 - math.cos(3 * 2 * math.pi * q / 36)) / 2) * INCH) for q in range(36)]
+				pieces.append(finished(extruded(outline, normal * (plate_["thickness"] * INCH)), finish))
+				for q in range(3):
+					at_ = web + normal * (plate_["thickness"] * INCH) + radial(2 * math.pi * q / 3) * ((plate_["radius"] - 0.45) * INCH)
+					pieces.append(finished(cylinder(at_, at_ + normal * (0.2 * INCH), 0.3, sides=6), finish))
+			pieces.append(finished(cylinder(web, web + normal * (1.2 * INCH), cap / 2, sides=24), finish))
+			pieces.append(finished(cylinder(web + normal * (1.2 * INCH), web + normal * (1.8 * INCH), nut / 2, sides=6), "chrome"))
 			continue
 		middle = len(vertices)
 		vertices.append(plane)
@@ -2970,6 +3096,16 @@ def tyre(centre, axis, radius, width, hub, finish, sides=28, grooves=0, face=Non
 				at_ = out_ + radial(2 * math.pi * (q + 0.5) / ps["count"]) * (ps["radius"] * INCH)
 				pieces.append(finished(cylinder(at_ - normal * (0.2 * INCH), at_ + normal * (0.8 * INCH), ps["diameter"] / 2, sides=8), finish))
 	return merge([(vertices, faces, finishes)] + pieces)
+
+
+def extruded(outline, offset):
+	# A prism: a closed flat outline (anticlockwise seen from where `offset`
+	# points) and its copy moved by `offset`, capped at both ends
+	m = len(outline)
+	vertices = list(outline) + [q + offset for q in outline]
+	faces = [tuple(range(m - 1, -1, -1)), tuple(range(m, 2 * m))]
+	faces += [(i, (i + 1) % m, m + (i + 1) % m, m + i) for i in range(m)]
+	return vertices, faces
 
 
 def plate(corner, along, across, thickness):
@@ -3148,19 +3284,73 @@ def stroked(f, ramp):
 	return speed * (ramp / 2 + f - ramp)
 
 
-def sequenced(legs=24, doors=24):
-	# The gear's sequence (layout.motion doors): every door opens over the
-	# gear's first share of travel and holds there, and only then do the legs
-	# and all that rides them move, over the rest; retracting, the reverse.
-	# Each phase moves as an actuator strokes (layout.motion stroke): gathering
+def timeline():
+	# The gear's mechanisms' times (layout.motion), each way, as shares of the
+	# gear's stroke time from the handle's move: {"up": {mechanism: [from,
+	# to]}, "down": {...}}. Retracting, the nose leg leads, the mains follow
+	# and the doors close last (layout.motion sequence: the legs' shares of
+	# the time before the doors, which take the last of it, layout.motion
+	# doors); extending, the doors snap open and both legs fall together
+	# (layout.motion extension)
+	share = LAYOUT["motion"]["doors"]["value"]["open"]
+	order = LAYOUT["motion"]["sequence"]["value"]
+	legs = 1 - share
+	up = {leg: [round(legs * (1 - order[leg][1]), 4), round(legs * (1 - order[leg][0]), 4)] for leg in ("nose", "main")}
+	up["doors"] = [round(legs, 4), 1.0]
+	return {"up": up, "down": {k: list(v) for k, v in LAYOUT["motion"]["extension"]["value"].items()}}
+
+
+def mechanism(name):
+	# Which of the gear's mechanisms a gear joint belongs to: the doors, the
+	# nose leg (with the launch bar it carries) or the main legs
+	if "door" in name:
+		return "doors"
+	return "nose" if name.startswith(("gear_nose", "launch_bar")) else "main"
+
+
+def thinned(curve, tolerance):
+	# The fewest of a curve's points [(x, y)] read piecewise linearly through
+	# which every point lies within the tolerance of the line through the
+	# kept ones either side, the ends kept (Douglas-Peucker)
+	keep, spans = {0, len(curve) - 1}, [(0, len(curve) - 1)]
+	while spans:
+		a, b = spans.pop()
+		(x0, y0), (x1, y1) = curve[a], curve[b]
+		worst, at_ = 0.0, None
+		for k in range(a + 1, b):
+			x, y = curve[k]
+			miss = abs(y - (y0 + (y1 - y0) * (x - x0) / ((x1 - x0) or 1)))
+			if miss > worst:
+				worst, at_ = miss, k
+		if at_ is not None and worst > tolerance:
+			keep.add(at_)
+			spans += [(a, at_), (at_, b)]
+	return [curve[k] for k in sorted(keep)]
+
+
+# how far a gear joint's keys may read off its motion between them: a turn,
+# radians (half a thousandth: a hundredth of an inch at a brace's 20 in), a
+# slide, metres (a tenth of a millimetre)
+KEYED = {"rotate": 0.0005, "slide": 0.0001}
+
+
+def sequenced(grid=480):
+	# The gear's sequence: each of its mechanisms (the doors, the nose leg,
+	# the main legs) has its own drive, gear.doors, gear.nose and gear.main, 0
+	# stowed to 1 down, which the engine runs each at its own pace after its
+	# own start, by direction (timeline(), the points file's motion gear).
+	# Each moves as an actuator strokes (layout.motion stroke): gathering
 	# speed over the ramp's share of its time, steady, then shedding it again,
 	# each ramp's speed easing (no jump in speed or in acceleration at either
 	# end). An ease over the whole phase spends a third of it in the last fifth
 	# of the travel, where a main wheel rises straight up into its bay. Every
 	# gear joint's keys were made against its own progress, 0 stowed to 1 down
-	# (a door's over 0 to the share); they are resampled against the gear here
+	# (a door's over 0 to the doors' share of the gear, layout.motion doors);
+	# they are resampled against its mechanism's stroke here, as densely as
+	# each joint's own motion needs to read within KEYED between its keys: a
+	# linkage's members keyed alike at even shares drift apart between keys
+	# where one turns fast (a side brace breaking from straight)
 	share = LAYOUT["motion"]["doors"]["value"]["open"]
-	order = LAYOUT["motion"]["sequence"]["value"]   # each leg's part of the rest: the nose leads on the way up
 	ramp = LAYOUT["motion"]["stroke"]["value"]["ramp"]
 
 	def gently(f):
@@ -3168,15 +3358,15 @@ def sequenced(legs=24, doors=24):
 	for name, j in JOINTS.items():
 		if j.get("drive") != "gear" or j["motion"] not in ("rotate", "slide"):
 			continue
-		keys = j["keys"]
-		if "door" in name:
+		keys, part = j["keys"], mechanism(name)
+		j["drive"] = f"gear.{part}"
+		inputs = [k / grid for k in range(grid + 1)]
+		if part == "doors":
 			opened = interp(keys, share)
-			j["keys"] = [[round(share * k / doors, 4), round(opened * gently(k / doors), 4)] for k in range(doors + 1)] + [[1, opened]]
+			curve = [(x, opened * gently(x)) for x in inputs]
 		else:
-			lo, hi = order["nose" if name.startswith(("gear_nose", "launch_bar")) else "main"]
-			a, b = share + (1 - share) * lo, share + (1 - share) * hi
-			j["keys"] = [[0, keys[0][1]]] + [[round(a + (b - a) * k / legs, 4), round(interp(keys, gently(k / legs)), 4)] for k in range(legs + 1)] + (
-				[[1, keys[-1][1]]] if b < 1 else [])
+			curve = [(x, interp(keys, gently(x))) for x in inputs]
+		j["keys"] = [[round(x, 4), round(y, 4)] for x, y in thinned(curve, KEYED[j["motion"]])]
 
 
 def actuator(n, pin, undo, skin):
@@ -3257,7 +3447,16 @@ def actuator(n, pin, undo, skin):
 	body = feet[0] - u0 * (fit * INCH)
 	clevis = [slab(feet[0], end, 1.7, side * cheek, 0.5) for side in (-1, 1)]
 	clevis += [cylinder(feet[0] + lateral * ((side * cheek - 0.25) * INCH), feet[0] + lateral * ((side * cheek + 0.25) * INCH), 1.7, sides=16) for side in (-1, 1)]
-	clevis += [slab(end, body, yoke, 0.0, 2 * cheek + 0.5), cylinder(feet[0] + lateral * ((cheek + 0.4) * INCH), feet[0] - lateral * ((cheek + 0.4) * INCH), 0.6)]
+	# the yoke: round where it leaves the polished rod, squared out to the
+	# cheeks (dvids9820806)
+	def neck(t):
+		a_ = (rod_r + 0.3) + (cheek + 0.25 - rod_r - 0.3) * t
+		b_ = (rod_r + 0.3) + (yoke - rod_r - 0.3) * t
+		power = 2.0 + 6.0 * t
+		centre = body + (end - body) * t
+		return [centre + (lateral * (a_ * math.copysign(abs(math.cos(th)) ** (2 / power), math.cos(th))) +
+			side_ * (b_ * math.copysign(abs(math.sin(th)) ** (2 / power), math.sin(th)))) * INCH for th in (2 * math.pi * k / 20 for k in range(20))]
+	clevis += [outward(loft([neck(t) for t in (0.0, 0.3, 0.65, 1.0)])), cylinder(feet[0] + lateral * ((cheek + 0.4) * INCH), feet[0] - lateral * ((cheek + 0.4) * INCH), 0.6)]
 	# its pin hollow, standing proud of the cheeks (layout.gear legs nose
 	# castings fittings pin, dvids9820808)
 	clevis += [hollow(feet[0] + lateral * (k * (cheek + 0.25) * INCH), lateral * k, n["castings"]["fittings"]["pin"]) for k in (-1, 1)]
@@ -3368,7 +3567,9 @@ def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing,
 	# keeps each in its plane square to the axis and their ends meet exactly
 	m, b = LAYOUT["gear"]["legs"]["main"], LAYOUT["motion"]["braces"]["value"]
 	fit = m["castings"]["fittings"]
-	steps = [k / 20 for k in range(21)]
+	# solved at steps closing in on gear down, where the brace breaks from
+	# straight and its halves' turns grow as the root of the foot's travel
+	steps = sorted({round(k / 40, 6) for k in range(41)} | {round(1 - (k / 40) ** 2, 6) for k in range(41)})
 	n = axis.normalized()
 
 	def carry(p, t):
@@ -3420,6 +3621,68 @@ def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing,
 	joint(f"{leg}_brace", n, flat(q0 - k0), n.cross(flat(q0 - k0)), "gear",
 		[[t, round(angle(q0 - k0, q - k) - angle(k0 - pin, k - pin), 4)] for t, k, q in zip(steps, knees, bolts)])
 	MARKS[f"brace_bolt_{name}"] = (q0, f"{leg}_brace")
+	# the side brace's end fittings (layout.motion braces side fitting, its
+	# fork in dvids8678626 and dvids8678629), riding the lower half on their own
+	# node so the brace's tube still ends on its bolt: the fork's two cheeks
+	# straddling the post's lug either side of its boss, each an eye round
+	# the bolt tapering into the tube, square to the bolt, a yoke joining
+	# them to the tube, the bolt's pin hollow and standing proud of the
+	# cheeks. The knee takes no boss wider than its tubes: stowed, the post
+	# lies against its pin's axis
+	f_ = b["side"]["fitting"]
+	# the foot is a universal joint (layout.motion braces side foot,
+	# dvids8678626): the fork's pin square to the brace and to the foot's bolt,
+	# which runs down through a spool turning in the post's clevis; through
+	# the stroke the fork rolls on the brace and the spool on its bolt to keep
+	# the pin so, the brace's fold staying about the trunnion's axis. Each
+	# step's pin in the post's own frame (the post gear down), then at rest
+	ft = b["side"]["foot"]
+	down_ = Vector((-ft["bolt"][0], -side * ft["bolt"][2], ft["bolt"][1])).normalized()
+	pins = []
+	for t, k_, q_ in zip(steps, knees, bolts):
+		p_ = down_.cross(Matrix.Rotation(swing * (1 - t), 3, n).inverted() @ (k_ - q_)).normalized()
+		pins.append(-p_ if pins and p_.dot(pins[-1]) < 0 else p_)
+	rest_ = Matrix.Rotation(swing, 3, n)
+	pin = (rest_ @ pins[0]).normalized()
+	d = (k0 - q0) - pin * (k0 - q0).dot(pin)
+	d = d.normalized()
+	e = pin.cross(d).normalized()
+	outline = hull([(f_["eye"] / 2 * math.cos(a), f_["eye"] / 2 * math.sin(a)) for a in (2 * math.pi * k / 20 for k in range(20))] +
+		[(f_["length"], -radius), (f_["length"], radius)])
+	flat_ = [q0 + (d * x + e * y) * INCH for x, y in outline]
+	face_ = LUG + 0.05   # each cheek's inner face, just clear of the lug's boss
+	# the post's axis level with the bolt: the cheek on its side is the inner
+	axis_ = (fork - trunnion).normalized()
+	root = trunnion + axis_ * (bolt - trunnion).dot(axis_)
+	inner = math.copysign(1.0, (carry(root, 0) - q0).dot(pin))
+	pieces = []
+	for k in (-1, 1):
+		ring_ = [q + pin * (k * face_ * INCH) for q in flat_]
+		pieces.append(extruded(ring_ if k > 0 else ring_[::-1], pin * (k * f_["cheek"] * INCH)))
+		# the pin hollow at its outer end and with a round head at its inner (dvids8678626)
+		end_ = q0 + pin * (k * (face_ + f_["cheek"]) * INCH)
+		pieces.append(stud(end_, pin * k, fit["pin"][0]) if k == inner else hollow(end_, pin * k, fit["pin"]))
+	pieces.append(plate(q0 + (d * (f_["length"] - 0.8) - e * radius) * INCH, d * (0.8 * INCH), e * (2 * radius * INCH), 2 * (face_ + f_["cheek"])))
+	node(f"{leg}_brace_fittings", parent=f"{leg}_brace", hinge=k0, mesh=merge(pieces), paint="white")
+	# the fork's roll on the brace's axis at each step: from where the brace's
+	# fold alone carries its pin to where the joint wants it
+	along_ = (q0 - k0).normalized()
+	rolls = []
+	for t, k_, q_, p_ in zip(steps, knees, bolts, pins):
+		carried_ = Matrix.Rotation(angle(q0 - k0, q_ - k_), 3, n) @ pin
+		wanted = Matrix.Rotation(swing * (1 - t), 3, n) @ p_
+		axis_t = (q_ - k_).normalized()
+		rolls.append(math.atan2(axis_t.dot(carried_.cross(wanted)), carried_.dot(wanted)))
+	joint(f"{leg}_brace_fittings", along_, pin, along_.cross(pin), "gear", [[t, round(r_, 4)] for t, r_ in zip(steps, rolls)])
+	# the spool: its block between the fork's cheeks, bored for the pin, its
+	# neck between them down to the clevis's upper lug, and its body on down
+	# to the lower, turning on the foot's bolt with the pin
+	(l0_, _), (m0_, _) = ft["lugs"]
+	bolt_rest = rest_ @ down_
+	node(f"{leg}_spool", parent=f"{leg}_strut", hinge=q0, mesh=merge([cylinder(q0 - pin * (LUG * INCH), q0 + pin * (LUG * INCH), 1.2),
+		cylinder(q0, q0 + bolt_rest * (l0_ * INCH), LUG - 0.1), cylinder(q0 + bolt_rest * (l0_ * INCH), q0 + bolt_rest * (m0_ * INCH), ft["spool"] / 2)]), paint="white")
+	joint(f"{leg}_spool", bolt_rest, pin, bolt_rest.cross(pin), "gear",
+		[[t, round(math.atan2(down_.dot(pins[0].cross(p_)), pins[0].dot(p_)), 4)] for t, p_ in zip(steps, pins)])
 	# The connecting link, rigid, from its pin in the structure down its axis
 	# to the bell crank's pin; the crank, on a bracket off the arm's pivot
 	# boss with its arm square to the link, turns to hold the link's length
@@ -3475,14 +3738,33 @@ def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing,
 			[stud(q + n * (k * e * INCH), n * k, fit["bolt"]) for q, e in ((centre, 1.0), (rest_pin, 0.5)) for k in (-1, 1)]), strut_undo), paint="white")
 	arm = strut_undo.to_3x3() @ flat(rest_pin - centre)
 	joint(f"{leg}_crank", n, arm, n.cross(arm), "gear", [[t, round(phi - phis[0], 4)] for t, phi in zip(steps, phis)])
-	# the post's lower casting's fittings, riding the post: a lug out to the
-	# side brace's bolt with the bolt's boss along the axis the brace turns
-	# about, and the crank's bracket from the pivot boss (within its length,
-	# gear()) out to the crank's pin
-	root = trunnion + (fork - trunnion).normalized() * (bolt - trunnion).dot((fork - trunnion).normalized())
+	# the post's lower casting's fittings, riding the post: under the fork the
+	# clevis the brace's foot turns in (layout.motion braces side foot,
+	# dvids8678626), two lugs off the post either side of the spool, the
+	# bolt's thread, castellated nut and end under the lower lug; and the
+	# crank's bracket from the pivot boss (within its length, gear()) out to
+	# the crank's pin
+	def along(x):
+		return bolt + down_ * (x * INCH)
+	ends_ = []
+	for top_, bottom_ in ft["lugs"]:
+		# each lug a plate square to the bolt from the post's axis out round the
+		# bolt, as wide as the spool and a little more
+		q = along(top_)
+		home = trunnion + axis_ * (q - trunnion).dot(axis_)
+		e1 = ((home - q) - down_ * (home - q).dot(down_))
+		reach_, e1 = e1.length / INCH, e1.normalized()
+		e2 = down_.cross(e1)
+		r = ft["spool"] / 2 + 0.3
+		ring_ = [q + (e1 * math.cos(t) + e2 * math.sin(t)) * (r * INCH) for t in (math.pi / 2 + math.pi * k / 12 for k in range(13))]
+		ring_ += [q + (e1 * reach_ - e2 * r) * INCH, q + (e1 * reach_ + e2 * r) * INCH]
+		ends_.append(outward(extruded(ring_, down_ * ((bottom_ - top_) * INCH))))
+	_, (_, b1) = ft["lugs"]
+	across, n0, n1 = ft["nut"]
+	ends_ += [cylinder(along(b1), along(n0), ft["spool"] / 2 - 0.4),
+		cylinder(along(n0), along(n1), across / 2 / math.cos(math.pi / 12), sides=12), cylinder(along(n1), along(ft["end"][1]), ft["end"][0] / 2)]
 	base = pivot + out * max(-4.5 * INCH, min(2.5 * INCH, (centre - pivot).dot(out)))
-	node(f"{leg}_casting", parent=f"{leg}_strut", hinge=strut_undo @ centre, mesh=rested(merge([cylinder(root, bolt, 1.0),
-		cylinder(bolt - n * (1.2 * INCH), bolt + n * (1.2 * INCH), 1.2), cylinder(base, centre, 1.0)]), strut_undo), paint="white")
+	node(f"{leg}_casting", parent=f"{leg}_strut", hinge=strut_undo @ centre, mesh=rested(merge(ends_ + [cylinder(base, centre, 1.0)]), strut_undo), paint="white")
 
 
 def gear():
@@ -3574,14 +3856,18 @@ def gear():
 		post_r = m["post"] / 2
 		head = top + extended * (c["head"]["length"] * INCH)
 		flare = top + extended * (c["flare"]["from"] * INCH)
-		pieces = [cylinder(trunnion, fork, post_r, sides=16), boss,
+		pieces = [cylinder(trunnion, flare + extended * (0.2 * INCH), post_r, sides=16), boss,   # the post down into the lower casting's top, which carries it on to the fork
 			cylinder(top - extended * (1.0 * INCH), head, c["head"]["diameter"] / 2, sides=16),
 			cylinder(head, head + extended * (1.0 * INCH), c["head"]["diameter"] / 2, post_r, sides=16),
-			cylinder(flare, fork, post_r, c["flare"]["diameter"] / 2, sides=16)]
+			casting(flare, fork, out, post_r, c["flare"])]
 		# the pivot's pin, hollow, standing proud of the boss's ends
 		# (layout.gear legs main castings fittings pin, dvids8678626)
 		fit = c["fittings"]
-		pieces += [hollow(pivot + out * (2.5 * INCH), out, fit["pin"]), hollow(pivot - out * (4.5 * INCH), -out, fit["pin"])]
+		# the pivot pin's outboard end through its hex nut (castings fittings
+		# nut, dvids8678626), the inboard end, unseen, its plain hollow end
+		nut_ = fit["nut"]
+		pieces += [cylinder(pivot + out * (2.5 * INCH), pivot + out * ((2.5 + nut_[1]) * INCH), nut_[0] / 2 / math.cos(math.pi / 6), sides=6),
+			hollow(pivot + out * ((2.5 + nut_[1]) * INCH), out, fit["pin"]), hollow(pivot - out * (4.5 * INCH), -out, fit["pin"])]
 		for band in c["bands"]:
 			at_ = top + extended * (band * INCH)
 			pieces.append(cylinder(at_ - extended * (0.35 * INCH), at_ + extended * (0.35 * INCH), post_r + 0.3, sides=16))
@@ -3682,7 +3968,7 @@ def gear():
 		wheel_turn = axle_undo.to_3x3()
 		node(f"{leg}_wheel", parent=f"{leg}_axle", hinge=axle_undo @ axle,
 			mesh=rested(tyre(axle, out, main_r, g["tyres"]["main"]["width"], g["tyres"]["main"]["hub"], "hub", grooves=g["tyres"]["main"]["grooves"],
-				face=g["tyres"]["main"]["face"], outer=1, brake=g["tyres"]["main"]["brake"]), axle_undo))
+				face=g["tyres"]["main"]["face"], outer=1, brake=g["tyres"]["main"]["brake"], sides=48, bulge=g["tyres"]["bulge"]), axle_undo))
 		# the hub's outer face, where a photo shows the wheel's centre
 		MARKS[f"axle_main_{name}"] = (axle_undo @ (axle + out * (g["tyres"]["main"]["width"] * 0.35 * INCH)), f"{leg}_wheel")
 		# its centre, where a head-on photo shows the middle of the tyre
@@ -3705,7 +3991,7 @@ def gear():
 		aim_in = Matrix.Translation(shock_top) @ Matrix.Rotation(toward(drawn_eye, arm, bend_in), 4, bend_in) @ Matrix.Translation(-shock_top)
 		body_undo = strut_undo @ aim_in
 		body_turn = body_undo.to_3x3()
-		steps = [k / 10 for k in range(11)]
+		steps = [k / 40 for k in range(41)]
 		eyes_in = [pivot + Matrix.Rotation(shrink * (1 - g_), 3, lever) @ (eye - pivot) for g_ in steps]
 		node(f"{leg}_shock_aim", parent=f"{leg}_strut", hinge=strut_undo @ shock_top)
 		aim_keys = [[g_, round(abs(toward(e, drawn_eye - shock_top, bend_in)), 4)] for g_, e in zip(steps, eyes_in)]
@@ -3838,6 +4124,55 @@ def gear():
 		housing(c["steering"]["stations"], c["steering"]["waterlines"], c["steering"]["width"], power=6.0),
 		*notched(web["outline"], web["thickness"], n, undo, pin),
 		cylinder(at(f, w, -web["boss"][1] / 2), at(f, w, web["boss"][1] / 2), web["boss"][0] / 2)]
+	# the hydraulic hoses down the post's starboard front to the steering
+	# block (layout.gear legs nose castings hoses, dvids8678629 head-on and
+	# dvids9820808 from starboard): each from inside the bay down the post
+	# at its bearing round from forward, sagging out a little on the way,
+	# over the housing's front to its fitting on the block's side
+	hs = c["hoses"]
+	reach = n["post"] / 2 + hs["diameter"] / 2 + 0.1
+	for bearing, end in zip(hs["bearings"], hs["ends"]):
+		b_ = math.radians(bearing)
+		df, db = -math.cos(b_), math.sin(b_)
+		run = [at(column + df * reach, hs["top"], db * reach),
+			at(column + df * (reach + 0.6), (hs["top"] + c["housing"]["waterlines"][1]) / 2, db * (reach + 0.6)),
+			at(column + df * reach, c["housing"]["waterlines"][1] + 0.6, db * reach),
+			at(c["steering"]["stations"][1] - 0.2, c["steering"]["waterlines"][1] + 0.6, end[2]),
+			at(*end)]
+		pieces.append(finished(hose(run, hs["diameter"], sides=8), "rubber"))
+	# the wiring down the post's port front (layout.gear legs nose castings
+	# harness, dvids8678628), from the bay down the post to the housing's top
+	hn = c["harness"]
+	b_ = math.radians(hn["bearing"])
+	df, db = -math.cos(b_), math.sin(b_)
+	reach = n["post"] / 2 + hn["diameter"] / 2 + 0.05
+	pieces.append(finished(hose([at(column + df * reach, hn["top"], db * reach),
+		at(column + df * (reach + 0.4), (hn["top"] + c["housing"]["waterlines"][1]) / 2, db * (reach + 0.4)),
+		at(column + df * reach, c["housing"]["waterlines"][1] + 0.4, db * reach),
+		at(column + df * reach, c["housing"]["waterlines"][1] - 0.3, db * reach)], hn["diameter"], sides=6), "rubber"))
+	# an eye ring on either side of the post under the bay (layout.gear legs
+	# nose castings eyes, dvids9820806 and dvids8678628): flat on the post's
+	# side, its stock's inner face just inside the post's round
+	ey = c["eyes"]
+	outer, inner = ey["diameters"][0] / 2, ey["diameters"][1] / 2
+	turns = [2 * math.pi * k / 24 for k in range(24)]
+	for side in (-1, 1):
+		face = side * (math.sqrt(max((n["post"] / 2) ** 2 - outer ** 2, 0.0)) - 0.05)
+		for half in (0, 1):
+			arc = [t for t in turns if half * math.pi - 1e-9 <= t <= (half + 1) * math.pi + 1e-9] + [(half + 1) * math.pi]
+			arc = sorted(set(round(t, 9) for t in arc))
+			ring_ = [at(ey["at"][0] + outer * math.cos(t), ey["at"][1] + outer * math.sin(t), face) for t in arc] + \
+				[at(ey["at"][0] + inner * math.cos(t), ey["at"][1] + inner * math.sin(t), face) for t in reversed(arc)]
+			pieces.append(outward(extruded(ring_, at(0.0, 0.0, side * ey["stock"]) - at(0.0, 0.0, 0.0))))
+	# a squared block on the post's port front over the housing, under the
+	# approach lights' box, and the upright cylinder between it and the post
+	# (layout.gear legs nose castings block, dvids9820806 and dvids8678629)
+	# (its own node, to one side of the post, which is otherwise its mirror)
+	bk = c["block"]
+	(f0, f1), (w0, w1), (b0, b1) = bk["stations"], bk["waterlines"], bk["buttlines"]
+	pf, pb = bk["pipe"]["at"]
+	block = [filleted(profiled([[f0, w0], [f1, w0], [f1, w1], [f0, w1]], abs(b1 - b0), (b0 + b1) / 2), c["fittings"]["round"]),
+		cylinder(at(pf, w0, pb), at(pf, bk["pipe"]["top"], pb), bk["pipe"]["diameter"] / 2)]
 	# the castings' fittings (layout.gear legs nose castings fittings,
 	# dvids9820808): the web's raised rim round its outline on each face, and
 	# round bolt heads on the launch bar's pivot and the torque link's pin on
@@ -3857,6 +4192,7 @@ def gear():
 			cylinder(at(*d["at"], inner + side * 0.5), at(*c["link"]["to"], inner + side * 0.5), c["link"]["diameter"] / 2),
 			filleted(profiled(c["plates"]["outline"], 0.6, side * c["plates"]["buttline"]), min(fit["round"], 0.24))]
 	node("gear_nose_strut", hinge=trunnion, mesh=rested(merge(pieces), undo), paint="white")
+	node("gear_nose_block", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(block), undo), paint="white")
 	joint("gear_nose_strut", frames[0][1], stowed, extended, "gear", [[0, 0], [1, swing]])
 
 	def flying(mesh):
@@ -3880,7 +4216,7 @@ def gear():
 	node("gear_nose_steering", parent="gear_nose_oleo", hinge=undo @ (top + stretch))
 	joint("gear_nose_steering", undo.to_3x3() @ extended, PORT, -PORT, "steering", IDENTITY)
 	wheels = merge([tyre(axle + Vector((0, s * offset * INCH, 0)), PORT, nose_r, g["tyres"]["nose"]["width"], g["tyres"]["nose"]["hub"], "white",
-		grooves=g["tyres"]["nose"]["grooves"], face=g["tyres"]["nose"]["face"], outer=s) for s in (-1, 1)] +
+		grooves=g["tyres"]["nose"]["grooves"], face=g["tyres"]["nose"]["face"], outer=s, sides=40, bulge=g["tyres"]["bulge"]) for s in (-1, 1)] +
 		[cylinder(axle + Vector((0, -6 * INCH, 0)), axle + Vector((0, 6 * INCH, 0)), 1.2)])
 	node("gear_nose_wheel", parent="gear_nose_steering", hinge=undo @ (axle + stretch), mesh=rested(flying(wheels), undo), paint="white")
 	for side in (-1, 1):
@@ -3889,11 +4225,12 @@ def gear():
 	joint("gear_nose_wheel", undo.to_3x3() @ PORT, Vector((0, 0, -1)), FORWARD, "wheel.nose", IDENTITY)
 	actuator(n, pin, undo, belly)
 	# The holdback bar aft of the fork, its spring above it on two posts: it
-	# trails aft gear down, as the photos show it on the ground, and folds up
-	# along the piston's aft face as the leg retracts, as the transit photos
-	# show a bar lying along the oleo's aft side (layout.motion holdback): as
-	# far as the piston, the fork and the post above them let it, pivoting on
-	# its root at the fork. Built folded, as it rests
+	# trails aft on the ground, as the photos show it there, and lies folded
+	# up along the piston's aft face with the oleo out, as the photos in flight
+	# show it gear down and the transit photos as the leg retracts (layout.gear
+	# legs nose castings holdback): folding as far as the piston, the fork and
+	# the post above them let it, pivoting on its root at the fork, with the
+	# oleo's stroke from out to standing. Built folded, as it rests
 	h = c["holdback"]
 	(s0f, s0w), (s1f, s1w) = h["spring"]
 	low = max(p[1] for p in h["outline"])
@@ -3918,7 +4255,7 @@ def gear():
 	posts = [profiled([[x - 0.5, low - 0.3], [x + 0.5, low - 0.3], [x + 0.5, y + 0.4], [x - 0.5, y + 0.4]], h["width"]) for x, y in h["spring"]]
 	node("gear_nose_holdback", parent="gear_nose_oleo", hinge=undo @ (pivot_h + stretch), mesh=rested(flying(rested(merge([filleted(profiled(h["outline"], h["width"]), min(c["fittings"]["round"], 0.4 * h["width"]))] + posts + coil), fold_h)), undo), paint="white")
 	trailing = at(max(f for f, _ in h["outline"]), root[1], 0) - pivot_h
-	joint("gear_nose_holdback", undo.to_3x3() @ PORT, undo.to_3x3() @ trailing, undo.to_3x3() @ DOWN, "gear", [[0, 0], [1, round(tuck, 4)]])
+	joint("gear_nose_holdback", undo.to_3x3() @ PORT, undo.to_3x3() @ trailing, undo.to_3x3() @ DOWN, "oleo.nose", [[0, 0], [round(ext * INCH, 4), round(tuck, 4)]])
 	# The launch bar: raised as the photos show it gear down, lowered forward
 	# until its tip rests on the deck (layout.motion bar); as the leg
 	# retracts it folds down past forward to lie along the post's front, as
@@ -4001,11 +4338,13 @@ def gear():
 	# held on an arm from the box's back into the post's wall
 	back = face - facing * (depth * INCH)
 	casing.append(cylinder(back + facing * (0.5 * INCH), at(post + 0.5, w, 0), 0.8, sides=8))
-	for k in (1, 0, -1):
-		centre = middle + UP * (k * a_["spacing"] * INCH)
-		lenses.append(cylinder(centre, centre - facing * (0.4 * INCH), a_["lens"] / 2))
 	node("gear_nose_lamps", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(casing), undo), paint="white")
 	node("lamp_gear_nose", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(merge(lenses), undo), paint="lights")
+	# each approach light's lens its own node, which the engine lights by itself
+	# with the angle of attack (NATOPS 2.6.1.6)
+	for k, hue in ((1, "green"), (0, "amber"), (-1, "red")):
+		centre = middle + UP * (k * a_["spacing"] * INCH)
+		node(f"lamp_approach_{hue}", parent="gear_nose_strut", hinge=undo @ trunnion, mesh=rested(cylinder(centre, centre - facing * (0.4 * INCH), a_["lens"] / 2), undo), paint="lights")
 
 	def door(node_name, well, outline, hinge, targets, below=True, curve=None, corners=None, pairs=None, least=None):
 		# A door cut from the skin inside its plan outline ([FS, BL]), hinged
@@ -5075,7 +5414,7 @@ def texels(image):
 # and wells (exposed()). Baked where they rest, stowed behind closed doors, they sit in
 # the dark; the rest of the airframe is shaded at rest, so nothing hanging
 # open shadows the belly it is stowed against
-OPENED = {"gear": 1.0, "speedbrake": 1.0, "probe": 1.0}
+OPENED = {"gear.doors": 1.0, "gear.nose": 1.0, "gear.main": 1.0, "speedbrake": 1.0, "probe": 1.0}
 OPEN_REACH = 24.0   # inches: the ambient occlusion's reach on what stands open
 
 
@@ -6398,7 +6737,8 @@ def main():
 	# the engine (layout.motion)
 	m = {k: v["value"] for k, v in LAYOUT["motion"].items() if isinstance(v, dict)}
 	motion = {"seconds": {k: m[k]["seconds"] for k in ("canopy", "probe", "bar", "fold", "hook", "scoop", "swing")}, "toe": m["toe"], "swing": m["swing"]["travel"],
-		"canopy": {k: m["canopy"][k] for k in ("unlatch", "fall", "lock")}}   # the closing's own phases: the opening's are its stroke and the slide's share
+		"canopy": {k: m["canopy"][k] for k in ("unlatch", "fall", "lock")},   # the closing's own phases: the opening's are its stroke and the slide's share
+		"gear": timeline()}   # each gear mechanism's share of the stroke's time, each way
 	document = {"frame": {"origin": {"station": ORIGIN["station"], "waterline": ORIGIN["waterline"], "buttline": 0}},
 		"motion": motion,
 		"joints": dict(sorted(JOINTS.items())),

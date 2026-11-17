@@ -95,6 +95,40 @@ class Posed(dict):
 		self.weights = {}
 
 
+class Joints(dict):
+	# A points file's joints (joints()), with the timeline of the gear's
+	# mechanisms its motion gives (motion gear: each mechanism's [from, to]
+	# share of the stroke's time, "up" and "down"), so a pose by the one
+	# gear value poses each mechanism's own drive
+	timeline = None
+
+
+def joints(document):
+	# A points file's joints, as pose() reads them (Joints)
+	out = Joints(document["joints"])
+	out.timeline = document.get("motion", {}).get("gear")
+	return out
+
+
+def sequence(timeline, gear):
+	# Each gear mechanism's drive (gear.doors, gear.nose, gear.main, 0 stowed
+	# to 1 down) with the whole gear at `gear` of the way down along the
+	# retraction: the share of the retraction's time gone, each mechanism
+	# through its own part of it
+	gone = 1.0 - gear
+	return {f"gear.{name}": 1.0 - min(1.0, max(0.0, (gone - a) / (b - a))) for name, (a, b) in timeline["up"].items()}
+
+
+def driven(joints, drives):
+	# The drives a pose sets: as given, with each gear mechanism's own drive
+	# from the one gear value (sequence()) where the joints carry the
+	# timeline and the pose gives the gear but not that mechanism
+	timeline = getattr(joints, "timeline", None)
+	if timeline and "gear" in drives:
+		return {**sequence(timeline, float(drives["gear"])), **drives}
+	return drives
+
+
 def pose(joints, drives):
 	# The points file's joints driven to the given values (drives not given
 	# rest at 0): {node: (motion, axis, value)}, the axis in the model frame. A
@@ -103,6 +137,7 @@ def pose(joints, drives):
 	# ({key: {drive, keys}}) weight its mesh's shape keys, and a "morph" joint
 	# does nothing else
 	out = Posed()
+	drives = driven(joints, drives)
 	for name, joint in joints.items():
 		if joint["motion"] == "bend":
 			out[name] = ("bend", np.array([joint["axis"], joint["direction"]], float), tuple(setting(joint, name, drives)))

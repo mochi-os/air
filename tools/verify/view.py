@@ -17,6 +17,7 @@ from mathutils import Matrix, Quaternion, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from camera import clipping  # noqa: E402
+import model as mod  # noqa: E402
 
 
 def lookup(keys, x):
@@ -47,7 +48,7 @@ def main():
 	width = int(args[4]) if len(args) > 4 else 1600
 	bpy.ops.wm.read_factory_settings(use_empty=True)
 	bpy.ops.import_scene.gltf(filepath=model)
-	joints = json.loads(Path(points).read_text())["joints"]
+	joints = mod.joints(json.loads(Path(points).read_text()))
 	rest = {name: (obj.location.copy(), obj.rotation_mode, obj.rotation_quaternion.copy(), obj.hide_render)
 		for name, obj in ((n, bpy.data.objects.get(n)) for n in joints) if obj is not None}
 	scene = bpy.context.scene
@@ -67,7 +68,7 @@ def main():
 		for name, (location, mode, quaternion, hidden) in rest.items():
 			obj = bpy.data.objects[name]
 			obj.location, obj.rotation_mode, obj.rotation_quaternion, obj.hide_render = location, "QUATERNION", quaternion, hidden
-		drives = entry.get("pose", {})
+		drives = mod.driven(joints, entry.get("pose", {}))   # the gear by one value, each mechanism through the retraction (model.py)
 		for name, j in joints.items():
 			obj = bpy.data.objects.get(name)
 			if obj is None:

@@ -202,6 +202,54 @@ describe('the AOA indexer bands', () => {
   })
 })
 
+// The nose strut's approach lights (NATOPS 2.6.1.6): the indexer block leaves
+// its bands on ind.bands, and approach_lights lights the strut's green, amber
+// and red lenses from them, dimmed with the warning lights, dark without ac
+// power or bands. Both read from engine.ts as text.
+const approach = /\nfunction approach_lights\(bands\)\{[\s\S]*?emissiveIntensity=[^\n]*\n/.exec(source)?.[0] ?? ''
+function bands(alpha: number, flying = true, extension = 1): { slow: boolean; donut: boolean; fast: boolean } {
+  if (!block) throw new Error('indexer block not found in engine.ts')
+  return new Function('alpha', 'flying', 'extension', `const D2R=Math.PI/180, glow=0, buses={ essential:true }, STATE={alpha:0, extension:1}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
+    const ind={slow:{opacity:0},donut:{opacity:0},fast:{opacity:0}}, ownship={hook:1,grounded:!flying};
+    let glance=0, hook_bypass="carrier";
+    const out=[alpha*D2R, extension];
+    if(false){} ${block}
+    return ind.bands;`)(alpha, flying, extension)
+}
+function lenses(given: unknown, ac: boolean, warn: number): number[] {
+  if (!approach) throw new Error('approach_lights not found in engine.ts')
+  const lamps = { green: { emissiveIntensity: 9 }, amber: { emissiveIntensity: 9 }, red: { emissiveIntensity: 9 } }
+  new Function('given', 'ownship', 'buses', 'lighting', `${approach} approach_lights(given);`)(given, { group: { userData: { gearLamps: lamps } } }, { ac }, { warn })
+  return [lamps.green.emissiveIntensity, lamps.amber.emissiveIntensity, lamps.red.emissiveIntensity]
+}
+
+describe('the approach lights on the nose strut', () => {
+  it('take the indexer\'s bands whatever its knob, green for slow, amber on speed and red for fast', () => {
+    expect(lenses(bands(12), true, 1)).toEqual([3, 0, 0])
+    expect(lenses(bands(9), true, 1)).toEqual([3, 3, 0])
+    expect(lenses(bands(8.1), true, 1)).toEqual([0, 3, 0])
+    expect(lenses(bands(7.1), true, 1)).toEqual([0, 3, 3])
+    expect(lenses(bands(5), true, 1)).toEqual([0, 0, 3])
+  })
+
+  it('stay dark on the ground, with the gear not down and locked, without ac power and with no bands', () => {
+    expect(lenses(bands(8.1, false), true, 1)).toEqual([0, 0, 0])
+    expect(lenses(bands(8.1, true, 0.5), true, 1)).toEqual([0, 0, 0])
+    expect(lenses(bands(8.1), false, 1)).toEqual([0, 0, 0])
+    expect(lenses(null, true, 1)).toEqual([0, 0, 0])
+  })
+
+  it('dim with the warning and caution lights', () => {
+    expect(lenses(bands(8.1), true, 0.2)).toEqual([0, 0.6000000000000001, 0])
+  })
+
+  it('are left out of the formation strips\' glow and lit as lamps of their own', () => {
+    expect(source).toMatch(/const lamps=\{\}; e\.traverse\(o=>\{ const kind=o\.name==="lamp_gear_nose"\?"landing":\/\^lamp_approach_\(green\|amber\|red\)\$\//)
+    expect(source).toMatch(/if\(!pool\|\|Object\.values\(lamps\)\.includes\(mm\)\) return;/)
+    expect(source).toMatch(/const lens=ownship\.group\.userData\.gearLamps\?\.landing; if\(lens\) lens\.emissiveIntensity=land\?3:0;/)
+  })
+})
+
 describe('the hook bypass wiring', () => {
   it('has a key, a settings label and a rig entry that scrubs the modeled switch', () => {
     const keys = readFileSync(fileURLToPath(new URL('./keys.ts', import.meta.url)), 'utf8')

@@ -51,6 +51,7 @@ import { reconcile as cautions_reconcile, restack as cautions_restack, lines as 
 import { diagnose } from '../lib/graphics'
 import { oleo, flatten, REACH } from './oleo'
 import { rig as joints_rig, pose as joints_pose, roll as wheel_roll, schedule as joints_schedule } from './joints'
+import { advance as gear_advance, settled as gear_settled, type Timeline as GearTimeline } from './gear'
 import { rounds as hang_rounds, parts as hang_parts, place as hang_place, KINDS as round_kinds } from './hang'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { Radar, boresight, notched as radar_notched, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL, FRAME as RADAR_FRAME } from './radar'
@@ -85,7 +86,7 @@ import ford_ship from '../assets/ford.json'   // its ship file, written beside i
 import { layout as ship_layout, lit as ship_lit } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
 import fa18c_points from '../assets/fa18c.json'   // its points file, written beside it by tools/fa18c/build.py: the joints and their schedules, and the points the engine draws
-const MOTION=(fa18c_points as any).motion as { seconds:{ canopy:number, probe:number, bar:number, fold:number, hook:number, scoop:number, swing:number }, toe:number, swing:number, canopy:{ unlatch:number, fall:number, lock:number } };   // the mechanisms' stroke times (the swing's from centre to either stop), the rudders' toe-in and the hook's sideways travel each way, deg (tools/fa18c facts layout.motion)
+const MOTION=(fa18c_points as any).motion as { seconds:{ canopy:number, probe:number, bar:number, fold:number, hook:number, scoop:number, swing:number }, toe:number, swing:number, canopy:{ unlatch:number, fall:number, lock:number }, gear:GearTimeline };   // the mechanisms' stroke times (the swing's from centre to either stop), the rudders' toe-in, the hook's sideways travel each way, deg, and the gear's mechanisms' timeline each way (tools/fa18c facts layout.motion; gear.ts)
 import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the model it replaces: the player's own jet in first person, whose cockpit the engine's cockpit tables are measured on, until our cockpit is built (claude/plans/air-fa18c.md, step 4)
 import fa18c_far_url from '../assets/fa18c-far.glb?url'   // the distant stages (#3): tools/fa18c
 import amraam_model_url from '../assets/aim120c.glb?url'   // our own missiles (tools/missiles), each with its points file: the mount its launcher seats
@@ -2249,8 +2250,13 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 		g.userData.exterior.legs=exterior_legs(g.userData.exterior, spec); g.userData.exterior.deck=exterior_deck(g.userData.exterior);
 		if(g.userData.stages){ g.userData.stages.parts.push(e); e.visible=g.userData.stage===0; }   // another jet's stage shows our model as it showed the old one's parts
 		{ const glow=new Map(), burner=new Map();   // its formation strips and lenses (lights) glow with the FORMATION knob, its flames (burner) with the engine's reheat, as the old model's emissive maps did; neither carries an emissive map, so each takes its colour here
+			// the nose strut's lamps (NATOPS 2.6.1.5-6) are their own lights, not the formation strips': the landing
+			// light's lens with the LDG/TAXI light, the approach lights' green, amber and red with the angle of attack
+			const lamps={}; e.traverse(o=>{ const kind=o.name==="lamp_gear_nose"?"landing":/^lamp_approach_(green|amber|red)$/.exec(o.name)?.[1]; if(!kind||!o.isMesh) return;
+				const hue=GEAR_LAMPS[kind], m=o.material.clone(); m.color=new THREE.Color(...hue).multiplyScalar(0.45); m.emissive=new THREE.Color(...hue); m.emissiveIntensity=0; o.material=m; lamps[kind]=m; });
+			g.userData.gearLamps=lamps;
 			e.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
-				const pool=mm.name==="burner"?burner:mm.name==="lights"?glow:null; if(!pool) return;
+				const pool=mm.name==="burner"?burner:mm.name==="lights"?glow:null; if(!pool||Object.values(lamps).includes(mm)) return;
 				if(!pool.has(mm)){ const c=mm.clone(); c.emissive=pool===burner?new THREE.Color(1,0.42,0.12):new THREE.Color(0.55,1,0.45); c.emissiveIntensity=0; c.userData.glowmax=pool===burner?1:4.0; pool.set(mm,c); }   // the strips' electroluminescent green; the flames' orange
 				if(Array.isArray(o.material)) o.material[ix]=pool.get(mm); else o.material=pool.get(mm); }); });
 			g.userData.glow=[...(g.userData.glow||[]),...glow.values()]; g.userData.burner=[...(g.userData.burner||[]),...burner.values()]; }
@@ -2287,14 +2293,14 @@ function airframe_show(g,force){ const u=g.userData, x=u.exterior; if(!x) return
 // fa18c.go's gear), the depth of whose penetration is the strut's load.
 const EXTERIOR_LEGS={ nose:"c_tire_anim_AN_Wheels_132", left:"l_tire_anim_AN_Tire_35", right:"r_tire_anim_AN__287" };   // each leg's spin entry, for the flight model's contact and the tyre's load
 function exterior_legs(x, spec){ const legs=[], e=x.object, at=new THREE.Vector3();
-	const lift=(leg,travel)=>{ joints_pose(x.joints,(drive)=>drive==="gear"?1:drive===`oleo.${leg}`?travel:undefined); e.updateMatrixWorld(true);
+	const lift=(leg,travel)=>{ joints_pose(x.joints,(drive)=>drive.startsWith("gear.")?1:drive===`oleo.${leg}`?travel:undefined); e.updateMatrixWorld(true);
 		const wheel=e.getObjectByName(`gear_${leg}_wheel`); return wheel?e.worldToLocal(wheel.getWorldPosition(at)).y:NaN; };
 	for(const [leg,tyre] of Object.entries(EXTERIOR_LEGS)){ const wheel=e.getObjectByName(`gear_${leg}_wheel`), oleo=x.joints.find(j=>j.name===`gear_${leg}_oleo`), point=x.points.gear[leg];
 		const spin=(spec.spin||[]).find(s=>s.node===tyre); if(!wheel||!oleo||!point) continue;
 		const rate=(lift(leg,0.1)-lift(leg,0))/0.1;   // metres the wheel rises per unit of oleo drive
 		const r=rate>1e-3?rate:1;
 		legs.push({ leg, wheel, oleo, radius:point.radius, rate:r, lift:0, reach:point.full!==undefined?point.full*r:REACH+(point.static||0)*r, contact:spin?spin.attach:null, strut:spin?spin.strut:0, tyre:spin?spin.tyre:0, travel:spin?spin.travel:0, limit:spin?spin.limit:0 }); }   // reach: the leg's own stroke from its length in flight to fully in (the points file's full: the nose's 17 in, a main arm's droop and the inch and a half its shock absorber has left), so the drawn oleo never pushes past what its parts allow; a points file without it, the default bound on a bad terrain sample plus the leg's static stroke
-	joints_pose(x.joints,(drive)=>drive==="gear"||drive.startsWith("oleo.")?0:undefined);   // back to rest: stowed
+	joints_pose(x.joints,(drive)=>drive.startsWith("gear.")||drive.startsWith("oleo.")?0:undefined);   // back to rest: stowed
 	return legs; }
 // exterior_deck is how far our own model's hook lowers before its point meets the ground the jet stands on
 // (points.ground, under the main wheels): the claw rests on a deck, not through it.
@@ -2328,6 +2334,14 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 	const load=exterior_load_factor(st), legs=x.legs||[];
 	const wheel=(leg)=>{ const l=legs.find(q=>q.leg===leg); return wheel_roll((st.wheelDist??0)/(l?l.radius:0.3)); };
 	const oleo_of=(leg)=>{ const l=legs.find(q=>q.leg===leg); return l?Math.max(0,l.lift)/l.rate:0; };
+	// the gear's doors, nose leg and main legs each in its sequence (gear.ts), the way the gear last travelled
+	// (to the end it stands at when it is not travelling): drawn where the gear stands at first sight, or when
+	// it is set outright (a spawn, a reset) rather than travelling
+	const travel=down-(st.mechanismsAt??down);
+	if(travel!==0) st.lowering=travel>0; else if(down>=1||down<=0) st.lowering=down>=1;
+	if(!st.mechanisms||Math.abs(travel)>GEAR_RATE*dt+0.02) st.mechanisms=gear_settled(MOTION.gear,down);
+	else{ const lowering=!!st.lowering; gear_advance(MOTION.gear,st.mechanisms,lowering,dt,1/GEAR_RATE); }
+	st.mechanismsAt=down;
 	const value=(drive,name)=>{ switch(drive){
 		case "stabilator.left": return s?s.stabL:0;
 		case "stabilator.right": return s?s.stabR:0;
@@ -2339,7 +2353,9 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 		case "rudder": return clamp((s?s.rudder:0)+(name==="rudder_left"?-toe:toe),-30*D2R,30*D2R);   // toe-in: both trailing edges inboard
 		case "speedbrake": return clamp(st.speedbrake??0,0,1);
 		case "fold": return clamp(st.fold??0,0,1);
-		case "gear": return down;
+		case "gear.doors": return st.mechanisms.doors;
+		case "gear.nose": return st.mechanisms.nose;
+		case "gear.main": return st.mechanisms.main;
 		case "hook": return hook;
 		case "swing": return st.swing??0;   // the hook trailing the pull of the wire it holds (update_wire_drag, update_anim)
 		case "probe": return clamp(st.probe??0,0,1);
@@ -6977,6 +6993,9 @@ let aircraft_lights=null;
 // strobe lights, and not the landing/taxi light.
 const STROBE=["dim","off","bright"];
 const exterior={ position:1, formation:1, strobe:"bright", landing:false };
+// the nose strut's lamps' colours (NATOPS 2.6.1.5-6): the landing light's white and the approach lights' green
+// (high angle of attack), amber (optimum) and red (low), lit through their lenses as their light is on
+const GEAR_LAMPS={ landing:[1,0.95,0.85], green:[0.25,1,0.35], amber:[1,0.62,0.12], red:[1,0.12,0.08] };
 ownship.group=make_jet(); bandit.group=make_jet(); scene.add(ownship.group,bandit.group);
 ownship.group.userData.player=true; layer_own_group(ownship.group);
 build_aircraft_lights(); layer_own_group(ownship.group);   // the nav lights/strobes/landing spot just joined the group — layer them too
@@ -8007,6 +8026,7 @@ function update_aircraft_lights(){
 	const geardown=(ownship.gear??0)<0.02, land=exterior.landing && (ownship.gearTarget??1)<0.5 && geardown;   // LDG/TAXI ON, the handle DN and the gear down (2.6.1.5): the light rides the nose gear strut, on when the extend animation finishes (down & locked, the HUD's green GEAR threshold), dark the moment retraction starts
 	for(const p of aircraft_lights.pos){ p.visible=position>0&&!(p.userData&&p.userData.spare); p.material.opacity=position; }   // the POSITION knob's level
 	for(const p of aircraft_lights.landing) p.visible=land;
+	{ const lens=ownship.group.userData.gearLamps?.landing; if(lens) lens.emissiveIntensity=land?3:0; }   // the strut's lamp itself, lit with its light
 	for(const p of aircraft_lights.strobe){ p.visible=strobe; p.material.opacity=exterior.strobe==="dim"?0.35:1; }
 	const spot=aircraft_lights.spot; spot.visible=land;   // the landing-light beam lights whatever it points at (kept in the scene so it works in first-person, where the aircraft group is hidden)
 	if(land){ const n=aircraft_lights.nose; spot.position.copy(datum(ownship)).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
@@ -8095,9 +8115,20 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		// The bands of NATOPS figure 2-19 (161520 and up), each symbol fully lit or
 		// dark: SLOW 9.3° up, SLIGHTLY SLOW 8.8-9.3° (chevron and donut), ON SPEED
 		// 7.4-8.8°, SLIGHTLY FAST 6.9-7.4° (donut and chevron), FAST below 6.9°.
-		ind.slow.opacity = lit&&alpha>=8.8?glow:0;
-		ind.fast.opacity = lit&&alpha<7.4?glow:0;
-		ind.donut.opacity= lit&&alpha>=6.9&&alpha<9.3?glow:0; } }
+		// The nose strut's approach lights take the same bands, flash and conditions
+		// (2.6.1.6: all gear down and locked, weight off the gear), green, amber
+		// and red for the chevron, donut and chevron, whatever the indexer's knob
+		ind.bands={ slow:lit&&alpha>=8.8, fast:lit&&alpha<7.4, donut:lit&&alpha>=6.9&&alpha<9.3 };
+		ind.slow.opacity = ind.bands.slow?glow:0;
+		ind.fast.opacity = ind.bands.fast?glow:0;
+		ind.donut.opacity= ind.bands.donut?glow:0; }
+	approach_lights(ind&&!(INDEXER_TEST||lamps_testing)?ind.bands:null); }
+// approach_lights lights the nose strut's green, amber and red approach lights
+// (NATOPS 2.6.1.6) from the AOA indexer's bands, dimmed whenever the warning,
+// caution and advisory lights are; dark with no bands or, as the indexer, no ac power
+function approach_lights(bands){ const lamps=ownship.group.userData.gearLamps; if(!lamps) return;
+	const power=!!buses.ac, on={ green:power&&!!bands?.slow, amber:power&&!!bands?.donut, red:power&&!!bands?.fast };
+	for(const hue of ["green","amber","red"]) if(lamps[hue]) lamps[hue].emissiveIntensity=on[hue]?3*lighting.warn:0; }
 generate_world();
 // ---- input ----
 const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
