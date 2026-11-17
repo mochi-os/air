@@ -3489,22 +3489,23 @@ let castle=null;   // when the sensor switch went forward from BST into HACQ, wh
 const hold=autopilot.fresh(), link=datalink.fresh(); let coupled="";
 let hold_was=false, onspeed_flag=false, onspeed_owed=false;   // the autopilot as the last frame left it, and the one-shot pitch trim reset its disengagement asks of the core (2.9.2.1): the flag until the core here has stepped with it, owed until a datagram has carried it to the server's
 // link_picture: where the jet is on the carrier's approach and what its own equipment can do, for the data
-// link - the hook against the touchdown point, as the lens has it (ols_dev).
-function link_picture(){ const g=demonstration_picture().groove, o=carrier_ols;
+// link - the hook against the touchdown point, as the lens has it (ols_dev), from the demonstration's picture
+// of the jet (p), which a caller that already holds one passes.
+function link_picture(p=demonstration_picture()){ const g=p.groove, o=carrier_ols;
 	return { time:sim_time, along:g.along+HOOK_AFT, across:g.right, height:ownship.pos.y-(o?o.dy:0)-HOOK_DROP, final:g.heading, altitude:ownship.pos.y, waved:!!ownship.waving,
 		link:!!o&&radios.link.on&&buses.ac&&fed(2,"b")&&!emcon, beacon:radios.beacon.on&&buses.ac&&fed(2,"b")&&!emcon, able:navigate.attitude(nav.ins)&&mc().one, flaps:flap_select===2, throttle:atc_on&&atc_speed===null, coupled:hold.modes.coupled?hold.source:"" }; }
 // couple_now: what the UFC's CPL option couples to (2.9.2.6, 24.6.1.2) - with ACL boxed and the uplink
 // offering it, the carrier's commands or its heading; else the steering boxed on the HSI, the TACAN station
 // by its bearing and range. label: the cue for it on the HUD and HSI. passed: a point flown direct has been
 // reached, and the steering uncouples.
-function couple_now(){ const up=datalink.couple(link,link_picture());
+function couple_now(p=demonstration_picture()){ const up=datalink.couple(link,link_picture(p));
 	if(up) return { couple:up, label:up.axis==="bank"?"CPLD P/R":"CPLD HDG", passed:false };
 	const truth=nav_sense(0), station=nav.steer==="tcn"?tacan():null;
 	const c=navigate.coupling(nav,navigate.place(nav,truth),(ownship.gauges||{}).track??truth.heading,ownship.speed??0,station&&station.range!=null?{ bearing:station.bearing, range:station.range }:null);
 	return c?{ couple:{ axis:"track", value:c.track/D2R, vertical:null }, label:"CPL "+c.label, passed:c.passed }:null; }
 // autopilot_sense: what the jet is doing, for the autopilot (autopilot.ts Sense). The radar altitude is
 // the height indicator's, gone with the set off or silenced.
-function autopilot_sense(now){ const p=demonstration_picture(), surface=ground_height(ownship.pos.x,ownship.pos.z);
+function autopilot_sense(now,p=demonstration_picture()){ const surface=ground_height(ownship.pos.x,ownship.pos.z);
 	return { time:sim_time, pitch:p.pitch, bank:p.bank, heading:p.heading, track:p.track, altitude:p.altitude, height:radalt_inhibited()?null:ownship.pos.y-(surface>-1e8?Math.max(surface,0):0), vertical:p.vertical, cas:p.cas,
 		roll:p.roll, rate:p.rate, approach:trim_law(), airborne:!on_ground(), attitude:navigate.attitude(nav.ins), computer:mc().one, stick:{ pitch:input.pitch, roll:input.roll }, trim:{ pitch:input.trim||0, roll:input.lean||0 },
 		selected:nav.heading/D2R, couple:now?now.couple:null, limit:nav.limit }; }
@@ -3518,12 +3519,14 @@ function acl_select(){ datalink.select(link);
 // switch takes every mode off; a point reached, or the end of a sequence, uncouples; coupled to a sequence
 // it turns ahead of each waypoint; and on each axis the autopilot holds, its stick goes to the flight
 // controls in place of the pilot's, with the trim switch, which then moves its references. ACL is a NAV
-// master mode's (24.6.1), and the scripted pilot flies with everything off.
-function autopilot_frame(dt){ const before=JSON.stringify([hold.engaged,hold.modes,sim_time<hold.caution,link.shown,link.changed]);
+// master mode's (24.6.1), and the scripted pilot flies with everything off. It runs in every world step, sixteen
+// a frame at 64x, so the picture of the jet against the ship, the dearest thing it reads, is made once for its
+// three readers.
+function autopilot_frame(dt){ const before=JSON.stringify([hold.engaged,hold.modes,sim_time<hold.caution,link.shown,link.changed]), p=demonstration_picture();
 	if(link.selected&&master!=="nav") acl_select();
-	datalink.step(link,link_picture(),dt);
+	datalink.step(link,link_picture(p),dt);
 	if(hotas.paddle||demonstration) autopilot.paddle(hold);
-	const now=couple_now(), s=autopilot_sense(now), sequence=hold.modes.coupled&&coupled.startsWith("CPL SEQ");
+	const now=couple_now(p), s=autopilot_sense(now,p), sequence=hold.modes.coupled&&coupled.startsWith("CPL SEQ");
 	if(hold.modes.coupled&&hold.source==="track"&&((now&&now.passed)||(sequence&&!nav.auto))) autopilot.uncouple(hold,s,false);
 	if(sequence&&hold.modes.coupled) navigate.anticipate(nav,navigate.place(nav,nav_sense(0)),ownship.speed??0,autopilot.bound(s).bank*D2R);
 	if(hold.modes.coupled&&now&&now.couple.axis===hold.source) coupled=now.label;   // a sequence's label follows its number; a source that has changed is about to be let go
@@ -9761,7 +9764,7 @@ let presenting=true;   // the running chunk is its frame's last
 let framed=0;   // sim seconds the frame has advanced, the running chunk included
 let glance=0;   // the mission's wall seconds, stopped while paused as the sim is
 let beat=0;   // the frame's wall seconds: what a hand held through the frame was held for
-const BUDGET=10;   // ms of each frame the sim chunks may take: past it the frame stops early, and the time it owed is dropped rather than carried. 64× in free flight needs about 7 ms of a 60 fps frame; 6 ms held it near 58×
+const BUDGET=10;   // ms of each frame the sim chunks may take: past it the frame stops early, and the time it owed is dropped rather than carried. 64× in free flight needs about 9 ms of a 60 fps frame: sixteen steps of some 0.55 ms, the flight core's four 1/60 s steps 0.36 ms of each
 // Flight recorder (#212): a rolling buffer saved from the log page. The
 // bot's doctrine state rides along in every build - free to capture (the brain
 // runs in-process in wasm for a local joust), and what a recording a player
@@ -10989,11 +10992,14 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 // of sink takes off it, from the flight core's own trim for the jet as it is
 // (flight_power), read again every two seconds as the fuel burns: the book the
 // demonstration's pilot flies the approach's power from, so that it follows
-// the airframe and the stores. Null on a core without it.
-let approach_power={ at:-Infinity, book:null };
+// the airframe and the stores. Null on a core without it. Two seconds of the
+// pilot's time as well as the world's: each reading trims two scratch jets, and
+// at 64x two seconds of the world come round every other frame, where the fuel
+// a reading 128 s apart misses moves the lever a few thousandths.
+const approach_power={ at:-Infinity, seen:-Infinity, book:null };
 function approach_book(){
-	if(sim_time-approach_power.at>=2||sim_time<approach_power.at){
-		approach_power.at=sim_time;
+	if((sim_time-approach_power.at>=2&&glance-approach_power.seen>=2)||sim_time<approach_power.at){
+		approach_power.at=sim_time; approach_power.seen=glance;
 		const level=flight_power(150,0), sloped=flight_power(150,3.5);
 		approach_power.book=level&&sloped?{ level:level.throttle, rate:(level.throttle-sloped.throttle)/(sloped.speed*Math.sin(3.5*D2R)) }:null; }
 	return approach_power.book; }
@@ -11819,7 +11825,9 @@ function fly_bandit_stricken(dt){
 // slat, covers and tip Sidewinder with it; battle/battle_test.go pins the
 // ranges.
 const PANELS=[{ node:"Left_Wing_Outer_81", first:4 }, { node:"Right_wing_outer_317", first:20 }];
-function shed_panels(st,words){ if(!st||!st.group||!words) return;
+// Drawn, so once a frame, on its last world step: each look-up walks the whole jet's tree, and at 64x a
+// frame flies sixteen steps.
+function shed_panels(st,words){ if(!presenting||!st||!st.group||!words) return;
 	for(const panel of PANELS){
 		let gone=true;
 		for(let e=panel.first;e<panel.first+4;e++) if((words[STATE.element+e]??0)<0.99){ gone=false; break; }
