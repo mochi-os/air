@@ -12088,7 +12088,7 @@ function visuals(dt){
 function debris_struck(){ const met=flight_debris_meet(); if(!met||!met.strikes) return;
 	ownship.struck=(ownship.struck||0)+met.strikes; hit_flash=Math.min(1,hit_flash+0.25*met.strikes); audio_hit(Math.min(met.strikes,4)); }
 function step_world(dt){ sim_time+=dt;
-	marshal_watch(); pattern_watch(); hints_watch(); timer_update();
+	marshal_watch(); pattern_watch(); hints_watch(); picture_watch(); timer_update();
 	fly_player(dt); if(!MULTIPLAYER&&!playback&&crash_t<=0&&!cheat("invulnerable")) debris_struck(); if(has_enemy) fly_bandit(dt); if(MULTIPLAYER&&net) net_frame(dt);
 	nav_frame(dt);
 	avionics_frame(dt);
@@ -12257,6 +12257,7 @@ function reset_ownship(){
 		weapons_hold=!bvr;   // #87: fight's on at the merge, not before — except the BVR start, which is free from spawn
 		joust_side=Math.random()<0.5?1:-1;
 		joust_start=bvr?bvr_opening():null; joust_place(); ownship.throttle=0.85;
+		picture_due=bvr?sim_time+PICTURE_AFTER:-1;
 		if(bvr){ notice(translate("FIGHT'S ON")); merge_events.push(`${sim_time.toFixed(1)}|start`); } }   // the rule difference announced at the calmest moment: this joust has no hold — i18n-format-ok: ACMI event timestamp, not display text
 	else {   // air start (free flight): ~15 km ENE of the runway at 5000 ft, heading at the carrier
 		const rwy=airports.length?airports[0]:{x:-1125,z:2898};   // Sand Island runway (fallback = its known centroid, since the map loads async)
@@ -12567,20 +12568,23 @@ function hud_message(text){ hctx.textAlign="center"; hctx.fillStyle=AM; hctx.fon
 // core flying trial shots, refreshed ~2 Hz.
 let zone_at=0, zone=null, zone_track=null;
 // bvr_separation mirrors the server's derivation (#32): head-on Rmax from the
-// round core's ladder at the spawn block (272 m/s at 6096 m) plus the 15 nmi
-// commit buffer. The constant fallback covers only the boot race and sits near
-// the derivation on purpose.
+// round core's ladder at the spawn block (272 m/s at 6096 m) plus the 2 nmi
+// commit buffer (world/games/air/air.go commit), kept once the core has derived
+// it; 0 before the core boots.
 let bvr_apart=0;
 function bvr_separation(){ if(bvr_apart>0) return bvr_apart;
-	const z=round_ladder({position:{x:0,y:6096,z:0},velocity:{x:272,y:0,z:0}},{position:{x:60000,y:6096,z:0},velocity:{x:-272,y:0,z:0}},0,true);   // in still air, as the server judges it: it sizes the start, and a shot flies the same whichever way the wind blows
-	bvr_apart=(z&&z.max>0?z.max:84000)+27780;
+	const z=round_ladder({position:{x:0,y:6096,z:0},velocity:{x:272+30,y:0,z:0}},{position:{x:60000,y:6096,z:0},velocity:{x:-272,y:0,z:0}},true);   // the round as it leaves the rail (the server's rail, amraam_departure), in still air as the server judges it: it sizes the start, and a shot flies the same whichever way the wind blows
+	if(!z||!(z.max>0)) return 0;
+	bvr_apart=z.max+3704;
 	return bvr_apart; }
 // bvr_opening draws this BVR joust's start (#46) from a fresh seed, through the
 // core's Go the world server draws a match's with. &opening=head (developer)
-// pins the classic head-on block the probes fly. A core not yet booted falls
-// back to it, marked pending for joust_drawn to draw once the core binds.
-function bvr_opening(){ const head={ altitude:[6096,6096], speed:272, flank:0, apart:bvr_separation() };
-	if(DEV_MODE&&new URLSearchParams(location.search).get("opening")==="head") return head;
+// pins the classic head-on block the probes fly. A core not yet booted gives
+// the head-on block at the derivation's present figure, marked pending for
+// joust_drawn to draw once the core binds: the buffer is only a few kilometres,
+// so a start left on a stand-in figure could begin inside the round's reach.
+function bvr_opening(){ const apart=bvr_separation(), head={ altitude:[6096,6096], speed:272, flank:0, apart:apart||91700 };
+	if(DEV_MODE&&new URLSearchParams(location.search).get("opening")==="head") return apart?head:{ ...head, pending:true };
 	return joust_opening(Math.floor(Math.random()*2147483647))||{ ...head, pending:true }; }
 // joust_heading is the heading an end of the joust starts on: along the line
 // toward the other end (side +1 east), turned the flank off it - the same way
@@ -12598,6 +12602,23 @@ function joust_place(){ const bvr=!!joust_start; const reach=bvr?joust_start.apa
 // on it, on the frame the core binds and before either jet has flown.
 function joust_drawn(){ if(MULTIPLAYER||!joust_start||!joust_start.pending) return;
 	joust_start=bvr_opening(); joust_place(); }
+// The picture (#196): a BVR joust starts beyond the radar's reach with the
+// bandit up to 45 degrees off the nose, and nothing else tells the pilot where
+// he is, so a controller calls the single group a few seconds in, as an
+// airborne controller would - his bearing (magnetic) and range from the pilot,
+// his height in thousands of feet and his aspect: HOT inside 30 degrees of
+// pointing at the pilot, FLANK to 70, BEAM to 110, then DRAG. Called from the
+// jets as they are then, so a start the core drew late is called right.
+const PICTURE_AFTER=3;   // s of the world's time after the start
+let picture_due=-1;   // when the picture is called, or -1
+function picture_watch(){ if(picture_due<0||sim_time<picture_due) return; picture_due=-1;
+	if(has_enemy&&bandit.group.visible) radio("AWACS: "+picture_call()); }
+function picture_call(){ const dx=bandit.pos.x-ownship.pos.x, dz=bandit.pos.z-ownship.pos.z;
+	const range=Math.round(Math.hypot(dx,bandit.pos.y-ownship.pos.y,dz)/NM), height=Math.round(theatre.frame.altitude(bandit.pos)*3.281/1000);
+	const vx=bandit.velx??bandit.fwd.x, vz=bandit.velz??bandit.fwd.z;
+	const aspect=Math.atan2(Math.abs(vz*dx-vx*dz),-(vx*dx+vz*dz))*180/Math.PI;   // his track against the line from him to the pilot: 0 pointing at him
+	const word=aspect<=30?"HOT":aspect<=70?"FLANK":aspect<=110?"BEAM":"DRAG";
+	return translate("SINGLE GROUP BRAA {bearing}/{range}, {altitude} THOUSAND, {aspect}",{ bearing:compass(dx,dz), range, altitude:height, aspect:translate(word) }); }
 // radar_target is what the radar holds of the locked or L&S contact, which the
 // launch zones fly against: its trackfile's last fix carried on by that fix's
 // velocity for the track's age. A tracking STT refreshes it every frame, a TWS
@@ -13974,10 +13995,12 @@ function rwr_step(dt){ if(!running) return;
 	audio_rwr(RWR.locked(),level); }
 let rwr_called=-9, rwr_fresh=0, rwr_missile=false;
 // acquire_press: Enter is monotonic - it only ever commits harder (#27/#30). In
-// TWS it takes the nearest trackfile as the L&S or escalates the L&S to STT;
-// every other state runs the ACM flow, the visual cone designation when the
-// radar is silent. Stepping between trackfiles is Backspace's, so Enter can
-// never cost a supported round its datalink.
+// TWS it takes the nearest trackfile as the L&S or escalates the L&S to STT; in
+// RWS with the AIM-120 up and the ACM conditions off, it locks the return under
+// the cursor or the nearest the scan holds, at any range (aacq), since the cone
+// reaches only 10 nm; every other state runs the ACM flow, the visual cone
+// designation when the radar is silent. Stepping between trackfiles is
+// Backspace's, so Enter can never cost a supported round its datalink.
 function acquire_press(){
 	if(RADAR.mode==="tws"&&RADAR.stt==null&&!RADAR.silent()&&RADAR.tracks.length){
 		if(RADAR.ls!=null){ if(radar_designate(RADAR.ls)) radar_events.push(`${sim_time.toFixed(1)}|acquire|stt`); return; }   // the L&S hardens into the lock — i18n-format-ok: ACMI event timestamp, not display text
@@ -13986,6 +14009,7 @@ function acquire_press(){
 		RADAR.ls=order[0].id; radar_events.push(`${sim_time.toFixed(1)}|acquire|ls`);   // i18n-format-ok: ACMI event timestamp, not display text
 		designated=RADAR.ls;
 		return; }
+	if(RADAR.mode==="rws"&&master==="120c"&&!RADAR.auto&&RADAR.stt==null&&!RADAR.silent()&&aacq()) return;
 	acquire_acm(); }
 // BACKSPACE: undesignate, contextual like the real button — in TWS with no
 // lock it STEPS the L&S to the next trackfile (the shoot-step-shoot rhythm,
@@ -14070,7 +14094,7 @@ function sensor(way){
 	if(aa&&display===designator&&ddi_state[display].page==="rdr"&&!ddi_state[display].menu){ aacq(); return; }
 	designator=display; hmd.priority=false; helmet.exit(hmd); ddi_dirty=true; }
 // aacq: auto acquisition (#27): the target under the TDC if there is one, else the nearest the scan
-// holds, straight to STT
+// holds, straight to STT. True when it locked one.
 // antenna_step: the antenna elevation a step up or down, which takes it back from an antenna wheel
 // bound on the stick until that wheel is moved again, as the keys take the throttle from its lever
 function antenna_step(d){ RADAR.slew(d); const wheel=pad_levers.antenna; if(wheel){ wheel.armed=false; wheel.rest=undefined; } }
@@ -14088,18 +14112,22 @@ function tdc_slew(x,y,dt){ hotas.tdc.x=x; hotas.tdc.y=y;
 function aacq(){ const own=radar_own(), half=RADAR.half(), scaleM=RADAR.scale*NM;
 	const seen=RADAR.mode==="tws"?RADAR.tracks.map(t=>{ const g=radar_geometry(own,t); return { id:t.id, azimuth:g.azimuth, range:g.range }; }):RADAR.bricks.map(b=>({ id:b.id, azimuth:b.azimuth, range:b.range }));
 	const held=seen.filter(c=>c.range<=scaleM&&Math.abs(c.azimuth-RADAR.centre.azimuth)<=half);
-	if(!held.length) return;
+	if(!held.length) return false;
 	const id=radar_pick(held,radar_cursor.azimuth,radar_cursor.range,half,scaleM)??held.reduce((a,b)=>b.range<a.range?b:a).id;
-	if(radar_lock(id)) radar_events.push(`${sim_time.toFixed(1)}|acquire|aacq`); }   // i18n-format-ok: ACMI event timestamp, not display text
+	if(!radar_lock(id)) return false;
+	radar_events.push(`${sim_time.toFixed(1)}|acquire|aacq`); return true; }   // i18n-format-ok: ACMI event timestamp, not display text
 // default_radar: the set at spawn, as default_master has the weapon up - a
-// merge joust commands boresight at 10 nm, a BVR or AMRAAM fight is TWS at 40
-// nm, free flight searches in RWS.
+// merge joust commands boresight at 10 nm, another AMRAAM fight is TWS at 40
+// nm, and free flight searches in RWS. A BVR joust searches in RWS too: its
+// opening turns each jet up to 45 degrees off the line to the other, and the
+// bearing opens as they close, past TWS's 45 degrees and inside RWS's 70,
+// where the bandit's own radar sees 60.
 function merge_joust(){ return boresight(cfg.task,cfg.duel); }   // the rule lives in radar.ts, where a test can reach it
 function radar_scale(){ return merge_joust()?10:40; }   // the merge is inside ten miles from the first frame; everything else searches at the full scale
 function default_radar(){
 	RADAR.sil=false; RADAR.width=0; RADAR.bars=2; RADAR.stt=null; RADAR.ls=null; RADAR.memory=0; RADAR.auto=false; RADAR.acm="bst";
 	if(merge_joust()){ RADAR.mode="rws"; RADAR.auto=true; }
-	else RADAR.mode=master==="120c"?"tws":"rws";
+	else RADAR.mode=master==="120c"&&cfg.duel!=="bvr"?"tws":"rws";
 	rdr_reset(); }
 function notice(text,secs){ net_notice=text; net_notice_t=secs||3;
 	if(cfg.record&&!playback&&record_notices.length<20&&(text!==notice_last||sim_time-notice_at>1)){ record_notices.push(String(text)); notice_last=text; notice_at=sim_time; } }   // a banner raised afresh every frame is recorded once, not sixty times a second   // the single centre-banner slot; each call REPLACES the last (the LSO grade, BOLTER and REARMED all route through here so they can never overprint each other)

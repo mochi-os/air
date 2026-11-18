@@ -157,6 +157,16 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   // The flavour radio tier (#146) — log-only calls.
   TALLY: msg`TALLY`,
   REJOINING: msg`REJOINING`,
+  // The controller's picture at a BVR start (#196): AWACS stays verbatim as a
+  // callsign does, BRAA as brevity's own acronym; the words and the aspect
+  // localise.
+  'SINGLE GROUP BRAA {bearing}/{range}, {altitude} THOUSAND, {aspect}': msg({
+    message: 'SINGLE GROUP BRAA {bearing}/{range}, {altitude} THOUSAND, {aspect}',
+  }),
+  HOT: msg({ message: 'HOT', context: 'aspect' }),
+  FLANK: msg({ message: 'FLANK', context: 'aspect' }),
+  BEAM: msg({ message: 'BEAM', context: 'aspect' }),
+  DRAG: msg({ message: 'DRAG', context: 'aspect' }),
   // The Case III recovery script (#205) — controller callsigns (MARSHAL,
   // APPROACH, PADDLES) stay verbatim like player callsigns; the call words
   // localise, same rule as the wingman brevity calls above.

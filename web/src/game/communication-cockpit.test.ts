@@ -158,7 +158,7 @@ describe('a call on the ship\'s frequencies', () => {
     expect(heard('', { up: -1 })).toHaveLength(1); expect(heard('uhf.panel.antenna="auto";')).toHaveLength(1)
   })
   it('is how every call from the ship and the field goes out, and chat is not', () => {
-    expect(source.match(/\bradio\((?!text\))/g)?.length).toBe(12) // tower, approach, marshal and paddles, and the pilot's own calls to them
+    expect(source.match(/\bradio\((?!text\))/g)?.length).toBe(13) // tower, approach, marshal and paddles, the pilot's own calls to them, and the controller's picture at a BVR start
     expect(source.match(/"#9fd0ff"/g)?.length).toBe(1) // the radio's colour, used nowhere but inside radio: no call is left on the ungated path
     expect(source).toMatch(/function feed\(fate,killer,victim\)\{ const line=report\(fate,killer,victim\); if\(line\) comm\(translate\(line\.text,line\.values\),"#ffd27f"\); \}/)
   })
