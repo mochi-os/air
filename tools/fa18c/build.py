@@ -71,6 +71,8 @@ AFT, DOWN = -FORWARD, -UP
 # A joint driven straight in radians: half a turn either way covers every throw (the nosewheel's 75 deg among
 # them), and the engine wraps a wheel's roll into one turn, since a schedule holds at its ends.
 IDENTITY = [[-math.pi, -math.pi], [math.pi, math.pi]]
+# The gap a moving part keeps from what it passes, in (check.py SEAM)
+SEAM = 0.1
 
 
 def value(entry):
@@ -149,18 +151,24 @@ class Surface:
 		y = half(airfoil(thickness), x) * side
 		return leading + self.aft * (x * chord * INCH) + self.up * (y * chord * INCH)
 
-	def piece(self, spans, chord, steps=6, end=None, extra=()):
+	def piece(self, spans, chord, steps=6, end=None, extra=(), back=None):
 		# The part between span stations spans[0]..spans[1] and chord fractions
 		# chord[0]..chord[1], closed at every cut. end, a function of the span
 		# station, is the share of the chord a rounded corner leaves (1 where
-		# none), and extra adds span stations for its rings
+		# none), and extra adds span stations for its rings; back, a function
+		# of the span station, the chord fraction its aft edge stands at there
+		# in place of chord[1] (the table's stations before it kept, so a
+		# neighbouring piece shares their corners)
 		start, stop = chord
 		xs = sorted({start, stop} | {x for x in STATIONS if start < x < stop})
 		us = sorted({spans[0] + (spans[1] - spans[0]) * i / steps for i in range(steps + 1)} | {u for u in extra if spans[0] < u < spans[1]})
 		rings = []
 		for u in us:
 			scale = end(u) if end else 1.0
-			rings.append([self.point(u, x, 1, scale) for x in xs] + [self.point(u, x, -1, scale) for x in reversed(xs)])
+			at_ = xs if back is None else xs[:-1] + [back(u)]
+			if at_[-1] <= at_[-2]:
+				raise SystemExit(f"Surface.piece: its aft edge at {u:.1f} in out lies ahead of the table's station {at_[-2]}")
+			rings.append([self.point(u, x, 1, scale) for x in at_] + [self.point(u, x, -1, scale) for x in reversed(at_)])
 		return loft(rings)
 
 	def rounded(self, radius):
@@ -514,8 +522,16 @@ def wing(side):
 	tef = 1 - LAYOUT["hinge"]["value"]
 	inside = 40.0   # the root buried in the fuselage
 	# the aileron starts inboard of the fold line: the inner panel stops at its
-	# hinge there, and that part of it folds with the outer panel
-	node(f"wing_inner_{name}", mesh=surface.panel((inside, fold), [(spans["lef"]["inner"], inner_lef, "front"), (spans["tef"], tef, "back"), (spans["aileron"], aileron, "back")]))
+	# hinge there, and that part of it folds with the outer panel. There the
+	# inner panel's aft edge runs streamwise, parallel to the fold's axis, a
+	# seam ahead of the aileron's hinge at its inner end: the aileron's hinge
+	# line sweeps aft going out, and turned about the fold its nose would
+	# swing into an edge that followed it
+	stub = spans["aileron"][0]
+	lead = lambda u: ORIGIN["station"] - surface.station(u)[0].x / INCH
+	edge = lead(stub) + (1 - aileron) * surface.station(stub)[1] - SEAM
+	node(f"wing_inner_{name}", mesh=merge([surface.panel((inside, stub), [(spans["lef"]["inner"], inner_lef, "front"), (spans["tef"], tef, "back")]),
+		surface.piece((stub, fold), (inner_lef, 1 - aileron), steps=1, back=lambda u: (edge - lead(u)) / surface.station(u)[1])]))
 	bent(f"wing_inner_{name}", bend)
 
 	def hinged(joint_name, reach, x, part, arm, want, drive, parent=None, paint="paint"):
@@ -532,13 +548,18 @@ def wing(side):
 	hinged(f"flap_trailing_{name}", spans["tef"], 1 - tef, (1 - tef, 1), AFT, DOWN, f"trailing.{name}")
 	# The outer panel folds about the fold line, carrying its flap and aileron,
 	# as far as the photos fold it (layout.fold): NATOPS's folded span holds at
-	# any angle past 90 deg, where the panel's foot stands outermost
-	a, b = surface.point(fold, 0), surface.point(fold, 1)
+	# any angle past 90 deg, where the panel's foot stands outermost. Its
+	# hinge runs along the upper skin's peak over the fold line, so the outer
+	# panel's root face swings up clear of the inner panel's
+	_, chord_, thickness_ = surface.station(fold)
+	peak = max(y for _, y in airfoil(thickness_)) * chord_
+	a, b = (surface.point(fold, x) + surface.up * (peak * INCH) for x in (0, 1))
 	outer = surface.panel((fold, semispan), [(spans["lef"]["outer"], outer_lef, "front"), (spans["aileron"], aileron, "back")])
 	high = math.radians(LAYOUT["fold"]["angle"])
-	# under a bend joint at the fold line's leading end, which lies on its
-	# streamwise axis: the fold line rides the bend unbroken
-	flex_joint(f"flex_wing_{name}", bend, a)
+	# under a bend joint at the fold line's leading end in the chord plane, on
+	# the bend's streamwise axis: the bend carries the hinge above it as it
+	# carries the skin there, and the fold line rides the bend unbroken
+	flex_joint(f"flex_wing_{name}", bend, surface.point(fold, 0))
 	node(f"wing_{name}", parent=f"flex_wing_{name}", hinge=a)
 	joint(f"wing_{name}", b - a, Vector((0, -side, 0)), UP, "fold", [[0, 0], [1, round(high, 4)]])
 	node(f"wing_outer_{name}", parent=f"wing_{name}", hinge=a, paint="team", mesh=outer)
@@ -639,7 +660,7 @@ def stabilator(side):
 SEAT = (0.5, 12.0, 2.0)   # inches a part mounted on the skin reaches into it, above its foot it is cast down from, and between the points of its foot (fin())
 
 
-def fairing(name, side, surface, skin, span):
+def fairing(name, side, surface, skin, span, corner):
 	# The riveted fairing along a fin's root on its outboard side (layout.fin
 	# fairing): its upper edge runs up the leading edge from the root's corner
 	# to the photos' top line and aft along it on the fin's face, standing
@@ -648,10 +669,21 @@ def fairing(name, side, surface, skin, span):
 	# each section straight from edge to foot, closed inside the fin and the
 	# skin along the fin's face carried down to the skin (closed straight from
 	# edge to foot, a slab stood off the canted fin over an open crevice, its
-	# floor black in the bake); it ends square at the last top point. Returns
-	# its front foot, where the leading edge meets the skin
+	# floor black in the bake). Behind the band's last top point the plate
+	# (aft) carries on to the rudder's lower leading corner (`corner`): a
+	# `seam` step in where the band ends, then its upper edge eased in to
+	# within `step` of the fin's face and its foot on the fin root's line the
+	# photos cast, so it ends on the fin with no face standing aft (ended
+	# square at the band's end, a wedge stood 5.3 in off the fin there).
+	# Returns its front foot, where the leading edge meets the skin
 	place = LAYOUT["fin"]["fairing"]
-	top, foot = [tuple(p) for p in place["top"]], [tuple(p) for p in place["foot"]]
+	plate = place["aft"]
+	top = [tuple(p) for p in place["top"]]
+	line = top + [tuple(p) for p in plate["top"]]
+	# the foot on the band's buttlines, then on the fin root's line the photos
+	# cast from where it turns in behind the band (stepped in at the band's
+	# end instead, the band's last section stood 2 in proud of the plate's)
+	foot = [tuple(p) for p in place["foot"] if p[0] < plate["foot"][0][0]] + [tuple(p) for p in plate["foot"]]
 	face = built([f"fin_{name}"])
 	low, high = surface.point(0, 0), surface.point(value(FACTS["fin"]["height"]), 0)
 
@@ -660,22 +692,30 @@ def fairing(name, side, surface, skin, span):
 
 	(f0, w0, _), (f1, w1, _) = source(low), source(high)
 	outward = Vector((0, -side, 0))   # Blender's y is to port
-	start, end = f0, top[-1][0]
-	rings = []
-	steps = int(math.ceil((end - start) / 2.0))
-	for i in range(steps + 1):
-		station = start + (end - start) * i / steps
+	start, band, end = f0, top[-1][0], source(corner)[0] - plate["clear"]
+	steps = int(math.ceil((band - start) / 2.0))
+	stations = [(start + (band - start) * i / steps, False) for i in range(steps + 1)]
+	# rings every half inch, which the foot's turn in behind the band needs
+	count = int(math.ceil((end - band) / 0.5))
+	stations += [(band + (end - band) * i / count, True) for i in range(count + 1)]
+
+	def ring(station, aft):
 		edge = low.lerp(high, (station - f0) / (f1 - f0))   # the leading edge at this station
-		line = float(np.interp(station, [p[0] for p in top], [p[1] for p in top]))
-		if source(edge)[1] <= line:
+		height = float(np.interp(station, [p[0] for p in line], [p[1] for p in line]))
+		if source(edge)[1] <= height:
 			upper = edge
 		else:
-			origin = at(station, line, side * 90.0)
+			origin = at(station, height, side * 90.0)
 			upper = face.ray_cast(origin, -outward)[0]
 			if upper is None:
 				raise SystemExit(f"fin_{name}'s face not found at FS {station:.1f}")
 		stand = place["step"] * ease((station - top[0][0]) / (top[1][0] - top[0][0]))
 		bl = float(np.interp(station, [p[0] for p in foot], [p[1] for p in foot]))
+		if aft:
+			# the upper edge eased in from the band's end, less the seam, to
+			# its stand-off at the plate's aft end
+			k = ease((station - band) / (end - band))
+			stand = place["step"] - plate["seam"] + (plate["step"] - place["step"] + plate["seam"]) * k
 		hits = crossings(skin, at(station, 160.0, side * bl), DOWN)
 		if not hits:
 			raise SystemExit(f"no skin beneath fin_{name}'s fairing at FS {station:.1f}")
@@ -688,8 +728,9 @@ def fairing(name, side, surface, skin, span):
 		inner = upper - outward * (inset * INCH)
 		depth = (inner.z - lower.z) / INCH + 0.5
 		root = inner - span * (depth / span.z * INCH)
-		ring = [inner] + [outer.lerp(lower, k / 4) for k in range(5)] + [lower + DOWN * (0.5 * INCH), root]
-		rings.append(ring)
+		return [inner] + [outer.lerp(lower, k / 4) for k in range(5)] + [lower + DOWN * (0.5 * INCH), root]
+
+	rings = [ring(station, aft) for station, aft in stations]
 	vertices, faces = loft(rings)
 	# faces out: the outer face's quad at mid-length outboard
 	n = len(rings[0])
@@ -715,9 +756,12 @@ def fin(side):
 	toe = math.radians(value(f["toe"]))
 	aft = AFT * math.cos(toe) + PORT * (side * math.sin(toe))
 	surface = Surface(root, span, sweep, (root_chord, tip_chord), (airfoils["root"], airfoils["tip"]), height, aft=aft)
-	reach = LAYOUT["surfaces"]["rudder"]
-	spans = (reach[0] * height, reach[1] * height)
-	rudder = surface.fraction(value(f["rudder"]) / 2, spans)
+	# the rudder's outline as the photos read it (layout.rudder): its lower
+	# and upper edges along the span and its hinge line at one share of the
+	# chord, its trailing edge the fin's
+	measured = LAYOUT["rudder"]
+	spans = (measured["span"][0] * height, measured["span"][1] * height)
+	rudder = 1 - measured["hinge"]
 	node(f"fin_{name}", hinge=root, mesh=surface.panel((0, height), [(spans, rudder, "back")]))
 	# The root's section carried straight down the fin's plane to SEAT[0]
 	# inches inside the built skin, as a fixed part of its own (the fin keeps
@@ -754,7 +798,7 @@ def fin(side):
 	k = len(dense)
 	faces = faces[:-2] + [faces[-1]] + [(i, i + 1, 2 * k - 2 - i, 2 * k - 1 - i) for i in range(k - 1)]
 	node(f"fin_root_{name}", hinge=root, mesh=(vertices, faces))
-	corner = fairing(name, side, surface, skin, span)
+	corner = fairing(name, side, surface, skin, span, surface.point(spans[0], 1 - rudder))
 	# the antenna pods on the trailing edge below the tip (layout.pods), each
 	# straddling the fin on its plane at its waterline; the upper one's blunt
 	# end is a landmark
@@ -1582,9 +1626,21 @@ def canopy(stations, rings):
 
 	limits = [sill_index(r) for r in range(len(rings))]
 	vertices, faces = loft(rings)
+	# the band where the ring jumps out to the nacelles just ahead of JOIN
+	# (union_ring()), across the ducts: its faces inside the inlets' skins
+	# at JOIN, which close the nacelles round them, are left out (the ring's
+	# points there stand up to 0.07 in off the inlets' last, sampled apart)
+	jump = stations.index(max(s for s in stations if s < JOIN - 1e-6))
+	nacelle = np.array([(bl, wl) for wl, bl in joint_ring()])
+
+	def inside(v):
+		return enclosing(nacelle, (abs(v.y) / INCH, ORIGIN["waterline"] + v.z / INCH), 0.25)
+
 	groups = {"body": [], "windscreen": [], "canopy": []}
 	for k, face in enumerate(faces):
 		r, i = divmod(k, n)
+		if r == jump and all(inside(vertices[v]) for v in face):
+			continue
 		if r >= len(rings) - 1:
 			groups["body"].append((face, "paint"))
 			continue
@@ -1600,6 +1656,33 @@ def canopy(stations, rings):
 			frame = station < bow + BOW_FRAME or max(columns) == limit
 			groups["canopy"].append((face, "paint" if frame else "glass"))
 	groups["canopy"] = glass_edge(vertices, groups["canopy"])
+	# the skin under the canopy's rim (its sill, its aft end, its bow at the
+	# windscreen), so no slit opens where the canopy's shell stands a seal's
+	# step proud of the loft (layout.motion canopy): the canopy's faces within
+	# RIM inches of its edge kept on the fuselage too, their edge where the
+	# loft lays it and falling in from it by twice the step, so the shell
+	# slides clear over them where the loft rises aft (it rises up to 0.3 in
+	# over the slide behind the bow)
+	count = {}
+	for face, _ in groups["canopy"]:
+		for a, b in zip(face, face[1:] + face[:1]):
+			count[frozenset((a, b))] = count.get(frozenset((a, b)), 0) + 1
+	rim = {i for e, k in count.items() if k == 1 for i in e}
+	edge = [vertices[i] for i in rim]
+	normals = shell_normals(vertices, [f for f, _ in groups["canopy"]])
+	sunk = {}
+
+	def under(i):
+		# a vertex of the skin under the rim: its own on the edge, else a copy fallen in
+		if i in rim:
+			return i
+		if i not in sunk:
+			vertices.append(vertices[i] - normals[i] * (2 * LAYOUT["motion"]["canopy"]["value"]["seal"] * INCH))
+			sunk[i] = len(vertices) - 1
+		return sunk[i]
+	for face, _ in list(groups["canopy"]):
+		if any(min((vertices[i] - e).length for e in edge) < RIM * INCH for i in face):
+			groups["body"].append((tuple(under(i) for i in face), "paint"))
 
 	def mesh(entries):
 		used = sorted({i for face, _ in entries for i in face})
@@ -1621,34 +1704,71 @@ def canopy(stations, rings):
 		kinds += [kind] * len(pieces)
 	node("fuselage", mesh=(vertices_, split, kinds))
 	node("windscreen", mesh=mesh(groups["windscreen"]))
-	# The canopy slides aft to unlatch (NATOPS 2.15.1), then swings up about
-	# its aft hinge (layout.motion canopy)
+	# The canopy slides aft along its sill to unlatch (NATOPS 2.15.1), rising
+	# as it goes, then swings up about its hinge at its aft top (layout.motion
+	# canopy). Its shell stands a seal's step proud of the loft it was cut
+	# from, so neither the slide nor the turn drags its rim through the skin
+	# it rests on
 	motion = LAYOUT["motion"]["canopy"]["value"]
-	hinge = at(back + 1.0, layout["aft"]["waterline"] - 4.0, 0)
+	shell, moved = proud(mesh(groups["canopy"]), motion["seal"])
+	hinge = at(*motion["hinge"], 0)
+	slide = AFT * (motion["slide"] * INCH) + UP * (motion["rise"] * INCH)
 	node("canopy_slide", hinge=hinge)
-	joint("canopy_slide", AFT, AFT, AFT, "canopy", [[0, 0], [motion["unlatch"], motion["slide"] * INCH], [1, motion["slide"] * INCH]], motion="slide")
-	node("canopy", parent="canopy_slide", hinge=hinge, mesh=mesh(groups["canopy"]))
+	joint("canopy_slide", slide, slide, slide, "canopy", [[0, 0], [motion["unlatch"], round(slide.length, 5)], [1, round(slide.length, 5)]], motion="slide")
+	node("canopy", parent="canopy_slide", hinge=hinge, mesh=shell)
 	joint("canopy", PORT, FORWARD, UP, "canopy", [[0, 0], [motion["unlatch"], 0], [1, math.radians(motion["open"])]])
 	# Features: the frame's corners and the sill on each side (the column
 	# SILL steps down from the top; the port half runs back up the ring)
 	index = {round(st, 1): r for r, st in enumerate(stations)}
 	column = lambda r, side: rings[r][SILL] if side > 0 else rings[r][n - SILL]
+	# a point of the canopy's where its proud shell has it
+	shelled = lambda v: moved.get(tuple(round(c, 7) for c in v), v)
 	MARKS["windscreen_base"] = (rings[index[round(front, 1)]][0], "windscreen")
-	MARKS["bow_top"] = (rings[index[round(bow, 1)]][0], "canopy")
+	MARKS["bow_top"] = (shelled(rings[index[round(bow, 1)]][0]), "canopy")
 	# the fixed windscreen's aft arch, where the bow meets it: the same point while the
 	# canopy is shut, and what a photo with the canopy raised shows there
 	MARKS["windscreen_top"] = (rings[index[round(bow, 1)]][0], "windscreen")
-	MARKS["canopy_aft"] = (rings[index[round(back, 1)]][0], "canopy")
-	MARKS["canopy_crown"] = (max((rings[r][0] for r in range(len(rings)) if bow <= stations[r] <= back), key=lambda v: v.z), "canopy")
+	MARKS["canopy_aft"] = (shelled(rings[index[round(back, 1)]][0]), "canopy")
+	MARKS["canopy_crown"] = (shelled(max((rings[r][0] for r in range(len(rings)) if bow <= stations[r] <= back), key=lambda v: v.z)), "canopy")
 	glass = [r for r, st in enumerate(stations) if bow <= st <= back]
 	screen = [r for r, st in enumerate(stations) if front <= st <= bow]
 	for side in (-1, 1):
 		name = side_name(side)
-		MARKS[f"bow_foot_{name}"] = (column(index[round(bow, 1)], side), "canopy")
-		MARKS[f"sill_aft_{name}"] = (column(glass[-1], side), "canopy")
-		CURVES[f"canopy_sill_{name}"] = ([column(r, side) for r in glass], "canopy")
+		MARKS[f"bow_foot_{name}"] = (shelled(column(index[round(bow, 1)], side)), "canopy")
+		MARKS[f"sill_aft_{name}"] = (shelled(column(glass[-1], side)), "canopy")
+		CURVES[f"canopy_sill_{name}"] = ([shelled(column(r, side)) for r in glass], "canopy")
 		CURVES[f"windscreen_sill_{name}"] = ([column(r, side) for r in screen], "windscreen")
-	CURVES["canopy_top"] = ([rings[r][0] for r in glass], "canopy")
+	CURVES["canopy_top"] = ([shelled(rings[r][0]) for r in glass], "canopy")
+
+
+RIM = 2.5   # in: how far in from the canopy's edge the skin under it runs (canopy())
+
+
+def shell_normals(vertices, faces):
+	# Each corner's normal over the faces given (a shell's), each face's
+	# turned away from the centreline below it: {index: unit normal}
+	normals = {}
+	for f in faces:
+		corners = [vertices[i] for i in f]
+		n = Vector()
+		for a, b in zip(corners, corners[1:] + corners[:1]):
+			n += a.cross(b)   # Newell's
+		centre = sum(corners, Vector()) / len(corners)
+		if n.dot(centre - Vector((centre.x, 0.0, 0.0))) < 0:
+			n = -n
+		for i in f:
+			normals[i] = normals.get(i, Vector()) + n.normalized()
+	return {i: n.normalized() for i, n in normals.items()}
+
+
+def proud(mesh, step):
+	# A shell (vertices, faces, finishes) stood `step` inches out: each corner
+	# moved along its faces' mean normal (shell_normals()); and where each
+	# corner went, by its place before
+	vertices, faces, finishes = mesh
+	normals = shell_normals(vertices, faces)
+	out = [v + normals[i] * (step * INCH) for i, v in enumerate(vertices)]
+	return (out, faces, finishes), {tuple(round(c, 7) for c in v): w for v, w in zip(vertices, out)}
 
 
 ANGLES = [math.pi * i / 47 for i in range(48)]   # each half-ring, top centreline (0) to keel (pi)
@@ -1759,7 +1879,68 @@ def along(station, start, count):
 
 
 
-AFT_STATIONS = [412, 420, 435, 450, 470, 490, 510, 530, 550, 570, 590, 610, 630, 650, 670, 692]
+def legs(station):
+	# The unsided outline from the top centreline to the keel split where the
+	# nacelle takes it over from the body (crease()), at the nacelle's top,
+	# its outboard side and its bottom (where it crosses the nacelle's centre
+	# buttline and waterline): (angles, lengths, the five legs' ends along it)
+	angles, path, length = outline(station, 0.0, False)
+	b, w = nacelle_at(station)[:2]
+	x, y = path[:, 0], path[:, 1]
+	top = int(np.argmax((x[:-1] - b) * (x[1:] - b) <= 0))
+	side = top + int(np.argmax(x[top:]))
+	bottom = side + int(np.argmax((y[side:-1] - w) * (y[side + 1:] - w) <= 0))
+	bottom = bottom + int(np.argmax((x[bottom:-1] - b) * (x[bottom + 1:] - b) <= 0))
+	seam = min(float(np.interp(crease(station), angles, length)), float(length[top]) - 1.0)
+	return angles, length, [seam, float(length[top]), float(length[side]), float(length[bottom]), float(length[-1])]
+
+
+def crease(station):
+	# The angle round the body's centre at which a nacelle takes the
+	# outline over from the body and the deck, walking out from the top: the
+	# V's floor behind the speedbrake, a sharp turn that columns spaced
+	# along the outline cut off by more or less from ring to ring
+	top, bottom = smooth(CORE["top"], station), smooth(CORE["bottom"], station)
+	upper, half = core_widths(station)
+	centre = (0.0, (top + bottom) / 2)
+	b, w, a, up, down = nacelle_at(station)
+	others = [((0.0, centre[1]), ((upper, half), (top - bottom) / 2), core_power(station))]
+	deck = deck_top(station)
+	if deck is not None and deck > w + 0.25:
+		others.append(((0.0, w), (deck_half(station), deck - w, DECK_BELOW), DECK_EXPONENT))
+	directions = [(math.sin(t), math.cos(t)) for t in DENSE]
+	nacelle = np.array(exit_distances((b, w), (a, up, down), 2.3 + (2.0 - 2.3) * rounding(station), centre, directions))
+	rest = np.max([exit_distances(c, h, n, centre, directions) for c, h, n in others], axis=0)
+	return DENSE[int(np.argmax(nacelle > rest))]
+
+
+SHARES = {}
+
+
+def spaced(station, count):
+	# `count` points from the top centreline to the keel behind the speedbrake,
+	# evenly along each leg of the outline between the nacelle's top, its
+	# outboard side and its bottom, each leg holding the steps it holds where
+	# the tail's spacing has eased in: spaced along the whole outline, the V
+	# forming between the nacelles lengthened its top leg and moved every step
+	# below it from station to station
+	if count not in SHARES:
+		_, _, ends = legs(TAIL["narrows"][0] + TAIL_EASE)
+		steps = [round((count - 1) * e / ends[-1]) for e in ends]
+		SHARES[count] = [b - a for a, b in zip([0] + steps[:-1], steps)]
+	angles, length, ends = legs(station)
+	marks = []
+	for (a, b), n in zip(zip([0.0] + ends[:-1], ends), SHARES[count]):
+		marks += list(np.linspace(a, b, n + 1)[:-1])
+	turns = np.interp(marks + [ends[-1]], length, angles)
+	theta, path, _ = outline(station, 0.0)
+	return [(float(np.interp(a, theta, path[:, 0])), float(np.interp(a, theta, path[:, 1]))) for a in turns]
+
+
+TAIL_EASE = 16.0   # inches behind the speedbrake over which the tail's spacing eases in (union_ring())
+
+# the last two: the nozzles' flaps' start, and the nacelles' lips over them (layout.nacelle end)
+AFT_STATIONS = [412, 420, 435, 450, 470, 490, 510, 530, 550, 570, 590, 610, 630, 650, 670, LAYOUT["nozzle"]["start"], LAYOUT["nozzle"]["start"] + LAYOUT["nacelle"]["end"]["lip"]]
 
 
 def polar(points, centre, angles):
@@ -1804,20 +1985,26 @@ LEX_STATIONS = 48   # rings from the apex to the junction
 # flat over its inner half, falling steeply only near the edge
 LEX_FALL = [(0.0, 0.0), (0.25, 0.04), (0.44, 0.15), (0.5, 0.21), (0.67, 0.32), (0.78, 0.43), (0.83, 0.52), (0.89, 0.6), (0.94, 0.72), (1.0, 1.0)]
 FAIRING = 60.0      # inches behind the junction the LEX takes to settle onto the wing root
+RIDE = 0.05   # inches the LEX's underside rides over the skin rising under it behind FS 357
 
 
 def lex(side, widths):
-	# The leading-edge extension: a thin blade off the body's side from its
-	# apex to the LEX-wing junction, then a fairing behind the junction that
-	# eases its upper surface down onto the nacelle's shoulder and the wing
-	# root, so the LEX runs into the wing with no step. Its span is
-	# TM-101724's at FS 253, 296 and 357, run between them and forward by
-	# cr186938's graph; its root and edge stand where the traced TP-3111
-	# sections put them above the keel; at the junction (tp3111, FS 404.05)
-	# its edge meets the wing's leading edge. Spans and heights run on smooth
-	# curves through those knots. Its upper surface never dips under what lies
-	# beneath it (the fuselage, the wing), so the two never cross in a ragged
-	# line where they run nearly level.
+	# The leading-edge extension: a wedge off the body's side from its apex to
+	# the LEX-wing junction, then a fairing behind the junction that eases its
+	# upper surface down onto the nacelle's shoulder and the wing root, so the
+	# LEX runs into the wing with no step. Its span is TM-101724's at FS 253,
+	# 296 and 357, run between them and forward by cr186938's graph; its root
+	# and edge stand where the traced TP-3111 sections put them above the
+	# keel, and so does its nearly flat underside (lex.underside); at the
+	# junction (tp3111, FS 404.05) its edge meets the wing's leading edge.
+	# Spans and heights run on smooth curves through those knots. Behind FS
+	# 357 its underside comes down through the splitter's top (layout.inlet)
+	# to the wing's lower surface by the wing root's leading edge (layout.lex
+	# underside), so the root lies inside it, and on aft just under that
+	# surface, riding just over the cowl and the nacelle where they rise
+	# above it. Its upper
+	# surface never dips under what lies beneath it (the fuselage, the wing),
+	# so the two never cross in a ragged line where they run nearly level.
 	name = side_name(side)
 	wing = SURFACES[f"wing_{name}"]
 	# The apex where the photos put it (layout.lex), cr186938's graph from FS
@@ -1838,6 +2025,35 @@ def lex(side, widths):
 	def root_line(station):
 		return profile("keel", min(station, junction)) + smooth(root_height, station)
 
+	# The underside: the traced sections' heights above the keel at each share
+	# of the span (each section's own root to edge), run between them along
+	# the stations and held behind FS 357
+	sections_ = FACTS["lex"]["underside"]["value"]
+
+	def traced(station, t):
+		return smooth([(sec["station"], smooth([((bl - sec["heights"][0][0]) / (sec["edge"] - sec["heights"][0][0]), h) for bl, h in sec["heights"]], t)) for sec in sections_], station)
+
+	def wing_low(station, bl):
+		# the inner wing's lower surface over a buttline (its root's, BL 40,
+		# inboard of that), or None off its chord
+		bl = max(bl, 40.0)
+		leading, chord, _ = wing.station(bl)
+		x = (station - (456 - leading.x / INCH)) / chord
+		return ORIGIN["waterline"] + wing.point(bl, x, -1).z / INCH if 0 <= x <= 1 else None
+
+	cover = LAYOUT["lex"]["underside"]["clearance"]
+	floor_ = wing_low(junction, 40.0) - cover   # the wing root's lower surface under the junction
+
+	def roof(station, bl):
+		# where the underside comes down to: just under the wing root's lower
+		# surface under the junction, and just under the wing's own lower
+		# surface wherever that is lower
+		w = wing_low(station, bl)
+		return floor_ if w is None else min(floor_, w - cover)
+
+	last = sections_[-1]["station"]
+	down = 456 - wing.station(40.0)[0].x / INCH   # the wing root's leading edge
+
 	def wing_top(station, bl):
 		# the inner wing's upper surface over a buttline, or None off its
 		# chord; held at its root (BL 40) for 4 in inboard, so what settles
@@ -1853,6 +2069,15 @@ def lex(side, widths):
 	# to the junction's buttline
 	knots = [(st, body_at(st, root_line(st)) + smooth(graph, st) * smooth(ratio, st)) for st in (apex, 205, 220, 240, 253, 270, 296, 320, 340, 357)]
 	knots.append((junction, reach))
+	# The descent behind FS 357, as a share of the way down to the roof: none
+	# at FS 357, through the splitter's top (its leading edge meets the
+	# underside there, layout.inlet), all of it by the wing root's leading
+	# edge (BL 40), arriving level
+	f0, w0, b0 = LAYOUT["inlet"]["splitter"]["edge"][0]
+	inner = body_at(f0, root_line(f0)) - 1.0
+	t0 = (b0 - inner) / (smooth(knots, f0) - inner)
+	held = profile("keel", f0) + traced(last, t0)
+	descent = [(last, 0.0), (f0, (held - w0) / (held - roof(f0, b0))), (down, 1.0)]
 	stations = [apex + (junction - apex) * i / LEX_STATIONS for i in range(LEX_STATIONS + 1)]
 	# Behind the junction a ring only where the fuselage beneath has one, on
 	# to the last at or past the fairing's end: between its rings the fuselage
@@ -1878,12 +2103,10 @@ def lex(side, widths):
 			span = max(edge_bl - body_at(station, root), 0.0)
 			if station < 253:
 				edge = root - (root - (keel + smooth(edge_height, 253))) * span / measured[253]
-			thickness = min(3.0, 0.2 * span + 0.2)
 		else:
 			# the outer side rides the inner wing just inboard of the junction
 			edge_bl = reach - 5.0 * e
 			edge = (wing_top(station, edge_bl) or meet) - 0.1 * e
-			thickness = 3.0 * (1 - e) + 0.3 * e
 		# behind the junction the root stays on the body's wall at the
 		# junction's root height, wherever the root itself has settled: the
 		# spine's wall, inboard of the deck that rises past that height under
@@ -1942,11 +2165,36 @@ def lex(side, widths):
 			top.append((bl, wl))
 		if station > junction:
 			top = lifted(top, [starboard] + ([inlet] if inlet else []), clearance)
-		sections.append((station, top, thickness, body, root))
-	for station, top, thickness, body, root in sections:
-		bottom = [(bl, wl - thickness * (0.3 + 0.7 * 4 * t * (1 - t)) if 0 < k < across else wl) for k, ((bl, wl), t) in
-			enumerate(zip(top, [k / across for k in range(across + 1)]))]
-		bottom[0] = (body, root - thickness)
+
+		def underside(t, bl, wl):
+			# the underside under the upper surface's wl at a share of the
+			# span: ahead of FS 253 its thickness there shrinking with the
+			# span; the traced sections to FS 357; then down to the roof
+			if station > junction:
+				b = roof(station, bl)
+			elif station < 253:
+				thick = smooth(root_height, 253) + 0.5 - (smooth(root_height, 253) + 0.5 - smooth(edge_height, 253)) * smooth(LEX_FALL, t) - traced(253, t)
+				b = wl - thick * span / measured[253]
+			else:
+				b = keel + traced(min(station, last), t)
+				if station > last:
+					b += (roof(station, bl) - b) * onward(descent, station)
+			# on what rises under it (the cowl, the nacelle, the deck beside the
+			# spine), just clear of it, never round it: what it enclosed would
+			# go as hidden faces
+			skin = under(max(bl, body + 1.5)) if station > last else None
+			if skin is not None:
+				b = max(b, skin + RIDE)
+			return min(b, wl - (0.3 if station <= junction else 0.1))
+
+		bottom = [(bl, underside(k / across, bl, wl)) for k, (bl, wl) in enumerate(top)]
+		if station > last:
+			bottom = lifted(bottom, [starboard] + ([inlet] if inlet else []), RIDE)
+		# its root inside the body's wall at its own height too
+		wall = body_at(station, bottom[0][1]) if station <= junction else core_at(station, bottom[0][1])
+		bottom[0] = (min(body, wall - 1.0), bottom[0][1])
+		sections.append((station, top, bottom))
+	for station, top, bottom in sections:
 		points = top + list(reversed(bottom[1:-1])) + [bottom[0]]
 		rings.append([at(station, h, side * b) for b, h in points])
 		tops.append((station, top))
@@ -2020,6 +2268,8 @@ def exit_distances(centre, half, exponent, origin, directions, reach=120.0):
 	x = origin[0] + d[:, :1] * t - centre[0]
 	y = origin[1] + d[:, 1:] * t - centre[1]
 	b = np.where(y > 0, half[1], half[-1])
+	if isinstance(exponent, tuple):
+		exponent = np.where(y > 0, exponent[0], exponent[1])   # above and below the centre
 	if isinstance(half[0], dict):
 		out = x * half[0]["sign"] > 0
 		a = np.where(out, half[0]["out"], half[0]["in"])
@@ -2050,10 +2300,15 @@ def engine_buttline(station):
 # The body's top is the spine's crown the profile measures (layout.spine), to
 # FS 500, then on to the tail as fitted: the HATP side view's top line runs
 # 1.8-2.9 in above it over FS 455-500. Above its centre the body is narrower
-# than below ("upper"), fitted through the spine's flank points.
+# than below ("upper"), fitted through the spine's flank points. Behind the
+# speedbrake the top falls into the V between the nacelles' tops and the body
+# narrows to the strip between the nozzles (layout.spine tail, narrowing()):
+# carried on along the crest, it stood a flat cap between the nozzles 14 in
+# above the photos' V
 SPINE = LAYOUT["spine"]
+TAIL = SPINE["tail"]
 CORE = {
-	"top": sorted([(s, w) for s, w in SPINE["crown"] if s >= 357] + [(540, 138.2), (600, 129.6)] + [tuple(p) for p in SPINE["crest"]]),   # FS 540 and 600 as fitted (600 0.4 in under the crown the fit had, which the deck now swells back up); behind and between the fins, the photos' crest
+	"top": sorted([(s, w) for s, w in SPINE["crown"] if s >= 357] + [(540, 138.2), (600, 129.6)] + [tuple(SPINE["crest"][0])] + [tuple(p) for p in TAIL["top"]]),   # FS 540 and 600 as fitted (600 0.4 in under the crown the fit had, which the deck now swells back up); the photos' crest at the speedbrake's aft edge, then the tail's V
 	"bottom": [(357, 84.2), (420, 83.5), (500, 84), (560, 85), (620, 88), (692, 93)],
 	"half": [(357, 23.2), (404, 24), (450, 22), (550, 20), (650, 17), (692, 12)],
 }
@@ -2126,7 +2381,36 @@ def deck_half(station):
 	# DECK_END as it sinks into the nacelles, so its edge, just inside their
 	# outboard sides, leaves them before it ends (ending at full width, it
 	# creased their sides 3-7 deg; drawn in over FS 580-640 only, 4)
-	return smooth([(490.0, DECK_HALF), (510.0, DECK_HALF), (640.0, DECK_HALF - 18.0), (DECK_END + 20, DECK_HALF - 18.0)], station)
+	# and narrowing with the body to the strip between the nozzles, where
+	# between the nacelles' rings it would stand a web the photos do not show
+	return narrowing(lambda s: smooth([(490.0, DECK_HALF), (510.0, DECK_HALF), (640.0, DECK_HALF - 18.0), (DECK_END + 20, DECK_HALF - 18.0)], s), station)
+
+
+def narrowing(width, station):
+	# A half-width (a function of the station) behind the speedbrake, narrowed
+	# to the strip between the nozzles (layout.spine tail): its own run eased,
+	# level at both ends, to half the strip's width
+	start, end = TAIL["narrows"]
+	return width(station) + (TAIL["strip"] / 2 - width(end)) * ease((station - start) / (end - start))
+
+
+def core_widths(station):
+	# The body's half-widths above and below its centre
+	return narrowing(lambda s: onward(CORE["upper"], s), station), narrowing(lambda s: smooth(CORE["half"], s), station)
+
+
+FLOOR = 12.0   # the body's exponent above its centre where it has narrowed to the strip (core_power())
+
+
+def core_power(station):
+	# The body's superellipse exponents above and below its centre. Above,
+	# behind the speedbrake, eased up to FLOOR as the body narrows to the
+	# strip, so that its top is the V's floor (layout.spine tail): at 2.6 it
+	# stood a dome 2.8 in high over the strip's edges at FS 680, which had
+	# turned to a trough between the nacelles' walls by FS 688, folding the
+	# facets between 40-60 deg
+	start, end = TAIL["narrows"]
+	return 2.6 + (FLOOR - 2.6) * ease((station - start) / (end - start)), 2.6
 
 
 def core_at(station, waterline):
@@ -2137,15 +2421,33 @@ def core_at(station, waterline):
 	share = abs(y / ((top - bottom) / 2))
 	if share >= 1:
 		return 0.0
-	return (onward(CORE["upper"], station) if y > 0 else smooth(CORE["half"], station)) * (1 - share ** 2.6) ** (1 / 2.6)
+	power = core_power(station)[0 if y > 0 else 1]
+	return core_widths(station)[0 if y > 0 else 1] * (1 - share ** power) ** (1 / power)
 
 
 NOZZLE = LAYOUT["nozzle"]   # the outer flaps' start and exit, their radii, and the axis's waterline
 # its centre falls from FS 580 onto the nozzles' axis at their start
 NACELLE = [(445, 30.3, 103.3, 15.3, 16.5), (470, None, 104.5, 17.5, 17.5), (520, None, 105.5, 19.5, 18.5), (580, None, 106.0, 21.0, 19.0),
 	(640, None, 106.0 + (NOZZLE["waterline"] - 106.0) * (640 - 580) / (692 - 580), 20.0, 18.5), (692, None, NOZZLE["waterline"], 18.5, 17.5)]
+# Each nacelle ends on its outer flaps' start circle (layout.nacelle end),
+# its section eased into that circle from `round`, and runs `lip` on over the
+# flaps to the fuselage's last ring: ended on its own section at FS 692, it
+# stood an annulus 0.6-0.9 in round the flaps
+END = LAYOUT["nacelle"]["end"]
+TAIL_END = NOZZLE["start"] + END["lip"]
+# inches the end's sections stand outside that circle: the skin's facets
+# between its columns cut up to 0.2 in inside their corners, and on the
+# circle itself the alternate flaps showed through the lip in teeth
+LIP = 0.15
+
+
+def rounding(station):
+	# how far a nacelle's section has eased into its end circle
+	return ease((station - END["round"]) / (NOZZLE["start"] - END["round"]))
+
+
 # The fuselage station where each inlet's outer skin hands over to the rear
-# fuselage's nacelle, behind the plug that closes the duct
+# fuselage's nacelle, round the duct
 JOIN = 440.0
 
 
@@ -2155,11 +2457,11 @@ def union_ring(station, angles=None, sided=True):
 	# The nacelles join it whole at JOIN: ahead of that the inlets' own outer
 	# skins (inlets()) stand in for them, and the fuselage's ring jumps out to
 	# the nacelles between its last station ahead of JOIN and JOIN itself,
-	# inside them, behind the plug
-	top, bottom, half = (smooth(CORE[k], station) for k in ("top", "bottom", "half"))
-	upper = onward(CORE["upper"], station)
+	# inside them, where the ducts pass (canopy() leaves those faces out)
+	top, bottom = smooth(CORE["top"], station), smooth(CORE["bottom"], station)
+	upper, half = core_widths(station)
 	centre = (0.0, (top + bottom) / 2)
-	core = ((0.0, centre[1]), ((upper, half), (top - bottom) / 2), 2.6)
+	core = ((0.0, centre[1]), ((upper, half), (top - bottom) / 2), core_power(station))
 	default = angles is None
 	turns = angles or angles_at(station, centre)
 	flat = nacelle_side(station) if sided and station >= JOIN - 1e-6 else None
@@ -2171,11 +2473,12 @@ def union_ring(station, angles=None, sided=True):
 		parts = [core]
 		if station >= JOIN - 1e-6:
 			b, w, a, up, down = nacelle_at(station)
+			power = 2.3 + (2.0 - 2.3) * rounding(station)   # a circle at the end
 			for side in (1, -1):
 				if outboard is None:
-					parts.append(((side * b, w), (a, up, down), 2.3))
+					parts.append(((side * b, w), (a, up, down), power))
 				else:
-					parts.append(((side * b, w), ({"in": a, "out": outboard, "sign": side}, up, down), {"in": 2.3, "out": flat[1]}))
+					parts.append(((side * b, w), ({"in": a, "out": outboard, "sign": side}, up, down), {"in": power, "out": flat[1]}))
 			deck = deck_top(station)
 			if deck is not None and deck > w + 0.25:
 				wide = deck_half(station)
@@ -2202,6 +2505,11 @@ def union_ring(station, angles=None, sided=True):
 		weight = flat[3]
 		side = assembled(width)
 		ring = [(x0 + (x1 - x0) * weight, y0 + (y1 - y0) * weight) for (x0, y0), (x1, y1) in zip(ring, side)]
+	if angles is DENSE and station > TAIL["narrows"][0]:
+		# the V above, and the notch below between the strip and the
+		# nacelles' lower sides (walked from the keel, upside down)
+		ring = walled(ring, centre, nacelle_at(station)[0], ease((station - TAIL["narrows"][0]) / TAIL_EASE), rounding(station))
+		ring = [(x, -y) for x, y in reversed(valley([(x, -y) for x, y in reversed(ring)], (centre[0], -centre[1])))]
 	ring = doored(station, ring)
 	if sided:
 		# the band on the sided outline alone: the columns are spaced along
@@ -2220,7 +2528,22 @@ def union_ring(station, angles=None, sided=True):
 		# under a nacelle's crown) the outline leaps between two rays, and a
 		# point cast at an angle near one lands on one side or the other from
 		# station to station, twisting the loft's facets
-		ring = ring[:SILL] + along(station, angles_at(station, centre)[SILL], len(ring) - SILL)
+		sill = angles_at(station, centre)[SILL]
+		ring = ring[:SILL] + along(station, sill, len(ring) - SILL)
+		if station > TAIL["narrows"][0]:
+			# behind the speedbrake the steps run evenly along the outline's
+			# legs (spaced()), eased in from the sill's split: as the
+			# top falls into the V between the nacelles the steps above the
+			# sill (a tenth of the outline, on the strip) and the sparser ones
+			# below met its walls differently from station to station, and
+			# twisted the facets between. Each step's angle is eased, and the
+			# point taken on the outline there (eased point by point, the steps
+			# cut inside the outline by up to an inch)
+			weight = ease((station - TAIL["narrows"][0]) / TAIL_EASE)
+			theta, path, _ = outline(station, 0.0)
+			turn = lambda p: math.atan2(p[0] - centre[0], p[1] - centre[1])
+			turns = [turn(a) + (turn(b) - turn(a)) * weight for a, b in zip(ring, spaced(station, len(ring)))]
+			ring = [(float(np.interp(a, theta, path[:, 0])), float(np.interp(a, theta, path[:, 1]))) for a in turns]
 		# one column pinned to the bay's corner (from the dense outline,
 		# which along() has just built): between columns 4-5 in apart the
 		# corner was cut off by up to 4 in, by more or less from station to
@@ -2231,6 +2554,83 @@ def union_ring(station, angles=None, sided=True):
 			x, y = ring[BAY_COLUMN]
 			ring[BAY_COLUMN] = (x + (corner[0] - x) * weight, y + (corner[1] - y) * weight)
 	return centre, ring
+
+
+def walled(ring, centre, side, weight, level, drop=0.25):
+	# Behind the speedbrake the V between the nacelles' tops: its walls run
+	# straight from the strip's edge, where the top leaves its level by
+	# `drop` inches, to where they touch a nacelle's rounded top (the outline
+	# there highest seen from the edge, inboard of the nacelle's centre
+	# buttline `side`), each sample moved out along its ray onto the wall,
+	# by `weight` (the V eased in behind the speedbrake). By `level` the
+	# walls give way to the nacelles' own round sides down to the strip, the
+	# strip carried across to them: at the nozzles the V reaches the gap
+	# between their rings (layout.spine tail), where straight walls stood
+	# 0.6 in inside the rings above the strip. The union of the body and the
+	# nacelles left a groove 1.3-3 in deep along each of the strip's edges
+	# from FS 676 to the end, the facets between folded 60-100 deg; and
+	# where no ray from the centre meets a nacelle's inboard wall, a notch
+	# the loft's columns crossed in shards
+	top = ring[0][1]
+	c = next((k for k, (x, y) in enumerate(ring) if abs(y - top) > drop), None)
+	if c is None or c == 0 or weight <= 0:
+		return ring
+	c -= 1
+	(x0, y0) = ring[c]
+	reach = [k for k in range(c + 1, len(ring)) if x0 < ring[k][0] <= side]
+	if not reach:
+		return ring
+	touch = max(reach, key=lambda k: math.atan2(ring[k][1] - y0, ring[k][0] - x0))
+	across = next((k for k in reach if ring[k][1] >= y0), touch)
+
+	def onto(k, far):
+		# sample k moved out along its ray onto the chord from the edge to
+		# sample `far` (as it is, beyond it or where the chord runs inside it)
+		x, y = ring[k]
+		if k >= far:
+			return x, y
+		(x1, y1), dx, dy = ring[far], x - centre[0], y - centre[1]
+		ex, ey = x1 - x0, y1 - y0
+		det = dx * ey - dy * ex
+		if abs(det) < 1e-12:
+			return x, y
+		t = ((x0 - centre[0]) * ey - (y0 - centre[1]) * ex) / det
+		return (centre[0] + dx * t, centre[1] + dy * t) if t > 1.0 else (x, y)
+
+	out = list(ring)
+	for k in range(c + 1, max(touch, across)):
+		(ax, ay), (bx, by) = onto(k, touch), onto(k, across)
+		x, y = ring[k]
+		wall = (ax + (bx - ax) * level, ay + (by - ay) * level)
+		out[k] = (x + (wall[0] - x) * weight, y + (wall[1] - y) * weight)
+	return out
+
+
+def valley(ring, centre, leap=1.0, stride=4):
+	# Behind the speedbrake the top falls into a V between the nacelles'
+	# tops, whose walls below where a ray from the centre grazes a nacelle no
+	# ray meets: there the outline dives down the strip's side and leaps back
+	# up onto the nacelle, a notch the loft's columns crossed in shards. Each
+	# leap outward of more than `leap` inches between neighbouring samples is
+	# closed by the chord across the notch's mouth, from where the dive begins
+	# (going back from the leap, the first `stride` samples running nearer
+	# level than steep: the samples step in hundredths of an inch) to the
+	# leap's far side. Bridged instead by the flattest chord over the outline
+	# before it, the notch took the visible trough beside the strip with it
+	# as soon as it opened, and the skin folded there
+	r = [math.hypot(x - centre[0], y - centre[1]) for x, y in ring]
+	out = list(ring)
+	for i in range(len(ring) - 1):
+		if r[i + 1] - r[i] <= leap:
+			continue
+		c = i
+		while c >= stride and abs(ring[c][1] - ring[c - stride][1]) > abs(ring[c][0] - ring[c - stride][0]):
+			c -= 1
+		(x0, y0), (x1, y1) = ring[c], ring[i + 1]
+		for k in range(c + 1, i + 1):
+			f = (k - c) / (i + 1 - c)
+			out[k] = (x0 + (x1 - x0) * f, y0 + (y1 - y0) * f)
+	return out
 
 
 def nacelle_side(station):
@@ -2457,9 +2857,9 @@ def lamps():
 		fin = built([f"fin_{name}"])
 		node(f"formation_fin_{name}", mesh=flush(fin, strips["fin"], side, strips["width"], inward), paint="lights")
 		node(f"formation_body_{name}", mesh=flush(built(["fuselage"]), strips["body"], side, strips["width"], inward), paint="lights")
-		# the strobes on the fins' faces, cast in along the buttline; the position
-		# lights under the LEX's edges, 0.9 in inboard of it, cast up onto it
-		for key, part, toward in ((f"strobe_{name}", f"fin_{name}", inward), (f"position_lex_{name}", f"lex_{name}", UP)):
+		# the strobes on the fins' faces and the position lights on the LEX's
+		# edges, each cast in along the buttline
+		for key, part, toward in ((f"strobe_{name}", f"fin_{name}", inward), (f"position_lex_{name}", f"lex_{name}", inward)):
 			f, w, b = points[key]["at"]
 			ends = [[f - lens / 2, w, abs(b)], [f + lens / 2, w, abs(b)]]
 			node(f"lamp_{key}", mesh=flush(built([part]), ends, side, lens, toward), paint="lights")
@@ -2481,6 +2881,35 @@ def lamps():
 	f, w, b = ORIGIN["station"] - end.x / INCH, ORIGIN["waterline"] + end.z / INCH, -end.y / INCH
 	ends = [[f - 0.5, w - 0.5, b], [f - 0.5, w + 0.5, b]]
 	node("lamp_position_tail", mesh=flush(built(["pod_right"]), ends, 1, 1.0, FORWARD), paint="lights")
+
+
+def cheeks():
+	# The box on each nacelle's side over the cheek station (layout.nacelle
+	# cheek), airframe, shown with or without the stores: its outboard face
+	# upright, its top along the photos' line, its bottom level with the
+	# round's line just under it, its inboard face inside the nacelle, square
+	# at its front and turning outboard over its aft end to its aft edge; and
+	# ahead of it the LAU-116's block, which the photos show on clean jets too
+	# (launcher())
+	box = LAYOUT["nacelle"]["cheek"]
+	(edge, buttline), front, chamfer = box["edge"], box["front"], box["chamfer"]
+	turn = edge - chamfer
+	stations = sorted({front, *range(math.ceil(front), math.ceil(turn)), turn, edge - chamfer / 2, edge})
+	for side in (-1, 1):
+		name = side_name(side)
+		rings = []
+		for station in stations:
+			deep = box["depth"] * min(1.0, max(0.06, (edge - station) / chamfer))
+			low, high = smooth(box["bottom"], station), smooth(box["top"], station)
+			rings.append([fwb([station, w, b], side) for w, b in ((low, buttline), (high, buttline), (high, buttline - deep), (low, buttline - deep))])
+		block, corners = launcher(side)
+		node(f"fairing_cheek_{name}", mesh=merge([outward(loft(rings)), block]))
+		# the block's corners the photos mark (marking.md)
+		for key in ("front_top", "front_bottom"):
+			MARKS[f"ejector_{key}_{name}"] = (corners[key], f"fairing_cheek_{name}")
+		# the aft edge's middle and the outboard face's top front corner (marking.md)
+		MARKS[f"fairing_cheek_aft_{name}"] = (fwb([edge, (smooth(box["bottom"], edge) + smooth(box["top"], edge)) / 2, buttline], side), f"fairing_cheek_{name}")
+		MARKS[f"fairing_cheek_front_{name}"] = (fwb([front, smooth(box["top"], front), buttline], side), f"fairing_cheek_{name}")
 
 
 def mouth_box():
@@ -2516,12 +2945,19 @@ def nacelle_at(station):
 	knots = [(MOUTH["station"], b0, w0, a0, h0)]
 	knots += [(s, b if b is not None else engine_buttline(s), w, a, h) for s, b, w, a, h in NACELLE]
 	b, w, a, up = (smooth([(k[0], k[i]) for k in knots], station) for i in (1, 2, 3, 4))
-	return b, w, a, up, w - nacelle_bottom(station)
+	down = w - nacelle_bottom(station)
+	# eased into the circle it ends on, round the engine's axis (layout.nacelle
+	# end), LIP outside it all round (with the bottom kept inside it, the
+	# skin crossed the flaps' forward ends round the lower outboard quarter,
+	# and the alternate flaps showed through it in teeth)
+	k = rounding(station)
+	r = END["radius"] + LIP
+	return b, w + (NOZZLE["waterline"] - w) * k, a + (r - a) * k, up + (r - up) * k, down + (r - down) * k
 
 
 MOUTH_SIDES = 80   # points round the inlet's mouth, from its top outboard and round: at 40 the rings'
 # chords cut 0.2 in inside the fuselage's outline where the two meet
-PLUG = 15   # inches down each inlet's duct to the plug that closes it
+DUCT_RINGS = 9   # rings down each inlet's duct, from the lip's inside to its cap
 
 
 def mouth():
@@ -2671,6 +3107,64 @@ def inlet_ring(depth, inset, blend=0.0):
 		for (s_, w, b), (tw, tb), (lw, lb) in zip(d, target(station), target(MOUTH["station"]))]
 
 
+def duct_ring(share):
+	# The duct's inside at a share of the way from the lip's inside (1.2 in
+	# down) to its cap (layout.inlet duct), as (FS, WL, BL outboard) round
+	# the mouth's directions: raked as the lip at first, square at the cap;
+	# the mouth's D half the wall inside the lip, turning toward a circle of
+	# its own area and its centre toward the engine's axis as the S-duct's
+	# first stretch does, each by the share of the way to the engine face
+	# its depth is (the turn on a cosine, level at the mouth)
+	duct = LAYOUT["inlet"]["duct"]
+	top = LAYOUT["inlet"]["lip"]["top"][0]
+	cap = top + duct["depth"]
+	length = duct["face"] * value(FACTS["engine"]["inlet"])
+	if "circle" not in MOUTH:
+		inside = np.array([(b, w) for _, w, b in mouth_ring(0, MOUTH["wall"])])
+		area = abs(np.dot(inside[:, 0], np.roll(inside[:, 1], 1)) - np.dot(inside[:, 1], np.roll(inside[:, 0], 1))) / 2
+		MOUTH["circle"] = math.sqrt(area / math.pi)
+	lip = mouth_ring(1.2, MOUTH["wall"])
+	depth = (cap - top) * share
+	turn = depth / length
+	shift = (engine_buttline(top + length) - MOUTH["centre"][0]) * (1 - math.cos(math.pi * turn)) / 2
+	out = []
+	c = MOUTH["centre"]
+	for s0, w, b in lip:
+		f = 1 + (MOUTH["circle"] / math.hypot(b - c[0], w - c[1]) - 1) * turn
+		out.append((s0 * (1 - share) + cap * share, c[1] + (w - c[1]) * f, c[0] + shift + (b - c[0]) * f))
+	return out
+
+
+def ducted(station, waterline, buttline):
+	# The share of its paint each point (arrays of FS, WL, BL) keeps for
+	# lying inside an inlet's duct (layout.inlet duct): 1 outside the ducts;
+	# inside, by its depth past the lip, from the lip's grey to black a
+	# hydraulic diameter down (eased at both ends), and black on the cap. A
+	# point is inside where it lies within half an inch of the duct's
+	# section at its depth (the skin outside stands a wall's width off it)
+	duct = LAYOUT["inlet"]["duct"]
+	plane, cap = MOUTH["plane"], LAYOUT["inlet"]["lip"]["top"][0] + duct["depth"]
+	shape = np.shape(station)
+	station, waterline, bl = np.ravel(station), np.ravel(waterline), np.abs(np.ravel(buttline))
+	depth = station - (plane[0] + plane[1] * waterline + plane[2] * bl)
+	out = np.ones(len(station))
+	near = np.flatnonzero((depth > 0) & (station < cap + 0.5) & (bl > 10) & (bl < 55) & (waterline > 65) & (waterline < 115))
+	if not len(near):
+		return out.reshape(shape)
+	rings = [np.array(duct_ring(k / 24)) for k in range(25)]
+	starts = np.array([r[:, 0].mean() for r in rings])
+	k = np.clip(np.searchsorted(starts, station[near]), 0, 24)
+	held = np.zeros(len(near), bool)
+	for j in np.unique(k):
+		chosen = np.flatnonzero(k == j)
+		polygon = rings[j][:, [2, 1]]
+		held[chosen] = [enclosing(polygon, (b, w), 0.5) for b, w in zip(bl[near][chosen], waterline[near][chosen])]
+	inside = near[held]
+	f = np.clip(depth[inside] / value(FACTS["engine"]["inlet"]), 0, 1)
+	out[inside] = 1 - f * f * (3 - 2 * f)
+	return out.reshape(shape)
+
+
 def inlet_slice(station):
 	# The inlet's outer skin cut across a station, as a closed list of (BL
 	# outboard, WL) round the mouth; [] off it. Each point of the mouth runs aft
@@ -2694,9 +3188,10 @@ def inlet_slice(station):
 
 def inlets():
 	# Each inlet: an open duct from the lip aft into the nacelle, its lip
-	# rounded, its interior closed by a plug 15 in down the duct; behind the
-	# lip its outer surface eases from the mouth's D into the rear fuselage at
-	# JOIN, where the fuselage's nacelle takes over
+	# rounded, the duct turning toward the engine and closed by a cap past
+	# JOIN, ahead of the main gear's bay (duct_ring(), layout.inlet duct);
+	# behind the lip its outer surface eases from the mouth's D into the rear
+	# fuselage at JOIN, where the fuselage's nacelle takes over, open there
 	wall = MOUTH["wall"]
 	for side in (-1, 1):
 		name = side_name(side)
@@ -2704,9 +3199,11 @@ def inlets():
 		def ring(depth, inset, blend=0.0):
 			return [at(s_, w, side * b) for s_, w, b in inlet_ring(depth, inset, blend)]
 
-		rings = [ring(PLUG, wall), ring(6, wall), ring(1.2, wall), ring(-0.4, wall / 2), ring(1.2, 0)]
+		rings = [[at(s_, w, side * b) for s_, w, b in duct_ring(1 - k / DUCT_RINGS)] for k in range(DUCT_RINGS)]
+		rings += [ring(1.2, wall), ring(-0.4, wall / 2), ring(1.2, 0)]
 		rings += [ring(depth, 0, outer_blend(depth)) for depth in INLET_OUTER[1:] + [JOIN - MOUTH["station"]]]
-		node(f"inlet_{name}", mesh=loft(rings))
+		vertices, faces = loft(rings)
+		node(f"inlet_{name}", mesh=(vertices, faces[:-1]))
 		outer = mouth_ring(0, 0)
 		lip = LAYOUT["inlet"]["lip"]
 
@@ -3200,7 +3697,8 @@ GROOVE = LAYOUT["gear"]["tyres"]["groove"]   # the tyres' tread grooves: width a
 # Each well's opening in the skin, cut once the airframe is built (wells()):
 # {well: {"below": bool, "pieces": [a door's plan outline, [[FS, BL], ...]]}}
 # for the doors and the speedbrake, as cut() copied them; the probe's is its
-# door's stations and angles, {"probe": {"shell": (from, to, upper, lower)}}
+# door's stations and angles and the station its well reaches back to,
+# {"probe": {"shell": (from, to, upper, lower), "back": station}}
 OPENINGS = {}
 
 
@@ -3551,6 +4049,19 @@ def within(outline, x, y):
 	# whether a side-view point lies inside a convex (FS, WL) outline
 	sense = polygon_sense(outline)
 	return all(((f1 - f0) * (y - w0) - (w1 - w0) * (x - f0)) * sense > 0 for (f0, w0), (f1, w1) in zip(outline, outline[1:] + outline[:1]))
+
+
+def enclosing(polygon, point, margin=0.0):
+	# whether a closed polygon ((N, 2) array) holds a point, or passes within
+	# `margin` of it
+	a, b = polygon, np.roll(polygon, -1, axis=0)
+	x, y = point
+	crossing = ((a[:, 1] > y) != (b[:, 1] > y)) & (x < a[:, 0] + (y - a[:, 1]) * (b[:, 0] - a[:, 0]) / np.where(b[:, 1] != a[:, 1], b[:, 1] - a[:, 1], 1))
+	if crossing.sum() % 2:
+		return True
+	e = b - a
+	t = np.clip(((x - a[:, 0]) * e[:, 0] + (y - a[:, 1]) * e[:, 1]) / np.maximum((e * e).sum(1), 1e-12), 0, 1)
+	return bool((np.hypot(a[:, 0] + e[:, 0] * t - x, a[:, 1] + e[:, 1] * t - y) <= margin).any())
 
 
 def polygon_sense(outline):
@@ -4511,6 +5022,135 @@ def gear():
 				f"gear_door_outer_aft_inboard_{name}": [f1, side * inner], f"gear_door_outer_front_inboard_{name}": [f0, side * inner]})
 
 
+def tailhook(pivot):
+	# The arresting hook (layout.hook): swings sideways on its pivot (NATOPS
+	# 2.10.5's lateral liquid spring), then lowers. Stowed, its shank climbs
+	# from the pivot into the channel between the nacelles, the point tucked
+	# between the nozzles. Cast like the gear's parts (casting's rounded
+	# edges, hollow pins, studs): the yoke round the pin on the keel's lug, a
+	# round shank tapering aft with its split collar and the small lug on its
+	# top, and the point, a boss with an aft-facing bore on a flat skid, bolt
+	# heads either side; the hold-down rod from the keel to a lug on the
+	# shank's top telescopes as the hook lowers (a box shank 4.4 in wide and a
+	# box shoe were what the photos showed as round castings)
+	hook = LAYOUT["hook"]
+	point, fittings = hook["head"], hook["fittings"]
+	node("hook_swing", hinge=pivot)
+	joint("hook_swing", UP, AFT, -PORT, "swing", IDENTITY)
+	tip = at(*hook["point"], 0)
+	along = (tip - pivot).normalized()
+	side = Vector(at(0, 0, 1) - at(0, 0, 0)).normalized()
+	up = side.cross(along).normalized()
+	if up.dot(UP) < 0:
+		up = -up
+	length = (tip - pivot).length / INCH
+
+	def p(s, u=0.0, v=0.0):
+		# along the shank s, up from its line u and across it v, inches
+		return pivot + along * (s * INCH) + up * (u * INCH) + side * (v * INCH)
+
+	def diameter(s):
+		knots = hook["shank"]
+		return float(np.interp(s / length, [k[0] for k in knots], [k[1] for k in knots]))
+
+	def round_ring(s, radius, sides=16, lift=0.0):
+		return [p(s, lift + radius * math.cos(2 * math.pi * k / sides), radius * math.sin(2 * math.pi * k / sides)) for k in range(sides)]
+
+	def block(s0, s1, u0, u1, v0, v1):
+		return outward(loft([[p(s, u0, v0), p(s, u0, v1), p(s, u1, v1), p(s, u1, v0)] for s in (s0, s1)]))
+
+	# the point's place: its aft face set back from the tip so that its
+	# lowest corner, aftmost below the climbing line, lands on the tip's
+	# station (the skid ends just short of it)
+	boss, length_ = point["boss"][0] / 2, point["boss"][1]
+	width, long, thick = point["skid"]
+	under = boss - 0.6   # the skid's top, up into the boss
+	climb = math.asin(along.dot(UP))
+	end = length - boss * math.tan(climb)
+	# the yoke's arms, their outer faces under the pin's caps (layout.hook fitting)
+	reach = hook["fitting"]["radius"]
+	outer = hook["fitting"]["width"] / 2 - STANDOFF
+	inner = outer - fittings["yoke"]
+	pieces = []
+	# the yoke: an arm either side of the keel's lug, a round lug on the pin,
+	# carried aft to a block that rounds into the shank
+	for sign in (1, -1):
+		v0, v1 = sorted((sign * inner, sign * outer))
+		pieces.append(cylinder(p(0, 0, v0), p(0, 0, v1), reach, sides=20))
+		pieces.append(filleted(block(0.0, 4.5, -reach * 0.6, reach * 0.6, v0, v1), 0.2))
+		pieces.append(hollow(p(0, 0, sign * outer), side * sign, fittings["pin"]))
+	pieces.append(filleted(block(3.5, 6.0, -1.5, 1.5, -outer, outer), 0.3))
+	# the shank: round, its diameter's knots, from the yoke's block to the boss's neck
+	stations = [5.5 + (end - length_ - 2.0 - 5.5) * i / 8 for i in range(9)]
+	pieces.append(loft([round_ring(s, diameter(s) / 2) for s in stations]))
+	neck = [end - length_ - 2.0 + 2.0 * i / 4 for i in range(5)]
+	pieces.append(loft([round_ring(s, diameter(s) / 2 + (boss - diameter(s) / 2) * ease(i / 4)) for i, s in enumerate(neck)]))
+	# the split collar near its top, a clamp's bolt on it
+	place, stand, band = fittings["collar"]
+	r = diameter(place) / 2 + stand
+	pieces.append(cylinder(p(place - band / 2), p(place + band / 2), r, sides=20))
+	pieces.append(stud(p(place, r), up, 0.5))
+	# the small lug on its top a third of the way along
+	share, l, w, h = fittings["tab"]
+	s = share * length
+	pieces.append(filleted(block(s - l / 2, s + l / 2, diameter(s) / 2 - 0.2, diameter(s) / 2 + h, -w / 2, w / 2), 0.1))
+	# the point: the boss round the shank's line, its bore facing aft (a dark
+	# disc just under its face, as hollow() draws a pin's bore), on the skid
+	pieces.append(loft([round_ring(end - length_, boss, 20), round_ring(end, boss, 20)]))
+	pieces.append(finished(cylinder(p(end - 0.05), p(end + 0.01), point["bore"] / 2, sides=16), "hub"))
+	pieces.append(filleted(block(end - 0.4 - long, end - 0.4, -under - thick, -under, -width / 2, width / 2), 0.4))
+	span, bolt = point["bolts"]
+	for sign in (1, -1):
+		pieces.append(cylinder(p(end - long / 2, -under - thick / 2, sign * width / 2 - sign * 0.2), p(end - long / 2, -under - thick / 2, sign * span / 2), bolt / 2, sides=12))
+	# the hold-down rod's lug on the shank's top
+	rod = fittings["rod"]
+	g = p(rod["lug"], diameter(rod["lug"]) / 2 + 0.6)
+	pieces.append(filleted(block(rod["lug"] - 0.8, rod["lug"] + 0.8, diameter(rod["lug"]) / 2 - 0.3, diameter(rod["lug"]) / 2 + 1.2, -0.6, 0.6), 0.15))
+	hooked = merge(pieces)
+	node("hook", parent="hook_swing", hinge=pivot, mesh=hooked)
+	MARKS["hook_point"] = (tip, "hook")
+	MARKS["hook_pivot"] = (pivot, "hook")
+	# lowered until the point's lowest corner lies in the direction the
+	# photos' does from the pivot (layout.hook lowered): turned aft towards
+	# down. Its distance from the pivot, past the stowed tip's, is unsettled
+	lowered = at(*hook["lowered"], 0) - pivot
+	aim = math.atan2(lowered.z, lowered.x)
+
+	def lowest(turn):
+		c, s_ = math.cos(turn), math.sin(turn)
+		return min((Vector(((v - pivot).x * c - (v - pivot).z * s_, 0.0, (v - pivot).x * s_ + (v - pivot).z * c)) for v in hooked[0]), key=lambda q: q.z)
+
+	travel = min((math.radians(tenth / 10) for tenth in range(400, 1000)), key=lambda turn: abs(math.atan2(lowest(turn).z, lowest(turn).x) - aim))
+	joint("hook", PORT, AFT, DOWN, "hook", [[0, 0], [1, round(travel, 4)]])
+	# the hold-down rod: a cylinder turning on its pin in the keel's aft face
+	# and a piston turning on the shank's lug, each kept on the line between
+	# the two pins as the hook lowers
+	q = at(*rod["top"], 0)
+	cylinder_d, piston_d = rod["diameters"]
+	cylinder_l, piston_l = rod["lengths"]
+	towards = (g - q).normalized()
+	node("hook_rod", parent="hook_swing", hinge=q, mesh=merge([cylinder(q - towards * (0.6 * INCH), q + towards * (cylinder_l * INCH), cylinder_d / 2, sides=14),
+		cylinder(q + towards * (1.5 * INCH), q + towards * (2.3 * INCH), cylinder_d / 2 + 0.2, sides=14)]))
+	node("hook_piston", parent="hook", hinge=g, mesh=merge([cylinder(g, g - towards * (piston_l * INCH), piston_d / 2, sides=12),
+		cylinder(g + side * (0.7 * INCH), g - side * (0.7 * INCH), 0.45, sides=10)]))
+
+	def angle(v):
+		# a direction's turn aft towards down, in the plane of the hook's travel
+		return math.atan2(-v.z, -v.x)
+
+	def lug_at(turn):
+		c, s_ = math.cos(turn), math.sin(turn)
+		d = g - pivot
+		# turned aft towards down about the pivot (Blender's x forward, z up)
+		return pivot + Vector((d.x * c - d.z * s_, d.y, d.x * s_ + d.z * c))
+
+	rest = angle(g - q)
+	keys = [i / 16 for i in range(17)]
+	turns = [angle(lug_at(travel * k) - q) - rest for k in keys]
+	joint("hook_rod", PORT, AFT, DOWN, "hook", [[k, round(t, 4)] for k, t in zip(keys, turns)])
+	joint("hook_piston", PORT, AFT, DOWN, "hook", [[k, round(t - travel * k, 4)] for k, t in zip(keys, turns)])
+
+
 def mechanisms():
 	# The arresting hook, the refuelling probe and its door and the
 	# speedbrake. Placements are provisional: the hook's pivot is
@@ -4538,87 +5178,272 @@ def mechanisms():
 			at(station, b, -0.6 * half), at(station, b + 1.0, -half)])
 	hook = LAYOUT["hook"]
 	pivot = at(*hook["pivot"], 0)
-	fitting = hook["fitting"]
-	node("keel", mesh=merge([loft(rings), cylinder(at(hook["pivot"][0], hook["pivot"][1], -fitting["width"] / 2), at(hook["pivot"][0], hook["pivot"][1], fitting["width"] / 2), fitting["radius"])]))
-	# Hook: swings sideways on its pivot (NATOPS 2.10.5's lateral liquid
-	# spring), then lowers. Stowed, its shank climbs from the pivot into the
-	# channel between the nacelles, the shoe tucked between the nozzles
-	# (layout.hook): a tapered bar, then the shoe, deeper below the line, its
-	# tip at the point
-	node("hook_swing", hinge=pivot)
-	joint("hook_swing", UP, AFT, -PORT, "swing", IDENTITY)
-	tip = at(*hook["point"], 0)
-	along = (tip - pivot).normalized()
-	side = Vector(at(0, 0, 1) - at(0, 0, 0)).normalized()
-	up = side.cross(along).normalized()
-	if up.dot(UP) < 0:
-		up = -up
-	length = (tip - pivot).length / INCH
-
-	def section(distance, width, above, below):
-		c = pivot + along * (distance * INCH)
-		return [c + up * (above * INCH) - side * (width / 2 * INCH), c + up * (above * INCH) + side * (width / 2 * INCH),
-			c - up * (below * INCH) + side * (width / 2 * INCH), c - up * (below * INCH) - side * (width / 2 * INCH)]
-
-	depth, width = hook["shank"]["depth"], hook["shank"]["width"]
-	shank = loft([section(0.0, width, depth / 2, depth / 2), section(length - 6, width * 0.7, depth * 0.4, depth * 0.4)])
-	# the tip's end face is square to the shank, which climbs: set back by the
-	# depth below the line times the climb, its lowest corner lands on the point
-	back = (depth / 2 + 0.6) * along.dot(UP)
-	shoe = loft([section(length - 6, width * 0.7, depth * 0.4, depth * 0.4), section(length - 5, width, depth / 2, depth / 2 + 1.6),
-		section(length - 1.5, width, depth / 2, depth / 2 + 1.6), section(length - back, width * 0.7, depth * 0.35, depth / 2 + 0.6)])
-	hooked = merge([shank, shoe])
-	node("hook", parent="hook_swing", hinge=pivot, mesh=hooked)
-	MARKS["hook_point"] = (tip, "hook")
-	MARKS["hook_pivot"] = (pivot, "hook")
-	# lowered until the shoe's lowest point lies in the direction the photos'
-	# does from the pivot (layout.hook lowered): turned aft towards down. Its
-	# distance from the pivot, 2.9 in past the stowed tip's, is unsettled
-	lowered = at(*hook["lowered"], 0) - pivot
-	aim = math.atan2(lowered.z, lowered.x)
-
-	def lowest(turn):
-		c, s = math.cos(turn), math.sin(turn)
-		return min((Vector(((v - pivot).x * c - (v - pivot).z * s, 0.0, (v - pivot).x * s + (v - pivot).z * c)) for v in hooked[0]), key=lambda q: q.z)
-
-	travel = min((math.radians(tenth / 10) for tenth in range(400, 1000)), key=lambda turn: abs(math.atan2(lowest(turn).z, lowest(turn).x) - aim))
-	joint("hook", PORT, AFT, DOWN, "hook", [[0, 0], [1, round(travel, 4)]])
+	# its aft end the lug between the hook's yoke arms, round the pin
+	inner = hook["fitting"]["width"] / 2 - STANDOFF - hook["fittings"]["yoke"]
+	node("keel", mesh=merge([loft(rings), cylinder(at(hook["pivot"][0], hook["pivot"][1], -inner), at(hook["pivot"][0], hook["pivot"][1], inner), hook["fittings"]["lug"] / 2, sides=20)]))
+	tailhook(pivot)
 	# Probe: its door on the upper starboard nose where the photos put the
 	# reference airframe's (layout.probe; the research jet's, TM-101724's, ran
-	# FS 128.5 to 188), a thin shell on the skin, 0.15 in proud, hinged along
-	# its lower edge; the probe lies stowed beneath it, 3.5 in under the skin,
-	# and swings out and forward about its aft end
+	# FS 128.5 to 188), a thin shell on the skin, 0.15 in proud. The probe lies
+	# stowed beneath it, 3.5 in under the skin, and swings out about its root
+	# (layout.motion probe pivot, behind the door's aft edge) by the least turn
+	# that takes its nozzle to where the photos put it out (layout.motion probe
+	# nozzle), as the hook's travel is solved from its photo point. The door
+	# rides the probe on the stand-off brackets the photos show, with no joint
+	# of its own. The skin is opened ahead of it for the nozzle (layout.probe
+	# opening), closed by a door of its own (forward_door())
 	door = LAYOUT["probe"]
-	start, end = door["from"], door["to"]
+	start, end, front = door["from"], door["to"], door["opening"]
 	upper, lower = math.radians(door["upper"]), math.radians(door["lower"])
-	stations = [start + (end - start) * i / 14 for i in range(15)]
 	angles = [upper + (lower - upper) * j / 6 for j in range(7)]
 	shell = lambda st, th, out: at(st, *reversed(skin(st, th, out)))
-	rings = [[shell(st, th, 0.15) for th in angles] + [shell(st, th, -0.1) for th in reversed(angles)] for st in stations]
-	a, b = shell(start, lower, 0.15), shell(end, lower, 0.15)
-	node("probe_door", hinge=a, mesh=loft(rings))
-	OPENINGS["probe"] = {"shell": (start, end, upper, lower)}
+
+	# the seam between the forward door and the probe door: the plane through
+	# the forward door's hinge's aft end square to its hinge (its upper edge),
+	# in which the forward door's aft edge turns, so it never swings into the
+	# probe door beside it; its station at an angle round and an offset off
+	# the skin, `short` inches ahead of the plane
+	hinge = [shell(front, upper, 0.15), shell(start, upper, 0.15)]
+	line = (hinge[1] - hinge[0]).normalized()
+
+	def seam(th, out, short=0.0):
+		st = start
+		for _ in range(3):
+			miss = (shell(st, th, out) - hinge[1]).dot(line) / INCH + short
+			st -= miss / ((shell(st + 0.1, th, out) - shell(st, th, out)).dot(line) / INCH / 0.1)
+		return st
+
+	def panel(a, b, count, head=None, tail=None):
+		# a shell on the skin from station a to b, its first or last ring's
+		# stations given round it (head, tail: of the angle and the offset)
+		stations = [a + (b - a) * i / count for i in range(count + 1)]
+		at_ = lambda i, th, out: (head(th, out) if head and i == 0 else tail(th, out) if tail and i == count else stations[i])
+		return loft([[shell(at_(i, th, 0.15), th, 0.15) for th in angles] + [shell(at_(i, th, -0.1), th, -0.1) for th in reversed(angles)] for i in range(count + 1)]), stations
+	shut, stations = panel(start, end, 14, head=seam)
+	forward, _ = panel(front, start, 4, tail=lambda th, out: seam(th, out, 0.05))
 	motion = LAYOUT["motion"]["probe"]["value"]
-	joint("probe_door", b - a, shell((start + end) / 2, upper, 0.15) - shell((start + end) / 2, lower, 0.15), -PORT, "probe",
-		[[0, 0], [motion["opening"], math.radians(motion["door"])], [1, math.radians(motion["door"])]])
 	middle = (upper + lower) / 2
+	# the stowed probe's line: 3.5 in under the skin at its root and at 3 in
+	# behind the door's forward end, as long as reaching the photos' nozzle needs
+	root, aim = shell(end + motion["pivot"], middle, -3.5), shell(start + 3, middle, -3.5)
+	aim = (aim - root).normalized()
+	nozzle, point = at(*motion["nozzle"]), at(*motion["tip"])
+	reach = nozzle - root
+	stowed = root + aim * reach.length
+	axis = aim.cross(reach.normalized())
+	turn = math.asin(min(1.0, axis.length))
+	if aim.dot(reach) < 0:
+		turn = math.pi - turn
+	# the nozzle's head, coaxial with the shaft: its collar from 1.5 in behind
+	# the ball's centre and its round nose out to the photos' tip, as (inches
+	# along from the ball's centre, radius)
+	head = (point - nozzle).length / INCH
+	tip = stowed + aim * (head * INCH)
+	u = aim.orthogonal().normalized()
+	v = aim.cross(u)
+	profile = [(-1.5, 2.1), (0.0, 2.1), (0.45 * head, 1.95), (0.7 * head, 1.6), (0.88 * head, 1.1), (head, 0.4)]
+	rings = [[stowed + aim * (t * INCH) + (u * math.cos(2 * math.pi * i / 16) + v * math.sin(2 * math.pi * i / 16)) * (r * INCH) for i in range(16)] for t, r in profile]
+	PROBE[:] = [tip]
+	# under the skin behind the door's aft edge, and on to 1.5 in ahead of it,
+	# the arm narrows to a neck round its root's pin: the skin over it, and
+	# the opening's aft edge the arm's top swings back toward, stand clear
+	neck = root + aim * ((motion["pivot"] + 1.5) * INCH)
+	arm = merge([cylinder(root, neck, 1.0, sides=12), cylinder(neck, stowed - aim * (1.5 * INCH), 2.2, 1.9, sides=16), loft(rings)])
+	# the opening, and the station its well reaches back to: an inch past the
+	# probe's root end
+	OPENINGS["probe"] = {"shell": (front, end, upper, lower), "back": max(ORIGIN["station"] - q.x / INCH for q in arm[0]) + 1.0}
+	node("probe", hinge=root, mesh=arm)
+	# it waits while the forward door opens (layout.motion probe forward)
+	share = motion["forward"]
+	joint("probe", axis, aim, reach - aim * reach.length, "probe", [[0, 0], [share, 0], [1, round(turn, 4)]])
+	node("probe_door", parent="probe", mesh=shut)
+	middle_ = (front + start) / 2
+	forward_door(forward, hinge, shell(middle_, lower, 0.15) - shell(middle_, upper, 0.15),
+		shell(middle_, upper, 1.15) - shell(middle_, upper, 0.15), [(arm, 0.3), (shut, 0.0)], root, axis, turn, share)
 	# its lower corners, the crispest in a photo
-	MARKS["probe_door_front"] = (shell(start, lower, 0.15), "probe_door")
+	MARKS["probe_door_front"] = (shell(seam(lower, 0.15), lower, 0.15), "probe_door")
 	MARKS["probe_door_aft"] = (shell(end, lower, 0.15), "probe_door")
 	CURVES["probe_door"] = ([shell(st, upper, 0.15) for st in stations] + [shell(end, th, 0.15) for th in angles[1:]] +
-		[shell(st, lower, 0.15) for st in reversed(stations[:-1])] + [shell(start, th, 0.15) for th in reversed(angles[:-1])], "probe_door")
-	root, tip = shell(end - 2, middle, -3.5), shell(start + 3, middle, -3.5)
-	PROBE[:] = [tip]
-	node("probe", hinge=root, mesh=merge([cylinder(root, tip, 2.2, 1.9), cylinder(tip, tip + FORWARD * (2 * INCH), 1.9, 1.2)]))
-	joint("probe", UP + PORT * 0.4, FORWARD, -PORT, "probe", [[0, 0], [motion["opening"], 0], [1, math.radians(motion["swing"])]])
-	# Speedbrake: the dorsal panel between the fins, on the spine's skin,
-	# hinged at its forward edge (layout.speedbrake)
+		[shell(st, lower, 0.15) for st in reversed(stations[1:-1])] + [shell(seam(th, 0.15), th, 0.15) for th in reversed(angles)], "probe_door")
+	print(f"probe: {reach.length / INCH:.1f} in from its root to the nozzle, turning {math.degrees(turn):.1f} deg; stowed, its tip at FS {ORIGIN['station'] - tip.x / INCH:.1f}")
+	speedbrake()
+
+
+def forward_door(mesh, hinge, across, out, riders, root, axis, turn, share):
+	# The probe's forward door (layout.probe opening): the panel over the
+	# opening ahead of the probe door, a door of its own hinged along its
+	# upper edge, since the nozzle leaves past the lower one (from 26 deg
+	# round the section to 52). It opens while the probe waits, its first
+	# `share` of the stroke, holds open while the probe's parts pass, and
+	# closes behind them over as long again, so it stands closed at rest and
+	# with the probe out, as dvids6690145 shows it. Its opening is the least
+	# that keeps each part the probe carries (riders: its mesh at rest and how
+	# many inches off it to stay; the probe door beside it, which it closes
+	# against, only out of it) clear at every share of the probe's turn, and
+	# it starts to close once no angle it closes through comes so near again
+	a, b = hinge
+	line = (b - a).normalized()
+	if (Matrix.Rotation(0.1, 3, line) @ across - across).dot(out) < 0:
+		line = -line   # a positive turn lifts the lower edge out
+	turns = [k / 60 for k in range(61)]
+
+	def turned(vertices, centre, direction, angle):
+		R = Matrix.Rotation(angle, 3, direction)
+		return [centre + R @ (v - centre) for v in vertices]
+	carried = {}
+	for f in turns:
+		posed = [(turned(r[0], root, axis.normalized(), turn * f), r[1], gap) for r, gap in riders]
+		carried[f] = [(BVHTree.FromPolygons(vs, fs), vs, gap) for vs, fs, gap in posed]
+	poses = {}
+
+	def touches(angle, f):
+		if angle not in poses:
+			vs = turned(mesh[0], a, line, angle)
+			poses[angle] = (BVHTree.FromPolygons(vs, mesh[1]), vs)
+		door, vs = poses[angle]
+		for k, (tree, theirs, gap) in enumerate(carried[f]):
+			# stowed, the probe lies as close under the door as the wells hold it
+			gap = gap if f > 0 else 0.0
+			if door.overlap(tree) or (gap and (any(tree.find_nearest(v, gap * INCH)[0] is not None for v in vs) or any(door.find_nearest(v, gap * INCH)[0] is not None for v in theirs))):
+				return k + 1
+		return 0
+	angles = [math.radians(d) for d in range(0, 152, 2)]
+	opening = next((x for x in angles[1:] if not any(touches(x, f) for f in turns)), None)
+	if opening is None:
+		raise SystemExit("probe's forward door: no opening up to 150 deg clears the probe through its turn")
+	through = [x for x in angles if x <= opening]
+	met = [(round(math.degrees(x)), touches(x, 0.0)) for x in through[1:] if touches(x, 0.0)]
+	if met:
+		raise SystemExit(f"probe's forward door: it meets the stowed probe's parts as it opens (deg, part): {met[:6]}, opening {math.degrees(opening):.0f}")
+	# the least share of the turn from which on no angle it closes through
+	# comes near the probe's parts
+	bad = [f for f in turns if any(touches(x, f) for x in through)]
+	clear = next((f for f in turns if not bad or f > max(bad)), None)
+	if clear is None:
+		raise SystemExit("probe's forward door: the probe out stands in its way")
+	shut = share + clear * (1 - share)   # the stroke's share where it starts to close
+	done = min(1.0, shut + share)
+	if done - shut < 0.02:
+		raise SystemExit(f"probe's forward door: no time to close, the probe clear only at {clear:.2f} of its turn")
+	ramp = LAYOUT["motion"]["stroke"]["value"]["ramp"]
+	inputs = [k / 480 for k in range(481)]
+
+	def angle_at(x):
+		if x <= share:
+			return opening * stroked(x / share, ramp)
+		if x <= shut:
+			return opening
+		if x <= done:
+			return opening * (1 - stroked((x - shut) / (done - shut), ramp))
+		return 0.0
+	node("probe_door_forward", hinge=a, mesh=mesh)
+	joint("probe_door_forward", line, across, out, "probe", [[x, round(y, 4)] for x, y in thinned([(x, angle_at(x)) for x in inputs], KEYED["rotate"])])
+	print(f"probe's forward door: opens {math.degrees(opening):.0f} deg over the stroke's first {share:.2f}, starts to close at {shut:.2f}",
+		f"(the probe clear at {clear:.2f} of its turn), shut by {done:.2f}")
+
+
+def pivot(a, b, angle):
+	# The point (x, z) about which a turn of `angle` aft toward up (x forward,
+	# z up: a vector pointing aft turns toward up) takes the point a to b
+	middle = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+	chord = (b[0] - a[0], b[1] - a[1])
+	length = math.hypot(*chord)
+	reach = length / 2 / math.tan(angle / 2)
+	c, s = math.cos(angle), math.sin(angle)
+
+	def miss(p):
+		v = (a[0] - p[0], a[1] - p[1])
+		return math.hypot(v[0] * c + v[1] * s + p[0] - b[0], -v[0] * s + v[1] * c + p[1] - b[1])
+	return min(((middle[0] - k * chord[1] / length * reach, middle[1] + k * chord[0] / length * reach) for k in (1, -1)), key=miss)
+
+
+def speedbrake():
+	# The dorsal panel between the fins (layout.speedbrake), cut from the
+	# spine's skin. Open (tp209033's 60 deg) it stands where the photos put it:
+	# its turn takes its closed aft corner onto the photos' about the point
+	# that solves, as the hook's travel is solved from its photo point. The
+	# photos show nothing at that point and no hinge at the panel's forward
+	# edge, which stands 8-10 in off the spine: under the panel only a narrow
+	# member painted like it, almost upright on the centreline, and beside it
+	# a dark hose rising to it (layout.speedbrake mechanism). The member is
+	# built as the actuator: a cylinder turning about its foot's pin in the
+	# well and two stages sliding out of it to a lug under the panel, each
+	# keyed as finely as its own motion needs, so the stages' end stays on the
+	# lug; the hose rides the cylinder from the well to its side
 	sb = LAYOUT["speedbrake"]
 	front, back, half = sb["front"], sb["back"], sb["half"]
+	mech = sb["mechanism"]
 	skin_tree = built(["fuselage"])
-	node("speedbrake", hinge=draped(skin_tree, front, 0, out=0.15), mesh=cut((front, back), (-half, half)))
+	turn = math.radians(FACTS["surfaces"]["limits"]["speedbrake"]["up"])
+	# a turn of `angle` aft toward up about PORT, in the plane of the
+	# stations and waterlines: (x, z) of a point relative to the turn's centre
+	rotated = lambda v, angle: Vector((v.x * math.cos(angle) + v.z * math.sin(angle), v.y, -v.x * math.sin(angle) + v.z * math.cos(angle)))
+	closed, opened_ = draped(skin_tree, back, half, out=0.15), at(*sb["open"]["aft"])
+	x, z = pivot(closed.xz, opened_.xz, turn)
+	pole = Vector((x, 0.0, z))
+	mesh = cut((front, back), (-half, half))
 	OPENINGS["speedbrake"] = {"below": False, "pieces": [[[front, -half], [back, -half], [back, half], [front, half]]]}
-	joint("speedbrake", PORT, AFT, UP, "speedbrake", [[0, 0], [1, math.radians(60)]])
+	# the lug under the panel near its aft end, carrying the actuator's eye
+	act = mech["actuator"]
+	foot = at(act["foot"][0], act["foot"][1], 0)
+	lug_station, below = act["lug"]
+	# the panel's inner face lies a tenth under the skin (cut()): the pin
+	# `below` under it, the lug a plate on the centreline from inside the
+	# panel down round the pin
+	eye = draped(skin_tree, lug_station, 0, out=-0.1) - UP * (below * INCH)
+	tops = [draped(skin_tree, lug_station + k, 0, out=-0.05) for k in (-1.2, 1.2)]
+	plate = [tops[0], tops[1], eye + AFT * (1.0 * INCH), eye + FORWARD * (1.0 * INCH)]
+	lug = merge([loft([[q + PORT * (k * 0.2 * INCH) for q in plate] for k in (1, -1)]), cylinder(eye + PORT * (0.2 * INCH), eye - PORT * (0.2 * INCH), 1.0, sides=12)])
+	node("speedbrake", hinge=pole, mesh=mesh)
+	joint("speedbrake", PORT, AFT, UP, "speedbrake", [[0, 0], [1, round(turn, 4)]])
+	node("speedbrake_lug", parent="speedbrake", mesh=lug)
+	# the actuator's aim and reach through the stroke, sampled finely
+	inputs = [k / 240 for k in range(241)]
+	eyes = [rotated(eye - pole, turn * x) + pole for x in inputs]
+	u0 = (eyes[0] - foot).normalized()
+	aims = [math.atan2(u0.z * (e - foot).normalized().x - u0.x * (e - foot).normalized().z, u0.dot((e - foot).normalized())) for e in eyes]
+	reaches = [(e - foot).length for e in eyes]
+	tube, stages = act["diameters"], act["stages"]
+	least, most = reaches[0] / INCH, max(reaches) / INCH
+	stroke = (most - least) / stages
+	end = 2.5   # in: the last stage's rod end, from its tube to its eye
+	length = least - 1.0 - 0.5 * stages - end   # each tube, nested between the foot's boss and the rod end
+	if length - stroke < act["overlap"]:
+		raise SystemExit(f"speedbrake actuator: {stages} stages of {length:.1f} in overlap by {length - stroke:.1f} in at full stretch")
+	print(f"speedbrake: turning {math.degrees(turn):.1f} deg about FS {ORIGIN['station'] - pole.x / INCH:.1f}, WL {pole.z / INCH + ORIGIN['waterline']:.1f};",
+		f"the actuator {least:.1f} to {most:.1f} in pin to pin, {stages} stages of {length:.1f} in, each sliding {stroke:.1f}")
+	ring = lambda d: cylinder(foot + PORT * (d / 2 * INCH), foot - PORT * (d / 2 * INCH), 1.1, sides=12)
+	cylinder_ = merge([cylinder(foot + u0 * (1.0 * INCH), foot + u0 * ((1.0 + length) * INCH), tube[0] / 2, sides=16), ring(tube[0])])
+	node("speedbrake_actuator", hinge=foot, mesh=cylinder_)
+	joint("speedbrake_actuator", PORT, AFT, UP, "speedbrake", [[x, round(y, 4)] for x, y in thinned(list(zip(inputs, aims)), KEYED["rotate"])])
+	names = ("middle", "inner")
+	if stages != len(names):
+		raise SystemExit(f"speedbrake actuator: built with {len(names)} stages, not {stages}")
+	parent, start = "speedbrake_actuator", 1.0
+	for k, stage in enumerate(names):
+		name = f"speedbrake_actuator_{stage}"
+		start += 0.5
+		last = k == stages - 1
+		if last:
+			start = least - end - length
+		pieces = [cylinder(foot + u0 * (start * INCH), foot + u0 * ((start + length) * INCH), tube[k + 1] / 2, sides=16)]
+		if last:
+			# its rod end: a fork straddling the lug's plate, round its pin
+			pieces.append(cylinder(foot + u0 * ((least - end) * INCH), eyes[0], 0.6, sides=10))
+			pieces += [cylinder(eyes[0] + PORT * (sign * 0.25 * INCH), eyes[0] + PORT * (sign * 0.75 * INCH), 1.1, sides=12) for sign in (1, -1)]
+		node(name, parent=parent, hinge=foot, mesh=merge(pieces))
+		share = [(x, (r - reaches[0]) / stages) for x, r in zip(inputs, reaches)]
+		joint(name, u0, u0, u0, "speedbrake", [[x, round(y, 5)] for x, y in thinned(share, KEYED["slide"])], motion="slide")
+		parent = name
+	# the hose: from the well up the cylinder's side, at its place in the
+	# photos with the panel open, riding the cylinder
+	hose = mech["hose"]
+	aim = aims[-1]
+	back_ = lambda p: rotated(p - foot, -aim) + foot
+	base, top = back_(at(*hose["base"])), back_(at(*hose["top"]))
+	split = base.lerp(top, hose["fitting"] / ((top - base).length / INCH))
+	node("speedbrake_hose", parent="speedbrake_actuator", hinge=foot, mesh=merge([cylinder(base, split, hose["diameters"][0] / 2, sides=12),
+		cylinder(split, top, hose["diameters"][1] / 2, sides=10)]), paint="hub")
 
 
 def wells():
@@ -4721,13 +5546,14 @@ def wells():
 		node(f"well_{name}", mesh=box(segments, below, depth), paint="paint" if name == "speedbrake" else "white", inside=True)
 	# the probe's: a trough under its door, the skin's own section moved in,
 	# starting a tenth of an inch under the skin and as far past the door's
-	# edges, so its top lies hidden under the rim of the hole
+	# edges, so its top lies hidden under the rim of the hole, and on back
+	# under the skin past the probe's root
 	start, end, upper, lower = OPENINGS["probe"]["shell"]
 	depth = w["probe"]["depth"]
 	shell = lambda st, th, out: at(st, *reversed(skin(st, th, out)))
 	over = 0.1
 	reach = lambda st: over / math.hypot(*(a - b for a, b in zip(skin(st, (upper + lower) / 2), half_ring(st)[0])))
-	start, end = start - over, end + over
+	start, end = start - over, max(end + over, OPENINGS["probe"]["back"])
 	stations = [start + (end - start) * i / 14 for i in range(15)]
 	rings = []
 	for st in stations:
@@ -4807,7 +5633,11 @@ def opened():
 					worst = max(worst, stray / INCH)
 				outward = (shell(middle, (upper + lower) / 2) - axis).normalized()
 				lo, hi = at(s1 + 1, 0, 0).x, at(s0 - 1, 0, 0).x
-				near = lambda f, lo=lo, hi=hi: lo <= f.calc_center_median().x <= hi and f.calc_center_median().y < 0
+				# a face reaching into the piece's stations, however far its middle
+				# lies (the loft's rings stand 3 in apart): one straddling a piece's
+				# end is split there and its part inside cut away, never left as a
+				# strip of skin across the hole
+				near = lambda f, lo=lo, hi=hi: max(v.co.x for v in f.verts) >= lo and min(v.co.x for v in f.verts) <= hi and f.calc_center_median().y < 0
 				removed[name] += split(planes, outward, near)
 			print(f"wells: the probe door's edges stray from their planes by {worst:.3f} in at most, the hole kept inside them")
 	# the cuts' slivers of no area, whose normals no facing test can read:
@@ -4877,9 +5707,10 @@ def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None, i
 	# [FS, BL] corners, on its top or its bottom: its outer face `proud` off
 	# every facet, its inner `under` beneath, its edges closed, but for those
 	# along `seams` ([FS, BL] pairs), where another panel of the same part
-	# goes on; with `inside`, its inner face and edges in that finish. It
-	# takes the skin's facets turned to its side by at least `least` (the
-	# cosine of their slope)
+	# goes on; with `inside`, its inner face and its edges below the skin in
+	# that finish, the band of its edges standing proud of the skin in the
+	# outer face's. It takes the skin's facets turned to its side by at least
+	# `least` (the cosine of their slope)
 	bm = bmesh.new()
 	bm.from_mesh(NODES["fuselage"].data)
 	bmesh.ops.translate(bm, verts=bm.verts, vec=HINGES["fuselage"])
@@ -4923,13 +5754,26 @@ def cut(stations, buttlines, below=False, proud=0.15, under=0.1, outline=None, i
 			if math.hypot(f - f0 - dx * k, b - b0 - dy * k) < 0.01:
 				return True
 		return False
+	# with an inside finish, each edge split where it meets the skin, on a
+	# ring of corners at the skin itself
+	finishes = [None] * outer + [inside] * outer
+	level = {}
 	for e in bm.edges:
 		if len(e.link_faces) == 1 and not seam(e):
 			a, b = (index[v] for v in e.verts)
-			faces.append((a, b, n + b, n + a))
+			if not inside:
+				faces.append((a, b, n + b, n + a))
+				continue
+			for v in e.verts:
+				if v not in level:
+					level[v] = len(vertices)
+					vertices.append(v.co.copy())
+			c, d = (level[v] for v in e.verts)
+			faces += [(a, b, d, c), (c, d, n + b, n + a)]
+			finishes += [None, inside]
 	bm.free()
 	if inside:
-		return vertices, faces, [None] * outer + [inside] * (len(faces) - outer)
+		return vertices, faces, finishes
 	return vertices, faces
 
 
@@ -5253,7 +6097,7 @@ def nozzles():
 		# hides. Dark until the engine sets their glow and draws the flames. Ten
 		# sides keep the distant stage's burner within its 80 triangles
 		axis = lambda station: at(station, *centre(station))
-		near, far = waist - 0.5, CORE["top"][-1][0] + 0.5
+		near, far = waist - 0.5, TAIL_END + 0.5
 		ring = lambda station: [axis(station) + (round_at(station, throat, 2 * math.pi * i / 10) - axis(station)) for i in range(10)]
 		vertices = ring(far) + ring(near)
 		faces = [(i, (i + 1) % 10, 10 + (i + 1) % 10, 10 + i) for i in range(10)] + [tuple(range(10))]
@@ -5334,7 +6178,6 @@ def paint(directory, folder=None):
 	baked = cache.fetch(folder, "paint", keys[0], parts, lambda: bakes(parts, frames))
 	for m in MATERIALS.values():
 		next(n for n in m.node_tree.nodes if n.type == "TEX_IMAGE").image = image
-	shade = baked["shade"].astype(np.float64)
 	# The two greys (layout.paint): each texel's surface normal, baked in the
 	# objects' own axes (every node rests unrotated, so they are the jet's),
 	# picks the upper grey or, facing down, the lower
@@ -5342,6 +6185,8 @@ def paint(directory, folder=None):
 	up = normal[..., 2]
 	covered = np.abs(np.linalg.norm(normal, axis=-1) - 1) < 0.1   # texels the bake reached: a unit normal
 	where = baked["where"].astype(np.float64)
+	size = texel_size(where, covered)
+	shade = soften(baked["shade"].astype(np.float64), where, covered, size)
 	nozzle = baked["nozzle"]
 	p = LAYOUT["paint"]
 	upper, lower = np.array(p["upper"]) / 255, np.array(p["lower"]) / 255
@@ -5349,7 +6194,6 @@ def paint(directory, folder=None):
 	f = np.clip((up - start) / (end - start), 0, 1)
 	f = (f * f * (3 - 2 * f))[..., None]
 	grey = upper[None, None, :] * (1 - f) + lower[None, None, :] * f
-	size = texel_size(where, covered)
 	colour = grey * (0.4 + 0.6 * shade[..., None]) * (panels(where, covered, size) * stencils(where, covered, size))[..., None]
 	# The nozzles' flaps: bare metal outside; inside, the divergent flaps'
 	# faces from the exit to the throat and the dark beyond it, each texel
@@ -5381,6 +6225,8 @@ def paint(directory, folder=None):
 	dv = (along * rows % 1 - 0.5) * (NOZZLE["exit"] - NOZZLE_WAIST[0]) / rows
 	tint = np.where((divergent & (np.hypot(du, dv) < hole))[..., None], dark, tint)
 	colour = np.where(nozzle[..., None], tint * (0.4 + 0.6 * shade[..., None]), colour)
+	# the inlets' ducts darkening to black down their length (ducted())
+	colour = colour * ducted(station, waterline, buttline)[..., None]
 	# the landing gear's finishes (layout.paint gear), shaded, with no panel
 	# lines or stencils
 	finish = baked["finish"]
@@ -5419,7 +6265,7 @@ OPEN_REACH = 24.0   # inches: the ambient occlusion's reach on what stands open
 
 
 def exposed(name):
-	return name.startswith(("gear_", "well_")) or name in ("launch_bar", "speedbrake", "probe", "probe_door")
+	return name.startswith(("gear_", "well_", "speedbrake")) or name in ("launch_bar", "probe", "probe_door", "probe_door_forward")
 
 
 @contextmanager
@@ -5689,6 +6535,34 @@ def store_bakes(stored, size, target):
 	return {"part": part, "where": where, "occlusion": occlusion}
 
 
+def soften(shade, where, covered, size, sigma=1.0, reach=2, buried=0.02):
+	# The occlusion bake's noise smoothed within each island: 48 samples a
+	# texel leave 0.4-0.5% of noise from texel to texel, blotches 0.47 in
+	# across up close. Each covered texel takes a Gaussian mean (`sigma`
+	# texels, out to `reach`) of the neighbours the bake reached that lie on
+	# the jet within half as far again as their step across the atlas (across
+	# an island's edge the next texel lies elsewhere on the jet) and are not
+	# buried: a texel whose sample lay inside another part saw nothing, and
+	# its black ran along the fin fairing's edges in a sawtooth. A buried
+	# texel takes its unburied neighbours' shade; one with none keeps its own
+	h, w = shade.shape
+	keep = covered & (shade >= buried)
+	padded = lambda a, v: np.pad(a, [(reach, reach), (reach, reach)] + [(0, 0)] * (a.ndim - 2), constant_values=v)
+	shade_, where_, keep_ = padded(shade, 0.0), padded(where, 1e9), padded(keep, False)
+	total, weight = np.zeros((h, w)), np.zeros((h, w))
+	for dy in range(-reach, reach + 1):
+		for dx in range(-reach, reach + 1):
+			if dx * dx + dy * dy > reach * reach:
+				continue
+			k = math.exp(-(dx * dx + dy * dy) / (2 * sigma * sigma))
+			cut = (slice(reach + dy, reach + dy + h), slice(reach + dx, reach + dx + w))
+			near = np.linalg.norm(where_[cut] - where, axis=-1) <= 1.5 * math.hypot(dx, dy) * size
+			m = keep_[cut] & near & covered
+			total += np.where(m, k * shade_[cut], 0.0)
+			weight += np.where(m, k, 0.0)
+	return np.where(covered & (weight > 0), total / np.maximum(weight, 1e-12), shade)
+
+
 def texel_size(where, covered):
 	# Each texel's size on the jet (metres): the distance to its nearer
 	# neighbour across the atlas on the same island (one no more than three
@@ -5789,7 +6663,10 @@ def on_parts(tree, corners, k, step=0.5, far=1.0):
 
 
 STENCIL = 40   # pixels per inch the stencils are drawn at before they are laid on the atlas
-STENCIL_DENSITY = 4.4   # the stencils' skin's texels per inch, against the rest's
+# at 4.4 the stencils' coarsest texel stood at 0.150 in, and the tailhook's
+# fittings, packed as islands of their own, took it to 0.153 in, past
+# layout.stencils' 0.15
+STENCIL_DENSITY = 4.6   # the stencils' skin's texels per inch, against the rest's
 STENCIL_MARGIN = 1.5    # inches round each stencil its own island reaches
 
 
@@ -6336,11 +7213,76 @@ def round_at(nose, f, up, kind):
 	return {"kind": kind, "mount": exported(mount), "forward": exported(f), "up": exported(up)}
 
 
+def launcher(side):
+	# A cheek station's LAU-116 as the photos show it (layout.stores.lau116),
+	# airframe, shown with or without a round: the block on the nacelle's side
+	# ahead of the cheek box, from its upright front to the box's front, its
+	# top and bottom level, its outboard face upright, its outboard edges
+	# rounded and its front's chamfered, its inboard side on the nacelle's
+	# skin (cast at each station), clear of the stowed main wheel just under
+	# it. The rest of its body lies inside the nacelle: not built. Returns the
+	# mesh and the block's corners
+	lau = LAYOUT["stores"]["lau116"]
+	(f0, top, b0), (f1, bottom, b1) = lau["front_top"], lau["front_bottom"]
+	front, back = (f0 + f1) / 2, LAYOUT["nacelle"]["cheek"]["front"]
+	outboard, r = (b0 + b1 + lau["hole"][2]) / 3, lau["round"]
+	skin = built(["fuselage"])
+
+	def wall(station, w):
+		# the nacelle's skin at a station and waterline, BL, cast inboard
+		start = fwb([station, w, outboard + 6.0], side)
+		hit = skin.ray_cast(start, (fwb([station, w, 0.0], side) - start).normalized())[0]
+		if hit is None:
+			raise SystemExit(f"no nacelle skin under the LAU-116 at FS {station:.1f}, WL {w:.1f}")
+		return outboard + 6.0 - (hit - start).length / INCH
+
+	def ring(station, inset=0.0):
+		# round the outboard corners from the skin at the bottom to the skin at
+		# the top, then down the skin
+		low, high, face, k = bottom + inset, top - inset, outboard - inset, max(r - inset, 0.05)
+		points = [(low, wall(station, low))]
+		points += [(low + k - k * math.cos(math.radians(a)), face - k + k * math.sin(math.radians(a))) for a in range(0, 91, 15)]
+		points += [(high - k + k * math.sin(math.radians(a)), face - k + k * math.cos(math.radians(a))) for a in range(0, 91, 15)]
+		points += [(high - (high - low) * i / 8, wall(station, high - (high - low) * i / 8)) for i in range(8)]
+		return [fwb([station, w, b], side) for w, b in points]
+
+	stations = [front + r] + [s for s in range(math.ceil(front + r + 1.0), math.floor(back)) ] + [back]
+	block = loft([ring(front, r)] + [ring(s) for s in stations])
+	corners = {"front_top": fwb([front, top, outboard], side), "front_bottom": fwb([front, bottom, outboard], side), "back": fwb([back, top, outboard], side)}
+	return outward(block), corners
+
+
+def hooks(nose, f, u):
+	# The LAU-116's hooks, the store a cheek round hangs from: one on each
+	# hanger of the round (layout.stores.lau116 hooks), the hanger's
+	# footprint, up the round's up (u) from the hanger's top into the
+	# nacelle's skin, 0.1 in past it, clear of the stowed main wheel under it
+	lau = STORES["lau116"]
+	r, skin = lau["round"], built(["fuselage"])
+	pieces = []
+	fittings = {p["name"]: p for p in value(MISSILES["layout"]["aim120c"]["fittings"])}
+	for name in lau["hooks"]["hangers"]:
+		p = fittings[name]
+		if "section" in p:
+			(a, b), half, low = p["stations"], max(abs(x) for x, _ in p["section"]), max(y for _, y in p["section"])
+		else:
+			(a, b), half, low = p["box"][0], p["box"][1][1], p["box"][2][1]
+		middle = (a + b) / 2
+		start = nose - f * (middle * INCH) + u * (low * INCH)
+		hit = skin.ray_cast(start, u)[0]
+		if hit is None:
+			raise SystemExit(f"no nacelle skin over the LAU-116's {name} hook")
+		high = low + (hit - start).length / INCH + 0.1
+		centre = lambda s: nose - f * (s * INCH) + u * ((low + high) / 2 * INCH)
+		pieces.append(loft([rounded_ring(centre(s), f, u, 2 * half, high - low, rounding=min(1.0, r / half)) for s in (a, b)]))
+	return merge([outward(piece) for piece in pieces])
+
+
 def stores():
 	global STORES
 	STORES = LAYOUT["stores"]
 	lau7, lau127 = FACTS["stores"]["lau7"], FACTS["stores"]["lau127"]
-	lau115, lau116 = FACTS["stores"]["lau115"], FACTS["stores"]["lau116"]
+	lau115 = FACTS["stores"]["lau115"]
 	py, rails, rounds = STORES["pylon"], STORES["rails"], STORES["rounds"]
 	for side in (-1, 1):
 		name = side_name(side)
@@ -6525,39 +7467,11 @@ def stores():
 		nose = fwb(rounds["cheek"]["nose"], side)
 		up = (UP + Vector((0, side, 0))).normalized()   # up and inboard
 		f, u = square((nose - fwb(rounds["cheek"]["tail"], side)).normalized(), up)
-		round_ = round_at(nose, f, u, "aim120c")
-		ROUNDS[cheek] = {f"ejector_{cheek}": round_}
-		station, radius = missile_mount("aim120c")
-		# the LAU-116 between the round's forward and aft hooks
-		lugs = value(MISSILES["layout"]["aim120c"]["lugs"])
-		middle = (min(lugs) + max(lugs)) / 2
-		hooks = nose - f * (middle * INCH) + u * ((radius + value(lau116["height"]) / 2) * INCH)
-		front = hooks + f * (value(lau116["length"]) / 2 * INCH)
-		# behind it, over the round's aft end, the box the photos show running on
-		# to a chamfered aft face (layout.stores.rounds.cheek.fairing): standing
-		# off the nacelle's side, its outboard face upright, its bottom just over
-		# the round, its top level, its inboard face in the nacelle and turning
-		# outboard over its aft end to its aft edge
-		fairing = rounds["cheek"]["fairing"]
-		edge = fairing["edge"]
-		tail_, nose_ = rounds["cheek"]["tail"], rounds["cheek"]["nose"]
-		def over(station):
-			# its bottom, WL, at a station: the round's top and the clearance
-			k = (station - nose_[0]) / (tail_[0] - nose_[0])
-			return nose_[1] + k * (tail_[1] - nose_[1]) + value(MISSILES["aim120c"]["diameter"]) / 2 + fairing["clear"]
-		begin = ORIGIN["station"] - (front - f * (value(lau116["length"]) * INCH)).x / INCH - 2.0   # 2 in inside the LAU-116
-		turn = edge[0] - fairing["chamfer"]
-		rings = []
-		for station in [begin, (begin + turn) / 2, turn, edge[0] - fairing["chamfer"] / 2, edge[0]]:
-			deep = fairing["depth"] * min(1.0, max(0.06, (edge[0] - station) / fairing["chamfer"]))
-			low, high = over(station), fairing["top"]
-			rings.append([fwb([station, w, b], side) for w, b in ((low, edge[1]), (high, edge[1]), (high, edge[1] - deep), (low, edge[1] - deep))])
-		store(f"ejector_{cheek}", merge([box_mesh(front, f, u, value(lau116["length"]), value(lau116["width"]), value(lau116["height"]), 4.0, tip=0.8),
-			outward(loft(rings))]), hinge=front, frame=(front, front - f * (value(lau116["length"]) * INCH), u))
-		# the LAU-116's exposed lower face's front, on its middle line, the face
-		# toward the round; the fairing's aft edge's middle (marking.md)
-		MARKS[f"ejector_front_{name}"] = (front - u * (value(lau116["height"]) / 2 * INCH) * 0.8, f"ejector_{cheek}")
-		MARKS[f"ejector_aft_{name}"] = (fwb([edge[0], (over(edge[0]) + fairing["top"]) / 2, edge[1]], side), f"ejector_{cheek}")
+		ROUNDS[cheek] = {f"ejector_{cheek}": round_at(nose, f, u, "aim120c")}
+		# the LAU-116's hooks; its block, and behind it over the round's aft
+		# end the box, are the airframe's (cheeks())
+		corners = launcher(side)[1]
+		store(f"ejector_{cheek}", hooks(nose, f, u), hinge=corners["front_top"], frame=(corners["front_top"], corners["back"], UP))
 	# The centreline: the SUU-62 on the belly and its tank, level
 	centre = STORES["centre"]
 	n = at(*centre["nose"])
@@ -6718,6 +7632,7 @@ def main():
 	sequenced()
 	scoop()
 	lamps()
+	cheeks()
 	stores()
 	print("chord fractions:", json.dumps(fractions, default=lambda x: round(x, 3)))
 	located = points()

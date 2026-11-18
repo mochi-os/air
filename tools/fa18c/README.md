@@ -47,8 +47,10 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   areas over the spans in `facts.json` `layout`. The forebody lofts the cited sections over the HATP keel
   line, its nosecone on TM-101724's drooped axis; over FS 150-404 its bottom is flattened up onto the keel the
   photos' lower outline reads (`layout.belly`, `keeled()`), 0.3-2.1 in above that line, within 4-5 in of
-  the keel only, its lower sides held; the LEX is a blade whose span and heights come from
-  TM-101724, cr186938 and the traced sections, faired behind the LEX-wing junction onto the wing root. Every
+  the keel only, its lower sides held; the LEX is a wedge whose span and heights come from
+  TM-101724, cr186938 and the traced sections, its nearly flat underside traced too (`lex.underside`) and
+  carried down behind FS 357 onto the wing root's lower surface, so the root lies inside it (`layout.lex`
+  underside), faired behind the LEX-wing junction onto the wing root. Every
   trace is read through its pixel steps, never step by step: the HATP profiles through each step's midpoint
   and then a 4 in Gaussian (`smoothed()`), the traced sections' outlines by a 1 in Gaussian along them
   (`destaired()`). Every run between cited values (section shapes, ratios, widths, the rear body's and the
@@ -76,15 +78,18 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   from the canopy's aft end to the nozzles. The fairing settles once onto the line the skin runs along where
   it lands (85% of `FAIRING` behind the junction), from the blade as it stands at the junction with its edge
   riding the wing. Each inlet is a raked D-shaped mouth through the lip points the photos measure
-  (`layout.inlet`), its flat side inboard beside a splitter plate. Behind the lip its outer skin rides the
+  (`layout.inlet`), its flat side inboard beside a splitter plate, its duct running 35 in down, turning toward
+  the engine and a circle, to a cap ahead of the main gear's bay (`layout.inlet` duct; the paint darkens it to
+  black over a hydraulic diameter, `ducted()`). Behind the lip its outer skin rides the
   nacelle as it grows (`target()`), carrying the mouth's D as it stands off the nacelle at the lip, that
-  difference fading out by `JOIN` (FS 440), where it hands over to the rear fuselage on one ring, behind the
-  duct's plug, where the nacelles join the fuselage whole; each nacelle's bottom follows `layout.nacelle`:
+  difference fading out by `JOIN` (FS 440), where it hands over to the rear fuselage on one ring, round the
+  duct, where the nacelles join the fuselage whole; each nacelle's bottom follows `layout.nacelle`:
   the HATP keel line to FS 500, the photos' lower outline over FS 606-630, and the profile photo's outline
   on to the nozzles. Below it the closed main gear doors stand as a long blister (`layout.nacelle` door,
   FS 460-576, up to 3.8 in deep), which the HATP figure's wind-tunnel model lacks: `doored()` lowers the
   outline onto the doors' line across their span only (BL 16-42), so the tunnel between the nacelles keeps
-  its shape, and the blister ends in the step up the photos show at FS 574-578. Over the main gear bays
+  its shape, and the blister ends in the step up the photos show at FS 574-578. On each nacelle's side over the
+  cheek station stands a box, airframe (`fairing_cheek_*`, `layout.nacelle` cheek). Over the main gear bays
   the bottom runs nearly flat out to the bay's outboard edge, where the outer door hangs, and a band rises
   straight from it to a crease on the side (`layout.nacelle` bay): `bay()` joins that wedge to the sided
   outline, and one of the loft's columns (`BAY_COLUMN`) is pinned to the corner, which columns 4-5 in apart
@@ -93,31 +98,45 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   strips and the lower corner seen from below): `nacelle_side()` solves the outboard half's width and
   exponent through both, `union_ring()` draws the deck's edge in to `DECK_SIDE`, where the union passes within
   0.1 in of the strips' line, and the plain and reshaped outlines are blended point by point, easing in from FS 480 and out by
-  FS 680. Behind the speedbrake the top's centreline runs through the sky check's crest
-  (`layout.spine` crest); ahead of it the crest stays as fitted, the photos there unsettled.
+  FS 680. Behind the speedbrake the top's centreline falls into the V between the nacelles' tops and the
+  body narrows to the strip between the nozzles (`layout.spine` tail, `narrowing()`), the steps round the
+  section spaced along its legs between the nacelle's top, side and bottom (`spaced()`). The body's top there
+  is the V's floor (`core_power()`), its walls straight from the floor's edges to the nacelles' tops,
+  giving way to their round sides at the nozzles (`walled()`), and below a notch no ray from the centre
+  sees is closed over its mouth (`valley()`); each nacelle ends on its outer flaps' start circle, `LIP`
+  outside it, its lip over them (`layout.nacelle` end). The crest checks the side outline's top there;
+  ahead of the speedbrake it stays as fitted, the photos there unsettled.
   From `JOIN` aft the points that bridge the tunnel between the nacelles run evenly along the outline
   without the side's reshaping, placed at the same angles on the outline with it (`along()`). Behind the forebody the sections' lower
   steps run evenly along the outline, not round its centre, and the fuselage is split into triangles before
   any panel is cut from it, so panel and skin share them. The canopy's sill, top line and
   leaning bow and aft edge are where the photos put them (`layout.canopy`), the glass's section a
-  superellipse fitted to the photos' outlines. The nose carries the probes, fairings, light strips and blade
+  superellipse fitted to the photos' outlines; its shell stands a seal's step proud of the loft over a strip
+  of skin left under its rim, so it slides aft up the sill and swings about its aft top clear of the skin
+  (`layout.motion canopy`, `proud()`). The nose carries the probes, fairings, light strips and blade
   the photos place (`layout.aoa`, `pitot`, `blisters`, `formation`, `blade`), the fins their tip pods
   (`layout.pods`) and a fixed root piece under each (`fin_root_*`: the root's section carried down the fin's
   plane to half an inch inside the built skin, cast point by point every 2 in of chord, since the root is a
   straight chord over a deck that falls away aft) with the riveted fairing along its outboard side
   (`fin_fairing_*`, `layout.fin` fairing: from the fin's face at the photos' upper edge straight down to the
-  nacelle at its foot); under each outer panel hangs the fairing at the fold hinge that carries the position
+  nacelle at its foot, and behind the band a plate on to the rudder's lower leading corner, drawn in onto the
+  fin, its foot on the fin root's traced line, aft), the rudders' outline the photos' (`layout.rudder`); under each outer panel hangs the fairing at the fold hinge that carries the position
   light (`underwing()`, `layout.wing_fairing`: pointed in plan, a blunt nose, square at the aileron's hinge and
   a shallower tail piece on the aileron, both folding and flexing with the panel), and a simple cockpit with
   its pilot sits under the canopy (`layout.cockpit`). Each nozzle
   is twelve flaps, each its own joint (`layout.petals`): a curved outer flap with its stepped tab, and inside
   it the divergent and convergent flaps of the gas path, closing together; the burner's dark duct lies beyond
   the throat, and the paint gives the flaps bare metal outside, the divergent flaps' cooling holes and a dark
-  ring of brackets at the exit (`layout.paint.nozzle`). Flush panels (the speedbrake, the gear doors) are
+  ring of brackets at the exit (`layout.paint.nozzle`). The probe swings out about its root behind its door
+  by the least turn that takes its nozzle to where two photos put it, the door riding it; the panel over the
+  opening ahead of it is a door of its own, opening while the nozzle passes and shut again before the probe is
+  out (`layout.motion probe`, `forward_door()`); the speedbrake turns to where three photos put it open, on
+  a two-stage actuator from its well (`layout.speedbrake`, `speedbrake()`). Flush panels (the speedbrake, the gear doors) are
   cut from the fuselage's own built skin (`cut()`, between stations and buttlines or inside a convex plan
   outline; a door of several convex pieces leaves no wall where two meet, and a piece may take only skin
   facing its way more steeply, as the main inner door's corner panel does short of the nacelle's side) and
-  offset off every facet, its slivers collapsed first; once the airframe is built, the skin under each door is cut away and a
+  offset off every facet, its slivers collapsed first, each edge split at the skin (the band proud of it in the
+  outer face's finish, below it the inside's, `shape.flush`); once the airframe is built, the skin under each door is cut away and a
   well stands behind the opening (`wells()`, `layout.wells`): each gear bay, the speedbrake's and the probe's,
   walls and a roof standing on the skin, sized to hold the parts that stow there, its faces turned in
   (`node(inside=True)`: `tidy()` turns every face out, and an open box's out is away from its bay). The
@@ -200,15 +219,18 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   (`paint.gear`, `layout.gear`), and with the atlas the legs lit as they stand gear down; each left part the mirror
   image of its right twin, at rest and gear down; parts lying against each other (`SEAMS`: the inlets, the
   LEX and its fairing, the wing root, the fuselage) never crossing back and forth where they show; nothing
-  poking through the LEX's fairing, which covers the wing's root end; nothing the gear moves passing through
-  anything it neither carries nor rides at any of 41 steps of its stroke, each moving part pulled in by a
+  poking through the LEX's fairing, which covers the wing's root end; nothing a mechanism moves passing through
+  anything it neither carries nor rides (`SWEPT`: the gear at 41 steps of its stroke, the probe, the canopy,
+  the fold and the speedbrake at 21; parts riding another mechanism's joints together are left to the
+  static checks, and a door keeps its seat wherever it stands as it rests), each moving part pulled in by a
   seam first (`clearance()`, `shrunk()`, `through()`: designed contacts, `JOINED`, are judged by where they
   meet gear down, a door's crossings near its hinge are its hinge's, a closed door's seat is the wells'
   check's, and two crossings are signed off: the main shock's upper cylinder past its pin, hidden in the bay,
   with the connecting link (`OVERLAPS`), and the side brace's foot's clevis from its lower lug down passing
   through the open inner door and the bay's edge mid-stroke (`FOOTED`, by depth down the foot's bolt)); each
   linkage's shared pin, carried by both its members' nodes at 81 steps, within 0.05 in (the side brace's foot,
-  the connecting link's end, the nose drag brace's eye: the gear's keys are thinned to each joint's own motion,
+  the connecting link's end, the nose drag brace's eye, the speedbrake actuator's eye on its lug, `pinned()`:
+  the keys are thinned to each joint's own motion,
   `thinned()`, so linked members keyed alike cannot drift apart between keys); the fuselage's store mounts on the
   skin; each fin, its rudder's lower end and its root piece standing on the skin all along the root, each
   face's foot (its lowest corners along the fin's span, either side of its mid-plane) on or in the skin
@@ -235,8 +257,10 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   registered on the apex and centreline, with the share of their union both cover, and every place the
   outlines part by more than a threshold, worst first, in stations, waterlines and buttlines.
 - **`photos.json`** - the photo match's catalogue (`../verify/photos.py`): the frame, the anchors the sources
-  cite, and per photo its marks, traced edges and pose. **`marking.md`** names every point and edge and how to
-  mark them.
+  cite, and per photo its marks, traced edges and pose. The pose the points are measured in, and each photo of
+  the jet standing, give the oleos as `"static"`: the stance the points file gives, where the sources cite the
+  axles, rather than the gear's rest, which hangs as in flight. **`marking.md`** names every point and edge and
+  how to mark them.
 - **`checklist.json`** - every visible shape, region by region, with the photos that show it and whether the
   model matches.
 - **`tips.py`** - the wing's and the stabilators' tip heights from the solved photos (`photos.py --cameras`):
@@ -269,7 +293,8 @@ inside the fins, the pilot inside the seat and the like: about 2,100 triangles, 
 `check.py`'s `shape.hidden` holds the build to none.
 
 The build also unwraps every part into one atlas and bakes its ambient occlusion in Cycles (`paint.png`
-beside OUT.glb), the shading the paint is laid over. Faces of more than four corners are triangulated first (a
+beside OUT.glb), the shading the paint is laid over, its texel-to-texel noise smoothed within each island
+(`soften()`). Faces of more than four corners are triangulated first (a
 long bent cap laid flat in one piece overlapped itself); faces the islands lay over others get islands of their
 own (`unfolded()`), and once packed the atlas is searched again at its own size, what it finds laid into a strip
 along its right side the packing leaves free (`STRIP`), never packed again. Each texel's surface normal picks the
@@ -316,7 +341,8 @@ rm far-unpacked.glb
 The wing bends up with the lift (facts `layout.flex`; plan, Wing flex). `build.py` (`Bend`) bends it as a
 cantilever from the LEX-wing junction to tm212871's level-flight rise, 2.1 in at the tip at 1 g. Each hinged
 surface and the fold rides a bend joint, `flex_<part>`, that turns and slides it with the wing at its hinge line's
-middle (the fold's at its leading end, on the fold line's axis). Each wing mesh carries the rest as the shape key
+middle (the fold's at its leading end, on the fold line's axis, under the fold's hinge on the upper skin's
+peak). Each wing mesh carries the rest as the shape key
 `flex`. The drive `load` is the lift's load factor, 0 parked and 1 in level flight. A photo in flight poses
 `"load": 1`, and `render.py ... load=7.5` shows the limit. `check.py` holds:
 - the tip's rise, and the shape against tm210726's ground test;
@@ -331,7 +357,10 @@ JSON, so the two must come from one build. Until the cockpit and distant stages 
 as `fa18c-old.glb`: the pilot's jet in first person and the frame its cockpit is measured in.
 
 The model carries its own stores (claude/plans/air-fa18c.md #9; `stores()` in `build.py`): the SUU-63 and SUU-62
-pylons, the LAU-115C/As with a LAU-7 and a LAU-127 on each side, the LAU-116s, the 330-gallon tanks and the wingtip
+pylons, the LAU-115C/As with a LAU-7 and a LAU-127 on each side, the LAU-116s (a hook on each hanger of its round,
+`hooks()`; the block each shows on the nacelle's side ahead of the cheek box is the airframe's, on the box's node, as
+the clean jets' photos show it, `launcher()`, and the rest of its body lies inside the nacelle and is not built), the
+330-gallon tanks and the wingtip
 LAU-7s, each a node named for its station (`pylon_2`, `rail_8a`, `launcher_8b`, `tank_7`). Each but the wingtip rails
 is a `show` joint on the drive `stores`, hidden at rest; a photo's pose shows the ones it carries (`"joints":
 {"tank_7": 1}`), and the engine those its loadout carries (`web/src/game/hang.ts`). The points file's `stores` lists
@@ -349,7 +378,9 @@ beside its rack), so no part carries the shadow of one the loadout can leave off
 under that shading, the missiles' calibrated wear, and the 330-gallon tanks' joint rings and filler cap as the
 photos show them. `check.py` reads it back through the station 7 tank's UVs (`paint.stores`). Every store part touches what it
 hangs from and every round its rail (`shape.attached`: a pylon on the wing, a rack or a tank on its pylon, a side rail
-on its rack, each round hung from its seat as the engine hangs it, by the shipped missiles), within 0.1 in.
+on its rack, each round hung from its seat as the engine hangs it, by the shipped missiles), within 0.1 in. Nothing a
+store shows stands outside the cheek box's outboard face (rays in from outboard along it, `layout.nacelle`), and each
+LAU-116's block, read with no stores shown, meets the photos' marks within their spread (`layout.stores`).
 
 ## Factory-fresh paint
 

@@ -75,7 +75,8 @@ The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
 - `mirror`: the suffixes of left and right pairs, solved as one point and its mirror image. Leave it out for
   anything asymmetric (a carrier's island).
 - `photos`: per photo, where each named point falls (`marks`), traced `edges`, the `pose` the model takes to
-  match it (gear down, canopy open, surfaces deflected), pixels to cast onto a plane (`locate`), and
+  match it (gear down, canopy open, surfaces deflected; a leg's oleo given as `"static"` stands at the points
+  file's gear `static`, the build's own stance), pixels to cast onto a plane (`locate`), and
   `"solve": false` for one kept on file but too thinly marked to solve, and `"use": "measure"` for a copyrighted or
   uncredited photo, whose numbers may be read but whose pixels are never published: `page.py` shows the model through
   its camera alone and the sky check's sheets a plain tile. The sky check (5a) reads `clear`,
@@ -571,6 +572,13 @@ What went wrong on the F/A-18C, each a rule now:
   catalogue's `pose` now names the pose every point is measured, cited and reported in; each photo's marks on parts it
   poses otherwise are carried into its pose (`Bundle` `moves`, `Features.between`). Choose a pose the same on both
   sides (the mirrored pairs need it) and the one the cited points describe (the F/A-18C's: gear down).
+- **The measuring pose must stand as the cited points do.** Once the F/A-18C's gear rested hanging as in flight,
+  its measuring pose `{"gear": 1}` was the in-flight stance: the main axles hung 15 in ahead of and 22 in below
+  the standing station and height the sources cite. Every photo still fitted its marks as well as before, but
+  the axle anchors tilted the whole solve toward their station: the fin tips measured 5 in high, the hook 8 in,
+  and 122 points and edges failed. Stand it as the sources do (`"oleo.<leg>": "static"`), and pose a parked
+  photo's oleos as `"static"` too, never a copy of the points file's number: the catalogue's copy stood the
+  main wheels 2 in low from the commit that wrote it.
 - **A fixed feature that meets a moving one needs its own name.** With the canopy shut, the windscreen's aft arch and the
   canopy's bow are one point; with it raised, the bow rises 70 in. Two photos had marked the arch as `bow_top`, which
   rides on the canopy, and broke once marks were carried by their pose: the arch is `windscreen_top` now.

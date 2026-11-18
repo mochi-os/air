@@ -225,6 +225,23 @@ class ModelTest(unittest.TestCase):
 		self.assertAlmostEqual(mod.pose(joints, {"gear": 0.0, "gear.nose": 0.25})["nose"][2], 0.25)
 		self.assertAlmostEqual(mod.pose(document["joints"], {"gear": 1.0})["nose"][2], 0.0)
 
+	def test_static_stands_the_gear_as_the_points_file_does(self):
+		# a leg's oleo given as "static" takes the points file's gear static
+		# for that leg, so a pose of the jet standing follows the build; a
+		# number still poses as given, and a drive the gear gives no static
+		# for, or joints read without the points file, refuse it
+		document = {"joints": {name: {"motion": "slide", "axis": [0, 1, 0], "drive": f"oleo.{name}", "keys": [[0, 0], [1, 1]]} for name in ("nose", "left")},
+			"points": {"gear": {"nose": {"static": 0.4}, "left": {"static": 0.8}}}}
+		joints = mod.joints(document)
+		posed = mod.pose(joints, {"gear": 1, "oleo.nose": "static", "oleo.left": "static"})
+		self.assertAlmostEqual(posed["nose"][2], 0.4)
+		self.assertAlmostEqual(posed["left"][2], 0.8)
+		self.assertAlmostEqual(mod.pose(joints, {"oleo.left": 0.5})["left"][2], 0.5)
+		with self.assertRaisesRegex(ValueError, "oleo.right: \"static\" needs the points file's gear static"):
+			mod.pose(joints, {"oleo.right": "static"})
+		with self.assertRaisesRegex(ValueError, "oleo.left: \"static\" needs the points file's gear static"):
+			mod.pose(document["joints"], {"oleo.left": "static"})
+
 	def test_slide_and_show(self):
 		joints = {"flap": {"motion": "slide", "axis": [0, 1, 0], "drive": "d", "keys": [[0, 0], [1, 0.3]]},
 			"tab": {"motion": "show", "axis": [1, 0, 0], "drive": "s", "keys": [[0, 0], [1, 1]]}}

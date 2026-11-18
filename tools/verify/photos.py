@@ -32,9 +32,11 @@
 #            every drive at rest). A mark on a part a photo poses otherwise (a flap drooped, a
 #            stabilator turned) is carried into that photo's pose, so photos of the part at
 #            different angles agree. Choose one that is the same on both sides, as the mirrored
-#            pairs need, and the one the cited points describe (the F/A-18C's: gear down)
+#            pairs need, and the one the cited points describe (the F/A-18C's: gear down and
+#            standing, each oleo "static")
 #   photos   {id: {"file": path under the catalogue's references folder, "pose": {drive: value, "joints": {joint: value}}
-#                  (a joint named there takes that value past its drive), "solve": false to leave it out,
+#                  (a joint named there takes that value past its drive; a leg's oleo given as "static" stands
+#                  at the points file's gear static, model.py driven()), "solve": false to leave it out,
 #                  "stores", "clear", "paint", "ground" and "masks" for skyline.py (its load; true where the background is clear
 #                  blue sky or open sea; "blue" where the jet's own paint is as blue as that sky (the Blue Angels); true to
 #                  leave out what lies under the horizon, false never to, absent to leave it out where
