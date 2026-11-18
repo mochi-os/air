@@ -40,6 +40,7 @@ export interface Shown {
   test: boolean // the lights test is on
   arm: boolean // MASTER ARM at ARM
   air: boolean // the A/A master mode
+  ground: boolean // the A/G master mode
   ready: boolean // the extinguisher's READY
   discharged: boolean // and DISCH
   stations: readonly number[] // the station select buttons pressed in
@@ -147,7 +148,7 @@ function arm(c: Context, s: Shown): void {
   lens(c, s, 'DISCH', 149, 75, 86, 34, s.discharged, GREEN)
   text(c, 'FIRE', 150, 108, 15); text(c, 'EXTGH', 150, 126, 15)
   lens(c, s, 'A/A', 100, 174, 78, 36, s.air, GREEN, 17); text(c, 'A/A', 174, 174, 15)
-  lens(c, s, 'A/G', 100, 218, 78, 36, false, GREEN, 17); text(c, 'A/G', 174, 218, 15)
+  lens(c, s, 'A/G', 100, 218, 78, 36, s.ground, GREEN, 17); text(c, 'A/G', 174, 218, 15)
   text(c, 'ARM', 124, 262, 16)
   toggle(c, 124, 320, s.arm ? 1 : -1)
   text(c, 'SAFE', 124, 378, 16)

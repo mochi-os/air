@@ -94,13 +94,13 @@ describe('the frame budget', () => {
       simulate(1/60); return framed*60;`
     )(chunking, stepping, cost, crash) as number
   it('fits 64× in free flight into a 60 fps frame', () => {
-    expect(ran(0.45)).toBeCloseTo(64, 6) // free flight's world step, measured headless
+    expect(ran(0.55)).toBeCloseTo(64, 6) // free flight's world step, measured headless (timecheck: 16 steps in 8.9 ms)
   })
   it('drops what a costlier world cannot fit, rather than carrying it', () => {
     expect(ran(0.9)).toBeLessThan(64 * 0.95) // a joust's, the bandit's brain included
   })
   it('ends the frame a step after a crash returns the world to 1×', () => {
-    expect(ran(0.45, 3)).toBeCloseTo(16, 6) // four of the frame's sixteen fifteenths of a second
+    expect(ran(0.55, 3)).toBeCloseTo(16, 6) // four of the frame's sixteen fifteenths of a second
   })
 })
 
@@ -362,6 +362,49 @@ describe("the pilot's hand on the pilot's clock", () => {
     expect(source.match(/autopilot\.cue\(hold,sim_time,glance\)/g)).toHaveLength(2) // the HSI's CPL and the HUD's
     expect(source).not.toMatch(/autopilot\.cue\(hold,sim_time\)/)
     expect(source).toMatch(/datalink\.flashing\(link,sim_time,glance\)/)
+  })
+})
+
+// What a world step does beyond the flight core costs it at 64x sixteen times a
+// frame, so what only the eye or a slow book needs is done less often.
+describe('the world step\'s own work', () => {
+  // frames of the pilot's time at a rate, each in its world steps, the last presenting
+  const flown = (rate: number, seconds: number, step: (presenting: boolean, sim: number, glance: number) => void) => {
+    let sim = 0, glance = 0
+    for (let frame = 0; frame < Math.round(seconds * 60); frame++) {
+      glance += 1 / 60
+      const chunk = chunking(rate), steps = Math.round(rate / 60 / chunk)
+      for (let k = 0; k < steps; k++) { sim += chunk; step(k === steps - 1, sim, glance) }
+    }
+  }
+  it('reads the approach\'s book of power every two seconds of the pilot\'s time at 64x, not of the world\'s', () => {
+    // approach_book, lifted against a flight core whose trims are counted: each reading trims two jets
+    const kept = /\nconst approach_power=[^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(kept).not.toBe('')
+    const book = () => new Function(`let sim_time=0, glance=0, solved=0; const D2R=Math.PI/180, flight_power=()=>{ solved++; return { throttle:0.4, speed:68 }; };
+      ${kept}${lift('approach_book')}
+      return { read:(sim,wall)=>{ sim_time=sim; glance=wall; return approach_book(); }, readings:()=>solved/2 };`)() as { read(sim: number, wall: number): unknown; readings(): number }
+    const readings = (rate: number) => {
+      const b = book()
+      flown(rate, 10, (_, sim, glance) => { b.read(sim, glance) })
+      return b.readings()
+    }
+    expect(readings(64)).toBeLessThanOrEqual(6) // ten seconds at 64x are 640 of the world's: read every two of those, 320 readings
+    expect(readings(1)).toBeGreaterThanOrEqual(5)
+    expect(readings(1)).toBeLessThanOrEqual(6)
+    expect(readings(0.25)).toBeLessThanOrEqual(2) // and every two of the world's in slow motion, as the fuel burns
+    const b = book()
+    b.read(100, 100)
+    b.read(1, 100.5) // a new mission's clock: read again at once
+    expect(b.readings()).toBe(2)
+  })
+  it('looks the shed panels up in the jet\'s tree once a frame, on its last step', () => {
+    const walks = new Function('flown', `let presenting=true, walked=0; const STATE={ element:0 }, words=new Array(32).fill(1);
+      const st={ group:{ getObjectByName:()=>{ walked++; return { visible:true }; } } };
+      ${/\nconst PANELS=[^\n]*\n/.exec(source)?.[0] ?? ''}${lift('shed_panels')}
+      flown(64, 1, (last)=>{ presenting=last; shed_panels(st,words); });
+      return walked;`)(flown) as number
+    expect(walks).toBe(60 * 2) // a second at 64x: sixty frames, each panel once
   })
 })
 

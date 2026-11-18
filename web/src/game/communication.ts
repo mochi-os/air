@@ -172,6 +172,39 @@ export function landing(p: Panel, ufc: number): number {
   return p.landing === 'manual' ? p.channel : ufc
 }
 
+// ---- the TACAN's identity (23.1.1, 24.4) ----
+
+// The station keys its identity in Morse on a 1350 Hz tone once every 37.5 s, its dots 0.125 s and its dashes
+// 0.375 s (MIL-STD-291), and the TCN volume control sets its level in the headset (23.1.1). The spaces keep Morse's
+// own proportions: a dot's length between the parts of a letter, three between letters.
+export const IDENT = { tone: 1350, period: 37.5, dot: 0.125 }
+const MORSE: Readonly<Record<string, string>> = {
+  A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', F: '..-.', G: '--.', H: '....', I: '..', J: '.---', K: '-.-', L: '.-..', M: '--',
+  N: '-.', O: '---', P: '.--.', Q: '--.-', R: '.-.', S: '...', T: '-', U: '..-', V: '...-', W: '.--', X: '-..-', Y: '-.--', Z: '--..',
+  '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.',
+}
+// keying: the ident's tone as [start, end] spans, seconds from the start of its message.
+export function keying(ident: string): [number, number][] {
+  const spans: [number, number][] = []
+  let at = 0
+  for (const letter of ident.toUpperCase()) {
+    const code = MORSE[letter]
+    if (!code) continue
+    if (spans.length) at += 2 * IDENT.dot // three dots between letters, one already counted after the last part
+    for (const part of code) {
+      const length = part === '-' ? 3 * IDENT.dot : IDENT.dot
+      spans.push([at, at + length])
+      at += length + IDENT.dot
+    }
+  }
+  return spans
+}
+// sounding: whether the station's tone sounds at seconds into its flight, its message starting each period.
+export function sounding(ident: string, seconds: number): boolean {
+  const t = ((seconds % IDENT.period) + IDENT.period) % IDENT.period
+  return keying(ident).some(([start, end]) => t >= start && t < end)
+}
+
 // ---- the backup frequency control (25.4) ----
 
 // The UFC BU display: COM1 or COM2 pressed shows that radio; the keypad down

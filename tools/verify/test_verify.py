@@ -208,6 +208,23 @@ class ModelTest(unittest.TestCase):
 		# the value is the joint's own (radians), not a drive input read through the schedule
 		self.assertAlmostEqual(mod.pose(joints, {"joints": {"tab": 0.25}})["tab"][2], 0.25)
 
+	def test_gear_by_one_value(self):
+		# a points file's gear mechanisms, each on its own drive, posed by the
+		# one gear value through the retraction's timeline: at a share of it
+		# gone, each mechanism through its own part (the nose leg leading, the
+		# mains following, the doors last); a mechanism the pose names keeps
+		# its value; joints read without the timeline leave the drive unset
+		document = {"motion": {"gear": {"up": {"nose": [0.0, 0.5], "main": [0.2, 0.8], "doors": [0.8, 1.0]},
+			"down": {"doors": [0.0, 0.1], "nose": [0.1, 0.9], "main": [0.1, 1.0]}}},
+			"joints": {name: {"motion": "rotate", "axis": [0, 0, 1], "drive": f"gear.{name}", "keys": [[0, 0], [1, 1]]} for name in ("nose", "main", "doors")}}
+		joints = mod.joints(document)
+		for gear, want in ((1.0, (1, 1, 1)), (0.75, (0.5, 0.9166667, 1)), (0.3, (0, 0.1666667, 1)), (0.1, (0, 0, 0.5)), (0.0, (0, 0, 0))):
+			posed = mod.pose(joints, {"gear": gear})
+			for name, value in zip(("nose", "main", "doors"), want):
+				self.assertAlmostEqual(posed[name][2], value, places=6, msg=f"{name} at gear {gear}")
+		self.assertAlmostEqual(mod.pose(joints, {"gear": 0.0, "gear.nose": 0.25})["nose"][2], 0.25)
+		self.assertAlmostEqual(mod.pose(document["joints"], {"gear": 1.0})["nose"][2], 0.0)
+
 	def test_slide_and_show(self):
 		joints = {"flap": {"motion": "slide", "axis": [0, 1, 0], "drive": "d", "keys": [[0, 0], [1, 0.3]]},
 			"tab": {"motion": "show", "axis": [1, 0, 0], "drive": "s", "keys": [[0, 0], [1, 1]]}}
@@ -325,6 +342,39 @@ class CameraTest(unittest.TestCase):
 		for v in ([0.3, -0.2, 0.1], [0, math.pi - 1e-9, 0], [1.2, 2.0, -1.5], [0, 0, 0]):
 			R = cam.rotation(v)
 			np.testing.assert_allclose(cam.rotation(cam.vector(R)), R, atol=1e-6)
+
+	def test_clipping_holds_what_the_camera_sees(self):
+		# a jet 20 m long seen from 215 m, 12 m and 5 m: every point of each
+		# part within 50 degrees of the line of sight lies between the clip
+		# planes (from 12 m, looking at a part off to the side, the middle
+		# stands nearer in depth than its sphere's near side is in distance)
+		rng = np.random.default_rng(3)
+		spheres = [((0.0, 0.0, 0.0), 6.0), ((8.0, -1.0, 0.0), 3.0), ((-8.0, 0.5, 1.0), 2.0), ((6.0, -4.0, 0.0), 1.0)]
+		for position in ((0.0, -215.0, 20.0), (0.0, -12.0, 0.0), (0.0, -5.0, 1.0)):
+			start, end = cam.clipping(position, spheres)
+			position = np.array(position)
+			points = []
+			for centre, radius in spheres:
+				ball = rng.normal(size=(2000, 3))
+				points.append(np.array(centre) + radius * ball / np.linalg.norm(ball, axis=1, keepdims=True) * rng.random((2000, 1)) ** (1 / 3))
+			offset = np.concatenate(points) - position
+			for axis in [-position] + [np.array(centre) - position for centre, _ in spheres]:
+				axis = axis / np.linalg.norm(axis)
+				depth = offset @ axis
+				seen = depth > np.cos(math.radians(50)) * np.linalg.norm(offset, axis=1)
+				self.assertGreater(seen.sum(), 100)
+				self.assertGreaterEqual(depth[seen].min(), start)
+				self.assertLessEqual(depth[seen].max(), end)
+
+	def test_clipping_starts_near_a_distant_jet(self):
+		# from 215 m the near plane stands past 100 m, where a start of a few
+		# centimetres leaves the depth buffer too coarse for the shading; from
+		# inside a part's sphere it falls back to 5 cm
+		start, end = cam.clipping((0.0, -215.0, 20.0), [((0.0, 0.0, 0.0), 10.0)])
+		self.assertGreater(start, 100.0)
+		self.assertLess(end, 230.0)
+		start, _ = cam.clipping((0.0, -1.0, 0.0), [((0.0, 0.0, 0.0), 10.0)])
+		self.assertEqual(start, 0.05)
 
 	def test_solve_recovers_camera(self):
 		points = scene()

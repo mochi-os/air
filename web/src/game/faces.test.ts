@@ -10,7 +10,7 @@ import * as F from './faces'
 // faces draw on a recording context: every legend with the colour it was
 // written in, and every lever's end.
 const dark: F.Shown = {
-  power: true, test: false, arm: false, air: false, ready: false, discharged: false, stations: [],
+  power: true, test: false, arm: false, air: false, ground: false, ready: false, discharged: false, stations: [],
   dispenser: 'off', jammer: 'off', indicator: { power: false, limit: false, offset: false, special: false, fail: false },
 }
 const shown = (over: Partial<F.Shown> = {}): F.Shown => ({ ...dark, ...over })
@@ -90,10 +90,12 @@ describe('the master arm panel\'s face', () => {
     expect(draw('arm', shown({ arm: true })).levers).toEqual([[124, 296]])
     expect(draw('arm', shown({ arm: false })).levers).toEqual([[124, 344]])
   })
-  it('lights A/A in the A/A master mode, and never A/G', () => {
+  it('lights A/A in the A/A master mode and A/G in the A/G master mode, each alone', () => {
     expect(colour(draw('arm', shown()), 'A/A')).toEqual([DIM, INK]) // the lens dark, its label beside it
     expect(colour(draw('arm', shown({ air: true })), 'A/A')).toEqual([GREEN, INK])
     expect(colour(draw('arm', shown({ air: true })), 'A/G')).toEqual([DIM, INK])
+    expect(colour(draw('arm', shown({ ground: true })), 'A/G')).toEqual([GREEN, INK])
+    expect(colour(draw('arm', shown({ ground: true })), 'A/A')).toEqual([DIM, INK])
   })
   it('lights READY amber and DISCH green on the extinguisher pushbutton', () => {
     expect(colour(draw('arm', shown()), 'READY')).toEqual([DIM]); expect(colour(draw('arm', shown()), 'DISCH')).toEqual([DIM])

@@ -39,7 +39,7 @@ const KT = 1 / 1.94384
 // frame held the pedals.
 function roll(frames: [number, boolean, number, number][], on = true, handle = 'norm'): boolean[] {
   if (!protection) throw new Error('the anti-skid block not found in engine.ts')
-  return new Function('frames', 'on', 'handle', `let sim_time=0, parking=false; const ownship={ speed:0, grounded:false }, landing={ at:-Infinity }; ${protection}
+  return new Function('frames', 'on', 'handle', `let sim_time=0, parking=false; const ownship={ speed:0, grounded:false }, landing={ at:-Infinity }, fed=()=>true; ${protection}
     antiskid=on; pulled=handle==="emerg"; parking=handle==="park";
     return frames.map(([t,grounded,knots,at])=>{ sim_time=t; ownship.grounded=grounded; ownship.speed=knots; landing.at=at; return brakes_held(); });`)(
     frames.map(([t, grounded, knots, at]) => [t, grounded, knots * KT, at]), on, handle) as boolean[]

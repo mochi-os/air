@@ -37,7 +37,7 @@ import {
   world_say,
   type Join as NetJoin,
 } from './net'
-import { flight_cruise, flight_climb, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_speed, flight_steer, flight_voyage, flight_carrier, flight_deck, flight_reframe, flight_wind, flight_footing, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
+import { flight_cruise, flight_climb, flight_power, flight_load, flight_ready, flight_failure, flight_init, flight_set, flight_get, flight_frame, flight_interval, flight_debt, flight_debris_lay, flight_debris_meet, flight_mark, flight_ack, flight_level, flight_approach, flight_stores, flight_clear, flight_plan, flight_speed, flight_steer, flight_voyage, flight_carrier, flight_deck, flight_reframe, flight_wind, flight_footing, flight_version, flight_wake_shed, flight_wake, steps as flight_steps, STATE, battle_hulk, battle_racks, battle_volley, battle_fly, battle_blast, battle_progress, BATTLE, bandit_init, bandit_spawn, bandit_mirror, bandit_menace, bandit_step, bandit_mode, WARHEAD, round_launch, round_step, round_ladder, round_distract, round_drop, flight_catalog, bandit_coast, heater_ladder, bandit_journal, joust_opening } from './flight'
 import { journal_notes } from './journal'
 import { due as checkpoint_due, save as checkpoint_save, FLYING as CHECKPOINT_FLYING, SORTIE as CHECKPOINT_SORTIE } from './checkpoint'
 import { SEEKERS, seeker_sight, seeker_break, seeker_steer } from './seeker'
@@ -49,8 +49,9 @@ import { model as model_stock } from './library'
 import { fresh as ifei_fresh, press as ifei_press, face as ifei_face, test as ifei_test, reset as ifei_reset, settle as ifei_settle, zulu as ifei_zulu, BUTTONS as ifei_buttons } from './ifei'
 import { reconcile as cautions_reconcile, restack as cautions_restack, lines as cautions_lines, host as cautions_host, dedicated as cautions_dedicated } from './cautions'
 import { diagnose } from '../lib/graphics'
-import { oleo, flatten } from './oleo'
+import { oleo, flatten, REACH } from './oleo'
 import { rig as joints_rig, pose as joints_pose, roll as wheel_roll, schedule as joints_schedule } from './joints'
+import { advance as gear_advance, settled as gear_settled, type Timeline as GearTimeline } from './gear'
 import { rounds as hang_rounds, parts as hang_parts, place as hang_place, KINDS as round_kinds } from './hang'
 // #57 parked: import { start as head_start, shape as head_shape, Euro as HeadEuro } from './head'
 import { Radar, boresight, notched as radar_notched, geometry as radar_geometry, pick as radar_pick, WIDTHS as RADAR_WIDTHS, SCALES as RADAR_SCALES, BARS as RADAR_BARS, TILT as RADAR_TILT, GIMBAL as RADAR_GIMBAL, FRAME as RADAR_FRAME } from './radar'
@@ -70,7 +71,7 @@ import { shellStorage } from '@mochi/web'
 import { deviceDefaults, unreachable } from '../lib/config'
 import { demise, opponent, report } from './fate'
 import { geometry_canonical, geometry_hash } from './geometry'
-import { audio_pace, audio_pass, audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
+import { audio_pace, audio_pass, audio_gesture, audio_enable, audio_state, audio_volumes, audio_frame, audio_view, audio_gun, audio_hit, audio_explosion, audio_launch, audio_flare, audio_catapult, audio_trap, audio_touchdown, audio_servo, audio_gear, audio_gearlock, audio_geardoor, audio_eject, audio_caution, audio_voice, audio_voiced, audio_horn, audio_seeker, audio_tacan, audio_departure, audio_law, audio_remote, audio_remote_drop, audio_listener, audio_rwr, audio_rwr_paint, audio_flyby } from './audio'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
@@ -80,11 +81,12 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 // the URL changes when the bytes do, so there is no version constant to bump on
 // regen. The dev readout shows the hash.
 import ford_model_url from '../assets/ford.glb?url'
+import ford_far_url from '../assets/ford-far.glb?url'
 import ford_ship from '../assets/ford.json'   // its ship file, written beside it by tools/ford/build.py: the deck layout and the points the engine draws
 import { layout as ship_layout, lit as ship_lit } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
 import fa18c_points from '../assets/fa18c.json'   // its points file, written beside it by tools/fa18c/build.py: the joints and their schedules, and the points the engine draws
-const MOTION=(fa18c_points as any).motion as { seconds:{ canopy:number, probe:number, bar:number, fold:number, hook:number, scoop:number, swing:number }, toe:number, swing:number, canopy:{ unlatch:number, fall:number, lock:number } };   // the mechanisms' stroke times (the swing's from centre to either stop), the rudders' toe-in and the hook's sideways travel each way, deg (tools/fa18c facts layout.motion)
+const MOTION=(fa18c_points as any).motion as { seconds:{ canopy:number, probe:number, bar:number, fold:number, hook:number, scoop:number, swing:number }, toe:number, swing:number, canopy:{ unlatch:number, fall:number, lock:number }, gear:GearTimeline };   // the mechanisms' stroke times (the swing's from centre to either stop), the rudders' toe-in, the hook's sideways travel each way, deg, and the gear's mechanisms' timeline each way (tools/fa18c facts layout.motion; gear.ts)
 import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the model it replaces: the player's own jet in first person, whose cockpit the engine's cockpit tables are measured on, until our cockpit is built (claude/plans/air-fa18c.md, step 4)
 import fa18c_far_url from '../assets/fa18c-far.glb?url'   // the distant stages (#3): tools/fa18c
 import amraam_model_url from '../assets/aim120c.glb?url'   // our own missiles (tools/missiles), each with its points file: the mount its launcher seats
@@ -116,6 +118,8 @@ import { humidity, vapour as vapour_show } from './vapour'
 import { decode as sky_decode, direction as sky_direction, light as sky_light, moon as sky_moon, planet as sky_planet, seen as sky_seen, sidereal as sky_sidereal, tint as sky_tint } from './sky'
 import { STAR_COUNT, STAR_DATA } from './stars'
 import { subdivide } from './subdivide'
+import { bank as proximity_bank, escape as proximity_escape, PROXIMITY, warns as proximity_warns } from './proximity'
+import { MIRROR_CLEAR, MIRROR_HEIGHT, MIRROR_MARGIN, MIRROR_PIECE, MIRROR_PIECES, MIRROR_STALE, MIRROR_WIDTH, MirrorClock, mirror_aim, mirror_carried, mirror_clear, mirror_live, mirror_material, mirror_normal, mirror_pieces, mirror_setting, mirror_view, mirror_virtual } from './mirror'
 
 export type GameConfig = Record<string, unknown>
 
@@ -199,11 +203,13 @@ function model_stamp(url){ const m=/-([\w-]+)\.\w+$/.exec(url); return m?m[1]:ur
 const CARRIER_MODELS={
 	// The model is built in its ship file's frame at true scale, its origin on
 	// the waterline: the loader neither scales, centres nor sinks it. length is
-	// the flight deck's, end to end. No far model yet: whether she needs one is settled once the rest of her is done.
+	// the flight deck's, end to end. far is her distant model (tools/ford/far.py): past CARRIER_LIMIT it
+	// draws in one call what the full model, its deck aside, draws in some 150.
 	ford:{ url:ford_model_url, length:332.6, yaw:20, bow:0,   // yaw:20 faces the bow to 070° (into the Midway wind): the model's bow is +X. bow = the bow's bearing in the MODEL frame (0 = +X, 90 = +Z): the deck-ops frame is (yaw - bow), so carrier-local fore-aft tracks the drawn bow whatever the modeller's axes
 		ident:"GF",                                       // the ship's TACAN ident (ACP 113), shown beside the HUD's slant range
 		tacan:{ channel:74, band:"X" }, icls:11,          // the ship's TACAN and ICLS channels, which the pre-flight tunes: plausible values, not a real hull's
 		channels:[305000,262500,275800,318500],           // its tower, approach, marshal and landing signal officer frequencies, kHz, the first four comm presets of the mission load: plausible values too
+		far:ford_far_url,
 		...ship_layout(ford_ship as Parameters<typeof ship_layout>[0]) } };
 const SHIP=CARRIER_MODELS.ford;   // the active carrier (a picker arrives with the second ship)
 function sanitize_cfg(){   // runs after every config merge (the server-backed store can hold stale eras too)
@@ -225,7 +231,7 @@ function fire_press(side){ secured[side]=!secured[side]; }   // #54: the DUMP sw
 const dev_nudge={fa:0,lat:0,hd:0};   // dev measuring-cursor offset from the nose wheel (I/K fore-aft, J/L port-stbd, U/O heading while parked); the readout and Ctrl+C include it
 function here_text(){   // dev: the deck point under the NOSE WHEEL (plus the nudge offset) in carrier-local coordinates — the same frame AND reference point as the shuttle table (a value can be compared with or pasted as a cat spot directly)
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
-	const nx=ownship.pos.x+ownship.fwd.x*nose, nz=ownship.pos.z+ownship.fwd.z*nose;
+	const o=datum(ownship), nx=o.x+ownship.fwd.x*nose, nz=o.z+ownship.fwd.z*nose;
 	const fa=carrier_fore_aft(nx,nz)+dev_nudge.fa, lat=carrier_lateral(nx,nz)+dev_nudge.lat;
 	const hd=Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)*180/Math.PI+dev_nudge.hd;   // heading in the deck frame (0 = down the bow, + = port), from the forward vector through the inverse frame
 	return "fa="+fa.toFixed(2)+", lat="+lat.toFixed(2)+", heading="+hd.toFixed(1)+", y="+ownship.pos.y.toFixed(2)+" · ford "+model_stamp(ford_model_url);   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -298,6 +304,11 @@ function screen_point(material,size){ screen_points.push({ material, size }); ma
 function screen_points_resize(){ const k=renderer.domElement.height/POINT_HEIGHT; for(const p of screen_points) p.material.size=p.size*k; }
 renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
 renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+// The sun's shadow map is drawn once a frame, by render_frame's first pass over the scene. Left to itself three
+// redraws it at every render of the scene: the cloud depth pass, the world and the cockpit pass, each from its own
+// camera's layers. No jet receives a shadow, so the cockpit pass's own map served nothing, and the mirrors' passes
+// would add two more.
+renderer.shadowMap.autoUpdate=false;
 const scene = new THREE.Scene(); scene.fog=new THREE.FogExp2(0xc4d6e2,0);   // the lit materials' haze: its colour the sky's horizon and its density the aerosol, set each frame (render_frame)
 // The lit materials' haze is the air's (atmosphere.ts FOG): a fragment loses what the air between its
 // height and the eye's takes over the distance between them. three's own FogExp2 squared the distance,
@@ -315,7 +326,10 @@ const camera = new THREE.PerspectiveCamera(45,1,3.0,130000);   // 45° ≈ HUD-l
 const LAYER_OWN=1;
 const cockpit_cam = new THREE.PerspectiveCamera(45,1,0.05,60);
 cockpit_cam.layers.set(LAYER_OWN);
-function layer_own_group(g){ g.traverse(o=>o.layers.set(LAYER_OWN)); }   // layers are per-object, not hierarchical: run over the whole subtree, and re-run whenever children are added
+// The mirrors' rear view draws the jet's own airframe from LAYER_MIRROR alone: a copy of the distant stage hung on
+// the ownship (mirror_jet_attach), which neither the world pass nor the cockpit pass draws.
+const LAYER_MIRROR=2;
+function layer_own_group(g){ g.traverse(o=>{ if(!o.userData.mirror) o.layers.set(LAYER_OWN); }); }   // layers are per-object, not hierarchical: run over the whole subtree, and re-run whenever children are added; the mirrors' copy keeps its own
 
 const sun = new THREE.DirectionalLight(0xfff4e0,2.4); sun.position.copy(sun_dir).multiplyScalar(4000); sun.castShadow=true;
 sun.shadow.mapSize.set(1024,1024); sun.shadow.camera.near=100; sun.shadow.camera.far=8000;
@@ -323,6 +337,7 @@ sun.shadow.camera.left=-800; sun.shadow.camera.right=800; sun.shadow.camera.top=
 scene.add(sun,sun.target); const hemi=new THREE.HemisphereLight(0xbcd6ec,0x35506a,0.9); const amb=new THREE.AmbientLight(0x405060,0.4); scene.add(hemi,amb);
 for(const o of [sun,sun.target,hemi,amb]) o.userData.framed=true;   // laid in the engine's frame, not on the earth: a move of the frame leaves the light where the local sky has it (theatre_carry)
 sun.layers.enable(LAYER_OWN); hemi.layers.enable(LAYER_OWN); amb.layers.enable(LAYER_OWN);   // lights are layer-filtered: without these the cockpit pass renders black
+sun.layers.enable(LAYER_MIRROR); hemi.layers.enable(LAYER_MIRROR); amb.layers.enable(LAYER_MIRROR);   // and the mirrors' airframe pass
 
 // ============================================================================ sky + ocean (proven)
 // The sea is drawn about one axis: its wind sea, the swell crossing it, its foam and its detail
@@ -1456,7 +1471,7 @@ function sun_follow(){ const aboard=!!carrier_model&&Math.hypot(ownship.pos.x-CA
 	sun.target.position.copy(_sun_focus); sun.position.copy(_sun_focus).addScaledVector(sun_dir,4000); sun.target.updateMatrixWorld(); }
 function render_frame(){
 	if(cfg.view==="ddi") return;   // head-down: the opaque 2D panel covers the screen — skip the world passes entirely (the sim and audio run on; set_view marks cloud history stale for the return cut)
-	sun_follow();
+	sun_follow(); renderer.shadowMap.needsUpdate=true;   // the sun placed, the frame's first pass over the scene draws its map; every later pass reuses it
 	{ const f=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion), u=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);
 		audio_listener(camera.position.x,camera.position.y,camera.position.z,f.x,f.y,f.z,u.x,u.y,u.z); }
 	// Cockpit split (#99), stateless per frame so nothing can strand a stale mask:
@@ -1467,10 +1482,7 @@ function render_frame(){
 	sky_mat.uniforms.u_dip.value=dip; cloud_mat.uniforms.uDip.value=dip;
 	air_step();   // a slice of any bake under way (air_settle)
 	sky_view_render(camera.position.y);   // the sky from this height, for everything that shows it
-	{ // the lit materials' haze takes the sky's horizon in the direction the camera faces (one colour a frame: three's fog has no per-pixel sky)
-		const f=fog_direction.set(0,0,-1).applyQuaternion(camera.quaternion); const across=Math.hypot(f.x,f.z)||1, k=Math.sqrt(1-0.03*0.03)/across;
-		const r=sky_radiance(air_tables,[f.x*k,0.03,f.z*k],camera.position.y,[sun_dir.x,sun_dir.y,sun_dir.z],air_aerosol), e=atmosphere_uniforms.u_illuminance.value;
-		scene.fog.color.setRGB(r[0]*e,r[1]*e,r[2]*e); scene.fog.density=air_aerosol; }   // the density carries the aerosol to the fog chunks (at_fog)
+	fog_toward(camera);
 	// Below an overcast deck at night everything but lights blacks out: the deck blocks the
 	// moon the night scene is lit by. Tied to the CAMERA for the sky and the deck, so a
 	// moonlit deck top seen from above stays visible; the sea and the land are always
@@ -1505,12 +1517,191 @@ function render_frame(){
 		renderer.autoClear=false; renderer.render(comp_scene,fs_cam); renderer.autoClear=true;   // blend the cloud layer over it
 		prevVP.copy(curVP); hist_valid=true; hist_write=hr;   // this frame's accumulation is next frame's history
 	} else { renderer.render(scene,camera); }
+	mirror_frame();   // before the near pass, which draws the mirrors' faces
 	if(pit){   // the near pass: ownship only, depth cleared, drawn OVER the composited world+clouds — clouds can never bleed onto the panel, and the world shows through the glass
 		cockpit_cam.position.copy(camera.position); cockpit_cam.quaternion.copy(camera.quaternion);
 		renderer.autoClear=false; renderer.clearDepth(); renderer.render(scene,cockpit_cam); renderer.autoClear=true;
 	}
 	glare_render();
 }
+// fog_toward gives the lit materials' haze the sky's horizon in the direction `view` faces (one colour a pass:
+// three's fog has no per-pixel sky).
+function fog_toward(view){
+	const f=fog_direction.set(0,0,-1).applyQuaternion(view.quaternion); const across=Math.hypot(f.x,f.z)||1, k=Math.sqrt(1-0.03*0.03)/across;
+	const r=sky_radiance(air_tables,[f.x*k,0.03,f.z*k],view.position.y,[sun_dir.x,sun_dir.y,sun_dir.z],air_aerosol), e=atmosphere_uniforms.u_illuminance.value;
+	scene.fog.color.setRGB(r[0]*e,r[1]*e,r[2]*e); scene.fog.density=air_aerosol; }   // the density carries the aerosol to the fog chunks (at_fog)
+
+// ============================================================================ mirrors
+// The canopy bow's rear-view mirrors (mirror.ts). In the cockpit view, above the lowest effects setting, each face
+// shows the scene behind the jet. The world is drawn from the mirrors' virtual eyes' mean into mirror.world, with the
+// clouds marched over it into mirror.out; the jet's own airframe, the distant stage on LAYER_MIRROR, is drawn for
+// each mirror from its own virtual eye into mirror.jets. Elsewhere, and while no face is on screen, nothing is drawn
+// and the faces keep the sky alone (mirror_bake).
+const MIRRORS_OFF=DEV_MODE&&new URLSearchParams(location.search).get("mirrors")==="0";   // &mirrors=0 (dev): the sky alone, a probe's comparison
+const mirror={ clock:new MirrorClock(), camera:new THREE.PerspectiveCamera(30,MIRROR_WIDTH/MIRROR_HEIGHT,camera.near,camera.far), piece:new THREE.PerspectiveCamera(30,1,0.05,60),
+	faces:[], pieces:[], material:null, world:null, jets:[], out:null, march:null, hist:[null,null], write:0, valid:false,   // valid: the cloud history holds an earlier update's march
+	view:new THREE.Matrix4(), inverse:new THREE.Matrix4(), previous:new THREE.Matrix4(), eye:new THREE.Vector3(),   // the update under way, for its march
+	shown:{ texture:null, view:new THREE.Matrix4(), at:-Infinity },   // the world layer the faces show
+	carried:{ views:[], turn:new THREE.Quaternion(), at:-Infinity },   // the airframe each mirror shows, and how the jet lay when it was drawn
+	turn:new THREE.Quaternion(), at:-Infinity, jitter:0, updates:0, margin:0, draws:{ world:0, jet:0 }, aims:[], fovs:[] };
+const mirror_copy=new THREE.ShaderMaterial({ depthTest:false, depthWrite:false, uniforms:{ tMap:{value:null} },
+	vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position.xy,0.0,1.0); }`,
+	fragmentShader:`varying vec2 vUv; uniform sampler2D tMap; void main(){ gl_FragColor=texture2D(tMap,vUv); }` });
+const mirror_copy_scene=new THREE.Scene(); mirror_copy_scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),mirror_copy));
+const _mirror_point=new THREE.Vector3(), _mirror_normal=new THREE.Vector3(), _mirror_normals=new THREE.Matrix3(), _mirror_up=new THREE.Vector3(), _mirror_mean=new THREE.Vector3(),
+	_mirror_turn=new THREE.Quaternion(), _mirror_fog=new THREE.Color(), _mirror_clear=new THREE.Color(), _mirror_frustum=new THREE.Frustum(), _mirror_vp=new THREE.Matrix4(), _mirror_plane=new THREE.Plane();
+// mirror_faces_find records the player's model's mirror faces: each mesh drawn in the silvered glass, for switching
+// its material, and each separate mirror in them (mirror_pieces), the largest MIRROR_PIECES, with its vertices and
+// normals in the mesh's own frame, from which an update finds the mirror's plane and reflects the eye's sight lines.
+function mirror_faces_find(m){ mirror.faces.length=0; mirror.pieces.length=0;
+	m.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
+		const pos=o.geometry.attributes.position, nor=o.geometry.attributes.normal; if(!mirror_mats.includes(mm)||!pos||!nor) return;
+		if(Array.isArray(o.material)) o.material=o.material.slice();   // this jet's own list, so the live face shows on it alone
+		const index=o.geometry.index, group=Array.isArray(o.material)?o.geometry.groups.find(gr=>gr.materialIndex===ix):null;
+		const from=group?group.start:0, to=group?group.start+group.count:(index?index.count:pos.count), triangles=[];
+		for(let i=from;i<to;i++) triangles.push(index?index.getX(i):i);
+		for(const vertices of mirror_pieces(triangles)){
+			const points=vertices.map(v=>new THREE.Vector3().fromBufferAttribute(pos,v)), normals=vertices.map(v=>new THREE.Vector3().fromBufferAttribute(nor,v));
+			const centre=points.reduce((a,p)=>a.add(p),new THREE.Vector3()).multiplyScalar(1/points.length), normal=normals.reduce((a,n)=>a.add(n),new THREE.Vector3()).normalize();
+			mirror.pieces.push({ mesh:o, vertices, points, normals, centre, normal }); }
+		if(!mirror.material) mirror.material=mirror_material(mm.side);
+		mirror.faces.push({ mesh:o, index:ix, glass:mm }); }); });
+	mirror.pieces.sort((a,b)=>b.points.length-a.points.length); mirror.pieces.length=Math.min(mirror.pieces.length,MIRROR_PIECES); }
+// mirror_set sets the mirrors as a pilot sets his (mirror_setting), from the calibrated eye in the model's rest pose:
+// each turns about its own centre to the normal that sends the eye's sight line along its setting, so setting a set
+// mirror again turns it by nothing. The geometry is every copy of the cockpit's; its positions and normals are taken
+// out of the model's 16-bit quantisation first, where a corner turned past the quantised range would wrap round to
+// the far side.
+function mirror_set(g){ const eye=g.userData.eye; if(!eye||!mirror.pieces.length) return;
+	g.updateMatrixWorld(true);
+	const at=g.localToWorld(new THREE.Vector3(eye.x,eye.y,0)), turn=g.getWorldQuaternion(new THREE.Quaternion());
+	for(const piece of mirror.pieces){ const geo=piece.mesh.geometry;
+		const plane=new THREE.Plane(); mirror_plane(piece,at,plane,new THREE.Vector3());
+		const centre=piece.centre.clone().applyMatrix4(piece.mesh.matrixWorld), across=g.worldToLocal(centre.clone()).z;   // metres right of the eye, which sits on the centreline
+		const toward=mirror_setting(across).applyQuaternion(turn), wanted=mirror_normal(at,centre,toward,new THREE.Vector3());
+		const local=piece.mesh.getWorldQuaternion(new THREE.Quaternion()), swing=local.clone().invert().multiply(new THREE.Quaternion().setFromUnitVectors(plane.normal,wanted)).multiply(local);
+		const unpack=name=>{ const a=geo.attributes[name]; if(a.array instanceof Float32Array&&!a.normalized&&!a.isInterleavedBufferAttribute) return a;
+			const f=new THREE.BufferAttribute(new Float32Array(a.count*3),3); for(let i=0;i<a.count;i++) f.setXYZ(i,a.getX(i),a.getY(i),a.getZ(i)); geo.setAttribute(name,f); return f; };
+		const pos=unpack("position"), nor=unpack("normal"), p=new THREE.Vector3();
+		piece.vertices.forEach((v,i)=>{ p.copy(piece.points[i]).sub(piece.centre).applyQuaternion(swing).add(piece.centre); pos.setXYZ(v,p.x,p.y,p.z); piece.points[i].copy(p);
+			p.copy(piece.normals[i]).applyQuaternion(swing); nor.setXYZ(v,p.x,p.y,p.z); piece.normals[i].copy(p); });
+		piece.normal.applyQuaternion(swing);
+		pos.needsUpdate=nor.needsUpdate=true; geo.computeBoundingSphere(); geo.computeBoundingBox(); } }
+// mirror_jet_attach hangs a copy of the distant stage on the player's jet, where stages_attach hangs another jet's,
+// for the mirrors alone: on LAYER_MIRROR, which only their rear view draws, casting no shadow, and without its
+// canopy glass (mirror_clear), which the stage paints as an opaque tint.
+const mirror_glassless=new WeakMap();   // a stage geometry -> its copy without the glass, made once
+function mirror_jet_attach(g,kind){ const far=fleet_far[kind], m=model_of(g);
+	if(!g.userData.player||g.userData.mirror_jet||!far||far==="loading"||m===g) return;
+	const inner=m.children[0]&&m.children[0].children[0]; if(!inner) return;
+	const root=far.clone(true); root.traverse(o=>{ o.userData.mirror=true; o.layers.set(LAYER_MIRROR); if(!o.isMesh) return; o.castShadow=false;
+		const geo=o.geometry, colour=geo.attributes.color; if(!colour) return;
+		if(!mirror_glassless.has(geo)){ const triangles=geo.index?Array.from({ length:geo.index.count },(_,i)=>geo.index.getX(i)):Array.from({ length:geo.attributes.position.count },(_,i)=>i);
+			const clear=geo.clone(); clear.setIndex(mirror_clear(triangles,v=>[colour.getX(v),colour.getY(v),colour.getZ(v)])); clear.userData.glass=(triangles.length-clear.index.count)/3; mirror_glassless.set(geo,clear); }
+		o.geometry=mirror_glassless.get(geo); });
+	inner.add(root);
+	const silhouette=root.getObjectByName("far"); if(silhouette) silhouette.visible=false;   // the stage drawn only far off
+	g.userData.mirror_jet={ root, up:root.getObjectByName("up"), down:root.getObjectByName("down") }; }
+function mirror_targets(){ if(mirror.world) return; const W=MIRROR_WIDTH, H=MIRROR_HEIGHT;
+	// Drawn as the canvas is: three tone-maps and encodes its lit materials only for the screen or a target it takes
+	// for an XR one, and the sky, sea and cloud shaders write display values into any target. The values are held as
+	// written, in RGBA8: three would give the texture an sRGB format but a multisampled target's renderbuffer a plain
+	// one, and WebGL resolves the one into the other only between identical formats, so the airframe never arrived.
+	const display=t=>{ t.isXRRenderTarget=true; t.texture.colorSpace=THREE.SRGBColorSpace; t.texture.internalFormat="RGBA8"; return t; };
+	mirror.world=display(new THREE.WebGLRenderTarget(W,H)); mirror.world.depthTexture=new THREE.DepthTexture(W,H);   // the depth the clouds are marched against
+	for(let k=0;k<MIRROR_PIECES;k++){ mirror.jets.push(display(new THREE.WebGLRenderTarget(MIRROR_PIECE,MIRROR_PIECE,{ samples:4 }))); mirror.carried.views.push(new THREE.Matrix4()); }   // cleared transparent: the airframe's edges resolve to their coverage
+	mirror.out=new THREE.WebGLRenderTarget(W,H,{ depthBuffer:false });   // the world with its clouds: a target apart, as the composite samples the world's depth
+	mirror.march=new THREE.WebGLMultipleRenderTargets(W,H,2,{ depthBuffer:false }); mirror.march.texture[1].minFilter=THREE.NearestFilter; mirror.march.texture[1].magFilter=THREE.NearestFilter;
+	mirror.hist=[0,1].map(()=>new THREE.WebGLRenderTarget(W,H,{ depthBuffer:false })); }
+function mirror_face_material(live){ for(const f of mirror.faces){ const want=live?mirror.material:f.glass;
+	if(Array.isArray(f.mesh.material)) f.mesh.material[f.index]=want; else f.mesh.material=want; } }
+function mirror_seen(){ _mirror_frustum.setFromProjectionMatrix(_mirror_vp.multiplyMatrices(cockpit_cam.projectionMatrix,camera.matrixWorldInverse));   // the cockpit pass's field, whose near plane, unlike the world's 3 m, lies short of the canopy bow
+	return mirror.faces.some(f=>f.mesh.visible&&_mirror_frustum.intersectsObject(f.mesh)); }
+// mirror_plane finds a mirror's plane in the world now, its normal turned toward the eye, into `plane`, and the
+// mirror's virtual eye into `out`.
+function mirror_plane(piece,eye,plane,out){ piece.mesh.updateWorldMatrix(true,false); _mirror_normals.getNormalMatrix(piece.mesh.matrixWorld);
+	_mirror_point.copy(piece.centre).applyMatrix4(piece.mesh.matrixWorld); _mirror_normal.copy(piece.normal).applyMatrix3(_mirror_normals).normalize();
+	if(_mirror_normal.dot(_mirror_mean.subVectors(eye,_mirror_point))<0) _mirror_normal.negate();
+	plane.setFromNormalAndCoplanarPoint(_mirror_normal,_mirror_point); return mirror_virtual(eye,_mirror_point,_mirror_normal,out); }
+// mirror_frame runs between the world's passes and the cockpit's: it draws whatever half of an update falls due
+// (MirrorClock) and sets the faces to the live view while a fresh one stands, or to the sky alone.
+function mirror_frame(){ const now=performance.now();
+	if(MIRRORS_OFF||!mirror_live(cfg.view,map_on,cfg.effects_quality??2)||!mirror.pieces.length||!mirror_seen()){ mirror.clock.reset(); mirror_face_material(false); return; }
+	mirror_targets();
+	const step=mirror.clock.step(now,cloud_active()), was=renderer.getRenderTarget();
+	if(step==="scene") mirror_scene(now); else if(step==="clouds") mirror_clouds(now);
+	renderer.setRenderTarget(was);
+	const live=!!mirror.shown.texture&&now-mirror.shown.at<MIRROR_STALE*1000&&now-mirror.carried.at<MIRROR_STALE*1000;
+	if(live){ const u=mirror.material.uniforms; u.tWorld.value=mirror.shown.texture; u.uWorld.value.copy(mirror.shown.view);
+		ownship.group.getWorldQuaternion(_mirror_turn);
+		for(let k=0;k<MIRROR_PIECES;k++){ const piece=mirror.pieces[k];
+			u["tJet"+k].value=mirror.jets[k].texture;
+			if(!piece){ u["uPlane"+k].value.set(0,1,0,1e9); continue; }
+			mirror_plane(piece,camera.position,_mirror_plane,_mirror_mean); u["uPlane"+k].value.set(_mirror_plane.normal.x,_mirror_plane.normal.y,_mirror_plane.normal.z,_mirror_plane.constant);
+			mirror_carried(mirror.carried.views[k],mirror.carried.turn,_mirror_turn,u["uJet"+k].value); } }
+	mirror_face_material(live); }
+// mirror_scene is an update's first half. It aims the world's rear view over the rays the mirrors reflect, from their
+// virtual eyes' mean, widened by how far the jet turned over the last update (the world layer is shown until the next
+// one lands, up to two periods on, and the rays turn with the jet meanwhile), and draws it; then it draws the
+// airframe for each mirror from that mirror's virtual eye, cut MIRROR_CLEAR short of the mirror's plane so nothing at
+// or beyond the glass shows.
+function mirror_scene(now){ const eye=camera.position, g=ownship.group, rays=[], virtual=[], planes=[];
+	for(const piece of mirror.pieces){ const plane=new THREE.Plane(), at=mirror_plane(piece,eye,plane,new THREE.Vector3()); virtual.push(at); planes.push(plane.clone().translate(plane.normal.clone().multiplyScalar(MIRROR_CLEAR)));
+		for(const p of piece.points) rays.push(_mirror_point.copy(p).applyMatrix4(piece.mesh.matrixWorld).sub(at).normalize().clone()); }   // from the virtual eye through the glass: the reflected ray
+	const centre=virtual.reduce((a,v)=>a.add(v),new THREE.Vector3()).multiplyScalar(1/virtual.length);
+	g.getWorldQuaternion(_mirror_turn);
+	const gap=(now-mirror.at)/1000, turned=2*Math.acos(Math.min(1,Math.abs(_mirror_turn.dot(mirror.turn)))), spin=gap>0&&gap<0.5?turned/gap:0;
+	mirror.margin=MIRROR_MARGIN+spin*2*mirror.clock.period/1000;
+	const cam=mirror.camera, up=_mirror_up.set(0,1,0).applyQuaternion(_mirror_turn); cam.near=camera.near; cam.far=camera.far;
+	if(!mirror_aim(cam,centre,rays,up,mirror.margin)) return;
+	mirror.turn.copy(_mirror_turn); mirror.at=now; mirror.updates++;
+	const placed=scene.matrixWorldAutoUpdate; scene.matrixWorldAutoUpdate=false;   // the frame's world pass has already placed every object: four more passes need not walk the scene again to do it
+	_mirror_fog.copy(scene.fog.color); fog_toward(cam);
+	cam.layers.set(0); renderer.setRenderTarget(mirror.world); renderer.render(scene,cam); mirror.draws.world=renderer.info.render.calls;
+	mirror_view(cam,mirror.view); mirror.inverse.copy(mirror.view).invert(); mirror.eye.copy(centre);
+	const jet=g.userData.mirror_jet, alpha=renderer.getClearAlpha(); renderer.getClearColor(_mirror_clear); renderer.setClearColor(0x000000,0);
+	if(jet){ const down=(ownship.gear??1)<0.5; if(jet.up) jet.up.visible=!down; if(jet.down) jet.down.visible=down; }
+	const piece_cam=mirror.piece; piece_cam.layers.set(LAYER_MIRROR); mirror.draws.jet=0;
+	for(let k=0;k<MIRROR_PIECES;k++){ renderer.setRenderTarget(mirror.jets[k]);
+		const piece=mirror.pieces[k], at=virtual[k];
+		if(!jet||!piece||!mirror_aim(piece_cam,at,mirror.pieces[k].points.map(p=>p.clone().applyMatrix4(piece.mesh.matrixWorld).sub(at).normalize()),up,MIRROR_MARGIN)){ renderer.clear(true,false,false); continue; }   // the distant stage still loading: the world alone
+		renderer.clippingPlanes=[planes[k]]; renderer.render(scene,piece_cam); renderer.clippingPlanes=[]; mirror.draws.jet+=renderer.info.render.calls;
+		mirror_view(piece_cam,mirror.carried.views[k]); mirror.aims[k]=piece_cam.getWorldDirection(new THREE.Vector3()).applyQuaternion(_mirror_turn.clone().invert()).toArray(); mirror.fovs[k]=piece_cam.fov; }   // where each mirror looks, in the jet's frame (dev_mirror)
+	renderer.setClearColor(_mirror_clear,alpha); scene.fog.color.copy(_mirror_fog); scene.matrixWorldAutoUpdate=placed;
+	mirror.carried.turn.copy(_mirror_turn); mirror.carried.at=now;
+	if(!mirror.clock.pending){ mirror.shown.texture=mirror.world.texture; mirror.shown.view.copy(mirror.view); mirror.shown.at=now; mirror.valid=false; } }   // no clouds: the world is the view
+// mirror_clouds is the second half, the frame after: the clouds marched against the world's depth from the view the
+// first half drew, blended into their own history, and laid over a copy of the world in mirror.out.
+function mirror_clouds(now){
+	if(!cloud_active()){ mirror.shown.texture=mirror.world.texture; mirror.shown.view.copy(mirror.view); mirror.shown.at=now; mirror.valid=false; return; }
+	const hr=1-mirror.write, u=cloud_mat.uniforms, a=acc_mat.uniforms, c=comp_mat.uniforms;
+	u.tDepth.value=mirror.world.depthTexture; u.uCamPos.value.copy(mirror.eye); u.uInvVP.value.copy(mirror.inverse); u.uJitter.value=(++mirror.jitter*0.61803398875)%1;
+	renderer.setRenderTarget(mirror.march); renderer.render(fs_scene,fs_cam);
+	a.tCur.value=mirror.march.texture[0]; a.tAux.value=mirror.march.texture[1]; a.tHist.value=mirror.hist[hr].texture; a.uTexel.value.set(1/MIRROR_WIDTH,1/MIRROR_HEIGHT);
+	a.uPrevVP.value.copy(mirror.previous); a.uInvVP.value.copy(mirror.inverse); a.uCamPos.value.copy(mirror.eye); a.uHistValid.value=mirror.valid?1:0; a.uHistory.value=cloud_history();
+	renderer.setRenderTarget(mirror.hist[mirror.write]); renderer.render(acc_scene,fs_cam);
+	mirror_copy.uniforms.tMap.value=mirror.world.texture; renderer.setRenderTarget(mirror.out); renderer.render(mirror_copy_scene,fs_cam);
+	c.tCloud.value=mirror.hist[mirror.write].texture; c.uTexel.value.set(1/MIRROR_WIDTH,1/MIRROR_HEIGHT); c.tDepthLow.value=mirror.world.depthTexture; c.tDepthHigh.value=mirror.world.depthTexture;
+	c.uNear.value=camera.near; c.uFar.value=camera.far;
+	renderer.autoClear=false; renderer.render(comp_scene,fs_cam); renderer.autoClear=true;
+	mirror.previous.copy(mirror.view); mirror.valid=true; mirror.write=hr;
+	mirror.shown.texture=mirror.out.texture; mirror.shown.view.copy(mirror.view); mirror.shown.at=now; }
+if(DEV_MODE) (globalThis as any).dev_mirror=()=>({ faces:mirror.faces.length, pieces:mirror.pieces.length, live:mirror.faces.some(f=>(Array.isArray(f.mesh.material)?f.mesh.material[f.index]:f.mesh.material)===mirror.material),
+	updates:mirror.updates, draws:mirror.draws, fov:mirror.camera.fov, glass:(j=>{ let n=0; j?.root.traverse(o=>{ if(o.isMesh) n+=o.geometry.userData.glass||0; }); return n; })(ownship.group.userData.mirror_jet), margin:mirror.margin/D2R, jet:!!ownship.group.userData.mirror_jet, clouds:mirror.valid,
+	wanted:mirror_live(cfg.view,map_on,cfg.effects_quality??2), seen:mirror.faces.length>0&&mirror_seen(),
+	aim:new THREE.Vector3(0,0,-1).applyQuaternion(mirror.camera.quaternion).applyQuaternion(ownship.group.getWorldQuaternion(new THREE.Quaternion()).invert()).toArray(), aims:mirror.aims, fovs:mirror.fovs,
+	at:mirror.pieces.map(piece=>piece.centre.clone().applyMatrix4(piece.mesh.matrixWorld).sub(camera.position).normalize().applyQuaternion(ownship.group.getWorldQuaternion(new THREE.Quaternion()).invert()).toArray()),
+	blocked:mirror.pieces.map((piece,k)=>{ const j=ownship.group.userData.mirror_jet, aim=mirror.aims[k]; if(!j||!aim) return null;   // the first airframe surface along each mirror's aim from its virtual eye: metres, and where it lies from the eye in the jet's frame
+		const g=ownship.group, turn=g.getWorldQuaternion(new THREE.Quaternion()), from=mirror_plane(piece,camera.position,new THREE.Plane(),new THREE.Vector3());
+		const cut=new THREE.Plane(); mirror_plane(piece,camera.position,cut,new THREE.Vector3()); cut.translate(cut.normal.clone().multiplyScalar(MIRROR_CLEAR));   // as the pass cuts it
+		const ray=new THREE.Raycaster(from,new THREE.Vector3(...aim).applyQuaternion(turn)); ray.layers.set(LAYER_MIRROR);
+		const hit=ray.intersectObject(j.root,true).find(h=>h.object.visible&&cut.distanceToPoint(h.point)>=0); if(!hit) return null;
+		return { distance:hit.distance, at:hit.point.clone().sub(camera.position).applyQuaternion(turn.clone().invert()).toArray() }; }) });   // aims and fovs: where each mirror looks and its field (degrees high), at: where each lies from the eye   // dev: whether the mirrors are live, wanted and on screen, how many updates and draws they make, the world view's field and margin (degrees) and where it looks in the jet's frame (forward, up, right)
+if(DEV_MODE) (globalThis as any).dev_mirror_image=(layer)=>{   // dev: a layer's last drawing as base64 RGBA rows, bottom row first: "jet0" to "jet2", or the world the faces show
+	const k=/^jet(\d)$/.exec(layer||""), t=k?mirror.jets[+k[1]]:mirror.shown.texture===mirror.out?.texture?mirror.out:mirror.world; if(!t) return null;
+	const px=new Uint8Array(t.width*t.height*4); renderer.readRenderTargetPixels(t,0,0,t.width,t.height,px);
+	let s=""; for(let i=0;i<px.length;i+=0x8000) s+=String.fromCharCode(...px.subarray(i,i+0x8000));
+	return { width:t.width, height:t.height, data:btoa(s) }; };
 
 // ============================================================================ geometry
 function merge_geometries(geos){ let total=0; const parts=geos.map(g=>(g.index?g.toNonIndexed():g)); parts.forEach(g=>total+=g.attributes.position.count);
@@ -1695,7 +1886,7 @@ const AIRCRAFT_MODELS={
 	      { name:"ruddertrim",   track:/^HANDLING_Knob_RudderTrim_AN/i,                 drive:"ruddertrim" }, // the FCS panel's RUD TRIM knob (#19)
 	      { name:"wingtanks",    track:/^Wings_Tanks_AN/i,                              drive:"wingtanks" },  // the fuel panel's EXT TANKS switches (#18)
 	      { name:"centretank",   track:/^CTR_Tank_AN/i,                                 drive:"centretank" },
-	      // controls that move and act on nothing (#16, #17, #22, #25): TRAVEL
+	      // controls without a drive of their own (#16, #17, #22, #25): TRAVEL
 	      { name:"apu",          track:/^ELECTRICAL_Switch_APU_Generator_AN/i,          drive:"travel" },
 	      { name:"crank",        track:/^Switch_ENG_CRANK_LeftPanel_AN/i,               drive:"travel" },
 	      { name:"extpwr",       track:/^RESET_AN/i,                                    drive:"travel" },     // the ground power panel (2.5.4): EXT PWR and GND PWR 1 to 4
@@ -1727,8 +1918,10 @@ const AIRCRAFT_MODELS={
 	      { name:"flaplever", track:/^lever_flap_AN/i, drive:"flaplever" } ] } };
 // The clickable rig entries (#19): each names the action a click on its node fires
 // through pit_press.
-// TRAVEL: the controls that move and act on nothing (#16, #17, #22, #25), each with its number of
+// TRAVEL: the controls without a drive of their own (#16, #17, #22, #25), each with its number of
 // positions; a click throws one a position, right toward its clip's end and left back (travel_press).
+// What one acts on reads its position (travel_at): the start systems, the ground power switches, the engine
+// anti-ice, AV COOL and the FLOOD switch; the rest act on nothing the game has.
 const TRAVEL={ apu:2, crank:3, extpwr:3, groundone:3, groundtwo:3, groundthree:3, groundfour:3, antiice:3, pitot:2, avcool:2, cabintemp:5, windshield:3, windlever:2,
 	kymode:4, kyfill:5, kypower:3, oxygen:2, chains:2, mask:2, smoke:2, spare:2, visors:2, floodswitch:2 };
 // TRAVEL_REST: where the pre-flight leaves one that does not rest where the model draws it - the three-position
@@ -2012,7 +2205,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	const previous=g.children.find(c=>c.userData&&c.userData.model); if(previous) g.remove(previous);   // aircraft swap: drop the old airframe
 	const outside=g.children.find(c=>c.userData&&c.userData.exterior); if(outside) g.remove(outside);   // and our own model hung beside it
 	g.userData.exterior=null; g.userData.legacy=null; g.userData.pit=null;
-	g.userData.stages=null; g.userData.stage=undefined;   // its distant stages went with it
+	g.userData.stages=null; g.userData.stage=undefined; g.userData.mirror_jet=null;   // its distant stages went with it, and the mirrors' copy
 	// No team tint on the airframe (#210): identification is the HUD box, locator
 	// line and map colours, not paint.
 	const m=loaded.proto.clone(true); m.userData.model=true;
@@ -2057,13 +2250,18 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 		g.userData.exterior.legs=exterior_legs(g.userData.exterior, spec); g.userData.exterior.deck=exterior_deck(g.userData.exterior);
 		if(g.userData.stages){ g.userData.stages.parts.push(e); e.visible=g.userData.stage===0; }   // another jet's stage shows our model as it showed the old one's parts
 		{ const glow=new Map(), burner=new Map();   // its formation strips and lenses (lights) glow with the FORMATION knob, its flames (burner) with the engine's reheat, as the old model's emissive maps did; neither carries an emissive map, so each takes its colour here
+			// the nose strut's lamps (NATOPS 2.6.1.5-6) are their own lights, not the formation strips': the landing
+			// light's lens with the LDG/TAXI light, the approach lights' green, amber and red with the angle of attack
+			const lamps={}; e.traverse(o=>{ const kind=o.name==="lamp_gear_nose"?"landing":/^lamp_approach_(green|amber|red)$/.exec(o.name)?.[1]; if(!kind||!o.isMesh) return;
+				const hue=GEAR_LAMPS[kind], m=o.material.clone(); m.color=new THREE.Color(...hue).multiplyScalar(0.45); m.emissive=new THREE.Color(...hue); m.emissiveIntensity=0; o.material=m; lamps[kind]=m; });
+			g.userData.gearLamps=lamps;
 			e.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
-				const pool=mm.name==="burner"?burner:mm.name==="lights"?glow:null; if(!pool) return;
+				const pool=mm.name==="burner"?burner:mm.name==="lights"?glow:null; if(!pool||Object.values(lamps).includes(mm)) return;
 				if(!pool.has(mm)){ const c=mm.clone(); c.emissive=pool===burner?new THREE.Color(1,0.42,0.12):new THREE.Color(0.55,1,0.45); c.emissiveIntensity=0; c.userData.glowmax=pool===burner?1:4.0; pool.set(mm,c); }   // the strips' electroluminescent green; the flames' orange
 				if(Array.isArray(o.material)) o.material[ix]=pool.get(mm); else o.material=pool.get(mm); }); });
 			g.userData.glow=[...(g.userData.glow||[]),...glow.values()]; g.userData.burner=[...(g.userData.burner||[]),...burner.values()]; }
 		airframe_show(g,true); }
-	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); controls_round(g,m); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
+	if(g.userData.player){ layer_own_group(g); cockpit_hidden(); controls_round(g,m); mirror_faces_find(m); mirror_jet_attach(g,kind); }   // the ownship renders in the cockpit pass; re-layer on every model (re)apply
 	if(loaded.rig.length){ const mixer=new THREE.AnimationMixer(m); g.userData.gearMixer=mixer;   // per-subsystem scrub actions, driven by state in update_anim()
 		g.userData.rig=loaded.rig.map(r=>{
 			if(r.node){ const o=m.getObjectByName(r.node); if(!o) return null;
@@ -2095,13 +2293,14 @@ function airframe_show(g,force){ const u=g.userData, x=u.exterior; if(!x) return
 // fa18c.go's gear), the depth of whose penetration is the strut's load.
 const EXTERIOR_LEGS={ nose:"c_tire_anim_AN_Wheels_132", left:"l_tire_anim_AN_Tire_35", right:"r_tire_anim_AN__287" };   // each leg's spin entry, for the flight model's contact and the tyre's load
 function exterior_legs(x, spec){ const legs=[], e=x.object, at=new THREE.Vector3();
-	const lift=(leg,travel)=>{ joints_pose(x.joints,(drive)=>drive==="gear"?1:drive===`oleo.${leg}`?travel:undefined); e.updateMatrixWorld(true);
+	const lift=(leg,travel)=>{ joints_pose(x.joints,(drive)=>drive.startsWith("gear.")?1:drive===`oleo.${leg}`?travel:undefined); e.updateMatrixWorld(true);
 		const wheel=e.getObjectByName(`gear_${leg}_wheel`); return wheel?e.worldToLocal(wheel.getWorldPosition(at)).y:NaN; };
 	for(const [leg,tyre] of Object.entries(EXTERIOR_LEGS)){ const wheel=e.getObjectByName(`gear_${leg}_wheel`), oleo=x.joints.find(j=>j.name===`gear_${leg}_oleo`), point=x.points.gear[leg];
 		const spin=(spec.spin||[]).find(s=>s.node===tyre); if(!wheel||!oleo||!point) continue;
 		const rate=(lift(leg,0.1)-lift(leg,0))/0.1;   // metres the wheel rises per unit of oleo drive
-		legs.push({ leg, wheel, oleo, radius:point.radius, rate:rate>1e-3?rate:1, lift:0, contact:spin?spin.attach:null, strut:spin?spin.strut:0, tyre:spin?spin.tyre:0, travel:spin?spin.travel:0, limit:spin?spin.limit:0 }); }
-	joints_pose(x.joints,(drive)=>drive==="gear"||drive.startsWith("oleo.")?0:undefined);   // back to rest: stowed
+		const r=rate>1e-3?rate:1;
+		legs.push({ leg, wheel, oleo, radius:point.radius, rate:r, lift:0, reach:point.full!==undefined?point.full*r:REACH+(point.static||0)*r, contact:spin?spin.attach:null, strut:spin?spin.strut:0, tyre:spin?spin.tyre:0, travel:spin?spin.travel:0, limit:spin?spin.limit:0 }); }   // reach: the leg's own stroke from its length in flight to fully in (the points file's full: the nose's 17 in, a main arm's droop and the inch and a half its shock absorber has left), so the drawn oleo never pushes past what its parts allow; a points file without it, the default bound on a bad terrain sample plus the leg's static stroke
+	joints_pose(x.joints,(drive)=>drive.startsWith("gear.")||drive.startsWith("oleo.")?0:undefined);   // back to rest: stowed
 	return legs; }
 // exterior_deck is how far our own model's hook lowers before its point meets the ground the jet stands on
 // (points.ground, under the main wheels): the claw rests on a deck, not through it.
@@ -2118,7 +2317,7 @@ function exterior_load_factor(st){
 	if(st===ownship) return (ownship.gload??1)*(1-THREE.MathUtils.clamp(st.squish??0,0,1));
 	if(st===bandit&&bandit_words) return bandit_words[STATE.nz]??1;
 	const under=st.pos?ground_height(st.pos.x,st.pos.z):-1e9;
-	return under>-1e8&&st.pos.y<under+stance_of(st.group&&st.group.userData.hasModel)+0.5?0:1; }
+	return under>-1e8&&datum(st).y<under+stance_of(st.group&&st.group.userData.hasModel)+0.5?0:1; }
 // exterior_pose drives our own model's joints from the jet's state (joints.ts; claude/plans/air-fa18c.md, Joints):
 // the flight controls from the core's surfaces, held where a jet sends none as the old rig held them (neutral
 // stabilators and rudders, the flaps and leading edges drooped with the gear down), the mechanisms from their 0..1
@@ -2129,12 +2328,20 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 	if(g.userData.player) airframe_show(g);   // the view picks the pilot's airframe
 	const s=st.surfaces, down=1-THREE.MathUtils.clamp(st.gear??1,0,1), toe=s&&s.toe!==undefined?s.toe:MOTION.toe*D2R*(st.squish??0), clamp=THREE.MathUtils.clamp;   // the core's toe-in where it flies the jet, its weight-on-the-wheels setting otherwise
 	let hook=clamp(st.hook??0,0,1);
-	if(hook>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8&&st.pos.y<=surf+stance_of(g.userData.hasModel)+0.6) hook=Math.min(hook,x.deck??HOOK_DECK_CAP); }   // the claw rests ON the deck, not through it
+	if(hook>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8&&datum(st).y<=surf+stance_of(g.userData.hasModel)+0.6) hook=Math.min(hook,x.deck??HOOK_DECK_CAP); }   // the claw rests ON the deck, not through it
 	const own=st===ownship, spool=own?(ownship.spool??0.8):0.8, stage=own?(ownship.stage??0):Math.max(...burners(st));
 	const open=Math.max(clamp((0.7-spool)/0.55,0,1),clamp(stage,0,1));   // F404 exit area: open at idle, closed by military, opening with the reheat stage
 	const load=exterior_load_factor(st), legs=x.legs||[];
 	const wheel=(leg)=>{ const l=legs.find(q=>q.leg===leg); return wheel_roll((st.wheelDist??0)/(l?l.radius:0.3)); };
 	const oleo_of=(leg)=>{ const l=legs.find(q=>q.leg===leg); return l?Math.max(0,l.lift)/l.rate:0; };
+	// the gear's doors, nose leg and main legs each in its sequence (gear.ts), the way the gear last travelled
+	// (to the end it stands at when it is not travelling): drawn where the gear stands at first sight, or when
+	// it is set outright (a spawn, a reset) rather than travelling
+	const travel=down-(st.mechanismsAt??down);
+	if(travel!==0) st.lowering=travel>0; else if(down>=1||down<=0) st.lowering=down>=1;
+	if(!st.mechanisms||Math.abs(travel)>GEAR_RATE*dt+0.02) st.mechanisms=gear_settled(MOTION.gear,down);
+	else{ const lowering=!!st.lowering; gear_advance(MOTION.gear,st.mechanisms,lowering,dt,1/GEAR_RATE); }
+	st.mechanismsAt=down;
 	const value=(drive,name)=>{ switch(drive){
 		case "stabilator.left": return s?s.stabL:0;
 		case "stabilator.right": return s?s.stabR:0;
@@ -2146,7 +2353,9 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 		case "rudder": return clamp((s?s.rudder:0)+(name==="rudder_left"?-toe:toe),-30*D2R,30*D2R);   // toe-in: both trailing edges inboard
 		case "speedbrake": return clamp(st.speedbrake??0,0,1);
 		case "fold": return clamp(st.fold??0,0,1);
-		case "gear": return down;
+		case "gear.doors": return st.mechanisms.doors;
+		case "gear.nose": return st.mechanisms.nose;
+		case "gear.main": return st.mechanisms.main;
 		case "hook": return hook;
 		case "swing": return st.swing??0;   // the hook trailing the pull of the wire it holds (update_wire_drag, update_anim)
 		case "probe": return clamp(st.probe??0,0,1);
@@ -2175,7 +2384,7 @@ function exterior_pose(st,g,dt){ const x=g.userData.exterior; if(!x) return;
 			if(seated&&l.contact){ const c=_exterior_contact.set(l.contact[0],l.contact[1],l.contact[2]).applyMatrix4(g.matrixWorld), under=ground_height(c.x,c.z), surface=ground_height(_exterior_wheel.x,_exterior_wheel.z);
 				const depth=under>-1e8?under-c.y:0;
 				if(depth>0&&surface>-1e8) plane=surface-flatten(depth,l.strut,l.tyre,l.travel,l.limit); }
-			l.lift=oleo(_exterior_wheel.y-l.radius,plane,l.lift,dt); }
+			l.lift=oleo(_exterior_wheel.y-l.radius,plane,l.lift,dt,l.reach); }
 		joints_pose(legs.map(l=>l.oleo),value); } }
 // shift_node moves a node of the model by an offset in the group frame (forward x, up y, right z),
 // whatever frames the model's own nodes are in (spec.shift).
@@ -2233,7 +2442,8 @@ async function init_far_model(kind){ const spec=AIRCRAFT_MODELS[kind]; if(!spec|
 			if(p&&p.name==="far"){ const c=o.geometry.attributes.color; for(let i=0;i<c.count;i++){ albedo.r+=c.getX(i); albedo.g+=c.getY(i); albedo.b+=c.getZ(i); corners++; } } });
 		gltf.scene.userData.albedo=corners?albedo.multiplyScalar(1/corners):new THREE.Color(0.27,0.27,0.27);   // the dot's colour: the far silhouette's mean
 		fleet_far[kind]=gltf.scene;
-		for(const st of new Set([bandit,...remotes.values()])) if(st.group&&st.group.userData.hasModel===kind) stages_attach(st.group,kind); }
+		for(const st of new Set([bandit,...remotes.values()])) if(st.group&&st.group.userData.hasModel===kind) stages_attach(st.group,kind);
+		if(ownship.group.userData.hasModel===kind) mirror_jet_attach(ownship.group,kind); }   // the player's jet carries a copy for its mirrors
 	catch(e){ fleet_far[kind]=null; console.warn("aircraft model: no distant stages for "+kind+" ("+((e&&e.message)||e)+")"); } }   // without them the jet is drawn in full at every range
 // stages_attach hangs a jet's distant stages beside its model's own nodes, in the glTF scene they were
 // built in (tools/fa18c), so normalise_model's scale, centring, rotation and stance place them too.
@@ -2471,7 +2681,7 @@ function build_faces(g){
 	g.userData.faces=built; faces_key=""; faces_update(); }
 // faces_shown: what the faces show now (faces.ts Shown). faces_update redraws them when it changes.
 let faces_key="";
-function faces_shown(){ return { power:buses.essential, test:lamps_testing, arm:arms.arm, air:master!=="nav", ready:armament.ready(secured), discharged:arms.discharged, stations:arms.stations,
+function faces_shown(){ return { power:buses.essential, test:lamps_testing, arm:arms.arm, air:master!=="nav"&&master!=="ag", ground:master==="ag", ready:armament.ready(secured), discharged:arms.discharged, stations:arms.stations,
 	dispenser:suite.dispenser, jammer:suite.jammer, indicator:countermeasures.indicator(suite.receiver,sim_time) }; }
 function faces_update(){ const u=ownship.group.userData; if(!u.faces) return;
 	const shown=faces_shown(), key=JSON.stringify(shown); if(key===faces_key) return; faces_key=key;
@@ -2510,7 +2720,7 @@ function build_standby(g){
 	g.userData.standby=faces; standby_draw(faces,{}); }
 function standby_draw(faces,gz){
 	const caged=sari_caged();
-	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,caged?SARI_CAGE:gz.pitch||0,caged?0:gz.bank||0,gz.yaw||0,gz.slip||0,sari_testing(),!buses.essential||caged,sari_trim);
+	asi_face(faces.asi,gz.asi||0); alt_face(faces.alt,gz.altitude||0,gz.baro||2992); vsi_face(faces.vsi,gz.vsi||0); adi_face(faces.adi,caged?SARI_CAGE:gz.pitch||0,caged?0:gz.bank||0,gz.yaw||0,gz.slip||0,sari_testing(),!buses.essential||!fed(2,"b")||caged,sari_trim);
 	for(const k of ["asi","alt","vsi","adi"]) faces[k].tex.needsUpdate=true; }
 function face_start(f,colour){ const x=face_context(f); x.globalAlpha=1;
 	x.fillStyle=colour||"#101210"; x.fillRect(0,0,256,256);
@@ -2877,10 +3087,10 @@ function lamps_update(out){
 	// glareshield panels (#12): SAM, AAA and CW stay dark, the world having no missile site, gun radar or continuous-wave illuminator to light them, and the BLEEDs and APU FIRE light only in the fire test
 	lamp_set(l.spdbrk,(out[STATE.speedbrake]||0)>0.02);   // any time the board is off its stop (NATOPS 2.8.4.8.2, #9)
 	lamp_set(l.lbar,bar_switch==="extend");   // green with the launch bar switch at EXTEND, out when it goes to RETRACT, which on this jet it does not do by itself at MIL (2.10.4, #11, #127); the red L BAR needs a retraction fault the game has none of
-	{ const j=countermeasures.lamps(suite,RWR.locked()||RWR.warned(),buses.ac,ASPJ_TEST,sim_time);   // the jammer's lights follow the ECM knob (countermeasures.ts, #10): STBY, ASPJ ON, REC and XMIT, and GO from its test at BIT; NO GO stays dark, the jammer having no failure to find
+	{ const j=countermeasures.lamps(suite,RWR.locked()||RWR.warned(),buses.ac&&fed(3,"a"),ASPJ_TEST,sim_time);   // the jammer's lights follow the ECM knob (countermeasures.ts, #10): STBY, ASPJ ON, REC and XMIT, and GO from its test at BIT; NO GO stays dark, the jammer having no failure to find
 		lamp_set(l.aspj,j.on); lamp_set(l.xmit,j.transmit); lamp_set(l.rec,j.receive); lamp_set(l.stby,j.standby); lamp_set(l.go,j.go); }
 	lamp_set(l.disp,countermeasures.dispensing(suite,sim_time));   // DISP while a dispenser programme runs
-	lamp_set(l.ai,suite.receiver.power&&buses.ac&&RWR.contacts.some(c=>c.locked&&!c.missile&&RWR.time-c.at<0.5));   // AI: an air intercept radar locked on, as the RWR hears it; a search radar's paint does not light it
+	lamp_set(l.ai,suite.receiver.power&&buses.ac&&fed(3,"a")&&RWR.contacts.some(c=>c.locked&&!c.missile&&RWR.time-c.at<0.5));   // AI: an air intercept radar locked on, as the RWR hears it; a search radar's paint does not light it
 	lamp_set(l.rcdr,recording());   // RCDR ON while the video recording system records (2.13.8.10)
 	lamp_set(l.spin,spin_switch==="rcvy");   // SPN RCVY with the spin recovery switch at RCVY (2.8.2.6.1)
 	faces_update();   // the faces' lights and switches: the master arm panel, the station select buttons, the dispenser/EMC panel and the RWR control indicator (#7, #10, #9)
@@ -3143,19 +3353,25 @@ function build_screens(g){
 const ddi_state={ left:{page:"eng",menu:""}, right:{page:"adi",menu:""}, center:{page:"hsi",menu:""} };
 let designator="right";   // the display the TDC works (#27, #32): the sensor control switch assigns it, and a diamond in that display's upper right corner says so
 // Master-mode display recall (#15): a display configuration per master-mode
-// family (A/A - gun and 9m share - and NAV), restored when the family is
-// selected; page selections record into the current family.
-const ddi_sets={ aa:{left:"sms",right:"rdr",center:"sa"}, nav:{left:"chklst",right:"fuel",center:"hsi"} };   // A/A seeds the attack scan on the right DDI with stores left and the SA picture on the AMPCD (#30) — the fighting layout; NAV keeps its instrument set
-function ddi_family(){ return master==="nav"?"nav":"aa"; }
+// family (A/A - gun and 9m share - NAV and A/G), restored when the family is
+// selected; page selections record into the current family. A/G carries no
+// sensor or store of its own here, so it starts on NAV's layout.
+const ddi_sets={ aa:{left:"sms",right:"rdr",center:"sa"}, nav:{left:"chklst",right:"fuel",center:"hsi"}, ag:{left:"chklst",right:"fuel",center:"hsi"} };   // A/A seeds the attack scan on the right DDI with stores left and the SA picture on the AMPCD (#30) — the fighting layout; NAV keeps its instrument set
+function ddi_family(){ return master==="nav"||master==="ag"?master:"aa"; }
 function ddi_recall(){ const set=ddi_sets[ddi_family()]; for(const d of ["left","right","center"]) ddi_state[d]={ page:set[d], menu:"" }; ddi_dirty=true; }
 function ddi_show(display,page){ ddi_state[display]={ page, menu:"" }; ddi_sets[ddi_family()][display]=page; ddi_dirty=true; }
-function set_master(m){ const before=ddi_family(); master=m; if(m!=="nav") air_weapon=m; if(ddi_family()!==before) ddi_recall(); }
-// air_press is the A/A master mode button (2.13.2, FO-5 item 12): from NAV it enters A/A on the weapon last selected
-// there, or the first aboard; pressed in A/A it deselects the mode, which is NAV.
+function set_master(m){ const before=ddi_family(); master=m; if(m!=="nav"&&m!=="ag") air_weapon=m; if(ddi_family()!==before) ddi_recall(); }
+// air_press is the A/A master mode button (2.13.2, FO-5 item 12): from NAV or A/G it enters A/A on the weapon last
+// selected there, or the first aboard; pressed in A/A it deselects the mode, which is NAV.
 let air_weapon="gun";
-function air_press(){ if(master!=="nav"){ set_master("nav"); return; }
+function air_press(){ if(master!=="nav"&&master!=="ag"){ set_master("nav"); return; }
 	const loaded={ gun:(ownship.rounds??0)>0, "9m":(ownship.msl|0)>0, "120c":Math.max(0,ownship.amraam|0)>0 };
 	set_master(loaded[air_weapon]?air_weapon:["9m","120c","gun"].find(m=>loaded[m])||"gun"); }
+// ground_press is the A/G master mode button (2.13.2): it selects the A/G master mode, and pressed in A/G it deselects
+// it, which is NAV. Its light on the master arm panel shows the mode. The jet carries no air-to-ground store, so the
+// mode delivers nothing: the HUD keeps the flight symbology every mode draws, without A/A's weapon cues or NAV's
+// steering, since A/G's own symbology is the NATIP's (2.13.4.8.11), which is not held.
+function ground_press(){ set_master(master==="ag"?"nav":"ag"); }
 // next_master cycles GUN -> 9M -> 120C -> NAV, skipping any station with
 // nothing left to fire; NAV always stays. select_master is the positional pick,
 // ignored for an empty station. default_master is the match's weapon at spawn:
@@ -3176,7 +3392,7 @@ function select_master(m){
 function next_master(){
 	const order=["gun","9m","120c","nav"];
 	const loaded={ gun:(ownship.rounds??0)>0, "9m":(ownship.msl|0)>0, "120c":Math.max(0,ownship.amraam|0)>0, nav:true };
-	let at=order.indexOf(master); if(at<0) at=0;
+	let at=order.indexOf(master==="ag"?"nav":master); if(at<0) at=0;   // from A/G the switch enters A/A as from NAV (2.13.2)
 	for(let step=1;step<=order.length;step++){ const m=order[(at+step)%order.length]; if(loaded[m]||m==="gun"&&!order.some(w=>w!=="nav"&&loaded[w])) return m; }
 	return master; }
 let ddi_dirty=false;   // a pushbutton press redraws NOW — the 120 ms cadence would read as a stuck button
@@ -3252,7 +3468,7 @@ function diamond(x){ x.save(); x.strokeStyle="#39e07a"; x.fillStyle="#39e07a"; x
 // the HSI is MC2's backup of it, and the GPWS and the low altitude warning are silent; without MC2 the TAC menu loses STORES and no missile leaves the rail;
 // with neither the displays flash STANDBY (2.13.4.2.1, 2.20.5, 2.12.5.1, 2.17.5.1, figure 12-1).
 let mc_switch="norm";
-function mc(){ const c=avionics.computers(mc_switch,buses.ac); return { one:c.one&&buses.left, two:c.two&&buses.right }; }   // MC1 on the left ac bus and MC2 on the right (FO-8), which differ only with the bus tie open
+function mc(){ const c=avionics.computers(mc_switch,buses.ac); return { one:c.one&&buses.left&&fed(1,"a"), two:c.two&&buses.right&&fed(1,"b") }; }   // MC1 on the left ac bus and MC2 on the right (FO-8), which differ only with the bus tie open
 // bit: the built-in test's state. bit_state: the BIT display's level - "" the top level, a group's
 // key its sublevel, "config" the configuration display, "ins" the INS post flight data - with SELBIT
 // boxed, which POST display shows and which page of failures. display_test: the displays' test pattern, on every display from its
@@ -3273,22 +3489,23 @@ let castle=null;   // when the sensor switch went forward from BST into HACQ, wh
 const hold=autopilot.fresh(), link=datalink.fresh(); let coupled="";
 let hold_was=false, onspeed_flag=false, onspeed_owed=false;   // the autopilot as the last frame left it, and the one-shot pitch trim reset its disengagement asks of the core (2.9.2.1): the flag until the core here has stepped with it, owed until a datagram has carried it to the server's
 // link_picture: where the jet is on the carrier's approach and what its own equipment can do, for the data
-// link - the hook against the touchdown point, as the lens has it (ols_dev).
-function link_picture(){ const g=demonstration_picture().groove, o=carrier_ols;
+// link - the hook against the touchdown point, as the lens has it (ols_dev), from the demonstration's picture
+// of the jet (p), which a caller that already holds one passes.
+function link_picture(p=demonstration_picture()){ const g=p.groove, o=carrier_ols;
 	return { time:sim_time, along:g.along+HOOK_AFT, across:g.right, height:ownship.pos.y-(o?o.dy:0)-HOOK_DROP, final:g.heading, altitude:ownship.pos.y, waved:!!ownship.waving,
-		link:!!o&&radios.link.on&&buses.ac&&!emcon, beacon:radios.beacon.on&&buses.ac&&!emcon, able:navigate.attitude(nav.ins)&&mc().one, flaps:flap_select===2, throttle:atc_on&&atc_speed===null, coupled:hold.modes.coupled?hold.source:"" }; }
+		link:!!o&&radios.link.on&&buses.ac&&fed(2,"b")&&!emcon, beacon:radios.beacon.on&&buses.ac&&fed(2,"b")&&!emcon, able:navigate.attitude(nav.ins)&&mc().one, flaps:flap_select===2, throttle:atc_on&&atc_speed===null, coupled:hold.modes.coupled?hold.source:"" }; }
 // couple_now: what the UFC's CPL option couples to (2.9.2.6, 24.6.1.2) - with ACL boxed and the uplink
 // offering it, the carrier's commands or its heading; else the steering boxed on the HSI, the TACAN station
 // by its bearing and range. label: the cue for it on the HUD and HSI. passed: a point flown direct has been
 // reached, and the steering uncouples.
-function couple_now(){ const up=datalink.couple(link,link_picture());
+function couple_now(p=demonstration_picture()){ const up=datalink.couple(link,link_picture(p));
 	if(up) return { couple:up, label:up.axis==="bank"?"CPLD P/R":"CPLD HDG", passed:false };
 	const truth=nav_sense(0), station=nav.steer==="tcn"?tacan():null;
 	const c=navigate.coupling(nav,navigate.place(nav,truth),(ownship.gauges||{}).track??truth.heading,ownship.speed??0,station&&station.range!=null?{ bearing:station.bearing, range:station.range }:null);
 	return c?{ couple:{ axis:"track", value:c.track/D2R, vertical:null }, label:"CPL "+c.label, passed:c.passed }:null; }
 // autopilot_sense: what the jet is doing, for the autopilot (autopilot.ts Sense). The radar altitude is
 // the height indicator's, gone with the set off or silenced.
-function autopilot_sense(now){ const p=demonstration_picture(), surface=ground_height(ownship.pos.x,ownship.pos.z);
+function autopilot_sense(now,p=demonstration_picture()){ const surface=ground_height(ownship.pos.x,ownship.pos.z);
 	return { time:sim_time, pitch:p.pitch, bank:p.bank, heading:p.heading, track:p.track, altitude:p.altitude, height:radalt_inhibited()?null:ownship.pos.y-(surface>-1e8?Math.max(surface,0):0), vertical:p.vertical, cas:p.cas,
 		roll:p.roll, rate:p.rate, approach:trim_law(), airborne:!on_ground(), attitude:navigate.attitude(nav.ins), computer:mc().one, stick:{ pitch:input.pitch, roll:input.roll }, trim:{ pitch:input.trim||0, roll:input.lean||0 },
 		selected:nav.heading/D2R, couple:now?now.couple:null, limit:nav.limit }; }
@@ -3302,12 +3519,14 @@ function acl_select(){ datalink.select(link);
 // switch takes every mode off; a point reached, or the end of a sequence, uncouples; coupled to a sequence
 // it turns ahead of each waypoint; and on each axis the autopilot holds, its stick goes to the flight
 // controls in place of the pilot's, with the trim switch, which then moves its references. ACL is a NAV
-// master mode's (24.6.1), and the scripted pilot flies with everything off.
-function autopilot_frame(dt){ const before=JSON.stringify([hold.engaged,hold.modes,sim_time<hold.caution,link.shown,link.changed]);
+// master mode's (24.6.1), and the scripted pilot flies with everything off. It runs in every world step, sixteen
+// a frame at 64x, so the picture of the jet against the ship, the dearest thing it reads, is made once for its
+// three readers.
+function autopilot_frame(dt){ const before=JSON.stringify([hold.engaged,hold.modes,sim_time<hold.caution,link.shown,link.changed]), p=demonstration_picture();
 	if(link.selected&&master!=="nav") acl_select();
-	datalink.step(link,link_picture(),dt);
+	datalink.step(link,link_picture(p),dt);
 	if(hotas.paddle||demonstration) autopilot.paddle(hold);
-	const now=couple_now(), s=autopilot_sense(now), sequence=hold.modes.coupled&&coupled.startsWith("CPL SEQ");
+	const now=couple_now(p), s=autopilot_sense(now,p), sequence=hold.modes.coupled&&coupled.startsWith("CPL SEQ");
 	if(hold.modes.coupled&&hold.source==="track"&&((now&&now.passed)||(sequence&&!nav.auto))) autopilot.uncouple(hold,s,false);
 	if(sequence&&hold.modes.coupled) navigate.anticipate(nav,navigate.place(nav,nav_sense(0)),ownship.speed??0,autopilot.bound(s).bank*D2R);
 	if(hold.modes.coupled&&now&&now.couple.axis===hold.source) coupled=now.label;   // a sequence's label follows its number; a source that has changed is about to be let go
@@ -3336,7 +3555,7 @@ const ASPJ_TEST=avionics.UNITS.find(u=>u.key==="aspj").seconds;   // how long th
 function avionics_frame(dt){ const before=Object.keys(bit.tests).join()+JSON.stringify(bit.results)+bit.advisory, m=mc();
 	avionics.step(bit,equipment(),dt,DDI_ORDER.some(d=>!ddi_state[d].menu&&ddi_state[d].page==="bit"));
 	helmet_frame(dt);
-	identification.step(squawk,buses.essential,(ownship.gearTarget??0)>0.5);   // the mode 4 codes, held or lost with the CRYPTO switch and the power (23.6.2.2.2)
+	identification.step(squawk,buses.essential&&fed(2,"b"),(ownship.gearTarget??0)>0.5);   // the mode 4 codes, held or lost with the CRYPTO switch and the power (23.6.2.2.2)
 	RADAR.testing=avionics.testing(bit,"rdr");
 	if(ufc_test.at>-Infinity){ ufc_dirty=true; if(sim_time-ufc_test.at>=10) ufc_test.at=-Infinity; }   // the UFC's test runs its two five-second periods
 	if(!m.one&&hsi_state.level!==""&&hsi_state.level!=="mode"){ hsi_state.level=""; hsi_state.slew=false; ddi_dirty=true; }   // the backup HSI has no position, update or data sublevel (25.1.2)
@@ -3656,7 +3875,7 @@ function aboard(){ return !!ownship.grounded&&Math.hypot((CARRIER.x-ownship.pos.
 // gives a fix only from a station in the stored table, received with range.
 function nav_sense(dt){ const gz=ownship.gauges||{}, station=tacan(), t=radios.tacan, stored=nav.stations.find(s=>s.channel===t.channel&&s.band===t.band);
 	return { dt, x:ownship.pos.x, z:ownship.pos.z, east:ownship.velx??ownship.vel_dir.x*ownship.speed, south:ownship.velz??ownship.vel_dir.z*ownship.speed, tas:last_out?airspeed(last_out[STATE.mach]||0,ownship.pos.y):ownship.speed,   // true airspeed through the air, where ownship.speed is over the ground
-		heading:gz.heading||0, pitch:gz.pitch||0, bank:gz.bank||0, airborne:!ownship.grounded, brake:parking, power:buses.ac, computer:mc().one, radar:!RADAR.silent()&&master==="nav", deck:aboard(),
+		heading:gz.heading||0, pitch:gz.pitch||0, bank:gz.bank||0, airborne:!ownship.grounded, brake:parking, power:buses.ac&&fed(2,"a"), computer:mc().one, radar:!RADAR.silent()&&master==="nav", deck:aboard(),
 		tacan:station&&station.range!=null&&stored?{ x:stored.x, z:stored.z, bearing:station.bearing, range:station.range }:null }; }
 // mission: what the memory unit carries for the map flown (2.13.1.2.1, #97) - the ship as waypoint 1
 // and the first airfield as waypoint 2, the ship's TACAN station, and the ship and every airfield as
@@ -4102,7 +4321,7 @@ function ddi_adi(x,display){ const gz=ownship.gauges||{}; const bank=gz.bank||0,
 // another aircraft answers; bearing without range in RCV or under EMCON, where the set
 // sends no interrogation to range with (24.4.2, 2.13.5.2).
 function tacan(){ const t=radios.tacan;
-	if(!t.on||t.air||t.channel!==SHIP.tacan.channel||t.band!==SHIP.tacan.band) return null;
+	if(!t.on||t.air||!fed(2,"b")||t.channel!==SHIP.tacan.channel||t.band!==SHIP.tacan.band) return null;
 	const dx=(CARRIER.x-ownship.pos.x), dz=(CARRIER.z-ownship.pos.z), ranging=t.mode==="tr"&&!emcon;
 	return { bearing:Math.atan2(dx,-dz), range:ranging?Math.hypot(dx,dz):null, slant:ranging?Math.hypot(dx,ownship.pos.y,dz):null }; }
 // time_to_go: a TTG as the HSI shows it, m:ss and from an hour h:mm:ss, to 8:59:59 (2.13.4.7).
@@ -4419,15 +4638,15 @@ function known(){
 // of the side whose radar tracks the jet, and whether every one of them gets its answer.
 function own_team(){ return MULTIPLAYER&&net?(net.teams.get(net.slot)||""):""; }
 function status_of(slot){ return (MULTIPLAYER&&net&&net.statuses.get(slot))||mids.STANDING; }
-function link_sense(){ return { power:buses.ac, held:squawk.held, emission:emcon }; }
+function link_sense(){ return { power:buses.ac&&fed(2,"b"), held:squawk.held, emission:emcon }; }
 function link_picture16(){ const mine=own_team(); if(!MULTIPLAYER||!net||!mine) return { members:[], donated:[] };
 	return mids.picture({ slot:net.slot, team:mine, receiving:mids.receiving(terminal,link_sense()) },[...net.teams.entries()].map(([slot,team])=>({ slot, team, sending:status_of(slot).link, tracks:status_of(slot).tracks }))); }
 function overhead(from,of){ const up=of.up||world_up; return (from.x-of.pos.x)*up.x+(from.y-of.pos.y)*up.y+(from.z-of.pos.z)*up.z>0; }
 function identified(c,mine){ const st=remotes.get(c.id), theirs=status_of(c.id);
-	return !!mine&&c.team===mine&&!!st&&identification.challenging(squawk,{ power:buses.ac, emission:emcon })&&theirs.reply&&identification.facing(theirs.antenna,overhead(ownship.pos,st)); }
+	return !!mine&&c.team===mine&&!!st&&identification.challenging(squawk,{ power:buses.ac&&fed(2,"b"), emission:emcon })&&theirs.reply&&identification.facing(theirs.antenna,overhead(ownship.pos,st)); }
 function challenges(){ const mine=own_team(), list=[]; if(!MULTIPLAYER||!net||!mine) return { challenged:false, answered:false };
 	for(const [slot,st] of remotes.entries()){ const theirs=status_of(slot); if(st.group&&st.group.visible&&net.teams.get(slot)===mine&&theirs.challenge&&theirs.tracks.includes(net.slot)) list.push(st); }
-	return { challenged:list.length>0, answered:list.length>0&&list.every(st=>identification.replying(squawk,{ power:buses.ac, emission:emcon, above:overhead(st.pos,ownship) })) }; }
+	return { challenged:list.length>0, answered:list.length>0&&list.every(st=>identification.replying(squawk,{ power:buses.ac&&fed(2,"b"), emission:emcon, above:overhead(st.pos,ownship) })) }; }
 // status_own: this aircraft's status for the session to relay: its transponder answering mode 4 and on which antenna,
 // its interrogator challenging, its terminal sending, and the slots its radar holds - the trackfiles and the single
 // target track.
@@ -5080,7 +5299,7 @@ function ddi_sms(x,display){   // SMS (#5): the stores format over the real load
 	x.fillText("9M "+Math.max(0,ownship.msl|0),24,430);
 	x.fillText("120C "+Math.max(0,ownship.amraam|0),120,430);
 	x.fillText("GUN "+(ownship.rounds??0),24,458);
-	x.textAlign="right"; x.fillText(master.toUpperCase(),488,458);
+	x.textAlign="right"; x.fillText(master==="ag"?"A/G":master.toUpperCase(),488,458);
 	x.textAlign="center"; x.font="26px monospace"; x.fillText(armament.armed(arms,arm_sense())?"ARM":"SAFE",256,66); }   // the ARM status (2.17.1.2, #109): ARM with the ARM conditions met, else SAFE. The NTRP's format is not held: its place here, under the title and clear of the caution and advisory lines, is ours
 function ddi_ew(x){ x.fillText("EW",256,36); ew_draw(x,256,266,190,18); }
 // ew_draw: the ALR-67 picture the EW page and the azimuth indicator share, at a
@@ -5257,7 +5476,7 @@ function update_rails(st,count){ if(!st.group) return; const nodes=(st.racks&&st
 function apply_model_all(){ apply_model_to(ownship.group, own_aircraft()); apply_model_to(bandit.group); position_aircraft_lights();
 	{ const g=ownship.group, before=new Set(g.children);   // the eye's calibration casts at the old cockpit, drawn while it runs; the parts the cockpit build hangs on the group are the pit's, drawn with it
 		for(const o of g.userData.legacy||[]) o.visible=true;
-		calibrate_eye();
+		calibrate_eye(); mirror_set(g);   // the mirrors are set from the eye
 		if(g.userData.exterior) g.userData.pit=[...new Set([...(g.userData.pit||[]),...g.children.filter(c=>!before.has(c))])].filter(c=>c.parent===g);
 		airframe_show(g,true); }
 	assign_loadout(ownship, loadout()); assign_loadout(bandit, bandit_fit());
@@ -5555,6 +5774,11 @@ function deck_y_at(grp,x,z,fallback){
 	if(deck_grid){ const g=deck_grid, fa=carrier_fore_aft(x,z), lat=carrier_lateral(x,z), gi=Math.floor((fa-g.minFa)/g.cell), gj=Math.floor((lat-g.minLat)/g.cell);
 		if(gi>=0&&gi<g.W&&gj>=0&&gj<g.H){ const y=g.data[gj*g.W+gi]; if(!Number.isNaN(y)) return CARRIER.deckY+_deck_rise.set(fa,y-CARRIER.height,lat).applyQuaternion(carrier_turn).y; } return fallback; }
 	_ray.set(new THREE.Vector3(x,5000,z), new THREE.Vector3(0,-1,0)); const hits=_ray.intersectObject(grp,true); return hits.length?hits[0].point.y:fallback; }
+// deck_plane is the flight deck's height at (x, z) where the ship floats now:
+// the plane through her deck reference, carried through her attitude. In a
+// frame anchored away from her she leans with the curved sea, so her deck is
+// level only where the frame is, and a spawn is laid in the map's frame.
+function deck_plane(x,z){ return CARRIER.deckY+_deck_rise.set(carrier_fore_aft(x,z),0,carrier_lateral(x,z)).applyQuaternion(carrier_turn).y; }
 // Place ownship on the configured catapult (deck height found by raycast when a model carrier is present).
 function place_on_cat(i=cat_idx){
 	// A cat pose ({x,z} offset and launch heading) was tuned at yaw 90; rotate it by the
@@ -6336,7 +6560,7 @@ const _v=new THREE.Vector3();
 // with no keyup wedges Space into the held-keys set and both paths then skip
 // the edge block.
 function trigger_missile(){
-	if(master!=="nav"&&!arms.arm){ notice(translate("MASTER ARM SAFE")); return; }   // the trigger pulled with MASTER ARM at SAFE: nothing fires, and the press says why
+	if(master!=="nav"&&master!=="ag"&&!arms.arm){ notice(translate("MASTER ARM SAFE")); return; }   // the trigger pulled with MASTER ARM at SAFE: nothing fires, and the press says why
 	if(!mc().two) return;   // without the weapon delivery computer no missile leaves the rail (figure 12-1, MC 2)
 	if(master==="120c"){ trigger_amraam(); return; }   // #27 phase 1: the trigger serves the selected weapon
 	if(master!=="9m" || weapons_hold || ownship.launching || (ownship.gear??0)<=0.98 || ownship.msl<=0) return;   // an unarmed loadout has no rounds, so msl covers the retired missiles flag (#17)
@@ -6373,8 +6597,8 @@ let amraam_visual=false;   // UNCAGE: the boresight/MADDOG launch mode (#27 phas
 const VISUAL=7.5*D2R;
 function amraam_field(){ return master==="120c"&&(amraam_visual||(RADAR.stt==null&&RADAR.ls==null)); }
 let caged=false;   // the same switch in the NAV master mode: the velocity vector caged to the HUD centreline (NATOPS I-2-102 item 10)
-function jammer_armed(){ return buses.ac&&suite.jammer==="transmit"; }   // XMIT (#31): the ECM knob's standing decision, on ac power; jammer_loud() is whether it radiates right now
-function jammer_loud(){ return countermeasures.radiating(suite,RWR.locked()||RWR.warned(),buses.ac); }   // armed AND painted: the threat picture decides the radiation, so forgetting it armed is a carried risk, not a constant beacon
+function jammer_armed(){ return buses.ac&&fed(3,"a")&&suite.jammer==="transmit"; }   // XMIT (#31): the ECM knob's standing decision, on ac power; jammer_loud() is whether it radiates right now
+function jammer_loud(){ return countermeasures.radiating(suite,RWR.locked()||RWR.warned(),buses.ac&&fed(3,"a")); }   // armed AND painted: the threat picture decides the radiation, so forgetting it armed is a carried risk, not a constant beacon
 // launch_amraam (#27 phase 2): the round separates off its rail or ejector
 // and is handed to the Go core with the datalink's first estimate — or with
 // none at all for a VISUAL shot, which starts the seeker hot. The slot is
@@ -6642,9 +6866,17 @@ function local_offset(st,x,y,z){ const right=new THREE.Vector3().crossVectors(st
 // speed. Anything that looks FROM the ownship or records where it was reads
 // this, never ownship.pos.
 const _shown=new THREE.Vector3();
-function presented(st){ if(st===ownship&&MULTIPLAYER) return _shown.copy(st.pos).add(render_offset);
-	if(st===ownship&&slowed()){ const d=flight_debt(); return _shown.set(st.pos.x+(st.velx||0)*d,st.pos.y+(st.vely||0)*d,st.pos.z+(st.velz||0)*d); }   // slow motion: where the jet has flown since its last step (smooth_poses)
-	return st.pos; }
+function presented(st){ const at=datum(st);
+	if(st===ownship&&MULTIPLAYER) return _shown.copy(at).add(render_offset);
+	if(st===ownship&&slowed()){ const d=flight_debt(); return _shown.set(at.x+(st.velx||0)*d,at.y+(st.vely||0)*d,at.z+(st.velz||0)*d); }   // slow motion: where the jet has flown since its last step (smooth_poses)
+	return at; }
+// datum is where a jet's airframe is drawn and placed from (#188): the core's position is its centre of mass,
+// which its fuel and stores move about the datum - st.center, body axes from the datum, as the core reports it
+// (STATE.center) - so the datum is the position less the attitude's turn of the centre. Another player's jet
+// arrives at its datum (the server packs it so) and has no centre of its own.
+const _datum=new THREE.Vector3();
+function datum(st,out=_datum){ const c=st.center; out.copy(st.pos); if(!c) return out;
+	return out.addScaledVector(st.fwd,-c.x).addScaledVector(st.up||world_up,-c.y).addScaledVector(st.right,-c.z); }
 // The world steps the jets and the missiles at fixed intervals, and slow motion
 // stretches each over several frames, so a jet drawn at its last step stutters:
 // at ¼× and 120 fps the bandit's 1/60 s step lasts eight frames. Slowed, each is
@@ -6653,7 +6885,7 @@ function presented(st){ if(st===ownship&&MULTIPLAYER) return _shown.copy(st.pos)
 function slowed(){ return !MULTIPLAYER&&!playback&&compression<1; }
 function smooth_poses(){ if(!slowed()) return;
 	ownship.group.position.copy(presented(ownship));
-	if(bandit&&bandit.group) bandit.group.position.set(bandit.pos.x+(bandit.velx||0)*bandit_acc,bandit.pos.y+(bandit.vely||0)*bandit_acc,bandit.pos.z+(bandit.velz||0)*bandit_acc);
+	if(bandit&&bandit.group){ const at=datum(bandit); bandit.group.position.set(at.x+(bandit.velx||0)*bandit_acc,at.y+(bandit.vely||0)*bandit_acc,at.z+(bandit.velz||0)*bandit_acc); }
 	for(const m of missiles) if(m.active&&m.mesh) m.mesh.position.set(m.px+m.vx*missile_acc,m.py+m.vy*missile_acc,m.pz+m.vz*missile_acc); }
 function body_offset(st,x,y,z){ const up=st.up||world_up; const right=st.right||new THREE.Vector3().crossVectors(st.fwd,world_up).normalize();
 	return presented(st).clone().addScaledVector(st.fwd,x).addScaledVector(up,y).addScaledVector(right,z); }
@@ -6764,6 +6996,9 @@ let aircraft_lights=null;
 // strobe lights, and not the landing/taxi light.
 const STROBE=["dim","off","bright"];
 const exterior={ position:1, formation:1, strobe:"bright", landing:false };
+// the nose strut's lamps' colours (NATOPS 2.6.1.5-6): the landing light's white and the approach lights' green
+// (high angle of attack), amber (optimum) and red (low), lit through their lenses as their light is on
+const GEAR_LAMPS={ landing:[1,0.95,0.85], green:[0.25,1,0.35], amber:[1,0.62,0.12], red:[1,0.12,0.08] };
 ownship.group=make_jet(); bandit.group=make_jet(); scene.add(ownship.group,bandit.group);
 ownship.group.userData.player=true; layer_own_group(ownship.group);
 build_aircraft_lights(); layer_own_group(ownship.group);   // the nav lights/strobes/landing spot just joined the group — layer them too
@@ -7491,14 +7726,18 @@ const EMERGENCY_LIGHT=0.5;   // the white emergency instrument light's intensity
 // (2.6.2.4), CONSOLES the console lighting (2.6.2.3), FLOOD the white floods (2.6.2.5) and WARN/CAUT the
 // lens brightness within NITE's low range, each from its knob (knob_level): the pre-flight leaves INST
 // PNL a dim wash by day and up at night, CONSOLES and FLOOD on at night. Both generators gone (2.6.2.8)
-// takes the integral lighting and the floods with them. NVG is not modelled: the game has no goggles,
-// and the FLOOD switch's CHART position has no chart light to light.
-const lighting={ mode:"day", instrument:0.22, consoles:0, flood:0, warn:1 };
+// takes the integral lighting and the floods with them. NVG is not modelled: the game has no goggles.
+// The FLOOD switch beside the knob (2.6.2.5, aircraft 161353 THRU 163782) sets what the knob lights: at
+// COCKPIT the floods and the chart light on the canopy arch, at CHART the chart light alone. The pre-flight
+// leaves it at COCKPIT, where the model draws it.
+const FLOOD={ chart:0, cockpit:1 };
+const lighting={ mode:"day", instrument:0.22, consoles:0, flood:0, chart:0, warn:1 };
 function lighting_set(){ const night=cfg.tod==="night";   // none of it on the L key, the exterior lights master switch
 	lighting.mode=night?"nite":"day";
 	lighting.instrument=unpowered?0:knob_level("instrument");
 	lighting.consoles=unpowered?0:knob_level("consoles");
-	lighting.flood=unpowered?0:knob_level("flood");
+	lighting.flood=unpowered||travel_at("floodswitch")===FLOOD.chart?0:knob_level("flood");
+	lighting.chart=unpowered?0:knob_level("flood");
 	lighting.warn=night?0.2+0.5*knob_level("warn"):1; }
 function instrument_backlight(){
 	lighting_set(); const level=lighting.instrument;
@@ -7506,7 +7745,7 @@ function instrument_backlight(){
 	for(const mm of instrument_mats) mm.emissiveIntensity=level;
 	const g=ownship.group;   // WARN/CAUT and the NITE mode dim every warning, caution and advisory light (2.6.2.1, 2.17.2.2): a lens's painted legend multiplies by its material colour, a plain lamp's colour is its own at that level
 	if(g&&g.userData.lamps) g.traverse(o=>{ if(o.userData.lens) o.material.color.setScalar(lighting.warn); else if(o.userData.lit!==undefined) o.material.color.setHex(o.userData.lit).multiplyScalar(lighting.warn); }); }
-let cockpit_flood=null, console_lights=null;
+let cockpit_flood=null, console_lights=null, chart_light=null;
 // ============================================================================ panel systems (G1)
 // Knobs the pilot has turned (#11, #23, #115): null keeps the level the pre-flight leaves, the time of
 // day's for the interior lights and full for the rest. A click turns one a fifth of its throw, right
@@ -7531,7 +7770,7 @@ const displays={ left:{ mode:"auto", brt:1, contrast:1 }, right:{ mode:"auto", b
 // video switch, BLK LVL, BAL and the ADF switch move and act on nothing.
 const hud_panel={ range:"day", video:"off" };
 let finder="off";
-function display_level(d){ const s=displays[d]; if(!buses.ac||(d==="left"&&!buses.left)||(d==="right"&&!buses.right)||s.mode==="off"||(d==="center"&&s.brt<=0)) return 0;   // each DDI on its own side's ac bus (FO-8)
+function display_level(d){ const s=displays[d]; if(!buses.ac||(d==="left"&&!buses.left)||(d==="right"&&!buses.right)||!fed(d==="left"?1:2,"a")||s.mode==="off"||(d==="center"&&s.brt<=0)) return 0;   // each DDI on its own side's ac bus (FO-8)
 	return (s.mode==="night"?0.45:1)*(0.3+0.7*s.brt); }
 // display_contrast: how much of a screen's face is its own light (#132), the rest a veil over symbology and background
 // alike (screen_contrast), at any brightness: all of it at the top stop, CONTRAST_FLOOR at the bottom, where the symbology
@@ -7544,10 +7783,10 @@ function display_press(d,control,direction){ const s=displays[d], up=direction>=
 	else s.mode=SELECTOR[THREE.MathUtils.clamp(SELECTOR.indexOf(s.mode)+(up?1:-1),0,3)]; }
 function displays_light(){ const u=ownship.group.userData;
 	for(const sc of u.screens||[]){ sc.mesh.material.color.setScalar(display_level(sc.display)); if(sc.mesh.material.userData.contrast) sc.mesh.material.userData.contrast.value=display_contrast(sc.display); }
-	if(u.ufc) u.ufc.mesh.material.color.setScalar(buses.ac?0.3+0.7*knob_level("ufc"):0);
+	if(u.ufc) u.ufc.mesh.material.color.setScalar(buses.ac&&fed(2,"b")?0.3+0.7*knob_level("ufc"):0);
 	if(u.ifei) u.ifei.mesh.material.color.setScalar(buses.ac?(lighting.mode==="nite"?0.3+0.7*knob_level("ifei"):1):0);
-	if(u.rwr) u.rwr.mesh.material.color.setScalar(buses.ac&&suite.receiver.power?1:0); }   // the azimuth indicator is dark without ac power (#116), and with the set's POWER off (#9)
-function symbology(){ return buses.ac?knob_level("symbology")*(hud_panel.range==="night"?0.45:1):0; }   // the HUD's SYM BRT knob, its bottom stop OFF (2.13.4.8.2), in the selector's range as a DDI's NIGHT takes the lower (#139); the HUD is on the ac buses
+	if(u.rwr) u.rwr.mesh.material.color.setScalar(buses.ac&&fed(3,"a")&&suite.receiver.power?1:0); }   // the azimuth indicator is dark without ac power (#116), and with the set's POWER off (#9)
+function symbology(){ return buses.ac&&fed(2,"a")?knob_level("symbology")*(hud_panel.range==="night"?0.45:1):0; }   // the HUD's SYM BRT knob, its bottom stop OFF (2.13.4.8.2), in the selector's range as a DDI's NIGHT takes the lower (#139); the HUD is on the ac buses
 // The electrical power panel (#21, NATOPS 2.5, figure 2-9): the L and R GEN switches, NORM or OFF, and
 // BATT, OFF, ON or ORIDE. Either generator on the line powers every bus. With both off the 28 V dc
 // essential bus alone lives, on the batteries with BATT at ON or ORIDE (2.5.2): the warning, caution
@@ -7565,7 +7804,7 @@ function symbology(){ return buses.ac?knob_level("symbology")*(hud_panel.range==
 // switch is cycled; open, each generator powers its own side alone, and a generator off the line leaves its side dead.
 // Of each side's loads (FO-8) the game splits the mission computers and the DDIs: MC1 and the left DDI on the left ac
 // bus, MC2 and the right DDI on the right.
-const electrics={ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true };
+const electrics={ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true, cart:false };
 const BATTERY_LIFE=600;   // s, each battery's charge on the essential bus alone
 let buses={ ac:true, essential:true, left:true, right:true };
 // sub_idle: an engine's IFEI readings below ground idle (#133, NATOPS 2.1.1.6, 7.2), from the core's rundown (STATE.rundown,
@@ -7584,7 +7823,8 @@ function battery_source(){ const c=electrics.charge;   // the battery carrying t
 function power_step(out){ const dt=electrics.at===null?0:THREE.MathUtils.clamp(sim_time-electrics.at,0,4); electrics.at=sim_time;   // once a frame, over the frame's sim time: 3.2 s at 64× and the 50 ms frame clamp
 	const [l,r]=generators(out), generating=l||r, cart=ground_power()&&!generating, ac=generating||cart;   // the cart's power reaches the buses only while neither generator is on the line (2.5.4)
 	if(generating&&!electrics.generating&&electrics.powered&&ownship.grounded&&!parking) electrics.tie=false;   // an engine start on the ground with the parking brake released opens the bus tie (2.5.1.3): a generator coming on the line of a jet that has had ac power, from a generator or the cart - a spawn's engines take a moment to read as turning, and that is no start
-	electrics.generating=generating;
+	electrics.generating=generating; electrics.cart=cart;
+	for(const k of GROUND_SWITCHES) if(!cart&&travel_at(k)!==GROUND.auto) thrown[k]=GROUND.auto;   // the solenoid holds a switch at ON on external power alone: a generator on the line, or the cart off the buses, and it returns to AUTO (2.5.4.2)
 	if(ac) electrics.powered=true;
 	if(ac){ electrics.lost=-Infinity; electrics.cutoff=false; for(const k of ["u","e"]) electrics.charge[k]=Math.min(1,electrics.charge[k]+dt/BATTERY_LIFE); }
 	else if(electrics.lost===-Infinity){ electrics.lost=sim_time; electrics.ground=!!ownship.grounded; }
@@ -7595,7 +7835,7 @@ function power_step(out){ const dt=electrics.at===null?0:THREE.MathUtils.clamp(s
 	if(essential){ electrics.dead=-Infinity; electrics.energised=true; } else if(electrics.dead===-Infinity&&electrics.energised) electrics.dead=sim_time;   // the reversion follows a loss of the bus: a cold jet's controls were never powered to lose it (#133)
 	if(!essential&&electrics.dead>-Infinity&&sim_time-electrics.dead>=8) electrics.mech=true;
 	buses={ ac, essential, left:l||(electrics.tie&&r)||cart, right:r||(electrics.tie&&l)||cart };
-	RADAR.unpowered=!ac; }
+	RADAR.unpowered=!ac||!fed(2,"a"); }
 function battery_set(position){ if(position==="on"&&electrics.battery!=="on"&&electrics.lost>-Infinity){ electrics.lost=sim_time; electrics.cutoff=false; }   // back to ON from OFF or ORIDE: five more minutes (15.17.1)
 	electrics.battery=position; }
 function mechanical(){ return electrics.mech; }
@@ -7625,6 +7865,19 @@ const CRANK=["port","","starboard"];   // ENG CRANK's positions as its clip runs
 const EXTERNAL={ off:0, norm:1, reset:2 };   // EXT PWR's positions as its clip runs (measured): OFF aft, NORM, RESET forward
 const START={ held:50, crossbleed:80, cable:3, reset:0.4 };   // % N2 that releases ENG CRANK, and the other engine's that crossbleeds; m the cart's cable reaches; s a click holds EXT PWR at RESET
 const starter={ speed:0, running:false, lined:-Infinity, cart:null, reset:-Infinity };   // the APU's speed 0 to 1 and whether it runs; when both generators came on the line; where the cart is plugged in ({ ship, a, b }: deck fore-aft and lateral, or world x and z), null with none; when EXT PWR went to RESET
+// The ground power switches (2.5.4.2, figure 2-10's placard): on external power the ac buses come up as on a
+// generator, but each GND PWR switch's systems stay off at AUTO. A ON powers its group A, B ON its group B with A:
+//   1: A mission computer 1 and the left DDI; B mission computer 2.
+//   2: A the right DDI, the HUD, the radar, the INS and the AMPCD; B the TACAN, the air data computer, UHF 1 and 2,
+//      the radar altimeter, the beacon, the ILS, the data link, the IFF, the standby instruments, the KY-58 and the UFC.
+//   3: A the jammer, the dispenser, anti-skid, the oxygen gauging and the RWR; B the SMS and the gun decoder.
+//   4: A the intercom, which carries every voice alert and tone; B the intercom and the flight control electronics.
+// A switch is held at ON by its solenoid while external power is on the buses, and returns to AUTO when a
+// generator comes on the line. The first one set to ON runs the avionics cooling BIT for about 3 s, held under
+// the pilot's hand: a click holds it through. On a generator, or the battery, every group runs as before.
+const GROUND={ bon:0, auto:1, aon:2 };   // the positions as each switch's clip runs (measured: the same turn as EXT PWR's, OFF aft to RESET forward), B ON aft, AUTO, A ON forward
+const GROUND_SWITCHES=["groundone","groundtwo","groundthree","groundfour"];
+function fed(n,group){ if(!electrics.cart) return true; const at=travel_at(GROUND_SWITCHES[n-1]); return group==="a"?at!==GROUND.auto:at===GROUND.bon; }   // whether switch n's group a or b has power
 function apu_ready(){ return starter.speed>=1; }
 function ground_power(){ return !!starter.cart&&travel_at("extpwr")!==EXTERNAL.off; }
 function cranking(){ return CRANK[travel_at("crank")]||undefined; }   // the engine ENG CRANK motors, as the core's control
@@ -7653,10 +7906,11 @@ function parked_deck(){ const p=SHIP.parking, h=p.heading*D2R, nose=(AIRCRAFT_MO
 // air test, after which they reopen only once the knob has been turned through OFF back to NORM with
 // ac power on (2.14.5). Bleed air from either side pressurises the cockpit on figure 2-37's schedule
 // for aircraft 163092 and up: 2,300 ft below the field on the ground, 8,000 ft from 11,000 to 24,000
-// and a 5 psi differential above; without it the cockpit is at the aircraft's altitude (#14). TEMP,
-// the engine anti-ice switch, PITOT and the windshield anti-ice and rain switch move and act on
-// nothing: the game has no icing and no temperatures. AV COOL's EMERG deploys the FCS ram air scoop
-// (scoopTarget, below), which is all it does here.
+// and a 5 psi differential above; without it the cockpit is at the aircraft's altitude (#14). The
+// engine anti-ice switch lights the L and R HEAT advisories (2.1.1.6.1) and AV COOL's EMERG deploys the
+// FCS ram air scoop (scoopTarget, below), which is all either does here. TEMP, PITOT and the windshield
+// anti-ice and rain switch act on nothing: the game has no icing, rain or temperatures, and NATOPS gives
+// the pitot heater and the windshield a caution only for a failure (2.12.1.4, 2.16.4.2).
 const BLEED=["loff","norm","roff","off"];
 const BLEED_DETENTS=[0,0.3075,0.653,0.92];   // the knob's clip fraction at each position: its 282° sweep eases, and the four sit 90° apart from its authored L OFF
 const ecs={ bleed:1, valves:[true,true], through:false };
@@ -7731,14 +7985,14 @@ function update_shuttles(){   // the hooked cat's shuttle rides with the jet's l
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
 	if(carrier_shuttles[0]?.joint){   // the model's own: each slides from battery along its track, the hooked one under the nose wheel
 		for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i]; let travel=0;
-			if(i===active){ const wx=ownship.pos.x+ownship.fwd.x*nose, wz=ownship.pos.z+ownship.fwd.z*nose, h=s.cat.heading*D2R;
+			if(i===active){ const o=datum(ownship), wx=o.x+ownship.fwd.x*nose, wz=o.z+ownship.fwd.z*nose, h=s.cat.heading*D2R;
 				travel=(carrier_fore_aft(wx,wz)-s.cat.x)*Math.cos(h)-(carrier_lateral(wx,wz)-s.cat.z)*Math.sin(h); }
 			ship_joint(s.joint,THREE.MathUtils.clamp(travel,0,ship_joint_max(s.joint))); }
 		ship_joint("catapult_console_bow",active===0||active===1?ship_joint_max("catapult_console_bow"):0);   // each control station stands up while its catapults are manned: the bow's for 1 and 2,
 		ship_joint("catapult_console_waist",active===2||active===3?ship_joint_max("catapult_console_waist"):0);   // the waist's for 3 and 4
 		return; }
 	for(let i=0;i<carrier_shuttles.length;i++){ const s=carrier_shuttles[i];
-		if(i===active){ s.mesh.position.set(ownship.pos.x+ownship.fwd.x*(nose+0.28), 0, ownship.pos.z+ownship.fwd.z*(nose+0.28)); rig_local(s.mesh.position).y=s.home.y; }   // found in the world, placed on the rig the shuttles hang from
+		if(i===active){ const o=datum(ownship); s.mesh.position.set(o.x+ownship.fwd.x*(nose+0.28), 0, o.z+ownship.fwd.z*(nose+0.28)); rig_local(s.mesh.position).y=s.home.y; }   // found in the world, placed on the rig the shuttles hang from
 		else s.mesh.position.copy(s.home); }
 }
 function update_jbds(dt){   // the hooked cat's deflector rises through run-up and the stroke, drops once the jet is away (matches are air-start: only our own jet stands on a catapult)
@@ -7767,15 +8021,18 @@ function update_aircraft_lights(){
 		ownship.group.add(cockpit_flood); }
 	const at=ownship.group.userData.eye||{x:3.0,y:0.6}; cockpit_flood.position.set(at.x+0.45,at.y-0.15,0);
 	if(!console_lights){ console_lights=[-0.45,0.45].map(z=>{ const l=new THREE.PointLight(0xffd9a8,0,1.2,2); l.layers.set(LAYER_OWN); l.position.set(at.x+0.15,at.y-0.25,z); ownship.group.add(l); return l; }); }   // the console lighting (2.6.2.3): the tub's texture has no emissive layer, so a low light over each console stands in for the integral panels; two, not the jet's six floods
+	if(!chart_light){ chart_light=new THREE.PointLight(0xffffff,0,0.9,2); chart_light.layers.set(LAYER_OWN); chart_light.position.set(at.x-0.05,at.y+0.3,0); ownship.group.add(chart_light); }   // the chart light on the canopy arch (2.6.2.5), over the pilot's lap
 	const pit=cfg.view==="cockpit";   // only spends when the pit is on screen
 	cockpit_flood.intensity=pit?0.12*lighting.flood:0;   // the instrument panel floods (2.6.2.5) on the FLOOD level
+	chart_light.intensity=pit?0.05*lighting.chart:0;
 	for(const l of console_lights) l.intensity=pit?0.06*Math.max(lighting.consoles,lighting.flood):0;
 	const geardown=(ownship.gear??0)<0.02, land=exterior.landing && (ownship.gearTarget??1)<0.5 && geardown;   // LDG/TAXI ON, the handle DN and the gear down (2.6.1.5): the light rides the nose gear strut, on when the extend animation finishes (down & locked, the HUD's green GEAR threshold), dark the moment retraction starts
 	for(const p of aircraft_lights.pos){ p.visible=position>0&&!(p.userData&&p.userData.spare); p.material.opacity=position; }   // the POSITION knob's level
 	for(const p of aircraft_lights.landing) p.visible=land;
+	{ const lens=ownship.group.userData.gearLamps?.landing; if(lens) lens.emissiveIntensity=land?3:0; }   // the strut's lamp itself, lit with its light
 	for(const p of aircraft_lights.strobe){ p.visible=strobe; p.material.opacity=exterior.strobe==="dim"?0.35:1; }
 	const spot=aircraft_lights.spot; spot.visible=land;   // the landing-light beam lights whatever it points at (kept in the scene so it works in first-person, where the aircraft group is hidden)
-	if(land){ const n=aircraft_lights.nose; spot.position.copy(ownship.pos).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
+	if(land){ const n=aircraft_lights.nose; spot.position.copy(datum(ownship)).addScaledVector(ownship.fwd,n.x).addScaledVector(ownship.up,n.y);   // at the strut
 		aircraft_lights.spotTarget.position.copy(ownship.pos).addScaledVector(ownship.fwd,70).addScaledVector(ownship.up,-15); }   // aim forward + ~12° down
 }
 function approach_deviation(){   // shared by the HUD ICLS needles and the ADI page's bars: one computation, one truth
@@ -7861,9 +8118,20 @@ function update_gauges(out){   // instrument channels for the cockpit rig (#99)
 		// The bands of NATOPS figure 2-19 (161520 and up), each symbol fully lit or
 		// dark: SLOW 9.3° up, SLIGHTLY SLOW 8.8-9.3° (chevron and donut), ON SPEED
 		// 7.4-8.8°, SLIGHTLY FAST 6.9-7.4° (donut and chevron), FAST below 6.9°.
-		ind.slow.opacity = lit&&alpha>=8.8?glow:0;
-		ind.fast.opacity = lit&&alpha<7.4?glow:0;
-		ind.donut.opacity= lit&&alpha>=6.9&&alpha<9.3?glow:0; } }
+		// The nose strut's approach lights take the same bands, flash and conditions
+		// (2.6.1.6: all gear down and locked, weight off the gear), green, amber
+		// and red for the chevron, donut and chevron, whatever the indexer's knob
+		ind.bands={ slow:lit&&alpha>=8.8, fast:lit&&alpha<7.4, donut:lit&&alpha>=6.9&&alpha<9.3 };
+		ind.slow.opacity = ind.bands.slow?glow:0;
+		ind.fast.opacity = ind.bands.fast?glow:0;
+		ind.donut.opacity= ind.bands.donut?glow:0; }
+	approach_lights(ind&&!(INDEXER_TEST||lamps_testing)?ind.bands:null); }
+// approach_lights lights the nose strut's green, amber and red approach lights
+// (NATOPS 2.6.1.6) from the AOA indexer's bands, dimmed whenever the warning,
+// caution and advisory lights are; dark with no bands or, as the indexer, no ac power
+function approach_lights(bands){ const lamps=ownship.group.userData.gearLamps; if(!lamps) return;
+	const power=!!buses.ac, on={ green:power&&!!bands?.slow, amber:power&&!!bands?.donut, red:power&&!!bands?.fast };
+	for(const hue of ["green","amber","red"]) if(lamps[hue]) lamps[hue].emissiveIntensity=on[hue]?3*lighting.warn:0; }
 generate_world();
 // ---- input ----
 const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
@@ -9069,7 +9337,7 @@ function pit_press(action,direction){ const d=direction||0;
 	// the master arm panel and the selective jettison controls (#7, FO-5 items 12, 17, 20, 32)
 	case "arm": arms.arm=d>0?true:d<0?false:!arms.arm; break;   // MASTER ARM: up to ARM, down to SAFE
 	case "mode.air": air_press(); break;
-	case "mode.ground": break;   // the A/G master mode button: no air-to-ground weapon or sensor aboard to select it for (#104)
+	case "mode.ground": ground_press(); break;
 	case "extinguisher": if(armament.discharge(arms,secured)) extinguish_flag=true; break;   // FIRE EXTGH with READY on (2.14.2)
 	case "jettison.emergency": emergency_clicked=glance; break;   // a click holds the button as long as a hand would, on the pilot's clock
 	case "jettison.select": armament.turn(arms,d||1); break;
@@ -9276,7 +9544,7 @@ let parking=false;   // the parking brake: forces the wheel-brake input while se
 let bar_switch="retract";
 let pulled=false;   // the same handle out to its detent without the turn: EMERG, the emergency brakes (2.10.3.3)
 let antiskid=true;
-function guarded(){ return antiskid&&!pulled&&!parking; }   // anti-skid at work: the switch ON and the brakes on their normal circuit, since EMERG and PARK run without it (2.10.3.3)
+function guarded(){ return antiskid&&fed(3,"a")&&!pulled&&!parking; }   // anti-skid at work: the switch ON and the brakes on their normal circuit, since EMERG and PARK run without it (2.10.3.3)
 let spun=-Infinity;   // the touchdown (its landing.at) whose wheels have spun up past 50 kt: its protection is over
 function brakes_held(){ const kt=(ownship.speed??0)*1.94384;
 	if(!ownship.grounded) return false;
@@ -9462,7 +9730,7 @@ function read_input(dt){
 	nws_step();
 	{ const x=(held("tdc.right")?1:0)-(held("tdc.left")?1:0)||pad_tdc.x, y=(held("tdc.up")?1:0)-(held("tdc.down")?1:0)||pad_tdc.y;
 		if(hmd.mode==="fine") helmet.nudge(hmd,x,y,dt); else tdc_slew(x,y,dt); }   // in fine alignment the TDC moves the helmet's crosses (2.21.12.2)
-	input.guns=hotas.trigger&&master==="gun"&&arms.arm;   // the trigger serves the SELECTED weapon (#133): guns only in GUN, and nothing with MASTER ARM at SAFE (2.17.1.2)
+	input.guns=hotas.trigger&&master==="gun"&&arms.arm&&fed(3,"b");   // the trigger serves the SELECTED weapon (#133): guns only in GUN, and nothing with MASTER ARM at SAFE (2.17.1.2)
 	input.trim=(held("trim.up")?1:0)-(held("trim.down")?1:0);   // . / , held: the pitch trim switch (UA attitude datum, PA alpha datum)
 	input.lean=(held("trim.right")?1:0)-(held("trim.left")?1:0);   // Shift+. / Shift+, held: the hat's roll half — a standing differential-flaperon bias
 	if(pad_trim.x||pad_trim.y){ input.trim=input.trim||-pad_trim.y; input.lean=input.lean||pad_trim.x; }   // the trim HAT (an axis pair, e.g. the VelocityOne castle at 8/9): forward = nose DOWN, the aviation convention
@@ -9496,7 +9764,7 @@ let presenting=true;   // the running chunk is its frame's last
 let framed=0;   // sim seconds the frame has advanced, the running chunk included
 let glance=0;   // the mission's wall seconds, stopped while paused as the sim is
 let beat=0;   // the frame's wall seconds: what a hand held through the frame was held for
-const BUDGET=10;   // ms of each frame the sim chunks may take: past it the frame stops early, and the time it owed is dropped rather than carried. 64× in free flight needs about 7 ms of a 60 fps frame; 6 ms held it near 58×
+const BUDGET=10;   // ms of each frame the sim chunks may take: past it the frame stops early, and the time it owed is dropped rather than carried. 64× in free flight needs about 9 ms of a 60 fps frame: sixteen steps of some 0.55 ms, the flight core's four 1/60 s steps 0.36 ms of each
 // Flight recorder (#212): a rolling buffer saved from the log page. The
 // bot's doctrine state rides along in every build - free to capture (the brain
 // runs in-process in wasm for a local joust), and what a recording a player
@@ -9852,7 +10120,7 @@ function cautions_update(dt){
 		relight.high=high; relight.sat=sat;
 		if(back&&!caution_lamp&&latch.length){ fresh=true; toned=true; } }
 	if(fresh) caution_lamp=true;
-	if(toned&&!battery&&sim_time-caution_toned>=5&&glance>=caution_free){ caution_free=glance+audio_caution(); caution_toned=sim_time; }   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have passed since the last, reset or not; a burst of related cautions is one tone
+	if(toned&&!battery&&fed(4,"a")&&sim_time-caution_toned>=5&&glance>=caution_free){ caution_free=glance+audio_caution(); caution_toned=sim_time; }   // NATOPS 2.17.2.1: another caution sounds the tone only once about 5 s have passed since the last, reset or not; a burst of related cautions is one tone
 	if(!latch.length) caution_lamp=false;   // a clean jet clears the latch (the reset key clears it earlier)
 	const bingo=low||below;
 	if(bingo&&!battery&&!audio_voiced("BINGO")){ bingo_nag+=dt; if(bingo_nag>=30&&glance>=caution_free){ bingo_nag=0; caution_free=glance+audio_caution(); caution_toned=sim_time; } } else bingo_nag=0;   // seconds of the world's time, whatever the frame rate
@@ -9862,7 +10130,7 @@ function cautions_update(dt){
 	if(gpws.call) active.add(gpws.call);   // the GPWS recovery call, back to back while the warning holds
 	if(sim_time-altitude_called<1) active.add("ALTITUDE");   // the secondary and barometric warnings' single call
 	if(fire_testing()){ active.add("ENGINE FIRE LEFT"); active.add("ENGINE FIRE RIGHT"); }   // the fire test runs the voice alerts (2.14.5, #17)
-	for(const message of [...active]) if(!audio_voiced(message)||!buses.essential||(battery&&!BATTERY_VOICES.has(message))) active.delete(message);   // nothing speaks with the essential bus dead
+	for(const message of [...active]) if(!audio_voiced(message)||!buses.essential||!fed(4,"a")||(battery&&!BATTERY_VOICES.has(message))) active.delete(message);   // nothing speaks with the essential bus dead
 	voice_step(voice,sim_time,glance,active,audio_voice); }
 let flap_armed=0;   // sim time a flap SELECTION stops expecting the surfaces to answer (#193)
 let law_primary=false;   // the primary radar low-altitude warning is sounding (NATOPS 2.12.5.1): gear up and locked, the radar altitude below the index
@@ -9873,7 +10141,7 @@ let law_disabled=false;   // the primary warning was disabled from the UFC (:RAL
 // the green light GO for its 5 s. At ground power-up the set sounds the whoop once to
 // familiarise the pilot (2.12.5.1): greet is that whoop, owed.
 let radalt_on=true, radalt_test=-Infinity, radalt_greet=false;
-function radalt_inhibited(){ return emcon||!radalt_on||!buses.ac; }   // the set off, silenced by EMCON, or without ac power (#116): its OFF flag in view (2.12.5.4.6) and no warning
+function radalt_inhibited(){ return emcon||!radalt_on||!buses.ac||!fed(2,"b"); }   // the set off, silenced by EMCON, or without ac power (#116): its OFF flag in view (2.12.5.4.6) and no warning
 let law_index=200;   // the low-altitude index, ft, set only with the height indicator's knob (2.12.5.4.1, 2.12.5.4.4): a cat shot's 40 or 200, the pre-flight settings, until the pilot turns it
 const altitude_set={ radar:0, baro:5000 };   // ft: the secondary radar and barometric low-altitude warnings (2.12.5.2, 2.12.5.3), as power-up with weight on wheels leaves them; 0 disables either
 const altitude_armed={ radar:false, baro:false };   // each call is a descent through its altitude, so each arms once the jet is above it
@@ -10004,11 +10272,10 @@ if(DEV_MODE) (globalThis as any).dev_nav=function(){ const hdg=(Math.atan2(ownsh
 if(DEV_MODE) (globalThis as any).dev_picture=function(){ return demonstration_picture(); };   // dev: the picture the scripted pilot is flying from this frame, so a probe can check the frame the engine hands it (the groove's along/right/slope, the hull frame) against its own geometry
 if(DEV_MODE) (globalThis as any).dev_demonstration=function(){ if(!demonstration) return null; const t=demonstration.targets;   // dev: the scripted pilot's mind — its phase, its seed, and what it is flying toward this frame, so a probe can judge the pattern against the hints' numbers
 	return { phase:demonstration.phase, seed:demonstration.seed, configured:demonstration.configured, habits:demonstration.habits,
-		altitude:+(t.altitude*3.28084).toFixed(0), vertical:+t.vertical.toFixed(2), kcas:+(t.cas*1.94384).toFixed(0), heading:+t.heading.toFixed(1), bank:+t.bank.toFixed(1), throttle:+demonstration.throttle.toFixed(3) }; };   // i18n-format-ok: dev probe payload, never rendered to a user
+		altitude:+(t.altitude*3.28084).toFixed(0), vertical:+t.vertical.toFixed(2), kcas:+(t.cas*1.94384).toFixed(0), heading:+t.heading.toFixed(1), bank:+t.bank.toFixed(1), throttle:+demonstration.throttle.toFixed(3), parts:demonstration.parts }; };   // i18n-format-ok: dev probe payload, never rendered to a user
 if(DEV_MODE) (globalThis as any).dev_law=function(){ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=ownship.pos.y-(g>-1e8?Math.max(g,0):0);
-	const sink=-(ownship.vely??0), speed=Math.max(ownship.speed,50), steep=Math.min(Math.max(sink,0)/speed,1), level=Math.sqrt(1-steep*steep);
-	const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level), upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));
-	return {agl:+agl.toFixed(0), sink:+sink.toFixed(1), speed:+speed.toFixed(1), upy:+ownship.up.y.toFixed(2), pull:+pull.toFixed(0), required:+(sink+sink*upright/Math.PI+pull).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
+	const velocity={x:ownship.velx??0,y:ownship.vely??0,z:ownship.velz??0}, load=ownship.gload??1;
+	return {agl:+agl.toFixed(0), sink:+(-velocity.y).toFixed(1), speed:+ownship.speed.toFixed(1), load:+load.toFixed(2), bank:+(proximity_bank(velocity,ownship.up)*57.2958*(ownship.right.y<0?1:-1)).toFixed(0), required:+Math.max(PROXIMITY.floor,proximity_escape(velocity,ownship.up,load)+PROXIMITY.clearance).toFixed(0), law:law_active, calls:law_calls}; };   // dev (#94): the GPWS arithmetic, live — every input the trigger sees  // i18n-format-ok: dev probe payload, never rendered to a user
 if(DEV_MODE) (globalThis as any).dev_voice=(message)=>{ if(message) audio_voice(message); return { clock:sim_time, until:voice.until, gear:gpws.gear, wheels:gpws.wheels, waveoff:gpws.waveoff }; };   // dev: the voice alert queue and the GPWS gear-up landing state; given a message, plays it outside the queue to audition the mix
 if(DEV_MODE) (globalThis as any).dev_alert=(name)=>{ ({caution:audio_caution,law:audio_law,horn:()=>audio_horn(true)})[name]?.(); };   // dev: sound one alert tone outside its condition, to audition the mix
 if(DEV_MODE) (globalThis as any).dev_ladder=()=>({ ...hud_ladder, speed:ownship.speed });   // dev: the ladder and its marker as last drawn
@@ -10196,12 +10463,18 @@ function boom_texture(){ if(!boom_tex){ boom_tex=new Promise(done=>{ ktx2_loader
 	transient_fx.push({mesh:warm,age:0,life:.1,boom:true,size:.001,roll:0,stagger:0});
 	done(t); },undefined,()=>done(null)); }); } return boom_tex; }
 boom_texture();   // prefetch: the first burst of a fight should not wait on the network
+// A fireball a few pixels across would sample the atlas's small mips, where the 5x5 cells (2048/5 is no power of
+// two) bleed into their neighbours and their clear margins: the hot core averages away into a pale disc the sky
+// shows through. The level is held at BOOM_SHARP (cells 51 texels across), so a distant fireball keeps its colour
+// and its alpha.
+const BOOM_SHARP=3;
 function boom_material(t){ return new THREE.ShaderMaterial({ transparent:true, depthWrite:false, side:THREE.DoubleSide,
 	uniforms:{ map:{value:t}, frame:{value:0}, fade:{value:1} },
 	vertexShader:"varying vec2 v; void main(){ v=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }",
 	fragmentShader:"uniform sampler2D map; uniform float frame; uniform float fade; varying vec2 v;\n"
-		+"vec4 cell(float f){ return texture2D(map,vec2((v.x+mod(f,5.0))/5.0,(floor(f/5.0)+1.0-v.y)/5.0)); }\n"
-		+"void main(){ float f=clamp(frame,0.0,24.0); vec4 c=mix(cell(floor(f)),cell(min(floor(f)+1.0,24.0)),fract(f)); gl_FragColor=vec4(c.rgb,c.a*fade); }" }); }
+		+"float level(){ vec2 t=v*vec2(textureSize(map,0))/5.0; return min(log2(max(max(length(dFdx(t)),length(dFdy(t))),1.0)),"+BOOM_SHARP.toFixed(1)+"); }   // the cell's texels a pixel spans, held at the sharp level\n"   // i18n-format-ok: a GLSL literal, never shown to a user
+		+"vec4 cell(float f,float l){ return textureLod(map,vec2((v.x+mod(f,5.0))/5.0,(floor(f/5.0)+1.0-v.y)/5.0),l); }\n"
+		+"void main(){ float f=clamp(frame,0.0,24.0), l=level(); vec4 c=mix(cell(floor(f),l),cell(min(floor(f)+1.0,24.0),l),fract(f)); gl_FragColor=vec4(c.rgb,c.a*fade); }" }); }
 function transient_blast(x,y,z,water){ if((cfg.effects_quality??2)<1) return;
 	const light=new THREE.PointLight(water?0xcceeff:0xff8b32,water?14:38,water?35:75,2); light.position.set(x,y+1,z); scene.add(light);
 	if(water){ const mat=new THREE.MeshBasicMaterial({color:0xd9f4ff,transparent:true,opacity:.72,depthWrite:false,side:THREE.DoubleSide,toneMapped:false});
@@ -10212,14 +10485,18 @@ function transient_blast(x,y,z,water){ if((cfg.effects_quality??2)<1) return;
 		for(let i=0;i<2;i++){ const mesh=new THREE.Mesh(boom_geo,boom_material(t));
 			const size=(i?15:11)+Math.random()*4; mesh.position.set(x,y+1,z); mesh.scale.setScalar(size); scene.add(mesh);
 			transient_fx.push({mesh,age:0,life:i?1.15:.9,boom:true,size,roll:Math.random()*Math.PI*2,stagger:i?-1.5:0}); } }); }
+// boom_floor: the least a fireball reach metres away is drawn across, metres, so a kill reads as a fireball, not a
+// dot: never under 1.3° of sky nor under BOOM_PIXELS of the view's 1080 reference pixels, whatever the field of view
+// and the zoom, out to 4 km; past 4 km it shrinks honestly. Close in the fireball's own size governs. BOOM_PIXELS is
+// what 1.3° came to in the 45° view the floor was tuned in.
+const BOOM_PIXELS=32;
+function boom_floor(reach){ return Math.min(reach,4000)*Math.max(0.0227,BOOM_PIXELS*2*Math.tan(camera.fov*D2R/2)/1080); }
 function update_transient_fx(dt){
 	for(let i=soot_queue.length-1;i>=0;i--) if(sim_time>=soot_queue[i].at){ const q=soot_queue.splice(i,1)[0]; soot_burst(q.x,q.y,q.z); }
 	for(let i=transient_fx.length-1;i>=0;i--){ const f=transient_fx[i]; f.age+=dt; const t=f.age/f.life;
 	if(t>=1){ if(f.mesh){ scene.remove(f.mesh); f.mesh.material.dispose(); if(!f.boom) f.mesh.geometry.dispose(); } if(f.light) scene.remove(f.light); transient_fx.splice(i,1); continue; }
 	if(f.boom){ f.mesh.material.uniforms.frame.value=Math.max(0,t*25+(f.stagger||0)); f.mesh.material.uniforms.fade.value=t>.75?(1-t)*4:1;
-		const reach=camera.position.distanceTo(f.mesh.position);
-		const least=Math.min(reach,4000)*0.0227;   // never under ~1.3° of sky out to 4 km: a kill reads as a fireball, not a dot (#92) — the close audition is untouched, and past 4 km it shrinks honestly
-		f.mesh.scale.setScalar(Math.max(f.size*(1+.5*t),least)); f.mesh.quaternion.copy(camera.quaternion); f.mesh.rotateZ(f.roll); }
+		f.mesh.scale.setScalar(Math.max(f.size*(1+.5*t),boom_floor(camera.position.distanceTo(f.mesh.position)))); f.mesh.quaternion.copy(camera.quaternion); f.mesh.rotateZ(f.roll); }
 	else if(f.mesh){ const s=3+t*24; f.mesh.scale.setScalar(s); f.mesh.material.opacity=(1-t)*.55; }
 	if(f.light) f.light.intensity=(1-t)*(f.water?14:38); } }
 function explosion_at(x,y,z,kind){
@@ -10248,8 +10525,9 @@ function explosion_at(x,y,z,kind){
 	debris.vx[k]=Math.cos(a)*Math.cos(e)*sp; debris.vy[k]=Math.abs(Math.sin(e))*sp*0.7+8; debris.vz[k]=Math.sin(a)*Math.cos(e)*sp;
 	debris.ttl[k]=debris.life[k]=3.5+Math.random()*3;
 	debris.r[k]=0.15;debris.g[k]=0.15;debris.b[k]=0.16; } }
-if(DEV_MODE) (globalThis as any).dev_boom=function(distance){   // #82: audition the detonation visuals — burst dead ahead of the camera
-	const d=Number(distance)||150, v=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion);
+if(DEV_MODE) (globalThis as any).dev_boom=function(distance,az,el){   // #82: audition the detonation visuals — burst dead ahead of the camera, or az degrees left of the nose and el up in the jet's frame (a burst the mirrors see while the head stays put)
+	const d=Number(distance)||150, v=az===undefined?new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion)
+		:new THREE.Vector3(Math.cos(el*D2R)*Math.cos(az*D2R),Math.sin(el*D2R),-Math.cos(el*D2R)*Math.sin(az*D2R)).applyQuaternion(ownship.group.getWorldQuaternion(new THREE.Quaternion()));
 	explosion_at(camera.position.x+v.x*d,camera.position.y+v.y*d,camera.position.z+v.z*d); };
 if(DEV_MODE) (globalThis as any).dev_fox=function(){ return launch_missile(ownship,null); };   // #83: audition the motor trail — a ballistic 9M off the rail
 if(DEV_MODE) (globalThis as any).dev_smoke=function(){ return smoke.activeList.length; };   // #83: live smoke-pool count — the decay curve the camera cannot fake
@@ -10421,7 +10699,7 @@ function on_cat_spot(){   // which catapult the aircraft is parked on, lined up 
 	if(ownship.launching) return -1;
 	const fh=Math.hypot(ownship.fwd.x,ownship.fwd.z)||1;
 	const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
-	const nx=ownship.pos.x+ownship.fwd.x/fh*nose, nz=ownship.pos.z+ownship.fwd.z/fh*nose;   // the nose-gear point — the shuttle datum
+	const o=datum(ownship), nx=o.x+ownship.fwd.x/fh*nose, nz=o.z+ownship.fwd.z/fh*nose;   // the nose-gear point — the shuttle datum
 	for(let i=0;i<SHIP.catapults.length;i++){
 		const cs=cat_spot(i); if(Math.hypot(nx-cs.x,nz-cs.z)>CAT_POS_TOL) continue;
 		const hd=SHIP.catapults[i].heading*D2R, fx=Math.cos(hd), fz=-Math.sin(hd), cfx=fx*CARRIER_C+fz*CARRIER_S, cfz=-fx*CARRIER_S+fz*CARRIER_C;   // this cat's launch heading in world
@@ -10437,9 +10715,10 @@ let _ground_kind="";   // surface kind under the last ground_height() hit: deck 
 function ground_height(x,z){   // top of the solid surface under (x,z): carrier deck / runway / apron / island; -inf = open sea (no landing)
 	_ground_kind="";
 	if(Math.abs(carrier_fore_aft(x,z))<180 && Math.abs(carrier_lateral(x,z))<60){   // the ship's own footprint, in her frame whatever her heading (contact.go's deck search): a world-axis box cut her ends off when she headed near east or west
-		if(!carrier_model){ _ground_kind="deck"; return CARRIER.deckY; }   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
+		const plane=deck_plane(x,z);
+		if(!carrier_model){ _ground_kind="deck"; return plane; }   // GLB still loading — treat the deck box as solid at the known height so a carrier start doesn't fall through to the flight model
 		const h=deck_y_at(carrier_model,x,z,-1e9);
-		if(h>-1e8 && h<CARRIER.deckY+4){ _ground_kind="deck"; return h>CARRIER.deckY-2.5?CARRIER.deckY:h; }   // the flight deck is one horizontal plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to the measured plane; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
+		if(h>-1e8 && h<plane+4){ _ground_kind="deck"; return h>plane-2.5?plane:h; }   // the flight deck is one plane — the GLB models it as two flat layers 1.72 m apart (gaps in the top layer expose the lower), so near-deck hits snap to her deck's plane where she floats now; genuinely lower hits (catwalks/sponsons off the edge) stay real. Taller hits are the island superstructure — see check_collisions
 	}
 	const home=homeward({ x, y:0, z }), h=land_height(home.x,home.z);   // the map is laid in the chart
 	return h>-1e8?chart_point({ x:home.x, y:h, z:home.z }).y:h;
@@ -10552,7 +10831,9 @@ if(DEV_MODE) (globalThis as any).dev_wheels=()=>{   // #203: where each DRAWN ty
 	const gnd=ground_height(ownship.pos.x,ownship.pos.z);
 	return JSON.stringify({ gear:+(ownship.gear??1).toFixed(2), grounded:!!ownship.grounded, squish:+(ownship.squish??0).toFixed(2), speed:+(ownship.speed||0).toFixed(1),   // i18n-format-ok: dev probe payload, never rendered to a user
 		origin:+ownship.pos.y.toFixed(3), ground:+gnd.toFixed(3), stand:+(ownship.pos.y-gnd).toFixed(3),   // #220: the origin's height above the surface — 2.63 minus the strut compression, so it pins the load directly   // i18n-format-ok: dev probe payload, never rendered to a user
-		groupy:+(ownship.group?ownship.group.position.y:NaN).toFixed(3), wheels:rows });   // i18n-format-ok: dev probe payload, never rendered to a user
+		groupy:+(ownship.group?ownship.group.position.y:NaN).toFixed(3), wheels:rows,   // i18n-format-ok: dev probe payload, never rendered to a user
+		legs:(ownship.group?.userData?.exterior?.legs||[]).map((l:any)=>{ const w=l.wheel.getWorldPosition(new THREE.Vector3()), g=ground_height(w.x,w.z);   // our model's legs: each one's lift against its reach (the points file's full stroke) and its tyre's bottom against the surface
+			return { leg:l.leg, lift:+l.lift.toFixed(3), reach:+l.reach.toFixed(3), clear:g>-1e8?+(w.y-l.radius-g).toFixed(3):null }; }) });   // i18n-format-ok: dev probe payload, never rendered to a user
 };
 if(DEV_MODE) (globalThis as any).dev_probe=()=>({ cue:hud_cue, bingo:bingo_low(), aerosol:air_aerosol, banner:net_notice_t>0?net_notice:"", y:+ownship.pos.y.toFixed(2), raw:[ownship.pos.x,ownship.pos.y,ownship.pos.z], shown:(()=>{ const p=presented(ownship); return [p.x,p.y,p.z]; })(), camera:[camera.position.x,camera.position.y,camera.position.z], clock:sim_time, v:+ownship.speed.toFixed(1), vy:+(ownship.vely??0).toFixed(2), thr:+ownship.throttle.toFixed(2), wow:flight_ready()&&flight_active?flight_get()[STATE.wow]:-1, test:!!test_active, crash:crash_t>0, kills:own_kills, banditv:has_enemy?(bandit.group.visible?1:0):-1, banditreheat:has_enemy?+(bandit.reheat??0).toFixed(2):-1, banditspeed:has_enemy?+(bandit.speed*1.944).toFixed(0):-1, contrail:(ownship.contrail&&ownship.contrail.count)||0, comms:comms.map(c=>c.text),   // #69: the ACHIEVED reheat the wasm brain's command produced, and the speed it bought  // i18n-format-ok: dev probe payload, never rendered to a user
 	msl:ownship.msl, amraam:Math.max(0,ownship.amraam|0),   // restored (#100): the #69 comment swallowed these two fields, and every weapons probe reading dev_probe().msl/.amraam went KeyError-red unnoticed   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
@@ -10707,6 +10988,22 @@ function test_drive(){   // hold the prescribed approach exactly; hand control b
 // line, the ball, the switches, the calls - and flies the same controls. What
 // it returns overwrites the frame's input sample AFTER read_input, so a key
 // or a stick moved while watching changes nothing; the view keys still work.
+// approach_book: the lever that holds the jet on-speed level and what each m/s
+// of sink takes off it, from the flight core's own trim for the jet as it is
+// (flight_power), read again every two seconds as the fuel burns: the book the
+// demonstration's pilot flies the approach's power from, so that it follows
+// the airframe and the stores. Null on a core without it. Two seconds of the
+// pilot's time as well as the world's: each reading trims two scratch jets, and
+// at 64x two seconds of the world come round every other frame, where the fuel
+// a reading 128 s apart misses moves the lever a few thousandths.
+const approach_power={ at:-Infinity, seen:-Infinity, book:null };
+function approach_book(){
+	if((sim_time-approach_power.at>=2&&glance-approach_power.seen>=2)||sim_time<approach_power.at){
+		approach_power.at=sim_time; approach_power.seen=glance;
+		const level=flight_power(150,0), sloped=flight_power(150,3.5);
+		approach_power.book=level&&sloped?{ level:level.throttle, rate:(level.throttle-sloped.throttle)/(sloped.speed*Math.sin(3.5*D2R)) }:null; }
+	return approach_power.book; }
+if(DEV_MODE) (globalThis as any).dev_power=()=>approach_book();   // dev: the approach's book of power, for the probes' scripted pilots
 function demonstration_picture(){
 	const O=carrier_world(0,0), F=carrier_world(100,0); let hx=F.x-O.x, hz=F.z-O.z; const hl=Math.hypot(hx,hz)||1; hx/=hl; hz/=hl;   // unit hull-forward
 	const rx=(ownship.pos.x-O.x), rz=(ownship.pos.z-O.z);
@@ -10718,7 +11015,7 @@ function demonstration_picture(){
 		roll:rates[STATE.omega]||0, rate:rates[STATE.omega+2]||0,   // body rates: roll about the nose (+ right), pitch about the right wing (+ nose up) - frames.go
 		throttle:ownship.throttle??0, gear:(ownship.gearTarget??0)<0.5, flap:flap_select, hook:(ownship.hookTarget??0)>0.5,
 		grounded:!!ownship.grounded, trapped:!!ownship.trapped, waving:!!ownship.waving, crashed:crash_t>0,   // no bolter flag: the grade is sticky until the next trap, and the pilot reads the touch itself
-		coached:!!hinted[HINT.form],
+		coached:!!hinted[HINT.form], power:approach_book(),
 		ship:{ along:rx*hx+rz*hz, starboard:-rx*hz+rz*hx, bow:SHIP.length/2, course:(Math.atan2(hx,-hz)*180/Math.PI+360)%360 },
 		groove:{ along:s.along, right:-s.lat, deviation:s.dev, slope:o?o.dy+HOOK_DROP+Math.tan(3.5*D2R)*Math.max(0,s.along+HOOK_AFT):ownship.pos.y, heading:o?(Math.atan2(-o.apx,o.apz)*180/Math.PI+360)%360:0, drift:o?way*(hx*o.apz-hz*o.apx):0 } };   // drift: the landing line's own motion to the pilot's right, her way across the angled deck   // the approach axis (apx, apz) points aft from the touchdown; the jet flies its reverse
 }
@@ -10885,7 +11182,7 @@ function playback_own(pose,dt){
 	ownship.throttle=lever; ownship.burner=heat; flap_select=n("Flaps",flap_select)|0; ownship.hookTarget=n("Hook",0); ownship.rounds=n("Rounds",ownship.rounds??0);
 	last_controls={ pitch:n("Stick",0), roll:n("Lateral",0), yaw:n("Pedal",0), override:n("Override",0)>0 }; input.yaw=last_controls.yaw; hotas.pedals=input.yaw; hotas.paddle=last_controls.override;   // the hands: the cockpit's stick draws them, and the pedal steers the nosewheel
 	playback_loadout(p);
-	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
+	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(datum(ownship));
 	shed_panels(ownship,o);
 	const firing=playback_burst(pose);
 	fire_gun(ownship,null,"own",dt,firing);
@@ -11055,6 +11352,7 @@ function sync_core(out){   // core state -> the ownship object every consumer re
 	ownship.altitude=theatre.frame.altitude(ownship.pos);   // the height over the sea: the frame's y, less the curve between the jet and the frame's anchor
 	ownship.q.set(out[STATE.attitude+1],out[STATE.attitude+2],out[STATE.attitude+3],out[STATE.attitude]);
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
+	(ownship.center??=new THREE.Vector3()).set(out[STATE.center]||0,out[STATE.center+1]||0,out[STATE.center+2]||0);   // the centre of mass from the datum (#188): the airframe is drawn from datum()
 	ownship.velx=out[STATE.velocity]; ownship.vely=out[STATE.velocity+1]; ownship.velz=out[STATE.velocity+2];
 	ownship.speed=Math.hypot(ownship.velx,ownship.vely,ownship.velz);
 	if(ownship.speed>0.5) ownship.vel_dir.set(ownship.velx/ownship.speed,ownship.vely/ownship.speed,ownship.velz/ownship.speed); else ownship.vel_dir.copy(ownship.fwd);
@@ -11121,6 +11419,23 @@ function approach_over(angle){ const p=ownship.pos, d={ x:ownship.fwd.x, z:ownsh
 		const b=flight_get(); speed=Math.hypot(b[STATE.velocity]-w.x,b[STATE.velocity+1]-w.y,b[STATE.velocity+2]-w.z)||speed; }
 	return throttle; }
 const IDLE=0.06;   // the core's idle spool (flight/propulsion.go idle): the lever commands through this floor, so a running engine is never below it
+// seated turns ownship.pos, the datum a spawn places (stance_of() is the datum's height over the surface), into the
+// core's position, the centre of mass: the datum plus the attitude's turn of the centre the core weighs for the
+// loadout and fuel it holds now (#188). Placed at the datum's stance, a loaded jet's centre fell the 0.2 m its stores
+// pull it below the datum, and its drawn tyres sank into the deck.
+const _seat=new THREE.Vector3();
+function seated(){ const o=flight_get(); ownship.pos.add(_seat.set(o[STATE.center]||0,o[STATE.center+1]||0,o[STATE.center+2]||0).applyQuaternion(ownship.q)); }
+// rested stands a ground spawn as the core rests it under its weight: the datum at its height over the surface under
+// it and the attitude pitched as its struts settle, the heading kept (#188). A constant stance is a clean jet's: a
+// loaded one, placed there, sank 3 cm as its struts took the weight.
+const _level=new THREE.Vector3(), _across=new THREE.Vector3(), _above=new THREE.Vector3(), _basis=new THREE.Matrix4();
+function rested(){ const g=ground_height(ownship.pos.x,ownship.pos.z), o=flight_get(), height=o[STATE.rest], pitch=o[STATE.rest+1]||0;
+	if(!(g>-1e8)||!(height>0)) return false;
+	ownship.pos.y=g+height;
+	_level.set(ownship.fwd.x,0,ownship.fwd.z).normalize(); _across.crossVectors(_level,world_up).normalize();
+	ownship.fwd.copy(_level).multiplyScalar(Math.cos(pitch)).addScaledVector(world_up,Math.sin(pitch));
+	ownship.q.setFromRotationMatrix(_basis.makeBasis(ownship.fwd,_above.crossVectors(_across,ownship.fwd).normalize(),_across));
+	return true; }
 function flight_push(){   // deliver the ownship pose to the core: trimmed level flight when airborne, a composed state on the ground / in a test
 	if(!flight_active) return;
 	prev_wire=-1;
@@ -11132,19 +11447,20 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 		// level (slope 0) at 1,200 ft on the final bearing; the intercept ~3 nm ahead
 		// is the pilot's (CV-1). The trim is of the jet as loaded: the loadout goes on first, or its weight and
 		// drag arrive on the first frame and sink the hands-off start 70 m in 25 s.
-		flight_stores(own_mask());
+		flight_stores(own_mask()); seated();
 		const slope={ groove:GROOVE.slope, final:FINAL.slope }[mission_start()];   // the groove and final descend on their paths over the deck or the field (#133)
 		ownship.throttle=slope===undefined?flight_approach(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, 0, FUEL()):approach_over(slope);
 		sync_core(flight_get()); return;
 	}
 	if(!test_active && ownship.speed>50 && !ownship.grounded){
-		flight_stores(own_mask());   // trimmed as loaded, as Case II is: mounted after, the loadout's weight and drag took 14 kt and 31 m off a Case I entry in 30 s
+		flight_stores(own_mask()); seated();   // trimmed as loaded, as Case II is: mounted after, the loadout's weight and drag took 14 kt and 31 m off a Case I entry in 30 s
 		flight_level(ownship.pos.x,ownship.pos.y,ownship.pos.z, ownship.fwd.x,ownship.fwd.z, ownship.speed, FUEL());   // trimmed CLEAN level flight — right for air starts, but it threw away the landing start's composed on-speed pose (the PA law then wrestled a clean trim onto approach alpha: nose-down lurch, dead stick)
 		{ const entry=mission_start();
 			if(entry==="case1"||entry==="case3"){   // pattern and marshal entries HOLD their entry speed: command the power the core just solved, or the spawn's high default spools back up and the jet runs away from 350/250 kt (the free-flight air start keeps its power-on feel). (spool − idle)/(1 − idle) inverts the propulsion idle floor back to a lever position
 				const trimmed=flight_get(); ownship.throttle=Math.max(0,Math.min(1,(trimmed[STATE.engine]-IDLE)/(1-IDLE))); } }
 		sync_core(flight_get()); return;
 	}
+	flight_stores(own_mask());   // the loadout before the state: its tanks' fuel goes into it, and its centre of mass places the jet (seated)
 	const b=flight_get();   // keep time (carrier pose, wind field) and fuel across resets
 	// ...but never the damage block: every flight_push is a fresh-airframe moment
 	// (mission start, re-spot, scenario, respawn), and a recycled snapshot carries
@@ -11169,6 +11485,9 @@ function flight_push(){   // deliver the ownship pose to the core: trimmed level
 	b[STATE.catapult]=-1; b[STATE.stroke]=-1; b[STATE.wire]=-1;
 	b[STATE.wow]=0; b[STATE.contact]=-1;
 	b[STATE.touch]=0; b[STATE.touch+1]=0; b[STATE.touch+2]=0; b[STATE.touch+3]=0;
+	flight_set(b);   // at the datum first: the core weighs the centre and the rest for the fuel and tanks just set
+	if(ownship.speed<1&&rested()){ b[STATE.attitude]=ownship.q.w; b[STATE.attitude+1]=ownship.q.x; b[STATE.attitude+2]=ownship.q.y; b[STATE.attitude+3]=ownship.q.z; }
+	seated(); b[STATE.position]=ownship.pos.x; b[STATE.position+1]=ownship.pos.y; b[STATE.position+2]=ownship.pos.z;
 	flight_set(b); sync_core(flight_get());
 }
 function verdict(out){   // judge the core's touchdown record: crash conditions end the pass; survivable touches just record the numbers for the LSO
@@ -11176,7 +11495,7 @@ function verdict(out){   // judge the core's touchdown record: crash conditions 
 	const deck=kind===3, soft=kind===2;
 	const pitch=Math.asin(THREE.MathUtils.clamp(ownship.fwd.y,-1,1));
 	ownship.touch={ sink, bank, t:sim_time, deck, fa:deck?carrier_fore_aft(ownship.pos.x,ownship.pos.z):0 };
-	const die=()=>{ ownship.group.position.copy(ownship.pos); crash_ownship("verdict"); return true; };
+	const die=()=>{ ownship.group.position.copy(datum(ownship)); crash_ownship("verdict"); return true; };
 	if(deck && ownship.touch.fa<-134) return die();                   // ramp strike: caught the round-down at the stern
 	if(out[STATE.extension]<0.5){                                     // belly arrival: survivable only feather-soft and level — but judged at FLYING speed: the core now lets a slide settle its nose and rest a wingtip below 20 m/s (ground handling, not a crash)
 		if(ownship.speed>20 && (sink>2 || bank>0.09 || pitch>0.21 || pitch<-0.04)) return die();
@@ -11331,21 +11650,7 @@ function fly_player(dt){
 			audio_prev.launching=!!ownship.launching; audio_prev.trapped=!!ownship.trapped; audio_prev.grounded=!!ownship.grounded; }
 		{ const g=ground_height(ownship.pos.x,ownship.pos.z); const agl=(ownship.pos.y-(g>-1e8?Math.max(g,0):0))*3.28084;   // the radar altimeter's height above the surface, ft, for its warnings and the GPWS escape model
 			const sink=-(ownship.vely??0);   // m/s down
-			// The GPWS warning models the ESCAPE, as the real one does (#94, NATOPS 2.17.5.2):
-			// a second of pilot reaction, the roll to wings-level, then a 4 g
-			// pull — deliberately milder than the jet's limit, so the call errs
-			// early — consumed against the altitude available. The old rule
-			// (six seconds of current sink, capped at the 5,000 ft hard deck)
-			// fired at 4,400 ft in a 530 kt 67-degree slice whose recovery
-			// already needed 5,200: a time-of-sink rule cannot lead a steep,
-			// accelerating dive, and the pilot heard it with the arithmetic
-			// already lost.
-			const closure=(()=>{ if(sink<=10) return false;   // any gear position: the GPWS protects the approach too (2.17.5)
-				const speed=Math.max(ownship.speed,50), steep=Math.min(sink/speed,1), level=Math.sqrt(1-steep*steep);
-				const radius=speed*speed/(9.81*Math.max(4-level,1)), pull=radius*(1-level);
-				const upright=Math.acos(THREE.MathUtils.clamp(ownship.up.y,-1,1));   // radians of roll to bring the lift vector upright, flown at 180 deg/s
-				const required=sink*1.0+sink*(upright/Math.PI)+pull;
-				return agl/3.28084<Math.max(91,required); })();
+			const closure=proximity_warns(agl/3.28084,{x:ownship.velx??0,y:ownship.vely??0,z:ownship.velz??0},ownship.up,ownship.gload??1);   // the GPWS warning models the escape (proximity.ts), in any gear position: it protects the approach too (2.17.5)
 			const flying=!ownship.grounded&&!ownship.launching&&crash_t<=0;
 			// GPWS below 150 ft (NATOPS 2.17.5.2, 2.17.5.4): CHECK GEAR while descending under 200 knots
 			// with the gear not down and locked, once 60 s have passed since weight on wheels or a
@@ -11385,13 +11690,13 @@ function fly_player(dt){
 					else if(altitude_armed[kind]&&now<set){ altitude_armed[kind]=false; altitude_called=sim_time; } } } }
 		cautions_update(dt);   // #47: keyed, view-independent — the tone lives HERE, not in draw_hud
 	}
-	if(out[STATE.contact]>=0){ flight_clear(); ownship.group.position.copy(ownship.pos); return crash_ownship("probe"); }   // crash probe: any non-permitted airframe contact
+	if(out[STATE.contact]>=0){ flight_clear(); ownship.group.position.copy(datum(ownship)); return crash_ownship("probe"); }   // crash probe: any non-permitted airframe contact
 	if(out[STATE.touch]>0.5){ const crashed=verdict(out); flight_clear(); if(crashed) return; }
 	if(sim_time<test_idle && out[STATE.wow]<0.5 && out[STATE.velocity+1]>1){ test_idle=0; _test_power=0; }   // climbing away (a bolter): end the rollout grace — the pilot needs the throttle back
 	// bolter: hook down, touched the deck this pass, airborne again without a wire
 	if(prev_wow&&!ownship.grounded&&!ownship.trapped&&(ownship.hookTarget??0)>0.5&&ownship.touch&&ownship.touch.deck&&(sim_time-ownship.touch.t)<8&&ownship.speed>30){ pass_end("bolter"); notice(translate("BOLTER"), 6); recoach(); if(mission_start()==="case3") hint(HINT.miss,{heading:ship_downwind()}); else hint(HINT.bolt,{heading:ship_downwind()}); }   // the bolter pattern is the recovery case's: 1,200' for Case III, the 600' visual pattern otherwise
 	prev_wow=ownship.grounded;
-	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
+	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(datum(ownship));
 	if(MULTIPLAYER && render_offset.lengthSq()>1e-8){ render_offset.multiplyScalar(Math.max(0,1-dt*7)); ownship.group.position.add(render_offset); }   // the correction shows as a ~150 ms visual decay, never a physics change
 	check_collisions(dt);
 }
@@ -11419,7 +11724,7 @@ function fly_bandit(dt){
 			const steps=Math.min(4,Math.floor((fly_bandit.debt=(fly_bandit.debt||0)+dt)*60)); fly_bandit.debt-=steps/60;
 			let w=null; for(let s=0;s<steps;s++){ const one=bandit_coast(bandit.lean); if(!one) break; w=one; }
 			if(w){ bandit_words=w;
-				bandit.pos.set(w[0],w[1],w[2]);
+				bandit.pos.set(w[0],w[1],w[2]); (bandit.center??=new THREE.Vector3()).set(w[STATE.center]||0,w[STATE.center+1]||0,w[STATE.center+2]||0);
 				bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
 				bandit.speed=Math.hypot(w[3],w[4],w[5]);
 				bandit.spools=[w[STATE.engine],w[STATE.engine+2]]; bandit.reheats=[w[STATE.engine+1],w[STATE.engine+3]]; bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);
@@ -11428,7 +11733,7 @@ function fly_bandit(dt){
 				(bandit.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(_q);
 				(bandit.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(_q);
 				bandit.group.quaternion.copy(_q);
-				bandit.group.position.copy(bandit.pos); }
+				bandit.group.position.copy(datum(bandit)); }
 			return;
 		}
 		return fly_bandit_stricken(dt);
@@ -11460,7 +11765,7 @@ function fly_bandit(dt){
 			if(loosed) launch_bandit_round();   // an AMRAAM left the bandit's rail in ANY substep: the client owns the round from here, same core the player's shots fly
 			if(heated) launch_bandit_heater();   // and the same for a 9M: the brain fired it, the client flies it at us
 
-			bandit.pos.set(w[0],w[1],w[2]);
+			bandit.pos.set(w[0],w[1],w[2]); (bandit.center??=new THREE.Vector3()).set(w[STATE.center]||0,w[STATE.center+1]||0,w[STATE.center+2]||0);   // the centre of mass from the datum (#188)
 			bandit.velx=w[3]; bandit.vely=w[4]; bandit.velz=w[5];
 			bandit.speed=Math.hypot(w[3],w[4],w[5]);
 			bandit.spools=[w[STATE.engine],w[STATE.engine+2]]; bandit.reheats=[w[STATE.engine+1],w[STATE.engine+3]]; bandit.reheat=Math.max(w[STATE.engine+1],w[STATE.engine+3]);   // achieved reheat: the flare-seduction burner factor reads it
@@ -11472,7 +11777,7 @@ function fly_bandit(dt){
 			(bandit.up??=new THREE.Vector3()).set(0,1,0).applyQuaternion(_q);
 			(bandit.right??=new THREE.Vector3()).set(0,0,1).applyQuaternion(_q);
 			bandit.group.quaternion.copy(_q);
-			bandit.group.position.copy(bandit.pos);
+			bandit.group.position.copy(datum(bandit));
 			if(bandit.merging&&(bandit.pos.distanceTo(ownship.pos)<500||bandit.fwd.dot(_v.subVectors(ownship.pos,bandit.pos))<0)) bandit.merging=false;   // keep the merge flag honest for the SP weapons hold
 			if(step.flare){ dispense_flare(bandit); bandit.flared_at=sim_time; bandit_dispensed++; }
 			if(step.chaff){ dispense_chaff(bandit); }   // the split programme (#43): a bloom for the player's AMRAAM, no flare and no flared_at
@@ -11520,7 +11825,9 @@ function fly_bandit_stricken(dt){
 // slat, covers and tip Sidewinder with it; battle/battle_test.go pins the
 // ranges.
 const PANELS=[{ node:"Left_Wing_Outer_81", first:4 }, { node:"Right_wing_outer_317", first:20 }];
-function shed_panels(st,words){ if(!st||!st.group||!words) return;
+// Drawn, so once a frame, on its last world step: each look-up walks the whole jet's tree, and at 64x a
+// frame flies sixteen steps.
+function shed_panels(st,words){ if(!presenting||!st||!st.group||!words) return;
 	for(const panel of PANELS){
 		let gone=true;
 		for(let e=panel.first;e<panel.first+4;e++) if((words[STATE.element+e]??0)<0.99){ gone=false; break; }
@@ -11564,7 +11871,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 		switch(r.drive){
 		case "gear": f=1-THREE.MathUtils.clamp(st.gear??1,0,1); break;   // st.gear: 1 = up; the rig scrubs extension. Weight-on-wheels compression is NOT a fixed squat fraction here any more: it is per-leg, load-aware and measured against the surface under each tyre (#203), applied to the wheels below
 		case "hook": { f=THREE.MathUtils.clamp(st.hook??0,0,1);
-			if(f>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8 && st.pos.y<=surf+stance_of(g.userData.hasModel)+0.6) f=Math.min(f,HOOK_DECK_CAP); }   // claw rests ON the deck, not through it
+			if(f>0.05){ const surf=ground_height(st.pos.x,st.pos.z); if(surf>-1e8 && datum(st).y<=surf+stance_of(g.userData.hasModel)+0.6) f=Math.min(f,HOOK_DECK_CAP); }   // claw rests ON the deck, not through it
 			break; }
 		case "speedbrake": f=THREE.MathUtils.clamp(st.speedbrake??0,0,1); break;
 		case "probe": f=THREE.MathUtils.clamp(st.probe??0,0,1); break;
@@ -11877,7 +12184,7 @@ function reset_ownship(){
 		Object.assign(hmd,helmet.fresh(air,{ azimuth:wild(), elevation:wild(), roll:wild() },Math.random()*Math.PI*2)); if(!air) knobs.hmd=0; }
 	displays.left.mode=displays.right.mode="auto"; displays.center.mode="day"; for(const d of Object.values(displays)){ d.brt=1; d.contrast=1; }
 	Object.assign(hud_panel,{ range:"day", video:"off" }); finder="off";   // the HUD control panel's selector at DAY and video OFF, and the ADF switch OFF (#139)
-	Object.assign(electrics,{ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true }); buses={ ac:true, essential:true, left:true, right:true };   // both generators and BATT ON, charged,
+	Object.assign(electrics,{ switches:[true,true], battery:"on", lost:-Infinity, ground:false, cutoff:false, charge:{ u:1, e:1 }, dead:-Infinity, mech:false, at:null, tie:true, powered:false, generating:false, energised:true, cart:false }); buses={ ac:true, essential:true, left:true, right:true };   // both generators and BATT ON, charged,
 	if(cold_start){ electrics.battery="off"; electrics.energised=false; buses={ ac:false, essential:false, left:false, right:false }; }   // cold and dark (#133): BATT OFF and nothing powered
 	buttons.trim=buttons.reset=-Infinity; buttons.standing=false; buttons.jams=0;
 	ecs.bleed=1; ecs.valves=[true,true]; ecs.through=false; fire_test.at=-Infinity; rudder_trim=0; reference="auto";   // BLEED AIR at NORM, the rudder trimmed neutral, ATT at AUTO,
@@ -11967,7 +12274,7 @@ function reset_ownship(){
 	flap_select=(st==="case2"||st==="groove"||st==="final")?2:wheels?1:0;   // HALF on the runway and the cat: NATOPS takes off on HALF flap and charts the launch trim for HALF (8.2.5), and the jet is handed over configured for it exactly as Case II is handed over on FULL. The core already flies the takeoff droop and the PA gains from its own on-the-wheels latch (flight/fcs.go halfleg), so this changes no handling on the roll — it makes the switch say what the jet is doing, and it makes the lineup hint a checklist item rather than a gesture. The clean-up passing 250 knots returns it to AUTO, which is what releases the latch.
 	// The flap switch otherwise follows the same established/clean split, and resets between missions — it selects the pitch law now (#86), so a FULL left over from a previous flight would fly a clean spawn on the approach law. On deck AUTO is right: the core latches the HALF-flap takeoff configuration itself while on the wheels
 	flight_push();   // deliver the spawn to the flight core (no-op until it boots; the boot pushes this pose itself)
-	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(ownship.pos);
+	ownship.group.quaternion.copy(ownship.q); ownship.group.position.copy(datum(ownship));
 	if(st==="joust"){   // joust_place put the bandit at its end
 		bandit.merging=true;   // merging: the bandit flies straight at the player until the pass, so the merge can be timed   // the other end of the merge, same airspeed (equal TAS is the fair condition once wind exists)
 		bandit_brain=false; fly_bandit.tried=false;   // the wasm brain arms lazily in fly_bandit once the core is ready (#125 phase 2)
@@ -12395,7 +12702,7 @@ function heat_lit(lockon,brk,cue){ return lockon&&!brk&&!weapons_hold&&ownship.m
 // than read from the HUD's frame, which the head-down view never draws: the heater's from its own seeker lock
 // and zone, the AMRAAM's from its zone, and the X for the breakaway or either missile's minimum range.
 function attack_cue(){
-	if(master==="nav"||hud_landing()) return { shoot:false, brk:false };
+	if(master==="nav"||master==="ag"||hud_landing()) return { shoot:false, brk:false };   // A/G's cues are its stores', and it has none
 	const boxed=hud_target(), r=boxed?ranging():null, brk=breakaway_due(boxed,r?r.range:1500,r?r.closure:0);
 	if(master==="9m"){ const lockon=seeker_now.lockon, cue=lockon?heat_cue(heat_zone()):null;
 		return { shoot:heat_lit(lockon,brk,cue), brk:brk||(lockon&&ownship.msl>0&&cue==="break") }; }
@@ -12596,7 +12903,7 @@ function draw_hud(){
 			const needle=new THREE.Mesh(new THREE.BoxGeometry(2.4,0.02,0.06),cmat); needle.position.x=1.2; needle.renderOrder=999; dev_cursor.add(needle);   // heading needle: U/O rotate it; lay it along the painted track line to read the true heading
 			dev_cursor.traverse(o=>{ o.frustumCulled=false; }); scene.add(dev_cursor); }
 		{ const nose=(AIRCRAFT_MODELS[own_aircraft()]||AIRCRAFT_MODELS.fa18c).nose||5.3;
-			const bx=ownship.pos.x+ownship.fwd.x*nose+dev_nudge.fa*CARRIER_C+dev_nudge.lat*CARRIER_S, bz=ownship.pos.z+ownship.fwd.z*nose-dev_nudge.fa*CARRIER_S+dev_nudge.lat*CARRIER_C;
+			const o=datum(ownship), bx=o.x+ownship.fwd.x*nose+dev_nudge.fa*CARRIER_C+dev_nudge.lat*CARRIER_S, bz=o.z+ownship.fwd.z*nose-dev_nudge.fa*CARRIER_S+dev_nudge.lat*CARRIER_C;
 			const hd=(Math.atan2(-(ownship.fwd.x*CARRIER_S+ownship.fwd.z*CARRIER_C), ownship.fwd.x*CARRIER_C-ownship.fwd.z*CARRIER_S)+dev_nudge.hd*D2R);
 			const dfa=Math.cos(hd), dla=-Math.sin(hd);   // deck-frame heading (+ = port) -> world direction, same transform as the offset
 			const dx2=dfa*CARRIER_C+dla*CARRIER_S, dz2=-dfa*CARRIER_S+dla*CARRIER_C;
@@ -12683,7 +12990,8 @@ function draw_hud(){
 	// from the glass, exactly like the real headset.
 	const lockon=seeker_now.lockon, drinking=seeker_now.drinking, quarry=seeker_now.quarry;
 	if(growl_force&&sim_time<growl_force.until) audio_seeker(growl_force.state,growl_force.strength);
-	else audio_seeker(game_paused?0:(master==="9m"&&!pa?(lockon?2:1):0),drinking,uhf.panel.volume.weapon);   // the WPN volume control sets the tone's level (23.1.1)
+	else audio_seeker(game_paused||!fed(4,"a")?0:(master==="9m"&&!pa?(lockon?2:1):0),drinking,uhf.panel.volume.weapon);   // the WPN volume control sets the tone's level (23.1.1)
+	audio_tacan(!game_paused&&buses.ac&&fed(4,"a")&&!!tacan()&&communication.sounding(SHIP.ident,sim_time),uhf.panel.volume.tacan);   // the ship's TACAN identity in Morse, at the TCN volume control's level (23.1.1): heard while the set receives her
 	// Departure / AoA warning tone (NATOPS 2.8.2.5, #53): yaw-rate intensity
 	// from the 40°/s onset to the 60°/s ceiling, steady above 35° AoA. Ground
 	// excluded — a HI-mode nosewheel turn yaws faster than the onset.
@@ -13078,7 +13386,7 @@ let comms=[];   // the radio/chat log (#84): {text, colour, until} — top-left,
 // control off the bottom - and the COMM 1 antenna selected in view of a station on the surface - the lower one unless the jet is on its back,
 // ANT SEL's AUTO taking whichever it is. The pilot's own calls go out the same way.
 function radio(text){ const inverted=ownship.up.y<0;   // a station on the surface is above the wings only of a jet upside down
-	if(uhf.one.on&&buses.essential&&(uhf.panel.antenna==="auto"||(uhf.panel.antenna==="upper")===inverted)) comm(text,"#9fd0ff"); }
+	if(uhf.one.on&&buses.essential&&fed(2,"b")&&(uhf.panel.antenna==="auto"||(uhf.panel.antenna==="upper")===inverted)) comm(text,"#9fd0ff"); }
 function comm(text,colour){ comms.push({ text:String(text).slice(0,80), colour, until:performance.now()+10000 }); while(comms.length>5) comms.shift();
 	if(cfg.record&&!playback&&record_radio.length<20) record_radio.push((colour&&String(colour).startsWith("#")?colour+" ":"")+String(text).slice(0,80)); if(DEV_MODE){ const log=((globalThis as any).dev_comms??=[]); log.push(String(text)); } }   // dev_comms: the un-fading log — the live rows expire in ten seconds, which is faster than a headless probe can attach
 function chat_scope(){ return (net&&net.welcome&&net.welcome.spawn&&net.welcome.spawn.mode==="teams")?"team":"match"; }
@@ -13659,7 +13967,7 @@ function rwr_step(dt){ if(!running) return;
 	const events=RWR.step(dt,{ x:ownship.pos.x, z:ownship.pos.z },emitters,Math.random,seekers);
 	rwr_fresh+=events.fresh; rwr_missile=rwr_missile||events.missile;   // what every chunk of a compressed frame heard, sounded once a frame
 	if(!presenting) return;
-	const level=suite.receiver.power&&buses.ac?uhf.panel.volume.receiver:0;   // the set's tones, at the RWR volume control's level (23.1.1); none with it off or unpowered (#116)
+	const level=suite.receiver.power&&buses.ac&&fed(3,"a")&&fed(4,"a")?uhf.panel.volume.receiver:0;   // the set's tones, at the RWR volume control's level (23.1.1); none with it off or unpowered (#116)
 	if(rwr_fresh>0) audio_rwr_paint(level);
 	if(rwr_missile&&level>0&&glance-rwr_called>3){ rwr_called=glance; notice(translate("MISSILE")); }   // the third voice: nails, spike, MISSILE
 	rwr_fresh=0; rwr_missile=false;
@@ -13868,7 +14176,7 @@ function apply_own_state(state,reset=true){ if(!state||!state.position) return;
 	if(reset){ ownship.throttle=0.85;
 		ownship.gearTarget=1; ownship.gear=1; ownship.hookTarget=0; ownship.hook=0; ownship.speedbrakeTarget=0; }
 	ownship.grounded=false; ownship.trapped=false; ownship.launching=false;
-	ownship.group.position.copy(ownship.pos); ownship.group.quaternion.copy(ownship.q); }
+	ownship.group.position.copy(datum(ownship)); ownship.group.quaternion.copy(ownship.q); }
 function net_event(e){ const slot=Number(e.slot);
 	switch(e.kind){
 	case "kill":
@@ -14208,7 +14516,7 @@ addEventListener("pointerdown",()=>{ audio_gesture(); try{ window.focus(); }catc
 function menu_backdrop(){ const a=performance.now()*0.00007; const r=440;
 	camera.position.set(CARRIER.x+Math.cos(a)*r, CARRIER.deckY+70, CARRIER.z+Math.sin(a)*r);
 	camera.up.set(0,1,0); camera.lookAt(CARRIER.x,CARRIER.deckY+12,CARRIER.z);
-	ownship.group.visible=true; ownship.group.position.copy(ownship.pos); ownship.group.quaternion.copy(ownship.q); bandit.group.visible=false; }
+	ownship.group.visible=true; ownship.group.position.copy(datum(ownship)); ownship.group.quaternion.copy(ownship.q); bandit.group.visible=false; }
 
 const clock=new THREE.Clock();
 // simulate advances the world by the frame's share of sim time: compression ×

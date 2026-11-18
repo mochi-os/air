@@ -379,8 +379,11 @@ describe('the wiring', () => {
       /scene\.fog\.color\.setRGB\(r\[0\]\*e,r\[1\]\*e,r\[2\]\*e\); scene\.fog\.density=air_aerosol; \}/
     )
     expect(engine).toMatch(
-      /const r=sky_radiance\(air_tables,\[f\.x\*k,0\.03,f\.z\*k\],camera\.position\.y,\[sun_dir\.x,sun_dir\.y,sun_dir\.z\],air_aerosol\)/
+      /const r=sky_radiance\(air_tables,\[f\.x\*k,0\.03,f\.z\*k\],view\.position\.y,\[sun_dir\.x,sun_dir\.y,sun_dir\.z\],air_aerosol\)/
     )
+    // each pass's own view: the world's camera, and the mirrors' rear view for their pass
+    expect(engine).toMatch(/\n\tfog_toward\(camera\);\n/)
+    expect(engine).toMatch(/_mirror_fog\.copy\(scene\.fog\.color\); fog_toward\(cam\);/)
   })
 
   it("hazes the lit materials by the air's own extinction between the eye's height and theirs, over the distance", () => {

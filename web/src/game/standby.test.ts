@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 import * as countermeasures from './countermeasures'
 import { DEGREE } from './earth'
 import * as magnetic from './magnetic'
+import { warns } from './proximity'
 
 // The standby attitude reference indicator (NATOPS 2.12.2) carries pitch,
 // roll, an OFF flag and a needle and ball - no ILS bars. The model has
@@ -453,7 +454,7 @@ describe('the standby instrument faces', () => {
   // NATOPS 2.12.2 and 25.2.4.2 items 1 and 3: pulled, the knob cages the gyro to the case, 4° nose up and
   // wings level whatever the jet's attitude, with the OFF flag in view.
   it('read the case\'s 4° nose up and wings level with the OFF flag while caged, the jet and the trim otherwise', () => {
-    const draw = (caged: boolean, essential = true, trim = 0) => new Function('caged', 'essential', 'trim', `const D2R=Math.PI/180, drawn=[], buses={ essential };
+    const draw = (caged: boolean, essential = true, trim = 0) => new Function('caged', 'essential', 'trim', `const D2R=Math.PI/180, drawn=[], buses={ essential }, fed=()=>true;
       ${/\nconst SARI_TRIM=[^\n]*\n/.exec(source)?.[0] ?? ''} let sari_trim=trim; const sari_caged=()=>caged, sari_testing=()=>false;
       const asi_face=()=>{}, alt_face=()=>{}, vsi_face=()=>{}, adi_face=(f,...a)=>drawn.push(a);
       ${lift('standby_draw')} standby_draw({ asi:{tex:{}}, alt:{tex:{}}, vsi:{tex:{}}, adi:{tex:{}} }, { pitch:0.3, bank:-0.5, yaw:0.01, slip:0.2 }); return drawn[0];`)(caged, essential, trim) as unknown[]
@@ -604,11 +605,12 @@ describe('the GPWS warning', () => {
   })
 
   it('runs its recovery model whatever the gear', () => {
-    const model = /const closure=\(\(\)=>\{[\s\S]*?\}\)\(\);/.exec(source)?.[0] ?? ''
-    expect(model).not.toBe('')
-    const escape = (gearTarget: number) => new Function('gearTarget', `const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}};
-      const ownship={ gearTarget, speed:200, up:{ y:1 } }, sink=40, agl=250; ${model} return closure;`)(gearTarget) as boolean
-    expect(escape(0)).toBe(true) // gear down, diving at 250 ft
+    const call = /const closure=proximity_warns\([^\n]*?\);/.exec(source)?.[0] ?? ''
+    expect(call).not.toBe('')
+    expect(call).not.toMatch(/gear/) // the escape model (proximity.ts) is given no gear position
+    const escape = (gearTarget: number) => new Function('proximity_warns', 'gearTarget', `const ownship={ gearTarget, gear:gearTarget, velx:0, vely:-40, velz:-196, up:{ x:0, y:0.98, z:-0.2 }, gload:1 }, agl=330;
+      ${call} return closure;`)(warns, gearTarget) as boolean
+    expect(escape(0)).toBe(true) // gear down, sinking 40 m/s at 330 ft: above the 300 ft floor, so it is the escape that warns
     expect(escape(1)).toBe(true)
   })
 })
@@ -732,7 +734,7 @@ describe('the radar altimeter height indicator', () => {
   it('shows OFF with the set off, as under EMCON, and not for the radar\'s own silence (NATOPS 2.12.5, 2.13.5.2)', () => {
     const inhibited = /\nfunction radalt_inhibited\(\)[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(inhibited).not.toBe('')
-    const run = (emcon: boolean, on: boolean, sil = false, ac = true) => new Function('emcon', 'on', 'sil', 'ac', `const RADAR={ sil, silent:()=>sil||emcon }, radalt_on=on, buses={ ac }; ${inhibited} return radalt_inhibited();`)(emcon, on, sil, ac) as boolean
+    const run = (emcon: boolean, on: boolean, sil = false, ac = true) => new Function('emcon', 'on', 'sil', 'ac', `const RADAR={ sil, silent:()=>sil||emcon }, radalt_on=on, buses={ ac }, fed=()=>true; ${inhibited} return radalt_inhibited();`)(emcon, on, sil, ac) as boolean
     expect(run(false, true)).toBe(false)
     expect(run(false, true, false, false)).toBe(true) // no ac power: the set is off (#116)
     expect(run(true, true)).toBe(true)

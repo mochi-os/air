@@ -150,7 +150,7 @@ describe('self pose', () => {
   // two tests fails.
   it('decodes the bytes the server actually produces', () => {
     const golden = Uint8Array.from(
-      '00000000000000000000000000eb7eae008a05950f7f0000d00731000093050f000000f0000e4002'
+      '005b7ec23db7cd043dbb2008bceb7eae008a05950f7f0000d00731000093050f000000f0000e4002'
         .match(/../g)!
         .map((h) => parseInt(h, 16))
     )

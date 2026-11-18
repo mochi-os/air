@@ -129,7 +129,7 @@ describe('the ownship\'s cockpit controls', () => {
   })
 
   it('round the ownship\'s, which the cockpit pass draws, and never a bandit\'s', () => {
-    expect(lift('apply_model_to')).toMatch(/\n\tif\(g\.userData\.player\)\{ layer_own_group\(g\); cockpit_hidden\(\); controls_round\(g,m\); \}/)
+    expect(lift('apply_model_to')).toMatch(/\n\tif\(g\.userData\.player\)\{ layer_own_group\(g\); cockpit_hidden\(\); controls_round\(g,m\); [^}]*\}/)
     expect(source.match(/controls_round\(/g)).toHaveLength(2) // the definition and that one call
   })
 })

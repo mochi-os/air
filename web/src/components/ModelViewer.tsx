@@ -31,7 +31,7 @@ import aim120c_points from '../assets/aim120c.json'
 import fa18c_points from '../assets/fa18c.json'
 import * as cycle from '../game/cycle'
 import { outfit, type Fittings, type Kind, type Seat } from '../game/hang'
-import { pose, rig, type Joint, type Posed } from '../game/joints'
+import { pose, rig, type Joint } from '../game/joints'
 import { model } from '../game/library'
 import { posed } from '../game/model'
 import { deflectors, layout, meatball, raising, stations } from '../game/ship'
@@ -121,11 +121,11 @@ function lift(ship: THREE.Object3D, seconds: number): void {
 }
 
 // The model whose parts the Motion button moves, the F/A-18C: its joints, and
-// its motion (cycle.ts) from the model and its rigged joints
+// its motion (cycle.ts)
 const MOTION = {
   file: 'fa18c.glb',
   joints: (fa18c_points as unknown as { joints: Record<string, Joint> }).joints,
-  motion: (shown: THREE.Object3D, posed: Posed[]) => cycle.fa18c(cycle.rises(shown, posed)),
+  motion: () => cycle.fa18c(),
 }
 
 // The Ford's lens lights as the game draws them (engine.ts,
@@ -300,7 +300,14 @@ export function ModelViewer({
     if (!host) return
     let renderer: THREE.WebGLRenderer
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: true })
+      // Depth kept to a share of the distance, not of the clip planes: zoomed
+      // to the cursor, the orbit target can lie a few metres from the camera
+      // with the model 80 m off, its near plane then millimetres, and a door
+      // 5 cm in front of a wall drew through it in stripes
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        logarithmicDepthBuffer: true,
+      })
     } catch {
       setStatus('WebGL is not available in this browser')
       return
@@ -472,7 +479,7 @@ export function ModelViewer({
       quaternion: p.object.quaternion.clone(),
       influences: p.morphs.map((m) => m.mesh.morphTargetInfluences?.[m.index] ?? 0),
     }))
-    const motion = MOTION.motion(shown, posed)
+    const motion = MOTION.motion()
     let frame = 0
     let last = performance.now()
     const step = (now: number) => {

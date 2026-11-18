@@ -15,6 +15,10 @@ from pathlib import Path
 import bpy
 from mathutils import Matrix, Quaternion, Vector
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from camera import clipping  # noqa: E402
+import model as mod  # noqa: E402
+
 
 def lookup(keys, x):
 	# as model.py's: a bend's keys ([input, turn, slide]) give a tuple
@@ -44,7 +48,7 @@ def main():
 	width = int(args[4]) if len(args) > 4 else 1600
 	bpy.ops.wm.read_factory_settings(use_empty=True)
 	bpy.ops.import_scene.gltf(filepath=model)
-	joints = json.loads(Path(points).read_text())["joints"]
+	joints = mod.joints(json.loads(Path(points).read_text()))
 	rest = {name: (obj.location.copy(), obj.rotation_mode, obj.rotation_quaternion.copy(), obj.hide_render)
 		for name, obj in ((n, bpy.data.objects.get(n)) for n in joints) if obj is not None}
 	scene = bpy.context.scene
@@ -64,7 +68,7 @@ def main():
 		for name, (location, mode, quaternion, hidden) in rest.items():
 			obj = bpy.data.objects[name]
 			obj.location, obj.rotation_mode, obj.rotation_quaternion, obj.hide_render = location, "QUATERNION", quaternion, hidden
-		drives = entry.get("pose", {})
+		drives = mod.driven(joints, entry.get("pose", {}))   # the gear by one value, each mechanism through the retraction (model.py)
 		for name, j in joints.items():
 			obj = bpy.data.objects.get(name)
 			if obj is None:
@@ -102,7 +106,14 @@ def main():
 		data.sensor_fit = "HORIZONTAL"
 		data.sensor_width = 36.0
 		data.lens = f * 36.0 / w
-		data.clip_start, data.clip_end = 0.05, 2000.0
+		bpy.context.view_layer.update()
+		spheres = []
+		for obj in scene.objects:
+			if obj.type == "MESH":
+				corners = [obj.matrix_world @ Vector(c) for c in obj.bound_box]
+				centre = sum(corners, Vector()) / 8
+				spheres.append((tuple(centre), max((c - centre).length for c in corners)))
+		data.clip_start, data.clip_end = clipping(tuple(camera.matrix_world.translation), spheres)
 		scene.render.resolution_x, scene.render.resolution_y = width, round(width * h / w)
 		scene.render.filepath = str(Path(outdir) / f"{entry['photo']}.png")
 		bpy.ops.render.render(write_still=True)

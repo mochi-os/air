@@ -12,9 +12,13 @@
 # usage: blender -b --factory-startup -P render.py -- MODEL.glb MODEL.json OUTDIR [drive=value ...]
 #   e.g. gear=1 canopy=1 hook=1 probe=1 speedbrake=1 ladder=1 bar=1 load=7.5
 import json, sys
+from pathlib import Path
 
 import bpy
 from mathutils import Quaternion, Vector
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "verify"))
+import model as mod  # noqa: E402
 
 VIEWS = {
 	"quarter": ((14, 11, 7), (-1, 0, 0)),
@@ -44,7 +48,9 @@ def main():
 	drives = {k: float(v) for k, v in (a.split("=") for a in args[3:])}
 	bpy.ops.wm.read_factory_settings(use_empty=True)
 	bpy.ops.import_scene.gltf(filepath=model)
-	for name, j in json.loads(open(points).read())["joints"].items():
+	joints = mod.joints(json.loads(open(points).read()))
+	drives = mod.driven(joints, drives)   # gear=1 sets each gear mechanism (model.py)
+	for name, j in joints.items():
 		obj = bpy.data.objects.get(name)
 		if obj is None:
 			raise SystemExit(f"{name}: a joint with no node")

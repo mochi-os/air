@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import ford from '../assets/ford.json'
-import { split } from './model'
+import { repack, split, strip } from './model'
 import { type Contract, foul, layout } from './ship'
 
 // The carrier's deck layout lives in one file beside its model, which its build
@@ -376,6 +376,7 @@ describe("the carrier's ship file", () => {
       let _ground_kind="";
       ${lift('carrier_fore_aft')}${lift('carrier_lateral')}
       const deck_y_at=(m,x,z,f)=>Math.abs(carrier_fore_aft(x,z))<=166.29&&Math.abs(carrier_lateral(x,z))<30?18.27:f;
+      const deck_plane=()=>18.27;   // level on her heading
       const homeward=(p)=>p, land_height=()=>-1e9, chart_point=(p)=>p;
       ${lift('ground_height')}
       return ground_height(x,z);`
@@ -449,6 +450,7 @@ describe("the carrier's ship file", () => {
       const ownship={ launching:false, pos:{ x:37, z:4.6 }, fwd:{ x:Math.cos(5*D2R), z:-Math.sin(5*D2R) } }, on_cat_spot=()=>cat_idx;
       const AIRCRAFT_MODELS={ fa18c:{ nose:5.3 } }, own_aircraft=()=>'fa18c', carrier_fore_aft=(x,z)=>x, carrier_lateral=(x,z)=>z;
       const ship_joint=(name,value)=>{ set[name]=value; }, ship_joint_max=(name)=>name==='catapult_console_bow'?1.3:name==='catapult_console_waist'?0.7:90;
+      const datum=(st)=>st.pos;   // the jet's datum (#188): this stand-in has no centre of mass off it
       ${lift('update_shuttles')} update_shuttles();`
     )
     run(set, 0)
@@ -589,6 +591,104 @@ describe("the carrier's ship file", () => {
     const pane = used.find((m: { name: string }) => m.name === 'pane')
     expect(pane.alphaMode).toBe('BLEND')
     expect(pane.pbrMetallicRoughness.baseColorFactor[3]).toBeLessThan(1)
+  })
+
+  it('reads the installed model as the engine does: decoded, every joint a node, the vehicles and walkways known by their meshes', async () => {
+    // packed (tools/ford/pack.py) its geometry is meshopt-compressed and its parts merged, and the
+    // deck grid tells the vehicles and the island's walkways by the names the loader gives their
+    // meshes: with either part taken away, what the grid reads of the rest must not change
+    const THREE = await import('three')
+    const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js')
+    const { MeshoptDecoder } = await import('three/examples/jsm/libs/meshopt_decoder.module.js')
+    const bytes = readFileSync(
+      fileURLToPath(new URL('../assets/ford.glb', import.meta.url))
+    )
+    const parts = split(
+      bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)
+    )
+    strip(parts.json)
+    const loader = new GLTFLoader()
+    loader.setMeshoptDecoder(MeshoptDecoder)
+    const gltf = await new Promise<{ scene: InstanceType<typeof THREE.Group> }>((resolve, reject) =>
+      loader.parse(repack(parts.json, parts.bin), '', resolve, reject)
+    )
+    const scene = gltf.scene
+    scene.updateMatrixWorld(true)
+    for (const joint of Object.keys(ford.joints))
+      expect(scene.getObjectByName(joint), joint).toBeTruthy()
+    const grid = new Function(
+      'THREE',
+      `const CARRIER={ x:0, z:0 }, CARRIER_C=1, CARRIER_S=0; let deck_grid=null;
+      ${lift('carrier_fore_aft')}${lift('carrier_lateral')}${lift('build_deck_grid')}
+      return (grp)=>{ build_deck_grid(grp, ${ford.deck.height}); return deck_grid; };`
+    )(THREE)
+    const whole = grid(scene)
+    expect(whole.island.top).toBeGreaterThan(ford.deck.height + 4)
+    for (const name of ['vehicles', 'island_details']) {
+      const part = scene.getObjectByName(name)
+      expect(part, name).toBeTruthy()
+      const above = part!.parent!
+      above.remove(part!)
+      const without = grid(scene)
+      above.add(part!)
+      expect(without.island, name).toEqual(whole.island)
+      expect(without.mast, name).toEqual(whole.mast)
+      if (name === 'vehicles')
+        expect(Array.from(without.data)).toEqual(Array.from(whole.data))
+    }
+  })
+
+  it("draws her far off from her own far model: one call, coloured in its vertices, as long and tall as what it stands in for", async () => {
+    // engine.ts swaps it in past CARRIER_LIMIT for the full model's meshes outside CARRIER_KEEP (tools/ford/far.py)
+    const THREE = await import('three')
+    const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js')
+    const { MeshoptDecoder } = await import('three/examples/jsm/libs/meshopt_decoder.module.js')
+    const parse = (name: string) => {
+      const bytes = readFileSync(fileURLToPath(new URL(`../assets/${name}`, import.meta.url)))
+      const parts = split(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength))
+      strip(parts.json)
+      const loader = new GLTFLoader()
+      loader.setMeshoptDecoder(MeshoptDecoder)
+      return new Promise<{ scene: InstanceType<typeof THREE.Group> }>((resolve, reject) =>
+        loader.parse(repack(parts.json, parts.bin), '', resolve, reject)
+      )
+    }
+    const keep = new RegExp(/CARRIER_KEEP=\/(.+?)\/[,;]/.exec(source)![1])
+    const full = (await parse('ford.glb')).scene
+    const far = (await parse('ford-far.glb')).scene
+    full.updateMatrixWorld(true)
+    far.updateMatrixWorld(true)
+    const meshes: InstanceType<typeof THREE.Mesh>[] = []
+    far.traverse((o) => { if ((o as InstanceType<typeof THREE.Mesh>).isMesh) meshes.push(o as InstanceType<typeof THREE.Mesh>) })
+    expect(meshes.length).toBe(1)
+    expect(meshes[0].geometry.attributes.color).toBeTruthy()
+    expect((meshes[0].material as InstanceType<typeof THREE.MeshStandardMaterial>).vertexColors).toBe(true)
+    const stood = new THREE.Box3()
+    full.traverse((o) => {
+      if (!(o as InstanceType<typeof THREE.Mesh>).isMesh) return
+      for (let p: InstanceType<typeof THREE.Object3D> | null = o; p; p = p.parent) if (keep.test(p.name || '')) return
+      stood.union(new THREE.Box3().setFromObject(o, true))
+    })
+    const drawn = new THREE.Box3().setFromObject(far, true)
+    // within a pixel where it is nearest (CARRIER_LIMIT times STAGE_MARGIN pixels of 1080 down a 45 degree view)
+    const number = (pattern: RegExp) => Number(pattern.exec(source)![1])
+    const pixel =
+      number(/ford:\{ url:ford_model_url, length:([\d.]+)/) /
+      (number(/CARRIER_LIMIT=([\d.]+)/) * number(/STAGE_MARGIN=([\d.]+)/))
+    expect(pixel).toBeGreaterThan(1)
+    for (const axis of ['x', 'y'] as const) {
+      expect(Math.abs(drawn.min[axis] - stood.min[axis]), axis).toBeLessThan(pixel)
+      expect(Math.abs(drawn.max[axis] - stood.max[axis]), axis).toBeLessThan(pixel)
+    }
+  })
+
+  it('labels each of her wires in the banner and the match log, and none she lacks', () => {
+    const wires = new Set(ford.landing.wires.map((_, i) => i + 1))
+    for (const file of ['../components/GameCanvas.tsx', '../components/MatchLog.tsx']) {
+      const text = readFileSync(fileURLToPath(new URL(file, import.meta.url)), 'utf8')
+      const labelled = new Set([...text.matchAll(/`(\d+) WIRE`/g)].map((m) => Number(m[1])))
+      expect(labelled, file).toEqual(wires)
+    }
   })
 
   it("measures the island's crash box and mast top from its body, not the walkways and antennas standing off it", async () => {

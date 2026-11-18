@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
-import { flatten, oleo } from './oleo'
+import { flatten, oleo, REACH } from './oleo'
 
 // settle runs the correction to convergence and returns where the tyre bottom
 // ends up. `bottom` is measured off the posed node, so it carries the offset
@@ -66,6 +66,25 @@ describe('oleo', () => {
     let lift = 0
     for (let i = 0; i < 500; i++) lift = oleo(-50, 0, lift, 1 / 60)
     expect(lift).toBeLessThanOrEqual(0.25)
+  })
+
+  // The nose leg rests at its length in flight, 16 in (0.406 m) beyond its
+  // length on the ground, so a loaded nose wheel stands that far plus a little
+  // through the surface. Given its stroke to fully in (the points file's full,
+  // 17 in) it comes all the way up; the default alone strands it a stroke
+  // short; and a wheel deeper than the stroke stops at it, the oleo fully in.
+  it('seats a leg standing out by its static stroke when given its full stroke', () => {
+    const full = 0.4318
+    const below = -(0.4064 + 0.02)
+    let lift = 0
+    for (let i = 0; i < 600; i++) lift = oleo(below + lift, 0, lift, 1 / 60, full)
+    expect(lift).toBeCloseTo(-below, 6)
+    let short = 0
+    for (let i = 0; i < 600; i++) short = oleo(below + short, 0, short, 1 / 60)
+    expect(short).toBeCloseTo(REACH, 6)
+    let deep = 0
+    for (let i = 0; i < 600; i++) deep = oleo(-0.5 + deep, 0, deep, 1 / 60, full)
+    expect(deep).toBeCloseTo(full, 6)
   })
 
   // Rotation: the wheel climbs away from the runway. The caller stops seating
@@ -216,6 +235,17 @@ describe('oleo wiring', () => {
   it('seats only a loaded strut, never a wheel merely near the ground', () => {
     expect(source).toMatch(/if\(s\.depth>0\)\{\s*s\.sink=flatten\(/)
     expect(source).toMatch(/plane=surface-s\.sink/)
+  })
+
+  // Each drawn leg seats within its own reach: its stroke from its length in
+  // flight to fully in, from the points file, so the nose, which the model
+  // rests 16 in out at its length in flight, can come up onto the deck, and
+  // no leg is pushed past what its drawn parts allow (a main shock absorber's
+  // can sliding off its body). A points file without it falls back to the
+  // default bound on a bad terrain sample plus the leg's static stroke.
+  it('gives each drawn leg its own reach, its stroke to fully in', () => {
+    expect(source).toMatch(/reach:point\.full!==undefined\?point\.full\*r:REACH\+\(point\.static\|\|0\)\*r\b/)
+    expect(source).toMatch(/oleo\(_exterior_wheel\.y-l\.radius,plane,l\.lift,dt,l\.reach\)/)
   })
 
   // The fixed squat scrub is what this replaces: one clip fraction for all

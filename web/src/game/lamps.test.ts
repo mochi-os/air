@@ -86,7 +86,7 @@ function panel(p: Panel): string[] {
   const run = new Function('p', 'countermeasures', `const STATE={speedbrake:0}, out=[p.speedbrake||0], ownship={bar:p.bar||0, barTarget:p.target??p.bar??0}, bar_switch=p.extend?"extend":"retract", sim_time=100, ASPJ_TEST=20;
     const suite=countermeasures.fresh(true); suite.jammer=p.jammer||"off"; suite.tested=100-(p.tested??0); if(p.dispensed!==undefined) suite.dispensed=100-p.dispensed; suite.receiver.power=p.receiver??true;
     const RWR={ time:100, contacts:(p.contacts||[]).map(c=>({ locked:!!c.locked, missile:!!c.missile, at:100-(c.age||0) })), locked:()=>!!p.painted, warned:()=>false };
-    const buses={ ac:p.ac??true }, master=p.master||"nav", taping=p.taping||"automatic"; ${recording}
+    const buses={ ac:p.ac??true }, fed=()=>true, master=p.master||"nav", taping=p.taping||"automatic"; ${recording}
     const l={spdbrk:{},lbar:{},aspj:{},xmit:{},rec:{},stby:{},go:{},nogo:{},disp:{},ai:{},rcdr:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
   return run(p, countermeasures) as string[]
@@ -250,14 +250,14 @@ function gencaptions(c: Cautions): { captions: string[]; battery: boolean } {
   const lines = /\n\tconst \[genL,genR\]=core\?generators\(core\):\[true,true\][^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!lines || !generators) throw new Error('generator captions not found in engine.ts')
   return new Function('c', `const STATE={engine:0, engine_harm:4}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
-    const core=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0], captions=[], buses={ ac:generators(core).some(Boolean) }; ${lines} return { captions, battery };`)(c) as { captions: string[]; battery: boolean }
+    const core=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0], captions=[], buses={ ac:generators(core).some(Boolean) }, fed=()=>true; ${lines} return { captions, battery };`)(c) as { captions: string[]; battery: boolean }
 }
 function cautionlit(c: Cautions): string[] {
   const block = /\n\t\/\/ the caution lights panel \(#13\)[\s\S]*?lamp_set\(l\.fces,fcs_jammed\(out\)\);\n/.exec(source)?.[0] ?? ''
   if (!block || !generators || !fcs) throw new Error('caution panel block not found in engine.ts')
   const run = new Function('c', `const FUELLO=726, STATE={engine:0, engine_harm:4, jam:6}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
     ${fcs} const out=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0, 0,0,0,0,0,0,0,0]; for(const ch of c.jam||[]) out[6+ch]=1;
-    const ownship={group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5, buses={ ac:c.ac??true, essential:true }, battery_switch=()=>false, check_seat=()=>!!c.seat, accumulator_low=()=>!!c.accumulator, ground_power=()=>false; let unpowered=false; electrics.tie=c.tie??true;
+    const ownship={group:{userData:{}}}, cfg={view:'cockpit'}, EMERGENCY_LIGHT=0.5, buses={ ac:c.ac??true, essential:true }, fed=()=>true, battery_switch=()=>false, check_seat=()=>!!c.seat, accumulator_low=()=>!!c.accumulator, ground_power=()=>false; let unpowered=false; electrics.tie=c.tie??true;
     const l={fuello:{},genL:{},genR:{},fces:{},battsw:{},ckseat:{},apuacc:{},gentie:{}}, lamp_set=(m,on)=>{ m.on=!!on; }, fuel_low=()=>!!c.low; ${block}
     return Object.keys(l).filter((k)=>l[k].on);`)
   return run(c) as string[]
@@ -424,7 +424,7 @@ function emergency(p: Power): { unpowered: boolean; intensity: number } {
   if (!block || !generators) throw new Error('generator block not found in engine.ts')
   const run = new Function('p', `const STATE={engine:0, engine_harm:4}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
     const out=[p.spoolL??0.7, 0, p.spoolR??0.7, 0, 0, 0];
-    const ownship={group:{userData:{emergency:{intensity:0}}}}, cfg={view:p.view||'cockpit'}, EMERGENCY_LIGHT=0.5, buses={ essential:p.essential??true }, ground_power=()=>!!p.cart; let unpowered=false;
+    const ownship={group:{userData:{emergency:{intensity:0}}}}, cfg={view:p.view||'cockpit'}, EMERGENCY_LIGHT=0.5, buses={ essential:p.essential??true }, fed=()=>true, ground_power=()=>!!p.cart; let unpowered=false;
     const l={genL:{},genR:{}}, lamp_set=(m,on)=>{ m.on=!!on; }; ${block}
     return { unpowered, intensity:ownship.group.userData.emergency.intensity };`)
   return run(p) as { unpowered: boolean; intensity: number }
@@ -436,7 +436,9 @@ function lights(tod: string, lights: boolean, unpowered: boolean, turned?: Recor
   if (!state || !fn) throw new Error('lighting_set not found in engine.ts')
   const knob = /\nconst knobs=\{[^\n]*\nfunction knob_level\(k\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!knob) throw new Error('knob_level not found in engine.ts')
-  const run = new Function('tod', 'lights', 'unpowered', 'turned', `const cfg={tod}, ownship={lights}; ${knob} Object.assign(knobs,turned||{}); ${state} ${fn} lighting_set(); return { ...lighting };`)
+  const flood = /\nconst FLOOD=[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!flood) throw new Error('FLOOD not found in engine.ts')
+  const run = new Function('tod', 'lights', 'unpowered', 'turned', `const cfg={tod}, ownship={lights}, travel_at=()=>1; ${knob} Object.assign(knobs,turned||{}); ${flood} ${state} ${fn} lighting_set(); return { ...lighting };`) // the FLOOD switch at COCKPIT
   return run(tod, lights, unpowered, turned) as Lights
 }
 function backlight(tod: string, on: boolean, unpowered: boolean): number {
@@ -597,12 +599,12 @@ describe('the MASTER CAUTION and silence button clicks', () => {
 // key and the generators, driving the model's knobs and dimming the lenses.
 describe('the interior lights panel', () => {
   it('sets DAY with a dim instrument wash and everything else off by day', () => {
-    expect(lights('day', false, false)).toEqual({ mode: 'day', instrument: 0.22, consoles: 0, flood: 0, warn: 1 })
+    expect(lights('day', false, false)).toEqual({ mode: 'day', instrument: 0.22, consoles: 0, flood: 0, chart: 0, warn: 1 })
     expect(lights('day', true, false).flood).toBe(0)
   })
 
   it('sets NITE at night, dims the lenses, and brings the panel, consoles and floods up, whatever the exterior lights master', () => {
-    expect(lights('night', false, false)).toEqual({ mode: 'nite', instrument: 0.62, consoles: 1, flood: 1, warn: 0.55 })
+    expect(lights('night', false, false)).toEqual({ mode: 'nite', instrument: 0.62, consoles: 1, flood: 1, chart: 1, warn: 0.55 })
     expect(lights('night', true, false)).toEqual(lights('night', false, false))
     expect(lights('day', true, false)).toEqual(lights('day', false, false))
   })
@@ -642,11 +644,12 @@ describe('the interior lights panel', () => {
       expect(rig, name).toMatch(new RegExp('name:"' + name + '",\\s+track:/\\^' + node + '/i,\\s+drive:"' + name + '"'))
     expect(source).toMatch(/case "instpnl": f=knob_level\("instrument"\); break; case "consoles": f=knob_level\("consoles"\); break; case "flood": f=knob_level\("flood"\); break;/)
     expect(source).toMatch(/case "warncaut": f=knob_level\("warn"\); break;/)
-    // the FLOOD COCKPIT/CHART switch moves and lights nothing, there being no chart light (#23); its clip runs CHART-ward from its drawn COCKPIT, so it rests flipped at its drawn end
+    // the FLOOD COCKPIT/CHART switch sets what the FLOOD knob lights (2.6.2.5); its clip runs CHART-ward from its drawn COCKPIT, so it rests flipped at its drawn end
     expect(rig).toMatch(/name:"floodswitch", track:\/\^Knob_CHART_RightPanel_AN\/i,\s+drive:"travel", flip:true \}/)
     expect(source).toMatch(/const TRAVEL_REST=\{[^\n]*floodswitch:1 \};/)
     expect(source).not.toMatch(/track:\/\^MODE_C_AN[^\n]*drive:"(?!travel)/)
-    expect(source).not.toMatch(/lighting\.chart/)
+    expect(source).toMatch(/const FLOOD=\{ chart:0, cockpit:1 \};/)
+    expect(source).toMatch(/\tchart_light\.intensity=pit\?0\.05\*lighting\.chart:0;/)
     expect(source).toMatch(/if\(\/\^EMISSIVE_LIGHTS\$\/\.test\(mm\.name\|\|""\)\) instrument_mats\.push\(mm\);/)
     expect(source).toMatch(/for\(const l of console_lights\) l\.intensity=pit\?0\.06\*Math\.max\(lighting\.consoles,lighting\.flood\):0;/)
     expect(source).toMatch(/cockpit_flood\.intensity=pit\?0\.12\*lighting\.flood:0;/)
@@ -705,7 +708,7 @@ describe('the lights test', () => {
       const blank=lens(), tested=[...Object.values(l),blank];
       const STATE={extension:0,speedbrake:1,cas:2,jam:3,gear_harm:12}, out=[], own_burn=[0,0], own_burning=false, caution_lamp=!!c.caution, suite=countermeasures.fresh(false), ASPJ_TEST=20, recording=()=>false, accumulator_low=()=>false, electrics={ tie:true }, faces_update=()=>{}, apu_ready=()=>!!c.ready, ground_power=()=>false;
       const RWR={contacts:[], time:0, locked:()=>false, warned:()=>false}, fuel_low=()=>false, fcs_jammed=()=>false, generators=()=>unpowered?[false,false]:[true,true], EMERGENCY_LIGHT=1, cfg={view:"cockpit",tod:"day"}, RADAR={stt:null}, hud_shoot=false;
-      const buses={ ac:!unpowered, essential:c.essential??true }, battery_switch=()=>!!c.batt, check_seat=()=>!!c.seat, fire_testing=()=>!!c.fire, cabin_feet=null, clock_elapsed=()=>0;
+      const buses={ ac:!unpowered, essential:c.essential??true }, fed=()=>true, battery_switch=()=>!!c.batt, check_seat=()=>!!c.seat, fire_testing=()=>!!c.fire, cabin_feet=null, clock_elapsed=()=>0;
       const wheels_warning=()=>false, sim_time=0, glance=0, GEAR_COLLAPSE=0.7, flap_select=0, spin_switch=c.spin||"norm";
       const bar_switch="retract", ownship={ group:{ userData:{ lamps:l, tested } }, gearTarget:1, barTarget:0, hook:0, hookTarget:0, grounded:false, gauges:{ hyd1:2.83, hyd2:2.83 } };
       ${update}

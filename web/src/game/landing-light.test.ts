@@ -63,21 +63,31 @@ describe('the landing light stays dark on a carrier recovery', () => {
 // own switch, the gear handle and the gear. update_aircraft_lights is run whole
 // against stand-ins, the cockpit lights already built.
 interface Point { visible: boolean; material: { opacity: number } }
-interface Frame { pos: Point[]; strobe: Point[]; landing: Point[]; spot: boolean }
-interface Jet { lights?: boolean; gear?: number; gearTarget?: number; at?: number; exterior?: Record<string, unknown> }
+interface Frame { pos: Point[]; strobe: Point[]; landing: Point[]; spot: boolean; flood: number; chart: number }
+interface Jet { lights?: boolean; gear?: number; gearTarget?: number; at?: number; exterior?: Record<string, unknown>; view?: string; lighting?: Record<string, number> }
 function frame(jet: Jet): Frame {
   const update = body('update_aircraft_lights')
   if (!update) throw new Error('update_aircraft_lights not found in engine.ts')
-  return new Function('jet', `const sim_time=(jet.at??0)/1000, instrument_backlight=()=>{}, cfg={ view:"hud" }, lighting={ flood:0, consoles:0 };
-    const cockpit_flood={ position:{ set(){} }, intensity:0 }, console_lights=[];
+  return new Function('jet', `const sim_time=(jet.at??0)/1000, instrument_backlight=()=>{}, cfg={ view:jet.view||"hud" }, lighting={ flood:0, consoles:0, chart:0, ...jet.lighting };
+    const cockpit_flood={ position:{ set(){} }, intensity:0 }, console_lights=[], chart_light={ intensity:0 };
     const exterior={ position:1, formation:1, strobe:"bright", landing:false, ...jet.exterior };
     const v=()=>{ const o={ copy(){ return o; }, addScaledVector(){ return o; } }; return o; }, point=()=>({ visible:false, material:{ opacity:1 } });
-    const ownship={ lights:!!jet.lights, gear:jet.gear??1, gearTarget:jet.gearTarget??1, group:{ userData:{} }, pos:v(), fwd:v(), up:v() };
+    const ownship={ lights:!!jet.lights, gear:jet.gear??1, gearTarget:jet.gearTarget??1, group:{ userData:{} }, pos:v(), fwd:v(), up:v() }, datum=(st)=>st.pos;
     const aircraft_lights={ pos:[point(),point(),point(),point(),point(),point(),point()], strobe:[point(),point()], landing:[point()], spot:{ visible:false, position:v() }, spotTarget:{ position:v() }, nose:{ x:4.6, y:-1.2 } };
     ${update} update_aircraft_lights();
-    return { pos:aircraft_lights.pos, strobe:aircraft_lights.strobe, landing:aircraft_lights.landing, spot:aircraft_lights.spot.visible };`)(jet) as Frame
+    return { pos:aircraft_lights.pos, strobe:aircraft_lights.strobe, landing:aircraft_lights.landing, spot:aircraft_lights.spot.visible, flood:cockpit_flood.intensity, chart:chart_light.intensity };`)(jet) as Frame
 }
 const shown = (points: Point[]) => points.map((p) => (p.visible ? p.material.opacity : 0))
+
+describe('the cockpit\'s floods and chart light', () => {
+  it('light the panel from the flood level and the lap from the chart level, in the cockpit view alone', () => {
+    const lit = frame({ view: 'cockpit', lighting: { flood: 1, chart: 1 } })
+    expect([lit.flood, lit.chart]).toEqual([0.12, 0.05])
+    expect([frame({ view: 'cockpit', lighting: { flood: 0, chart: 1 } }).chart, frame({ view: 'cockpit', lighting: { flood: 0, chart: 0.5 } }).chart]).toEqual([0.05, 0.025])
+    const hud = frame({ view: 'hud', lighting: { flood: 1, chart: 1 } })
+    expect([hud.flood, hud.chart]).toEqual([0, 0])
+  })
+})
 
 describe('the exterior lights', () => {
   it('show all seven position lights at the POSITION knob\'s level under the master switch', () => {

@@ -7,10 +7,8 @@
 // pace the game moves it. Where nothing in the game sets a pace - the part
 // follows the jet's state (a wheel the ground, the wing its lift) or no game
 // code drives it yet - the pace is an estimate, marked as one where it is set.
-import * as THREE from 'three'
 import fa18c_points from '../assets/fa18c.json'
-import { pose, roll, type Posed } from './joints'
-import { PACE, REACH } from './oleo'
+import { advance, settled, type Timeline } from './gear'
 
 const DEGREE = Math.PI / 180
 
@@ -67,31 +65,60 @@ export function stroke(
   }
 }
 
-// spin turns a wheel at a speed in radians a second one way for some seconds,
-// then the other way, without end: its value the angle wrapped into one turn,
-// as a wheel's joint reads it (joints.ts roll)
-export function spin(speed: number, seconds: number): Mover {
-  let angle = 0
+// The F/A-18C's drives that move only with weight on its wheels, its gear's
+// mechanisms (gear.ts), and the seconds the gear holds at each end:
+// estimates, long enough to see each pose
+const GROUND = ['oleo.nose', 'oleo.left', 'oleo.right', 'steering', 'bar', 'wheel.nose', 'wheel.left', 'wheel.right'] as const
+const MECHANISMS = ['doors', 'nose', 'main'] as const
+const HOLD = { down: 1, stowed: 1 }
+const GEAR = 5 // s each way on HYD 2 (flight/events.go)
+const STEP = 1 / 120 // s: the longest step the sequence takes at once
+
+// flight runs the gear down and up without end, as the engine draws a jet's
+// in the air: the handle down for the stroke and a hold, then up for the
+// stroke and a hold, each mechanism moving in its sequence (gear.ts: the
+// doors, then both legs together, down; the nose leg, the mains, then the
+// doors, up). Every oleo stays at its length in flight, the nosewheel
+// straight, the launch bar up and the wheels still: the engine seats a leg,
+// steers, lowers the bar and rolls the wheels only with weight on the wheels
+// (engine.ts exterior_pose, update_anim), which the viewer's jet never has; a
+// touchdown and taxi between the gear's strokes read as the gear going in and
+// out part way.
+export function flight(timeline: Timeline): Record<string, Mover> {
+  const lowered = GEAR + HOLD.down
+  const cycle = lowered + GEAR + HOLD.stowed
   let clock = 0
-  let sense = 1
-  return {
+  const state = settled(timeline, 0)
+  const still: Mover = {
     get value() {
-      return roll(angle)
+      return 0
     },
-    step(dt: number) {
-      let left = dt
-      while (left > 0) {
-        const run = Math.min(left, seconds - clock)
-        angle += sense * speed * run
-        clock += run
-        left -= run
-        if (clock >= seconds) {
-          clock = 0
-          sense = -sense
-        }
-      }
-    },
+    step() {},
   }
+  const out: Record<string, Mover> = Object.fromEntries(GROUND.map((drive) => [drive, still]))
+  MECHANISMS.forEach((name, i) => {
+    out[`gear.${name}`] = {
+      get value() {
+        return state[name]
+      },
+      // the first steps the handle and the sequence for all three, in steps no
+      // longer than STEP and none across the handle's move
+      step:
+        i > 0
+          ? () => {}
+          : (seconds: number) => {
+              let left = seconds
+              while (left > 1e-12) {
+                const at = clock % cycle
+                const chunk = Math.min(left, STEP, at < lowered ? lowered - at : cycle - at)
+                advance(timeline, state, at < lowered, chunk, GEAR)
+                clock += chunk
+                left -= chunk
+              }
+            },
+    }
+  })
+  return out
 }
 
 // The F404's spool and reheat as the flight core runs them (world
@@ -161,51 +188,24 @@ type Points = {
     seconds: Record<'canopy' | 'probe' | 'bar' | 'fold' | 'hook' | 'scoop' | 'swing', number>
     swing: number
     canopy: { unlatch: number; fall: number; lock: number }
+    gear: Timeline
   }
-  points: { gear: Record<'nose' | 'left' | 'right', { radius: number }> }
-}
-
-// Legs holds a number for each of the F/A-18C's legs
-export type Legs = Record<'nose' | 'left' | 'right', number>
-
-// rises measures how far each leg's wheel rises, metres per unit of its oleo
-// drive, with the gear down, as the engine measures it (engine.ts
-// exterior_legs): the drawn oleo lifts a wheel by a height, and its drive is
-// that height over this. It poses the jet; the caller puts it back.
-export function rises(scene: THREE.Object3D, posed: Posed[]): Legs {
-  const at = new THREE.Vector3()
-  const height = (leg: string, travel: number) => {
-    pose(posed, (drive) => (drive === 'gear' ? 1 : drive === `oleo.${leg}` ? travel : undefined))
-    scene.updateMatrixWorld(true)
-    const wheel = scene.getObjectByName(`gear_${leg}_wheel`)
-    return wheel ? scene.worldToLocal(wheel.getWorldPosition(at)).y : NaN
-  }
-  const out = { nose: 1, left: 1, right: 1 }
-  for (const leg of ['nose', 'left', 'right'] as const) {
-    const rate = (height(leg, 0.1) - height(leg, 0)) / 0.1
-    out[leg] = rate > 1e-3 ? rate : 1
-  }
-  return out
 }
 
 // The F/A-18C's drives that move nothing of their own: the loadout shows and
 // hides the stores (the viewer's Stores button)
 export const STILL = new Set(['stores'])
 
-// fa18c drives every joint of our F/A-18C (fa18c.json): its mechanisms at
-// their stroke times, its flight controls through their throws at their rate
-// limits (world aircraft/fa18c/fa18c.go Control.Throw and Control.Rate), its
-// oleos as the engine draws them, by each leg's wheel rise per unit of drive
-// (rises), and its other passive parts at estimated paces
-export function fa18c(legs: Legs, points: Points = fa18c_points as unknown as Points): Motion {
+// fa18c drives every joint of our F/A-18C (fa18c.json): the gear down and
+// up, with everything that moves only on the ground still (flight), its
+// other mechanisms at their stroke times, its flight controls through their
+// throws at their rate limits (world aircraft/fa18c/fa18c.go Control.Throw
+// and Control.Rate), and its other passive parts at estimated paces
+export function fa18c(points: Points = fa18c_points as unknown as Points): Motion {
   const { seconds, canopy } = points.motion
   const stroked = (s: number) => stroke(0, 1, 1 / s)
-  const taxi = 5.1 // m/s, about 10 kt: an estimate (the wheels roll with the ground)
-  const wheel = (leg: 'nose' | 'left' | 'right') => spin(taxi / points.points.gear[leg].radius, 4)
-  // the drawn oleo's whole lift of its wheel at its pace (oleo.ts), in drive
-  const oleo = (leg: 'nose' | 'left' | 'right') => stroke(0, REACH / legs[leg], PACE / legs[leg])
   return by({
-    gear: stroke(0, 1, 1 / 5), // 5 s each way on HYD 2 (flight/events.go)
+    ...flight(points.motion.gear),
     speedbrake: stroke(0, 1, 0.4), // 2.5 s to full travel (Control.Rate.Brake)
     // the canopy's stroke as the engine times it (engine.ts update_anim):
     // opening at one pace, closing its fall and its slide forward to lock
@@ -217,7 +217,6 @@ export function fa18c(legs: Legs, points: Points = fa18c_points as unknown as Po
       [canopy.unlatch]
     ),
     probe: stroked(seconds.probe),
-    bar: stroked(seconds.bar),
     fold: stroked(seconds.fold),
     hook: stroked(seconds.hook),
     scoop: stroked(seconds.scoop),
@@ -233,16 +232,7 @@ export function fa18c(legs: Legs, points: Points = fa18c_points as unknown as Po
     // the leading edges to their 25 deg limit at 0.6 rad/s (Control.Slat.Limit)
     slat: stroke(0, 25 * DEGREE, 0.6),
     rudder: stroke(-30 * DEGREE, 30 * DEGREE, 75 * DEGREE),
-    // the nosewheel to NWS HI's 75 deg (Gear.Nose.Steer) at the engine's
-    // 0.4 rad/s slew (engine.ts update_anim)
-    steering: stroke(-75 * DEGREE, 75 * DEGREE, 0.4),
     nozzle: engine(6),
-    'wheel.nose': wheel('nose'),
-    'wheel.left': wheel('left'),
-    'wheel.right': wheel('right'),
-    'oleo.nose': oleo('nose'),
-    'oleo.left': oleo('left'),
-    'oleo.right': oleo('right'),
     // the wing's bend through its whole -3 to 7.5 g at 5 g/s: an estimate
     // (it follows the lift)
     load: stroke(-3, 7.5, 5),

@@ -110,7 +110,7 @@ def main():
 	frame = mod.Frame(catalogue["frame"])
 	model = mod.Model(glb)
 	points_file = json.loads(Path(points_path).read_text())
-	joints, hardpoints = points_file["joints"], points_file.get("points", {}).get("hardpoints", {})
+	joints, hardpoints = mod.joints(points_file), points_file.get("points", {}).get("hardpoints", {})
 	scan = scans(catalogue)
 
 	def ranged(name):

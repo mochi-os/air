@@ -250,7 +250,6 @@ export function MatchLog({
       1: t`1 WIRE`,
       2: t`2 WIRE`,
       3: t`3 WIRE`,
-      4: t`4 WIRE`,
     }
     return labels[wire] ?? String(wire)
   }

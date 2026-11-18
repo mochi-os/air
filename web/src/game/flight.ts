@@ -73,8 +73,10 @@ export const STATE = {
   power: 129, // achieved spool fraction across the airframe's engines
   stage: 130, // achieved reheat stage
   spin: 131, // the spin recovery display's stick direction: -1 STICK LEFT, +1 STICK RIGHT, 0 no display (NATOPS 2.8.2.6.2)
+  center: 132, // x y z: the centre of mass from the datum, body axes (m) - position is the centre, and the airframe is drawn and placed from its datum, position less the attitude's turn of this (#188)
+  rest: 135, // height pitch: how the jet stands at rest on level ground under its weight now, the datum's height (m) and the pitch (rad, nose up) - where a ground spawn is placed (#188)
 } as const
-const EXTRA = 8
+const EXTRA = 13
 
 const DT = 1 / 240 // the core's step: what the server and multiplayer prediction always fly
 const CAP = 30 // accumulator cap: tab throttling must not spiral into replay storms
@@ -153,6 +155,7 @@ interface Core {
     fuel: number
   ): number
   cruise?(altitude: number, mach: number): [number, number] | string
+  power?(altitude: number, slope: number): [number, number] | string
   climb?(altitude: number): [number, number, number] | string
   clear(): string
   hulk(index: number, aircraft: string, stores?: number): boolean
@@ -1264,6 +1267,18 @@ export function flight_approach(
   fuel: number
 ): number {
   return (core?.approach(x, y, z, dx, dz, slope, fuel) as number) ?? 0
+}
+
+// flight_power reports the throttle and the true airspeed, m/s, of an
+// on-speed path of `slope` degrees below the horizon at an altitude (m), for
+// the jet as it is now - its weight, stores and damage - as flight_approach
+// would trim them: the book a scripted pilot flies the approach's power from.
+// The flying state is untouched. Null before the core is up, or on a core
+// that predates it.
+export function flight_power(altitude: number, slope: number): { throttle: number; speed: number } | null {
+  const result = core?.power?.(altitude, slope)
+  if (!Array.isArray(result) || !(result[1] > 0)) return null
+  return { throttle: result[0], speed: result[1] }
 }
 
 // flight_climb reports the best steady climb on military power at an altitude

@@ -27,7 +27,7 @@ const press = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t\}
 interface Jet { airborne?: boolean; ac?: boolean; painted?: boolean; warned?: boolean }
 function cockpit<T>(body: string, o: Jet = {}): T {
   if (!press) throw new Error('pit_press not found in engine.ts')
-  return new Function('o', 'countermeasures', 'communication', `let sim_time=50; const buses={ ac:o.ac??true }, RWR={ locked:()=>!!o.painted, warned:()=>!!o.warned };
+  return new Function('o', 'countermeasures', 'communication', `let sim_time=50; const buses={ ac:o.ac??true }, fed=()=>true, RWR={ locked:()=>!!o.painted, warned:()=>!!o.warned };
     const suite=countermeasures.fresh(o.airborne??true), ran=[], dispense=(way)=>ran.push(way);
     ${lift('jammer_armed')}
     ${lift('jammer_loud')}
@@ -102,7 +102,7 @@ describe('the RWR control indicator\'s pushbuttons', () => {
 
 describe('the RWR\'s tones', () => {
   it('sound at the RWR volume control\'s level, and not at all with the set off or without ac power', () => {
-    expect(source).toMatch(/\n\tconst level=suite\.receiver\.power&&buses\.ac\?uhf\.panel\.volume\.receiver:0;[^\n]*\n\tif\(rwr_fresh>0\) audio_rwr_paint\(level\);\n\tif\(rwr_missile&&level>0&&glance-rwr_called>3\)\{ rwr_called=glance; notice\(translate\("MISSILE"\)\); \}[^\n]*\n\trwr_fresh=0; rwr_missile=false;\n\taudio_rwr\(RWR\.locked\(\),level\); \}/)
+    expect(source).toMatch(/\n\tconst level=suite\.receiver\.power&&buses\.ac&&fed\(3,\"a\"\)&&fed\(4,\"a\"\)\?uhf\.panel\.volume\.receiver:0;[^\n]*\n\tif\(rwr_fresh>0\) audio_rwr_paint\(level\);\n\tif\(rwr_missile&&level>0&&glance-rwr_called>3\)\{ rwr_called=glance; notice\(translate\("MISSILE"\)\); \}[^\n]*\n\trwr_fresh=0; rwr_missile=false;\n\taudio_rwr\(RWR\.locked\(\),level\); \}/)
   })
   it('scale the lock warble and the new-threat chirp by that level', () => {
     const audio = readFileSync(fileURLToPath(new URL('./audio.ts', import.meta.url)), 'utf8')

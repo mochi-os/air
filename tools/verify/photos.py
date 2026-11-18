@@ -237,7 +237,7 @@ class Match:
 		self.catalogue = json.loads(Path(catalogue).read_text())
 		self.frame = mod.Frame(self.catalogue["frame"])
 		self.model = mod.Model(glb)
-		self.joints = json.loads(Path(points_file).read_text())["joints"]
+		self.joints = mod.joints(json.loads(Path(points_file).read_text()))
 		self.features = Features(self.model, self.joints, features_file)
 		self.pose = self.catalogue.get("pose", {})
 		# a photo marked "solve": false stays catalogued but out of the solve (too

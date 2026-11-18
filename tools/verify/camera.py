@@ -65,6 +65,20 @@ def eye(camera):
 	return -rotation(camera[1:4]).T @ camera[4:7]
 
 
+def clipping(position, spheres):
+	# A render camera's clip range around what it renders, each part given as
+	# a bounding sphere (centre, radius): from half the nearest one's near
+	# side, since a part off the axis stands nearer in depth than in
+	# distance, to past the farthest one's far side. A fixed start of a few
+	# centimetres spends the depth buffer's precision on the first metres, and
+	# a distant camera's cavity shading comes out in stair-stepped bands
+	position = np.asarray(position, float)
+	ranges = [(np.linalg.norm(np.asarray(c, float) - position), r) for c, r in spheres]
+	near = min(d - r for d, r in ranges)
+	far = max(d + r for d, r in ranges)
+	return max(0.05, 0.5 * near), far + 1.0
+
+
 def ray(camera, pixel, centre):
 	# The model-frame direction through a pixel
 	x = undistort(camera, [pixel], centre)[0]

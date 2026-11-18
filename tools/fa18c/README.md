@@ -34,7 +34,7 @@ python3 -I views.py    # true-scale top, side and front silhouettes from the HAT
 
 ```
 blender -b --factory-startup --python-exit-code 1 -P build.py -- OUT.glb OUT.json FEATURES.json [--draft] [--cache DIR]   # under the probe.slice memory cap
-python3 -I check.py OUT.glb OUT.json
+python3 -I check.py OUT.glb OUT.json [--only GROUP[,GROUP...]]   # --only: just those groups (overall, layout, layout.motion, ...), as for a negative control
 python3 -I outline.py OUT.glb [OVERLAY.png] [--threshold INCHES]
 ```
 
@@ -115,7 +115,9 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   the throat, and the paint gives the flaps bare metal outside, the divergent flaps' cooling holes and a dark
   ring of brackets at the exit (`layout.paint.nozzle`). Flush panels (the speedbrake, the gear doors) are
   cut from the fuselage's own built skin (`cut()`, between stations and buttlines or inside a convex plan
-  outline) and offset off every facet; once the airframe is built, the skin under each door is cut away and a
+  outline; a door of several convex pieces leaves no wall where two meet, and a piece may take only skin
+  facing its way more steeply, as the main inner door's corner panel does short of the nacelle's side) and
+  offset off every facet, its slivers collapsed first; once the airframe is built, the skin under each door is cut away and a
   well stands behind the opening (`wells()`, `layout.wells`): each gear bay, the speedbrake's and the probe's,
   walls and a roof standing on the skin, sized to hold the parts that stow there, its faces turned in
   (`node(inside=True)`: `tidy()` turns every face out, and an open box's out is away from its bay). The
@@ -124,11 +126,55 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   doors): each main leg a post down to a trailing arm's pivot, the arm carrying the wheel (its turn about the
   pivot the leg's compression), a shock absorber, a side brace folding at a knee and the planing mechanism's
   connecting link and bell crank; the leg swings aft about one trunnion axis, its shock drawn in and its axle
-  turned a quarter so the wheel lies flat in the bay (`layout.motion.stowed`, `main_members()`). The nose leg is a
-  vertical post, the piston and the trailing axle, a telescopic drag brace and the launch bar raised, with the
-  landing lamp and the approach lights' box on the post's front. Each door, hinged on the
+  turned a quarter so the wheel lies flat in the bay (`layout.motion.stowed`, `main_members()`). The main leg
+  too rests as it hangs in flight: the arm drooped below its standing angle by the shock's 12 in stroke, which
+  the oleo drive takes back up to the stance the photos show (the points file's `static`). The shock turns
+  about the boss the side close-up (dvids8678626, its camera solved from its EXIF focal length) shows where it
+  meets the skin; its white upper cylinder runs on past that pin into the bay as far as the piston's stroke
+  needs. Its eye swings round the arm's pivot out of the plane the shock turns in (the pin stands to one side
+  of the arm), so each drive turns it and then leans it onto the eye (the `shock_aim`/`shock_lean` and
+  `shock_turn`/`shock` pairs). Its castings are traced from the close-ups (`layout.gear` legs main castings:
+  the post's head and clamp bands, the lower casting flaring to the fork's cheeks round the pivot boss, the
+  clevis holding the shock's top (its outboard cheek a lug round the pin, the connecting link passing outboard
+  of the casting), the tapered arm with its flange and its brake line in a coiled guard, the planing rod riding
+  the arm from a pin on the pivot's axis to the axle's fitting, the shock's white cap with its red band over
+  the polished body and the can's ribbed collar, the can narrowing to its neck; the connecting link a white
+  sleeve, a polished rod between two lock collars and a white rod end; the side brace's foot a universal joint,
+  as dvids8678626 shows it: its fork's pin square to the brace and to a bolt down through the fork's middle,
+  on which a spool turns in a clevis off the post, its castellated nut and end below, the fork rolling on the
+  brace and the spool on its bolt to keep the pin square through the stroke, `layout.motion` braces side
+  foot), and the fittings read off them face on
+  (castings fittings: the pivot's and the shock's top pins hollow, the bell crank's round bolt heads, the
+  castings' edges rounded, `hollow()`, `stud()`, `filleted()`; their heights off the faces they sit on are
+  `STANDOFF`, which the photos, seeing them face on, cannot give), and each wheel's face from the side photos (`layout.gear` tyres:
+  the tread's grooves, the rim's flange round a recessed disc with the main wheels' lightening holes, the bolt
+  circle, the cap and axle nut; the main wheels' brakes on their inner faces, `tyre()`). Each leg's `full` in
+  the points file is the oleo drive with the leg fully in (the main shock's body meeting its can's end, the
+  nose piston its post's head), the most the engine pushes it. The nose leg is a
+  vertical post hung from its trunnion on a yoke, with its castings traced from the side photos (`layout.gear`
+  legs nose castings: the steering housing, the collar with the steering's bronze ring gear its top band, the
+  steering block, the web out to the drag brace's pin with a raised rim round it, notched where the stowed rod
+  lies (`notched()`), the torque link's bosses and links, round bolt heads on the pivot plates), the piston, the axle's
+  fork, the holdback bar and its spring, the drag brace (the retraction actuator: its cylinder turning about
+  its pin in the airframe, the rod sliding out of it to a clevis on the web's pin, hollow, and the strip that closes
+  its slot in the skin, `actuator()`), the launch bar (a flat bar with its black band and the head the shuttle
+  takes) raised, the landing lamp and the approach lights' box on the post's front, each lens its own node the
+  engine lights (the approach lights with the angle of attack, as the cockpit indexer), and the squared block on
+  the post's port front over the housing (`gear_nose_block`). The leg rests as it
+  hangs in flight, the oleo out by its extension; the oleo drive pushes it in, and the stance the photos show
+  is the extension's worth of it (the points file's gear `static`). The holdback folds up along the piston as
+  the oleo comes out (it rides `oleo.nose`, trailing at the standing stroke), so it lies folded in flight and
+  through every retraction, and the launch bar folds down along the post's front as the leg retracts, each as far
+  as its neighbours let it (`tucked()`). Each door, hinged on the
   skin, opens by the angle that brings its free edge's ends nearest the photos', and closes as long along the
-  skin as the photos show it open. The third
+  skin as the photos show it open (the forward nose doors to the centreline, where the leg passes). The gear's
+  joints each ride one mechanism's drive (`sequenced()`): `gear.doors`, `gear.nose` or `gear.main`, each
+  stroking as an actuator does (`stroked()`, `layout.motion stroke`): gathering speed over a short share of
+  its time, steady, then easing to a stop. The points file's `motion.gear` gives each mechanism's share of
+  the stroke's time each way (`timeline()`): up, the nose leg leads, the mains follow and the doors close last
+  (`layout.motion sequence` and `doors`); down, the doors open first and both legs fall together
+  (`layout.motion extension`). The engine runs them by direction (`web/src/game/gear.ts`); the checks pose
+  the whole gear by one value through the retraction's timeline (`verify/model.py` `sequence()`). The third
   output, the features file, names points and curves on the model with the node each rides on, for the photo
   match. `--draft` leaves out the paint bake (seconds instead of minutes). `--cache DIR` keeps the atlases'
   UVs and bakes between builds (`../cache.py`): the jet's under a key of every part's faces, the stencils'
@@ -154,7 +200,16 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   (`paint.gear`, `layout.gear`), and with the atlas the legs lit as they stand gear down; each left part the mirror
   image of its right twin, at rest and gear down; parts lying against each other (`SEAMS`: the inlets, the
   LEX and its fairing, the wing root, the fuselage) never crossing back and forth where they show; nothing
-  poking through the LEX's fairing, which covers the wing's root end; the fuselage's store mounts on the
+  poking through the LEX's fairing, which covers the wing's root end; nothing the gear moves passing through
+  anything it neither carries nor rides at any of 41 steps of its stroke, each moving part pulled in by a
+  seam first (`clearance()`, `shrunk()`, `through()`: designed contacts, `JOINED`, are judged by where they
+  meet gear down, a door's crossings near its hinge are its hinge's, a closed door's seat is the wells'
+  check's, and two crossings are signed off: the main shock's upper cylinder past its pin, hidden in the bay,
+  with the connecting link (`OVERLAPS`), and the side brace's foot's clevis from its lower lug down passing
+  through the open inner door and the bay's edge mid-stroke (`FOOTED`, by depth down the foot's bolt)); each
+  linkage's shared pin, carried by both its members' nodes at 81 steps, within 0.05 in (the side brace's foot,
+  the connecting link's end, the nose drag brace's eye: the gear's keys are thinned to each joint's own motion,
+  `thinned()`, so linked members keyed alike cannot drift apart between keys); the fuselage's store mounts on the
   skin; each fin, its rudder's lower end and its root piece standing on the skin all along the root, each
   face's foot (its lowest corners along the fin's span, either side of its mid-plane) on or in the skin
   (`shape.seated`); no crease in the skin away from its real edges (`shape.bend`: fixed lines on the skin seen from
@@ -229,8 +284,10 @@ hubs' grey (`tyre()` closes each wheel with a hub `layout.gear.tyres` sizes); a 
 picks its colour, shaded, with no panel lines or stencils. What is seen only open (the gear, its doors and bays,
 the speedbrake, the probe and their wells, `exposed()`) takes its occlusion from a second bake with the gear down,
 the speedbrake up and the probe out (`OPENED`, `posed()`): baked stowed behind closed doors it sat at the
-occlusion's floor, sRGB 32, 37, 42 whatever its colour. The rest is shaded at rest, so nothing hanging open
-shadows the belly it stows against.
+occlusion's floor, sRGB 32, 37, 42 whatever its colour. That bake reaches 24 in (`OPEN_REACH`), so the legs are
+shaded by their own castings and what stands near them, not by the whole airframe over them, which with no
+ground under the jet left them grey where the photos show them white. The rest is shaded at rest, so nothing
+hanging open shadows the belly it stows against.
 
 Our model's distant stages wait until the model is finished (the user, 2026-11-02): the first set was
 deleted. These scripts stay for then, building from the painted model (the old model's own pipeline is below):

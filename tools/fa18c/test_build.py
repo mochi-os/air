@@ -12,10 +12,12 @@
 # build whose inputs are unchanged takes both atlases' UVs and bakes from the
 # cache and makes the same model, byte for byte; a change to the paint alone
 # bakes nothing again, one to the tanks the stores alone. Also that the model
-# rests as built: the wing's flex morph weighted 0. About 20 minutes.
+# rests as built: the wing's flex morph weighted 0. About 20 minutes. And
+# that a gear joint's keys read within their tolerance of its motion
+# (ThinnedTest, without Blender: python3 -I test_build.py ThinnedTest).
 #
 # usage: systemd-run --user --scope --slice=probe.slice -p MemoryMax=6G -p MemorySwapMax=0 python3 -I test_build.py
-import json, os, re, struct, subprocess, tempfile, unittest
+import ast, json, math, os, re, struct, subprocess, tempfile, unittest
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -36,6 +38,34 @@ def changed(change):
 	return facts
 
 
+class ThinnedTest(unittest.TestCase):
+	# A gear joint's keys (build.py thinned(), sequenced()): read piecewise
+	# linearly, every point of the motion they stand for within the
+	# tolerance, the ends kept, and no more kept than the motion's bends need
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in ("thinned", "interp")]
+		space = {}
+		exec(compile(ast.Module(body=found, type_ignores=[]), "build.py", "exec"), space)
+		cls.thinned, cls.interp = staticmethod(space["thinned"]), staticmethod(space["interp"])
+
+	def test_a_straight_stretch_keeps_its_ends_alone(self):
+		line = [(k / 100, 0.3 + 2 * k / 100) for k in range(101)]
+		self.assertEqual(self.thinned(line, 1e-6), [line[0], line[-1]])
+
+	def test_a_brace_breaking_from_straight_reads_within_the_tolerance(self):
+		# a turn growing as the root of the travel from straight, as a side
+		# brace's halves do just after the gear starts up
+		curve = [(k / 480, math.sqrt(1 - k / 480)) for k in range(481)]
+		kept = self.thinned(curve, 0.0005)
+		self.assertEqual((kept[0], kept[-1]), (curve[0], curve[-1]))
+		self.assertLessEqual(max(abs(self.interp(kept, x) - y) for x, y in curve), 0.0005)
+		self.assertLess(len(kept), len(curve) / 4)
+		# denser where it turns fastest: more keys in the last tenth than the first
+		self.assertGreater(sum(x > 0.9 for x, _ in kept), sum(x < 0.1 for x, _ in kept))
+
+
 class KeyTest(unittest.TestCase):
 	# Each case a draft build writing its keys (build.py --keys): a changed
 	# facts file, or a copy of build.py beside it with its code changed
@@ -47,14 +77,15 @@ class KeyTest(unittest.TestCase):
 		"pitot": (lambda l: l["pitot"].update(tube=0.9), None),
 		"near": (lambda l: l["antennas"]["ventral"][2].__setitem__(1, 75.3), None),   # the blade under the nose, within the centreline tank's reach
 		"bakes": (None, ("	shade = texels(occlusion)[..., 0]\n", "	shade = texels(occlusion)[..., 0]   # changed\n")),
-		"opened": (None, ('OPENED = {"gear": 1.0, "speedbrake": 1.0, "probe": 1.0}', 'OPENED = {"gear": 0.9, "speedbrake": 1.0, "probe": 1.0}')),
+		"opened": (None, ('OPENED = {"gear.doors": 1.0, "gear.nose": 1.0, "gear.main": 1.0, "speedbrake": 1.0, "probe": 1.0}', 'OPENED = {"gear.doors": 1.0, "gear.nose": 1.0, "gear.main": 0.9, "speedbrake": 1.0, "probe": 1.0}')),
 		"finish": (lambda l: l["paint"]["gear"].update(white=[150, 150, 152]), None),
 		"atlas": (None, ("ATLAS = 2048\n", "ATLAS = 4096\n")),
 		"store_bakes": (None, ("	occlusion = np.ones((size, size), np.float32)\n", "	occlusion = np.ones((size, size), np.float32)   # changed\n")),
 		"reach": (None, ("STORE_REACH = 12.0\n", "STORE_REACH = 12.5\n")),
 		"store_atlas": (lambda l: l["stores"]["paint"].update(atlas=512), None),
 		"strip": (None, ("STRIP = 0.03   #", "STRIP = 0.04   #")),
-		"density": (None, ("STENCIL_DENSITY = 4.0   #", "STENCIL_DENSITY = 3.0   #")),
+		"density": (None, ("STENCIL_DENSITY = 4.4   #", "STENCIL_DENSITY = 3.0   #")),
+		"open_reach": (None, ("OPEN_REACH = 24.0   #", "OPEN_REACH = 25.0   #")),
 		"margin": (None, ("STENCIL_MARGIN = 1.5    #", "STENCIL_MARGIN = 2.0    #")),
 		"nozzles": (None, ("			NOZZLE_PARTS.append(petal)\n", "			NOZZLE_PARTS.append(petal) if k else None\n")),
 	}
@@ -111,6 +142,9 @@ class KeyTest(unittest.TestCase):
 
 	def test_the_open_pose_counts_in_the_jets_key_alone(self):
 		self.assertEqual(self.moved("opened"), {"paint": True, "stores": False})
+
+	def test_the_open_parts_reach_counts_in_the_jets_key_alone(self):
+		self.assertEqual(self.moved("open_reach"), {"paint": True, "stores": False})
 
 	def test_the_tanks_bake_the_stores_alone(self):
 		self.assertEqual(self.moved("tanks"), {"paint": False, "stores": True})

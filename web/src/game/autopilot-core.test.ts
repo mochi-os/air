@@ -20,7 +20,7 @@ import { atc_step, cruise_step } from './atc'
 // skipped.
 const assets = fileURLToPath(new URL('../assets/', import.meta.url))
 const built = existsSync(assets + 'flight.wasm') && existsSync(assets + 'wasm_exec.js')
-interface Core { init(world: string): string; level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string; frame(input: Uint8Array, output: Uint8Array): string; climb(altitude: number): [number, number, number] }
+interface Core { init(world: string): string; level(x: number, y: number, z: number, dx: number, dz: number, speed: number, fuel: number): string; frame(input: Uint8Array, output: Uint8Array): string; approach(x: number, y: number, z: number, dx: number, dz: number, slope: number, fuel: number): number; power?(altitude: number, slope: number): [number, number]; climb(altitude: number): [number, number, number] }
 let core: Core
 // The core's frame: sixteen input words and the state with its instrument tail (flight.ts).
 const SIZE = 124, TAIL = 8, ALPHA = 124, CAS = 128 // flight.ts SIZE and STATE.alpha, STATE.cas: that module pulls in the interface's message macros, which this suite cannot load
@@ -84,6 +84,27 @@ describe.skipIf(!built)('the autopilot against the flight core', () => {
     for (let k = 0; k < 500 && !g.air_flight; k++) await new Promise((resolve) => setTimeout(resolve, 10))
     core = g.air_flight as Core
   }, 30000)
+
+  // The book the scripted pilots fly the approach's power from (engine.ts approach_book): the core's
+  // own approach trim for the jet as it is, read without moving the jet it is read for.
+  it('reads the approach\'s book of power as the spawn trims it, and leaves the flying jet where it was', () => {
+    core.init(JSON.stringify({ aircraft: 'fa18c', environment: { seed: 1 }, world: { sea: 3 } }))
+    core.level(0, 3000, 0, 0, -1, 200, 2041)
+    input.fill(0); input[3] = 0.5; input[7] = 4
+    core.frame(sent, read)
+    const level = core.power?.(150, 0), sloped = core.power?.(150, 3.5)
+    expect(Array.isArray(level) && Array.isArray(sloped)).toBe(true)
+    input[6] = 1
+    core.frame(sent, read)
+    expect(out[1]).toBeGreaterThan(2900) // still at 3,000 m, not put on the approach at 150
+    expect(Math.hypot(out[3], out[4], out[5])).toBeGreaterThan(150)
+    core.init(JSON.stringify({ aircraft: 'fa18c', environment: { seed: 1 }, world: { sea: 3 } }))
+    const spawned = core.approach(0, 150, 0, 0, -1, 0, 2041)
+    expect(level![0]).toBeCloseTo(spawned, 3)
+    expect(sloped![0]).toBeLessThan(level![0])
+    expect(sloped![1]).toBeGreaterThan(55) // on-speed, m/s
+    expect(sloped![1]).toBeLessThan(80)
+  })
 
   it('holds the heading and the pitch attitude it engaged at', () => {
     const { ap, log } = fly({ altitude: 3000, speed: 200 }, 35, (ap, s, time) => { if (once(time, 2)) P.engage(ap, s) })

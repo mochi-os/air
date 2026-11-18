@@ -28,10 +28,10 @@ const D = Math.PI / 180, FOOT = 0.3048
 // ATC, everything on; the suite aligned with the steering on the TACAN.
 const world = `const D2R=Math.PI/180, HOOK_AFT=9, HOOK_DROP=4; let MULTIPLAYER=false;
   let sim_time=100, glance=100, master="nav", emcon=false, flap_select=2, atc_on=true, atc_speed=null, demonstration=null, ddi_dirty=false, ufc_dirty=false, law=true, inhibited=false, surface=-1e9, station={ bearing:1, range:20000 }, computers={ one:true, two:true };
-  let carrier_ols={ dy:20 }; const world_rate=()=>1, shown=[], mc=()=>computers, buses={ ac:true }, radios={ tacan:{ on:true }, ils:{ on:false, channel:11 }, link:{ on:false }, beacon:{ on:false } }, hotas={ paddle:false }, input={ pitch:0, roll:0, trim:0, lean:0 };
+  let carrier_ols={ dy:20 }; const world_rate=()=>1, shown=[], mc=()=>computers, buses={ ac:true }, fed=()=>true, radios={ tacan:{ on:true }, ils:{ on:false, channel:11 }, link:{ on:false }, beacon:{ on:false } }, hotas={ paddle:false }, input={ pitch:0, roll:0, trim:0, lean:0 };
   const ownship={ pos:{ x:0, y:20+4+1200*0.3048, z:0 }, grounded:false, waving:false, speed:70, aoa:8.1, gauges:{ track:61*D2R } };
   let picture={ pitch:2, bank:0, heading:60, track:61, altitude:ownship.pos.y, vertical:0, cas:70, roll:0.01, rate:0.02, groove:{ along:13000-9, right:0, heading:60 } };
-  const demonstration_picture=()=>picture, trim_law=()=>law, on_ground=()=>!!ownship.grounded, radalt_inhibited=()=>inhibited, ground_height=()=>surface, ddi_show=(d,p)=>shown.push([d,p]), tacan=()=>station;
+  let pictured=0; const demonstration_picture=()=>{ pictured++; return picture; }, trim_law=()=>law, on_ground=()=>!!ownship.grounded, radalt_inhibited=()=>inhibited, ground_height=()=>surface, ddi_show=(d,p)=>shown.push([d,p]), tacan=()=>station;
   const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); nav.gps.error={ x:0, z:0 }; nav.ins.error={ x:0, z:0 }; nav.steer="tcn";
   const nav_sense=()=>({ dt:0, x:ownship.pos.x, z:ownship.pos.z, east:0, south:-70, tas:70, heading:60*D2R, pitch:0, bank:0, airborne:true, brake:false, power:true, radar:false, deck:false, tacan:null });`
 const state = /\nconst hold=autopilot\.fresh\(\), link=datalink\.fresh\(\); let coupled="";\nlet hold_was=false, onspeed_flag=false, onspeed_owed=false;[^\n]*\n/.exec(source)?.[0] ?? ''
@@ -227,6 +227,11 @@ describe('the frame', () => {
     expect(cockpit('autopilot_frame(1/60); return [ddi_dirty, ufc_dirty];')).toEqual([false, false])
     expect(cockpit('autopilot.engage(hold,autopilot_sense(null)); autopilot_frame(1/60); ddi_dirty=ufc_dirty=false; autopilot_frame(1/60); const steady=ddi_dirty; hotas.paddle=true; autopilot_frame(1/60); return [steady, ddi_dirty, ufc_dirty];')).toEqual([false, true, true])
     expect(cockpit('acl_select(); link.test=0; ddi_dirty=ufc_dirty=false; autopilot_frame(1/60); return [ddi_dirty, ufc_dirty];')).toEqual([true, true])
+  })
+  it('makes the picture of the jet against the ship once a step, for the data link, CPL and the autopilot alike', () => {
+    // a world step runs it sixteen times a frame at 64x, and the picture is the dearest thing it reads
+    expect(cockpit('pictured=0; autopilot_frame(1/60); return pictured;')).toBe(1)
+    expect(cockpit('acl_select(); link.test=0; autopilot.engage(hold,autopilot_sense(null)); pictured=0; autopilot_frame(1/60); return pictured;')).toBe(1)
   })
   it('runs in the step once the pilot\'s controls are read, ahead of the scripted pilot', () => {
     expect(source).toMatch(/\n\tautopilot_frame\(dt\);[^\n]*\n\tif\(demonstration\) demonstration_drive\(dt\);/)

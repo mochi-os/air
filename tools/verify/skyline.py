@@ -863,7 +863,7 @@ def reaching(argv):
 	frame = mod.Frame(catalogue["frame"])
 	settings = Settings(catalogue)
 	model = mod.Model(glb)
-	joints = json.loads(Path(points_path).read_text())["joints"]
+	joints = mod.joints(json.loads(Path(points_path).read_text()))
 	skin = universe(model, joints, frame, settings)
 	count = int(argv[argv.index("--count") + 1]) if "--count" in argv else 240
 	seen = reach(model, joints, postures(settings), frame, settings, count, distances=(1.6, 2.5, 6.0), workers=6)
@@ -902,7 +902,7 @@ def main():
 	settings = Settings(catalogue)
 	model = mod.Model(glb)
 	points_file = json.loads(Path(points_path).read_text())
-	joints, hardpoints = points_file["joints"], points_file.get("points", {}).get("hardpoints", {})
+	joints, hardpoints = mod.joints(points_file), points_file.get("points", {}).get("hardpoints", {})
 	out = Path(out)
 	out.mkdir(parents=True, exist_ok=True)
 	spec = catalogue.get("gate")
