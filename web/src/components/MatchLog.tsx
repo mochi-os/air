@@ -208,6 +208,7 @@ export function MatchLog({
       flown: t`Flown`,
       victory: t`Victory`,
       killed: t`Killed`,
+      traded: t`Mutual kill`, // a joust where each jet was downed, the second by what the first left flying
       flying: t`Unfinished`, // saved while flying and never finished: the tab froze, crashed or closed (#16)
     }
     return labels[reason] ?? reason.charAt(0).toUpperCase() + reason.slice(1)

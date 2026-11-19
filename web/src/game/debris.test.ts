@@ -25,7 +25,7 @@ describe('the bandit falls', () => {
     new Function(
       'flight_debris_lay',
       `const bandit={ pos:{x:1,y:2000,z:3}, velx:150, vely:-5, velz:0, group:{ visible:true } };
-       let has_enemy=true, sim_time=12; const cfg={}; const BANDIT="Bandit";
+       let has_enemy=true, sim_time=12, crash_t=0, traded=false; const cfg={}; const BANDIT="Bandit";
        const explosion_at=()=>{}, feed=()=>{}, opponent=()=>"", notice=()=>{}, translate=(t)=>t;
        ${lift('bandit_destroy')}
        bandit_destroy(${JSON.stringify(why)});`

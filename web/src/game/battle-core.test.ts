@@ -112,4 +112,31 @@ describe.skipIf(!built)('a store fire in the battle core', () => {
     step(tick++, false, BANDIT, (bay === 0 ? 1 : 2) | 4) // that engine secured and the bottle into its bay
     expect(out[bay]).toBe(0)
   }, 60000)
+
+  // fly says how many of each side's rounds are still in the air after the
+  // step, the ownship's (word 31) and the bandit's (word 32): a joust the pilot
+  // has lost waits on his, and gun rounds are the one thing he left flying that
+  // the engine cannot see.
+  it("counts each side's rounds still in the air", () => {
+    const fly = () => {
+      input.fill(0)
+      input.set([1 / 60, 1, 1, BANDIT.x, BANDIT.y, BANDIT.z, 1, 0, 0, 0, 0, 0, -200])
+      core.fly(sent, read)
+    }
+    const volley = (shooter: number, z: number, tick: number) => {
+      input.fill(0)
+      input.set([shooter, 0, 3000, z, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 200, 2, tick]) // fired north, away from the bandit
+      core.volley(sent, read)
+    }
+    for (let k = 0; k < 600; k++) fly() // whatever the cases above left flying comes down
+    expect([out[31], out[32]]).toEqual([0, 0])
+    volley(0, 5000, 200000)
+    fly()
+    expect([out[31], out[32]]).toEqual([2, 0])
+    volley(1, 9000, 200001)
+    fly()
+    expect([out[31], out[32]]).toEqual([2, 2])
+    for (let k = 0; k < 600; k++) fly()
+    expect([out[31], out[32]]).toEqual([0, 0])
+  }, 60000)
 })

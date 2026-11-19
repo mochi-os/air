@@ -46,6 +46,10 @@ function fireball<T>(body: string): T {
     const bandit={ pos:new THREE.Vector3(1000,0,-1000), group:{ visible:true } }, remotes=new Map(), net=null;
     let padlocked=false, look_home=false, head_az=0, head_el=0, crash_t=0, own_written=true, own_killer="", own_deaths=0, has_enemy=true, MULTIPLAYER=false, sim_time=5, view_events=[];
     const notice=(m)=>notices.push(m), translate=(m)=>m, feed=()=>{}, explosion_at=()=>{};
+    const missiles=[], own_aloft=0, burning_stores=()=>[];   // nothing of the pilot's left flying: the bandit stands down at the crash (joust_pending)
+    ${lift('joust_pending')}
+    ${lift('stand_down')}
+    ${lift('bandit_pending')}
     ${lift('view_note')}
     ${lift('latch')}
     ${lift('look_press')}

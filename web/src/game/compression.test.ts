@@ -110,6 +110,10 @@ describe('the crash', () => {
     const rate = new Function(`
       let crash_t=0, own_written=true, compression=64, own_killer='', own_deaths=0, look_home=true, has_enemy=false; const MULTIPLAYER=false;
       const ownship={ pos:{ x:0, y:0, z:0 }, group:{ visible:true }, speed:200 }, bandit={ group:{} }, cfg={}, latch=()=>{}, feed=()=>{}, explosion_at=()=>{};
+      const missiles=[], own_aloft=0, burning_stores=()=>[];
+      ${lift('joust_pending')}
+      ${lift('stand_down')}
+      ${lift('bandit_pending')}
       ${lift('crash_ownship').replace(/ as any/g, '')}
       crash_ownship('sea'); return compression;`)() as number
     expect(rate).toBe(1)

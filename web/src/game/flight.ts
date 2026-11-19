@@ -692,8 +692,10 @@ export function battle_volley(
 
 // GRAZED is where the core puts the near-miss block: after the whole impact
 // table at a fixed offset, so it is found without counting impacts. Must match
-// `grazed` in world/wasm/battle.go.
+// `grazed` in world/wasm/battle.go. ALOFT, after it, is the ownship's and the
+// bandit's rounds still in the air (`aloft`).
 const GRAZED = 3 + 3 * 8
+const ALOFT = GRAZED + 4
 
 // battle_fly advances every airborne round one step: rounds from the ownship
 // resolve against the bandit hulk (when aim is present), the bandit's against
@@ -708,6 +710,9 @@ const GRAZED = 3 + 3 * 8
 // since is the tick the current burst opened on: only rounds born at or after
 // it count toward the miss, because a round flies for four seconds and bursts
 // come closer together than that. Negative measures nothing.
+//
+// aloft is how many of each side's rounds are still in the air after the step:
+// the ownship's, then the bandit's.
 export function battle_fly(
   dt: number,
   invulnerable: boolean,
@@ -718,8 +723,9 @@ export function battle_fly(
   own: number
   impacts: { x: number; y: number; z: number }[]
   graze: { gap: number; ahead: number; above: number; right: number } | null
+  aloft: { own: number; bandit: number }
 } {
-  if (!core) return { bandit: 0, own: 0, impacts: [], graze: null }
+  if (!core) return { bandit: 0, own: 0, impacts: [], graze: null, aloft: { own: 0, bandit: 0 } }
   const b = battle_input
   b[0] = dt
   b[1] = invulnerable ? 1 : 0
@@ -761,6 +767,7 @@ export function battle_fly(
             right: battle_output[GRAZED + 3],
           }
         : null,
+    aloft: { own: battle_output[ALOFT] || 0, bandit: battle_output[ALOFT + 1] || 0 },
   }
 }
 

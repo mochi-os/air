@@ -6677,7 +6677,7 @@ function step_amraam(m,dt,behind=0){
 	else{
 	truth=(t&&t.group&&t.group.visible)?{ position:stood(t,behind),
 		velocity:{x:t.velx??t.fwd.x*t.speed,y:t.vely??t.fwd.y*t.speed,z:t.velz??t.fwd.z*t.speed} }:null;
-	supported=truth&&!RADAR.silent()&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support
+	supported=truth&&crash_t<=0&&!RADAR.silent()&&(RADAR.stt===m.track||RADAR.tracks.some(k=>k.id===m.track));   // the shooter's radar still holds this trackfile: the crank works, turning cold drops support, and a pilot shot down supports nothing (the server's datalink needs its shooter alive)
 	if(truth&&t.chaffed!==undefined&&sim_time-t.chaffed<2.0){ if(round_distract(m.slot,drifted(t,behind),truth)) m.took=(m.took||0)+1; } }   // a fresh bloom from the target (#29): the core's doppler gate decides whether it seduces; took counts the ones that did (dev telemetry)
 	m.supported=!!supported;   // (#33 debrief): whether THIS step still had midcourse support, so a shot that goes long can be told apart from one whose shooter lost the track first - recorded every step, so the ACMI's own delta-suppression on the missile's combined data catches the transition
 	const state=round_step(m.slot,dt,supported?truth:null,truth,m.enemy&&!!truth&&jammer_loud());   // our jammer radiating draws the bandit's round to home on it, as the server's rounds do
@@ -6957,6 +6957,9 @@ function apply_harm(kind){ const words=flight_get(); if(!words) return;
 			forward:{x:ownship.fwd.x,y:ownship.fwd.y,z:ownship.fwd.z}, up:{x:ownship.up.x,y:ownship.up.y,z:ownship.up.z} };
 		for(let volley=0;volley<6;volley++) battle_volley(1,{...pose,velocity:{x:ownship.velx,y:ownship.vely,z:ownship.velz}},40,battle_tick+volley); } }   // real rounds now: they arrive over the next frames
 let own_burn=[0,0], own_burning=false, own_leak=0;   // ownship condition mirrored from progress()
+let own_aloft=0, bandit_aloft=0;   // each side's gun rounds still in the air after the last battle step: a joust waits on the fallen jet's (joust_pending, bandit_pending)
+let traded=false;   // the single-player joust ended as a mutual kill: each jet downed, the second by what the first left flying
+const WRECKAGE=5;   // seconds a kill's wreckage can strike (world battle/debris.go debris_life)
 let eject_flag=false, ejected=false;
 bandit.harm={ thrust:0, wing:0, killed:false, burning:false, fire:[0,0], leak:0 };   // zonal summary driving the AI, plus the graded wound channels the visuals read (#244)
 bandit.rounds=MAGAZINE;   // the bandit fires from the same 578-round M61 load as the ownship (#233) — fire_gun enforces it. Dry, it keeps pressing its attacks with a silent gun: the brain never learns the belt state, which is what a real pilot out of rounds would do rather than concede
@@ -6985,10 +6988,54 @@ function battle_rig(){ battle_rigged=battle_hulk(0,"fa18c");   // battle_rigged:
 // mission from the menu. `why` names the cause, as crash_ownship(why) does; the
 // fallback is for a caller that cannot say.
 function bandit_destroy(why){ bandit.fate=bandit.fate||why||"fire"; bandit.fated=sim_time; explosion_at(bandit.pos.x,bandit.pos.y,bandit.pos.z);
-	if(why==="verdict"||why==="fire"||why==="midair") flight_debris_lay(bandit.pos,{ x:bandit.velx??0, y:bandit.vely??0, z:bandit.velz??0 });   // killed in the air, its wreckage hangs there a few seconds: fly through it and the pieces strike (debris_struck). A jet that met the ground or the sea left none in the air
+	if(crash_t>0) traded=true;   // the pilot fell first, and what he left flying downed it (joust_pending): a mutual kill
+	if(why==="verdict"||why==="fire"||why==="midair"){ flight_debris_lay(bandit.pos,{ x:bandit.velx??0, y:bandit.vely??0, z:bandit.velz??0 }); bandit.wrecked=sim_time; }   // killed in the air, its wreckage hangs there a few seconds: fly through it and the pieces strike (debris_struck). A jet that met the ground or the sea left none in the air
 	has_enemy=false; bandit.group.visible=false;
 	if(bandit.fate!=="midair") feed(opponent(bandit.fate), cfg.callsign||"701", BANDIT);   // a midair kills both, and the ownship's own crash reports that one, naming both jets
 	notice(translate("KILL")); }
+// bandit_struck draws where the pilot's gun rounds landed on the bandit in a
+// battle step and counts them, and keeps how many of each side's are still
+// flying.
+function bandit_struck(flown){
+	for(const p of flown.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
+		hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed,bandit,p); }
+	bandit.struck=(bandit.struck||0)+flown.bandit;   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
+	own_aloft=flown.aloft.own; bandit_aloft=flown.aloft.bandit; }
+// bandit_wounds reads one step of the damage cascade into the bandit's harm,
+// and destroys it when its tank vapour goes up.
+function bandit_wounds(battle){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
+	h.fire=[battle[6]||0,battle[7]||0]; h.leak=battle[14]||0;   // per-engine fire intensity (always exported, never read until #244) and the hulk leak (new wasm row)
+	h.wreck=battle[13]; if(h.killed&&!bandit.fate) bandit.fate="pilot";
+	if(battle[10]&BATTLE.explode){ own_kills++; bandit_destroy("fire"); } }   // the tank-vapour detonation: the one place "fire" is the honest word
+// joust_pending: a joust's first kill decides it only once nothing the fallen
+// jet left behind can still down the other, as the server's reckon has it.
+// The pilot shot down, the bandit flies on as his target while his missiles
+// or gun rounds are in the air or a fire burns in it; its falling before then
+// is the trade. (The bandit falling first needs no wait: the pilot flies on,
+// and its rounds and wreckage keep their chance at him.)
+function joust_pending(){ if(!has_enemy||!bandit.group.visible) return false;
+	if(own_aloft>0||missiles.some(m=>m.active&&!m.enemy)) return true;
+	const h=bandit.harm; return !!h&&(h.burning||h.fire[0]>0||h.fire[1]>0||burning_stores(bandit).length>0); }
+// stand_down: the duel is decided the other way, and the winner stands down
+// rather than circle a respawning target - once nothing the pilot left can
+// still reach it.
+function stand_down(){ if(has_enemy&&!joust_pending()){ has_enemy=false; bandit.group.visible=false; } }
+// bandit_pending is the other way round: the bandit down first, and what it
+// left can still down the pilot - its missiles and gun rounds in the air, its
+// wreckage while the cloud lasts, a fire burning in his jet. Nothing waits on
+// it, since he flies on; his falling while it holds is the mutual kill.
+function bandit_pending(){ if(MULTIPLAYER||cfg.task!=="joust"||has_enemy||!bandit.fate) return false;
+	if(bandit_aloft>0||missiles.some(m=>m.active&&m.enemy)) return true;
+	if(sim_time-(bandit.wrecked??-Infinity)<WRECKAGE) return true;
+	return own_burning||own_burn[0]>0||own_burn[1]>0||burning_stores(ownship).length>0; }
+// battle_after keeps the fight's clock running through the pilot's death while
+// the joust waits on him: his rounds fly on against the bandit, and its wounds
+// burn on. His own jet is gone, so nothing lands on it.
+function battle_after(dt){
+	bandit_struck(battle_fly(Math.min(dt,0.1), true, battle_aim(bandit), burst_tick));
+	battle_acc+=dt; let due=Math.floor(battle_acc*60+1e-9); battle_acc-=due/60;
+	for(;due>0&&has_enemy;due--){ const battle=battle_progress(ownship.throttle,battle_tick++,false,0); cooked(bandit,battle[63]); bandit_wounds(battle); }
+	if(has_enemy) bandit_racks(); }
 let aircraft_lights=null;
 // The exterior lights panel (NATOPS 2.6.1): the POSITION and FORMATION knobs, 0 OFF to 1 BRT; the STROBE
 // switch, DIM aft, OFF and BRT forward (STROBE); and the LDG/TAXI switch. The exterior lights master switch
@@ -10588,12 +10635,13 @@ function soot_burst(x,y,z){
 		const tone=0.10+Math.random()*0.12;
 		smoke.r[k]=tone*1.1; smoke.g[k]=tone; smoke.b[k]=tone*0.95; } }
 function crash_ownship(why,killer){ if(crash_t>0) return; crash_t=3.0; own_written=false;
+	if(bandit_pending()) traded=true;   // the bandit fell first, and what it left downed him: a mutual kill
 	compression=1;   // the fireball plays in real time, as a respawn and a new mission fly: compressed, the world runs on minutes through it, the swell sweeping the eye at the waterline
 	ownship.fate=ownship.fate||why||"pilot";   // how this life ended, for the recording (#238): every path names its own reason, the ejection "eject"
 	own_killer=killer||"";   // and WHO, which is what the banner says: the weapon is in the recording, the name is what the pilot wants
 	if(!MULTIPLAYER) own_deaths++;   // local deaths count too — the history records the joust honestly (multiplayer's arrive via the net death event)
 	latch(false,"auto"); look_home=false;   // the padlock lets go without a word: the jet is lost, not the target, and the release below would otherwise find the bandit gone and announce NO TARGET over the fireball
-	if(has_enemy){ has_enemy=false; bandit.group.visible=false; }   // the duel is decided the other way: the winner stands down rather than circling a respawning target (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
+	stand_down();   // the duel is decided the other way, unless what the pilot left flying downs the bandit too (has_enemy is never true in multiplayer, where the airframe belongs to a remote player)
 	if(!MULTIPLAYER) feed(ownship.fate, own_killer, cfg.callsign||"701");   // multiplayer reports from the kill event instead, which names every death in the match rather than only this one
 	(globalThis as any).dev_crash=why||"?"; explosion_at(ownship.pos.x,ownship.pos.y,ownship.pos.z,"own"); ownship.group.visible=false; ownship.speed=0; }
 function over_runway(p){ const r=obstacles.runway; if(!r) return false; const dx=p.x-r.x, dz=p.z-r.z;   // p in the chart, where the field is laid
@@ -11509,6 +11557,16 @@ function verdict(out){   // judge the core's touchdown record: crash conditions 
 	}
 	return false;                                                     // bounces and rollout are the core's physics, not a verdict
 }
+// fireball is single player's crash, one world step of it: watched on wall
+// time before the menu (at 64x the menu came 47 ms after the crash), and held
+// while the joust still waits on what the pilot left flying, the fight going
+// on without him (joust_pending). The menu then owns what happens next.
+function fireball(dt){ if(presenting) crash_t-=beat;
+	if(joust_pending()) battle_after(dt);
+	stand_down();
+	if(crash_t<=0&&has_enemy) crash_t=1e-9;   // the bandit still a target: the joust is not decided yet
+	if(crash_t<=0){ crash_t=0; mission_done=true;
+		if(on_over) on_over({ fate:ownship.fate||"crash", struck:ownship.struck||0, seconds:Math.max(0,sim_time-mission_zero) }); } }
 function fly_player(dt){
 	if(net_waiting){ hud_message(translate("WAITING FOR OPPONENT")); return; }   // joust waiting room: frozen at the ring, no sim, until the server's match-start respawn
 	if(crash_t>0||mission_done){
@@ -11516,9 +11574,7 @@ function fly_player(dt){
 		if(MULTIPLAYER) return;   // multiplayer: hold in the fireball until the server's respawn event places us (simulate still reads the pilot's hands)
 		// Single player: the crash ends the mission (#240), every task included; the
 		// menu owns what happens next.
-		if(!mission_done){ if(presenting) crash_t-=beat;   // the fireball is watched before the menu: wall time, or at 64× the menu came 47 ms after the crash
-			if(crash_t<=0){ crash_t=0; mission_done=true;
-				if(on_over) on_over({ fate:ownship.fate||"crash", struck:ownship.struck||0, seconds:Math.max(0,sim_time-mission_zero) }); } }
+		if(!mission_done) fireball(dt);
 		return; }
 	systems_step(dt);   // what the held controls drive in the jet: brakes, the APU accumulator, approach power
 	ownship.fwd.set(1,0,0).applyQuaternion(ownship.q); ownship.up.set(0,1,0).applyQuaternion(ownship.q); ownship.right.set(0,0,1).applyQuaternion(ownship.q);
@@ -11570,10 +11626,9 @@ function fly_player(dt){
 		// a real defence. Sparks land where ownship rounds strike the bandit;
 		// the flash and thud are the bandit's rounds arriving on us.
 		{ const flown=battle_fly(Math.min(dt,0.1), !!cheat("invulnerable"), (has_enemy&&bandit.group.visible)?battle_aim(bandit):null, burst_tick);
-			for(const p of flown.impacts){ const w=_v.set(p.x,p.y,p.z).applyQuaternion(bandit.group.quaternion).add(bandit.group.position);
-				hit_sparks(w.x,w.y,w.z,bandit.velx??bandit.fwd.x*bandit.speed,bandit.vely??bandit.fwd.y*bandit.speed,bandit.velz??bandit.fwd.z*bandit.speed,bandit,p); }
+			bandit_struck(flown);
 			if(flown.own>0){ hit_flash=Math.min(1,hit_flash+0.25*flown.own); audio_hit(Math.min(flown.own,4)); }
-			ownship.struck=(ownship.struck||0)+flown.own; bandit.struck=(bandit.struck||0)+flown.bandit;   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
+			ownship.struck=(ownship.struck||0)+flown.own;   // cumulative rounds taken, for the recording (#238): the total survives 10 Hz sampling losslessly
 			if(flown.graze&&(!graze||flown.graze.gap<graze.gap)) graze={...flown.graze}; }   // the burst's closest MISS: kept as a running minimum, because a burst is many ticks and only its best moment says anything
 		// The cascade advances 1/60 s a call (battle.Advance's rate), so it runs on
 		// the sim's clock through an accumulator, as the bandit's brain and the
@@ -11583,10 +11638,7 @@ function fly_player(dt){
 		for(;due>0;due--){ const battle=battle_progress(ownship.throttle,battle_tick++,battle_reset,(secured[0]?1:0)|(secured[1]?2:0)|(extinguish_flag?4:0)); battle_reset=false; extinguish_flag=false;   // bit 4: the fire extinguisher discharged this step (2.14.2)
 			own_burn[0]=battle[0]; own_burn[1]=battle[1]; own_burning=battle[2]>0; own_leak=battle[5];
 			cooked(ownship,battle[62]); if(has_enemy) cooked(bandit,battle[63]);   // a round's motor alight on a rail: it jumps the launch order, and its fire is drawn at the station
-			if(has_enemy){ const h=bandit.harm; h.thrust=battle[11]; h.wing=battle[12]; h.killed=battle[9]>0; h.burning=battle[8]>0;
-				h.fire=[battle[6]||0,battle[7]||0]; h.leak=battle[14]||0;   // per-engine fire intensity (always exported, never read until #244) and the hulk leak (new wasm row)
-				h.wreck=battle[13]; if(h.killed&&!bandit.fate) bandit.fate="pilot";
-				if(battle[10]&BATTLE.explode){ own_kills++; bandit_destroy("fire"); } }   // the tank-vapour detonation: the one place "fire" is the honest word
+			if(has_enemy) bandit_wounds(battle);
 			if(battle[4]&BATTLE.explode) exploded=true;   // the fuel fire's fuse ran out
 			if(battle[3]>0) downed=true; }
 		shed_panels(ownship,last_out);   // our own wing too: in any external view a lost panel is the loudest damage cue there is
@@ -12135,12 +12187,12 @@ function reset_ownship(){
 	theatre_reset();   // every spawn is laid in the chart
 	test_idle=0; _test_power=0;   // a respawn ends any scenario rollout grace — the lever and brakes are the pilot's again
 	hist_valid=false;   // spawn/respawn teleports the camera — a cut for the cloud accumulation history
-	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
+	battle_rig(); ejected=false; hit_flash=0; own_burn=[0,0]; own_burning=false; own_leak=0; own_aloft=0; bandit_aloft=0; peak_g=1;   // a fresh jet, a fresh fight (#78)
 	bandit_acc=0; missile_acc=0; battle_acc=0;   // no stale fixed-step debt across spawns
 	compression=1;   // a respawn, and a new mission, fly in real time
 	designated=-1; latch(false,"auto");   // a respawn drops the acquisition and the padlock
 	bandit.spent=0; bandit.rounds=MAGAZINE; assign_loadout(bandit, bandit_fit()); bandit.msl=bandit_remaining(); bandit.amraam=stores_amraams(bandit.loadout).length;   // a fresh fight rearms the bandit: full belt, full rails, clean expenditure. The counts carried the last fight's launches into the next until 2026-10-12
-	bandit.struck=0; bandit.fate=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
+	bandit.struck=0; bandit.fate=undefined; bandit.wrecked=undefined; ownship.struck=0; ownship.fate=undefined;   // and starts clean battle channels (#238)
 	ownship.q.set(0,0,0,1); ownship.fwd.set(1,0,0); ownship.up.set(0,1,0); ownship.right.set(0,0,1); ownship.vel_dir.set(1,0,0);
 	ownship.rounds=MAGAZINE; ownship.msl=magazine(); rearm_order(ownship); ownship.flares=FLARE_LOAD; ownship.chaff=CHAFF_LOAD; ownship.aoa=0; ownship.gload=1; ownship.launching=false; ownship.trapped=false; ownship.pull=0; ownship.swing=0; ownship.wire=0; atc_on=false; atc_flash=-Infinity; atc_speed=null; ownship.lights=(cfg.tod!=="day");
 	master=default_master(); default_radar();   // the match's own weapon is already selected at spawn, and the radar set for it: a dead trigger at the merge is a trap, and so is arriving with the gun up in a heater fight   // lights default on at night, off by day; the magazine is the flown loadout's round count (#17)
@@ -13417,7 +13469,7 @@ function exit_match(){ if(!running) return; running=false; /* #57 parked: head_c
 	// no history row, no recording. The sub-5s carve-out is the one exception to #212's every-flight-is-history.
 	const sortie=sim_time-mission_zero>=CHECKPOINT_SORTIE;
 	if(MULTIPLAYER) net_finish("left");
-	else if(sortie) net_record(sortie_row(own_kills>0?"victory":(own_deaths>0?"killed":"flown")));   // EVERY completed sortie is history (#212): a scoreless sortie or a carrier approach is exactly the one you want the recording of, and the cheat flag is data on the row, never a filter
+	else if(sortie) net_record(sortie_row(sortie_reason()));   // EVERY completed sortie is history (#212): a scoreless sortie or a carrier approach is exactly the one you want the recording of, and the cheat flag is data on the row, never a filter
 	// Upload the recording against that row (#213), after net_record and
 	// unawaited: the row must exist for the save to bind to, and the menu never
 	// waits on an upload. It queues behind any checkpoint still uploading (#16),
@@ -13425,6 +13477,9 @@ function exit_match(){ if(!running) return; running=false; /* #57 parked: head_c
 	if(sortie){ const replay=recording_file();   // multiplayer included (#118): the row above is what it binds to
 		setTimeout(()=>void checkpoint_save(null,replay),600); }
 	if(onExit) onExit(); }
+// sortie_reason is how a single-player flight ended: a mutual kill, the bandit
+// downed, the pilot downed, or flown.
+function sortie_reason(){ return traded?"traded":own_kills>0?"victory":own_deaths>0?"killed":"flown"; }
 // sortie_row is this single-player flight's history row, ended now for reason.
 function sortie_row(reason){ return {
 	world:"local", session:"local-"+mission_began, mode:cfg.task==="joust"?"joust":"free", team:"",
@@ -14287,6 +14342,7 @@ function match_row(reason){ return { world:join.server, title:join.title||"", se
 function net_end(reason,results){ if(session_over) return;
 	net_finish(reason);
 	if(results&&results.name){ notice(results.name+" "+translate("WINS")); }   // joust outcome
+	else if(results&&results.winner===-1&&results.loser===-1) notice(translate("MUTUAL KILL"));   // both down, each to the other or to what the other left flying (the server's reckon), a midair included
 	else notice(translate("SESSION ENDED"));
 	setTimeout(()=>{ if(running){ running=false; if(onExit) onExit(); } },1800); }
 function net_frame(dt){
@@ -14512,7 +14568,7 @@ function start_mission(){
 	menu_hold=false; map_on=false; map_el.style.display="none"; globe_show(false);
 	loading=!assets_ready(); loading_t0=performance.now();   // hold the LOADING screen until every async asset is in — no piecemeal pop-in of carrier/airfield/airframe
 	cloud_mat.uniforms.uDebug.value=0;   // clear the Shift+C cloud A/B latch — a stale debug toggle must not survive into a fresh mission
-	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
+	running=true; mission_began=Date.now(); own_kills=0; own_deaths=0; traded=false; RWR.reset(); /* #57 parked: head_begin(); */   // fresh history identity and score per mission — module state survives remounts, and a reused session key would dedup the next joust away
 	mission_done=false; mission_zero=sim_time; fuel_read=false; checkpoint_at=-Infinity; mission_epoch=Date.now();   // a fresh mission may follow an ended one without a page reload (#240)
 	on_config=onConfig||null; on_over=onOver||null; views_fresh();   // the views as a match starts them (#138)
 	view_events.length=0; view_note("view",cfg.view,"start"); view_note("zoom",zoom_target.toFixed(2),"start");   // the recording opens on the view and zoom the match began with; anything noted before this (the last match's tail, the start's own set_view) is not this match's - i18n-format-ok: ACMI event value, not display text
