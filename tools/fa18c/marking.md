@@ -95,9 +95,16 @@ photo's `aside`, never its `marks` (a tank's tip is a silhouette end, and in the
   front and aft faces meet its bottom; `rack_outboard_root_front_<side>`: where its front face meets the pylon.
 - `pylon_centre_nose`, `pylon_centre_tail`: the SUU-62's foremost point low down (where its front meets the tank)
   and its aft lower corner; `pylon_centre_root_front`, `pylon_centre_root_aft`: where its edges meet the belly.
-- `ejector_front_<side>`: the LAU-116's exposed lower face's front end, on its middle line; `ejector_aft_<side>`: the
-  middle of the launcher box's aft-most edge, the upright edge over the round's tail where the chamfered aft face
-  meets the outboard side (`left` for station 4, `right` for 6).
+- The LAU-116 shows a block on the nacelle's side ahead of the cheek box, its outboard face flush with the box's, its
+  top below the box's (`left` for station 4, `right` for 6): `ejector_front_top_<side>`, `ejector_front_bottom_<side>`,
+  its front face's top and bottom outboard corners; `ejector_front_inboard_<side>`, where its front face's top edge
+  meets the nacelle's side; `ejector_step_<side>`, the upper corner of the step in its outline near its aft end, seen from
+  aft of the beam; `ejector_hole_<side>`, the middle of the dark round hole in the upper half of its outboard face, about 6 in
+  behind its front. From ahead, the round's upper wing can stand in front of its front's outboard edge: mark a corner
+  only where it shows.
+- `fairing_cheek_aft_<side>`: the middle of the box behind the cheek station's aft-most edge, the upright edge over
+  the round's tail where the chamfered aft face meets the outboard side; `fairing_cheek_front_<side>`: the top front
+  corner of its outboard face. The box is airframe, there with no stores.
 - `missile_<where>_nose_<side>`, `missile_<where>_tail_<side>`: a round's nose tip and the middle of its aft end, only
   where they end the silhouette (seen from the side, above or below), never in a view along the round; say which
   missile it is (an AIM-9X's small fins, a 9M's large canards, a finless training round).

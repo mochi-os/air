@@ -301,6 +301,7 @@ describe('the BVR joust start', () => {
     joust_drawn(): void
     set(o: Opening | null, side?: number): void
     draw(o: Opening | null): void
+    derive(n: number): void
     start(): Opening | null
     ownship: Jet
     bandit: Jet
@@ -312,12 +313,12 @@ describe('the BVR joust start', () => {
       'MULTIPLAYER',
       `const DEV_MODE=true, NM=1852, location={ search:${JSON.stringify(search)} }, world_up=new THREE.Vector3(0,1,0);
        const asked=[]; const joust_opening=(seed)=>{ asked.push(seed); return drawn; };
-       const bvr_separation=()=>111000; let joust_start=null, joust_side=1;
+       let separation=111000; const bvr_separation=()=>separation; let joust_start=null, joust_side=1;
        const jet=()=>({ pos:new THREE.Vector3(), fwd:new THREE.Vector3(), q:new THREE.Quaternion(), vel_dir:new THREE.Vector3(), speed:0 });
        const ownship=jet(), bandit=jet();
        ${lift('bvr_opening')} ${lift('joust_heading')} ${lift('joust_place')} ${lift('joust_drawn')}
        return { asked, bvr_opening, joust_heading, joust_place, joust_drawn, ownship, bandit,
-         set:(o,side=1)=>{ joust_start=o; joust_side=side; }, draw:(o)=>{ drawn=o; }, start:()=>joust_start };`
+         set:(o,side=1)=>{ joust_start=o; joust_side=side; }, draw:(o)=>{ drawn=o; }, derive:(n)=>{ separation=n; }, start:()=>joust_start };`
     )(THREE, drawn, multiplayer) as Joust
   }
   const drawn: Opening = { altitude: [9000, 5000], speed: 250, flank: Math.PI / 6, apart: 120000 }
@@ -333,6 +334,18 @@ describe('the BVR joust start', () => {
   it('pins the classic head-on start with &opening=head, and falls back to it pending before the core boots', () => {
     expect(start('?developer=1&opening=head', drawn).bvr_opening()).toEqual(head)
     expect(start('', null).bvr_opening()).toEqual({ ...head, pending: true })
+  })
+  it('draws the pinned head-on start again once the core derives its separation, never flying the stand-in figure', () => {
+    const s = start('?developer=1&opening=head', drawn)
+    s.derive(0) // the core has not booted: no separation yet
+    s.set(s.bvr_opening())
+    expect(s.start()).toEqual({ ...head, apart: 91700, pending: true })
+    s.joust_place()
+    s.derive(111000) // the core is up
+    s.joust_drawn()
+    expect(s.start()).toEqual(head)
+    expect([s.ownship.pos.x, s.bandit.pos.x]).toEqual([-55500, 55500])
+    expect(s.asked).toEqual([]) // the pinned start is never drawn from a seed
   })
   it('turns both ends the flank the same way, so each sees the other the same angle off its nose', () => {
     const s = start('', drawn)

@@ -50,7 +50,8 @@ class Caster:
 		entry = {c["photo"]: c for c in cameras}[photo]
 		self.camera = np.array(entry["camera"], float)
 		self.centre = np.array(entry["size"], float) / 2
-		posed = mod.pose(points.get("joints", {}), entry.get("pose", {}))
+		# read with joints(), so the gear by one value and a stance named "static" pose as the photo stood
+		posed = mod.pose(mod.joints(points) if "joints" in points else {}, entry.get("pose", {}))
 		self.triangles = model.triangles(posed, include=onto)
 
 	def cast(self, pixel, plane=None):

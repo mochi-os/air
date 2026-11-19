@@ -41,8 +41,11 @@ PAINTED = {"layout.stencils"}   # facts only the paint's atlas shows
 # date and what they approved), or test_check fails; a text that gains a
 # guess fails again until it is signed again
 GUESSES = {
-	"layout.wells.note": (1, "user, 2026-11-13: the speedbrake well's floor 4 in under the skin; no photo shows the open speedbrake from above or behind"),
-	"layout.paint.where": (1, "user, 2026-11-13: the speedbrake's and the probe's wells keep the airframe's greys; no photo shows the speedbrake open and the refuelling photos show the probe's bay only in deep shadow"),
+	"layout.wells.note": (1, "user, 2026-11-16: as recommended: the speedbrake well's floor 9.5 in under the skin, as deep as its stowed actuator and hose need; the three photos of it open look up at it from ahead, its inside hidden by the panel"),
+	"layout.paint.where": (1, "user, 2026-11-13: the speedbrake's and the probe's wells keep the airframe's greys; the refuelling photos show the probe's bay only in deep shadow; user, 2026-11-16: the speedbrake's well's inside hidden by its open panel in the three photos that show it open"),
+	"layout.nacelle.cheek.note": (1, "user, 2026-11-17: the cheek box's front built square below its photographed top corner, which the LAU-116's fitting and the round hide in both photos that show it"),
+	"layout.stores.lau116.hooks.note": (1, "user, 2026-11-17: the LAU-116's hooks built as each hanger's footprint running up into the airframe; the round hides them closed in every photo of a loaded station, and dvids9393257's shadow hints the forward one stands about 1.5 in lower"),
+	"layout.speedbrake.note": (2, "user, 2026-11-16: as recommended: the speedbrake's actuator built as the narrow member the photos show under the panel, its foot's pin, its lug under the panel and the hose's ends placed to stand as the photos show them, their tops hidden in every view, and two stages to reach (29.8 to 64.0 in pin to pin); the panel turned about the point its photographed corners solve, nothing drawn there, what holds its forward edge shown by no photo"),
 	"layout.stores.centreline.note": (2, "user, 2026-11-11: the SUU-62's width 9.5 in with its 7 in taper, consistent with dvids8025511, 9393257 and 9393262 but fixed by none; its aft end at FS 445, shaped as dvids_4642578 shows"),
 	"layout.stores.rack.note": (1, "user, 2026-11-11: keep the 3 in block joining each side rail to its LAU-115 until a solvable photo shows the shoulder fittings (dvids7378817 shows them, but no landmark lets its camera be solved)"),
 	"layout.stores.rails.tip.note": (1, "user, 2026-11-11: keep the LAU-7 channel 1.0 in deep; no public-domain end view of an empty LAU-7 was found"),
@@ -67,11 +70,13 @@ GUESSES = {
 	"layout.motion.stroke.note": (1, "user, 2026-11-15: the gear's legs and doors stroke at a steady speed between short cushioned ends, in place of an ease over the whole stroke that left the main wheels standing flat in the open bays; the ramps' 15% share of the stroke time is Claude's estimate"),
 	"layout.motion.doors.note": (1, "user, 2026-11-12: keep the gear doors opening over the first 15% of the gear's travel; NATOPS gives only that every door stays open with the gear down"),
 	"layout.motion.hook.note": (1, "user, 2026-11-12: keep the hook's 2 s stroke, within NATOPS's 3 s down and 6 s up maxima"),
-	"layout.motion.probe.note": (1, "user, 2026-11-12: the probe door open 66 deg from dvids8025511's fit, and the probe's 28 deg swing kept; no photo shows the swing"),
+	"layout.motion.probe.note": (3, "user, 2026-11-16: as recommended: the probe's root, on which the door rides, 2.5 in behind the door's aft edge (2-3 in), so that edge rises as it swings out aft; no photo shows the root; user, 2026-11-17: the forward door opening over the stroke's first 0.15 while the probe waits, and closing over as long once the probe is clear of it"),
+	"layout.probe.note": (2, "user, 2026-11-16: as recommended: the skin opened ahead of the probe door to FS 129, half an inch ahead of the stowed nozzle's tip; user, 2026-11-17: the panel ahead of the probe door over FS 129-145 a door of its own, opening while the nozzle passes and closed at rest and with the probe out, as dvids6690145 shows; its hinge and timing estimated"),
+	"layout.motion.canopy.note": (2, "user, 2026-11-16: as recommended: the canopy's shell 0.2 in proud of the loft, a visible step at the sill and the aft joint, and its slide rising 0.15 in over the 1.5 in aft, the least that clear the skin it rests on; its hinge at the aft top (FS 326, WL 152.6), whose place the photos do not tell apart"),
+	"layout.hook.note": (1, "user, 2026-11-16: the hook's hold-down rod estimated from the proportions in US Navy 050124-N-4308O-018 (no solved camera) scaled to the solved shank: its pin on the keel's aft face, its lug 5 in along the shank, a cylinder and a piston telescoping as the hook lowers (user, 2026-11-16: as recommended)"),
 	"layout.motion.extension.note": (1, "user, 2026-11-16: the mains' start, hidden behind the camera jet's own nose tyres in DVIDS 781086, taken with the nose leg's once the doors are open"),
 	"layout.motion.braces.note": (6, "user, 2026-11-16: the main side brace's foot's clevis's lower end crossing the open inner door and the bay's edge at gear 0.375-0.45 kept, a known crossing; user, 2026-11-16: the main side brace's foot's clevis, spool, nut and end built from dvids8678626 alone, the bolt's lean across the sight line and the lugs' width round it estimated; user, 2026-11-16: the main side brace's fork at its bolt with 0.4 in cheeks, which no photo shows edge on; user, 2026-11-12: the nose drag brace's 6 in reach into its tube at full stretch kept; user, 2026-11-14: the drag brace rebuilt to the photos as the actuator they show, the hidden rod dropped; user, 2026-11-13: the main side brace's pin at WL 78 and its knee halfway (user, 2026-11-14: moved up off halfway, to 0.57, clear of the open inner door and the post), the connecting link's pin at WL 82, the bell crank's pin at WL 56 with its 6 in arm on a bracket off the pivot boss, and the link's 1.8 in diameter, placed for room and signed off from the retraction renders"),
 	"layout.scoop.note": (1, "user, 2026-11-12: the FCS ram air scoop's can 4.8 in long, a 12 oz can's height from the maintainers' name for it, and its red the gear doors' edges' red in dvids8678626; no photo shows it deployed"),
-	"layout.motion.probe.share": (1, "user, 2026-11-12: the probe door's first 25% of NATOPS's 6 s kept; no video shows the probe moving"),
 	"layout.motion.scoop.note": (2, "user, 2026-11-12: the FCS ram air scoop hinged at its cap's aft edge, swinging 90 deg in 1 s until its mouth faces forward; no photo shows it deployed"),
 	"layout.gear.note": (13, "user, 2026-11-16: the nose holdback folding evenly with the oleo's stroke from out to standing, its fold between estimated; user, 2026-11-16: the main pivot nut's 0.8 in thickness; the nose post's eye rings' 0.6 in stock; the nose post's port wiring, read by eye; user, 2026-11-16: the main wheels' 0.6 in web, their holes' 2 in reach, the cap plate's 0.2 in thickness and the sidewall widest 0.45 of the way to the tread; the main lower casting's 1 in pocket over half its length; the nose leg's two hydraulic hoses, their bearings, the waterline they leave the bay at and their fittings, read by eye; user, 2026-11-14: the main shock turning about the boss dvids8678626 shows where it meets the skin, its white upper cylinder running on up its line into the bay as far as the piston's travel needs, so the 12 in stroke and the approach photos' droop hold with the eye where three solved photos put it; user, 2026-11-14: the planing rod riding the arm from a pin on the pivot's axis to the axle's fitting"),
 	"layout.motion.stowed.note": (2, "user, 2026-11-13: the main gear as the source has its mechanism (no turn about the post, the shrink link, the axle's quarter turn) in a bay as deep as that needs; user, 2026-11-14: the trunnion axis, swing and axle turn fitted to the take-off photos, the bay deepened to WL 107.4 and out to BL 42.7 to hold it, the stowed wheel left 27.8 deg off flat"),
@@ -105,6 +110,7 @@ EXEMPT = {
 	"wing.incidence": "no twist is published; checked as a flat chord plane through layout.wing's anhedral",
 	"wing.dihedral": "cr201687's -3 deg: the photos put the tips about 5 in higher, so the build takes layout.wing's anhedral, checked there",
 	"wing.chord": "checked through reference.chord",
+	"fin.rudder": "cr201687's area; the rudders' outline is the photos' (layout.rudder, checked there), 6% larger",
 	"engine.thrust": "where the flight model applies thrust, not a shape",
 	"canopy": "the two-seat canopy's differences; this is the single-seat jet",
 	"gravity@HARV phase 1, 60% fuel, clean, gear up": "a centre of gravity, not a shape",
@@ -115,6 +121,9 @@ EXEMPT = {
 	"layout.hardpoints": "store mounts the build writes as given, the fuselage ones draped onto the skin (shape.mount); step 5 checks them against the stores",
 	"layout.paint": "colours the paint bake writes into the atlas, not a shape (looked at on the comparison sheets)",
 	"stores.bru32.length": "the rack inside the pylon: not built",
+	"stores.lau116.length": "the LAU-116's body inside the nacelle behind its shut bay: not built; its exposed block and hooks are layout.stores.lau116's, checked there",
+	"stores.lau116.width": "the LAU-116's body inside the nacelle behind its shut bay: not built; its exposed block and hooks are layout.stores.lau116's, checked there",
+	"stores.lau116.height": "the LAU-116's body inside the nacelle behind its shut bay: not built; its exposed block and hooks are layout.stores.lau116's, checked there",
 	"stores.bru32.hooks": "where the rack hangs the LAU-115: the build places it on them (step 5c)",
 	"stores.lau115.rails": "which rail carries which missile, not a shape",
 	"stores.tank.capacity": "a fuel capacity, not a shape: the tank's size is the photos' (layout.stores.tank)",
@@ -355,30 +364,31 @@ def shoelace(loop):
 HULL = ["fuselage", "lex_left", "lex_right", "inlet_left", "inlet_right", "wing_inner_left", "wing_inner_right", "canopy", "windscreen",
 	"fin_left", "fin_right",
 	# and the parts on the skin, where the hidden faces under them are gone
-	"fairings_left", "fairings_right", "fin_root_left", "fin_root_right", "fin_fairing_left", "fin_fairing_right", "keel",
+	"fairings_left", "fairings_right", "fin_root_left", "fin_root_right", "fin_fairing_left", "fin_fairing_right", "keel", "fairing_cheek_left", "fairing_cheek_right",
 	"antenna_chin", "antenna_dome", "antenna_dorsal", "antenna_spine", "antenna_ventral", "blade_nose", "aoa_left", "aoa_right",
 	"pitot_left", "pitot_right", "splitter_left", "splitter_right", "lex_fence_left", "lex_fence_right",
 	"formation_body_left", "formation_body_right", "formation_fin_left", "formation_fin_right", "formation_left", "formation_right",
 	"formation_tip_left", "formation_tip_right", "formation_undertip_left", "formation_undertip_right"]
 STOWED = [f"gear_{leg}_{piece}" for leg in ("left", "right", "nose") for piece in ("strut", "oleo", "wheel")] + [
 	f"gear_{leg}_{piece}" for leg in ("left", "right") for piece in ("axle", "shock", "shock_can", "brace", "brace_upper", "brace_fittings", "spool", "link", "crank", "casting")] + ["gear_nose_brace", "gear_nose_brace_rod", "gear_nose_holdback"] + [
-	"launch_bar", "gear_nose_lamps", "gear_nose_block", "lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red", "probe", "cockpit_tub", "cockpit_panel", "cockpit_seat", "cockpit_stick", "cockpit_hud", "pilot"]
+	"launch_bar", "gear_nose_lamps", "gear_nose_block", "lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red", "probe",
+	"speedbrake_actuator", "speedbrake_actuator_middle", "speedbrake_actuator_inner", "speedbrake_hose", "speedbrake_lug", "cockpit_tub", "cockpit_panel", "cockpit_seat", "cockpit_stick", "cockpit_hud", "pilot"]
 # how far a door's outer face stands off the skin it was cut from (build.py cut())
 PROUD = 0.15
 FLUSH = [("speedbrake", False), ("gear_nose_door_left", True), ("gear_nose_door_right", True), ("gear_nose_door_long", True), ("gear_nose_door_brace", True),
-	("gear_door_inner_left", True), ("gear_door_inner_right", True), ("gear_door_strip_left", True), ("gear_door_strip_right", True), ("gear_door_outer_left", True), ("gear_door_outer_right", True), ("probe_door", False)]
+	("gear_door_inner_left", True), ("gear_door_inner_right", True), ("gear_door_strip_left", True), ("gear_door_strip_right", True), ("gear_door_outer_left", True), ("gear_door_outer_right", True), ("probe_door", False), ("probe_door_forward", False)]
 # The parts with no twin that stand to one side; every other one is
 # symmetric about the centreline
 # a store part's name, its station and its side of a twin (the contract's Stores)
 STATION = re.compile(r"^((?:pylon|rack|rail|launcher|ejector|tank))_([1-9])([ab]?)$")
-ONE_SIDED = {"antenna_dome", "antenna_ventral", "gear_nose_door_long", "gear_nose_lamps", "gear_nose_block", "lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red", "lamp_position_tail", "pilot", "probe", "probe_door", "scoop", "well_probe"}
+ONE_SIDED = {"antenna_dome", "antenna_ventral", "gear_nose_door_long", "gear_nose_lamps", "gear_nose_block", "lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red", "lamp_position_tail", "pilot", "probe", "probe_door", "probe_door_forward", "scoop", "speedbrake_hose", "well_probe"}
 # Each well (layout.wells): the doors that close its opening and the parts it
 # holds at rest
 WELLS = {f"main_{side}": ([f"gear_door_{d}_{side}" for d in ("inner", "strip", "outer")], [f"gear_{side}_{p}" for p in ("strut", "oleo", "wheel", "axle", "shock", "shock_can", "brace", "brace_upper", "brace_fittings", "spool", "link", "crank", "casting", "rod")]) for side in ("left", "right")}
 WELLS["nose"] = (["gear_nose_door_left", "gear_nose_door_right", "gear_nose_door_long", "gear_nose_door_brace"], ["gear_nose_strut", "gear_nose_oleo", "gear_nose_wheel", "gear_nose_brace", "gear_nose_brace_rod",
 	"gear_nose_lamps", "gear_nose_block", "lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red", "launch_bar", "gear_nose_holdback"])
-WELLS["speedbrake"] = (["speedbrake"], [])
-WELLS["probe"] = (["probe_door"], ["probe"])
+WELLS["speedbrake"] = (["speedbrake"], ["speedbrake_actuator", "speedbrake_actuator_middle", "speedbrake_actuator_inner", "speedbrake_hose", "speedbrake_lug"])
+WELLS["probe"] = (["probe_door", "probe_door_forward"], ["probe"])
 # The gear's parts that meet by design, neither carrying the other: a side
 # brace's foot on its bolt, a connecting link's end on its bell crank's pin,
 # the spool on the clevis's lugs and the brace's foot in the spool's block,
@@ -386,10 +396,11 @@ WELLS["probe"] = (["probe_door"], ["probe"])
 # both on the arm's pivot boss, the shock absorber's can on its eye at the
 # arm's end where the axle's stub begins, the nose drag brace's eye on the
 # web's pin, the nose block on the post, the nose lamps' lenses in their
-# housing (clearance())
+# housing, the speedbrake actuator's eye on its lug's pin (clearance())
 JOINED = [(f"gear_{side}_{a}", f"gear_{side}_{b}") for side in ("left", "right") for a, b in (("casting", "brace"), ("casting", "spool"), ("spool", "brace"), ("crank", "link"), ("casting", "crank"),
 	("casting", "oleo"), ("shock_can", "oleo"), ("shock_can", "axle"))] + [("gear_nose_strut", "gear_nose_brace_rod"), ("gear_nose_strut", "gear_nose_block")] + [
-	("gear_nose_lamps", lens) for lens in ("lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red")]
+	("gear_nose_lamps", lens) for lens in ("lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red")] + [
+	("speedbrake_lug", "speedbrake_actuator_inner")]
 # how far a moving part's surface stands back from what it passes, in: each
 # is pulled in by this before the crossings are sought (clearance())
 SEAM = 0.1
@@ -541,6 +552,16 @@ def rim(jet, name):
 	lo, hi = points.min(0) - 0.05, points.max(0) + 0.05
 	skin = skin[((skin.max(1) >= lo) & (skin.min(1) <= hi)).all(1)]
 	return float(closest(FRAME.source(points), FRAME.source(skin.reshape(-1, 3)).reshape(-1, 3, 3)).max())
+
+
+def depths(jet, name, finish):
+	# How deep each corner of a door's faces in a finish lies under its
+	# outer face at rest, inches
+	t = jet.model.parts(verify.pose(jet.joints, {}), materials=(finish,)).get(name)
+	if t is None or not len(t):
+		raise KeyError(f"{name} has no faces in {finish}")
+	face = FRAME.source(jet.faces(name).reshape(-1, 3)).reshape(-1, 3, 3)
+	return closest(FRAME.source(t.reshape(-1, 3)), face)
 
 
 def stacked(jet, doors):
@@ -809,6 +830,35 @@ def shrunk(tris, by):
 	return (flat + move[index]).reshape(-1, 3, 3)
 
 
+def boundary(tris):
+	# The corners of a shell's edge (triangles (N, 3, 3)): those on a side
+	# only one triangle has
+	key = lambda v: tuple(np.round(v, 7))
+	count = {}
+	for t in tris:
+		for a, b in ((0, 1), (1, 2), (2, 0)):
+			e = frozenset((key(t[a]), key(t[b])))
+			count[e] = count.get(e, 0) + 1
+	return np.array(sorted({v for e, k in count.items() if k == 1 for v in e})).reshape(-1, 3)
+
+
+def pinned(jet, pin, names, drives, steps=81):
+	# How far apart a pin (a point in the model frame at rest) stands, carried
+	# from rest by each of the named nodes through a drive's stroke (drives:
+	# value to {drive: value}) at `steps` steps: the most, in inches. A
+	# linkage's members, each carrying their shared pin, drift apart between
+	# keys that read their motions at different shares
+	index = jet.model.index
+	rest = jet.model.worlds(verify.pose(jet.joints, {}))
+	homes = [np.linalg.inv(rest[index[n]]) @ np.append(pin, 1.0) for n in names]
+	worst = 0.0
+	for d in np.linspace(0, 1, steps):
+		w = jet.model.worlds(verify.pose(jet.joints, drives(float(d))))
+		at = [(w[index[n]] @ h)[:3] for n, h in zip(names, homes)]
+		worst = max(worst, max(float(np.linalg.norm(p - at[0])) for p in at[1:]) / FRAME.unit)
+	return worst
+
+
 # The missiles the loadout hangs on the jet (our own builds, ../missiles), as
 # the game ships them
 ROUNDS = HERE.parent.parent / "web" / "src" / "assets"
@@ -870,12 +920,16 @@ def seated(part, skin, stations, plane=None):
 	# where no station cuts the part. Lowest by waterline instead, a face
 	# slanting down into the skin was judged halfway up, and a face meeting
 	# another part (a fin's root on a fairing under it) was judged at the
-	# closing face between them. plane: the triangles whose own mid-plane is
-	# the part's (the fin alone, whose shape the build's culling of the
-	# fairing's hidden faces leaves as it was); the part's by default
-	points = (part if plane is None else plane).reshape(-1, 3)
-	centre = points.mean(0)
-	normal = np.linalg.svd(points - centre, full_matrices=False)[2][-1]
+	# closing face between them. plane: the part's mid-plane as a point on it
+	# and its normal, or the triangles whose own mid-plane it is; the part's
+	# by default
+	if isinstance(plane, tuple):
+		centre, normal = (np.asarray(v, float) for v in plane)
+		normal = normal / np.linalg.norm(normal)
+	else:
+		points = (part if plane is None else plane).reshape(-1, 3)
+		centre = points.mean(0)
+		normal = np.linalg.svd(points - centre, full_matrices=False)[2][-1]
 	span = np.cross(normal, [1.0, 0.0, 0.0])
 	span = span / np.linalg.norm(span) * (1.0 if span[1] >= 0 else -1.0)
 	worst = np.nan
@@ -901,6 +955,7 @@ def seated(part, skin, stations, plane=None):
 # How far the skin's top drops at the edge of a hole in it, inches: more than
 # any step its own shape takes over a quarter inch
 DROP = 2.0
+DEEP = 6.0   # inches under the skin on both sides that a top read through a hole lies (holed())
 
 
 def holed(skin, station, buttline, reach=8.0, step=0.25):
@@ -916,6 +971,13 @@ def holed(skin, station, buttline, reach=8.0, step=0.25):
 	found = np.isfinite(tops)
 	if found.sum() < 3:
 		return False
+	# a top read far below the skin on both sides of it (the floor, a duct)
+	# is a hole however the skin beside it curves: beside a fin's root
+	# fairing the nacelle's shoulder falls away within an inch or two
+	# outboard of the hole, under the fit below, which then missed it
+	with np.errstate(invalid="ignore"):
+		if np.isfinite(tops[k]) and (tops[:k] > tops[k] + DEEP).any() and (tops[k + 1 :] > tops[k] + DEEP).any():
+			return True
 	# from the upper half of the tops (a fit to them all bends down into the
 	# hole), then every top within DROP of the fit, until that settles
 	keep = found & (tops >= np.median(tops[found]))
@@ -995,6 +1057,112 @@ def surface_distance(points, tris, chunk=256):
 		rim = np.minimum(np.minimum(edge(p, a, b), edge(p, b, c)), edge(p, c, a))
 		out[i:i + chunk] = np.where(over, np.abs(h), rim).min(1)
 	return out
+
+
+def standing(points, tris, chunk=256):
+	# Each point's (N, 3) distance from the nearest of the triangles (M, 3, 3),
+	# negative where it lies behind that triangle's face, inside what it
+	# bounds. Source coordinates mirror the model's frame, so an outward
+	# face's cross product there points in
+	out = np.full(len(points), -np.inf)
+	a, b, c = tris[:, 0], tris[:, 1], tris[:, 2]
+	n = -np.cross(b - a, c - a)
+	size = np.linalg.norm(n, axis=1)
+	keep = size > 1e-12
+	if not keep.any():
+		return out
+	a, b, c, n = a[keep], b[keep], c[keep], n[keep] / size[keep, None]
+	v0, v1 = b - a, c - a
+	d00, d01, d11 = (v0 * v0).sum(1), (v0 * v1).sum(1), (v1 * v1).sum(1)
+	den = d00 * d11 - d01 * d01
+
+	def edge(p, s0, s1):
+		e = s1 - s0
+		t = np.clip(((p[:, None] - s0[None]) * e[None]).sum(-1) / np.maximum((e * e).sum(1), 1e-12)[None], 0, 1)
+		return np.linalg.norm(s0[None] + t[..., None] * e[None] - p[:, None], axis=-1)
+
+	for i in range(0, len(points), chunk):
+		p = points[i:i + chunk]
+		w = p[:, None] - a[None]
+		h = (w * n[None]).sum(-1)
+		q = w - h[..., None] * n[None]
+		d20, d21 = (q * v0[None]).sum(-1), (q * v1[None]).sum(-1)
+		u, v = (d11 * d20 - d01 * d21) / den, (d00 * d21 - d01 * d20) / den
+		over = (u >= 0) & (v >= 0) & (u + v <= 1)
+		d = np.where(over, np.abs(h), np.minimum(np.minimum(edge(p, a, b), edge(p, b, c)), edge(p, c, a)))
+		k = d.argmin(1)
+		rows = np.arange(len(p))
+		out[i:i + chunk] = d[rows, k] * np.where(h[rows, k] < 0, -1.0, 1.0)
+	return out
+
+
+def proud(tris, behind, step=0.05):
+	# How far the triangles (N, 3, 3) that face aft (within 30 deg of it: a
+	# ramp turned further, a fillet drawing in, is no end) stand proud of what
+	# lies behind them, the furthest: each one's corners, edges' middles and middle,
+	# from the nearest of `behind` (M, 3, 3) reaching more than `step` in aft
+	# of it or turned forward back to back with it, where it stands outside
+	# that (a face's hidden part, inside the parts behind it, stands proud of
+	# nothing). A face turned aft's cross product points forward here
+	# (standing())
+	n = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
+	size = np.linalg.norm(n, axis=1)
+	t = tris[(size > 1e-12) & (n[:, 0] < -math.cos(math.radians(30)) * size)]
+	if not len(t):
+		return 0.0
+	m = np.cross(behind[:, 1] - behind[:, 0], behind[:, 2] - behind[:, 0])
+	forward = m[:, 0] > 0.5 * np.linalg.norm(m, axis=1)
+	points = np.concatenate([t.reshape(-1, 3), t.mean(1), ((t + np.roll(t, -1, axis=1)) / 2).reshape(-1, 3)])
+	worst = 0.0
+	for station in np.unique(np.round(points[:, 0], 2)):
+		here = points[np.abs(points[:, 0] - station) < 0.006]
+		later = behind[(behind[:, :, 0].max(1) > station + step) | (forward & (np.abs(behind[:, :, 0] - station) < step).all(1))]
+		if len(later):
+			worst = max(worst, float(standing(here, later).max()))
+	return worst
+
+
+def outward(tris):
+	# Unit normals out of the jet for triangles (N, 3, 3) as it reads in
+	# source coordinates, where their cross products point in (the
+	# coordinates mirror the model's frame)
+	n = -np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
+	return n / np.maximum(np.linalg.norm(n, axis=1), 1e-12)[:, None]
+
+
+def folds(tris):
+	# The sharpest fold between two of the triangles (N, 3, 3) that share an
+	# edge: the angle between their normals, degrees (0 lying flat; slivers
+	# passed over)
+	n = outward(tris)
+	edges = {}
+	for i, t in enumerate(np.round(tris, 4)):
+		for a, b in ((0, 1), (1, 2), (2, 0)):
+			edges.setdefault(tuple(sorted((tuple(t[a]), tuple(t[b])))), []).append(i)
+	pairs = np.array([faces for faces in edges.values() if len(faces) == 2], int).reshape(-1, 2)
+	# a sliver's direction is its rounding's (under a thousandth of a square
+	# inch: the speedbrake's opening cuts some at its corners)
+	area = np.linalg.norm(np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0]), axis=1) / 2
+	pairs = pairs[(area[pairs] > 1e-3).all(1)] if len(pairs) else pairs
+	if not len(pairs):
+		return 0.0
+	return float(np.degrees(np.arccos(np.clip((n[pairs[:, 0]] * n[pairs[:, 1]]).sum(1), -1.0, 1.0))).max())
+
+
+def lip(inner, outer, turns, width=2.0):
+	# The least by which points `inner` stand outside points `outer` round
+	# an axis, each set given as (up, out) from it: at each of the angles
+	# `turns` (degrees from straight up, + out), the nearest of inner's
+	# within width/2 degrees against the furthest of outer's; NaN where no
+	# angle has both
+	def round_(points):
+		return np.degrees(np.arctan2(points[:, 1], points[:, 0])), np.hypot(points[:, 0], points[:, 1])
+
+	a, r = round_(np.asarray(inner, float).reshape(-1, 2))
+	b, q = round_(np.asarray(outer, float).reshape(-1, 2))
+	least = [float(r[np.abs(a - t) <= width / 2].min() - q[np.abs(b - t) <= width / 2].max()) for t in turns
+		if (np.abs(a - t) <= width / 2).any() and (np.abs(b - t) <= width / 2).any()]
+	return min(least) if least else float("nan")
 
 
 def first_hit(tris, origin, direction):
@@ -1104,18 +1272,25 @@ def mirrored(left, right):
 	return float(max(np.abs(left.min(0) - right.min(0)).max(), np.abs(left.max(0) - right.max(0)).max()))
 
 
-# Clearance (layout.motion): through the gear's stroke no part it moves
-# passes through another part it neither carries nor rides: not the skin
-# round an opening, not a door, not another leg's member, by more than the
-# seam a real part keeps (SEAM: each moving part is pulled in by it first;
-# a door cut to its opening's own outline grazes the opening's walls as it
-# starts to turn). Where two parts
-# meet by design (JOINED) their crossings with the gear down are the joint,
-# and only a crossing further than 2 in from it, in the first part's own
-# frame, is a clash; a door's crossings of the skin, its well or another
+# Clearance (layout.motion): through each mechanism's stroke (SWEPT) no part
+# it moves passes through another part it neither carries nor rides: not the
+# skin round an opening, not a door, not another leg's member, by more than
+# the seam a real part keeps (SEAM: each moving part is pulled in by it
+# first; a door cut to its opening's own outline grazes the opening's walls
+# as it starts to turn). Where two parts meet by design (JOINED) their
+# crossings at the stroke's end (gear down, the speedbrake open) are the
+# joint, and only a crossing further than 2 in from it, in the first part's
+# own frame, is a clash; a door's crossings of the skin, its well or another
 # door within HINGE of its hinge line are its turn in the skin, and closed
-# (gear 0) its seat, which the wells check judges
-def clearance(jet):
+# (where it stands as it rests: gear 0, or the probe still waiting) its
+# seat, which the wells check judges
+# The mechanisms swept, each by its drive from 0 to 1 over its steps: the
+# gear by the one value through the retraction's timeline, every part on one
+# of its mechanisms' drives moving with it
+SWEPT = {"gear": 41, "probe": 21, "canopy": 21, "fold": 21, "speedbrake": 21}
+
+
+def clearance(jet, drive="gear", steps=41):
 	model, nodes, inch = jet.model, jet.model.nodes, FRAME.unit
 
 	def lineage(i):
@@ -1125,32 +1300,49 @@ def clearance(jet):
 			i = nodes[i]["parent"]
 		return out
 
+	def rides(name):
+		own = jet.joints.get(name, {}).get("drive") or ""
+		return own.startswith("gear.") if drive == "gear" else own == drive
+
 	lines = [lineage(i) for i in range(len(nodes))]
-	gear = [i for i, n in enumerate(nodes) if n["mesh"] is not None and any((jet.joints.get(nodes[k]["name"], {}).get("drive") or "").startswith("gear.") for k in lines[i])]
-	if not gear:
-		raise KeyError("no part the gear moves")
+	driven = [frozenset(k for k in lines[i] if rides(nodes[k]["name"])) for i in range(len(nodes))]
+	moving = [i for i, n in enumerate(nodes) if n["mesh"] is not None and driven[i]]
+	if not moving:
+		raise KeyError(f"no part the {drive} moves")
 	meshed = [i for i, n in enumerate(nodes) if n["mesh"] is not None]
-	pairs = [(i, k) for i in gear for k in meshed if k != i and i not in lines[k] and k not in lines[i] and not (k in gear and k < i)]
+	pairs = [(i, k) for i in moving for k in meshed if k != i and i not in lines[k] and k not in lines[i] and not (k in moving and k < i)]
+	if drive != "gear":
+		# the gear judges its parts riding one joint as well, their seats by
+		# JOINED; another mechanism's parts riding its joints together (a rail
+		# on the folding panel, the fairing hung half an inch into it) keep
+		# their places against each other through its stroke, which the
+		# static checks judge
+		pairs = [(i, k) for i, k in pairs if driven[i] != driven[k]]
 	joined = {frozenset(p) for p in JOINED}
-	doors = {i for i in gear if "door" in nodes[i]["name"] and nodes[i]["name"] in jet.joints}
-	hinges = {i: (model.rest[i][:3, 3], np.asarray(jet.joints[nodes[i]["name"]]["axis"], float) / np.linalg.norm(jet.joints[nodes[i]["name"]]["axis"])) for i in doors}
+	# the doors: the gear's on joints of their own; another mechanism's, each
+	# part cut from the skin to close its opening (FLUSH), which may ride the
+	# part it opens for with no hinge of its own (the probe's door)
+	flush = {n for n, _ in FLUSH}
+	doors = {i for i in moving if (("door" in nodes[i]["name"] and nodes[i]["name"] in jet.joints) if drive == "gear" else nodes[i]["name"] in flush)}
+	hinges = {i: (model.rest[i][:3, 3], np.asarray(jet.joints[nodes[i]["name"]]["axis"], float) / np.linalg.norm(jet.joints[nodes[i]["name"]]["axis"])) for i in doors if nodes[i]["name"] in jet.joints}
 	seats, found = {}, {}
 	# each overlap's shock: its pin (the node's hinge) and its line toward
 	# the eye in its own frame, from the can's far end at rest
-	shock_axes = {}
-	rest_worlds = model.worlds(verify.pose(jet.joints, {}))
-	rest_parts = model.parts(verify.pose(jet.joints, {}))
-	for name in set(OVERLAPS.values()):
-		i = model.index[name]
-		can = rest_parts[name.replace("_shock", "_shock_can")].reshape(-1, 3)
-		local = (can - rest_worlds[i][:3, 3]) @ rest_worlds[i][:3, :3]
-		far = local[np.argmax(np.linalg.norm(local, axis=1))]
-		shock_axes[name] = far / np.linalg.norm(far)
-	# each foot's bolt, down from the spool's hinge, and where its lower lug begins
-	foot_axes = {n: np.asarray(jet.joints[n]["axis"], float) / np.linalg.norm(jet.joints[n]["axis"]) for n in set(FOOTED.values())}
-	lower = FACTS["layout"]["motion"]["braces"]["value"]["side"]["foot"]["lugs"][1][0]
-	for t in np.linspace(1, 0, 41):
-		posed = verify.pose(jet.joints, {"gear": float(t)})
+	shock_axes, foot_axes, lower = {}, {}, 0.0
+	if drive == "gear":
+		rest_worlds = model.worlds(verify.pose(jet.joints, {}))
+		rest_parts = model.parts(verify.pose(jet.joints, {}))
+		for name in set(OVERLAPS.values()):
+			i = model.index[name]
+			can = rest_parts[name.replace("_shock", "_shock_can")].reshape(-1, 3)
+			local = (can - rest_worlds[i][:3, 3]) @ rest_worlds[i][:3, :3]
+			far = local[np.argmax(np.linalg.norm(local, axis=1))]
+			shock_axes[name] = far / np.linalg.norm(far)
+		# each foot's bolt, down from the spool's hinge, and where its lower lug begins
+		foot_axes = {n: np.asarray(jet.joints[n]["axis"], float) / np.linalg.norm(jet.joints[n]["axis"]) for n in set(FOOTED.values())}
+		lower = FACTS["layout"]["motion"]["braces"]["value"]["side"]["foot"]["lugs"][1][0]
+	for t in np.linspace(1, 0, steps):
+		posed = verify.pose(jet.joints, {drive: float(t)})
 		parts, worlds = model.parts(posed), model.worlds(posed)
 		boxes = {name: (p.reshape(-1, 3).min(0), p.reshape(-1, 3).max(0)) for name, p in parts.items()}
 		pulled = {}
@@ -1158,10 +1350,10 @@ def clearance(jet):
 			a, b = nodes[i]["name"], nodes[k]["name"]
 			if a not in parts or b not in parts or (boxes[a][0] > boxes[b][1]).any() or (boxes[b][0] > boxes[a][1]).any():
 				continue
-			for n in (a, b) if k in gear else (a,):
+			for n in (a, b) if k in moving else (a,):
 				if n not in pulled:
 					pulled[n] = shrunk(parts[n], SEAM * inch)
-			hits = through(pulled[a], pulled[b] if k in gear else parts[b])
+			hits = through(pulled[a], pulled[b] if k in moving else parts[b])
 			pair = frozenset((a, b))
 			if len(hits) and pair in joined:
 				local = (hits - worlds[i][:3, 3]) @ worlds[i][:3, :3]
@@ -1180,13 +1372,14 @@ def clearance(jet):
 				bolt = w[:3, :3] @ foot_axes[FOOTED[pair]]
 				hits = hits[(hits - w[:3, 3]) @ bolt < (lower - 0.2) * inch]
 			for door, other in ((i, k), (k, i)):
-				if len(hits) and door in doors and (other not in gear or other in doors):
-					if t == 0:
+				if len(hits) and door in doors and (other not in moving or other in doors):
+					if np.allclose(worlds[door], model.rest[door], atol=1e-9):
 						hits = hits[:0]   # closed: the wells check judges a door's seat
 						break
-					origin, axis = hinges[door]
-					off = hits - origin
-					hits = hits[np.linalg.norm(off - np.outer(off @ axis, axis), axis=1) > HINGE * inch]
+					if door in hinges:
+						origin, axis = hinges[door]
+						off = hits - origin
+						hits = hits[np.linalg.norm(off - np.outer(off @ axis, axis), axis=1) > HINGE * inch]
 			if len(hits):
 				entry = found.setdefault((a, b), {"at": [], "points": []})
 				entry["at"].append(round(float(t), 3))
@@ -1194,15 +1387,17 @@ def clearance(jet):
 	for (a, b), entry in sorted(found.items()):
 		p = np.concatenate(entry["points"])
 		lo, hi = p.min(0), p.max(0)
-		yield result("layout.motion", f"{a} through {b}, gear {min(entry['at'])}-{max(entry['at'])} at FS {lo[0]:.0f}-{hi[0]:.0f}, WL {lo[1]:.0f}-{hi[1]:.0f}, BL {lo[2]:.0f}-{hi[2]:.0f}",
+		yield result("layout.motion", f"{a} through {b}, {drive} {min(entry['at'])}-{max(entry['at'])} at FS {lo[0]:.0f}-{hi[0]:.0f}, WL {lo[1]:.0f}-{hi[1]:.0f}, BL {lo[2]:.0f}-{hi[2]:.0f}",
 			0, len(entry["at"]), 0, "steps")
-	yield result("layout.motion", f"pairs of parts crossing as the gear moves, of {len(pairs)} pairs over 41 steps", 0, len(found), 0, "pairs")
+	yield result("layout.motion", f"pairs of parts crossing as the {drive} moves, of {len(pairs)} pairs over {steps} steps", 0, len(found), 0, "pairs")
+	if drive != "gear":
+		return
 	# the sweep poses the gear along the retraction, the nose leg leading;
 	# the extension lowers both legs together, the doors open either way, so
 	# its poses differ only in where one leg stands against the other: no
 	# pose of the nose leg's parts reaches a main leg's through their strokes
 	def riding(part):
-		return [nodes[i]["name"] for i in gear if any(jet.joints.get(nodes[k]["name"], {}).get("drive") == f"gear.{part}" for k in lines[i])]
+		return [nodes[i]["name"] for i in moving if any(jet.joints.get(nodes[k]["name"], {}).get("drive") == f"gear.{part}" for k in lines[i])]
 	reach = {}
 	for part in ("nose", "main"):
 		swept = np.concatenate([jet.points(riding(part), {"gear.doors": 1.0, f"gear.{part}": float(t)}).reshape(-1, 3) for t in np.linspace(0, 1, 11)])
@@ -1268,7 +1463,7 @@ def checks(jet, only=(), seen=None):
 		# the folded panels' span, without the fairings under them (layout.wing_fairing),
 		# which turn outboard with the panel 4.3 in a side: see facts overall.span.folded
 		folded = jet.points([n for n in every if not n.startswith("gear") and not n.startswith("fairing_") and not n.startswith("lamp_position_fold")], {"fold": 1})
-		yield result("overall.span.folded", "span with the wings folded, the panels without their underwing fairings", value(F["overall"]["span"]["folded"]) * 12, folded[:, 2].max() - folded[:, 2].min(), 1.5)
+		yield result("overall.span.folded", "span with the wings folded, the panels without their underwing fairings", value(F["overall"]["span"]["folded"]) * 12, folded[:, 2].max() - folded[:, 2].min(), 3.0)
 		# the outer panel turned as far as the photos fold it (layout.fold): the
 		# rigid turn taking its points at rest onto its points folded
 		for side in ("left", "right"):
@@ -1432,6 +1627,36 @@ def checks(jet, only=(), seen=None):
 
 	yield from guard("lex", "LEX", lex)
 
+	# The LEX's underside at the traced sections (lex.underside): each
+	# section registered on the LEX's top, where the build places the top from
+	# the same trace, then the underside's height above that keel at each of
+	# the trace's buttlines between its root's fillet and its edge
+	def underside():
+		traced = json.loads((HERE / "references" / "sections.json").read_text())["sections"]
+
+		def crossing(segments, bl):
+			# the waterlines (or heights) where segments ((N, 2, 2) BL, WL) cross a buttline
+			a, b = segments[:, 0], segments[:, 1]
+			across = (a[:, 0] - bl) * (b[:, 0] - bl) <= 0
+			a, b = a[across], b[across]
+			f = (bl - a[:, 0]) / np.where(b[:, 0] != a[:, 0], b[:, 0] - a[:, 0], 1)
+			return a[:, 1] + f * (b[:, 1] - a[:, 1])
+
+		for sec in F["lex"]["underside"]["value"]:
+			station = sec["station"]
+			if station not in (296, 357):
+				continue
+			outline = np.array(traced[str(station)]["outline"], float)
+			halves = [np.stack([outline[:-1] * [k, 1], outline[1:] * [k, 1]], 1) for k in (1, -1)]
+			q = jet.cut(["lex_right"], [station, 100, 0], [1, 0, 0])[:, [2, 1]].reshape(-1, 2, 2)
+			flat = [bl for bl, _ in sec["heights"] if 26 <= bl <= 38]
+			keel = float(np.median([crossing(q, bl).max() - np.mean([crossing(h, bl).max() for h in halves]) for bl in flat]))
+			for bl, height in sec["heights"]:
+				low = crossing(q, bl)
+				yield result("lex.underside", f"FS {station} LEX underside at BL {bl:g}, above the keel its top sets", height, float(low.min()) - keel if len(low) else math.nan, 1.0)
+
+	yield from guard("lex.underside", "LEX underside", underside)
+
 	# The LEX's apex and fence (tp3111's base; the photos' apex and top corners)
 	def lex_parts():
 		start = F["layout"]["lex"]["apex"]
@@ -1520,6 +1745,43 @@ def checks(jet, only=(), seen=None):
 		span = (stations > junction) & np.isfinite(wing)
 		bare = np.where(span & np.isfinite(over), wing - over, np.where(span, np.inf, -np.inf))
 		yield result("shape.lex", "wing's root end standing above the LEX fairing beside it, the most", 0.0, max(float(bare.max()), 0.0), 0.05)
+		# no hollow under the LEX: the inner wing's leading edge inboard of the
+		# junction, every inch over BL 40-54, lies inside the LEX, the fuselage,
+		# the inlet and the splitter (a ray each way along each axis meets one),
+		# and a ray aft from FS 300 between the body and the LEX's edge, WL
+		# 112-124, meets the LEX (or the splitter under it) first, not the
+		# fuselage or the wing through a cavity
+		front = []
+		for bl in np.arange(40.5, 54.5, 1.0):
+			q = jet.cut(["wing_inner_right"], [400, 100, bl], [0, 0, 1])
+			if len(q):
+				front.append(q[np.argmin(q[:, 0])])
+		if len(front) < 14:
+			raise KeyError("the inner wing's leading edge over BL 40-54")
+		shell = jet.points(["lex_right", "fuselage", "inlet_right", "splitter_right"]).reshape(-1, 3, 3)
+		yield result("shape.lex", "inner wing's leading edge points over BL 40-54 not enclosed by the LEX, fuselage, inlet and splitter", 0, int((~enclosed(np.array(front), shell)).sum()), 0, "points")
+		names = sorted(jet.parts())
+		every = [jet.points([n]).reshape(-1, 3, 3) for n in names]
+		owner = np.concatenate([np.full(len(t), k) for k, t in enumerate(every)])
+		every = np.concatenate(every)
+		# those under the LEX's top at the junction, half an inch down (a ray
+		# over it runs on above the wing to the fins)
+		section = jet.cut(["lex_right"], [junction, 100, 0], [1, 0, 0]).reshape(-1, 2, 3)
+
+		def lid(b):
+			a, c = section[:, 0], section[:, 1]
+			across = (a[:, 2] - b) * (c[:, 2] - b) <= 0
+			f = (b - a[across, 2]) / np.where(c[across, 2] != a[across, 2], c[across, 2] - a[across, 2], 1)
+			return float((a[across, 1] + f * (c[across, 1] - a[across, 1])).max(initial=-np.inf))
+		rays = np.array([[300.0, w, b] for w in np.arange(112.0, 124.5, 1.0) for b in np.arange(25.0, 52.5, 1.0) if w <= lid(b) - 0.5])
+		if not len(rays):
+			raise ValueError("no LEX over the rays")
+		# the triangles their path can cross
+		path = (every[:, :, 0].max(1) >= 300.0) & (every[:, :, 1].max(1) >= 112.0) & (every[:, :, 1].min(1) <= 124.0) & (every[:, :, 2].max(1) >= 25.0) & (every[:, :, 2].min(1) <= 52.0)
+		index, _ = hits(every[path], rays, np.array([1.0, 0.0, 0.0]))
+		owner = owner[path]
+		wrong = [names[owner[k]] for k in index if k >= 0 and not (names[owner[k]].startswith("lex_") or names[owner[k]] == "splitter_right")]
+		yield result("shape.lex", f"rays aft under the LEX, WL 112-124, BL 25-52, meeting another part first, of {len(rays)}" + (f" ({', '.join(sorted(set(wrong)))})" if wrong else ""), 0, len(wrong), 0, "rays")
 
 	yield from guard("shape.lex", "LEX blend", blend)
 
@@ -1563,6 +1825,10 @@ def checks(jet, only=(), seen=None):
 				yield result("airfoils", "NACA 65A's thickest point", 0.40, where, 0.06, "of chord")
 		fold = jet.hinge("wing_right")
 		yield result("wing.fold", "fold line", value(w["fold"]), fold[2], 0.3, "BL in")
+		# the fold's hinge along the upper skin's peak over the fold line, so the
+		# outer panel's root face swings up clear of the inner panel's
+		skin = jet.cut(["wing_inner_right"], [400, 100, value(w["fold"]) - 0.1], [0, 0, 1])
+		yield result("wing.fold", "fold hinge's height, the inner panel's upper skin's peak at the fold line", skin[:, 1].max(), fold[1], 0.1, "WL in")
 		yield result("wing.span", "wingtip at the launcher rail (a sketch, so loosely)", value(w["span"]), jet.points(names)[:, 2].max(), 3.0, "BL in")
 		inner = jet.points(["flap_leading_inner_right"])
 		end = inner[inner[:, 2] < inner[:, 2].min() + 0.2]
@@ -1772,8 +2038,6 @@ def checks(jet, only=(), seen=None):
 		normal = FRAME.axes @ np.cross([1.0, 0, 0], span)
 		area = sum(verify.area(jet.tris([f"fin_{s}", f"rudder_{s}"]), normal * ([1, 1, -1] if s == "left" else 1)) / 2 for s in ("left", "right")) / 0.0254 ** 2 / 144
 		yield result("fin.area", "area, both fins", value(f_["area"]), area, 2.0, "ft2")
-		rudder = sum(verify.area(jet.tris([f"rudder_{s}"]), normal * ([1, 1, -1] if s == "left" else 1)) / 2 for s in ("left", "right")) / 0.0254 ** 2 / 144
-		yield result("fin.rudder", "rudder area, both", value(f_["rudder"]), rudder, 0.5, "ft2")
 		for frac, key in ((0.03, "root"), (0.97, "tip")):
 			q = sections[frac]
 			chord = q[:, 0].max() - q[:, 0].min()
@@ -1826,8 +2090,71 @@ def checks(jet, only=(), seen=None):
 		foot = low[np.argmax(low[:, 2])]
 		carried = face(w0) + (face(w1) - face(w0)) * (foot[1] - w0) / (w1 - w0)
 		yield result("layout.fin", f"fairing's foot outboard of the fin's face carried down, FS {station:.0f}", fair["standoff"], foot[2] - carried, 0.75, "in")
-
 	yield from guard("fin", "fins", fin)
+
+	# The plate behind the fin's root fairing (layout.fin fairing aft): its
+	# upper edge's height where the photos cast it, short of its end on the
+	# hinge line, and the seam step in from the band where the band ends
+	def plate():
+		fair = F["layout"]["fin"]["fairing"]
+		q = jet.points(["fin_fairing_right"])
+		end = q[:, 0].max()
+		for station, waterline in fair["aft"]["top"]:
+			c = jet.cut(["fin_fairing_right"], [min(station, end - 0.3), 0, 0], [1, 0, 0])
+			if not len(c):
+				raise KeyError(f"no fin_fairing_right at FS {station}")
+			yield result("layout.fin", f"fairing's plate's upper edge at FS {station:.0f}", waterline, c[:, 1].max(), 1.0, "WL in")
+		band = fair["top"][-1][0]
+
+		def edge(station):
+			# the upper edge's outermost buttline, its top 0.3 in
+			c = jet.cut(["fin_fairing_right"], [station, 0, 0], [1, 0, 0])
+			if not len(c):
+				raise KeyError(f"no fin_fairing_right at FS {station}")
+			return float(c[c[:, 1] > c[:, 1].max() - 0.3][:, 2].max())
+
+		yield result("layout.fin", "fairing's seam step in from the band to the plate", fair["aft"]["seam"], edge(band - 0.1) - edge(band + 0.1), 0.1, "in")
+		# its foot on the fin root's line the photos cast, where it turns in
+		# behind the band and along the fin
+		for station, buttline in fair["aft"]["foot"]:
+			if not band + 0.2 < station < end - 0.2:
+				continue
+			c = jet.cut(["fin_fairing_right"], [station, 0, 0], [1, 0, 0])
+			if not len(c):
+				raise KeyError(f"no fin_fairing_right at FS {station}")
+			low = c[c[:, 1] < c[:, 1].min() + 1.0]
+			yield result("layout.fin", f"fairing's plate's foot at FS {station:g}", buttline, low[:, 2].max(), 0.3, "BL in")
+
+	yield from guard("layout.fin", "fin's fairing's plate", plate)
+
+	# The rudder's outline (layout.rudder), the right one's, in the fin's own
+	# frame: each point's span from the root chord and its share of the chord
+	# there, the toed chord and the swept leading edge solved out
+	def rudder():
+		r = F["layout"]["rudder"]
+		cant, toe = math.radians(value(f_["cant"])), math.radians(value(f_["toe"]))
+		rc, tc, height = value(f_["root"]), value(f_["tip"]), value(f_["height"])
+		span = np.array([0.0, math.cos(cant), math.sin(cant)])
+		chordwise = np.array([math.cos(toe), 0.0, -math.sin(toe)])
+		sweep = math.tan(math.radians(value(f_["sweep"]))) + 0.25 * (rc - tc) / height
+		basis = np.stack([span + np.array([1.0, 0.0, 0.0]) * sweep, chordwise, np.cross(span, chordwise)], 1)
+		root = F["layout"]["fin"]["root"]
+		points = jet.points(["rudder_right"])
+		u, w, _ = np.linalg.solve(basis, (points - np.array([root["station"], root["waterline"], root["buttline"]])).T)
+		x = w / (rc + (tc - rc) * u / height)
+		yield result("layout.rudder", "rudder's top, of the fin's span", r["span"][1], u.max() / height, 0.005, "of the span")
+		yield result("layout.rudder", "rudder's lower edge, of the fin's span", r["span"][0], u.min() / height, 0.005, "of the span")
+		# its front at each of its rings, bottom to top
+		rings = np.round(u, 1)
+		fronts = [float(x[rings == level].min()) for level in np.unique(rings)]
+		yield result("layout.rudder", f"rudder's hinge line at each of its {len(fronts)} rings, the furthest off, of the fin's chord", r["hinge"], max(fronts, key=lambda v: abs(v - r["hinge"])), 0.01, "of the chord")
+		yield result("layout.rudder", "rudder's trailing edge, of the fin's chord", 1.0, float(x.max()), 0.005, "of the chord")
+		low = points[points[:, 1] < points[:, 1].min() + 0.6]
+		corner = low[low[:, 0] < low[:, 0].min() + 0.6].mean(0)
+		yield result("layout.rudder", "rudder's lower leading corner", r["corner"][0], corner[0], 1.5, "FS in")
+		yield result("layout.rudder", "rudder's lower leading corner", r["corner"][1], corner[1], 1.0, "WL in")
+
+	yield from guard("layout.rudder", "rudders", rudder)
 
 	# Engine, nozzles, inlets
 	e_ = F["engine"]
@@ -1894,6 +2221,23 @@ def checks(jet, only=(), seen=None):
 			near = plate[np.abs(plate[:, 1] - p[1]) < 0.6]
 			yield result("layout.inlet", f"splitter's leading edge at its {what}", p[0], pick(near[:, 0], np.min), 1.0, "FS in")
 			yield result("layout.inlet", f"splitter's buttline at its {what}", p[2], pick(near[:, 2], np.max), 0.5, "BL in")
+		# the duct as deep as dvids8025511 sees into it: each sight line through
+		# the far edge of its lit floor and walls ends on the left inlet's duct,
+		# nothing else ahead of it, at least 30 in past the lip (layout.inlet duct)
+		sight = place["duct"]["sight"]
+		eye = np.array(sight["eye"], float)
+		every, own = jet.tris(sorted(jet.parts())), jet.tris(["inlet_left"])
+		for k, far in enumerate(sight["far"]):
+			direction = FRAME.axes @ (np.array(far, float) - eye)
+			direction /= np.linalg.norm(direction)
+			start = FRAME.model(eye[None])[0]
+			d, mine = first_hit(every, start, direction), first_hit(own, start, direction)
+			if d is None:
+				raise ValueError(f"sight line {k + 1} meets nothing")
+			hit = FRAME.source((start + direction * d)[None])[0]
+			past = hit[0] - (plane[0] + plane[1] * hit[1] + plane[2] * abs(hit[2]))
+			yield result("layout.inlet", f"dvids8025511's sight line {k + 1} into the left duct ending on another part", 0, int(mine is None or mine > d + 1e-6), 0, "lines")
+			yield result("layout.inlet", f"dvids8025511's sight line {k + 1} into the left duct ending short of 30 in past the lip", 0.0, max(30.0 - past, 0.0), 0.0)
 
 	yield from guard("layout.inlet", "inlet", inlet)
 
@@ -2001,6 +2345,72 @@ def checks(jet, only=(), seen=None):
 
 	yield from guard("layout.nacelle", "nacelle", nacelle)
 
+	# The box on the right nacelle's side over the cheek station, airframe, at
+	# rest with no stores: its aft edge upright at its station and buttline,
+	# its front, its top along its line, its depth whole ahead of its chamfer
+	# and half way along it, and its outboard face where a ray in from outboard
+	# meets the jet first
+	def outboard():
+		buttline = F["layout"]["nacelle"]["cheek"]["edge"][1]
+		every = jet.tris(sorted(jet.parts()))
+		for station in (545.0, 560.0):
+			d = first_hit(every, FRAME.model(np.array([[station, 82.0, 80.0]]))[0], FRAME.axes @ np.array([0.0, 0.0, -1.0]))
+			yield result("layout.nacelle", f"first skin a ray in from outboard meets at FS {station:g}, WL 82, no stores", buttline, 80.0 - d / FRAME.unit if d is not None else math.nan, 0.1, "BL in")
+
+	yield from guard("layout.nacelle", "cheek box's face", outboard)
+
+	def cheek():
+		box = F["layout"]["nacelle"]["cheek"]
+		(edge, buttline), front = box["edge"], box["front"]
+		line = lambda knots, s: float(np.interp(s, *zip(*knots)))
+		q = jet.points(["fairing_cheek_right"])
+		aft = q[q[:, 0] > edge - 0.05]
+		yield result("layout.nacelle", "cheek box's aft edge, its station", edge, q[:, 0].max(), 0.05, "FS in")
+		yield result("layout.nacelle", "cheek box's aft edge, its buttline", buttline, aft[:, 2].max(), 0.05, "BL in")
+		yield result("layout.nacelle", "cheek box's aft edge, its top", line(box["top"], edge), aft[:, 1].max(), 0.05, "WL in")
+		yield result("layout.nacelle", "cheek box's aft edge, its bottom", line(box["bottom"], edge), aft[:, 1].min(), 0.05, "WL in")
+		# its front above the LAU-116's block, which rides its node ahead of it
+		over = q[q[:, 1] > F["layout"]["stores"]["lau116"]["front_top"][1] + 0.1]
+		ahead = over[over[:, 0] < over[:, 0].min() + 0.05]
+		yield result("layout.nacelle", "cheek box's front, its station", front, over[:, 0].min(), 0.05, "FS in")
+		yield result("layout.nacelle", "cheek box's top front corner, its height", line(box["top"], front), ahead[:, 1].max(), 0.05, "WL in")
+		for station, want in box["top"][1:4]:
+			c = jet.cut(["fairing_cheek_right"], [station, 100, 0], [1, 0, 0])
+			yield result("layout.nacelle", f"cheek box's top at FS {station:g}", want, c[:, 1].max() if len(c) else math.nan, 0.1, "WL in")
+		for back, share in ((box["chamfer"] + 1.0, 1.0), (box["chamfer"] / 2, 0.5)):
+			c = jet.cut(["fairing_cheek_right"], [edge - back, 100, 0], [1, 0, 0])
+			yield result("layout.nacelle", f"cheek box's depth {back:.2f} in ahead of its aft edge", box["depth"] * share, np.ptp(c[:, 2]) if len(c) else math.nan, 0.05)
+
+	yield from guard("layout.nacelle", "cheek box", cheek)
+
+	# Every store part shown, nothing standing outside the cheek box's outboard
+	# face over its length: a ray in from outboard every inch along the box and
+	# every half inch up its face meets the box before any store part, or a
+	# store part no further out than the box's face beside it
+	def clear():
+		box = F["layout"]["nacelle"]["cheek"]
+		(edge, buttline), front = box["edge"], box["front"]
+		line = lambda knots, s: float(np.interp(s, *zip(*knots)))
+		drives = {"stores": 1}
+		stored = jet.tris(sorted(n for n in jet.parts(drives) if STATION.match(n)), drives)
+		face = jet.tris(["fairing_cheek_right"], drives)
+		inward = FRAME.axes @ np.array([0.0, 0.0, -1.0])
+		worst, where = 0.0, None
+		for station in np.arange(front + 0.5, edge - 0.25, 1.0):
+			for w in np.arange(line(box["bottom"], station) + 0.25, line(box["top"], station) - 0.2, 0.5):
+				origin = FRAME.model(np.array([[station, w, 80.0]]))[0]
+				hit = first_hit(stored, origin, inward)
+				if hit is None:
+					continue
+				wall = first_hit(face, origin, inward)
+				out = (wall - hit) / FRAME.unit if wall is not None else (80.0 - hit / FRAME.unit) - buttline
+				if out > worst:
+					worst, where = out, (station, w)
+		label = f" (at FS {where[0]:g}, WL {where[1]:.1f})" if where else ""
+		yield result("layout.nacelle", f"store parts standing outside the cheek box's outboard face, stores shown, the furthest{label}", 0.0, worst, 0.05)
+
+	yield from guard("layout.nacelle", "cheek box's face with the stores", clear)
+
 	# The band between the nacelles: the skin's lowest point at each measured
 	# drain, grille corner, hole, pin and seam (both sides where off the
 	# centreline) and at the inner doors' triangulated inboard corners, within
@@ -2053,14 +2463,81 @@ def checks(jet, only=(), seen=None):
 			yield result("layout.spine", f"spine's top between the fins at FS {station:g}, BL {buttline:g}", waterline, at("above", station, buttline), 1.0, "WL in")
 		for station, waterline in sp["deck"]:
 			yield result("layout.spine", f"deck beside the spine at FS {station:g} (dvids9820788)", waterline, at("above", station, 24.0), 1.0, "WL in")
-		# the top's centreline behind the crown's last point, between and behind
-		# the fins, where the sky check's top outline puts it
+		# the top outline seen from the side behind the crown's last point, where
+		# the sky check puts it: the highest the skin stands across the
+		# buttlines (the centreline at the speedbrake's aft edge, the nacelles'
+		# tops at the nozzles)
 		top = jet.points(["fuselage", "speedbrake"]).reshape(-1, 3, 3)
 		for station, waterline in sp["crest"]:
-			crest = float(lines(top, "above", np.array([station - 0.5, station, station + 0.5]), np.array([-0.5, 0.0, 0.5]))[1, 1])
+			crest = float(np.nanmax(lines(top, "above", np.array([station - 0.5, station, station + 0.5]), np.arange(-40.0, 40.5, 0.5))[:, 1]))
 			yield result("layout.spine", f"crest at FS {station:g} (the sky check's top outline)", waterline, crest, 0.5, "WL in")
 
 	yield from guard("layout.spine", "spine", spine)
+
+	# The tail end (layout.spine tail): behind the speedbrake the top's
+	# centreline falls into the V between the nacelles' tops, and the
+	# fuselage ends inside its nozzles, but for the strip between them: every
+	# face of it turned aft within an inch of its end lies inside a nozzle's
+	# outer flaps' start circle (with the alternate flaps' stand) or on the
+	# strip (ended on the crest it stood a flat cap between the nozzles up to
+	# WL 122; on its own section, an annulus round the flaps)
+	def tail():
+		t = F["layout"]["spine"]["tail"]
+		skin = jet.points(["fuselage"]).reshape(-1, 3, 3)
+		knots = [tuple(k) for k in t["top"] if k[0] > F["layout"]["speedbrake"]["back"]]
+		middle = ((knots[-2][0] + knots[-1][0]) / 2, (knots[-2][1] + knots[-1][1]) / 2)
+		for station, waterline in sorted(knots + [middle]):
+			at = min(station, float(skin[..., 0].max()) - 0.5)
+			height = float(lines(skin, "above", np.array([at - 0.5, at, at + 0.5]), np.array([-0.5, 0.0, 0.5]))[1, 1])
+			yield result("shape.tail", f"skin's top on the centreline at FS {station:g}", waterline, height, 2.0, "WL in")
+		nozzle, petals = F["layout"]["nozzle"], F["layout"]["petals"]
+		radius = nozzle["radius"][0] + 0.3   # the alternate flaps stand 0.3 in proud (build.py nozzles())
+		end = float(skin[..., 0].max())
+		n = np.cross(skin[:, 1] - skin[:, 0], skin[:, 2] - skin[:, 0])
+		size = np.linalg.norm(n, axis=1)
+		aft = (size > 1e-12) & (n[:, 0] < -0.5 * size) & (skin[..., 0].min(1) > end - 1.0)   # source coordinates mirror the frame's handedness
+		corners = np.concatenate([skin[aft].reshape(-1, 3), skin[aft].mean(1)])
+		if not len(corners):
+			raise KeyError("no face of the fuselage turned aft at its end")
+		e = F["engine"]
+		axis = value(e["buttline"]) * 12 - (corners[:, 0] - value(F["reference"]["station"])) * math.tan(math.radians(value(e["angle"])))
+		off = np.hypot(np.abs(corners[:, 2]) - axis, corners[:, 1] - nozzle["waterline"]) - radius
+		# the strip between the rings, below the V's floor: the gap between
+		# the two circles at each height
+		rise = corners[:, 1] - nozzle["waterline"]
+		gap = axis - np.sqrt(np.maximum(radius * radius - rise * rise, 0.0))
+		strip = (np.abs(corners[:, 2]) <= np.maximum(gap, t["strip"] / 2 + 0.5)) & (np.abs(rise) < radius) & (corners[:, 1] <= t["top"][-1][1] + 1.5)
+		yield result("shape.tail", "fuselage's end, faces turned aft outside a nozzle's flaps' start circle, off the strip between them, the furthest", 0.0, float(max(off[~strip].max(), 0.0)) if (~strip).any() else 0.0, 0.5)
+		# the lip over the flaps' forward ends (layout.nacelle end), round its
+		# upper half from the V's wall to the nacelle's widest line, half an
+		# inch aft of their start: the least the skin stands outside the
+		# flaps, along its facets (on the circle itself the alternate flaps
+		# showed through it in teeth)
+		station = nozzle["start"] + 0.5
+		axis = value(e["buttline"]) * 12 - (station - value(F["reference"]["station"])) * math.tan(math.radians(value(e["angle"])))
+
+		def round_axis(names):
+			# the right side's cut, along its segments, as (up, out) from the axis
+			cut = jet.cut(names, np.array([station, 0.0, 0.0]), np.array([1.0, 0.0, 0.0])).reshape(-1, 2, 3)
+			p = (cut[:, :1, :] + (cut[:, 1:, :] - cut[:, :1, :]) * np.linspace(0.0, 1.0, 11)[None, :, None]).reshape(-1, 3)
+			p = p[p[:, 2] > 0]
+			return np.c_[p[:, 1] - nozzle["waterline"], p[:, 2] - axis]
+
+		skin_ = round_axis(["fuselage"])
+		skin_ = skin_[np.hypot(skin_[:, 0], skin_[:, 1]) < F["layout"]["nacelle"]["end"]["radius"] + 1.0]
+		least = lip(skin_, round_axis(sorted(n for n in jet.parts() if n.startswith("nozzle_right_petal_"))), range(-60, 96, 2))
+		if np.isnan(least):
+			raise KeyError("no lip over the right nozzle's flaps")
+		yield result("shape.tail", "nacelle's lip over its flaps' forward ends: the least it stands outside them round its upper half", 0.1, least, 0.08)
+		# the V's skin, from the speedbrake's aft edge to an inch short of the
+		# end and inside the nacelles' tops, folds no sharper than its floor's
+		# edges (the union of the body and the nacelles left a groove along
+		# each of the strip's edges at FS 680-684, and twisted the facets
+		# between 60-100 deg)
+		v = skin[(skin[..., 0].min(1) > F["layout"]["speedbrake"]["back"]) & (skin[..., 0].max(1) <= end - 1.0 + 1e-3) & (np.abs(skin[..., 2]).max(1) < 16.0) & (skin[..., 1].min(1) > nozzle["waterline"] + 4.0)]
+		yield result("shape.tail", "the V's skin behind the speedbrake: its sharpest fold between neighbouring faces (its floor's edges turn up to 45 deg)", 0.0, folds(v), 45.0, "deg")
+
+	yield from guard("shape.tail", "tail", tail)
 
 	# The forebody's keel where the photos' lower outline puts it (layout.belly)
 	def belly():
@@ -2103,8 +2580,13 @@ def checks(jet, only=(), seen=None):
 		round_from_top = np.degrees(np.arctan2(np.abs(d[:, 2]), d[:, 1] - middle))
 		yield result("layout.probe", "probe door's lower edge round from the top", pr["lower"], round_from_top.max(), 2.0, "deg")
 		yield result("layout.probe", "probe door's upper edge round from the top", pr["upper"], round_from_top.min(), 2.0, "deg")
+		# the skin opened ahead of the door for the stowed nozzle, closed by a
+		# door of its own from the opening's forward end to the probe door (the
+		# seam between them shape.flush's); the stowed probe within it
+		forward = jet.points(["probe_door_forward"])
+		yield result("layout.probe", "probe's forward door's forward end, the opening's", pr["opening"], forward[:, 0].min(), 0.1, "FS in")
 		probe = jet.points(["probe"])
-		yield result("layout.probe", "stowed probe reaching ahead of its door", 0.0, max(0.0, pr["from"] - probe[:, 0].min()), 0.01)
+		yield result("layout.probe", "stowed probe reaching ahead of the skin's opening", 0.0, max(0.0, pr["opening"] - probe[:, 0].min()), 0.01)
 		# the angle-of-attack probes: the plate's centre, and the cone standing out of it
 		aoa = F["layout"]["aoa"]
 		for name in ("aoa_left", "aoa_right"):
@@ -2236,7 +2718,7 @@ def checks(jet, only=(), seen=None):
 			# lights under the LEX's edges (the waterline the face's)
 			# and the position lights on the underwing fairings' noses, cast aft
 			# and up onto them (both the station and the height the nose's)
-			for key, faces in ((f"strobe_{side}", (2,)), (f"position_lex_{side}", (1,)), (f"position_fold_{side}", (0, 1))):
+			for key, faces in ((f"strobe_{side}", (2,)), (f"position_lex_{side}", (2,)), (f"position_fold_{side}", (0, 1))):
 				p = jet.points([f"lamp_{key}"])
 				centre = (p.min(axis=0) + p.max(axis=0)) / 2
 				at = np.array(lamps[key]["at"], float)
@@ -2325,12 +2807,13 @@ def checks(jet, only=(), seen=None):
 		hook = F["layout"]["hook"]
 		h = jet.points(["hook"])
 		yield result("layout.hook", "stowed hook's aftmost point, the shoe's tip", hook["point"][0], h[:, 0].max(), 0.5, "FS in")
-		# the photo marks the middle of the shoe's end face: the mean of the four
-		# corners furthest along the shank from the pivot
+		# the photo marks the middle of the point's end face: the mean of the
+		# corners within a tenth of an inch of the furthest along the shank
 		pivot = np.array(jet.hinge("hook"))
 		corners = np.unique(np.round(h, 4), axis=0)
 		axis = (np.array(hook["point"]) - pivot[:2]) / np.linalg.norm(np.array(hook["point"]) - pivot[:2])
-		face = corners[np.argsort((corners[:, :2] - pivot[:2]) @ axis)[-4:]]
+		reach = (corners[:, :2] - pivot[:2]) @ axis
+		face = corners[reach > reach.max() - 0.1]
 		yield result("layout.hook", "stowed hook's tip height, its end face's middle", hook["point"][1], float(face[:, 1].mean()), 1.0, "WL in")
 		yield result("layout.hook", "hook's pivot station", hook["pivot"][0], pivot[0], 0.1, "FS in")
 		yield result("layout.hook", "hook's pivot height", hook["pivot"][1], pivot[1], 0.1, "WL in")
@@ -2360,6 +2843,62 @@ def checks(jet, only=(), seen=None):
 		yield result("layout.keel", f"keel's width at FS {at:.0f}, tapering to its front", keel["width"] * (at - front) / (back - front), float(np.ptp(near[:, 2])) if len(near) else 0.0, 0.6, "in")
 
 	yield from guard("fittings", "fittings", fittings)
+
+	# The hook's castings (layout.hook shank, head): the shank round (its
+	# width across the jet and its depth square to that, cut square to its
+	# line at a quarter, half and three quarters of its length), the point's
+	# skid and its bolts' span, and its bore facing straight aft: a ray in
+	# along the shank's line from behind meets the bore first (a box shank 4.4
+	# in wide and 2.8 deep, and a box shoe, were what the photos show round)
+	def hook():
+		k = F["layout"]["hook"]
+		pivot = np.array(jet.hinge("hook"))
+		line = np.array(k["point"]) - pivot[:2]
+		length = float(np.linalg.norm(line))
+		axis = np.array([line[0], line[1], 0.0]) / length
+		up = np.array([-axis[1], axis[0], 0.0])
+		up = up if up[1] > 0 else -up
+		for share in (0.25, 0.5, 0.75):
+			c = jet.cut(["hook"], pivot + axis * share * length, axis)
+			if not len(c):
+				raise KeyError(f"no hook shank {share:.0%} along it")
+			want = float(np.interp(share, [q[0] for q in k["shank"]], [q[1] for q in k["shank"]]))
+			width, depth = float(np.ptp(c[:, 2])), float(np.ptp(c @ up))
+			yield result("layout.hook", f"shank's width across, {share:.0%} along it", want, width, 0.3)
+			yield result("layout.hook", f"shank's depth, {share:.0%} along it", want, depth, 0.3)
+			yield result("layout.hook", f"shank's depth over its width, {share:.0%} along it", 1.0, depth / width, 0.15, "ratio")
+		h = jet.points(["hook"])
+		reach = (h - pivot) @ axis
+		end = float(reach.max())
+		point = k["head"]
+		width, long, thick = point["skid"]
+		c = jet.cut(["hook"], pivot + axis * (end - 1.5), axis)
+		if not len(c):
+			raise KeyError("no hook point")
+		yield result("layout.hook", "point's skid's width", width, float(np.ptp(c[:, 2])), 0.3)
+		low = h[((h - pivot) @ up < -(point["boss"][0] / 2 + 0.2)) & (reach > end - long - 3.0)]
+		if not len(low):
+			raise KeyError("no hook skid")
+		yield result("layout.hook", "point's skid's length", long, float(np.ptp((low - pivot) @ axis)), 0.3)
+		# its thickness ahead of the boss, cut square to the shank's line half an
+		# inch behind its front, below the shank's neck
+		c = jet.cut(["hook"], pivot + axis * float(((low - pivot) @ axis).min() + 0.5), axis)
+		c = c[(c - pivot) @ up < -1.5]
+		if not len(c):
+			raise KeyError("no hook skid ahead of its boss")
+		yield result("layout.hook", "point's skid's thickness", thick, float(np.ptp((c - pivot) @ up)), 0.3)
+		c = jet.cut(["hook"], pivot + axis * float(((low - pivot) @ axis).mean()), axis)
+		yield result("layout.hook", "point's bolts' span across", point["bolts"][0], float(np.ptp(c[:, 2])), 0.3)
+		tris = jet.tris(["hook"])
+		bores = jet.model.parts(verify.pose(jet.joints, {}), materials=("hub",)).get("hook")
+		if bores is None:
+			raise KeyError("no bore in the hook's point")
+		origin = FRAME.model(pivot + axis * (end + 20.0))
+		direction = FRAME.axes @ -axis
+		every, bore = first_hit(tris, origin, direction), first_hit(bores, origin, direction)
+		yield result("layout.hook", "point's bore: a ray in along the shank's line from behind meets it first", 0.0, abs(every - bore) / FRAME.unit if every is not None and bore is not None else 99.0, 0.01)
+
+	yield from guard("layout.hook", "hook", hook)
 
 	# Layout placements the build should land on
 	L = F["layout"]
@@ -2788,8 +3327,12 @@ def checks(jet, only=(), seen=None):
 			halfway = w + (glass[:, 1].max() - w) / 2
 			near = glass[np.abs(glass[:, 1] - halfway) < 0.4]
 			n = np.interp(st, [c["sill"][0][0], c["sill"][-1][0]], c["glass"])
-			yield result("layout.canopy", f"glass's half-width halfway up at FS {st:.0f}", b * (1 - 0.5 ** n) ** (1 / n),
-				np.abs(near[:, 2]).max() if len(near) else np.inf, 0.3, "BL in")
+			# the section the exponent draws, and the shell stood the seal's step
+			# proud of it along its normal there (layout.motion canopy seal)
+			x = (1 - 0.5 ** n) ** (1 / n)
+			across, up = x ** (n - 1) / b, 0.5 ** (n - 1) / (glass[:, 1].max() - w)
+			seal = F["layout"]["motion"]["canopy"]["value"]["seal"] * across / math.hypot(across, up)
+			yield result("layout.canopy", f"glass's half-width halfway up at FS {st:.0f}", b * x + seal, np.abs(near[:, 2]).max() if len(near) else np.inf, 0.3, "BL in")
 		# the glass's lower edge, where the metal panel below it meets it, read off two left-side photos
 		glass = jet.model.parts(verify.pose(jet.joints, {}), materials=("glass",)).get("canopy", np.zeros((0, 3, 3)))
 		crown = lambda st: float(np.interp(st, [p[0] for p in L["spine"]["crown"]], [p[1] for p in L["spine"]["crown"]]))
@@ -2862,12 +3405,15 @@ def checks(jet, only=(), seen=None):
 		yield result("layout.surfaces", "aileron's inner end", L["surfaces"]["aileron"][0], jet.points(["aileron_right"])[:, 2].min(), 0.5, "BL in")
 		yield result("layout.surfaces", "trailing-edge flap's outer end", L["surfaces"]["tef"][1], jet.points(["flap_trailing_right"])[:, 2].max(), 0.5, "BL in")
 		# where the aileron runs inboard of the fold line, the inner panel stops
-		# at its hinge: nothing of it lies behind the aileron's leading edge there
-		between = (L["surfaces"]["aileron"][0] + value(F["wing"]["fold"])) / 2
-		inner = jet.cut(["wing_inner_right"], [0, 0, between], [0, 0, 1])
-		hinge = jet.cut(["aileron_right"], [0, 0, between], [0, 0, 1])
-		yield result("layout.surfaces", f"inner panel's aft edge at BL {between:.1f}, at the aileron's leading edge", float(hinge[:, 0].min()) if len(hinge) else 999.0,
-			float(inner[:, 0].max()) if len(inner) else -999.0, 0.3, "FS in")
+		# at its hinge, its aft edge streamwise (parallel to the fold's axis) a
+		# seam ahead of the aileron's leading edge at its inner end, so the
+		# aileron's nose, turned about the fold, clears it
+		stub, fold_ = L["surfaces"]["aileron"][0], value(F["wing"]["fold"])
+		hinge = jet.cut(["aileron_right"], [0, 0, stub + 0.05], [0, 0, 1])
+		for between in (stub + 1.0, (stub + fold_) / 2, fold_ - 0.5):
+			inner = jet.cut(["wing_inner_right"], [0, 0, between], [0, 0, 1])
+			yield result("layout.surfaces", f"inner panel's aft edge at BL {between:.1f}, a seam ahead of the aileron's leading edge at its inner end",
+				float(hinge[:, 0].min()) - SEAM if len(hinge) else 999.0, float(inner[:, 0].max()) if len(inner) else -999.0, 0.05, "FS in")
 
 	yield from guard("layout", "placements", placements)
 
@@ -3302,14 +3848,39 @@ def checks(jet, only=(), seen=None):
 		# each fin, with its rudder's lower end, stands on the skin all along
 		# its root: no daylight under it (the user saw the background through
 		# a 5.2 in gap there)
+		# Judged either side of the fin's chord plane, through its root's leading
+		# edge at its cited cant and toe: fitted to the fin's own points, the
+		# plane leaned with the faces the culling takes from under its fairing,
+		# and the thin trailing edge's foot fell all to one side
 		place, chord = F["layout"]["fin"]["root"], value(F["fin"]["root"])
+		cant, toe = math.radians(value(F["fin"]["cant"])), math.radians(value(F["fin"]["toe"]))
 		for side in ("left", "right"):
+			sign = 1.0 if side == "right" else -1.0
 			part = jet.points([f"fin_{side}", f"rudder_{side}", f"fin_root_{side}"]).reshape(-1, 3, 3)
-			gap = seated(part, skin, np.arange(place["station"] + 1.0, place["station"] + chord - 1.0, 2.0), jet.points([f"fin_{side}"]).reshape(-1, 3, 3))
+			normal = np.cross([0.0, math.cos(cant), sign * math.sin(cant)], [math.cos(toe), 0.0, -sign * math.sin(toe)])
+			gap = seated(part, skin, np.arange(place["station"] + 1.0, place["station"] + chord - 1.0, 2.0), (np.array([place["station"], place["waterline"], sign * place["buttline"]]), normal))
 			yield result("shape.seated", f"fin_{side}'s root standing off the skin beneath it, its furthest", 0.0, float(np.maximum(gap, 0.0)), 0.05)
+		# each fin's root fairing runs on to its rudder's lower leading corner and
+		# ends there on the fin: no face of it turned aft stands proud of what
+		# lies behind it by more than its seam (ended square at the band's end,
+		# it stood a wedge 5.3 in across off the fin)
+		for side in ("left", "right"):
+			fair = jet.points([f"fin_fairing_{side}"]).reshape(-1, 3, 3)
+			rudder = jet.points([f"rudder_{side}"])
+			low = rudder[rudder[:, 1] < rudder[:, 1].min() + 0.6]
+			corner = low[low[:, 0] < low[:, 0].min() + 0.6].mean(0)
+			yield result("shape.fairing", f"fin_fairing_{side}'s nearest to its rudder's lower leading corner", 0.0, float(np.linalg.norm(fair.reshape(-1, 3) - corner, axis=1).min()), 1.5)
+			behind = jet.points([f"fin_{side}", f"rudder_{side}", f"fin_root_{side}", f"fin_fairing_{side}", "fuselage"]).reshape(-1, 3, 3)
+			yield result("shape.fairing", f"fin_fairing_{side}'s faces turned aft standing proud of what lies behind them, the furthest", 0.0, proud(fair, behind), 0.5)
 		for name, below in FLUSH:
 			gap = rim(jet, name)
-			yield result("shape.flush", f"{name}'s closed face off the skin round its opening, its furthest", 0.0, gap, 0.1 if name == "probe_door" else 0.02)
+			yield result("shape.flush", f"{name}'s closed face off the skin round its opening, its furthest", 0.0, gap, 0.1 if name.startswith("probe_") else 0.02)
+			if name.startswith("gear_"):
+				# its inside finish no higher than the skin it was cut from: the
+				# edge's band standing proud of the skin in the outer face's
+				# (a white band showed along the closed doors' edges)
+				yield result("shape.flush", f"{name}'s white faces under its outer face, their shallowest", PROUD, float(depths(jet, name, "white").min()), 0.01, "in")
+				yield result("shape.flush", f"{name}'s painted faces under its outer face, their deepest", PROUD, float(depths(jet, name, "paint").max()), 0.01, "in")
 		for spot in F["layout"]["hardpoints"]["stations"]:
 			if spot["kind"] != "fuselage":
 				continue
@@ -3336,7 +3907,10 @@ def checks(jet, only=(), seen=None):
 		stations = np.arange(95.0, 661.0, 1.0)
 		cp = F["layout"]["canopy"]
 		lip = min(p[0] for p in F["layout"]["inlet"]["lip"].values())
-		join = float(jet.points(["inlet_right"])[:, 0].max())
+		# where the inlet's outer skin hands over: its last ring, where it
+		# reaches the nacelle's top (its duct runs on past it inside)
+		duct = jet.points(["inlet_right"])
+		join = float(duct[np.argmax(duct[:, 1]), 0])
 
 		def clear(*windows):
 			keep = np.ones(len(stations), bool)
@@ -3422,14 +3996,17 @@ def checks(jet, only=(), seen=None):
 		# fuselage's section that the nacelle adds stands nowhere outside the
 		# inlet's last ring (its jump from the body to the nacelle, just ahead,
 		# would show beside the ring). Added: outside the section 4.5 in ahead,
-		# and away from it (the spine narrowing there moves its points inside)
+		# and away from it (the spine narrowing there moves its points inside),
+		# and not inside the LEX over it (the body's wall under the LEX goes
+		# as hidden faces)
 		end = jet.points(["inlet_right"])
-		ring = np.unique(end[end[:, 0] > join - 0.02][:, [2, 1]].round(4), axis=0)
+		ring = np.unique(end[np.abs(end[:, 0] - join) < 0.02][:, [2, 1]].round(4), axis=0)
 		middle = ring.mean(0)
 		ring = ring[np.argsort(np.arctan2(ring[:, 1] - middle[1], ring[:, 0] - middle[0]))]
 		behind = jet.cut(["fuselage"], [join + 0.1, 100, 0], [1, 0, 0])[:, [2, 1]]
 		ahead = jet.cut(["fuselage"], [join - 4.5, 100, 0], [1, 0, 0])[:, [2, 1]].reshape(-1, 2, 2)
-		added = [q for q in behind if q[0] > 0 and segment_distance(q, ahead) > 0.5 and not inside_segments(q, ahead)]
+		over = jet.cut(["lex_right"], [join + 0.1, 100, 0], [1, 0, 0])[:, [2, 1]].reshape(-1, 2, 2)
+		added = [q for q in behind if q[0] > 0 and segment_distance(q, ahead) > 0.5 and not inside_segments(q, ahead) and not inside_segments(q, over)]
 		if not added:
 			raise KeyError("the fuselage adds no nacelle where the inlet ends")
 		outside = [segment_distance(q, np.stack([ring, np.roll(ring, -1, axis=0)], 1)) for q in added if not inside_polygon(q, ring)]
@@ -3471,7 +4048,7 @@ def checks(jet, only=(), seen=None):
 	yield from guard("shape", "shapes", shapes)
 
 	# The stores' shapes (layout.stores, stores.lau7, stores.lau115,
-	# stores.lau127, stores.lau116), every store part shown: a group per store,
+	# stores.lau127), every store part shown: a group per store,
 	# so one that cannot measure hides none of the others
 	def stores():
 		S, drives = F["layout"]["stores"], {"stores": 1}
@@ -3724,19 +4301,38 @@ def checks(jet, only=(), seen=None):
 			yield result("layout.stores", "station 8's outer LAU-127's tip, its middle up from its round's face", body["faces"]["at"] * height, toward - ((cut @ down).max() + (cut @ down).min()) / 2, 0.1)
 
 		def ejector():
-			# station 6's LAU-116: its length (its upper part, clear of the fairing
-			# behind it) and its section half way along, in its round's axes
-			seat = jet.document["points"]["hardpoints"]["6"]["rounds"]["ejector_6"]
-			ends = FRAME.source(np.array([seat["mount"], np.add(seat["mount"], seat["forward"]), np.add(seat["mount"], seat["up"])]))
-			forward, up = (ends[1] - ends[0]) / np.linalg.norm(ends[1] - ends[0]), (ends[2] - ends[0]) / np.linalg.norm(ends[2] - ends[0])
-			e = jet.points(["ejector_6"], drives)
-			upper = e[(e - ends[0]) @ up > 8.0]
-			along = (upper - ends[0]) @ forward
-			yield result("stores.lau116.length", "station 6's LAU-116, end to end", value(F["stores"]["lau116"]["length"]), np.ptp(along), 0.3)
-			at = ends[0] + forward * ((along.min() + along.max()) / 2)
-			cut = jet.cut(["ejector_6"], at, forward, drives).reshape(-1, 3) - at
-			yield result("stores.lau116.width", "station 6's LAU-116's section, across", value(F["stores"]["lau116"]["width"]), np.ptp(cut @ np.cross(forward, up)), 0.1)
-			yield result("stores.lau116.height", "station 6's LAU-116's section, standing", value(F["stores"]["lau116"]["height"]), np.ptp(cut @ up), 0.1)
+			# station 6's LAU-116 as the photos show it (layout.stores.lau116): its
+			# block, the airframe's (the cheek box's node, so shown with no stores
+			# as on the clean jets' photos: read at rest), its corners where the
+			# photos mark them, each coordinate within the spread of the photos
+			# that place it (the front 0.8 in, its top and bottom 0.1 in, its face
+			# 0.3 in: each photo's ray cast on the face), read off its section
+			# square to the jet 2 in behind its front; its top level to its aft
+			# end, and its face flush with the box's there
+			lau, box = S["lau116"], F["layout"]["nacelle"]["cheek"]
+			e = jet.points(["fairing_cheek_right"])
+			e = e[e[:, 0] < box["front"] - 0.01]
+			front = (lau["front_top"][0] + lau["front_bottom"][0]) / 2
+
+			def across(station):
+				# the block's section at a station: its lowest and highest
+				# waterline and its outboard buttline
+				c = jet.cut(["fairing_cheek_right"], [station, 100, 0], [1, 0, 0]).reshape(-1, 3)
+				return (c[:, 1].min(), c[:, 1].max(), c[:, 2].max()) if len(c) else (math.nan,) * 3
+
+			# its front, the foremost point within 8 in of the marks
+			near = e[(e[:, 0] > front - 8) & (e[:, 0] < front + 8)]
+			built = near[:, 0].min() if len(near) else math.nan
+			low, high, face = across(front + 2.0)
+			for key, mark in (("front_top", lau["front_top"]), ("front_bottom", lau["front_bottom"])):
+				yield result("layout.stores", f"station 6's LAU-116's front against {key}'s station", mark[0], built, 0.8, "FS in")
+				yield result("layout.stores", f"station 6's LAU-116's face against {key}'s buttline", mark[2], face, 0.3, "BL in")
+			yield result("layout.stores", "station 6's LAU-116's top against front_top's waterline", lau["front_top"][1], high, 0.1, "WL in")
+			yield result("layout.stores", "station 6's LAU-116's bottom against front_bottom's waterline", lau["front_bottom"][1], low, 0.1, "WL in")
+			yield result("layout.stores", "station 6's LAU-116's face against the hole's buttline", lau["hole"][2], face, 0.3, "BL in")
+			yield result("layout.stores", "station 6's LAU-116's top 0.5 in ahead of its aft end", lau["front_top"][1], across(box["front"] - 0.5)[1], 0.1, "WL in")
+			# flush with the box's face where it meets the box, within the marks' spread
+			yield result("layout.stores", "station 6's LAU-116's face 0.5 in ahead of its aft end against the cheek box's", box["edge"][1], across(box["front"] - 0.5)[2], 0.4, "BL in")
 
 		def pylon():
 			# The SUU-62: its bottom flat at its front's lower end, clear of the
@@ -3775,27 +4371,7 @@ def checks(jet, only=(), seen=None):
 				flat, _ = section([f"pylon_{station}"], np.array([middle, p[:, 1].min() + 2.0, np.median(p[:, 2])]), [1.0, 0.0, 0.0])
 				yield result("layout.stores", f"station {station}'s pylon's width, across its middle", S["pylon"]["width"], np.ptp(flat[:, 0]), 0.1)
 
-		def fairing():
-			# The cheek fairing behind station 6's LAU-116: its aft edge, upright
-			# at its station and buttline, from just over the round to its top;
-			# its depth, whole ahead of its chamfer and half way along it
-			cheek = S["rounds"]["cheek"]
-			fairing = cheek["fairing"]
-			e = jet.points(["ejector_6"], drives)
-			aft = e[e[:, 0] > fairing["edge"][0] - 0.05]
-			yield result("layout.stores", "cheek fairing's aft edge, its station", fairing["edge"][0], e[:, 0].max(), 0.05, "FS in")
-			yield result("layout.stores", "cheek fairing's aft edge, its buttline", fairing["edge"][1], aft[:, 2].max(), 0.05, "BL in")
-			yield result("layout.stores", "cheek fairing's aft edge, its top", fairing["top"], aft[:, 1].max(), 0.05, "WL in")
-			nose_, tail_ = cheek["nose"], cheek["tail"]
-			diameter = value(json.loads((HERE.parent / "missiles" / "facts.json").read_text())["aim120c"]["diameter"])
-			k = (fairing["edge"][0] - nose_[0]) / (tail_[0] - nose_[0])
-			over = nose_[1] + k * (tail_[1] - nose_[1]) + diameter / 2 + fairing["clear"]
-			yield result("layout.stores", "cheek fairing's aft edge, its bottom over the round", over, aft[:, 1].min(), 0.05, "WL in")
-			for back, share in ((fairing["chamfer"] + 1.0, 1.0), (fairing["chamfer"] / 2, 0.5)):
-				flat, _ = section(["ejector_6"], np.array([fairing["edge"][0] - back, 82.0, fairing["edge"][1]]), [1.0, 0.0, 0.0])
-				yield result("layout.stores", f"cheek fairing's depth {back:.2f} in ahead of its aft edge", fairing["depth"] * share, np.ptp(flat[:, 0]), 0.05)
-
-		return [("the wingtip LAU-7", tip), ("station 8's outer side rail", side), ("station 8's LAU-115", rack), ("station 8's outer LAU-127", launcher), ("station 6's LAU-116", ejector), ("the pylons", pylon), ("the cheek fairing", fairing)]
+		return [("the wingtip LAU-7", tip), ("station 8's outer side rail", side), ("station 8's LAU-115", rack), ("station 8's outer LAU-127", launcher), ("station 6's LAU-116", ejector), ("the pylons", pylon)]
 
 	for what, fn in stores():
 		yield from guard("layout.stores", f"{what}'s shape", fn)
@@ -3900,10 +4476,12 @@ def checks(jet, only=(), seen=None):
 		for name, below in FLUSH:
 			if not name.startswith("gear_"):
 				continue
-			outer = len(jet.faces(name))
+			# its outer face, and its edges' band proud of the skin, in the
+			# paint; the rest white (shape.flush)
+			painted = {tuple(np.round(t, 6).ravel()) for t in jet.model.parts(verify.pose(jet.joints, {}), materials=("paint",)).get(name, [])}
 			f = finishes.get(name, {})
-			yield result("shape.gear", f"{name}'s outer face, faces not in the paint", 0, abs(f.get("paint", 0) - outer), 0, "faces")
-			yield result("shape.gear", f"{name}'s other faces not in white", 0, sum(f.values()) - outer - f.get("white", 0), 0, "faces")
+			yield result("shape.gear", f"{name}'s outer face, faces not in the paint", 0, sum(tuple(np.round(t, 6).ravel()) not in painted for t in jet.faces(name)), 0, "faces")
+			yield result("shape.gear", f"{name}'s other faces in neither the paint nor white", 0, sum(f.values()) - f.get("paint", 0) - f.get("white", 0), 0, "faces")
 		for name, want in (("well_main_left", "white"), ("well_main_right", "white"), ("well_nose", "white"), ("well_speedbrake", "paint"), ("well_probe", "paint")):
 			f = finishes.get(name, {})
 			yield result("shape.gear", f"{name}'s faces not in {want}", 0, sum(f.values()) - f.get(want, 0) if f else 1, 0, "faces")
@@ -3955,11 +4533,55 @@ def checks(jet, only=(), seen=None):
 		J = jet.joints
 		last = lambda name: J[name]["keys"][-1][1]
 		yield result("layout.motion", "canopy's opening", m["canopy"]["open"], math.degrees(last("canopy")), 0.05, "deg")
-		yield result("layout.motion", "canopy's slide aft", m["canopy"]["slide"], last("canopy_slide") / 0.0254, 0.01)
+		# the slide along the sill (NATOPS 2.15.1): aft, and rising as it goes
+		slide = np.asarray(J["canopy_slide"]["axis"], float) / np.linalg.norm(J["canopy_slide"]["axis"]) * last("canopy_slide") / 0.0254
+		yield result("layout.motion", "canopy's slide aft", m["canopy"]["slide"], -slide[0], 0.01)
+		yield result("layout.motion", "canopy's rise over its slide", m["canopy"]["rise"], slide[1], 0.01)
 		yield result("layout.motion", "canopy's slide's share of the stroke", m["canopy"]["unlatch"], J["canopy"]["keys"][1][0], 0.001, "share")
-		yield result("layout.motion", "probe door's opening", m["probe"]["door"], math.degrees(last("probe_door")), 0.05, "deg")
-		yield result("layout.motion", "probe's swing", m["probe"]["swing"], math.degrees(last("probe")), 0.05, "deg")
-		yield result("layout.motion", "probe door's share of the stroke", m["probe"]["opening"], J["probe"]["keys"][1][0], 0.001, "share")
+		# its hinge at its aft top
+		for i, unit in ((0, "FS"), (1, "WL")):
+			yield result("layout.motion", f"canopy's hinge's {unit}", m["canopy"]["hinge"][i], jet.hinge("canopy")[i], 0.05, f"{unit} in")
+		# its shell a seal's step proud of the skin under its rim: each corner
+		# of its edge (a side of one face only) off the fuselage
+		edge = boundary(jet.points(["canopy"]).reshape(-1, 3, 3))
+		if not len(edge):
+			raise KeyError("no edge on the canopy")
+		skin = jet.points(["fuselage"]).reshape(-1, 3, 3)
+		lo, hi = edge.min(0) - 1.0, edge.max(0) + 1.0
+		skin = skin[((skin.max(1) >= lo) & (skin.min(1) <= hi)).all(1)]
+		off = closest(edge, skin)
+		yield result("layout.motion", "canopy's edge off the skin under it, its least", m["canopy"]["seal"], float(off.min()), 0.02)
+		yield result("layout.motion", "canopy's edge off the skin under it, its most", m["canopy"]["seal"], float(off.max()), 0.02)
+		# the probe out: its nozzle where the photos put it (layout.motion probe
+		# nozzle and tip), read off the posed mesh: the probe's axis from its
+		# root through its tip, the far ring's middle, and the ball's centre the
+		# middle of its ring as far back along that axis as the photos' tip
+		# stands ahead of it
+		out = jet.points(["probe"], {"probe": 1})
+		root = FRAME.source(jet.model.worlds(verify.pose(J, {"probe": 1}))[jet.model.index["probe"]][:3, 3][None])[0]
+		ahead = (out[np.argmax(np.linalg.norm(out - root, axis=1))] - root)
+		ahead /= np.linalg.norm(ahead)
+		along = (out - root) @ ahead
+		tip = out[along >= along.max() - 0.05].mean(0)
+		head = float(np.linalg.norm(np.array(m["probe"]["tip"]) - np.array(m["probe"]["nozzle"])))
+		ring = np.abs(along - (along.max() - head)) < 0.05
+		ball = out[ring].mean(0) if ring.any() else np.full(3, np.inf)
+		yield result("layout.motion", "probe out: its nozzle's ball centre off the photos'", 0.0, float(np.linalg.norm(ball - np.array(m["probe"]["nozzle"]))), 2.0)
+		yield result("layout.motion", "probe out: its nozzle's tip off the photos'", 0.0, float(np.linalg.norm(tip - np.array(m["probe"]["tip"]))), 2.0)
+		# its door rides it, with no joint of its own; the forward door ahead of
+		# it, on its own, closed at rest and with the probe out (layout.motion
+		# probe forward)
+		yield result("layout.motion", "probe door on a joint of its own", 0, int("probe_door" in J), 0, "joints")
+		shut = jet.points(["probe_door_forward"])
+		for end in (0, 1):
+			moved = float(np.linalg.norm(jet.points(["probe_door_forward"], {"probe": end}) - shut, axis=1).max())
+			yield result("layout.motion", f"probe's forward door off closed with the probe at {end}", 0.0, moved, 0.01)
+		# it opens over the stroke's first share, the probe waiting as long
+		door = J.get("probe_door_forward", {}).get("keys", [[1, 0]])
+		widest = max(abs(k[1]) for k in door)
+		yield result("layout.motion", "probe's forward door open by its share of the stroke", m["probe"]["forward"],
+			min(k[0] for k in door if abs(k[1]) >= widest - 1e-6) if widest > 0 else 1.0, 0.01, "share")
+		yield result("layout.motion", "probe waiting as long", m["probe"]["forward"], max(k[0] for k in J["probe"]["keys"] if abs(k[1]) < 1e-6), 0.01, "share")
 		# the gear's mechanisms each on its own drive (the points file's motion
 		# gear: each one's share of the stroke's time each way): every door on
 		# the doors', the nose leg and the launch bar on the nose's, the rest
@@ -4350,6 +4972,74 @@ def checks(jet, only=(), seen=None):
 
 	yield from guard("layout.motion", "mechanisms' strokes", motion)
 
+	# The speedbrake open (layout.speedbrake open): where the photos put it
+	def speedbrake_open():
+		sb = F["layout"]["speedbrake"]
+		brake = jet.points(["speedbrake"])
+		# its aft corners where the photos put them (layout.speedbrake open):
+		# each the outer face's corner at rest, carried by the panel
+		i = jet.model.index["speedbrake"]
+		carry = jet.model.worlds(verify.pose(jet.joints, {"speedbrake": 1}))[i] @ np.linalg.inv(jet.model.rest[i])
+		for side, sign in (("left", -1), ("right", 1)):
+			mine = brake[np.sign(brake[:, 2]) == sign]
+			corner = mine[np.argmax(mine[:, 0] + sign * mine[:, 2] + 0.01 * mine[:, 1])]
+			out = FRAME.source((carry @ np.append(FRAME.model(corner[None])[0], 1.0))[:3][None])[0]
+			yield result("layout.speedbrake", f"speedbrake open: its {side} aft corner off the photos'", 0.0, float(np.linalg.norm(out - np.array(sb["open"]["aft"]) * [1, 1, sign])), 1.0)
+		# its actuator open standing where the photos put the narrow member under
+		# it: its axis's station at the photos' two waterlines, and its width
+		i = jet.model.index["speedbrake_actuator"]
+		w = jet.model.worlds(verify.pose(jet.joints, {"speedbrake": 1}))[i]
+		foot = FRAME.source(w[:3, 3][None])[0]
+		tube = jet.points(["speedbrake_actuator"], {"speedbrake": 1})
+		ahead = np.linalg.svd(tube - tube.mean(0), full_matrices=False)[2][0]
+		ahead = ahead * np.sign(ahead[1])
+		for station, waterline in sb["open"]["strut"]:
+			yield result("layout.speedbrake", f"speedbrake open: its actuator's axis at WL {waterline:g}", station, foot[0] + (waterline - foot[1]) * ahead[0] / ahead[1], 1.5, "FS in")
+		across = np.linalg.norm((tube - foot) - np.outer((tube - foot) @ ahead, ahead), axis=1)
+		yield result("layout.speedbrake", "speedbrake's actuator across", sb["mechanism"]["actuator"]["diameters"][0], 2 * float(np.median(across[across > 1.5])), 0.1)
+
+	yield from guard("layout.speedbrake", "speedbrake open", speedbrake_open)
+
+	# The speedbrake's actuator holds together through the stroke (layout.speedbrake
+	# mechanism): its eye on the lug's pin under the panel, the pin where the
+	# facts put it at rest (its station, the depth under the panel's inner face,
+	# a tenth under the closed skin), carried by the lug's node and by the
+	# actuator's last stage at steps finer than their keys; and each stage
+	# still in the one below it by the overlap at full stretch
+	def speedbrake():
+		act = F["layout"]["speedbrake"]["mechanism"]["actuator"]
+		index = jet.model.index
+		station, depth = act["lug"]
+		skin = first_hit(jet.points(["fuselage"]).reshape(-1, 3, 3), np.array([station, 300.0, 0.0]), np.array([0.0, -1.0, 0.0]))
+		if skin is None:
+			raise KeyError("no skin over the speedbrake's lug")
+		pin = FRAME.model(np.array([[station, 300.0 - skin - 0.1 - depth, 0.0]]))[0]
+		# the stages in the order each rides the one before
+		stages, parent = [], index["speedbrake_actuator"]
+		while True:
+			child = [c for c in jet.model.nodes[parent]["children"] if jet.model.nodes[c]["name"].startswith("speedbrake_actuator_")]
+			if not child:
+				break
+			parent = child[0]
+			stages.append(jet.model.nodes[parent]["name"])
+		if len(stages) != act["stages"]:
+			raise KeyError(f"{len(stages)} speedbrake actuator stages")
+		off = pinned(jet, pin, ["speedbrake_lug", stages[-1]], lambda d: {"speedbrake": d})
+		yield result("layout.motion", "speedbrake actuator's eye off its lug's pin through the stroke, its most", 0.0, off, 0.05)
+		w = jet.model.worlds(verify.pose(jet.joints, {"speedbrake": 1}))
+		foot = FRAME.source(w[index["speedbrake_actuator"]][:3, 3][None])[0]
+		ends = {}
+		for n in ["speedbrake_actuator"] + stages:
+			tube = jet.model.parts(verify.pose(jet.joints, {"speedbrake": 1}))[n]
+			ends[n] = FRAME.source(tube.reshape(-1, 3))
+		ahead = np.linalg.svd(ends["speedbrake_actuator"] - ends["speedbrake_actuator"].mean(0), full_matrices=False)[2][0]
+		ahead = ahead * np.sign(ahead[1])
+		for outer, inner in zip(["speedbrake_actuator"] + stages, stages):
+			overlap = float(((ends[outer] - foot) @ ahead).max() - ((ends[inner] - foot) @ ahead).min())
+			yield result("layout.motion", f"{inner} in {outer} at full stretch, short of the overlap", 0.0, max(0.0, act["overlap"] - overlap), 0.0)
+
+	yield from guard("layout.motion", "speedbrake's actuator", speedbrake)
+
 	# Wells (layout.wells): under each closed door the skin is open, and the
 	# well behind the opening, closed by its doors and the skin round it,
 	# holds its parts at rest, stands inside the airframe, and holds no other
@@ -4429,7 +5119,8 @@ def checks(jet, only=(), seen=None):
 
 	yield from guard("layout.wells", "wells", wells)
 
-	yield from guard("layout.motion", "clearance through the gear's stroke", lambda: clearance(jet))
+	for drive, steps in SWEPT.items():
+		yield from guard("layout.motion", f"clearance through the {drive}'s stroke", lambda drive=drive, steps=steps: clearance(jet, drive, steps))
 
 	# The paint, on a painted build (a draft carries no atlas: main() says so)
 	image = atlas(jet.path)
@@ -4448,6 +5139,7 @@ def checks(jet, only=(), seen=None):
 		normals = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
 		area = np.linalg.norm(normals, axis=1)
 		normals = normals / np.maximum(area, 1e-12)[:, None]
+		facing = outward(tris)
 		e1, e2 = uvs[:, 1] - uvs[:, 0], uvs[:, 2] - uvs[:, 0]
 		texel = np.sqrt(area / 2 / np.maximum(np.abs(e1[:, 0] * e2[:, 1] - e1[:, 1] * e2[:, 0]) / 2 * size * size, 1e-12))
 		centres = tris.mean(1)
@@ -4538,7 +5230,11 @@ def checks(jet, only=(), seen=None):
 				if np.linalg.norm(beside) < 1e-9:
 					continue
 				beside /= np.linalg.norm(beside)
-				line_, left, right = read(np.array([q, q + 1.0 * beside, q - 1.0 * beside]), n, near)
+				# read from outside, where the line is seen (read from inside,
+				# the fin root's fillet line along the fairing's foot was read
+				# on the skin under the fairing, which only the bake's buried
+				# texels darkened)
+				line_, left, right = read(np.array([q, q + 1.0 * beside, q - 1.0 * beside]), facing[j], near)
 				reference = np.nanmax([left, right]) if np.isfinite([left, right]).any() else np.nan
 				if np.isfinite(line_) and np.isfinite(reference):
 					total += 1

@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
@@ -365,10 +365,34 @@ describe('the weapons fly through the air', () => {
     expect(dressed).toEqual([[missiles[0].mesh, '120c']]) // drawn as the AIM-120's own model
   })
 
-  it("judge the BVR start's separation in still air, as the server does", () => {
-    let still: unknown = null
-    new Function('round_ladder', `let bvr_apart=0;\n${lift('bvr_separation')}\nbvr_separation();`)((_s: unknown, _t: unknown, _w: number, calm: boolean) => { still = calm; return { max: 80000 } })
-    expect(still).toBe(true)
+  it("judge the BVR start's separation as the server does: the round off the rail, in still air", () => {
+    // round_ladder's own parameters, so the call is read against the function it calls
+    expect(readFileSync(fileURLToPath(new URL('./flight.ts', import.meta.url)), 'utf8')).toMatch(/export function round_ladder\(\s*shooter: Aimed,\s*target: Aimed,\s*still = false[^)]*\)/)
+    let passed: unknown[] = []
+    new Function('round_ladder', `let bvr_apart=0;\n${lift('bvr_separation')}\nbvr_separation();`)((...given: unknown[]) => { passed = given; return { max: 80000 } })
+    expect(passed.length).toBe(3)
+    expect(passed[2]).toBe(true) // still air
+    const shooter = passed[0] as { velocity: { x: number; y: number; z: number } }
+    expect(shooter.velocity).toEqual({ x: 302, y: 0, z: 0 }) // the block's 272 m/s and the rail's push
+    const world = fileURLToPath(new URL('../../../../../world/games/air/air.go', import.meta.url))
+    if (existsSync(world)) expect(readFileSync(world, 'utf8')).toMatch(/func rail\(nose flight\.Vec3, speed float64\) flight\.Vec3 \{\n\treturn nose\.Normalize\(\)\.Scale\(speed \+ 30\)/) // the server's rail, which its separation flies
+  })
+
+  it("puts the BVR start the server's commit buffer beyond head-on Rmax: two miles, just outside the round's reach", () => {
+    const apart = new Function('round_ladder', `let bvr_apart=0;\n${lift('bvr_separation')}\nreturn bvr_separation();`)(() => ({ max: 80000 })) as number
+    expect(apart - 80000).toBe(3704)
+    const world = fileURLToPath(new URL('../../../../../world/games/air/air.go', import.meta.url))
+    if (existsSync(world)) expect(Number(/\n\tcommit\s+=\s+([\d.]+)/.exec(readFileSync(world, 'utf8'))?.[1])).toBe(apart - 80000) // the server's own, where the world tree is beside this one
+  })
+
+  it('keeps no BVR separation before the core can derive one', () => {
+    const ladder = { z: null as { max: number } | null }
+    const separation = new Function('round_ladder', `let bvr_apart=0;\n${lift('bvr_separation')}\nreturn bvr_separation;`)(() => ladder.z) as () => number
+    expect(separation()).toBe(0) // the core has not booted
+    ladder.z = { max: 80000 }
+    expect(separation()).toBe(83704)
+    ladder.z = { max: 70000 }
+    expect(separation()).toBe(83704) // derived once, then kept
   })
 
   it('hand the frame\'s wind to every pool the weapons shed into', () => {

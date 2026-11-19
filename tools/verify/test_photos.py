@@ -105,6 +105,19 @@ class CastTest(unittest.TestCase):
 		self.assertEqual(how, "surface")
 		np.testing.assert_allclose(at, frame.source(point), atol=1e-4)
 
+	def test_the_surface_stands_as_the_points_file_does(self):
+		# a photo posed "static" swings the flap to the points file's stance
+		# for its drive, as test_the_surface_is_posed_as_the_photo_has_it does
+		# by number
+		points = {"joints": {"flap": dict(self.points["joints"]["flap"], drive="oleo.left")}, "points": {"gear": {"left": {"static": 1.0}}}}
+		cameras = [dict(self.cameras[0], pose={"oleo.left": "static"})]
+		caster = cast.Caster(self.catalogue, self.model, points, cameras, "p", onto=["flap"])
+		frame = mod.Frame(JET)
+		point = np.array([-3.95, -0.6, 0.05])
+		how, at = caster.cast(self.pixel(point))
+		self.assertEqual(how, "surface")
+		np.testing.assert_allclose(at, frame.source(point), atol=1e-4)
+
 	def test_a_pixel_off_the_model_needs_a_plane(self):
 		caster = cast.Caster(self.catalogue, self.model, self.points, self.cameras, "p", onto=["fuselage"])
 		frame = mod.Frame(JET)

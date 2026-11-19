@@ -99,14 +99,18 @@ class Joints(dict):
 	# A points file's joints (joints()), with the timeline of the gear's
 	# mechanisms its motion gives (motion gear: each mechanism's [from, to]
 	# share of the stroke's time, "up" and "down"), so a pose by the one
-	# gear value poses each mechanism's own drive
+	# gear value poses each mechanism's own drive, and the stance its gear
+	# gives ({drive: value}: each leg's oleo.<leg> at its points gear
+	# <leg> static, the jet standing), which a pose names as "static"
 	timeline = None
+	stance = None
 
 
 def joints(document):
 	# A points file's joints, as pose() reads them (Joints)
 	out = Joints(document["joints"])
 	out.timeline = document.get("motion", {}).get("gear")
+	out.stance = {f"oleo.{leg}": spec["static"] for leg, spec in document.get("points", {}).get("gear", {}).items() if "static" in spec}
 	return out
 
 
@@ -120,9 +124,19 @@ def sequence(timeline, gear):
 
 
 def driven(joints, drives):
-	# The drives a pose sets: as given, with each gear mechanism's own drive
-	# from the one gear value (sequence()) where the joints carry the
-	# timeline and the pose gives the gear but not that mechanism
+	# The drives a pose sets: as given, each given as "static" at the stance
+	# the joints carry (Joints: the build's own, so a pose of the jet standing
+	# follows the build rather than a copy of its number), with each gear
+	# mechanism's own drive from the one gear value (sequence()) where the
+	# joints carry the timeline and the pose gives the gear but not that
+	# mechanism
+	standing = [drive for drive, value in drives.items() if value == "static"]
+	if standing:
+		stance = getattr(joints, "stance", None) or {}
+		unknown = [drive for drive in standing if drive not in stance]
+		if unknown:
+			raise ValueError(f"{', '.join(unknown)}: \"static\" needs the points file's gear static for it, read with joints()")
+		drives = {**drives, **{drive: stance[drive] for drive in standing}}
 	timeline = getattr(joints, "timeline", None)
 	if timeline and "gear" in drives:
 		return {**sequence(timeline, float(drives["gear"])), **drives}

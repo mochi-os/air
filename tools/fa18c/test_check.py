@@ -59,6 +59,19 @@ class EntriesTest(unittest.TestCase):
 			self.assertIn(fact, check.entries(check.FACTS), f"{fact}: exempt but not in facts.json")
 			self.assertNotIn(fact, measured, f"{fact}: both measured and exempt")
 
+	def test_no_key_twice(self):
+		# a key written twice in one object reads as its last alone, and hides
+		# the first from the build and the check alike
+		twice = []
+
+		def pairs(items):
+			keys = [k for k, _ in items]
+			twice.extend(sorted({k for k in keys if keys.count(k) > 1}))
+			return dict(items)
+
+		json.loads((HERE / "facts.json").read_text(), object_pairs_hook=pairs)
+		self.assertEqual(twice, [])
+
 	def test_no_fact_is_a_guess(self):
 		# A shape no source shows is asked about, never guessed: any facts.json
 		# text saying it is guessed ("by eye", "estimated", "not measured", "unseen": verify's GUESS) is a guess unless the user signed it off
@@ -171,6 +184,75 @@ class GeometryTest(unittest.TestCase):
 			self.assertNotEqual(run.returncode, 0)
 			self.assertIn("--only wings: no group of that name", run.stderr)
 			self.assertIn("layout.motion", run.stderr)
+
+
+class LauncherTest(unittest.TestCase):
+	# The cheek station's LAU-116 (layout.stores.lau116): its block, on the
+	# cheek box's node (layout.nacelle cheek), and its hooks, the store; on
+	# models of boxes
+	HOOK = [((488.0, 76.0, 37.0), (491.0, 79.0, 39.0))]   # inside the nacelle, clear of the box
+
+	def jet(self, d, block, stored):
+		# a fuselage, the right cheek box over its length and height with the
+		# boxes of `block` on its node, and station 6's LAU-116 store the boxes
+		# of `stored` ([FS, WL, BL] low and high corners), shown with the stores
+		i, box_ = 0.0254, check.FACTS["layout"]["nacelle"]["cheek"]
+		model = lambda lo, hi: box(((456 - hi[0]) * i, (lo[1] - 105) * i, lo[2] * i), ((456 - lo[0]) * i, (hi[1] - 105) * i, hi[2] * i))
+
+		def merged(boxes):
+			pieces = [model(lo, hi) for lo, hi in boxes]
+			return np.concatenate([v for v, _ in pieces]), np.concatenate([f + sum(len(v) for v, _ in pieces[:k]) for k, (_, f) in enumerate(pieces)])
+
+		cheek = [((box_["front"], 79.0, 39.0), (box_["edge"][0], 88.0, box_["edge"][1]))] + list(block)
+		glb(Path(d) / "m.glb", [{"name": "fuselage", "mesh": model((400, 70, -38), (600, 100, 38))},
+			{"name": "fairing_cheek_right", "mesh": merged(cheek)}, {"name": "ejector_6", "mesh": merged(stored)}])
+		(Path(d) / "m.json").write_text(json.dumps({"joints": {"ejector_6": {"motion": "show", "drive": "stores", "keys": [[0, 0], [1, 1]]}}, "points": {}}))
+		return check.Jet(Path(d) / "m.glb", Path(d) / "m.json")
+
+	def block(self, move=(0.0, 0.0, 0.0)):
+		# the LAU-116's block as the facts give it, moved by [FS, WL, BL]
+		lau, box_ = check.FACTS["layout"]["stores"]["lau116"], check.FACTS["layout"]["nacelle"]["cheek"]
+		front = (lau["front_top"][0] + lau["front_bottom"][0]) / 2
+		outboard = (lau["front_top"][2] + lau["front_bottom"][2] + lau["hole"][2]) / 3
+		m = np.array(move)
+		return [(np.array([front, lau["front_bottom"][1], 40.9]) + m, np.array([box_["front"], lau["front_top"][1], outboard]) + m)]   # its inboard side on the skin
+
+	def rows(self, jet, fact, words):
+		return [r for r in check.checks(jet, [fact]) if words in r["what"]]
+
+	def test_nothing_stands_outside_the_cheek_box(self):
+		with tempfile.TemporaryDirectory() as d:
+			# the 44 in launcher the photos replaced, a store: 1.9 in through the box's face
+			jet = self.jet(d, [], [((500.0, 76.0, 40.0), (538.0, 93.0, 46.6))])
+			(row,) = self.rows(jet, "layout.nacelle", "outside the cheek box's outboard face")
+			self.assertTrue(check.failed(row), row)
+			self.assertAlmostEqual(row["measured"], 46.6 - 44.7, places=2)
+			self.assertIn("FS 522.1", row["what"])
+		with tempfile.TemporaryDirectory() as d:
+			# the block the photos show on the box's node, the hooks inside the nacelle
+			(row,) = self.rows(self.jet(d, self.block(), self.HOOK), "layout.nacelle", "outside the cheek box's outboard face")
+			self.assertFalse(check.failed(row), row)
+			self.assertEqual(row["measured"], 0.0)
+
+	def test_the_launchers_corners_meet_the_marks(self):
+		with tempfile.TemporaryDirectory() as d:
+			rows = self.rows(self.jet(d, self.block(), self.HOOK), "layout.stores", "LAU-116")
+			self.assertEqual(len(rows), 9, rows)
+			self.assertFalse([r for r in rows if check.failed(r)])
+		# each fitting moved past the marks' spread fails, and says where
+		for move, words in (((1.0, 0.0, 0.0), "front against"), ((0.0, 0.3, 0.0), "top against"), ((0.0, -0.3, 0.0), "bottom against"),
+				((0.0, 0.0, 0.5), "face against the hole"), ((0.0, 0.0, 0.5), "against the cheek box's")):
+			with tempfile.TemporaryDirectory() as d:
+				rows = self.rows(self.jet(d, self.block(move), self.HOOK), "layout.stores", "LAU-116")
+				self.assertTrue([r for r in rows if check.failed(r) and words in r["what"]], (move, rows))
+
+	def test_the_block_is_the_airframes(self):
+		# the block built as the store, shown only with a round: the clean jet
+		# has none, and every corner fails
+		with tempfile.TemporaryDirectory() as d:
+			rows = self.rows(self.jet(d, [], self.block() + self.HOOK), "layout.stores", "LAU-116")
+			self.assertEqual(len(rows), 9, rows)
+			self.assertTrue(all(check.failed(r) for r in rows), rows)
 
 
 def triangles(lo, hi):
@@ -303,6 +385,47 @@ class ShapeTest(unittest.TestCase):
 			closed = check.heights(jet.points(["fuselage"]).reshape(-1, 3, 3), np.array([449.0, 451.0]), np.array([-1.0, 1.0]))
 			np.testing.assert_allclose(closed, 120.0, atol=1e-6)
 
+	def test_depths(self):
+		# a flush door as cut() makes it: its outer face 0.15 in over the skin,
+		# its inner 0.1 under, each edge split at the skin, the band above in
+		# the paint and the band below white: its white faces lie the PROUD
+		# under its outer face, at their shallowest, and its painted ones that
+		# far at their deepest; an edge white all the way up reaches the outer face
+		i = 0.0254
+		x = lambda fs: (456 - fs) * i
+		ring = [(440, -5), (460, -5), (460, 5), (440, 5)]
+		level = lambda wl: np.array([[x(f), wl * i, b * i] for f, b in ring])
+		outer, skin, inner = level(15.15), level(15.0), level(14.9)
+		face = np.array([outer[[0, 1, 2]], outer[[0, 2, 3]]])
+		bands = lambda hi, lo: np.array([t for k in range(4) for t in ((hi[k], hi[(k + 1) % 4], lo[(k + 1) % 4]), (hi[k], lo[(k + 1) % 4], lo[k]))])
+		back = np.array([inner[[0, 2, 1]], inner[[0, 3, 2]]])
+
+		class Model:
+			def __init__(self, finishes):
+				self.finishes = finishes
+
+			def parts(self, posed=None, materials=None):
+				return {"door": np.concatenate([self.finishes[m] for m in materials])}
+
+		class Jet:
+			joints = {}
+
+			def __init__(self, finishes):
+				self.model = Model(finishes)
+
+			def faces(self, name):
+				return face
+
+		split = Jet({"paint": np.concatenate([face, bands(outer, skin)]), "white": np.concatenate([bands(skin, inner), back])})
+		self.assertAlmostEqual(float(check.depths(split, "door", "white").min()), check.PROUD, places=4)
+		self.assertAlmostEqual(float(check.depths(split, "door", "paint").max()), check.PROUD, places=4)
+		whole = Jet({"paint": face, "white": np.concatenate([bands(outer, inner), back])})
+		self.assertAlmostEqual(float(check.depths(whole, "door", "white").min()), 0.0, places=4)
+		self.assertAlmostEqual(float(check.depths(whole, "door", "paint").max()), 0.0, places=4)
+		# a door with no faces in a finish cannot be measured
+		with self.assertRaises(KeyError):
+			check.depths(Jet({"paint": face, "white": np.zeros((0, 3, 3))}), "door", "white")
+
 	def test_seam(self):
 		# a plate lying 0.15 in over the box's top all along: one stays on top
 		lid = triangles((420, 120.1, -8), (480, 120.15, 8))
@@ -416,6 +539,71 @@ class ShapeTest(unittest.TestCase):
 		deep = tris((2.0, 1.5, 0.5), (8.0, 3.0, 1.5))
 		self.assertTrue(len(check.through(check.shrunk(deep, 0.1), one)))
 
+	def test_boundary(self):
+		# a shell's edge: the corners on sides one triangle alone has; a closed
+		# box has none, the same box with its top's two triangles gone has its
+		# top's four corners
+		v, f = box((0.0, 0.0, 0.0), (1.0, 2.0, 3.0))
+		self.assertEqual(len(check.boundary(v[f])), 0)
+		top = [k for k, t in enumerate(f) if np.allclose(v[t][:, 1], 2.0)]
+		self.assertEqual(len(top), 2)
+		rim = check.boundary(v[np.delete(f, top, axis=0)])
+		self.assertEqual(len(rim), 4)
+		np.testing.assert_allclose(rim[:, 1], 2.0)
+
+	def _jet(self, d, nodes, joints):
+		path = Path(d) / "m.glb"
+		glb(path, nodes)
+		(Path(d) / "m.json").write_text(json.dumps({"joints": joints, "points": {}}))
+		return check.Jet(path, Path(d) / "m.json")
+
+	def test_pinned(self):
+		# a pin carried by two members turning alike about one hinge stays put
+		# between them; one turning about a hinge beside it, or keyed along
+		# another curve to the same end, drifts away mid-stroke
+		turn = lambda keys, drive="d": {"motion": "rotate", "axis": [0, 0, 1], "drive": drive, "keys": keys}
+		bar = box((0.0, -0.05, -0.05), (1.0, 0.05, 0.05))
+		with tempfile.TemporaryDirectory() as d:
+			jet = self._jet(d, [{"name": "a", "mesh": bar}, {"name": "b", "mesh": bar}, {"name": "c", "translation": (0.1, 0, 0), "mesh": bar},
+				{"name": "e", "mesh": bar}], {"a": turn([[0, 0], [1, 1.5]]), "b": turn([[0, 0], [1, 1.5]]), "c": turn([[0, 0], [1, 1.5]]), "e": turn([[0, 0], [0.5, 1.0], [1, 1.5]])})
+			pin = np.array([1.0, 0.0, 0.0])
+			self.assertAlmostEqual(check.pinned(jet, pin, ["a", "b"], lambda x: {"d": x}), 0.0, places=6)
+			self.assertGreater(check.pinned(jet, pin, ["a", "c"], lambda x: {"d": x}), 1.0)
+			self.assertGreater(check.pinned(jet, pin, ["a", "e"], lambda x: {"d": x}), 1.0)
+
+	def test_clearance_sweeps_each_drive(self):
+		# a mechanism's sweep (clearance(), SWEPT): a bar swinging on the probe
+		# drive, still over the stroke's first 0.3, passes through a post
+		# beside it mid-stroke; two parts riding the bar together overlap where
+		# they stand, which its sweep leaves to the static checks; a door riding
+		# the bar closes into the skin while it rests, its seat the wells
+		# check's, where a part of any other name crossing the skin then is a
+		# clash; a drive moving no part reports it missing
+		turn = lambda drive: {"motion": "rotate", "axis": [0, 0, 1], "drive": drive, "keys": [[0, 0], [0.3, 0], [1, 1.5]]}
+		with tempfile.TemporaryDirectory() as d:
+			nodes = [{"name": "arm", "mesh": box((0.0, -0.05, -0.05), (1.0, 0.05, 0.05)), "children": [1, 2, 3, 4]},
+				{"name": "cap", "mesh": box((0.8, -0.04, -0.04), (0.95, 0.04, 0.04))},
+				{"name": "rib", "mesh": box((0.85, -0.06, -0.02), (0.9, 0.06, 0.02))},
+				{"name": "probe_door", "mesh": box((0.3, -0.12, -0.04), (0.5, -0.06, 0.04))},
+				{"name": "probe_fin", "mesh": box((0.3, -0.12, 0.2), (0.5, -0.06, 0.3))},
+				{"name": "post", "mesh": box((0.45, 0.45, -0.1), (0.55, 0.55, 0.1))},
+				{"name": "fuselage", "mesh": box((0.35, -0.3, -0.5), (0.45, -0.1, 0.5))}]
+			jet = self._jet(d, nodes, {"arm": turn("probe")})
+			rows = list(check.clearance(jet, "probe", 21))
+			clash = [r for r in rows if r["what"].startswith("arm through post")]
+			self.assertEqual(len(clash), 1)
+			self.assertTrue(check.failed(clash[0]))
+			self.assertLess(clash[0]["measured"], 21)
+			self.assertFalse([r for r in rows if "cap" in r["what"] and "rib" in r["what"]])
+			self.assertFalse([r for r in rows if r["what"].startswith("probe_door through")])
+			fin = [r for r in rows if r["what"].startswith("probe_fin through fuselage")]
+			self.assertEqual(len(fin), 1)
+			self.assertIn("probe 0.0-0.3 ", fin[0]["what"])
+			pairs = [r for r in rows if r["what"].startswith("pairs of parts crossing as the probe moves")]
+			self.assertEqual(pairs[0]["measured"], 2)
+			with self.assertRaises(KeyError):
+				list(check.clearance(jet, "fold", 21))
+
 	def test_vertical(self):
 		# a vertical line through a box crosses its top and bottom; beside it, nothing
 		tris = (lambda v, f: v[f])(*box((0.0, 1.0, 0.0), (10.0, 3.0, 2.0)))
@@ -455,6 +643,88 @@ class ShapeTest(unittest.TestCase):
 		# a step in the skin's own shape is no hole
 		step = np.concatenate([np.array(tiles), tris((40.0, 89.0, 36.0), (60.0, 99.0, 44.0))])
 		self.assertFalse(check.holed(step, 50.0, 40.0))
+		# a hole between a deck and a nacelle's shoulder 5 in under it,
+		# falling away 5.5 in/in with an inch of it seen from above (the skin
+		# beside the fin's root fairing at FS 597), is a hole
+		shoulder = []
+		for s0 in range(0, 100, 10):
+			for b0 in np.arange(30.0, 43.25, 0.25):
+				if 40 <= s0 < 60 and 37.5 <= b0 < 42.25:
+					continue
+				drop = lambda b: 125.2 - 0.25 * (b - 30.0) if b <= 37.5 else 118.1 - 5.5 * (b - 42.25)
+				c = np.array([[s0, drop(b0), b0], [s0 + 10, drop(b0), b0], [s0 + 10, drop(b0 + 0.25), b0 + 0.25], [s0, drop(b0 + 0.25), b0 + 0.25]])
+				shoulder += [c[[0, 1, 2]], c[[0, 2, 3]]]
+		shoulder = np.concatenate([np.array(shoulder), tris((0.0, 79.0, -50.0), (100.0, 80.0, 43.25))])
+		self.assertTrue(check.holed(shoulder, 50.0, 38.0))
+		self.assertFalse(check.holed(shoulder, 30.0, 38.0))
+
+	def test_proud(self):
+		# A face turned aft stands proud of what lies behind it by its step: a
+		# block on the skin ended square stands its height; one ending over a
+		# lower block behind it, the difference; the part of a face inside
+		# what lies behind it, nothing. Source coordinates mirror the model's
+		# frame, so the boxes' faces are wound as the jet's read there
+		mirrored = lambda lo, hi: (lambda v, f: v[f][:, ::-1])(*box(lo, hi))
+		skin = mirrored((0.0, 90.0, -50.0), (100.0, 100.0, 50.0))
+		np.testing.assert_allclose(check.standing(np.array([[50.0, 101.0, 0.0], [50.0, 99.0, 0.0]]), skin), [1.0, -1.0])
+		block = mirrored((10.0, 100.0, 30.0), (50.0, 103.0, 40.0))
+		self.assertAlmostEqual(check.proud(block, np.concatenate([skin, block])), 3.0, places=6)
+		lower = mirrored((50.0, 100.0, 30.0), (80.0, 102.75, 40.0))
+		self.assertAlmostEqual(check.proud(block, np.concatenate([skin, block, lower])), 0.25, places=6)
+		sunk = mirrored((10.0, 97.0, 30.0), (50.0, 100.3, 40.0))
+		self.assertAlmostEqual(check.proud(sunk, np.concatenate([skin, sunk])), 0.3, places=6)
+		# nothing turned aft, nothing proud
+		self.assertEqual(check.proud(block[:2], skin), 0.0)
+		# and a ramp drawing in at 50 deg off aft is no face turned aft
+		v = np.array([[10.0, 100.0, 30.0], [50.0, 100.0, 30.0], [52.5, 103.0, 30.0], [10.0, 103.0, 30.0]])
+		v = np.concatenate([v, v + [0.0, 0.0, 10.0]])
+		f = np.array([(0, 2, 1), (0, 3, 2), (4, 5, 6), (4, 6, 7), (0, 1, 5), (0, 5, 4), (1, 2, 6), (1, 6, 5), (2, 3, 7), (2, 7, 6), (3, 0, 4), (3, 4, 7)])
+		ramp = v[f][:, ::-1]
+		self.assertEqual(check.proud(ramp, np.concatenate([skin, ramp])), 0.0)
+
+	def test_outward(self):
+		# out of the jet as it reads in source coordinates: a box's faces
+		# wound as the jet's (mirrored), its top face up and its aft face aft
+		v, f = box((0.0, 90.0, -10.0), (100.0, 100.0, 10.0))
+		tris = v[f][:, ::-1]
+		n = check.outward(tris)
+		top = tris.mean(1)[:, 1] > 99.9
+		aft = tris.mean(1)[:, 0] > 99.9
+		np.testing.assert_allclose(n[top], np.tile([0.0, 1.0, 0.0], (top.sum(), 1)), atol=1e-12)
+		np.testing.assert_allclose(n[aft], np.tile([1.0, 0.0, 0.0], (aft.sum(), 1)), atol=1e-12)
+
+	def test_folds(self):
+		# the angle between neighbouring faces' normals: none on a flat sheet,
+		# the turn of a hinge, the sharpest of several, and nothing between
+		# faces that share only a corner
+		flat = np.array([[[0, 0, 0], [1, 0, 0], [0, 1, 0]], [[1, 0, 0], [1, 1, 0], [0, 1, 0]]], float)
+		self.assertAlmostEqual(check.folds(flat), 0.0, places=6)
+		for angle in (30.0, 100.0):
+			a = math.radians(angle)
+			bent = np.array([[[0, 0, 0], [1, 0, 0], [0, 1, 0]], [[0, 0, 0], [0, 1, 0], [-math.cos(a), 0, math.sin(a)]]], float)
+			self.assertAlmostEqual(check.folds(bent), angle, places=6)
+		three = np.concatenate([flat, np.array([[[1, 0, 0], [2, 0, 1], [1, 1, 0]]], float)])
+		self.assertAlmostEqual(check.folds(three), 45.0, places=6)
+		apart = np.array([[[0, 0, 0], [1, 0, 0], [0, 1, 0]], [[0, 0, 0], [0, 0, 1], [-1, 0, 0]]], float)
+		self.assertAlmostEqual(check.folds(apart), 0.0, places=6)
+		# a sliver beside a face, turned whichever way its rounding left it, has no fold
+		sliver = np.concatenate([flat, np.array([[[1, 0, 0], [0, 1, 0], [0.5, 0.5, 0.0005]]], float)])
+		self.assertAlmostEqual(check.folds(sliver), 0.0, places=6)
+
+	def test_lip(self):
+		# the least a ring stands outside another round an axis, over the
+		# angles asked: two circles 0.2 apart, a dent in the outer one's
+		# reach, a dent outside the angles asked, and no angle with both
+		circle = lambda r, turns: np.c_[r * np.cos(np.radians(turns)), r * np.sin(np.radians(turns))]
+		turns = np.arange(-180.0, 180.0, 0.5)
+		self.assertAlmostEqual(check.lip(circle(18.0, turns), circle(17.8, turns), range(-60, 96, 2)), 0.2, places=6)
+		dent = circle(18.0, turns)
+		dent[np.abs(turns - 40.0) < 2] *= 17.7 / 18.0
+		self.assertAlmostEqual(check.lip(dent, circle(17.8, turns), range(-60, 96, 2)), -0.1, places=6)
+		dent = circle(18.0, turns)
+		dent[np.abs(turns - 150.0) < 2] *= 17.7 / 18.0
+		self.assertAlmostEqual(check.lip(dent, circle(17.8, turns), range(-60, 96, 2)), 0.2, places=6)
+		self.assertTrue(np.isnan(check.lip(circle(18.0, np.arange(100.0, 120.0)), circle(17.8, turns), range(-60, 96, 2))))
 
 	def test_seated(self):
 		tris = lambda lo, hi: (lambda v, f: v[f])(*box(lo, hi))
@@ -512,6 +782,14 @@ class ShapeTest(unittest.TestCase):
 		self.assertLess(check.seated(np.concatenate([fin, piece]), sloped, stations), 0.0)
 		# and the fin alone, its root above that deck, stands off it
 		self.assertGreater(check.seated(fin, sloped, stations), 0.5)
+		# a mid-plane given as a point and its normal reads as the one fitted to the part's own points
+		block = tris((5.0, 102.0, 38.0), (95.0, 160.0, 42.0))
+		self.assertAlmostEqual(check.seated(block, skin, stations, (np.array([50.0, 130.0, 40.0]), np.array([0.0, 0.0, 2.0]))), check.seated(block, skin, stations), places=6)
+		# and a plane off the part's middle puts its whole foot on one side, where a lifted face's foot is missed
+		v, f = box((5.0, 99.5, 38.0), (95.0, 160.0, 42.0))
+		v[(v[:, 1] < 100) & (v[:, 2] > 40)] += [0.0, 2.5, 0.0]
+		self.assertAlmostEqual(check.seated(v[f], skin, stations, (np.array([50.0, 130.0, 40.0]), np.array([0.0, 0.0, 1.0]))), 2.0, places=6)
+		self.assertAlmostEqual(check.seated(v[f], skin, stations, (np.array([50.0, 130.0, 37.0]), np.array([0.0, 0.0, 1.0]))), -0.5, places=6)
 		# no station cutting the part measures nothing
 		self.assertTrue(np.isnan(check.seated(tris((5.0, 102.0, 38.0), (95.0, 160.0, 42.0)), skin, np.array([200.0]))))
 

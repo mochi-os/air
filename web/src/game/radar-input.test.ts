@@ -146,21 +146,85 @@ function rig(contacts: { id: string; x: number; y: number; z: number; vx?: numbe
 // where the scan points, the sector's edges about its centre, and the
 // altitudes the bars span at the cursor's range.
 describe('a new mission sets the radar up afresh', () => {
-  it('scans four bars level, whatever the last mission left', () => {
-    const run = new Function(
+  const spawn = (task: string, duel: string, master: string) =>
+    new Function(
       'Radar',
       'boresight',
-      `const NM=1852, cfg={ task:'joust', duel:'bvr' }, master='120c';
+      `const NM=1852, cfg={ task:'${task}', duel:'${duel}' }, master='${master}';
        const RADAR=new Radar(); const radar_cursor={ azimuth:0, range:0 };
        ${[lift('merge_joust'), lift('radar_scale'), lift('rdr_reset'), lift('default_radar')].join('\n')}
        RADAR.bars=0; RADAR.elevation=0.3;
        default_radar();
        return RADAR;`
-    )
-    const radar = run(Radar, boresight) as Radar
+    )(Radar, boresight) as Radar
+  it('scans four bars level, whatever the last mission left', () => {
+    const radar = spawn('joust', 'bvr', '120c')
     expect(radar.bars).toBe(2)
     expect(radar.elevation).toBe(0)
-    expect(radar.mode).toBe('tws')
+  })
+  it('searches a BVR joust in RWS, whose scan takes in the bandit its opening puts up to 45 degrees off the nose', () => {
+    const radar = spawn('joust', 'bvr', '120c')
+    expect(radar.mode).toBe('rws')
+    expect(radar.half()).toBeGreaterThan(54 * Math.PI / 180) // the user's 43 degree flank had opened to 54 when the minute was up
+    expect(radar.auto).toBe(false) // a search, not the ACM conditions
+  })
+  it('keeps another AMRAAM fight in TWS, and a merge in boresight', () => {
+    expect(spawn('furball', '', '120c').mode).toBe('tws')
+    const merge = spawn('joust', 'merge', '9m')
+    expect([merge.mode, merge.auto]).toEqual(['rws', true])
+  })
+})
+
+// The picture at a BVR start (#196): the controller's call, from the jets as
+// they are three seconds in. The pilot sits at the origin; the engine's bearing
+// convention is atan2(dx, -dz), so north is -z.
+describe('the picture at a BVR start', () => {
+  const NM = 1852
+  const D = Math.PI / 180
+  const called = (bandit: { x: number; y: number; z: number; vx: number; vz: number }) =>
+    new Function(
+      'bandit',
+      `const NM=${NM};
+       const ownship={ pos:{ x:0, y:6000, z:0 } };
+       const theatre={ frame:{ altitude:(p)=>p.y } };
+       const compass=(dx,dz)=>String(Math.round((Math.atan2(dx,-dz)/${D}+360)%360)||360).padStart(3,'0');   // true bearings: the variation is navigation.ts's
+       const translate=(text,values)=>values?Object.keys(values).reduce((t,k)=>t.split('{'+k+'}').join(String(values[k])),text):text;
+       ${lift('picture_call')}
+       return picture_call();`
+    )({ pos: { x: bandit.x, y: bandit.y, z: bandit.z }, velx: bandit.vx, velz: bandit.vz, fwd: { x: 0, z: 1 } }) as string
+  it('gives his bearing, range and height', () => {
+    expect(called({ x: 0, y: 18000 / 3.281, z: -52 * NM, vx: 0, vz: 270 })).toBe('SINGLE GROUP BRAA 360/52, 18 THOUSAND, HOT')
+    const east = 50 * NM * Math.sin(43 * D), north = 50 * NM * Math.cos(43 * D)
+    expect(called({ x: east, y: 25000 / 3.281, z: -north, vx: 0, vz: 270 })).toMatch(/^SINGLE GROUP BRAA 043\/50, 25 THOUSAND, /)
+  })
+  it('calls his aspect HOT, FLANK, BEAM or DRAG by his track against the line to the pilot', () => {
+    const at = (off: number) => {
+      const toward = Math.atan2(0, 1) // from him at z=-50 nm the pilot lies along +z
+      const a = toward + off * D
+      return called({ x: 0, y: 6000, z: -50 * NM, vx: 270 * Math.sin(a), vz: 270 * Math.cos(a) }).split(', ').pop()
+    }
+    expect([at(0), at(29), at(31), at(-60), at(75), at(-109), at(115), at(180)]).toEqual(['HOT', 'HOT', 'FLANK', 'FLANK', 'BEAM', 'BEAM', 'DRAG', 'DRAG'])
+  })
+  it('is called once, three seconds of the world in, and only while there is a bandit', () => {
+    const run = (enemy: boolean) =>
+      new Function(
+        `let sim_time=0, picture_due=-1; const calls=[], has_enemy=${enemy}, bandit={ group:{ visible:true } };
+         const radio=(text)=>calls.push(text), picture_call=()=>'PICTURE';
+         ${/\nconst PICTURE_AFTER=[^\n]*\n/.exec(source)?.[0] ?? ''}${lift('picture_watch')}
+         picture_due=sim_time+PICTURE_AFTER;
+         const heard=[];
+         for(let k=0;k<6*15;k++){ sim_time+=1/15; picture_watch(); heard.push(calls.length); }
+         return { first:heard.indexOf(1), calls };`
+      )() as { first: number; calls: string[] }
+    const live = run(true)
+    expect(live.calls).toEqual(['AWACS: PICTURE'])
+    expect(live.first).toBeGreaterThanOrEqual(3 * 15 - 1)
+    expect(live.first).toBeLessThanOrEqual(3 * 15)
+    expect(run(false).calls).toEqual([])
+  })
+  it('is set at a BVR joust start and cleared at any other', () => {
+    expect(source).toMatch(/\n\t\tpicture_due=bvr\?sim_time\+PICTURE_AFTER:-1;\n\t\tif\(bvr\)\{ notice\(translate\("FIGHT'S ON"\)\)/)
+    expect(source).toMatch(/function step_world\(dt\)\{[^\n]*\n\t[^\n]*picture_watch\(\);/)
   })
 })
 
@@ -290,6 +354,35 @@ describe('acquire (Enter / the stick\'s acquire button)', () => {
     above.RADAR.mode = 'rws'
     above.press()
     expect(above.RADAR.stt).toBe('bandit')
+  })
+
+  it('locks a return the RWS scan holds at any range with the AIM-120 up, where the cone reaches 10 nm', () => {
+    const far = { id: 'bandit', x: 0, y: 0, z: -40 * 1852 }
+    const r = rig([far])
+    r.RADAR.mode = 'rws'
+    r.RADAR.bricks = [{ id: 'bandit', azimuth: 0, range: 40 * 1852, at: 0, x: 0, z: -40 * 1852 }]
+    r.clock(7)
+    r.press()
+    expect(r.RADAR.stt).toBe('bandit')
+    expect(r.events()).toEqual(['7.0|acquire|aacq'])
+  })
+  it('leaves Enter the boresight cone in RWS with the AIM-9 or the gun up, or the ACM conditions on', () => {
+    const far = { id: 'bandit', x: 0, y: 0, z: -40 * 1852 }
+    const brick = { id: 'bandit', azimuth: 0, range: 40 * 1852, at: 0, x: 0, z: -40 * 1852 }
+    for (const master of ['9m', 'gun']) {
+      const r = rig([far])
+      r.RADAR.mode = 'rws'
+      r.RADAR.bricks = [brick]
+      r.set('right', master)
+      r.press()
+      expect(r.RADAR.stt, master).toBeNull() // 40 nm is outside the cone
+    }
+    const acm = rig([far])
+    acm.RADAR.mode = 'rws'
+    acm.RADAR.bricks = [brick]
+    acm.RADAR.auto = true
+    acm.press()
+    expect(acm.RADAR.stt).toBeNull()
   })
 
   it('a press that finds nothing to acquire, and holds nothing, lands on nothing: no event', () => {
