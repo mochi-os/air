@@ -22,7 +22,7 @@ const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url
 // flight core's own figure, so a change there that the client misses fails here.
 const IDLE = Number(/\n\tidle\s*=\s*([\d.]+)/.exec(readFileSync(fileURLToPath(new URL('../../../../../world/games/air/flight/propulsion.go', import.meta.url)), 'utf8'))?.[1])
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -56,7 +56,8 @@ function system(o: { tod?: string; grounded?: boolean; parking?: boolean; multip
     let apu_accumulator=1, flight_active=true; const accumulator_low=()=>apu_accumulator<0.5, secured=[false,false], carrier_fore_aft=(x,z)=>x+1000, carrier_lateral=(x,z)=>z-500;   // the deck's frame a plain offset
     const SHIP={ parking:{ x:1005.3, z:-500, heading:0 } }, AIRCRAFT_MODELS={ fa18c:{ nose:5.3 } }, own_aircraft=()=>"fa18c", D2R=Math.PI/180;   // the deck's spot: its nose wheel 5.3 m ahead of the frame's origin, where the jet stands
     const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
-    ${tables} ${block} ${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${press}
+    ${tables} ${block} ${lift('_generators')}
+${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${press}
     return { press:pit_press, step(t,out){ sim_time=t; glance=t; power_step(out); }, start(t,out,dt){ sim_time=t; glance=t; power_step(out); start_step(out,dt); }, at(t){ sim_time=t; glance=t; }, generators,
       starter, start_fresh, apu_ready, ground_power, cranking, sub_idle, secured, fed, GROUND, get apu(){ return apu_accumulator; }, set apu(v){ apu_accumulator=v; }, knob_level, knob_turn, display_level, display_contrast, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, wing_kept, clock_elapsed, travel_at, lighting_set,
@@ -390,7 +391,7 @@ describe('the start systems (#133)', () => {
   })
   it('takes each system its power from its own placard group (figure 2-10)', () => {
     const wired: [string, RegExp][] = [
-      ['1A MC1, 1B MC2', /function mc\(\)\{ const c=avionics\.computers\(mc_switch,buses\.ac\); return \{ one:c\.one&&buses\.left&&fed\(1,"a"\), two:c\.two&&buses\.right&&fed\(1,"b"\) \}; \}/],
+      ['1A MC1, 1B MC2', /function mc\(\)\{ const c=avionics\.computers\(mc_switch,buses\.ac,_mc\); c\.one=c\.one&&buses\.left&&fed\(1,"a"\); c\.two=c\.two&&buses\.right&&fed\(1,"b"\); return c; \}/],
       ['1A left DDI, 2A right DDI and AMPCD', /function display_level\(d\)\{[^\n]*\|\|!fed\(d==="left"\?1:2,"a"\)\|\|/],
       ['2A HUD', /function symbology\(\)\{ return buses\.ac&&fed\(2,"a"\)\?/],
       ['2A radar', /\tRADAR\.unpowered=!ac\|\|!fed\(2,"a"\); \}/],

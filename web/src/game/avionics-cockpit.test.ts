@@ -23,7 +23,7 @@ import * as plates from './plates'
 // modules, with stand-ins for the jet.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -44,7 +44,7 @@ const world = `const NM=1852, D2R=Math.PI/180, DDI_ORDER=["left","right","center
   const ddi_state={ left:{ page:"fcs", menu:"" }, right:{ page:"bit", menu:"" }, center:{ page:"hsi", menu:"" } }, hsi_state={ level:"", slew:false };
   const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); const nav_sense=()=>({ dt:0, x:0, z:0, east:0, south:0, tas:0, heading:0, pitch:0, bank:0, airborne:false, brake:true, power:true, radar:false, deck:false, tacan:null });`
 const defs = [menus + '\n', legends + '\n', line('mc_switch'), line('bit'), line('bit_state'), line('display_test'), line('ufc_test'), line('hmd'), line('PATTERN_BARS')].join('')
-const functions = ['fcs_jams', 'mc', 'pattern_start', 'pattern_stop', 'equipment', 'avionics_frame', 'pattern_spot', 'pattern_draw', 'bit_press', 'ddi_bit', 'ddi_legend'].map(lift).join('\n')
+const functions = ['fcs_jams', 'mc', '_mc', 'bit_seen', 'alike', 'bit_take', 'bit_moved', 'pattern_start', 'pattern_stop', 'equipment', 'avionics_frame', 'pattern_spot', 'pattern_draw', 'bit_press', 'ddi_bit', 'ddi_legend'].map(lift).join('\n')
 function cockpit<T>(body: string): T {
   return new Function('navigate', 'avionics', 'THREE', 'countermeasures', 'communication', 'identification', 'mids', 'helmet', `${world} ${defs} ${functions}
     const helmet_frame=()=>{};   // the helmet's own frame is helmet-cockpit.test.ts's
@@ -67,11 +67,11 @@ describe('the MC switch', () => {
     expect(s).toEqual(['norm', 'one', 'one', 'two', 'two', 'true'])
   })
   it('runs mission computer 1 on the left ac bus and 2 on the right, which differ with the bus tie open (FO-8)', () => {
-    expect(cockpit('buses={ ac:true, essential:true, left:false, right:true }; const a=mc(); buses={ ac:true, essential:true, left:true, right:false }; return [a,mc()];'))
+    expect(cockpit('buses={ ac:true, essential:true, left:false, right:true }; const a={...mc()}; buses={ ac:true, essential:true, left:true, right:false }; return [a,{...mc()}];'))
       .toEqual([{ one: false, two: true }, { one: true, two: false }])
   })
   it('runs each computer with its switch position and the ac buses', () => {
-    expect(cockpit('const a=mc(); mc_switch="one"; const b=mc(); mc_switch="two"; const c=mc(); mc_switch="norm"; buses={ ac:false, essential:true }; return [a,b,c,mc()];'))
+    expect(cockpit('const a={...mc()}; mc_switch="one"; const b={...mc()}; mc_switch="two"; const c={...mc()}; mc_switch="norm"; buses={ ac:false, essential:true }; return [a,b,c,{...mc()}];'))
       .toEqual([{ one: true, two: true }, { one: false, two: true }, { one: true, two: false }, { one: false, two: false }])
   })
   it('stands aft of HYD ISOL on their plate on the left console, its positions the switch\'s own (#146)', () => {
@@ -140,6 +140,10 @@ describe('the frame\'s step', () => {
     const s = cockpit<unknown[]>(`avionics.start(bit,["rdr"],{},{ grounded:true, consent:false, test:false }); avionics_frame(1); const during=[RADAR.testing, Math.round(bit.tests.rdr), ddi_dirty];
       ddi_dirty=false; avionics_frame(1); const steady=ddi_dirty; avionics_frame(200); return [during, steady, RADAR.testing, bit.results.rdr, ddi_dirty];`)
     expect(s).toEqual([[true, 119, false], false, false, 'go', true])
+  })
+  it('tells a record of tests from one with other tests, and of results from one with other results', () => {
+    const s = cockpit<boolean[]>(`return [alike({ a:1 },{ a:2 },false), alike({ a:1 },{ a:2 },true), alike({ a:1 },{ a:1, b:1 },false), alike({ a:1, b:1 },{ a:1 },false), alike({ b:"go", a:"nogo" },{ a:"nogo", b:"go" },true), alike({},{},true)];`)
+    expect(s).toEqual([true, false, false, false, true, true])
   })
   it('raises the BIT advisory for a failure, and takes it down while the BIT display is on a display', () => {
     const s = cockpit<boolean[]>(`ddi_state.right.page="adi"; last_out=[0,1,0,0,0,0]; avionics_frame(0.1); const raised=bit.advisory, redrawn=ddi_dirty;
@@ -279,7 +283,7 @@ describe('what the mission computers take with them', () => {
     expect([fire(true, '120c'), fire(true, '9m'), fire(false, '120c'), fire(false, '9m')]).toEqual(['amraam', 'sidewinder', '', ''])
   })
   it('filters the cautions and advisories each sim step by the computers still running', () => {
-    expect(source).toMatch(/\n\tconst computing=mc\(\);\n\tcaptions\.splice\(0,captions\.length,\.\.\.avionics\.cautions\(captions,computing\)\);/)
+    expect(source).toMatch(/\n\tconst computing=mc\(\);\n\tavionics\.cautions\(captions,computing,captions\);/)
   })
   it('starts a mission with both on and nothing in test', () => {
     expect(source).toMatch(/mc_switch="norm"; Object\.assign\(bit,avionics\.fresh\(\)\); Object\.assign\(bit_state,\{ level:"", select:false, post:1, page:0 \}\); display_test\.on=false; ufc_test\.at=-Infinity; ownship\.torn=false;/)

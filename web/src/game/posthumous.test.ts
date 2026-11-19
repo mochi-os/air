@@ -17,7 +17,7 @@ const source = readFileSync(
   'utf8'
 )
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -77,7 +77,9 @@ function world(
      const presenting = true, beat = 0.5, sim_time = 20, mission_zero = 5;
      const ownship = { fate: 'missile', struck: 2, throttle: 0.4 };
      const on_over = (r) => over.push(r);
+     const audio_remote_drop = () => {};
      ${extra}
+     ${lift('lost')}
      ${names.map(lift).join('\n')}
      ${body}
      return { ...w, has_enemy, own_aloft, own_kills, crash_t, mission_done };`
@@ -360,11 +362,12 @@ describe('a mutual kill', () => {
        const MULTIPLAYER = false, sim_time = 20, WRECKAGE = 5, cfg = { task: 'joust' }, missiles = [];
        const ownship = { pos: { x: 0, y: 0, z: 0 }, group: { visible: true }, speed: 200 };
        const bandit = { group: { visible: false }, fate: ${JSON.stringify(fate)}, wrecked: ${wrecked} };
-       const latch = () => {}, feed = () => {}, explosion_at = () => {}, burning_stores = () => [];
+       const latch = () => {}, feed = () => {}, explosion_at = () => {}, burning_stores = () => [], audio_remote_drop = () => {}, DEV_MODE = false;
+       let mission_done = false;
        ${lift('joust_pending')}
        ${lift('stand_down')}
        ${lift('bandit_pending')}
-       ${lift('crash_ownship').replace(/ as any/g, '')}
+       ${lift('lost')}${lift('crash_ownship').replace(/ as any/g, '')}
        crash_ownship('missile', 'Bandit'); return traded;`
     )() as boolean
 
@@ -387,7 +390,7 @@ describe('a mutual kill', () => {
     new Function(
       `let crash_t = ${crash_t}, traded = false, has_enemy = true;
        const bandit = { pos: { x: 0, y: 0, z: 0 }, group: { visible: true } }, sim_time = 5, cfg = {}, BANDIT = 'Bandit';
-       const explosion_at = () => {}, flight_debris_lay = () => {}, feed = () => {}, opponent = () => '', notice = () => {}, translate = (t) => t;
+       const explosion_at = () => {}, flight_debris_lay = () => {}, feed = () => {}, opponent = () => '', notice = () => {}, translate = (t) => t, audio_remote_drop = () => {};
        ${lift('bandit_destroy')}
        bandit_destroy(${JSON.stringify(why)}); return { traded, wrecked: bandit.wrecked };`
     )() as { traded: boolean; wrecked?: number }
@@ -414,5 +417,44 @@ describe('a mutual kill', () => {
        return [own_aloft, bandit_aloft];`
     )() as number[]
     expect(aloft).toEqual([2, 7])
+  })
+})
+
+// sandbox runs code with every name it does not define standing in as an
+// inert stand-in - a function that answers itself to any call or property -
+// and the names given read and written through `vars`, so a function that
+// reaches far into the engine can be run for the few things it is asked about.
+function sandbox(code: string, vars: Record<string, unknown>): void {
+  const real = new Set(['Math', 'JSON', 'Object', 'Array', 'Number', 'String', 'Boolean', 'Set', 'Map', 'Infinity', 'NaN', 'undefined', 'console', 'globalThis'])
+  const inert: unknown = new Proxy(function () {}, { get: (_, k) => (k === Symbol.toPrimitive ? () => 0 : inert), apply: () => inert })
+  const scope = new Proxy(vars, {
+    has: (_, k) => typeof k === 'string' && !real.has(k),
+    get: (t, k) => (k === Symbol.unscopables ? undefined : k in t ? t[k as string] : inert),
+    set: (t, k, v) => ((t[k as string] = v), true),
+  })
+  new Function('scope', `with (scope) { ${code} }`)(scope)
+}
+
+describe('a life that is over', () => {
+  const crash = lift('crash_ownship').replace(/ as any/g, '')
+  const lost = lift('lost')
+  it('dies once: the eject chord under the game-over menu is no second death', () => {
+    const vars = { crash_t: 0, mission_done: false, own_deaths: 0, MULTIPLAYER: false, ownship: { pos: {}, group: {} } as Record<string, unknown> }
+    sandbox(`${lost}${crash} crash_ownship("sea")`, vars)
+    expect([vars.own_deaths, vars.crash_t]).toEqual([1, 3])
+    vars.crash_t = 0 // the fireball burnt out, and the mission with it
+    vars.mission_done = true
+    sandbox(`${lost}${crash} crash_ownship("eject")`, vars)
+    expect([vars.own_deaths, vars.crash_t]).toEqual([1, 0])
+  })
+  it('keeps the seat in the jet once the mission is over', () => {
+    const eject = /\n\t\telse if\((ch===key_of\("eject"\) && [^\n]*?)\)\{\n/.exec(source)?.[1] ?? ''
+    expect(eject).not.toBe('')
+    const fired = (done: boolean) => {
+      const vars = { crash_t: 0, mission_done: done, dev_parked: false, ejected: false, fired: false, ch: 'E', key_of: () => 'E' }
+      sandbox(`${lost} fired = (${eject})`, vars)
+      return vars.fired
+    }
+    expect([fired(false), fired(true)]).toEqual([true, false])
   })
 })

@@ -160,7 +160,8 @@ export function amplitudes(
 }
 
 // The sea's height variance the spectrum holds, m^2, summed over every
-// cascade's band: four times its root is the significant wave height.
+// cascade's band: four times its root is the significant wave height. Read by
+// the tests alone, which hold the spectrum to the sea state it is built for.
 export function variance(wind: Wind): number {
   const n = SIZE
   const limits = bands()

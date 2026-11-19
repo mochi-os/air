@@ -36,6 +36,7 @@ export type Row = [string, string, boolean] // key, label, red - the engine's ca
 // reconcile brings the slots up to date with the rows on show, returning the
 // same array when nothing changed so a caller can redraw only on change.
 export function reconcile(slots: Slots, rows: readonly Row[]): Slots {
+  if (settled(slots, rows)) return slots
   const want = new Map(rows.map(([key, label, red]) => [key, { key, label, red }]))
   const next: Slots = slots.map((slot) => (slot && want.has(slot.key) ? (want.get(slot.key) as Slot) : null))
   const held = new Set(next.filter((slot): slot is Slot => slot !== null).map((slot) => slot.key))
@@ -56,6 +57,24 @@ export function reconcile(slots: Slots, rows: readonly Row[]): Slots {
     same = a === b || (!!a && !!b && a.key === b.key && a.label === b.label && a.red === b.red)
   }
   return same ? slots : next
+}
+
+// settled: every slot showing the row reconcile would give it (the last of its key's rows), every row in a
+// slot, and no blank at the end - the steady state, step after step, answered without building anything.
+function settled(slots: Slots, rows: readonly Row[]): boolean {
+  if (slots.length > 0 && slots[slots.length - 1] === null) return false
+  for (const slot of slots) {
+    if (!slot) continue
+    let row: Row | null = null
+    for (let i = rows.length - 1; i >= 0 && !row; i--) if (rows[i][0] === slot.key) row = rows[i]
+    if (!row || row[1] !== slot.label || row[2] !== slot.red) return false
+  }
+  for (const row of rows) {
+    let shown = false
+    for (let i = 0; i < slots.length && !shown; i++) shown = slots[i]?.key === row[0]
+    if (!shown) return false
+  }
+  return true
 }
 
 // restack packs the blanks out: the MASTER CAUTION press with the light out.

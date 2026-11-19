@@ -2,8 +2,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import * as H from './helmet'
+import { HOME, point, settle, tangent, theatre, vector } from './earth'
 
 const D = Math.PI / 180
 const unaligned = { azimuth: 2 * D, elevation: -1 * D, roll: 3 * D }
@@ -254,6 +257,13 @@ describe('the seeker', () => {
     expect(angle(s, at(70))).toBeCloseTo(30, 9)
     expect(H.slave(at(0, 0), { x: -1, y: 0, z: 0 })).toEqual({ x: -1, y: 0, z: 0 }) // dead astern: the nose itself
   })
+  it('writes where it looks into the vector it is handed, as it would answer afresh', () => {
+    const out = { x: 0, y: 0, z: 0 }
+    for (const [sight, nose] of [[at(30, 10), at(0)], [at(70), at(0)], [at(0), at(180)]]) {
+      expect(H.slave(sight, nose, H.GIMBAL, out)).toBe(out)
+      expect(out).toEqual(H.slave(sight, nose))
+    }
+  })
   it('sees what is inside its field and nothing outside it', () => {
     expect([H.within(at(20), at(22), H.SEEKER), H.within(at(20), at(23), H.SEEKER)]).toEqual([true, false])
   })
@@ -265,5 +275,35 @@ describe('the seeker', () => {
       expect(angle(H.unpack(packed), v)).toBeLessThan(0.011)
     }
     expect(H.pack(at(90, 0))).toEqual([9000, 0])
+  })
+
+  // The line crosses the wire in the world frame the server keeps (air.go
+  // sighted), whatever frame the engine works in: in a match laid
+  // Earth-centred the engine's line, sent as it stood, pointed the server's
+  // seeker nowhere near the target. engine.ts cannot be imported, so the one
+  // function that packs it is lifted from its source.
+  it('crosses the wire in the world frame, pointing where the target is', () => {
+    const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+    const start = source.indexOf('function seeker_wire(')
+    expect(start).toBeGreaterThan(0)
+    const body = source.slice(start, source.indexOf('\n', start))
+    const wire = new Function('helmet', 'earth_vector', 'theatre', `${body} return seeker_wire;`)(H, vector, theatre) as (v: H.Vector) => [number, number]
+    // The engine's frame is laid 3 km east of Midway; the jet looks at a target
+    // 10 km north and 1 km above him there.
+    const frame = tangent(HOME.latitude, HOME.longitude + 3000 / 6378137 / Math.cos(HOME.latitude))
+    settle(frame)
+    try {
+      const jet = { x: 200, y: 4000, z: -300 }, target = { x: 200, y: 5000, z: -10300 }
+      const length = Math.hypot(target.x - jet.x, target.y - jet.y, target.z - jet.z)
+      const line = { x: (target.x - jet.x) / length, y: (target.y - jet.y) / length, z: (target.z - jet.z) / length }
+      // what the server measures: the direction between the two in its own frame
+      const a = point(theatre.outward, jet), b = point(theatre.outward, target)
+      const d = Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z)
+      const truth = { x: (b.x - a.x) / d, y: (b.y - a.y) / d, z: (b.z - a.z) / d }
+      expect(angle(H.unpack(wire(line)), truth)).toBeLessThan(0.011)
+      expect(angle(line, truth), 'the frames differ, or this proves nothing').toBeGreaterThan(10)
+    } finally {
+      settle(HOME)
+    }
   })
 })

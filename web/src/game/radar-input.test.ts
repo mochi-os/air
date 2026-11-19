@@ -26,7 +26,7 @@ import { amraams as stores_amraams, eject as stores_eject, sequence, departed } 
 // as text and run against the real Radar class, as acmi.test.ts's lift() does.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -247,7 +247,8 @@ describe('the RDR page draws the scan volume', () => {
        const radar_cursor={ azimuth:0, range:20*NM };
        const ownship={ pos:{x:0,y:6096,z:0}, gauges:{heading:0}, speed:250, fwd:{x:0,y:0,z:-1} };
        const attack_cue=()=>cue, breakaway=()=>{};
-       ${[lift('radar_own'), lift('ddi_legend'), lift('rdr_x'), lift('rdr_y'), lift('rdr_stick'), lift('rdr_star'), lift('rdr_block'), lift('ddi_rdr')].join('\n')}
+       const theatre={ frame:{ altitude:(p)=>p.y } };   // the frame's level the sea's here: a flat test world
+       ${[lift('radar_own'), lift('ddi_legend'), lift('rdr_x'), lift('rdr_y'), lift('rdr_stick'), lift('rdr_star'), lift('_rdr_at'), lift('rdr_height'), lift('rdr_block'), lift('ddi_rdr')].join('\n')}
        set(RADAR);
        const x=new Proxy({}, { get:(t,k)=>k==='fillText'?(s,px)=>{ text.push(String(s)); at.push([String(s),px]); }:k==='strokeRect'?(bx)=>boxes.push(bx):k==='measureText'?(s)=>({ width:10*String(s).length }):()=>{}, set:()=>true });
        ddi_rdr(x);
@@ -636,7 +637,7 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
     expect(source).not.toMatch(/heat_quarry/)
     expect(lift('seeker_look')).not.toMatch(/0\.866/) // no cone on the client: the seeker's own 2.5° field about its line
     expect(lift('seeker_look')).toMatch(/if\(master!=="9m"\|\|pa\)/)
-    expect(hud).toMatch(/const look=lockon\?quarry\.pos:seeker_now\.line\?new THREE\.Vector3\(\)\.copy\(camera\.position\)\.addScaledVector\(seeker_now\.line,1000\):null;/) // the seeker circle on its heat, boxed or not
+    expect(hud).toMatch(/const look=lockon\?quarry\.pos:seeker_now\.line\?_seek_look\.copy\(camera\.position\)\.addScaledVector\(seeker_now\.line,1000\):null;/) // the seeker circle on its heat, boxed or not
     expect(lift('radar_step')).toMatch(/RADAR\.step\(dt,radar_own\(\),contacts\(\)\);\n\tradar_held\(\);/)
   })
 
@@ -840,7 +841,7 @@ describe('the known picture: what the SA page and the map draw', () => {
     expect(solo.status().tracks).toEqual([])
   })
   it('sends its status with every input sample, and takes the others\' from the session\'s status events', () => {
-    expect(source).toMatch(/solo:solo_flag, extinguish:extinguish_flag, status:status_own\(\), seeker:seeker_now\.line\?helmet\.pack\(seeker_now\.line\):null \};/) // whatever it is slaved to, whenever the 9M is selected (#143)
+    expect(source).toMatch(/solo:solo_flag, extinguish:extinguish_flag, status:status_own\(\), seeker:seeker_now\.line\?seeker_wire\(seeker_now\.line\):null \};/) // whatever it is slaved to, whenever the 9M is selected (#143)
     const net = readFileSync(fileURLToPath(new URL('./net.ts', import.meta.url)), 'utf8')
     expect(net).toMatch(/if \(ev\.kind === 'status' && validSlot\(ev\.slot\)\) this\.statuses\.set\(ev\.slot as number, status_read\(ev, MAX_SLOT\)\)/)
   })

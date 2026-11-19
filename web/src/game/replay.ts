@@ -7,7 +7,9 @@
 // engine.ts would drag three.js into the log page's chunk. The engine
 // PUBLISHES here at mission start. It holds a FUNCTION, not a value - the
 // recorder is still filling - and the module state survives GameCanvas
-// unmounting.
+// unmounting. When the engine stops it SETTLES what it recorded: the function
+// it published is one of its own, which keeps its whole scope - the scene, its
+// textures, the GPU context - alive for as long as anything can reach it.
 
 export interface Replay {
   text: string
@@ -21,6 +23,12 @@ let live: () => Replay | null = () => null
 // publish is called by the engine at mission start, once per mission.
 export function publish(source: () => Replay | null): void {
   live = source
+}
+
+// settle is called by the engine as it stops: the recording, rendered one last
+// time, held as a value in place of the engine's function.
+export function settle(final: Replay | null): void {
+  live = () => final
 }
 
 // recording renders what is buffered right now; null when nothing was captured.

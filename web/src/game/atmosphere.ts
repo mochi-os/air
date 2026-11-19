@@ -176,6 +176,7 @@ export function transmittance(
 // The light passed between a point at r along mu and the point t km on along
 // its ray: two lookups of the table, the ray to space from each end (Bruneton),
 // taken from the far end back toward the near for a ray that meets the sea.
+// Read by the tests alone: the arithmetic the shaders do, checked here.
 export function between(
   table: Float32Array,
   r: number,
@@ -463,6 +464,7 @@ export function radiance(
 }
 
 // The sunlight reaching an altitude, per unit of sun illuminance outside the air.
+// Read by the tests alone, which hold the transmittance table to it.
 export function sunlight(t: Tables, altitude: number, sun: Vector): Vector {
   return transmittance(
     t.transmittance,

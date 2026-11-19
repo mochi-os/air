@@ -34,7 +34,7 @@ const toward = (degrees: number) => vec2(Math.sin(degrees * DEGREE), -Math.cos(d
 // next line that starts at column 0 (the bodies are tab-indented), keeping
 // that line when it is the function's own closing brace.
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -424,7 +424,7 @@ describe("the heater's step through the air", () => {
     `let blowing={ x:0, y:0, z:0 }, sim_time=10, crash_t=0, bandit_acc=0;
      const flight_wind=()=>blowing, flight_debt=()=>0, missiles=[], ownship={ pos:{ x:0, y:0, z:0 } }, bandit={ group:{ visible:true } };
      const MULTIPLAYER=false, DEV_MODE=false, has_enemy=false, wrap_axis=(v)=>v, wrap_distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y,a.z-b.z);
-     const step_amraam=()=>{}, trail_puff=()=>true, decoy_lure=(p)=>({ x:p.x, y:p.y-30, z:p.z });
+     const step_amraam=()=>{}, trail_puff=()=>true, decoy_lure=(p)=>({ x:p.x, y:p.y-30, z:p.z }), sunk=(x,y,z)=>y<=0;   // a flat test world: the frame's level is the sea
      ${lift('stood')}
      ${lift('step_missiles').replace(/ as any/g, '')}
      return { missiles, step_missiles, blow:(w)=>{ blowing=w; } };`)
@@ -553,7 +553,7 @@ describe('the rounds read the jets at their own time', () => {
      const flight_wind=()=>({ x:0, y:0, z:0 }), flight_debt=()=>0, missiles=[], ownship={ pos:{ x:0, y:0, z:0 } };
      const bandit={ group:{ visible:true }, fwd:{ x:0, y:0, z:-1 }, speed:250, velx:0, vely:0, velz:-250, pos:{ x:0, y:0, z:0 } };
      const MULTIPLAYER=false, DEV_MODE=false, has_enemy=false;
-     const step_amraam=()=>{}, trail_puff=()=>true, decoy_lure=(p)=>({ x:p.x, y:p.y-30, z:p.z });
+     const step_amraam=()=>{}, trail_puff=()=>true, decoy_lure=(p)=>({ x:p.x, y:p.y-30, z:p.z }), sunk=(x,y,z)=>y<=0;   // a flat test world: the frame's level is the sea
      ${lift('stood')}
      ${lift('step_missiles').replace(/ as any/g, '')}
      return (at, round, behind)=>{ bandit.pos={ ...at };
@@ -597,7 +597,7 @@ describe('the rounds read the jets at their own time', () => {
      const flight_debt=()=>debt, flight_wind=()=>({ x:0, y:0, z:0 }), cheat=()=>false, jammer_loud=()=>false, trail_puff=()=>true;
      const handed=[], blasts=[], booms=[];
      const round_step=(_slot,_dt,support,truth)=>{ handed.push({ support, truth }); return next; };
-     const round_drop=()=>{}, round_distract=()=>false, post_round=()=>{}, crash_ownship=()=>{}, bandit_destroy=()=>{};
+     const round_drop=()=>{}, round_distract=()=>false, post_round=()=>{}, crash_ownship=()=>{}, bandit_destroy=()=>{}, sunk=(x,y,z)=>y<=0;
      const explosion_at=(x,y,z)=>booms.push({ x, y, z }), battle_aim=(st)=>({ position:{ ...st.pos } });
      const battle_blast=(target,burst)=>{ blasts.push({ target, burst }); return { judged:0, spot:null, mask:0, kill:false, impacts:[] }; };
      ${lift('drifted')}
@@ -669,7 +669,7 @@ describe("the radar round's dev log", () => {
     const post = new Function(
       'sim_time',
       'DEV_MODE',
-      'globalThis',
+      'dev_global',
       `${lift('post_round').replace(/ as any/g, '')}\nreturn post_round;`
     )(10, true, shelf)
     const round = {

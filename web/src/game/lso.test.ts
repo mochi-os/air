@@ -254,7 +254,8 @@ describe('the waveoff', () => {
     expect(call).not.toBe('')
     const run = (frames: number) => new Function('frames', `const comms=[], ownship={ waving:false, waved:false }, wave=true, deck_closed=false, HINT={ abort:'a', wave:'w' };
       const sim_time=1, radio=(text)=>comms.push(text), translate=(t)=>t, pass_end=()=>{}, recoach=()=>{}, mission_start=()=>'carrier', hint=()=>{}, ship_groove=()=>90;
-      for(let i=0;i<frames;i++){ ${call}
+      for(let i=0;i<frames;i++){ const calling=ownship.waving; ownship.waving=false;   // as the watch steps it: the call cleared, and judged against the last step's
+        ${call}
       }
       return comms;`)(frames) as string[]
     expect(run(1)).toEqual(['PADDLES: WAVE OFF'])
@@ -263,7 +264,7 @@ describe('the waveoff', () => {
 
   it('ends the pass as a foul deck when the ship has closed it, and as the pilot\'s wave-off when not', () => {
     const ended = (closed: boolean) => new Function('closed', `const ended=[], ownship={ waving:false, waved:false }, wave=true, deck_closed=closed, HINT={ abort:'a', wave:'w' };
-      const sim_time=1, radio=()=>{}, translate=(t)=>t, pass_end=(e)=>ended.push(e), recoach=()=>{}, mission_start=()=>'case1', hint=()=>{}, ship_groove=()=>90;
+      const sim_time=1, radio=()=>{}, translate=(t)=>t, pass_end=(e)=>ended.push(e), recoach=()=>{}, mission_start=()=>'case1', hint=()=>{}, ship_groove=()=>90, calling=false;
       ${call}
       return ended;`)(closed) as string[]
     expect(ended(true)).toEqual(['foul'])
@@ -362,5 +363,43 @@ describe("the engine's book", () => {
     )
     expect(shown('PERFECT')).toBe('O\u0332K\u0332')
     expect(shown('FAIR')).toBe('FAIR')
+  })
+})
+
+// The LSO's wave-off call is made once for each wave-off, at its onset: the
+// engine's watch over a pass (step_world) is cut out of its source and stepped
+// against stand-ins, a pass flown hook up inside 1,200 m - a mandatory call
+// that holds as long as the hook stays up.
+describe("the LSO's wave-off call", () => {
+  const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const start = engine.indexOf('\tif(carrier_ols && !ownship.trapped')
+  const close = '} else { ownship.waving=false; ownship.groove=false; }'
+  const watch = engine.slice(start, engine.indexOf(close, start) + close.length)
+  it('is cut out of the engine whole', () => {
+    expect(start).toBeGreaterThan(0)
+    expect(watch).toContain('PADDLES')
+  })
+  it('is made once while the wave-off holds, not every step, and again for a new one', () => {
+    const calls: string[] = []
+    const ownship = { trapped: false, hook: 0, gear: 0, grounded: false, speed: 70, vely: -3, aoa: 8.1, pos: {}, groove: true, waving: false, waved: false, wavet: -1 }
+    const world = new Function(
+      'ownship',
+      'calls',
+      `const carrier_ols = { ramp: 0 }, GROOVE = { slope: 3.5 }, D2R = Math.PI / 180, HOOK_AFT = 9, deck_closed = false, HINT = { wave: 'wave', abort: 'abort' }
+       let sim_time = 0
+       const ols_dev = () => ({ along: 900, lat: 0, dist: 900, dev: 0 })
+       const pass_start = () => ({}), pass_end = () => {}, pass_sample = () => {}, pass_ramp = () => {}
+       const radio = (line) => calls.push(line), translate = (s) => s, recoach = () => {}, hint = () => {}, mission_start = () => 'case1', ship_groove = () => 0
+       return (dt) => { sim_time += dt; ${watch} }`
+    )(ownship, calls) as (dt: number) => void
+    for (let k = 0; k < 120; k++) world(1 / 60) // two seconds of a wave-off that holds
+    expect(calls).toEqual(['PADDLES: WAVE OFF'])
+    expect(ownship.wavet).toBeCloseTo(1 / 60, 9) // stamped at the onset: the lights blink from there
+    ownship.hook = 1 // hook down: the call ends
+    world(1 / 60)
+    expect(ownship.waving).toBe(false)
+    ownship.hook = 0 // and up again: a new call
+    world(1 / 60)
+    expect(calls).toHaveLength(2)
   })
 })

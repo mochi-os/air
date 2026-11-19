@@ -26,7 +26,7 @@ const source = readFileSync(
   'utf8'
 )
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -106,17 +106,24 @@ describe('the frame budget', () => {
 
 // A crash returns the world to real time, as a respawn and a new mission do.
 describe('the crash', () => {
-  it('returns the world to 1×', () => {
-    const rate = new Function(`
+  // crashed runs crash_ownship into the sea, in developer mode or not
+  const crashed = (developer: boolean) =>
+    new Function('developer', `
       let crash_t=0, own_written=true, compression=64, own_killer='', own_deaths=0, look_home=true, has_enemy=false; const MULTIPLAYER=false;
       const ownship={ pos:{ x:0, y:0, z:0 }, group:{ visible:true }, speed:200 }, bandit={ group:{} }, cfg={}, latch=()=>{}, feed=()=>{}, explosion_at=()=>{};
-      const missiles=[], own_aloft=0, burning_stores=()=>[];
+      const missiles=[], own_aloft=0, burning_stores=()=>[], audio_remote_drop=()=>{}, DEV_MODE=developer, dev_global=globalThis; let mission_done=false;
       ${lift('joust_pending')}
       ${lift('stand_down')}
       ${lift('bandit_pending')}
+      ${lift('lost')}
       ${lift('crash_ownship').replace(/ as any/g, '')}
-      crash_ownship('sea'); return compression;`)() as number
-    expect(rate).toBe(1)
+      delete globalThis.dev_crash; crash_ownship('sea'); const probe=globalThis.dev_crash; delete globalThis.dev_crash;
+      return { rate:compression, probe };`)(developer) as { rate: number; probe: unknown }
+  it('returns the world to 1×', () => {
+    expect(crashed(false).rate).toBe(1)
+  })
+  it('names its cause to the probes in developer mode only', () => {
+    expect([crashed(true).probe, crashed(false).probe]).toEqual(['sea', undefined])
   })
 })
 
@@ -261,7 +268,7 @@ describe('the effects on the world clock', () => {
   const ballistic = new Function(
     'smoke',
     'round_length',
-    `${lift('update_pool_ballistic')} return update_pool_ballistic;`
+    `${lift('STILL')}\n${lift('update_pool_ballistic')} return update_pool_ballistic;`
   )(null, () => 1) as (
     p: unknown,
     dt: number,

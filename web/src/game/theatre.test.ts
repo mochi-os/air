@@ -61,7 +61,7 @@ function harness(): Harness {
     const missiles=[], contrails=[], falling=[], soot_queue=[], RADAR={ tracks:[], bricks:[] }, navigate={ carry(){} }, nav={};
     ${line(/^const moving=[^\n]*/m)}
     ${line(/^const _carried=[^\n]*/m)}
-    ${lift('moved')}${lift('turned')}${lift('moved_at')}${lift('turned_at')}${lift('turned_fields')}${lift('carry_state')}${lift('theatre_carry')}
+    ${lift('moved')}${lift('turned')}${lift('moved_at')}${lift('turned_at')}${lift('moved_fields')}${lift('turned_fields')}${lift('carry_state')}const jets_all=()=>[...new Set([ownship,bandit,...remotes.values()])];${lift('theatre_carry')}
     return { scene, pool:smoke, carry:()=>theatre_carry(null,null),
       move:(q,by)=>{ const x=q.x, y=q.y, z=q.z, w=q.w;
         moving.rows=[1-2*(y*y+z*z),2*(x*y-w*z),2*(x*z+w*y), 2*(x*y+w*z),1-2*(x*x+z*z),2*(y*z-w*x), 2*(x*z-w*y),2*(y*z+w*x),1-2*(x*x+y*y)];

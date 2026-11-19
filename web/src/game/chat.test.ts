@@ -55,7 +55,7 @@ describe('the wiring', () => {
 
   it('opens Match or Team on the chat key and Everyone on the server on its shift chord', () => {
     expect(engine).toMatch(
-      /function chat_scope\(\)\{ return \(net&&net\.welcome&&net\.welcome\.spawn&&net\.welcome\.spawn\.mode==="teams"\)\?"team":"match"; \}/
+      /function chat_scope\(\)\{ return chat_opening\(net\?\.welcome\?\.spawn\?\.mode==="teams"\); \}/
     )
     expect(engine).toMatch(
       /if\(ch===key_of\("shout"\) && MULTIPLAYER && running && onChat\)\{ e\.preventDefault\(\); onChat\("server"\); \}/

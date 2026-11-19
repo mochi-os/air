@@ -71,7 +71,7 @@ describe('the save queue', () => {
 // from its source, and lift cuts one top-level function out of it.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -91,7 +91,8 @@ function engine(setup: string) {
      const setTimeout=(f)=>f(), lounge_stop=()=>{};
      const CHECKPOINT_FLYING='flying', CHECKPOINT_SORTIE=5;
      const recording_file=()=>({ session:MULTIPLAYER?'world-session':'local-1700', started:MULTIPLAYER?900:1700, text:'at '+Math.round(sim_time) });
-     ${['passes_row', 'sortie_row', 'match_row', 'recording_checkpoint', 'exit_match', 'net_finish'].map(lift).join('\n')}
+     let traded=false;
+     ${['passes_row', 'sortie_row', 'sortie_reason', 'match_row', 'recording_checkpoint', 'exit_match', 'net_finish'].map(lift).join('\n')}
      const fly=(seconds,rate=1)=>{ for(let k=0;k<seconds*10;k++){ sim_time=Math.round(sim_time*10+rate)/10; glance=Math.round(glance*10+1)/10; recording_checkpoint(); } };
      ${setup}`
   )(due, tally) as { saves: Saved[]; rows: Record<string, unknown>[] }

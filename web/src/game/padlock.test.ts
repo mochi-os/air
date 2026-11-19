@@ -14,7 +14,7 @@ import * as THREE from 'three'
 // update_camera's padlock block are lifted as text and run with stand-ins.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -46,7 +46,7 @@ function fireball<T>(body: string): T {
     const bandit={ pos:new THREE.Vector3(1000,0,-1000), group:{ visible:true } }, remotes=new Map(), net=null;
     let padlocked=false, look_home=false, head_az=0, head_el=0, crash_t=0, own_written=true, own_killer="", own_deaths=0, has_enemy=true, MULTIPLAYER=false, sim_time=5, view_events=[];
     const notice=(m)=>notices.push(m), translate=(m)=>m, feed=()=>{}, explosion_at=()=>{};
-    const missiles=[], own_aloft=0, burning_stores=()=>[];   // nothing of the pilot's left flying: the bandit stands down at the crash (joust_pending)
+    const missiles=[], own_aloft=0, burning_stores=()=>[], audio_remote_drop=()=>{}, DEV_MODE=false; let mission_done=false;   // nothing of the pilot's left flying: the bandit stands down at the crash (joust_pending)
     ${lift('joust_pending')}
     ${lift('stand_down')}
     ${lift('bandit_pending')}
@@ -54,6 +54,7 @@ function fireball<T>(body: string): T {
     ${lift('latch')}
     ${lift('look_press')}
     ${lift('look_target')}
+    ${lift('lost')}
     ${lift('crash_ownship').replace(/ as any/g, '')}
     const frame=(dt)=>{ ${block} };
     const frames=(n)=>{ for(let i=0;i<n;i++) frame(1/60); };

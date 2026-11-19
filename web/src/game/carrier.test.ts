@@ -52,7 +52,7 @@ interface Carrier {
 // Runs scenery() and the landing-line helpers it uses over the real ship file.
 function carrier(): Carrier {
   const scenery =
-    /function scenery\(\)\{[\s\S]*?return \{ sea:3, fields, carrier, prisms, posts \};[^\n]*\n\}/.exec(
+    /function scenery\(\)\{[\s\S]*?return \{ sea:SEA, fields, carrier, prisms, posts \};[^\n]*\n\}/.exec(
       source
     )?.[0] ?? ''
   const strip = /function strip_lat\(fa\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
@@ -63,7 +63,7 @@ function carrier(): Carrier {
     )
   const run = new Function(
     'SHIP',
-    `const ISLAND_H=3.5, AIRFIELD_FLOAT=1.46, RUNWAY_FLOAT=1.5, D2R=Math.PI/180, CARRIER_YD=0;
+    `const SEA=3, ISLAND_H=3.5, AIRFIELD_FLOAT=1.46, RUNWAY_FLOAT=1.5, D2R=Math.PI/180, CARRIER_YD=0;
     const CARRIER={x:0,z:0,deckY:20}, CHART={x:0,z:0,yaw:0}, physics_strips=[], runway_strips=[], obstacles={ islands:[], buildings:[], posts:[] }, carrier_island=()=>null;
     ${strip}${unit}${scenery}
     return scenery().carrier;`
@@ -752,5 +752,44 @@ describe("the carrier's ship file", () => {
     expect(cut.map).toBe(map)
     expect(cut.alphaTest).toBe(0.5)
     expect(cut.onBeforeCompile).toBe(carrier_depth.onBeforeCompile)
+  })
+})
+
+// The deck crew's turnaround after a trap, and the airfield's after a full
+// stop, are single player's: in a match the server holds the rounds and the
+// fuel and rearms only at a spawn, so a client that refilled itself showed a
+// load the server did not have. engine.ts cannot be imported (WebGL at module
+// scope), so the end of sync_core is cut out of its source and run against
+// stand-ins.
+describe('the turnaround after a stop', () => {
+  const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const sync = engine.slice(engine.indexOf('\nfunction sync_core('))
+  const start = sync.indexOf('\tif(!MULTIPLAYER&&ownship.trapped')
+  const tail = sync.slice(start, sync.indexOf('\n}\n', start))
+  const serviced = (multiplayer: boolean, trapped: boolean) => {
+    const ownship = { trapped, turned: false, taxied: false, flown: !trapped, grounded: true, speed: 0, pos: {}, rounds: 0, msl: 0, amraam: 0, flares: 0, chaff: 0, loadout: {} }
+    const fuel: number[] = []
+    new Function(
+      'ownship',
+      'fuel',
+      'MULTIPLAYER',
+      `const wire = ${trapped ? 0 : -1}
+       let prev_wire = wire
+       const notice = () => {}, translate = (s) => s
+       const MAGAZINE = 578, magazine = () => 2, stores_amraams = () => [1, 2], loadout = () => ({}), FLARE_LOAD = 60, CHAFF_LOAD = 60
+       const rearm_order = () => {}, update_rails = () => {}, STATE = { fuel: 0 }, FUEL = () => 4900, external_fill = () => {}
+       const flight_get = () => [0], flight_set = (b) => fuel.push(b[0]), on_strip = () => true
+       ${tail}`
+    )(ownship, fuel, multiplayer)
+    return { rounds: ownship.rounds, fuel }
+  }
+  it('rearms and refuels a jet trapped or stopped on a strip in single player', () => {
+    expect(start).toBeGreaterThan(0)
+    expect(serviced(false, true)).toEqual({ rounds: 578, fuel: [4900] })
+    expect(serviced(false, false)).toEqual({ rounds: 578, fuel: [4900] })
+  })
+  it('grants nothing in a match', () => {
+    expect(serviced(true, true)).toEqual({ rounds: 0, fuel: [] })
+    expect(serviced(true, false)).toEqual({ rounds: 0, fuel: [] })
   })
 })

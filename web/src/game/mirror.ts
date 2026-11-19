@@ -227,7 +227,7 @@ export function mirror_carried(view: THREE.Matrix4, then: THREE.Quaternion, now:
 
 // mirror_lookup: where a world direction falls in a target, as texture
 // co-ordinates from 0 to 1, by the face shader's own arithmetic; null behind
-// the camera.
+// the camera. Read by the tests alone: the shader's arithmetic, checked here.
 export function mirror_lookup(view: THREE.Matrix4, direction: THREE.Vector3): [number, number] | null {
   const e = view.elements,
     x = direction.x,

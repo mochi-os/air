@@ -242,12 +242,12 @@ describe('the HOOK light', () => {
 // caution, L GEN and R GEN when their generator drops off the line but neither
 // in a dual failure (NATOPS 2.5.1.1), FCES with any FCS caution (2.8.4.5.1).
 interface Cautions { low?: boolean; spoolL?: number; spoolR?: number; harmL?: number; harmR?: number; jam?: number[]; seat?: boolean; accumulator?: boolean; tie?: boolean; ac?: boolean }
-const generators = [/\nfunction generators\(out\)\{[^\n]*\n/, /\nfunction turning\(out,e\)\{[^\n]*\n/].map((re) => re.exec(source)?.[0] ?? '').join('') + 'const electrics={ switches:[true,true], tie:true };'
+const generators = [/\nconst _generators=[^\n]*\n/, /\nfunction generators\(out\)\{[^\n]*\n/, /\nfunction turning\(out,e\)\{[^\n]*\n/].map((re) => re.exec(source)?.[0] ?? '').join('') + 'const electrics={ switches:[true,true], tie:true };'
 const fcs = /\nconst FCS_CHANNELS=[^\n]*\nfunction fcs_jammed\(words\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
 // The DDI side of the generators (NATOPS 2.5.1.1): cautions_update's L GEN and R
 // GEN captions and its battery state, from the core's spools and harm.
 function gencaptions(c: Cautions): { captions: string[]; battery: boolean } {
-  const lines = /\n\tconst \[genL,genR\]=core\?generators\(core\):\[true,true\][^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  const lines = /\n\tconst \[genL,genR\]=core\?generators\(core\):GENERATING[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
   if (!lines || !generators) throw new Error('generator captions not found in engine.ts')
   return new Function('c', `const STATE={engine:0, engine_harm:4}, THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}; ${generators}
     const core=[c.spoolL??0.7, 0, c.spoolR??0.7, 0, c.harmL||0, c.harmR||0], captions=[], buses={ ac:generators(core).some(Boolean) }, fed=()=>true; ${lines} return { captions, battery };`)(c) as { captions: string[]; battery: boolean }

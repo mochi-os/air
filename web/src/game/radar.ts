@@ -304,20 +304,22 @@ export class Radar {
       !this.tracks.some((t) => t.id === this.ls)
     )
       this.ls = null
+    // Jamming strobes (#31): a radiating emitter shows as a bearing-only
+    // spoke whatever the radar is doing — the jam arrives whether or not
+    // the sweep is pointed at it, and SIL and EMCON stop the transmitter, not
+    // the receiver. A set without power or in its BIT receives nothing.
+    this.strobes = []
+    if (!this.unpowered && !this.testing)
+      for (const t of targets) {
+        if (!t.jamming) continue
+        const g = geometry(own, t)
+        this.strobes.push(g.azimuth)
+      }
     if (this.silent()) {
       this.stt = null // a silent radar tracks nothing — the picture freezes and ages
       return
     }
     this.aim(own)
-    // Jamming strobes (#31): a radiating emitter shows as a bearing-only
-    // spoke whatever the radar is doing — the jam arrives whether or not
-    // the sweep is pointed at it.
-    this.strobes = []
-    for (const t of targets) {
-      if (!t.jamming) continue
-      const g = geometry(own, t)
-      this.strobes.push(g.azimuth)
-    }
     if (this.stt != null) {
       const target = targets.find((t) => t.id === this.stt)
       const g = target ? geometry(own, target) : null

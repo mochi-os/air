@@ -2,8 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { type Contract, type Deck, deflectors, followers, foul, layout, lit, meatball, raising, STATIONS, stations } from './ship'
+import { type Contract, type Deck, deflectors, followers, foul, glide, HOOK, layout, lit, meatball, raising, STATIONS, stations, view } from './ship'
 
 // A small deck: a landing line angled to port, one wire whose pendant runs
 // between sheaves 16 m to port and 18 to starboard of where it crosses the
@@ -293,6 +295,41 @@ describe('meatball', () => {
     expect(meatball(ship, eye(30, 0, 25)).ball).toBeNull() // within 40 m
     expect(meatball(ship, eye(6000, 0, 400))).toEqual({ lit: true, ball: null }) // past 5 km, inside 7
     expect(meatball(ship, eye(800, 0, ship.deck - 1)).ball).toBeNull() // under the deck
+  })
+})
+
+// The pilot's lens in the game is drawn by the engine (update_ols), from the
+// same rule meatball draws the viewer's by: ship.ts view. engine.ts cannot be
+// imported, so the two functions are lifted from its source and run against a
+// stand-in lens.
+describe("the pilot's lens", () => {
+  const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const lift = (name: string) => {
+    const start = engine.indexOf(`\nfunction ${name}(`) + 1
+    expect(start, name).toBeGreaterThan(0)
+    return engine.slice(start, engine.indexOf('\n}\n', start) + 3) // both close on a line of their own
+  }
+  // shown flies the engine's lens for an eye `along` astern of a touchdown at
+  // the origin (the approach from the south), `across` it, `above` the deck
+  const shown = (along: number, across: number, above: number, climb = 0) => {
+    const points = () => ({ visible: false, geometry: { attributes: { position: { setY(_: number, y: number) { this.y = y }, y: 0, needsUpdate: false }, color: { setXYZ(_: number, _r: number, g: number) { this.g = g }, g: 0, needsUpdate: false } } } })
+    const o = { tdx: 0, tdz: 0, apx: 0, apz: 1, dy: 20, datumY: 18.9, travel: 1, datumPts: points(), ballPts: points(), wavePts: points() }
+    new Function('carrier_ols', 'ownship', 'ship_glide', 'ship_view', 'THREE', 'sim_time', `${lift('ols_dev')}${lift('update_ols')} update_ols({ x: ${across}, y: ${20 + above}, z: ${along} })`)(
+      o, { vely: climb, waving: false }, glide, view, {}, 0)
+    return { lit: o.datumPts.visible, ball: o.ballPts.visible ? o.ballPts.geometry.attributes.position.y - 18.9 : null, red: o.ballPts.geometry.attributes.color.g < 0.5 }
+  }
+  const on = (along: number, off = 0) => HOOK.below + Math.tan(((3.5 + off) * Math.PI) / 180) * (along + HOOK.aft)
+  it('shows what view shows: the wedge at 40° exactly, the ball and its red', () => {
+    expect(shown(800, 800 * Math.tan((39.99 * Math.PI) / 180), 200).lit).toBe(true)
+    expect(shown(800, 800 * 0.8395, 200).lit, 'past 40°, where a second copy of the rule read 0.84').toBe(false)
+    expect(shown(800, 0, on(800)).ball).toBeCloseTo(0, 6)
+    expect(shown(800, 0, on(800, 0.4)).ball).toBeCloseTo(0.5, 6)
+    expect([shown(800, 0, on(800, -0.75)).red, shown(800, 0, on(800, -0.65)).red]).toEqual([true, false])
+    expect(glide(on(800, 0.4), 800)).toBeCloseTo(0.4, 9)
+  })
+  it('takes the ball away from a jet climbing off the approach', () => {
+    expect(shown(800, 0, on(800), 5).ball).toBeNull()
+    expect(shown(800, 0, on(800), 5).lit).toBe(true)
   })
 })
 

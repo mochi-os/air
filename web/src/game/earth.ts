@@ -274,6 +274,21 @@ export function between(from: Frame, to: Frame): Rigid {
 export function point(r: Rigid, p: Vec): Vec {
   return r.plain ? vec(p.x, p.y, p.z) : add(rotate(r.turn, p), r.move)
 }
+// placed is point written into out, for the paths that run many times a frame and must not allocate.
+export function placed(r: Rigid, x: number, y: number, z: number, out: Vec): Vec {
+  if (r.plain) {
+    out.x = x
+    out.y = y
+    out.z = z
+    return out
+  }
+  const q = r.turn
+  const tx = 2 * (q.y * z - q.z * y), ty = 2 * (q.z * x - q.x * z), tz = 2 * (q.x * y - q.y * x)
+  out.x = x + q.w * tx + (q.y * tz - q.z * ty) + r.move.x
+  out.y = y + q.w * ty + (q.z * tx - q.x * tz) + r.move.y
+  out.z = z + q.w * tz + (q.x * ty - q.y * tx) + r.move.z
+  return out
+}
 export function vector(r: Rigid, v: Vec): Vec {
   return r.plain ? vec(v.x, v.y, v.z) : rotate(r.turn, v)
 }

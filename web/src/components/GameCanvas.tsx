@@ -141,6 +141,10 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'NO TANKS': msg`NO TANKS`,
   'EMERG JETT': msg`EMERG JETT`,
   'MASTER ARM SAFE': msg`MASTER ARM SAFE`,
+  // The AIM-120's refusals: no radar track to give it, or only a track where it
+  // needs the single-target track the lock gives
+  'NO RADAR LOCK': msg`NO RADAR LOCK`,
+  'LOCK REQUIRED': msg`LOCK REQUIRED`,
   'DISPENSER OFF': msg`DISPENSER OFF`,
   'PILOT DOWN': msg`PILOT DOWN`,
   WINS: msg`WINS`,

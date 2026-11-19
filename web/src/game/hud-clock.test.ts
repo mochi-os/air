@@ -109,7 +109,7 @@ describe('the HUD timer', () => {
   it('puts the Case III push time on the CD timer, running, where the push clock was', () => {
     expect(source).toMatch(/marshal=\{ push:sim_time\+MARSHAL_PUSH,[^\n]*\n\t\ttimer\.cd\.seconds=MARSHAL_PUSH; timer_run\("cd",true\); timer\.shown="cd";/)
     expect(source).toMatch(/\n\tufc\.func="";[^\n]*\n\ttimer_reset\(\);/)
-    expect(source).toMatch(/hints_watch\(\); timer_update\(\);/)
+    expect(source).toMatch(/hints_watch\(\); picture_watch\(\); timer_update\(\);/)
   })
 })
 

@@ -115,7 +115,7 @@ const source = readFileSync(
 // lift cuts one top-level function out of the source: from its head to the
 // next line that starts at column 0 (the bodies are tab-indented).
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -761,7 +761,7 @@ describe("each jet's cloud", () => {
       '_vapour_at',
       'vapour_light',
       'vapour_ropes',
-      `${lift('vapour_bounds')}\n${lift('vapour_burst')}\n${lift('vapour_effects')}\nreturn vapour_effects;`
+      `const jets_all=()=>[...new Set([ownship,bandit,...remotes.values()])];\n${lift('vapour_bounds')}\n${lift('vapour_burst')}\n${lift('vapour_effects')}\nreturn vapour_effects;`
     )(
       {
         MathUtils: {
@@ -1010,7 +1010,7 @@ describe('the engine', () => {
     )
     expect(source).toMatch(/\+flush_points\(vapour_pool,vp_pts\);/)
     expect(source).toMatch(
-      /const jets=new Set\(\[ownship,bandit,\.\.\.remotes\.values\(\)\]\);\n\tfor\(const st of jets\)\{ if\(!st\) continue;\n\t\tconst rig=vapour_rig\(st\)/
+      /const jets=jets_all\(\);\n\tfor\(const st of jets\)\{ if\(!st\) continue;\n\t\tconst rig=vapour_rig\(st\)/
     )
   })
 

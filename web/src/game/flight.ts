@@ -15,6 +15,7 @@ import flight_wasm_url from '../assets/flight.wasm?url'
 import wasm_exec_url from '../assets/wasm_exec.js?url'
 import { asset } from './preload'
 import { journal_parse, type Journal } from './journal'
+import { MENACE_MOST, MENACE_STRIDE } from './menace'
 import { reading as carrier_reading } from './wake'
 import type { Fitment } from './stores'
 
@@ -518,7 +519,7 @@ export interface Aim {
 
 const mirror = new Float64Array(SIZE + 1)
 const mirror_bytes = new Uint8Array(mirror.buffer)
-const bandit_out = new Float64Array(SIZE + 5) // state plus the instrument tail (alpha, beta, nz, mach, cas) at the ownship's own indices (#33 debrief)
+const bandit_out = new Float64Array(SIZE + EXTRA) // state plus the core's whole tail at the ownship's own indices: the instruments (#33 debrief) and the centre of mass the airframe is drawn from (#188). A shorter view drops what lies past it, as the copy fills only what the view holds
 const bandit_bytes = new Uint8Array(bandit_out.buffer)
 const menace = new Float64Array(64)
 const menace_bytes = new Uint8Array(menace.buffer)
@@ -570,8 +571,8 @@ export function bandit_mirror(
 // (-1 a heater, otherwise the radar round's guidance phase).
 export function bandit_menace(shots: number[]): void {
   if (!core?.bandit_menace) return
-  const count = Math.min(8, Math.floor(shots.length / 8))
-  for (let i = 0; i < count * 8; i++) menace[i] = shots[i]
+  const count = Math.floor(Math.min(MENACE_MOST, shots.length) / MENACE_STRIDE) // the wire's own stride and cap, which words() keeps to
+  for (let i = 0; i < count * MENACE_STRIDE; i++) menace[i] = shots[i]
   core.bandit_menace(menace_bytes, count)
 }
 

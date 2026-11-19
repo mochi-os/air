@@ -206,27 +206,45 @@ export function meatball(
     (aft[1] - forward[1]) / length,
   ]
   const [rx, rz] = [eye[0] - x, eye[2] - z]
-  const along = rx * ax + rz * az
-  const distance = Math.hypot(rx, rz)
-  const lit =
-    along > 10 &&
-    distance < 7000 &&
-    Math.abs(-rx * az + rz * ax) < along * Math.tan((40 * Math.PI) / 180)
-  if (distance <= 40 || distance >= 5000 || along <= 40 || eye[1] <= ship.deck)
-    return { lit, ball: null }
-  const deviation =
-    (Math.atan2(eye[1] - ship.deck - 4, Math.max(along + 9, 1)) * 180) /
-      Math.PI -
-    3.5
+  const seen = view(rx * ax + rz * az, -rx * az + rz * ax, eye[1] - ship.deck)
   const travel = (lens.cells * lens.pitch) / 2
   return {
-    lit,
-    ball: {
-      height:
-        lens.position[1] + Math.max(-1, Math.min(1, deviation / 0.8)) * travel,
-      low: deviation < -0.7,
+    lit: seen.lit,
+    ball: seen.ball && {
+      height: lens.position[1] + seen.ball.share * travel,
+      low: seen.ball.low,
     },
   }
+}
+
+// HOOK is where the tailhook rides from the pilot's eye, metres: the meatball
+// flies the hook onto the wire, so the eye rides well above the glideslope.
+export const HOOK = { below: 4, aft: 9 }
+// SLOPE is the lens's glideslope to the touchdown, degrees.
+export const SLOPE = 3.5
+
+// glide is the hook's deviation off the glideslope to the touchdown, degrees,
+// high positive, for an eye `above` the deck and `along` astern of the
+// touchdown, metres.
+export function glide(above: number, along: number): number {
+  return (Math.atan2(above - HOOK.below, Math.max(along + HOOK.aft, 1)) * 180) / Math.PI - SLOPE
+}
+
+// view is what the lens shows an eye `along` astern of the touchdown, `across`
+// the approach from it and `above` the deck, metres: its datum lights lit
+// within 7 km and 40° either side of the approach; and on an approach, 40 m to
+// 5 km out and above the deck, the ball's place on its column from -1 at the
+// foot to 1 at the head, and whether it shows red.
+export function view(
+  along: number,
+  across: number,
+  above: number
+): { lit: boolean; ball: { share: number; low: boolean } | null } {
+  const distance = Math.hypot(along, across)
+  const lit = along > 10 && distance < 7000 && Math.abs(across) < along * Math.tan((40 * Math.PI) / 180)
+  if (distance <= 40 || distance >= 5000 || along <= 40 || above <= 0) return { lit, ball: null }
+  const deviation = glide(above, along)
+  return { lit, ball: { share: Math.max(-1, Math.min(1, deviation / 0.8)), low: deviation < -0.7 } }
 }
 
 // The deck as the ship's lights show it: dark from dusk to dawn (the game's

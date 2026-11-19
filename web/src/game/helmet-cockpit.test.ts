@@ -19,7 +19,7 @@ import * as plates from './plates'
 // modules and a real three.js camera for the pilot's eye.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -48,9 +48,9 @@ const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   let MULTIPLAYER=false, has_enemy=true, ir_cool="norm"; const remotes=new Map();
   const bandit={ group:{ visible:true }, pos:new THREE.Vector3(0,0,-2000), fwd:new THREE.Vector3(0,0,-1), reheat:0 };
   const at=(az,el,d)=>new THREE.Vector3(Math.sin(az*D2R)*Math.cos(el*D2R),Math.sin(el*D2R),-Math.cos(az*D2R)*Math.cos(el*D2R)).multiplyScalar(d);`
-const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track'), line('amraam_visual'), line('VISUAL')].join('')
+const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track'), line('amraam_visual'), line('VISUAL'), line('_seek_to'), line('jets_every')].join('')
 const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hud_fit', 'hud_scale', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
-  'uncooled', 'seeker_reach', 'seeker_toward', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line'].map(lift).join('\n')
+  'uncooled', 'seeker_reach', 'seeker_toward', 'jets_refresh', 'jets_all', 'jets_other', 'seeker_sees', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line'].map(lift).join('\n')
 function pit<T>(body: string): T {
   return new Function('THREE', 'helmet', 'avionics', 'navigate', `${world} ${defs} ${functions}
     const frames=(seconds,dt=0.1)=>{ for(let t=0;t<seconds-1e-9;t+=dt){ sim_time+=dt; glance+=dt; beat=dt; helmet_frame(dt); } };
@@ -130,7 +130,7 @@ describe('the 9M\'s seeker under the helmet', () => {
   })
   it('with IR COOL at OFF, has nothing: no tone and no lock on a jet dead ahead or the radar\'s, caged to the boresight (#141)', () => {
     expect(pit(`master='9m'; bandit.pos.copy(at(0,0,2000)); const a=seeker_look(null,false).lockon; RADAR.stt='bandit'; const b=seeker_look(bandit,false).lockon;
-      ir_cool='off'; const c=seeker_look(null,false), d=seeker_look(bandit,false); ir_cool='oride'; return [a,b,c.lockon,c.drinking,c.line.z<-0.99,d.lockon,seeker_look(bandit,false).lockon];`))
+      ir_cool='off'; const c={...seeker_look(null,false)}; c.line=c.line&&c.line.clone(); const d={...seeker_look(bandit,false)}; ir_cool='oride'; return [a,b,c.lockon,c.drinking,c.line.z<-0.99,d.lockon,seeker_look(bandit,false).lockon];`))
       .toEqual([true, true, false, 0, true, false, true])
   })
   it('slaved, has the jet the pilot looks at off the nose, inside its 2.5° field and the 40° gimbal', () => {
@@ -562,7 +562,7 @@ describe('the AIM-120\'s field-of-view circle (the DCS guide, figure 154)', () =
   it('in a match, says a VISUAL shot is one with the trigger edge, and still refuses a supported shot without a lock (#155)', () => {
     const edge = (visual: boolean, stt: string, burning = false) => pit<[boolean, boolean, number]>(`let fox3_flag=false, fox3_visual=false; MULTIPLAYER=true; amraam_visual=${visual}; RADAR.stt=${stt};
       const amraam_departure=()=>({ name:'120c4' }), burning_stores=()=>${burning ? "['120c4']" : '[]'};
-      const weapons_hold=false, notice=()=>{}, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}; ownship.amraam=2; ${lift('trigger_amraam')}
+      const weapons_hold=false, notice=()=>{}, translate=(t)=>t, cheat=()=>false, audio_launch=()=>{}, update_rails=()=>{}; ownship.amraam=2; ${lift('trigger_amraam')}
 } trigger_amraam(); return [fox3_flag,fox3_visual,ownship.amraam];`)
     expect(edge(true, 'null')).toEqual([true, true, 1])
     expect(edge(false, 'null')).toEqual([false, false, 2])

@@ -829,6 +829,19 @@ describe('the groundspeed required', () => {
     nav.tot = 100
     expect(N.required(nav, { x: 0, z: 0 }, 200)).toBe(999)
   })
+  it('is null, not a fault in every frame, with an empty waypoint on the path', () => {
+    const nav = plan()
+    nav.waypoints[3] = north(200 * NM)
+    N.insert(nav, 7) // never entered: the UFC takes any number into a sequence
+    N.insert(nav, 3)
+    nav.target = 3
+    nav.tot = 3600
+    N.automatic(nav)
+    expect(nav.current).toBe(1)
+    expect(N.required(nav, { x: 0, z: 0 }, 0)).toBeNull()
+    nav.waypoints[7] = north(180 * NM)
+    expect(N.required(nav, { x: 0, z: 0 }, 0)).toBeCloseTo(200, 6) // 200 nm in the hour, once it holds a point
+  })
 })
 
 describe('designation', () => {
@@ -966,6 +979,31 @@ describe('a manual carrier alignment given the wrong ship speed', () => {
     expect(size(still.ins.drift)).toBeCloseTo(N.DRIFT, 6)
     expect(moved.ins.drift.x - still.ins.drift.x).toBeCloseTo(10, 6)
   })
+  it('leaves none from a ship under way given her true heading and speed, and all of it given nothing', () => {
+    const aligned = (given: boolean) => {
+      const deck = truth({ east: 10, deck: true }) // the jet rides the deck east at 10 m/s
+      const nav = cold()
+      nav.ins.knob = 'cv'
+      run(nav, deck, 1)
+      N.manual(nav)
+      if (given) N.carrier(nav, 90 * D, 10)
+      run(nav, deck, 905)
+      nav.ins.knob = 'nav'
+      run(nav, deck, 1)
+      return nav.ins.drift
+    }
+    const still = cold()
+    still.ins.knob = 'cv'
+    run(still, truth({ deck: true }), 1)
+    N.manual(still)
+    run(still, truth({ deck: true }), 905)
+    still.ins.knob = 'nav'
+    run(still, truth({ deck: true }), 1)
+    const right = aligned(true), none = aligned(false)
+    expect(right.x - still.ins.drift.x).toBeCloseTo(0, 6)
+    expect(right.z - still.ins.drift.z).toBeCloseTo(0, 6)
+    expect(none.x - still.ins.drift.x).toBeCloseTo(-10, 6)
+  })
 })
 
 describe('the cruise search', () => {
@@ -1025,6 +1063,22 @@ describe('grid coordinates', () => {
       expect(u.easting).toBeCloseTo(easting, 1); expect(u.northing).toBeCloseTo(northing, 1)
     }
     expect(N.utm(85, 0)).toBeNull(); expect(N.utm(-81, 0)).toBeNull()
+  })
+  it('keeps the grid\'s zones off south-west Norway and round Svalbard', () => {
+    // proj's figures, in the zone the grid names: Bergen is 32V, Longyearbyen 33X
+    for (const [latitude, longitude, zone, band, easting, northing] of [[60.39, 5.32, 32, 'V', 297230.22, 6700510.175], [78.22, 15.65, 33, 'X', 514813.527, 8683004.153],
+      [78, 5, 31, 'X', 546411.017, 8659161.997], [78, 25, 35, 'X', 453588.983, 8659161.997], [78, 35, 37, 'X', 407229.632, 8661538.516]] as [number, number, number, string, number, number][]) {
+      const u = N.utm(latitude, longitude) as N.Utm
+      expect([u.zone, u.band]).toEqual([zone, band])
+      expect(u.easting).toBeCloseTo(easting, 1); expect(u.northing).toBeCloseTo(northing, 1)
+    }
+    const zone = (latitude: number, longitude: number) => (N.utm(latitude, longitude) as N.Utm).zone
+    expect([zone(60, 2.99), zone(60, 3), zone(60, 11.99), zone(60, 12)]).toEqual([31, 32, 32, 33]) // 32V runs 3 to 12 E
+    expect([zone(55.99, 5), zone(64, 5)]).toEqual([31, 31]) // only in band V
+    expect([zone(78, 8.99), zone(78, 9), zone(78, 20.99), zone(78, 21), zone(78, 32.99), zone(78, 33), zone(78, 41.99), zone(78, 42)]).toEqual([31, 33, 33, 35, 35, 37, 37, 38])
+    expect([zone(71.99, 10), zone(84, 10), zone(78, -1)]).toEqual([32, 33, 30]) // band X only, from 0 E
+    const bergen = N.ungrid(N.square(60.39, 5.32) as N.Square, N.grid(60.39, 5.32, true).slice(5), true) as { latitude: number; longitude: number }
+    expect(bergen.latitude).toBeCloseTo(60.39, 4); expect(bergen.longitude).toBeCloseTo(5.32, 4) // and reads back where it was written
   })
   it('comes back from the zone to degrees', () => {
     const back = N.geodetic(4, 618238.268, 2356884.33, false)

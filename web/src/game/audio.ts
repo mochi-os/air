@@ -5,7 +5,7 @@
 
 // Game audio (#73): synthesized - continuous sources (engines, wind, fires) as
 // live Web Audio graphs modulated per frame from the flight core, one-shots
-// pre-rendered at startup with an OfflineAudioContext. The one recorded asset
+// synthesised into buffers at startup. The one recorded asset
 // is the voice alerts (voice.ts), spoken by Piper's public-domain LJ Speech
 // voice through tools/voice.py and decoded when the context is built. The
 // context starts suspended until the first user gesture; every entry point is
@@ -573,7 +573,7 @@ function build(): void {
     deck = { gain }
   }
 
-  void bake()
+  bake()
   void listen()
 }
 
@@ -626,26 +626,24 @@ function decay(i: number, rate: number, t: number): number {
   return Math.exp(-i / (rate * t))
 }
 
-async function bake(): Promise<void> {
+function bake(): void {
   const c = context as AudioContext
-  const render = async (
+  // render fills one shot's samples in place: the live context's buffer is the
+  // same buffer an OfflineAudioContext would hand back, and nothing is
+  // rendered through a graph.
+  const render = (
     length: number,
     fill: (data: Float32Array, rate: number) => void
-  ): Promise<AudioBuffer> => {
-    const offline = new OfflineAudioContext(
-      1,
-      Math.ceil(c.sampleRate * length),
-      c.sampleRate
-    )
-    const buffer = offline.createBuffer(1, offline.length, offline.sampleRate)
-    fill(buffer.getChannelData(0), offline.sampleRate)
+  ): AudioBuffer => {
+    const buffer = c.createBuffer(1, Math.ceil(c.sampleRate * length), c.sampleRate)
+    fill(buffer.getChannelData(0), c.sampleRate)
     return buffer
   }
   // M61 burr: 100 rounds/s — each round a 3 ms crack over a 140 Hz thump.
   // The M61 from inside: at 6,000 rpm the repetition fuses into one deep
   // tearing roar felt through the airframe — a 100 Hz pulse comb over heavy
   // noise with a rumble riding it, not fifty countable pops.
-  shots.gun = await render(0.5, (d, r) => {
+  shots.gun = render(0.5, (d, r) => {
     let low = 0
     for (let i = 0; i < d.length; i++) {
       const white = Math.random() * 2 - 1
@@ -659,7 +657,7 @@ async function bake(): Promise<void> {
   })
   // Trigger release: the rotary cluster winds down — a falling whir under a
   // fading rumble.
-  shots.gunspin = await render(0.7, (d, r) => {
+  shots.gunspin = render(0.7, (d, r) => {
     let phase = 0
     for (let i = 0; i < d.length; i++) {
       const f = 95 - 65 * (i / d.length)
@@ -673,7 +671,7 @@ async function bake(): Promise<void> {
     }
   })
   // Rounds striking us: a metallic clank cluster.
-  shots.hit = await render(0.25, (d, r) => {
+  shots.hit = render(0.25, (d, r) => {
     for (const [f, a] of [
       [2100, 0.5],
       [3400, 0.3],
@@ -686,9 +684,9 @@ async function bake(): Promise<void> {
   })
   // Explosion: a crack and a thump into a long low rumble; shaped in
   // blast_shape, beside the cue that plays it (distance shaping at play time).
-  shots.explosion = await render(2.2, blast_shape)
+  shots.explosion = render(2.2, blast_shape)
   // Missile away: a bandpass whoosh sweeping down with a rumble tail.
-  shots.launch = await render(1.4, (d, r) => {
+  shots.launch = render(1.4, (d, r) => {
     let last = 0
     for (let i = 0; i < d.length; i++) {
       const white = Math.random() * 2 - 1
@@ -697,16 +695,16 @@ async function bake(): Promise<void> {
     }
   })
   // Flare pop.
-  shots.flare = await render(0.3, (d, r) => {
+  shots.flare = render(0.3, (d, r) => {
     for (let i = 0; i < d.length; i++)
       d[i] = (Math.random() * 2 - 1) * decay(i, r, 0.05) * 0.5
   })
   // Missile flyby (#80): a round passing close without fusing — a rush that
   // swells, sweeps down through the closest approach and recedes. Shaped in
   // flyby_shape, beside the cue that plays it.
-  shots.flyby = await render(1.1, flyby_shape)
+  shots.flyby = render(1.1, flyby_shape)
   // Catapult: holdback clunk, building rumble, end clunk.
-  shots.catapult = await render(2.6, (d, r) => {
+  shots.catapult = render(2.6, (d, r) => {
     const clunk = (at: number, f: number, a: number) => {
       const base = Math.floor(at * r)
       for (let i = 0; i < r * 0.15 && base + i < d.length; i++)
@@ -724,7 +722,7 @@ async function bake(): Promise<void> {
   })
   // Trap: from the cockpit an arrestment is deceleration — airframe groan in
   // waves and a rattling tyre screech — not a wire's guitar string.
-  shots.trap = await render(1.6, (d, r) => {
+  shots.trap = render(1.6, (d, r) => {
     let low = 0
     let phase = 0
     for (let i = 0; i < d.length; i++) {
@@ -743,7 +741,7 @@ async function bake(): Promise<void> {
     }
   })
   // Touchdown: a thump and a tyre chirp.
-  shots.touchdown = await render(0.5, (d, r) => {
+  shots.touchdown = render(0.5, (d, r) => {
     for (let i = 0; i < d.length; i++) {
       d[i] += Math.sin((i / r) * 2 * Math.PI * 55) * decay(i, r, 0.09) * 1.0
       if (i < r * 0.06)
@@ -757,7 +755,7 @@ async function bake(): Promise<void> {
   // phase and the last sample was a step — the click the pilot reported. An
   // electric screw actuator under air load is a strained whirr, not a tone, so
   // the harmonics are rough and there is broadband noise riding them.
-  shots.servo = await render(0.5, (d, r) => {
+  shots.servo = render(0.5, (d, r) => {
     for (let i = 0; i < d.length; i++) {
       const env = Math.min(1, i / (r * 0.04)) * Math.min(1, (d.length - i) / (r * 0.06))
       const f = 300 + 30 * Math.sin((i / r) * 2 * Math.PI * 7) // the load beats as the surface runs
@@ -772,7 +770,7 @@ async function bake(): Promise<void> {
   // the hard downlock thunk (played three times, staggered — nose and mains
   // lock at different moments), and the softer double door thump that ends a
   // retraction. Up and down genuinely differ in the real jet.
-  shots.pump = await render(0.55, (d, r) => {
+  shots.pump = render(0.55, (d, r) => {
     for (let i = 0; i < d.length; i++) {
       const env = Math.min(1, i / (r * 0.05)) * decay(i, r, 0.4)
       const hum =
@@ -781,7 +779,7 @@ async function bake(): Promise<void> {
       d[i] = (hum + (Math.random() * 2 - 1) * 0.22) * env * 0.24 // the transit pump was inaudible under the engine floor (#88 mix audit)
     }
   })
-  shots.lock = await render(0.28, (d, r) => {
+  shots.lock = render(0.28, (d, r) => {
     let low = 0
     for (let i = 0; i < d.length; i++) {
       const white = Math.random() * 2 - 1
@@ -791,7 +789,7 @@ async function bake(): Promise<void> {
         Math.sin((i / r) * 2 * Math.PI * 62) * decay(i, r, 0.09) * 0.5
     }
   })
-  shots.door = await render(0.34, (d, r) => {
+  shots.door = render(0.34, (d, r) => {
     let low = 0
     for (let i = 0; i < d.length; i++) {
       const white = Math.random() * 2 - 1
@@ -801,7 +799,7 @@ async function bake(): Promise<void> {
     }
   })
   // Ejection: canopy bang, rocket roar, wind tail.
-  shots.eject = await render(2.0, (d, r) => {
+  shots.eject = render(2.0, (d, r) => {
     let last = 0
     for (let i = 0; i < d.length; i++) {
       const white = Math.random() * 2 - 1
@@ -812,9 +810,9 @@ async function bake(): Promise<void> {
     }
   })
   // Master caution: the NATOPS tone (caution_shape).
-  shots.caution = await render(CAUTION_LENGTH, caution_shape)
+  shots.caution = render(CAUTION_LENGTH, caution_shape)
   // Gear warning horn: a slow insistent low beep (looped while active).
-  shots.horn = await render(1.0, (d, r) => {
+  shots.horn = render(1.0, (d, r) => {
     for (let i = 0; i < r * 0.55; i++)
       d[i] =
         Math.sin((i / r) * 2 * Math.PI * 250) *
@@ -822,7 +820,7 @@ async function bake(): Promise<void> {
         0.3
   })
   // Radar-altimeter low-altitude warning: an urgent descending whoop, twice.
-  shots.law = await render(0.9, (d, r) => {
+  shots.law = render(0.9, (d, r) => {
     const whoop = (at: number) => {
       const base = Math.floor(at * r)
       let phase = 0
@@ -1153,8 +1151,7 @@ let servoAt = -1
 // rotation alpha, per #91) is properly quiet.
 export function audio_servo(travel: boolean): void {
   if (!travel) return
-  const t =
-    context && context.state === 'running' ? now() : performance.now() / 1000 // a SUSPENDED context's clock is frozen at zero and the cadence gate never reopens
+  const t = performance.now() / 1000 // wall time, the one clock: the audio context's starts at zero when it is built and stops while suspended, so a stamp from either clock read against the other held the cadence shut
   if (servoAt < 0 || t - servoAt > 0.42) {
     servoAt = t
     play('servo', 0.55)
@@ -1164,8 +1161,7 @@ let pumpAt = -1
 // The transit's hydraulic pump, repeated horn-style while the gear travels.
 export function audio_gear(travel: boolean): void {
   if (!travel) return
-  const t =
-    context && context.state === 'running' ? now() : performance.now() / 1000 // a SUSPENDED context's clock is frozen at zero and the cadence gate never reopens
+  const t = performance.now() / 1000 // wall time, as audio_servo
   if (pumpAt < 0 || t - pumpAt > 0.48) {
     pumpAt = t
     play('pump', 0.9)
@@ -1416,9 +1412,11 @@ export function audio_horn(active: boolean): void {
 // three.js positional audio does distance, we bend the pitch.
 
 interface Distant {
-  gain: GainNode
-  panner: PannerNode
+  source: AudioBufferSourceNode // the looping roar: a playing source lives as long as it plays, so a drop must stop it
   filter: BiquadFilterNode
+  mix: GainNode
+  panner: PannerNode
+  gain: GainNode
 }
 const distants = new Map<string, Distant>()
 
@@ -1488,7 +1486,7 @@ export function audio_remote(
     mix.gain.value = 0.5
     roar.connect(filter).connect(mix)
     mix.connect(panner).connect(gain).connect(bus('environment'))
-    d = { gain, panner, filter }
+    d = { source: roar, filter, mix, panner, gain }
     distants.set(key, d)
   }
   const t = now()
@@ -1505,9 +1503,28 @@ export function audio_remote_drop(key: string): void {
   passes.delete(key)
   const d = distants.get(key)
   if (!d) return
-  d.gain.gain.value = 0
-  d.panner.disconnect()
   distants.delete(key)
+  d.gain.gain.value = 0
+  d.source.stop()
+  for (const node of [d.source, d.filter, d.mix, d.panner, d.gain]) node.disconnect()
+}
+
+// audio_reset ends what one mission left playing before the next begins, or
+// the page moves on: every remote's roar (each a looping source that would
+// otherwise sound from its last place for as long as the page lives), the gun's
+// loop, and the pass, reheat and cadence ledgers.
+export function audio_reset(): void {
+  for (const key of [...distants.keys()]) audio_remote_drop(key)
+  passes.clear()
+  heat.clear()
+  if (gunLoop) {
+    gunLoop.stop()
+    gunLoop.disconnect()
+    gunLoop = null
+  }
+  gunFiring = false
+  servoAt = -1
+  pumpAt = -1
 }
 
 // The listener rides the camera.
@@ -1535,5 +1552,11 @@ export function audio_listener(
     l.upX.setTargetAtTime(ux, t, smooth)
     l.upY.setTargetAtTime(uy, t, smooth)
     l.upZ.setTargetAtTime(uz, t, smooth)
+  } else {
+    // A listener without the AudioParams (Firefox's) is placed by the older
+    // calls, as three.js's own AudioListener does: left alone it heard
+    // everything from the frame's anchor, up to 4 km from the pilot.
+    l.setPosition(x, y, z)
+    l.setOrientation(fx, fy, fz, ux, uy, uz)
   }
 }

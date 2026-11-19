@@ -23,7 +23,7 @@ import { EARTH, HOME, between, point } from './earth'
 // half is read from its source, and lift cuts one top-level function out of it.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -1751,7 +1751,7 @@ describe("the ownship's death in the recording", () => {
   })
 
   it('is wired where the engine samples and where the jet dies', () => {
-    expect(source).toMatch(/function crash_ownship\(why,killer\)\{ if\(crash_t>0\) return; crash_t=3\.0; own_written=false;/)
+    expect(source).toMatch(/function crash_ownship\(why,killer\)\{ if\(lost\(\)\) return; crash_t=3\.0; own_written=false;/)
     const sample = lift('recording_sample')
     expect(sample).toMatch(/const due=recorder\.due\(sim_time\);[^\n]*\n\tif\(!due\) return;[^\n]*\n\tconst own=own_record\(due\);/)
     expect(sample).toMatch(/tas:own==="death"\?undefined:airspeed\(out\[STATE\.mach\]\|\|0,ownship\.pos\.y\)/)

@@ -17,7 +17,7 @@ const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url
 // lift cuts one top-level function out of the source: from its head to the
 // next line that starts at column 0 (the bodies are tab-indented).
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -220,7 +220,7 @@ describe('laying a segment', () => {
 
 describe('the ribbons', () => {
   const vertices = () =>
-    new Function(`${lift('contrail_shape')}\n${lift('contrail_vertices')}\nreturn contrail_vertices;`)() as (rig: Rig, time: number, cam: { x: number; y: number; z: number }, pixel: number) => number
+    new Function(`const _shape = {};\n${lift('contrail_shape')}\n${lift('contrail_vertices')}\nreturn contrail_vertices;`)() as (rig: Rig, time: number, cam: { x: number; y: number; z: number }, pixel: number) => number
   // two segments 30 m apart along +x at 10,000 m, laid at 0 and 0.15 s, both engines trailing
   function laid(): Rig {
     const r = rig(null)
@@ -312,8 +312,8 @@ describe('every jet, every frame', () => {
     const scene = { removed: [] as unknown[], remove(m: unknown) { this.removed.push(m) } }
     const contrails = new Set<Rig>()
     const made = { rigs: 0 }
-    const body = `let sim_time=0, crash_t=0, presenting=true;
-      ${lift('contrail_air')}\n${lift('contrail_band')}\n${lift('contrail_shape')}\n${lift('contrail_lay')}\n${lift('contrail_vertices')}\n${lift('contrail_engines')}\n${lift('contrail_effects')}
+    const body = `let sim_time=0, crash_t=0, presenting=true; const _shape={}; const jets_all=()=>[...new Set([ownship,bandit,...remotes.values()])];
+      ${lift('contrail_air')}\n${lift('contrail_band')}\n${lift('contrail_shape')}\n${lift('contrail_lay')}\n${lift('contrail_vertices')}\n${lift('_engines')}\n${lift('contrail_engines')}\n${lift('contrail_effects')}
       return { run:contrail_effects, clock:(t)=>{ sim_time=t }, crash:(t)=>{ crash_t=t } };`
     const w = new Function('ownship', 'bandit', 'remotes', 'scene', 'camera', 'renderer', 'contrails', 'presented', 'body_offset', 'nozzle', 'wrap_axis', 'contrail_rig', body)(
       own, bandit, remotes, scene, { position: { x: 0, y: 0, z: 0 }, fov: 45 }, { domElement: { height: HEIGHT } }, contrails, (st: Jet) => st.pos, offset, nozzle, (v: number) => v,
@@ -428,7 +428,7 @@ describe('the wiring', () => {
   })
 
   it('reads each engine\'s achieved power beside its reheat for the ownship and the bandit', () => {
-    expect(source).toMatch(/\township\.spools=\[out\[STATE\.engine\]\*\(1-Math\.min\(1,out\[STATE\.engine_harm\]\|\|0\)\), out\[STATE\.engine\+2\]\*\(1-Math\.min\(1,out\[STATE\.engine_harm\+1\]\|\|0\)\)\];/)
+    expect(source).toMatch(/\township\.spools=own_spools; own_spools\[0\]=out\[STATE\.engine\]\*\(1-Math\.min\(1,out\[STATE\.engine_harm\]\|\|0\)\); own_spools\[1\]=out\[STATE\.engine\+2\]\*\(1-Math\.min\(1,out\[STATE\.engine_harm\+1\]\|\|0\)\);/)
     expect(source.match(/bandit\.spools=\[w\[STATE\.engine\],w\[STATE\.engine\+2\]\]; bandit\.reheats=\[w\[STATE\.engine\+1\],w\[STATE\.engine\+3\]\];/g)).toHaveLength(2)
   })
 

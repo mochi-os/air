@@ -1044,7 +1044,12 @@ function deadline<T>(work: Promise<T>, ms: number, label: string): Promise<T> {
   ) as Promise<T>
 }
 
-export async function connect(join: Join, handlers: Handlers): Promise<Net> {
+// connect dials a match and returns the Net once the welcome is in. An abort
+// of the given signal - the engine stopping while the dial is under way -
+// closes the transport and rejects at whichever step the handshake had
+// reached, so a dial no one is waiting for leaves no connection joined.
+export async function connect(join: Join, handlers: Handlers, signal?: AbortSignal): Promise<Net> {
+  signal?.throwIfAborted()
   const options: WebTransportOptions = {}
   if (join.certificate?.hash) {
     const raw = atob(join.certificate.hash)
@@ -1053,9 +1058,17 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     options.serverCertificateHashes = [{ algorithm: 'sha-256', value }]
   }
   const transport = new WebTransport(join.address, options)
+  let quit = () => {}
+  const aborted = new Promise<never>((_, reject) => {
+    quit = () => reject(signal?.reason ?? new DOMException('aborted', 'AbortError'))
+    signal?.addEventListener('abort', quit, { once: true })
+  })
+  aborted.catch(() => {}) // raced at each step; an abort after the last is no one's error
+  // step bounds one await of the handshake by its deadline and by the abort
+  const step = <T>(work: Promise<T>, ms: number, label: string) => Promise.race([deadline(work, ms, label), aborted])
   try {
-    await deadline(transport.ready, CONNECT_DEADLINE, 'connect')
-    const stream = await deadline(
+    await step(transport.ready, CONNECT_DEADLINE, 'connect')
+    const stream = await step(
       transport.createBidirectionalStream(),
       CONNECT_DEADLINE,
       'stream'
@@ -1087,7 +1100,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     // pull the first frame here, then hand the live iterator to the Net so the
     // control loop continues from exactly where the handshake left off.
     const messages = frames(reader, new Uint8Array(0))
-    const opening = await deadline(messages.next(), WELCOME_DEADLINE, 'welcome')
+    const opening = await step(messages.next(), WELCOME_DEADLINE, 'welcome')
     if (opening.done) throw new Error('closed')
     const first = cbor_decode(opening.value) as Record<string, unknown>
     if (first.kind === 'refuse')
@@ -1131,6 +1144,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
         console.warn('map geometry:', error)
       }
     }
+    signal?.throwIfAborted() // the geometry's fetch is bounded by its own timeout; the abort is read once it is in
     net.start(writer, messages)
     return net
   } catch (error) {
@@ -1143,6 +1157,8 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
       /* already closing */
     }
     throw error
+  } finally {
+    signal?.removeEventListener('abort', quit)
   }
 }
 

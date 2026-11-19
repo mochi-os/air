@@ -175,7 +175,7 @@ describe('place', () => {
 // functions.
 const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = engine.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : engine.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(engine.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
   const rest = engine.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -274,7 +274,7 @@ describe('the jettison drops our parts', () => {
     const falling: { piece: THREE.Object3D }[] = []
     const separate = new Function('THREE', 'scene', 'falling', `${lift('separate_debris')} return separate_debris;`)(THREE, scene, falling) as (
       st: object, names: string[]) => void
-    const st = { racks: { nodes: {}, parts: { tank7: [tank], pylon7: [pylon] } }, speed: 0 }
+    const st = { racks: { nodes: {}, parts: { tank7: [tank], pylon7: [pylon] } }, speed: 0, velx: 0, vely: 0, velz: 0 }
     separate(st, ['tank7'])
     expect(falling.map((f) => f.piece.name)).toEqual(['tank_7'])
     separate(st, ['pylon7'])
