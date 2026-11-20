@@ -16,8 +16,12 @@
 # that a gear joint's keys read within their tolerance of its motion
 # (ThinnedTest, without Blender: python3 -I test_build.py ThinnedTest), that
 # the speedbrake's turn is solved about the right point (PivotTest), the
-# occlusion's noise smoothed within each island (ShadeTest, likewise), and
-# the V's walls behind the speedbrake (WalledTest, likewise).
+# occlusion's noise smoothed within each island (ShadeTest, likewise), each
+# texel's size on the jet, the bake's margin's included (TexelTest, likewise),
+# each door's seam shaded on every edge texel (CoveringTest, likewise), the
+# V's walls behind the speedbrake (WalledTest, likewise), and each face a
+# cut leaves with a straight corner split from it (StraightTest, a small
+# Blender run).
 #
 # usage: systemd-run --user --scope --slice=probe.slice -p MemoryMax=6G -p MemorySwapMax=0 python3 -I test_build.py
 import ast, json, math, os, re, struct, subprocess, tempfile, unittest
@@ -100,59 +104,85 @@ class PivotTest(unittest.TestCase):
 
 
 class DuctTest(unittest.TestCase):
-	# The inlets' ducts (build.py duct_ring(), ducted(), without Blender): the
-	# duct raked as the lip at its mouth and square at its cap, turning
-	# inboard; the paint keeps the lip's grey at the mouth, darkens to black a
-	# hydraulic diameter down and on the cap, and leaves the outer skin and
-	# anything off the ducts alone, either side
+	# The inlets' ducts (build.py duct_ring(), faced(), bay_roof(), without
+	# Blender): each duct raked as the lip at its mouth and square from its
+	# first fitted section, running to the engine face's circle on the
+	# engine's axis at X/D 6.5; the paint picks out the engine face's disc and
+	# hub alone, never the walls; and the main bay's roof stands under the
+	# duct
 	@classmethod
 	def setUpClass(cls):
 		tree = ast.parse((HERE / "build.py").read_text())
-		wanted = ("value", "mouth", "reach", "mouth_ring", "engine_buttline", "duct_ring", "enclosing", "ducted")
-		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in wanted]
-		space = {"np": __import__("numpy"), "math": math, "FACTS": FACTS, "LAYOUT": FACTS["layout"], "MOUTH_SIDES": 80}
+		wanted = ("value", "mouth", "reach", "mouth_ring", "engine_buttline", "smooth", "ease", "duct_run", "duct_start", "duct_ring", "duct_stations",
+			"engine_face", "faced", "bay_roof", "enclosing")
+		constants = ("MOUTH_SIDES", "DUCT_NEAR", "DUCT_STEP", "HUB")
+		found = [n for n in tree.body if (isinstance(n, ast.FunctionDef) and n.name in wanted)
+			or (isinstance(n, ast.Assign) and any(getattr(t, "id", None) in constants for t in n.targets))]
+		space = {"np": __import__("numpy"), "math": math, "FACTS": FACTS, "LAYOUT": FACTS["layout"]}
 		exec(compile(ast.Module(body=found, type_ignores=[]), "build.py", "exec"), space)
 		space["MOUTH"] = space["mouth"]()
 		cls.space = space
 		cls.np = space["np"]
-		cls.cap = FACTS["layout"]["inlet"]["lip"]["top"][0] + FACTS["layout"]["inlet"]["duct"]["depth"]
+		inlet = FACTS["layout"]["inlet"]
+		cls.face = inlet["lip"]["top"][0] + inlet["duct"]["face"] * FACTS["engine"]["inlet"]["value"]
 
-	def kept(self, points):
-		p = self.np.array(points, float)
-		return self.space["ducted"](p[:, 0], p[:, 1], p[:, 2])
-
-	def test_raked_at_the_mouth_and_square_at_the_cap(self):
-		mouth, cap = self.space["duct_ring"](0.0), self.space["duct_ring"](1.0)
+	def test_raked_at_the_mouth_and_square_behind(self):
+		s = self.space
+		start = s["duct_start"]()
+		mouth = s["duct_ring"](start)
 		self.assertGreater(max(p[0] for p in mouth) - min(p[0] for p in mouth), 3.0)
-		self.assertTrue(all(abs(p[0] - self.cap) < 1e-9 for p in cap))
-		# turned inboard toward the engine's axis
-		self.assertLess(sum(p[2] for p in cap) / len(cap), sum(p[2] for p in mouth) / len(mouth) - 0.5)
+		for a, b in zip(mouth, s["mouth_ring"](1.2, s["MOUTH"]["wall"])):
+			self.assertTrue(all(abs(x - y) < 1e-9 for x, y in zip(a, b)))
+		first = s["duct_run"]()[0][0]
+		for station in (first, first + 20.0):
+			self.assertTrue(all(abs(p[0] - station) < 1e-9 for p in s["duct_ring"](station)))
 
-	def test_the_paint_darkens_down_the_duct(self):
-		ring = lambda share, k: self.space["duct_ring"](share)[k]
+	def test_it_runs_to_the_engine_face(self):
+		s = self.space
+		near, deep = s["duct_stations"]()
+		stations = [s["duct_start"]()] + near + deep
+		self.assertTrue(all(b > a for a, b in zip(stations, stations[1:])))
+		self.assertAlmostEqual(deep[-1], self.face, places=9)
+		self.assertLessEqual(max(b - a for a, b in zip(deep, deep[1:])), s["DUCT_STEP"] + 1e-9)
+		# its last ring the engine face's circle round the engine's axis, every other point as built
+		radius = FACTS["engine"]["face"]["value"] / 2
+		axis = (s["engine_buttline"](self.face), FACTS["layout"]["nozzle"]["waterline"])
+		ring = s["duct_ring"](self.face, 2)
+		self.assertEqual(len(ring), s["MOUTH_SIDES"] // 2)
+		for station, wl, bl in ring:
+			self.assertAlmostEqual(station, self.face, places=9)
+			self.assertAlmostEqual(math.hypot(bl - axis[0], wl - axis[1]), radius, places=6)
+		# turned inboard and up on its way there
+		mouth = self.np.array(s["duct_ring"](stations[0]))
+		self.assertLess(self.np.mean([p[2] for p in ring]), mouth[:, 2].mean() - 5.0)
+		self.assertGreater(self.np.mean([p[1] for p in ring]), mouth[:, 1].mean() + 5.0)
+
+	def test_the_paint_marks_the_engine_face_alone(self):
+		s = self.space
+		face, (bl, wl), radius, hub, length = s["engine_face"]()
+		disc = [(face, wl + r * math.cos(t), bl + r * math.sin(t)) for r in (0.0, 6.0, radius - 0.1) for t in (0.3, 2.0, 4.1)]
+		nose = [(face - length * u, wl + hub * math.sqrt(1 - u * u) * math.cos(t), bl + hub * math.sqrt(1 - u * u) * math.sin(t)) for u in self.space["HUB"] + [0.0] for t in (0.5, 3.0)]
+		near, deep = s["duct_stations"]()
+		walls = [p for st in [s["duct_start"]()] + near + deep if st < face - length - 0.5 for p in s["duct_ring"](st, 2)]
 		for side in (1, -1):
-			walls = [ring(share, k) for share in (0.0, 0.5, 1.0) for k in (0, 20, 40, 60)]
-			kept = self.kept([(s, w, side * b) for s, w, b in walls])
-			self.assertTrue((kept[:4] > 0.95).all(), kept[:4])     # at the lip, its grey
-			self.assertTrue((kept[8:] < 0.01).all(), kept[8:])     # down the duct, black
-			# the cap's middle, black; the outer skin a wall's width outside the duct, and the fuselage's side, untouched
-			centre = self.space["MOUTH"]["centre"]
-			outside = [(s + 0.5, w + (w - centre[1]) * 0.15, side * (b + (b - centre[0]) * 0.15)) for s, w, b in walls[:8]]
-			kept = self.kept([(self.cap, centre[1], side * centre[0])] + outside + [(420.0, 100.0, side * 12.0)])
-			self.assertLess(kept[0], 0.01)
-			self.assertTrue((kept[1:] == 1.0).all(), kept[1:])
+			on = self.np.array([(f, w, side * b) for f, w, b in disc + nose])
+			off = self.np.array([(f, w, side * b) for f, w, b in walls] + [(420.0, 100.0, side * 12.0), (face + 1.0, wl, side * bl)])
+			self.assertTrue(s["faced"](on[:, 0], on[:, 1], on[:, 2]).all())
+			self.assertFalse(s["faced"](off[:, 0], off[:, 1], off[:, 2]).any())
+		# a grid of texels keeps its shape, each judged alone
+		grid = self.np.array([[disc[0], (420.0, 100.0, 12.0)], [walls[0], disc[4]]], float)
+		marked = s["faced"](grid[..., 0], grid[..., 1], grid[..., 2])
+		self.assertEqual(marked.shape, (2, 2))
+		self.np.testing.assert_array_equal(marked, [[True, False], [False, True]])
 
-	def test_the_atlas_as_a_grid(self):
-		# the paint passes the atlas's texels as grids, rows by columns: each
-		# texel judged as it is alone
-		cap, mouth = self.space["duct_ring"](1.0)[20], self.space["duct_ring"](0.0)[20]
-		grid = self.np.array([[cap, (420.0, 100.0, 12.0)], [mouth, (420.0, 100.0, -12.0)]], float)
-		kept = self.space["ducted"](grid[..., 0], grid[..., 1], grid[..., 2])
-		self.assertEqual(kept.shape, (2, 2))
-		flat = self.kept(grid.reshape(-1, 3)).reshape(2, 2)
-		self.np.testing.assert_array_equal(kept, flat)
-		self.assertLess(kept[0, 0], 0.01)
-		self.assertGreater(kept[1, 0], 0.95)
+	def test_the_bay_roof_under_the_duct(self):
+		s = self.space
+		f0, f1, lo, hi = FACTS["layout"]["wells"]["main"][0]
+		gap = FACTS["layout"]["wells"]["roof"][0]
+		for station in self.np.linspace(f0, f1, 23):
+			roof = s["bay_roof"](station)
+			floor = min(w for _, w, b in s["duct_ring"](station, 2) if lo <= b <= hi)
+			self.assertAlmostEqual(floor - roof, gap, places=9)
 
 	def test_enclosing(self):
 		square = self.np.array([(0.0, 0.0), (4.0, 0.0), (4.0, 4.0), (0.0, 4.0)])
@@ -223,6 +253,209 @@ class ShadeTest(unittest.TestCase):
 		numpy.testing.assert_allclose(out[8:13, 8:13], 0.8)
 
 
+class TexelTest(unittest.TestCase):
+	# Each texel's size on the jet (build.py texel_size()), without Blender:
+	# python3 -I test_build.py TexelTest
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "texel_size"]
+		import numpy
+		space = {"np": numpy, "math": math}
+		exec(compile(ast.Module(body=found, type_ignores=[]), "build.py", "exec"), space)
+		cls.texel_size = staticmethod(space["texel_size"])
+
+	def test_a_margin_repeating_its_edge_takes_the_usual_step(self):
+		# an island 20 texels square a texel's step apart, its last three
+		# columns the bake's margin, each repeating the island's edge: covered
+		# (the margin carries the edge's normal too), at no step from it
+		import numpy
+		step = 0.012
+		ys, xs = numpy.mgrid[0:20, 0:23].astype(float)
+		where = numpy.stack([numpy.minimum(xs, 19) * step, ys * step, numpy.zeros_like(xs)], -1)
+		covered = numpy.ones((20, 23), bool)
+		size = self.texel_size(where, covered)
+		self.assertTrue((size > 0).all(), "a texel of no size: a line reaching it shades it by 0/0")
+		numpy.testing.assert_allclose(size[:, :20], step)
+		# a margin that all but repeats the edge (the bake's float noise, here
+		# 0.001 in): the edge's texels keep the island's step
+		where[:, 20:, 0] = 19 * step + numpy.arange(1, 4) * 0.001 * 0.0254
+		size = self.texel_size(where, covered)
+		numpy.testing.assert_allclose(size[:, :20], step)
+
+	def test_the_margin_takes_the_step_along_the_edge(self):
+		# the margin's own texels, each repeating the edge texel beside it
+		# across the edge (both its neighbours that way all but where it is),
+		# stand a texel's step from the next along the edge: on a square
+		# island that is their size, as it is the edge texel's
+		import numpy
+		step = 0.012
+		ys, xs = numpy.mgrid[0:20, 0:23].astype(float)
+		where = numpy.stack([numpy.minimum(xs, 19) * step, ys * step, numpy.zeros_like(xs)], -1)
+		where[:, 20:, 0] += numpy.arange(1, 4) * 1e-6
+		size = self.texel_size(where, numpy.ones((20, 23), bool))
+		numpy.testing.assert_allclose(size, step)
+
+	def test_a_margin_takes_the_size_of_the_texel_it_repeats(self):
+		# an island longer across its edge than along it (a forward nose
+		# door's, 1.07 in by 0.70): its margin repeats the edge texel's place
+		# and takes its size, not its own step along the edge, so a seam
+		# within the edge texel's reach shades the margin too
+		import numpy
+		across, along = 0.027, 0.018
+		ys, xs = numpy.mgrid[0:20, 0:23].astype(float)
+		where = numpy.stack([numpy.minimum(xs, 19) * across, ys * along, numpy.zeros_like(xs)], -1)
+		size = self.texel_size(where, numpy.ones((20, 23), bool))
+		numpy.testing.assert_allclose(size[:, :20], across)
+		numpy.testing.assert_allclose(size[:, 20:], across)
+
+	def test_islands_apart_on_the_atlas_keep_their_own_steps(self):
+		# two islands side by side, one a texel's step of 0.012 m, the other
+		# 2 m off with a step of 0.006: neither's size reaches across
+		import numpy
+		ys, xs = numpy.mgrid[0:10, 0:20].astype(float)
+		where = numpy.stack([xs * 0.012, ys * 0.012, numpy.zeros_like(xs)], -1)
+		where[:, 10:] = numpy.stack([2.0 + xs[:, 10:] * 0.006, ys[:, 10:] * 0.006, numpy.zeros_like(xs[:, 10:])], -1)
+		size = self.texel_size(where, numpy.ones((10, 20), bool))
+		numpy.testing.assert_allclose(size[:, :10], 0.012)
+		numpy.testing.assert_allclose(size[:, 10:], 0.006)
+
+
+class CoveringTest(unittest.TestCase):
+	# The share of each texel a panel line covers (build.py covering()),
+	# without Blender: python3 -I test_build.py CoveringTest
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "covering"]
+		import numpy
+		space = {"np": numpy, "math": math}
+		exec(compile(ast.Module(body=found, type_ignores=[]), "build.py", "exec"), space)
+		cls.covering = staticmethod(space["covering"])
+
+	def test_a_seam_shades_every_edge_texel(self):
+		# texels 0.7 in wide, the line 0.4 in: along a seam, the island's edge
+		# texel, its centre anywhere up to a texel inside, takes the line's
+		# width over the texel's; the next texel in takes none
+		import numpy
+		inch = 0.0254
+		texel, half = numpy.full(8, 0.7 * inch), 0.2 * inch
+		depth = numpy.array([0.0, 0.1, 0.35, 0.5, 0.6, 0.69, 0.75, 1.1]) * inch
+		share = self.covering(numpy.full(8, numpy.inf), depth, texel, half)
+		numpy.testing.assert_allclose(share[:6], 0.4 / 0.7, atol=1e-9)
+		self.assertTrue((share[6:] < 0.1).all(), share)
+
+	def test_a_traced_line_keeps_its_area(self):
+		# off any seam, a texel takes the share of its width the line covers:
+		# centred on it, the line's width over its own; half a texel off, the
+		# half the line reaches; further, none
+		import numpy
+		inch = 0.0254
+		texel, half = numpy.full(3, 0.7 * inch), 0.2 * inch
+		share = self.covering(numpy.array([0.0, 0.35, 0.6]) * inch, numpy.full(3, numpy.inf), texel, half)
+		numpy.testing.assert_allclose(share, [0.4 / 0.7, 0.2 / 0.7, 0.0], atol=1e-9)
+
+	def test_fine_texels_draw_the_seam_at_its_width(self):
+		# texels finer than the line: within half its width of a seam, whole;
+		# past it, bare (the edge's rule adds nothing the area did not)
+		import numpy
+		inch = 0.0254
+		texel, half = numpy.full(3, 0.1 * inch), 0.2 * inch
+		share = self.covering(numpy.full(3, numpy.inf), numpy.array([0.05, 0.15, 0.3]) * inch, texel, half)
+		numpy.testing.assert_allclose(share, [1.0, 1.0, 0.0], atol=1e-9)
+
+
+class Vec:
+	# Just enough of mathutils.Vector for build.py's turned() and blade(),
+	# without Blender
+	def __init__(self, v):
+		import numpy
+		self.v = numpy.asarray(v, float)
+
+	x = property(lambda self: float(self.v[0]))
+	y = property(lambda self: float(self.v[1]))
+	z = property(lambda self: float(self.v[2]))
+	length = property(lambda self: float((self.v ** 2).sum() ** 0.5))
+
+	def __add__(self, o):
+		return Vec(self.v + o.v)
+
+	def __sub__(self, o):
+		return Vec(self.v - o.v)
+
+	def __mul__(self, k):
+		return Vec(self.v * k)
+
+	__rmul__ = __mul__
+
+	def __truediv__(self, k):
+		return Vec(self.v / k)
+
+	def __neg__(self):
+		return Vec(-self.v)
+
+	def dot(self, o):
+		return float(self.v @ o.v)
+
+	def cross(self, o):
+		import numpy
+		return Vec(numpy.cross(self.v, o.v))
+
+	def normalized(self):
+		return Vec(self.v / self.length)
+
+	def orthogonal(self):
+		# any vector square to this one
+		import numpy
+		other = numpy.array([1.0, 0.0, 0.0]) if abs(self.v[0]) < 0.9 else numpy.array([0.0, 1.0, 0.0])
+		return Vec(numpy.cross(self.v, other))
+
+
+class FittingTest(unittest.TestCase):
+	# The pitot-static tube's and AoA probe's shapes (build.py turned(),
+	# blade(), with airfoil() and loft()), without Blender
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in ("turned", "blade", "airfoil", "half", "loft")]
+		cls.space = {"math": math, "Vector": Vec, "INCH": 0.0254, "FACTS": FACTS}
+		exec(compile(ast.Module(body=found, type_ignores=[]), "build.py", "exec"), cls.space)
+
+	def test_a_turned_body_takes_its_profile(self):
+		vertices, faces = self.space["turned"](Vec([0.0, 0.0, 0.0]), Vec([1.0, 0.0, 0.0]), [(0.0, 0.09), (4.5, 0.39), (9.4, 0.4)], sides=16)
+		self.assertEqual(len(vertices), 48)
+		for ring, (d, r) in zip(range(3), [(0.0, 0.09), (4.5, 0.39), (9.4, 0.4)]):
+			points = [vertices[ring * 16 + i].v for i in range(16)]
+			for p in points:
+				self.assertAlmostEqual(p[0], d * 0.0254, places=9)
+				self.assertAlmostEqual((p[1] ** 2 + p[2] ** 2) ** 0.5, r * 0.0254, places=9)
+		self.assertEqual(len(faces), 2 * 16 + 2)   # quads between three rings, an n-gon over each end
+
+	def test_a_blade_is_as_thick_as_asked_square_to_its_chord_and_span(self):
+		i = 0.0254
+		root = (Vec([0.0, 0.0, 0.0]), Vec([-4.4 * i, 0.0, 0.0]))
+		foot = (Vec([2.8 * i, -2.0 * i, -3.2 * i]), Vec([-0.7 * i, -2.0 * i, -3.2 * i]))
+		vertices, faces = self.space["blade"](root, foot, [0.5, 0.35])
+		n = len(vertices) // 2
+		for k, ((lead, trail), t) in enumerate(zip((root, foot), (0.5, 0.35))):
+			ring = [p.v for p in vertices[k * n:(k + 1) * n]]
+			chord = (trail - lead).normalized().v
+			span = ((foot[0] + foot[1]) * 0.5 - (root[0] + root[1]) * 0.5).v
+			across = Vec(chord).cross(Vec(span)).normalized().v
+			offsets = [float((p - lead.v) @ across) for p in ring]
+			self.assertAlmostEqual(max(offsets) - min(offsets), t * i, delta=0.005 * t * i)   # its thickness (the 65A table's thickest ordinate, 2.496 of 5)
+			along = [float((p - lead.v) @ chord) for p in ring]
+			self.assertAlmostEqual(min(along), 0.0, places=9)   # from its leading edge
+			self.assertAlmostEqual(max(along), (trail - lead).length, places=9)   # to its trailing edge
+			self.assertAlmostEqual(offsets[0], 0.0, places=9)   # round from a point on its leading edge
+
+	def test_a_blade_has_one_ring_at_each_end(self):
+		i = 0.0254
+		vertices, faces = self.space["blade"]((Vec([0.0, 0.0, 0.0]), Vec([-4.0 * i, 0.0, 0.0])), (Vec([1.0 * i, 0.0, -3.0 * i]), Vec([-3.0 * i, 0.0, -3.0 * i])), [0.5, 0.5])
+		self.assertEqual(len(vertices) % 2, 0)
+		self.assertEqual(len(faces), len(vertices) // 2 + 2)
+
+
 class WalledTest(unittest.TestCase):
 	# The V's walls behind the speedbrake (build.py walled()), without
 	# Blender: python3 -I test_build.py WalledTest. A half section from the
@@ -268,6 +501,82 @@ class WalledTest(unittest.TestCase):
 	def test_a_top_level_to_the_nacelle_is_left_alone(self):
 		flat = [(x * 0.5, 10.0) for x in range(21)]
 		self.assertEqual(self.walled(flat, (0.0, 0.0), 10.0, 1.0, 0.0), flat)
+
+
+class StraightTest(unittest.TestCase):
+	# A face with a straight corner (build.py mend(), in Blender): a cut's
+	# point on an edge of a face the cut did not reach. Split into triangles as
+	# the hidden-face cull splits it (a quad across its first corner's
+	# diagonal), such a face can lay a triangle of no area along the edge;
+	# mended first, none is, and every triangle stays inside the face's
+	# outline, its area the face's
+	SCRIPT = """
+import bmesh, json, sys
+from mathutils import Vector
+exec(sys.argv[sys.argv.index("--") + 1])
+
+def faces(corners, polygons, fix):
+	bm = bmesh.new()
+	vs = [bm.verts.new(Vector(c)) for c in corners]
+	for p in polygons:
+		bm.faces.new([vs[i] for i in p])
+	made = list(mend(bm)) if fix else [0, 0]
+	bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3], quad_method="FIXED")
+	areas = sorted(f.calc_area() for f in bm.faces)
+	bm.free()
+	return made, areas
+
+# the shoelace area of faces in the z = 0 plane
+def area(corners, polygons):
+	total = 0
+	for p in polygons:
+		c = [corners[i] for i in p]
+		total += abs(sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(c, c[1:] + c[:1]))) / 2
+	return total
+
+# a quad: a triangle with a cut's point on its edge from its third corner back
+# to its first; a pentagon with two such points on that edge; a concave cap
+# (a U whose left leg stands taller), its straight corner's furthest corner
+# across the notch; and the keel's front cap (FS 589), a 0.5 by 1 in
+# rectangle whose bottom edge carries points 0.0167 in apart, each one face;
+# and a strip of triangles with one of no area along its edge, its longest
+# side on the boundary (no turn of an edge can take it out), metres
+I = 0.0254
+quad = [(0, 0, 0), (0.05, 0.15, 0), (0.05, 0, 0), (0.015, 0, 0)]
+pentagon = [(0, 0, 0), (0.05, 0.15, 0), (0.05, 0, 0), (0.033, 0, 0), (0.015, 0, 0)]
+cap = [(x * 0.01, y * 0.01, 0) for x, y in ((0, 0), (2.5, 0), (3, 0), (3, 2), (2, 2), (2, 1), (1, 1), (1, 3), (0, 3))]
+keel = [(b * I, 0, 0) for b in (-0.25, -0.1667, -0.15, -0.1, 0, 0.1, 0.15, 0.1667, 0.25)] + [(0.25 * I, I, 0), (-0.25 * I, I, 0)]
+edge = ([(0, 0, 0), (0.004, 0, 0), (0.01, 0, 0), (0.01, 0.01, 0), (0, 0.01, 0)], [(2, 1, 0), (0, 1, 4), (1, 2, 3), (1, 3, 4)])
+shapes = {name: (c, [list(range(len(c)))]) for name, c in (("quad", quad), ("pentagon", pentagon), ("cap", cap), ("keel", keel))}
+shapes["edge"] = edge
+print("result " + json.dumps({name: [faces(c, p, fix) for fix in (False, True)] + [area(c, p)] for name, (c, p) in shapes.items()}))
+"""
+
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in ("straight", "mend")]
+		source = "import bmesh, math\nINCH = 0.0254\n" + ast.unparse(ast.Module(body=found, type_ignores=[]))
+		with tempfile.TemporaryDirectory() as d:
+			script = Path(d) / "straight.py"
+			script.write_text(cls.SCRIPT)
+			run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(script), "--", source], capture_output=True, text=True)
+		if run.returncode or "Traceback" in run.stdout + run.stderr:
+			raise RuntimeError(run.stdout + run.stderr)
+		cls.result = json.loads(re.search(r"^result (.*)$", run.stdout, re.M)[1])
+
+	def test_a_straight_corner_lays_a_triangle_of_no_area_unless_mended(self):
+		self.assertLess(self.result["quad"][0][1][0], 1e-12)   # the cull's split, unmended: a triangle of no area
+		# and mended, none, the triangles' areas the face's: none folded outside
+		# its outline (the cap's furthest corner lies across its notch)
+		least = (0.001 * 0.0254) ** 2
+		self.assertLess(self.result["edge"][0][1][0], least)
+		for name in ("quad", "pentagon", "cap", "keel", "edge"):
+			_, (made, fixed), whole = self.result[name]
+			# a face split, or the edge's flat triangle dissolved
+			self.assertGreater(made[0] if name == "edge" else made[1], 0, name)
+			self.assertGreater(fixed[0], least, name)   # every triangle with its area
+			self.assertAlmostEqual(sum(fixed) / whole, 1.0, places=6, msg=name)   # single precision
 
 
 class KeyTest(unittest.TestCase):
