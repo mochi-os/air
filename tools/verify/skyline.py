@@ -64,11 +64,14 @@ SKY = {"bright": 110, "even": 7.0, "contrast": 25, "depart": 8.0}   # the sky be
 SUSTAIN = 3      # samples a change in brightness must hold to be the jet, not a panel line or a halo
 SHARP = 5        # samples an edge may take to rise from a quarter to three quarters of the jet's level
 # The skin's families by node name; those that move stand where each photo's
-# pose puts them, so a miss on them is first a question about the pose
+# pose puts them, so a miss on them is first a question about the pose. The
+# wells are the gear's bays: their walls make an outline only through the
+# open doors, behind the legs, braces, door links and whatever the bays hold,
+# so a miss on them is first a question about the gear in front, not the skin
 FAMILIES = [("rudder", ("rudder_",)), ("fin", ("fin_",)), ("aileron", ("aileron_",)), ("flap", ("flap_trailing_",)), ("slat", ("flap_leading_",)),
 	("wing", ("wing_",)), ("stabilator", ("stabilator_",)), ("nozzle", ("nozzle_", "burner_")), ("gear", ("gear_", "hook", "launch_bar", "ladder")),
-	("canopy", ("canopy", "windscreen")), ("cockpit", ("cockpit_", "pilot"))]
-MOVING = {"rudder", "aileron", "flap", "slat", "stabilator", "nozzle", "gear", "canopy"}
+	("well", ("well_",)), ("canopy", ("canopy", "windscreen")), ("cockpit", ("cockpit_", "pilot"))]
+MOVING = {"rudder", "aileron", "flap", "slat", "stabilator", "nozzle", "gear", "well", "canopy"}
 MINIMUM = 3      # places a photo must judge in a region to count as judging it
 TOLERANCE = 1.0  # inches the median over a region's photos may miss by
 AGREE = 2 / 3    # share of a region's photos that must miss on the side of that median

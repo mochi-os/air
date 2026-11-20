@@ -167,7 +167,9 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   (the gear) are placed by ray casts on the built parts (`built()`). The gear stands where the photos put it (`layout.gear` legs and
   doors): each main leg a post down to a trailing arm's pivot, the arm carrying the wheel (its turn about the
   pivot the leg's compression), a shock absorber, a side brace folding at a knee and the planing mechanism's
-  connecting link and bell crank; the leg swings aft about one trunnion axis, its shock drawn in and its axle
+  connecting link and bell crank (the side brace's knee gear down where the photos last see the brace, at the
+  bay's edge, as dvids4642471 shows it with its boss and downlock spring; its structure pin placed for room
+  and the inlet duct over it raised for the boss to fold clear); the leg swings aft about one trunnion axis, its shock drawn in and its axle
   turned a quarter so the wheel lies flat in the bay (`layout.motion.stowed`, `main_members()`). The main leg
   too rests as it hangs in flight: the arm drooped below its standing angle by the shock's 12 in stroke, which
   the oleo drive takes back up to the stance the photos show (the points file's `static`). The shock turns

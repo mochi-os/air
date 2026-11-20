@@ -4422,29 +4422,49 @@ def main_members(skin, leg, name, side, out, pivot, trunnion, fork, axis, swing,
 		return origin + u * x + n.cross(u) * (sense * h)
 
 	# The side brace folds at its knee: its lower half from the bolt on the
-	# post's lower casting, its upper on up its axis to the pin, straight
-	# with the gear down
+	# post's lower casting up to the knee, which gear down stands where the
+	# photos last see the brace (dvids4642471 shows its boss there, at the
+	# bay's edge, the upper half going on up into the bay), and its upper
+	# half from there to its pin in the structure (layout.motion braces side
+	# pin, placed for room)
 	bolt = at(m["brace"][1][0], m["brace"][1][1], side * m["brace"][1][2])
-	seen = at(m["brace"][0][0], m["brace"][0][1], side * m["brace"][0][2])
-	pin = on(bolt, (seen - bolt).normalized(), b["side"]["pin"])
-	straight = bolt + (pin - bolt) * b["side"]["knee"]
-	rise = n * (straight - pin).dot(n)   # the knee's offset along the axis, which no turn changes
-	upper, lower = flat(straight - pin).length, flat(bolt - straight).length
+	knee = at(m["brace"][0][0], m["brace"][0][1], side * m["brace"][0][2])
+	pin = at(b["side"]["pin"][0], b["side"]["pin"][1], side * b["side"]["pin"][2])
+	rise = n * (knee - pin).dot(n)   # the knee's offset along the axis, which no turn changes
+	upper, lower = flat(knee - pin).length, flat(bolt - knee).length
 	bolts = [carry(bolt, t) for t in steps]
 	radius = b["link"] / 2
 
 	def folded(sense):
 		return [meet(pin, q, upper, lower, sense) + rise for q in bolts]
-	knees = max((folded(sense) for sense in (1, -1)), key=lambda k: min(room(skin, [], pin, k[0], radius), room(skin, [], k[0], bolts[0], radius, 0.15)))
+	# the fold that stands the knee gear down where the photos see it
+	knees = min((folded(sense) for sense in (1, -1)), key=lambda k: (k[-1] - knee).length)
+	if (knees[-1] - knee).length > 0.01 * INCH:
+		raise SystemExit(f"{leg} side brace: no fold stands its knee gear down where the photos see it ({(knees[-1] - knee).length / INCH:.2f} in off)")
 	k0, q0 = knees[0], bolts[0]
 	off = max((k + (q - k) - q).length for k, q in zip(knees, bolts))
-	print(f"{leg} side brace: halves {(straight - pin).length / INCH:.1f} and {(bolt - straight).length / INCH:.1f} in, its knee turning {math.degrees(abs(angle(k0 - pin, knees[-1] - pin))):.0f} deg")
-	node(f"{leg}_brace_upper", hinge=pin, mesh=cylinder(pin, k0, radius), paint="white")
+	print(f"{leg} side brace: halves {(knee - pin).length / INCH:.1f} and {(bolt - knee).length / INCH:.1f} in, its knee turning {math.degrees(abs(angle(k0 - pin, knees[-1] - pin))):.0f} deg")
+	# the knee's boss across the pin, on the lower half (layout.motion braces
+	# side boss, dvids4642471 at the tube's 1.8 in), and the downlock spring
+	# from it along the upper half on up into the bay, beside the tube on the
+	# boss's face (side spring: its coil, its pitch and its length into the
+	# bay, which no photo sees past the bay's edge)
+	boss, sp = b["side"]["boss"], b["side"]["spring"]
+	ends = [k0 - n * (boss[1] / 2 * INCH), k0 + n * (boss[1] / 2 * INCH)]
+	upward = (pin - k0).normalized()
+	beside = n * ((boss[1] / 2 - sp["diameter"] / 2) * INCH)
+	coil = []
+	count = int(sp["length"] / sp["pitch"])
+	for k in range(count):
+		a_ = k0 + beside + upward * ((boss[0] / 2 + k * sp["pitch"]) * INCH)
+		coil.append(cylinder(a_, a_ + upward * (sp["pitch"] * INCH), sp["diameter"] / 2 if k % 2 == 0 else sp["diameter"] / 2 - 0.15, sides=8))
+	node(f"{leg}_brace_upper", hinge=pin, mesh=merge([cylinder(pin, k0, radius)] + coil), paint="white")
 	joint(f"{leg}_brace_upper", n, flat(k0 - pin), n.cross(flat(k0 - pin)), "gear", [[t, round(angle(k0 - pin, k - pin), 4)] for t, k in zip(steps, knees)])
-	node(f"{leg}_brace", parent=f"{leg}_brace_upper", hinge=k0, mesh=cylinder(k0, q0, radius), paint="white")
+	node(f"{leg}_brace", parent=f"{leg}_brace_upper", hinge=k0, mesh=merge([cylinder(k0, q0, radius), cylinder(ends[0], ends[1], boss[0] / 2, sides=16)]), paint="white")
 	joint(f"{leg}_brace", n, flat(q0 - k0), n.cross(flat(q0 - k0)), "gear",
 		[[t, round(angle(q0 - k0, q - k) - angle(k0 - pin, k - pin), 4)] for t, k, q in zip(steps, knees, bolts)])
 	MARKS[f"brace_bolt_{name}"] = (q0, f"{leg}_brace")
+	MARKS[f"brace_knee_{name}"] = (k0, f"{leg}_brace")
 	# the side brace's end fittings (layout.motion braces side fitting, its
 	# fork in dvids8678626 and dvids8678629), riding the lower half on their own
 	# node so the brace's tube still ends on its bolt: the fork's two cheeks

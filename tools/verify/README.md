@@ -198,7 +198,10 @@ cameras by the gate's rule.
 A region is a finding when two or more photos judge it (3 places each at least), the median over them passes
 `tolerance` (1 in), and two thirds of them miss on that side: each photo is one measurement with its camera's
 own error. Findings on the families in `moving` (the F/A-18C's rudders, flaps, ailerons, leading-edge flaps,
-stabilators, nozzles, gear and canopy) are listed apart: their misses follow each photo's pose. The report
+stabilators, nozzles, gear, wells and canopy) are listed apart: their misses follow each photo's pose. A gear
+bay's wall (`well`) is no skin: it makes an outline only through the open doors, behind the legs, braces and
+door links, so a miss there reads the gear in front (the F/A-18C's main bays' aft walls read 3.3 in inside in two
+head-on photos, where the edge found was the side brace's knee and a nose door's corner fitting). The report
 ends with the coverage: every region of the skin judged by one photo only or by none.
 
 Some regions no photo can judge: they make the outline from no direction at all (a belly between nacelles,

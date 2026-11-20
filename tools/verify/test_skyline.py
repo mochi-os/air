@@ -672,6 +672,10 @@ class SkylineTest(unittest.TestCase):
 		self.assertEqual(skyline.region("flap_trailing_right", (560.0, 110.0, 120.0)), ("flap", 552, ""))
 		self.assertEqual(skyline.region("flap_leading_outer_left", (420.0, 110.0, -150.0)), ("slat", 408, ""))
 		self.assertEqual(skyline.region("rudder_right", (650.0, 170.0, 50.0)), ("rudder", 648, ""))
+		# a gear bay's wall is no skin: it makes an outline only through the open
+		# doors, behind the gear, and its misses are listed with the gear's
+		self.assertEqual(skyline.region("well_main_right", (533.4, 74.9, 16.4)), ("well", 528, ""))
+		self.assertIn("well", skyline.DEFAULT.moving)
 
 	def test_summary(self):
 		place = lambda miss, part="fin_left": {"miss": miss, "part": part, "point": [600.0, 160.0, -40.0]}

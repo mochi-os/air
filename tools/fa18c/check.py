@@ -47,7 +47,7 @@ GUESSES = {
 	"layout.nacelle.cheek.slot.note": (1, "user, 2026-11-17: the cheek box's slot's depth estimated as its width along the jet (3.5 in), its floor in shadow in every photo that sees into it; 2026-11-18: sunk inboard, its walls level, its floor up to 1.4 in inside the nacelle's side line, the station running on inside the side round it"),
 	"layout.nacelle.cheek.section.note": (1, "user, 2026-11-18: the cheek station's section between the measured lines estimated: the box's top corner rounded over 0.15 in, its top meeting the nacelle's skin turned 30 deg into it, the fairing over the box flattening onto its top below 2 in of height, the curve from the face's top to the skin with end slopes 0.4 of its chord, the block's face on the face's plane up to the box's top's height, the fairing over the box leaving its foot upright, the bottom corner rounded as the front edge's 0.45 in band, and the ramp's sections the front edge's scaled to its line and drawn in"),
 	"layout.nacelle.cheek.sweep.note": (1, "user, 2026-11-18: the cheek box's aft face sweeping from the skin out to the aft edge on a quarter ellipse, leaving the skin along it, the face rounding into it over its last 1.5 in, the edge at least 0.1 in thick; dvids9393266 shows the aft face only as a band of shade softening forward"),
-	"layout.inlet.duct.note": (3, "user, 2026-11-17: the duct's path and area between the mouth and the engine face, fitted for room over the stowed main gear; the F404 hub's 5 in radius and 7 in length; the engine's axis level, the face's centre at the nozzles' waterline"),
+	"layout.inlet.duct.note": (3, "user, 2026-11-17: the duct's path and area between the mouth and the engine face, fitted for room over the stowed main gear; user, 2026-11-19: its section at FS 460 raised 2.5 in for the refitted side brace's knee; the F404 hub's 5 in radius and 7 in length; the engine's axis level, the face's centre at the nozzles' waterline"),
 	"layout.pitot.note": (1,"user, 2026-11-17: the pitot strut 0.5 in thick at its root and 0.35 at the tube, a symmetric section; every photo sees its face, none its edge, and it is under an inch, as the blades' 0.4"),
 	"layout.nacelle.cheek.note": (1, "user, 2026-11-17: the cheek box's front below its photographed top corner, which the LAU-116's fitting and the round hide in both photos that show it, unseen; 2026-11-18: the block's face runs on into the box's there, one loft"),
 	"layout.stores.lau116.hooks.note": (1, "user, 2026-11-17: the LAU-116's hooks built as each hanger's footprint running up into the airframe; the round hides them closed in every photo of a loaded station, and dvids9393257's shadow hints the forward one stands about 1.5 in lower"),
@@ -81,7 +81,7 @@ GUESSES = {
 	"layout.motion.canopy.note": (2, "user, 2026-11-16: as recommended: the canopy's shell 0.2 in proud of the loft, a visible step at the sill and the aft joint, and its slide rising 0.15 in over the 1.5 in aft, the least that clear the skin it rests on; its hinge at the aft top (FS 326, WL 152.6), whose place the photos do not tell apart"),
 	"layout.hook.note": (3, "user, 2026-11-16 and 2026-11-18: the hook's hold-down rod estimated from the proportions in US Navy 050124-N-4308O-018 (no solved camera) scaled to the solved shank (user, 2026-11-16: as recommended); the point's body as long as it is wide with its 3.5 in flare, the shoe's 5.0 in reach, dished sole and 0.35 in recess, the bolts 0.9 in ahead of the face, the forging's web and socket, the damper's lengths (cylinder 2.5 + 5.8 in, piston 7.7 in, rod end 1.6 in) and the keel's aft end turning with the sideways swing, signed off as estimated (user, 2026-11-18)"),
 	"layout.motion.extension.note": (1, "user, 2026-11-16: the mains' start, hidden behind the camera jet's own nose tyres in DVIDS 781086, taken with the nose leg's once the doors are open"),
-	"layout.motion.braces.note": (6, "user, 2026-11-16: the main side brace's foot's clevis's lower end crossing the open inner door and the bay's edge at gear 0.375-0.45 kept, a known crossing; user, 2026-11-16: the main side brace's foot's clevis, spool, nut and end built from dvids8678626 alone, the bolt's lean across the sight line and the lugs' width round it estimated; user, 2026-11-16: the main side brace's fork at its bolt with 0.4 in cheeks, which no photo shows edge on; user, 2026-11-12: the nose drag brace's 6 in reach into its tube at full stretch kept; user, 2026-11-14: the drag brace rebuilt to the photos as the actuator they show, the hidden rod dropped; user, 2026-11-13: the main side brace's pin at WL 78 and its knee halfway (user, 2026-11-14: moved up off halfway, to 0.57, clear of the open inner door and the post), the connecting link's pin at WL 82, the bell crank's pin at WL 56 with its 6 in arm on a bracket off the pivot boss, and the link's 1.8 in diameter, placed for room and signed off from the retraction renders"),
+	"layout.motion.braces.note": (6, "user, 2026-11-16: the main side brace's foot's clevis's lower end crossing the open inner door and the bay's edge at gear 0.375-0.45 kept, a known crossing; user, 2026-11-16: the main side brace's foot's clevis, spool, nut and end built from dvids8678626 alone, the bolt's lean across the sight line and the lugs' width round it estimated; user, 2026-11-16: the main side brace's fork at its bolt with 0.4 in cheeks, which no photo shows edge on; user, 2026-11-12: the nose drag brace's 6 in reach into its tube at full stretch kept; user, 2026-11-14: the drag brace rebuilt to the photos as the actuator they show, the hidden rod dropped; user, 2026-11-13: the main side brace's pin at WL 78 and its knee halfway (user, 2026-11-14: moved up off halfway, to 0.57, clear of the open inner door and the post), the connecting link's pin at WL 82, the bell crank's pin at WL 56 with its 6 in arm on a bracket off the pivot boss, and the link's 1.8 in diameter, placed for room and signed off from the retraction renders; user, 2026-11-19: the main side brace refitted with its knee where dvids4642471 shows it, its structure pin re-placed for room (FS 462.0, WL 80.2, BL 24.2) and the boss's length along its pin and the spring's length into the bay estimated"),
 	"layout.scoop.note": (1, "user, 2026-11-12: the FCS ram air scoop's can 4.8 in long, a 12 oz can's height from the maintainers' name for it, and its red the gear doors' edges' red in dvids8678626; no photo shows it deployed"),
 	"layout.motion.scoop.note": (2, "user, 2026-11-12: the FCS ram air scoop hinged at its cap's aft edge, swinging 90 deg in 1 s until its mouth faces forward; no photo shows it deployed"),
 	"layout.gear.note": (13, "user, 2026-11-16: the nose holdback folding evenly with the oleo's stroke from out to standing, its fold between estimated; user, 2026-11-16: the main pivot nut's 0.8 in thickness; the nose post's eye rings' 0.6 in stock; the nose post's port wiring, read by eye; user, 2026-11-16: the main wheels' 0.6 in web, their holes' 2 in reach, the cap plate's 0.2 in thickness and the sidewall widest 0.45 of the way to the tread; the main lower casting's 1 in pocket over half its length; the nose leg's two hydraulic hoses, their bearings, the waterline they leave the bay at and their fittings, read by eye; user, 2026-11-14: the main shock turning about the boss dvids8678626 shows where it meets the skin, its white upper cylinder running on up its line into the bay as far as the piston's travel needs, so the 12 in stroke and the approach photos' droop hold with the eye where three solved photos put it; user, 2026-11-14: the planing rod riding the arm from a pin on the pivot's axis to the axle's fitting"),
@@ -3564,18 +3564,29 @@ def checks(jet, only=(), seen=None):
 					raise KeyError(f"no {side} main arm {s_} in aft of its pivot")
 				centres.append(q.mean(0))
 			pivot = centres[0] + (centres[0] - centres[1]) * (5.0 / 3.0)
-			# the side brace's axis gear down (both halves, straight) where the
-			# photos last see it, and its foot at the bolt
-			brace = np.unique(jet.points([f"gear_{side}_brace", f"gear_{side}_brace_upper"], down), axis=0)
-			middle = brace.mean(0)
-			line = np.linalg.svd(brace - middle, full_matrices=False)[2][0]
-			seen = middle + line * ((m["brace"][0][1] - middle[1]) / line[1])
-			along = (brace - middle) @ line
-			foot = brace[along <= along.min() + 0.05].mean(0) if line[1] > 0 else brace[along >= along.max() - 0.05].mean(0)
+			# the side brace gear down: its knee (the lower half's hinge) where
+			# the photos last see the brace before it enters the bay, its lower
+			# half's axis on from there to its foot at the bolt, and the knee's
+			# boss across its pin (layout.motion braces side boss)
+			worlds = jet.model.worlds(verify.pose(jet.joints, down))
+			pose_ = worlds[jet.model.index[f"gear_{side}_brace"]]
+			knee = FRAME.source(pose_[:3, 3])
+			lower_ = np.unique(jet.points([f"gear_{side}_brace"], down), axis=0)
+			bolt_ = np.array(m["brace"][1], float) * [1, 1, sgn]
+			line = (bolt_ - knee) / np.linalg.norm(bolt_ - knee)
+			tube = lower_[((lower_ - knee) @ line > 3.0)]
+			off = np.linalg.norm((tube - knee) - np.outer((tube - knee) @ line, line), axis=1)
+			foot = knee + line * float(((tube - knee) @ line).max())
 			for label, want, got, axes_ in (("post at the photos' top", m["top"], top, (("FS", 0), ("BL", 2))), ("arm's pivot end", m["pivot"], pivot, axes),
-					("side brace where the photos last see it", m["brace"][0], seen, (("FS", 0), ("BL", 2))), ("side brace's foot at its bolt", m["brace"][1], foot, axes)):
+					("side brace's knee where the photos last see the brace", m["brace"][0], knee, axes), ("side brace's foot at its bolt", m["brace"][1], foot, axes)):
 				for unit, i in axes_:
 					yield result("layout.gear", f"{side} main {label}", want[i], abs(got[i]) if i == 2 else got[i], 1.0, f"{unit} in")
+			yield result("layout.gear", f"{side} main side brace's lower half running from its knee to its bolt, its tube off that line", 0.0, float(np.median(off)) - FACTS["layout"]["motion"]["braces"]["value"]["link"] / 2, 0.1, "in")
+			hinge = (pose_[:3, :3] @ np.array(jet.joints[f"gear_{side}_brace"]["axis"], float)) @ FRAME.axes
+			hinge /= np.linalg.norm(hinge)
+			near = lower_[np.linalg.norm(lower_ - knee, axis=1) < 2.0]
+			radial = np.linalg.norm((near - knee) - np.outer((near - knee) @ hinge, hinge), axis=1)
+			yield result("layout.gear", f"{side} main side brace's knee boss across", FACTS["layout"]["motion"]["braces"]["value"]["side"]["boss"][0], 2 * float(radial.max()), 0.15, "in")
 			# the connecting link's axis, gear down, through the rod's two ends,
 			# within their disagreement with the axis fitted to the views'
 			# centrelines (0.9-1.1 in)
@@ -5634,8 +5645,10 @@ def checks(jet, only=(), seen=None):
 			# foot): the fork's eye round the pin, its reach up the brace to the
 			# tube, and a cheek's thickness
 			fit_ = F["layout"]["motion"]["braces"]["value"]["side"]["fitting"]
-			a, b = ends(f"gear_{side}_brace", {"gear": 1})
-			foot, knee = (a, b) if np.linalg.norm(a - bolt) < np.linalg.norm(b - bolt) else (b, a)
+			# the lower half's axis from its knee, the node's own origin, to
+			# the bolt its tube ends on: its mesh's ends would carry the knee's
+			# boss, which tilts a fitted axis
+			foot, knee = bolt, FRAME.source(down_w[index[f"gear_{side}_brace"]][:3, 3])
 			q = jet.points([f"gear_{side}_brace_fittings"], {"gear": 1})
 			footbolt = np.array(F["layout"]["motion"]["braces"]["value"]["side"]["foot"]["bolt"], float) * [1, 1, sign]
 			footbolt /= np.linalg.norm(footbolt)
