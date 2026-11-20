@@ -139,6 +139,47 @@ export function normalize_server(address: string): string {
   return a
 }
 
+// WIRE_TAIL is the ranges of the snapshot core's quantised tail words, by STATE
+// index: the unit interval the wire carries maps onto [least, most]. The world
+// server quantises with the same table (games/air/air.go wire_tail); every word
+// not in it is a loss, a jam or a latch on [0, 1]. The signed words were
+// clamped to zero on the way out, so a trim, a raised flap or toe-out arrived
+// as nothing and every snapshot restarted the prediction from it.
+const UNIT: [number, number] = [0, 1]
+const FLAPS: [number, number] = [-0.14, 0.79] // the trailing edge, rad: 8 degrees up, 45 down
+export const WIRE_TAIL: Record<number, [number, number]> = {
+  [STATE.loss]: [0, 8000], // shed mass, kg
+  [STATE.loss + 4]: [-1.5, 1.5], // the pitch damper's washout, rad/s
+  [STATE.datum]: [-0.07, 0.07], // the PA trim datum, rad: 4 degrees either way
+  [STATE.bank]: [-0.06, 0.06], // the roll-trim datum, stick fraction
+  [STATE.wing]: [0, 8000], // external fuel in the wing tanks, kg
+  [STATE.centre]: [0, 8000], // and the centreline's
+  [STATE.trailing]: FLAPS,
+  [STATE.trailing + 1]: FLAPS,
+  [STATE.toe]: [-0.27, 0.53], // the rudders' toe, rad: 15 degrees out, 30 in
+}
+
+// wire_expand re-expands a snapshot's wire core to the flight core's SIZE
+// words: 57 base words at full float64 precision, then the tail quantised to
+// uint16, each word over its WIRE_TAIL range — at full float64 it burst the
+// datagram MTU. null for a core too short to be one, or one whose base words
+// are not all finite, which would poison the prediction.
+export function wire_expand(bytes: unknown): Float64Array | null {
+  if (!(bytes instanceof Uint8Array) || bytes.byteLength < 456 + (SIZE - 57) * 2) return null
+  const expanded = new Float64Array(SIZE)
+  const view = new DataView(bytes.buffer, bytes.byteOffset)
+  for (let i = 0; i < 57; i++) {
+    const w = view.getFloat64(i * 8, true)
+    if (!Number.isFinite(w)) return null
+    expanded[i] = w
+  }
+  for (let i = 57; i < SIZE; i++) {
+    const [least, most] = WIRE_TAIL[i] ?? UNIT // BY INDEX: scaling "the last word" broke when #78 appended the gear words after Loss
+    expanded[i] = least + (view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535) * (most - least) // the uint16 tail is always finite
+  }
+  return expanded
+}
+
 // default_server is the conventional lobby URL on the page's own host — the
 // natural default when the Mochi server's operator also runs a world server.
 export function default_server(): string {
@@ -272,6 +313,182 @@ export async function world_chat(
   return (await response.json()) as { lines: WorldChatLine[]; sequence: number }
 }
 
+// WorldPoll is everything the server page shows, from one request: the
+// status, the match list and the lobby chat since a cursor.
+export interface WorldPoll {
+  status: WorldStatus
+  sessions: WorldSession[]
+  chat: { lines: WorldChatLine[]; sequence: number }
+}
+
+// Servers that answered the three separate reads when /poll failed: they
+// predate it, and are asked the old way from then on. An unknown path on such a
+// server answers without the CORS header, so the browser reports it as a
+// failed fetch, not a 404 - the separate reads succeeding is what tells it
+// apart from a server that is simply down.
+const unpolled = new Set<string>()
+
+// world_poll asks a server for its status, match list and chat since a cursor
+// in one read: the page's polls cost one read of the server's per-address
+// budget instead of three, so a household behind one address is not refused.
+// The pilot token makes it the offer heartbeat, as world_sessions is.
+export async function world_poll(
+  server: string,
+  game: string,
+  since: number,
+  signal?: AbortSignal,
+  pilot?: string
+): Promise<WorldPoll> {
+  if (!unpolled.has(server)) {
+    const query =
+      '/poll?game=' +
+      encodeURIComponent(game) +
+      '&since=' +
+      since +
+      (pilot ? '&pilot=' + encodeURIComponent(pilot) : '')
+    let response: Response
+    try {
+      response = await fetch(server + query, {
+        mode: 'cors',
+        signal: withTimeout(signal),
+      })
+    } catch (e) {
+      if (signal?.aborted) throw e
+      // No answer at all: an older server, or one that is down. The separate
+      // reads tell them apart, and fail with what is wrong when it is down.
+      const [status, sessions, chat] = await Promise.all([
+        world_status(server, signal),
+        world_sessions(server, game, signal, pilot),
+        world_chat(server, since, signal),
+      ])
+      unpolled.add(server)
+      return { status, sessions, chat }
+    }
+    // Any status at all is this server answering /poll: an error is the
+    // poll's, never a reason to ask three times over - a server refusing a
+    // rate-limited caller would be asked three times as often.
+    if (!response.ok) throw new Error('status ' + response.status)
+    const body = (await response.json()) as WorldPoll
+    return { ...body, sessions: body.sessions ?? [] }
+  }
+  const [status, sessions, chat] = await Promise.all([
+    world_status(server, signal),
+    world_sessions(server, game, signal, pilot),
+    world_chat(server, since, signal),
+  ])
+  return { status, sessions, chat }
+}
+
+// LobbyView is what one shared poll of a server has seen: its status and
+// match list (null and empty while it cannot be reached), the chat lines so
+// far (the newest hundred), and the failure of the last poll, if it failed.
+export interface LobbyView {
+  status: WorldStatus | null
+  sessions: WorldSession[]
+  lines: WorldChatLine[]
+  failure: unknown
+}
+
+export interface LobbyWatch {
+  refresh(): Promise<void> // poll now, after any poll already in flight
+  stop(): void
+}
+
+interface Lobby {
+  server: string
+  game: string
+  pilot?: string
+  cursor: number
+  view: LobbyView | null
+  listeners: Set<(view: LobbyView) => void>
+  controller: AbortController
+  pending: Promise<void> | null
+  timer: ReturnType<typeof setInterval> | null
+}
+
+// LOBBY_POLL is how often a watched server is polled.
+const LOBBY_POLL = 3000
+
+const lobbies = new Map<string, Lobby>()
+
+function lobby_pull(lobby: Lobby): Promise<void> {
+  if (lobby.pending) return lobby.pending
+  const signal = lobby.controller.signal
+  lobby.pending = world_poll(lobby.server, lobby.game, lobby.cursor, signal, lobby.pilot)
+    .then(
+      (poll) => {
+        if (signal.aborted) return
+        lobby.cursor = poll.chat.sequence
+        const before = lobby.view?.lines ?? []
+        const lines = poll.chat.lines.length ? [...before, ...poll.chat.lines].slice(-100) : before
+        lobby.view = { status: poll.status, sessions: poll.sessions, lines, failure: null }
+      },
+      (e: unknown) => {
+        if (signal.aborted) return
+        lobby.view = { status: null, sessions: [], lines: lobby.view?.lines ?? [], failure: e ?? new Error('unreachable') }
+      }
+    )
+    .finally(() => {
+      lobby.pending = null
+      if (signal.aborted || !lobby.view) return
+      for (const listener of lobby.listeners) listener(lobby.view)
+    })
+  return lobby.pending
+}
+
+// lobby_watch shares one poll of a server among everything on the page that
+// shows it - the match list and the lobby chat - so the page costs the server
+// one read every three seconds rather than one per panel per poll. The
+// listener is called with the view after every poll, and at once with the
+// last one if a poll has already answered. A pilot token makes the shared
+// poll this player's offer heartbeat.
+export function lobby_watch(
+  server: string,
+  game: string,
+  pilot: string | undefined,
+  listener: (view: LobbyView) => void
+): LobbyWatch {
+  const key = game + ' ' + server
+  let lobby = lobbies.get(key)
+  if (!lobby) {
+    lobby = {
+      server,
+      game,
+      cursor: 0,
+      view: null,
+      listeners: new Set(),
+      controller: new AbortController(),
+      pending: null,
+      timer: null,
+    }
+    lobbies.set(key, lobby)
+  }
+  const shared = lobby
+  if (pilot) shared.pilot = pilot
+  shared.listeners.add(listener)
+  if (shared.view) listener(shared.view)
+  if (!shared.timer) {
+    void lobby_pull(shared)
+    shared.timer = setInterval(() => void lobby_pull(shared), LOBBY_POLL)
+  }
+  let stopped = false
+  return {
+    refresh: () => {
+      if (stopped) return Promise.resolve()
+      return shared.pending ? shared.pending.then(() => lobby_pull(shared)) : lobby_pull(shared)
+    },
+    stop: () => {
+      if (stopped) return
+      stopped = true
+      shared.listeners.delete(listener)
+      if (shared.listeners.size) return
+      if (shared.timer) clearInterval(shared.timer)
+      shared.controller.abort()
+      lobbies.delete(key)
+    },
+  }
+}
+
 export async function world_say(
   server: string,
   name: string,
@@ -357,7 +574,7 @@ export interface InputSample {
   bypass: boolean // the ANTI SKID switch OFF (#114): a server that predates it reads nothing, and a sample without it keeps anti-skid on
   retract: boolean // the LAUNCH BAR switch at RETRACT (#127), sent on the wheels alone, where the crew could hook the jet up: a server that predates it reads nothing, and a sample without it keeps the crew's hook-up
   emergency: boolean // the gear handle turned and pulled: the emergency gear extension (#128)
-  mechanical: boolean // MECH ON (#116): the client judges when all electrical power is gone; a sample without it keeps the computers
+  mechanical: boolean // MECH ON (#116): false in a match, where the server models no electrical failure and ignores it (#30); a server that predates that would take it
   spin: boolean // the spin recovery switch at RCVY (#141): the flight computers engage the spin mode at 120 kt; a server that predates it reads nothing, and a sample without it keeps NORM
   uncooled: boolean // the IR COOL switch at OFF (#141): the heater's seeker has nothing, and a round leaves unguided; a sample without it keeps the seeker cooled
   wing: number // the EXT TANKS switches (#18): -1 STOP, 0 NORM, +1 ORIDE; a sample without them keeps the normal transfer
@@ -385,7 +602,7 @@ export interface InputSample {
   solo: boolean // this flare edge releases the flare alone - BYPASS, or a programme step without chaff (#107); a server that predates it drops a chaff bundle too
   extinguish: boolean // the FIRE EXTGH pushbutton, an edge: the bottle into the secured engine's bay
   onspeed: boolean // the pitch trim alone back to on-speed, an edge; a server that predates it leaves the trim where it was
-  reverted: boolean // mission computer 1 lost: the server's limiter drops its weight schedule and the stores' roll limit, as the client's has
+  reverted: boolean // mission computer 1 lost: false in a match, where the server models no such failure and ignores it (#30) - it dropped the limiter's weight schedule and the stores' roll limit for free
   held: number // wing fuel held at INHIBIT, kg; a server that predates it burns the wings' fuel with the rest
   status: Status // this aircraft's identification and link status, relayed to the session (mids.ts): a server that predates it reads nothing
   seeker: [number, number] | null // the 9M seeker's line while the helmet slaves it (helmet.ts pack: world azimuth and elevation, hundredths of a degree), else null; a server that predates it searches the nose cone
@@ -833,39 +1050,8 @@ export class Net {
       case 'snapshot': {
         const tick = Number(message.tick)
         if (!Number.isFinite(tick)) break
-        let core: Float64Array | null = null
-        const bytes = message.core as Uint8Array | undefined
-        if (
-          bytes instanceof Uint8Array &&
-          bytes.byteLength >= 456 + (SIZE - 57) * 2
-        ) {
-          // The wire core: 57 base words at full float64 precision, then the
-          // damage tail quantised to uint16 (unit-interval losses; the final
-          // word is shed mass at kg/8000) — full float64 burst the datagram
-          // MTU. Re-expand to the flight core's 106-word layout.
-          const expanded = new Float64Array(SIZE)
-          const view = new DataView(bytes.buffer, bytes.byteOffset)
-          let bad = false
-          for (let i = 0; i < 57; i++) {
-            const w = view.getFloat64(i * 8, true)
-            if (!Number.isFinite(w)) {
-              bad = true
-              break
-            } // a non-finite core word would poison the WASM prediction
-            expanded[i] = w
-          }
-          if (!bad) {
-            for (let i = 57; i < SIZE; i++) {
-              let v = view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535 // the uint16 tail is always finite
-              if (i === STATE.loss) v *= 8000 // Loss, kg — BY INDEX: scaling "the last word" broke when #78 appended the gear words after Loss (strut damage arrived x8000, Loss unscaled)
-              if (i === STATE.loss + 4) v = (v - 0.5) * 3 // Pitchwash, signed rad/s off the unit-interval wire mapping — BY INDEX for the same reason: "SIZE - 1" silently slid onto the roll-trim datum when buffet and bank were appended
-              if (i === STATE.wing || i === STATE.centre) v *= 8000 // external fuel, wing and centreline, kg — same scale as Loss
-              expanded[i] = v
-            }
-            core = expanded
-            this.cored = true
-          }
-        }
+        const core = wire_expand(message.core)
+        if (core) this.cored = true
         this.snapshots.push({
           at: performance.now(),
           tick,

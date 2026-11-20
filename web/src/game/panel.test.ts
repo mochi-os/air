@@ -783,8 +783,8 @@ describe('the fuel panel (#18)', () => {
     s.press('transfer.wing', 1); s.press('transfer.wing', 1)
     s.press('transfer.centre', -1); s.press('transfer.centre', -1)
     expect(s.transfer).toEqual({ wing: 1, centre: -1 })
-    expect(source).toMatch(/emergency:gear_emergency, mechanical:mechanical\(\), spin:spin_switch==="rcvy", transfer:\[transfer\.wing,transfer\.centre\],/)
-    expect(source).toMatch(/emergency:gear_emergency, mechanical:mechanical\(\), spin:spin_switch==="rcvy", uncooled:uncooled\(\), wing:transfer\.wing, centre:transfer\.centre,/)
+    expect(source).toMatch(/emergency:gear_emergency, mechanical:!MULTIPLAYER&&mechanical\(\), spin:spin_switch==="rcvy", transfer:\[transfer\.wing,transfer\.centre\],/)
+    expect(source).toMatch(/emergency:gear_emergency, mechanical:c\?c\.mechanical:false, spin:spin_switch==="rcvy", uncooled:uncooled\(\), wing:transfer\.wing, centre:transfer\.centre,/)
   })
 
   it('holds the wings\' fuel under INTR WING\'s INHIBIT and gives it back at NORM at the transfer rate', () => {

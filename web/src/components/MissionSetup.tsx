@@ -86,12 +86,13 @@ import {
 import { flight_catalog, flight_load } from '../game/flight'
 import {
   default_server,
+  lobby_watch,
   normalize_server,
-  world_chat,
   world_status,
   world_withdraw,
   world_say,
   type Join,
+  type LobbyWatch,
   type WorldChatLine,
 } from '../game/net'
 import {
@@ -1014,7 +1015,7 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   const [lounge, setLounge] = useState<WorldChatLine[]>([])
   const [error, setError] = useState('')
   const [up, setUp] = useState(true)
-  const cursor = useRef(0)
+  const watch = useRef<LobbyWatch | null>(null)
   const lineRef = useRef<HTMLInputElement>(null)
   const boxRef = useRef<HTMLDivElement>(null)
   // Whether the reader is parked on the newest line. Recorded when they SCROLL,
@@ -1033,28 +1034,19 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
     if (!matchMedia(TOUCH).matches) lineRef.current?.focus()
   }, [])
 
+  // The room is read through the poll the match list beside it shares: one
+  // read of the server a poll for the whole page.
   useEffect(() => {
-    cursor.current = 0
     setLounge([])
     stuck.current = true // a different server is a different room: start at its newest line
-    let alive = true
-    const pull = async () => {
-      try {
-        const reply = await world_chat(address, cursor.current)
-        if (!alive) return
-        cursor.current = reply.sequence
-        if (reply.lines.length)
-          setLounge((have) => [...have, ...reply.lines].slice(-100))
-        setUp(true)
-      } catch {
-        if (alive) setUp(false)
-      }
-    }
-    void pull()
-    const chatter = setInterval(pull, 3000)
+    const handle = lobby_watch(address, 'air', undefined, (view) => {
+      setUp(!view.failure)
+      setLounge(view.lines)
+    })
+    watch.current = handle
     return () => {
-      alive = false
-      clearInterval(chatter)
+      handle.stop()
+      if (watch.current === handle) watch.current = null
     }
   }, [address])
 
@@ -1074,12 +1066,8 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
       // asking to be shown it, but a send that failed must not drag the reader
       // off what they had scrolled back to.
       stuck.current = true
-      const reply = await world_chat(address, cursor.current)
-      cursor.current = reply.sequence
-      if (reply.lines.length)
-        setLounge((have) => [...have, ...reply.lines].slice(-100))
       setError('')
-      setUp(true)
+      await watch.current?.refresh()
     } catch (e) {
       setUp(false)
       setError(

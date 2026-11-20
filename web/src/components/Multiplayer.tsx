@@ -6,7 +6,7 @@
 // matches, join one or create your own. Creators choose match type, weather and
 // rules, carried as session parameters the world relays to every participant.
 // The standing "Furball" match is listed first.
-import { useCallback, useEffect, useId, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import { getErrorMessage } from '@mochi/web'
 import { Button } from '@mochi/web/components/ui/button'
@@ -30,11 +30,11 @@ import {
   default_server,
   normalize_server,
   supported,
+  lobby_watch,
   world_create,
-  world_sessions,
   world_withdraw,
-  world_status,
   type Join,
+  type LobbyWatch,
   type WorldSession,
   type WorldStatus,
   crossHost,
@@ -213,48 +213,31 @@ export function Multiplayer({
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
-  const refresh = useCallback(
-    async (signal?: AbortSignal) => {
-      try {
-        const [s, list] = await Promise.all([
-          world_status(address, signal),
-          world_sessions(address, 'air', signal, pilot),
-        ])
-        setStatus(s)
-        setSessions(list)
-        setError('')
-      } catch (e) {
-        if (signal?.aborted) return // unmounted or the address changed: don't clobber state with a stale failure
-        setStatus(null)
-        setSessions([])
-        setError(getErrorMessage(e, t`World server not reachable`))
-      }
-    },
-    [address, t, pilot]
-  )
-
-  // Poll while the panel is visible so the match list stays live. A single
-  // controller aborts in-flight requests on unmount or address change, and the
-  // in-flight guard stops a slow server from stacking overlapping refreshes.
+  // Watch the server while the panel is visible so the match list stays live.
+  // The poll is shared with the lobby chat beside it - one read of the server
+  // a poll for the whole page - and stopping the watch on unmount or an
+  // address change aborts what is in flight, so a stale failure never lands.
+  const watch = useRef<LobbyWatch | null>(null)
   useEffect(() => {
-    const controller = new AbortController()
-    let busy = false
-    const tick = async () => {
-      if (busy) return
-      busy = true
-      try {
-        await refresh(controller.signal)
-      } finally {
-        busy = false
-      }
-    }
-    void tick()
-    const timer = setInterval(() => void tick(), 5000)
+    const handle = lobby_watch(address, 'air', pilot, (view) => {
+      setStatus(view.status)
+      setSessions(view.sessions)
+      setError(
+        view.failure
+          ? getErrorMessage(view.failure, t`World server not reachable`)
+          : ''
+      )
+    })
+    watch.current = handle
     return () => {
-      clearInterval(timer)
-      controller.abort()
+      handle.stop()
+      if (watch.current === handle) watch.current = null
     }
-  }, [refresh])
+  }, [address, t, pilot])
+  const refresh = useCallback(
+    () => watch.current?.refresh() ?? Promise.resolve(),
+    []
+  )
 
   // enter gates every join on a cross-host check: if the lobby is redirecting
   // the game connection to a different host, confirm before dialling it.
