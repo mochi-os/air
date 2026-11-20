@@ -3648,9 +3648,9 @@ function hmd_line(){ const e=helmet.offset(hmd), ce=Math.cos(e.elevation);
 // so the direction is turned back by the error it reports its line of sight with - azimuth, elevation and
 // roll about the eye - before the eye's projection places it. Null behind the eye.
 const _hmd_e=new THREE.Euler(0,0,0,"YXZ"), _hmd_r=new THREE.Quaternion();
-function hmd_at(d){ const e=helmet.offset(hmd);
+function hmd_at(d,out){ const e=helmet.offset(hmd);
 	_hmd_r.setFromEuler(_hmd_e.set(e.elevation,-e.azimuth,-e.roll,"YXZ")).invert();
-	return proj_dir(_hmd_v.copy(d).applyQuaternion(_hmd_q.copy(camera.quaternion).invert()).applyQuaternion(_hmd_r).applyQuaternion(camera.quaternion)); }
+	return proj_dir(_hmd_v.copy(d).applyQuaternion(_hmd_q.copy(camera.quaternion).invert()).applyQuaternion(_hmd_r).applyQuaternion(camera.quaternion),out); }
 // hmd_blanked: BLNK boxed, and the helmet looking through the HUD's field - the glass in cockpit view, the HUD
 // view's own 25° - so the HUD's symbology is not drawn twice. Never while aligning, when its crosses must show
 // over the HUD's.
@@ -4707,8 +4707,14 @@ function known_newer(b){ for(let i=0;i<RADAR.bricks.length;i++){ const k=RADAR.b
 function own_team(){ return MULTIPLAYER&&net?(net.teams.get(net.slot)||""):""; }
 function status_of(slot){ return (MULTIPLAYER&&net&&net.statuses.get(slot))||mids.STANDING; }
 function link_sense(){ return { power:buses.ac&&fed(2,"b"), held:squawk.held, emission:emcon }; }
-function link_picture16(){ const mine=own_team(); if(!MULTIPLAYER||!net||!mine) return { members:[], donated:[] };
-	return mids.picture({ slot:net.slot, team:mine, receiving:mids.receiving(terminal,link_sense()) },[...net.teams.entries()].map(([slot,team])=>({ slot, team, sending:status_of(slot).link, tracks:status_of(slot).tracks }))); }
+// link_picture16's answer with no picture, and its reused arguments: known() only reads the answer, and mids.picture keeps neither argument.
+const LINK_NONE={ members:[], donated:[] }, _link_own={ slot:0, team:"", receiving:false }, _link_members=[];
+function link_picture16(){ const mine=own_team(); if(!MULTIPLAYER||!net||!mine) return LINK_NONE;
+	let n=0; for(const slot of net.teams.keys()){ const m=_link_members[n]||(_link_members[n]={ slot:0, team:"", sending:false, tracks:null }), status=status_of(slot);
+		m.slot=slot; m.team=net.teams.get(slot); m.sending=status.link; m.tracks=status.tracks; n++; }
+	_link_members.length=n;
+	_link_own.slot=net.slot; _link_own.team=mine; _link_own.receiving=mids.receiving(terminal,link_sense());
+	return mids.picture(_link_own,_link_members); }
 function overhead(from,of){ const up=of.up||world_up; return (from.x-of.pos.x)*up.x+(from.y-of.pos.y)*up.y+(from.z-of.pos.z)*up.z>0; }
 function identified(c,mine){ const st=remotes.get(c.id), theirs=status_of(c.id);
 	return !!mine&&c.team===mine&&!!st&&identification.challenging(squawk,{ power:buses.ac&&fed(2,"b"), emission:emcon })&&theirs.reply&&identification.facing(theirs.antenna,overhead(ownship.pos,st)); }
@@ -4781,28 +4787,34 @@ function link_draw(x,cy,R,hdg){ const p=link_picture(), five=link.five, quiet=ho
 // through a fixed 26° field about the nose in place of the HUD's camera, at the
 // glass's proportions - one degree the same on the ladder and in the layout, the
 // waterline datum 4° above the display's centre, the HUD's optical centre (item 2).
+// ddi_hud's fixed field and scratch (#201): the display's layout is a constant, and its projector writes
+// into an out as the HUD camera's does, so hud_pitch can lay the ladder on either.
+const DDI_PPD=512/26, DDI_CX=256, DDI_CY=256, DDI_WATERLINE=256-4*512/26, DDI_FOCAL=512/26/D2R;
+const DDI_BORE=[DDI_CX,DDI_WATERLINE], DDI_CENTRE=[DDI_CX,DDI_CY];
+const _ddi_path=new THREE.Vector3(), _ddi_marked=new THREE.Vector3(), _ddi_ladder=new THREE.Vector3(), _ddi_right=new THREE.Vector3();
+const _ddi_fpm=[0,0], _ddi_caged=[0,0], _ddi_marker=[0,0], _ddi_ghost=[0,0];
+// ddi_place: a perspective projection about the nose, as the HUD's camera makes; null behind it.
+function ddi_place(d,out){ const fwd=ownship.fwd, right=ownship.right, up=ownship.up, f=d.x*fwd.x+d.y*fwd.y+d.z*fwd.z; if(f<0.05) return null;
+	out=out||[0,0]; out[0]=DDI_CX+(d.x*right.x+d.y*right.y+d.z*right.z)/f*DDI_FOCAL; out[1]=DDI_WATERLINE-(d.x*up.x+d.y*up.y+d.z*up.z)/f*DDI_FOCAL; return out; }
 function ddi_hud(x){
-	const ppd=512/26, k=ppd/(HH/45), cx=256, cy=256, wly=cy-4*ppd, bore=[cx,wly], GREEN="#39e07a";   // k: the HUD layout's pixels onto the display's
-	const fwd=ownship.fwd, right=ownship.right, up=ownship.up, focal=ppd/D2R, pa=hud_landing();   // pa: the landing symbology, on the gear as the HUD's (item 13)
-	const place=(d)=>{ const f=d.x*fwd.x+d.y*fwd.y+d.z*fwd.z; if(f<0.05) return null;   // a perspective projection about the nose, as the HUD's camera makes
-		return [cx+(d.x*right.x+d.y*right.y+d.z*right.z)/f*focal, wly-(d.x*up.x+d.y*up.y+d.z*up.z)/f*focal]; };
-	const path=new THREE.Vector3(ownship.velx??ownship.vel_dir.x*ownship.speed,ownship.vely??ownship.vel_dir.y*ownship.speed,ownship.velz??ownship.vel_dir.z*ownship.speed).addScaledVector(fwd,Math.max(0,2-ownship.speed));   // the flight path as the HUD takes it, faded in from the nose over the first 2 m/s
+	const ppd=DDI_PPD, k=ppd/(HH/45), cx=DDI_CX, wly=DDI_WATERLINE, bore=DDI_BORE, GREEN="#39e07a";   // k: the HUD layout's pixels onto the display's
+	const fwd=ownship.fwd, right=ownship.right, up=ownship.up, focal=DDI_FOCAL, pa=hud_landing();   // pa: the landing symbology, on the gear as the HUD's (item 13)
+	const path=_ddi_path.set(ownship.velx??ownship.vel_dir.x*ownship.speed,ownship.vely??ownship.vel_dir.y*ownship.speed,ownship.velz??ownship.vel_dir.z*ownship.speed).addScaledVector(fwd,Math.max(0,2-ownship.speed));   // the flight path as the HUD takes it,
 	if(path.lengthSq()>1e-9) path.normalize(); else path.copy(fwd);
-	const limit=(q)=>{ const dx=q[0]-cx, dy=q[1]-cy, r=Math.hypot(dx,dy), rmax=8*ppd; return r>rmax?[[cx+dx/r*rmax,cy+dy/r*rmax],true]:[q,false]; };   // 8° about the optical centre (item 10)
 	const cage=master==="nav"?caged:!pa;
-	let fpm=place(path), fpm_limited=false, ghost=null, ghost_limited=false;
-	if(fpm){ const truth=fpm;
-		if(cage) fpm=[bore[0],truth[1]];
-		[fpm,fpm_limited]=limit(fpm);
-		if(cage&&Math.abs(truth[0]-bore[0])>2*ppd) [ghost,ghost_limited]=limit(truth); }
+	let fpm=ddi_place(path,_ddi_fpm), fpm_limited=false, ghost=null, ghost_limited=false;
+	if(fpm){ const truth=fpm;   // limited to 8° about the optical centre (item 10)
+		if(cage){ _ddi_caged[0]=bore[0]; _ddi_caged[1]=truth[1]; fpm=_ddi_caged; }
+		fpm_limited=hud_limit(fpm,DDI_CENTRE,8*ppd,_ddi_marker); fpm=_ddi_marker;
+		if(cage&&Math.abs(truth[0]-bore[0])>2*ppd){ ghost_limited=hud_limit(truth,DDI_CENTRE,8*ppd,_ddi_ghost); ghost=_ddi_ghost; } }
 	x.save(); x.beginPath(); x.rect(40,44,432,432); x.clip();   // the picture stays clear of the button bands
 	x.lineWidth=2; x.strokeStyle=GREEN; x.fillStyle=GREEN; x.textBaseline="middle";
-	{ const marked=fpm?new THREE.Vector3().copy(fwd).addScaledVector(right,(fpm[0]-cx)/focal).addScaledVector(up,-(fpm[1]-wly)/focal).normalize():path;   // the ladder hangs on the marker as drawn, as the HUD's does
-		const ladFwd=new THREE.Vector3(marked.x,0,marked.z);
+	{ const marked=fpm?_ddi_marked.copy(fwd).addScaledVector(right,(fpm[0]-cx)/focal).addScaledVector(up,-(fpm[1]-wly)/focal).normalize():path;   // the ladder hangs on the marker as drawn, as the HUD's does
+		const ladFwd=_ddi_ladder.set(marked.x,0,marked.z);
 		if(ladFwd.lengthSq()<0.0025) ladFwd.set(fwd.x,0,fwd.z);
-		if(ladFwd.lengthSq()>0.0025){ ladFwd.normalize(); hud_pitch(x,GREEN,place,ladFwd,new THREE.Vector3().crossVectors(ladFwd,world_up).normalize(),pa,k); } }
+		if(ladFwd.lengthSq()>0.0025){ ladFwd.normalize(); hud_pitch(x,GREEN,ddi_place,ladFwd,_ddi_right.crossVectors(ladFwd,world_up).normalize(),pa,k); } }
 	hud_symbols(x,GREEN,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,k);
-	if(law_active){ x.strokeStyle=GREEN; gpws_arrow(x,cx,cy,ppd,-Math.atan2(right.y,up.y)); }
+	if(law_active){ x.strokeStyle=GREEN; gpws_arrow(x,cx,DDI_CY,ppd,-Math.atan2(right.y,up.y)); }
 	let boxed=null, rng=1500, vc=0, ranged=false;
 	{ const dst=hud_target(); if(dst){ boxed=dst; const r=ranging(); if(r){ rng=r.range; vc=r.closure; ranged=true; } } }   // the ranging data, found as the HUD finds it
 	x.save(); x.translate(bore[0],bore[1]); x.scale(k,k); x.translate(0,4*HH/45);   // the layout's waterline datum onto the display's, at its degree
@@ -12564,8 +12576,8 @@ let HW=innerWidth, HH=innerHeight;
 function hud_resize(){ HW=innerWidth; HH=innerHeight; const dpr=Math.min(devicePixelRatio||1,2);
 	hud.width=HW*dpr; hud.height=HH*dpr; hud.style.width=HW+"px"; hud.style.height=HH+"px"; hctx.setTransform(dpr,0,0,dpr,0,0); }
 const _p=new THREE.Vector3();
-function proj_point(v){ _p.copy(v).project(camera); if(_p.z>1) return null; return [(_p.x*0.5+0.5)*HW,(-_p.y*0.5+0.5)*HH]; }
-function proj_into(v,out){ _p.copy(v).project(camera); if(_p.z>1) return null; out[0]=(_p.x*0.5+0.5)*HW; out[1]=(-_p.y*0.5+0.5)*HH; return out; }   // proj_point into out, for the paths that run every frame
+// proj_point: where a world point lands on the screen, into out when given (the paths that run every frame); null behind the eye.
+function proj_point(v,out){ _p.copy(v).project(camera); if(_p.z>1) return null; out=out||[0,0]; out[0]=(_p.x*0.5+0.5)*HW; out[1]=(-_p.y*0.5+0.5)*HH; return out; }
 // The combining glass, projected (#99): flight symbology in cockpit view lives ON
 // the glass — conformal pieces are clipped to this quad, instrument furniture is
 // scaled into it. Returns null when the glass is out of frame (head turned away).
@@ -12579,7 +12591,7 @@ function glass_rect(){ const at=ownship.group.userData.eye||{x:3.0,y:0.6};
 	// glareshield and the 2D overlay cannot be occluded by geometry. Written into the one record each frame.
 	const corners=_glass.corners, n=outline?outline.length:4; corners.length=n;
 	for(let i=0;i<n;i++){ const o=outline&&outline[i], x=o?o[2]:gx, y=o?o[1]:(i<2?gy+hh:gy-hh*0.42), z=o?o[0]:(i===0||i===3?-hw:hw);
-		if(!proj_into(body_offset(ownship,x,y,z,_glass_point),corners[i]||(corners[i]=[0,0]))) return null; }
+		if(!proj_point(body_offset(ownship,x,y,z,_glass_point),corners[i]||(corners[i]=[0,0]))) return null; }
 	let rcx=0, rcy=0, xlo=Infinity, xhi=-Infinity;
 	for(const c of corners){ rcx+=c[0]; rcy+=c[1]; if(c[0]<xlo)xlo=c[0]; if(c[0]>xhi)xhi=c[0]; }
 	rcx/=corners.length; rcy/=corners.length;
@@ -12591,7 +12603,8 @@ function glass_clip(g){ hctx.beginPath(); hctx.moveTo(g.corners[0][0],g.corners[
 	for(let i=1;i<g.corners.length;i++) hctx.lineTo(g.corners[i][0],g.corners[i][1]); hctx.closePath();
 	if(GLASS_DEBUG){ hctx.save(); hctx.strokeStyle="#ff40ff"; hctx.lineWidth=2; hctx.stroke(); hctx.restore(); }
 	hctx.clip(); }
-function proj_dir(d){ _p.copy(camera.position).addScaledVector(d,1000).project(camera); if(_p.z>1) return null; return [(_p.x*0.5+0.5)*HW,(-_p.y*0.5+0.5)*HH]; }
+// proj_dir: where a world direction lands on the screen, into out when given, as proj_point.
+function proj_dir(d,out){ _p.copy(camera.position).addScaledVector(d,1000).project(camera); if(_p.z>1) return null; out=out||[0,0]; out[0]=(_p.x*0.5+0.5)*HW; out[1]=(-_p.y*0.5+0.5)*HH; return out; }
 // hud_field: the HUD's field on the screen - the glass in the pit, the window in the HUD view - as its outline
 // and each edge's inward normal; hud_room: how far q lies inside it, negative outside.
 // draw_hud takes it once a frame, beside glass_rect, into the one list of edges.
@@ -12605,22 +12618,25 @@ function hud_field(glass){ const outline=glass?glass.corners:_window;
 		e.a=a; e.nx=-ey/l*side; e.ny=ex/l*side; }
 	return _field; }
 function hud_room(q,field){ let room=Infinity; for(const e of field) room=Math.min(room,(q[0]-e.a[0])*e.nx+(q[1]-e.a[1])*e.ny); return room; }
-const _hud_eye=new THREE.Vector3();   // hud_edge's line from the eye
+const _hud_eye=new THREE.Vector3(), _hud_edge_at=[0,0];   // hud_edge's line from the eye, and the point's projection
 // hud_edge: where the HUD draws a symbol of radius r for the world point p. While p projects inside the field,
 // at its projection; off it, or behind the eye, limited: on the line from the boresight toward it, as far out
 // as keeps the symbol on the glass, which is where the 9M's seeker circle and TD box go, flashing.
-function hud_edge(p,bore,field,r){
-	const at=proj_point(p);
-	if(at&&hud_room(at,field)>=0) return { at, limited:false };
+function hud_edge(p,bore,field,r,out){
+	const at=proj_point(p,_hud_edge_at);
+	if(at&&hud_room(at,field)>=0){ out.at[0]=at[0]; out.at[1]=at[1]; out.limited=false; return out; }
 	let ux, uy;
 	if(at){ ux=at[0]-bore[0]; uy=at[1]-bore[1]; }
 	else { const cs=_hud_eye.subVectors(p,camera.position).applyQuaternion(_q.copy(camera.quaternion).invert()); ux=cs.x; uy=-cs.y; }
-	const length=Math.hypot(ux,uy); if(length<1e-6) return { at:bore, limited:true };
+	const length=Math.hypot(ux,uy); if(length<1e-6){ out.at[0]=bore[0]; out.at[1]=bore[1]; out.limited=true; return out; }
 	ux/=length; uy/=length;
 	let reach=Infinity;
 	for(const e of field){ const toward=ux*e.nx+uy*e.ny; if(toward<0) reach=Math.min(reach,((bore[0]-e.a[0])*e.nx+(bore[1]-e.a[1])*e.ny-r)/-toward); }
 	reach=Math.max(0,Number.isFinite(reach)?reach:0);
-	return { at:[bore[0]+ux*reach,bore[1]+uy*reach], limited:true }; }
+	out.at[0]=bore[0]+ux*reach; out.at[1]=bore[1]+uy*reach; out.limited=true; return out; }
+// draw_hud's projected points, one scratch each so no two in use at once share one (#201)
+const _hud_bore=[0,0], _hud_optical=[0,0], _hud_fpm_raw=[0,0], _hud_diamond=[0,0], _hud_td=[0,0], _hud_amraam=[0,0], _hud_pip=[0,0], _hud_round_at=[0,0], _hud_cross=[0,0];
+const _hud_box_edge={ at:[0,0], limited:false }, _hud_seeker_edge={ at:[0,0], limited:false }, _hud_resting={ at:null, limited:false };
 let GR="#15b85f"; const AM="#ffc14d";   // GR switches to a brighter daytime green in draw_hud (real HUDs have a brightness knob)
 
 // ---- full-screen map (the map key): the islands, the airports, the carrier and the pilot's picture - every
@@ -12758,7 +12774,8 @@ function baro_update(){ const baro=(ownship.altitude??ownship.pos.y)*3.28084+bar
 	if(baro>=10000) baro_armed=true;
 	else if(baro_armed){ baro_armed=false; if(knots<300){ baro_shown=glance; baro_flash=true; } }
 	if(baro_set!==baro_last){ baro_last=baro_set; baro_shown=glance; baro_flash=false; } }
-function dir_at(headFwd, rightH, yawRad, pitchRad){ const d=headFwd.clone().applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
+// dir_at: headFwd turned by yawRad about the vertical and pitchRad about rightH, into out when given.
+function dir_at(headFwd, rightH, yawRad, pitchRad, out){ const d=(out?out.copy(headFwd):headFwd.clone()).applyAxisAngle(world_up,yawRad); d.applyAxisAngle(rightH,pitchRad); return d; }
 // score_text: a teams match's running total for one side, in the pilot's language and number format. The
 // map and the HUD view's stack both write it.
 function score_text(team){ const score=figure((team==="red"?net.score.red:net.score.blue)||0,0);
@@ -13160,7 +13177,7 @@ function draw_hud(){
 	trim_manual=trim_law();
 	const pa=hud_landing();                       // landing symbology gate
 	let fpm=null;
-	const bore=proj_dir(ownship.fwd)||[cx,cy];   // boresight on screen: the NOSE, in both first-person views. The HUD view used the screen centre, which is where the HEAD looks, and the head holds where the arrows or a drag left it - so a look 12° up put the limit ring, the cage and the gun cross on the head, and a level flight path 13° under it was clamped to the ring and flashed (#35). Shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
+	const bore=proj_dir(ownship.fwd,_hud_bore)||(_hud_bore[0]=cx,_hud_bore[1]=cy,_hud_bore);   // boresight on screen: the NOSE, in both first-person views. The HUD view used the screen centre, which is where the HEAD looks, and the head holds where the arrows or a drag left it - so a look 12° up put the limit ring, the cage and the gun cross on the head, and a level flight path 13° under it was clamped to the ring and flashed (#35). Shared by the conformal block AND the A/A weapon block below (was const inside the former: the 9M seeker threw and killed the frame loop)
 	if(glass){ hctx.save(); glass_clip(glass); }
 	if(flight_symbols){ hctx.globalAlpha=sym;
 	// ---- velocity vector, limited to an 8° circle about the HUD optical centre
@@ -13178,9 +13195,9 @@ function draw_hud(){
 	// more than 2° away, limited and flashing like the marker. NAV cages on the
 	// key; the A/A masters are always caged (ED manual: "In A/A it is always
 	// caged"); the landing symbology never is.
-	const centre=proj_dir(_hud_centre.copy(ownship.fwd).multiplyScalar(Math.cos(4*D2R)).addScaledVector(ownship.up,-Math.sin(4*D2R)))||bore;   // the optical centre, 4° down the airframe from the nose, so it banks with the jet
+	const centre=proj_dir(_hud_centre.copy(ownship.fwd).multiplyScalar(Math.cos(4*D2R)).addScaledVector(ownship.up,-Math.sin(4*D2R)),_hud_optical)||bore;   // the optical centre, 4° down the airframe from the nose, so it banks with the jet
 	const cage=master==="nav"?caged:!pa;
-	fpm=proj_dir(path);
+	fpm=proj_dir(path,_hud_fpm_raw);
 	let fpm_limited=false, ghost=null, ghost_limited=false;
 	if(fpm){ const truth=fpm;
 		if(cage){ _hud_caged[0]=bore[0]; _hud_caged[1]=truth[1]; fpm=_hud_caged; }
@@ -13194,11 +13211,11 @@ function draw_hud(){
 	if(ladFwd.lengthSq()<0.0025) ladFwd.set(ownship.fwd.x,0,ownship.fwd.z);   // near-vertical flight: fall back to the nose azimuth
 	if(ladFwd.lengthSq()>0.0025){ ladFwd.normalize(); const rightH=_hud_level_right.crossVectors(ladFwd,world_up).normalize();   // fwd × up = out the RIGHT wing (up × fwd pointed left and inverted the ladder)
 		if(DEV_MODE){ hud_ladder.axis=[]; for(let q=-60;q<=60;q+=0.5){ const P=proj_dir(dir_at(ladFwd,rightH,0,q*D2R)); if(P) hud_ladder.axis.push(P); } }   // dev: the ladder's centre line on screen, so a probe can check the marker sits on it
-		{ const horizon=hud_pitch(hctx,GR,proj_dir,ladFwd,rightH,pa,hs); if(horizon) hud_ladder.horizon=horizon; } }
+		{ const horizon=hud_pitch(hctx,GR,proj_dir,ladFwd,rightH,pa,hs); if(horizon){ const h=hud_ladder.horizon||(hud_ladder.horizon=[0,0]); h[0]=horizon[0]; h[1]=horizon[1]; } } }   // its own copy: hud_pitch hands back a scratch the DDI's repeat reuses
 
 	if(fpm){ hud_ladder.marker=fpm; hud_ladder.limited=fpm_limited; hud_ladder.bore=bore; hud_ladder.caged=cage; hud_ladder.ghost=ghost; }   // dev: where the marker was drawn, for the probes
 	hud_symbols(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs);
-	if(master==="nav"){ const sight=designation_line(), at=sight?proj_dir(sight):null;   // the target diamond on the designated point's line of sight (24.2.10)
+	if(master==="nav"){ const sight=designation_line(), at=sight?proj_dir(sight,_hud_diamond):null;   // the target diamond on the designated point's line of sight (24.2.10)
 		if(at){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.moveTo(at[0],at[1]-8*hs); hctx.lineTo(at[0]+8*hs,at[1]); hctx.lineTo(at[0],at[1]+8*hs); hctx.lineTo(at[0]-8*hs,at[1]); hctx.closePath(); hctx.stroke(); } }
 	if(law_active){ hctx.strokeStyle=GR; gpws_arrow(hctx,centre[0],centre[1],HH/45*hs,-Math.atan2(ownship.right.y,ownship.up.y)); }   // the GPWS recovery arrow (NATOPS 2.17.5.3)
 	hctx.globalAlpha=1; }
@@ -13224,8 +13241,8 @@ function draw_hud(){
 	const heat_shown=_heat_shown; heat_shown.shoot=heat_lit(lockon,brk,cue);
 	if(flight_symbols&&master!=="nav"&&!pa){ if(glass){ hctx.save(); glass_clip(glass); } hctx.globalAlpha=sym;
 	const blink=(glance*5)%2<1;   // the 9M's limited symbols flash at its SHOOT cue's rate
-	const edge=boxed?hud_edge(boxed.pos,bore,field,14*hs):null;   // edge.limited: he is off the HUD's field
-	const td=boxed?proj_point(boxed.pos):null;   // his projection, which the gun's director needs on the HUD or off it
+	const edge=boxed?hud_edge(boxed.pos,bore,field,14*hs,_hud_box_edge):null;   // edge.limited: he is off the HUD's field
+	const td=boxed?proj_point(boxed.pos,_hud_td):null;   // his projection, which the gun's director needs on the HUD or off it
 	const box=edge?(edge.limited?(master==="9m"&&blink?edge.at:null):edge.at):null;   // with the 9M the box is limited to the field's edge and flashes; otherwise the field takes it
 	if(box){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.strokeRect(box[0]-14*hs,box[1]-14*hs,28*hs,28*hs); }   // the target designator box — the real (monochrome green) marking, both views
 	if(master==="120c"&&edge&&attack_cue().shoot){   // the AMRAAM's SHOOT over the TD box (the AVM AIM-120 guide), at the field's edge with the box while he is off it, under it against the top
@@ -13241,7 +13258,7 @@ function draw_hud(){
 			hctx.beginPath(); hctx.moveTo(bore[0]+ux*18*hs,bore[1]+uy*18*hs); hctx.lineTo(bore[0]+ux*70*hs,bore[1]+uy*70*hs); hctx.stroke(); hctx.lineWidth=1.5;
 			hctx.fillStyle=GR; hctx.font=(12*hs).toFixed(1)+"px 'Hornet Display', monospace"; hctx.textAlign="center";   // i18n-format-ok: a CSS font size
 			hctx.fillText(String(Math.round(off)),bore[0]+ux*84*hs,bore[1]+uy*84*hs+4*hs); } }
-	if(amraam_field()){ const c=proj_dir(ownship.fwd);   // the AIM-120's field of view, dashed, about the boresight
+	if(amraam_field()){ const c=proj_dir(ownship.fwd,_hud_amraam);   // the AIM-120's field of view, dashed, about the boresight
 		if(c){ hctx.strokeStyle=GR; hctx.setLineDash([8*hs,6*hs]); hctx.beginPath(); hctx.arc(c[0],c[1],VISUAL/D2R*ppd,0,Math.PI*2); hctx.stroke(); hctx.setLineDash([]); } }
 	if(master==="gun"){
 		if(boxed&&td){   // director: a TRUE lead-computing pipper now that rounds fly real time of flight — where my rounds will be, pulled back by where HE will be, so pipper-on-target IS the deflection solution (mirrors battle.Burst exactly); range analog around the ring
@@ -13257,7 +13274,7 @@ function draw_hud(){
 				{x:(boxed.velx??boxed.fwd.x*boxed.speed)-mw.x,y:(boxed.vely??boxed.fwd.y*boxed.speed)-mw.y,z:(boxed.velz??boxed.fwd.z*boxed.speed)-mw.z},
 				ownship.pos.y);
 			const impact=solution.point, t=solution.seconds;   // t: the round's time of flight, which the developer decomposition below reads — it was a local of the inline solution this replaced, and referencing it undeclared threw on the first HUD frame of every developer-mode match (2026-08-18)
-			const pip=proj_point(impact);
+			const pip=proj_point(impact,_hud_pip);
 			if(DEV_MODE&&pip){ const bvy=(boxed.vely??boxed.fwd.y*boxed.speed);
 				dev_pip={py:Math.round(pip[1]),by:Math.round(bore[1]),t:+t.toFixed(2),rng:Math.round(rng),bvy:Math.round(bvy),   // i18n-format-ok: canvas-drawn numeric readout; useFormat is a React hook and this is the render loop
 					pullY:Math.round(-bvy*t),gravY:-Math.round(0.5*9.8*t*t),ownY:Math.round(ownship.vel_dir.y*ownship.speed*t)}; }   // decomposition of the vertical impact terms — which one lifts the pipper
@@ -13287,7 +13304,7 @@ function draw_hud(){
 			const l=round_length(ownship.pos.y), muz=body_offset(ownship,6.0,0.35,0.0,_hud_muzzle);   // the same for every range
 			for(let r=250;r<=1400;r+=115){ const t=(l/muzzle)*Math.expm1(r/l);
 				const at=_hud_round.copy(muz).addScaledVector(ownship.fwd,muzzle*t).addScaledVector(ownship.vel_dir,ownship.speed*t); at.y-=0.5*9.8*t*t;
-				const pp=proj_point(at); if(!pp) continue;
+				const pp=proj_point(at,_hud_round_at); if(!pp) continue;
 				const halfw=Math.atan(5.7/r)*ppd*57.29578;   // half the 11.4 m span at that range, in screen pixels
 				rails[0].push([pp[0]-halfw,pp[1]]); rails[1].push([pp[0]+halfw,pp[1]]); }
 			for(const rail of rails){ if(rail.length<2) continue; hctx.beginPath(); hctx.moveTo(rail[0][0],rail[0][1]);
@@ -13296,7 +13313,7 @@ function draw_hud(){
 	if(master==="9m"&&seeker_now.line){   // a seeker aboard to draw: none once the last round has gone (seeker_aboard)
 		const seeker=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;   // the 5° seeker circle, smaller once uncaged and tracking (the DCS guide)
 		const look=lockon?quarry.pos:seeker_now.line?_seek_look.copy(camera.position).addScaledVector(seeker_now.line,1000):null;   // a seeker with tone looks at its heat, boxed or not; without, along its line - the radar's target, the helmet's or the nose
-		const spot=look?hud_edge(look,bore,field,seeker):{ at:bore, limited:false }, at=spot.at;   // off the HUD's field the circle is limited to its edge and flashes
+		const spot=look?hud_edge(look,bore,field,seeker,_hud_seeker_edge):(_hud_resting.at=bore,_hud_resting), at=spot.at;   // off the HUD's field the circle is limited to its edge and flashes
 		const worn=hmd_seeker();   // the helmet carries the circle and its SHOOT while it works (2.21.15 to 2.21.17)
 		if(!worn&&(!spot.limited||blink)){ hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(at[0],at[1],seeker,0,Math.PI*2); hctx.stroke(); }
 		// the seeker circle and growl are what tone alone earns. Recorder Cue
@@ -13391,10 +13408,10 @@ function draw_hud(){
 	// cross 1.4° across at the line of sight the helmet reports, flashing at the edge of the HUD's field when
 	// the pilot looks outside it (2.21.12.4, figure 2-58).
 	if(flight_symbols&&helmet.ready(hmd)){ if(glass){ hctx.save(); glass_clip(glass); } hctx.globalAlpha=sym; hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.lineWidth=1.5;
-		if(hmd.mode){ const c=proj_dir(ownship.fwd); if(c) alignment_cross(c[0],c[1],ppd); }
+		if(hmd.mode){ const c=proj_dir(ownship.fwd,_hud_cross); if(c) alignment_cross(c[0],c[1],ppd); }
 		else { const line=hmd_line(), off=Math.acos(THREE.MathUtils.clamp(line.dot(ownship.fwd),-1,1)), limit=10*D2R;   // the HUD's field, taken as 10° about the boresight
-			if(off<=limit){ const p=proj_dir(line); if(p) hud_plus(p[0],p[1],0.7*ppd); }
-			else if((glance*4)%2<1){ const toward=_hud_toward.copy(line).addScaledVector(ownship.fwd,-line.dot(ownship.fwd)).normalize(), p=proj_dir(_hud_edge_line.copy(ownship.fwd).multiplyScalar(Math.cos(limit)).addScaledVector(toward,Math.sin(limit)));
+			if(off<=limit){ const p=proj_dir(line,_hud_cross); if(p) hud_plus(p[0],p[1],0.7*ppd); }
+			else if((glance*4)%2<1){ const toward=_hud_toward.copy(line).addScaledVector(ownship.fwd,-line.dot(ownship.fwd)).normalize(), p=proj_dir(_hud_edge_line.copy(ownship.fwd).multiplyScalar(Math.cos(limit)).addScaledVector(toward,Math.sin(limit)),_hud_cross);
 				if(p) hud_plus(p[0],p[1],0.7*ppd); } }
 		hctx.globalAlpha=1; if(glass) hctx.restore(); }
 	if(cfg.view==="hud"||cfg.view==="cockpit") draw_hmd(glass,pa,boxed,vc,ranged?rng:null,heat_shown);
@@ -13449,7 +13466,7 @@ function draw_hud(){
 	// with the team score, so nothing can land on top of a caution.
 	hctx.textAlign="left"; hctx.font="13px 'Hornet Display', monospace";
 	if(!authentic&&(comms.length||(hint_rows&&(cfg.hints!==false||playback)))){   // the radio/chat log (#84): top-left, scrolling, fading — game furniture, never in the authentic cockpit. Single player too since the Case III radio script (#205)
-		const cnow=performance.now(); comms=comms.filter(c=>c.until>cnow);
+		const cnow=performance.now(); { let kept=0; for(let i=0;i<comms.length;i++){ const c=comms[i]; if(c.until>cnow) comms[kept++]=c; } comms.length=kept; }   // in place, not a new list each frame
 		hctx.save(); hctx.textAlign="left"; hctx.font="15px ui-monospace, SFMono-Regular, Menlo, monospace";
 		let cy=128;
 		if(hint_rows&&(cfg.hints!==false||playback)){ hctx.globalAlpha=1;   // a replay's hints are off, and its coaching is the recording's   // the coaching slot (#70): no fade — it stands until the next hint replaces it
@@ -13866,14 +13883,14 @@ function draw_hmd(glass,pa,boxed,vc,rng,heat){
 		if(hmd.priority){ hctx.beginPath(); hctx.arc(cx,cy,Math.max(1.5,0.12*ppd),0,Math.PI*2); hctx.fill(); } }
 	if(set==="one"||!shown){ hctx.restore(); return; }   // MC1's backup carries neither the L&S nor the AIM-9's line of sight
 	const box=boxed?_hmd_box.set((boxed.pos.x-ownship.pos.x),boxed.pos.y-ownship.pos.y,(boxed.pos.z-ownship.pos.z)).normalize():null, point=master==="nav"?designation_line():null;
-	if(box){ const at=hmd_mark(box,false,cx,cy,ppd,ppdv,R);
+	if(box){ const at=hmd_mark(box,false,cx,cy,ppd,ppdv,R,_hmd_box_at);
 		if(master==="120c"&&!blanked&&attack_cue().shoot){ hctx.font="18px 'Hornet Display', monospace"; hctx.fillText("SHOOT",at[0],at[1]-26*hud_scale()); hud_shoot=true; } }   // the AMRAAM's over the helmet's box, as on the HUD; through the HUD, the HUD's
-	if(point) hmd_mark(point,true,cx,cy,ppd,ppdv,R);
+	if(point) hmd_mark(point,true,cx,cy,ppd,ppdv,R,_hmd_point_at);
 	if(box||point) hmd_locator(box||point,sight,cx,cy,ppd);   // the L&S's alone with both (2.21.14)
-	if(master==="9m"&&!pa&&seeker_now.line){ const at=hmd_at(seeker_now.line), r=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;   // the AIM-9's field of view, where the seeker looks, smaller once it tracks
+	if(master==="9m"&&!pa&&seeker_now.line){ const at=hmd_at(seeker_now.line,_hmd_seeker_at), r=(seeker_track?helmet.TRACK:helmet.SEEKER)/D2R*ppd;   // the AIM-9's field of view, where the seeker looks, smaller once it tracks
 		if(at){ hctx.beginPath(); hctx.arc(at[0],at[1],r,0,Math.PI*2); hctx.stroke();
 			if(heat&&heat.shoot){ hctx.font="16px 'Hornet Display', monospace"; hctx.fillText("SHOOT",at[0],at[1]-r-16); hud_shoot=true; } } }   // over the circle, as on the HUD
-	if(!pa&&amraam_field()&&helmet.shown(hmd,"SP/AMR FOV")){ const at=hmd_at(ownship.fwd);   // the AIM-120's field of view, as on the HUD (the DCS guide)
+	if(!pa&&amraam_field()&&helmet.shown(hmd,"SP/AMR FOV")){ const at=hmd_at(ownship.fwd,_hmd_amraam_at);   // the AIM-120's field of view, as on the HUD (the DCS guide)
 		if(at){ hctx.setLineDash([6,5]); hctx.beginPath(); hctx.arc(at[0],at[1],VISUAL/D2R*ppd,0,Math.PI*2); hctx.stroke(); hctx.setLineDash([]); } }
 	if(!blanked&&RADAR.auto&&(RADAR.acm==="hacq"||RADAR.acm==="lacq")){ hctx.setLineDash([6,5]); hctx.beginPath(); hctx.arc(cx,cy,helmet.ACQUIRE/D2R*ppd,0,Math.PI*2); hctx.stroke(); hctx.setLineDash([]); }   // the acquisition reticle
 	hctx.restore(); }
@@ -13891,17 +13908,19 @@ function hmd_shift(sight,cy,tape,unit){ const e=Math.asin(THREE.MathUtils.clamp(
 	return THREE.MathUtils.clamp(e/(30*D2R),0,1)*Math.max(0,cy-tape-32-0.95*unit); }
 // hmd_toward: the way to a world direction across the helmet display, a unit screen vector from its centre,
 // in the frame the helmet believes it has - for a direction outside the field or behind the eye.
+// The helmet's scratch, one per point drawn in a frame; hmd_toward's answer is a scratch every caller takes apart at once.
+const _hmd_toward=[0,0], _hmd_box_at=[0,0], _hmd_point_at=[0,0], _hmd_seeker_at=[0,0], _hmd_amraam_at=[0,0], _hmd_high_at=[0,0], _hmd_low_at=[0,0], _hmd_low_line=new THREE.Vector3();
 function hmd_toward(to){ const c=_hmd_v.copy(to).applyQuaternion(_hmd_q.copy(camera.quaternion).invert()), e=helmet.offset(hmd);
 	const az=Math.atan2(c.x,-c.z)-e.azimuth, el=Math.atan2(c.y,Math.hypot(c.x,c.z))-e.elevation, cr=Math.cos(-e.roll), sr=Math.sin(-e.roll);
 	const x=az*cr+el*sr, y=az*sr-el*cr, l=Math.hypot(x,y)||1;
-	return [x/l,y/l]; }
+	_hmd_toward[0]=x/l; _hmd_toward[1]=y/l; return _hmd_toward; }
 // hmd_mark: the TD box, or the designation's diamond, on a world direction where the helmet believes it lies,
 // held at the edge of the field nearest it while it lies outside (the DCS guide). Held there it flashes, as the
 // HUD's held box does with the 9M: steady, a mark is on its object; flashing, it only points the way, and two
 // steady boxes, the HUD's on the jet and the helmet's at its edge, left the pilot unable to tell which held him.
-function hmd_mark(to,diamond,cx,cy,ppd,ppdv,R){ const s=(diamond?8:14)*hud_scale(), edge=R-1.5*s;   // the HUD's own box and diamond size (14*hs, 8*hs), so through the HUD the two marks coincide at every field and zoom; sized by ppd/ppdv, they matched only at the 45° field
-	let at=hmd_at(to);
-	if(!at||Math.hypot(at[0]-cx,at[1]-cy)>edge){ const [ux,uy]=hmd_toward(to); at=[cx+ux*edge,cy+uy*edge];
+function hmd_mark(to,diamond,cx,cy,ppd,ppdv,R,out){ const s=(diamond?8:14)*hud_scale(), edge=R-1.5*s;   // the HUD's own box and diamond size (14*hs, 8*hs), so through the HUD the two marks coincide at every field and zoom; sized by ppd/ppdv, they matched only at the 45° field
+	let at=hmd_at(to,out);
+	if(!at||Math.hypot(at[0]-cx,at[1]-cy)>edge){ const [ux,uy]=hmd_toward(to); out[0]=cx+ux*edge; out[1]=cy+uy*edge; at=out;
 		if((glance*5)%2>=1) return at; }
 	if(!diamond){ hctx.strokeRect(at[0]-s,at[1]-s,2*s,2*s); return at; }
 	hctx.beginPath(); hctx.moveTo(at[0],at[1]-s); hctx.lineTo(at[0]+s,at[1]); hctx.lineTo(at[0],at[1]+s); hctx.lineTo(at[0]-s,at[1]); hctx.closePath(); hctx.stroke(); return at; }
@@ -13928,8 +13947,8 @@ function hmd_alignment(cx,cy,ppd){
 	hctx.save(); hctx.strokeStyle=GR; hctx.fillStyle=GR; hctx.lineWidth=1.5; hctx.setLineDash([]); hctx.textAlign="center"; hctx.font="13px 'Hornet Display', monospace";
 	const plus=(x,y,a)=>{ hctx.beginPath(); hctx.moveTo(x-a,y); hctx.lineTo(x+a,y); hctx.moveTo(x,y-a); hctx.lineTo(x,y+a); hctx.stroke(); };
 	if(hmd.mode==="coarse"){ alignment_cross(cx,cy-helmet.RAISED/D2R*ppd,ppd); hctx.fillText(helmet.message(hmd),cx,cy+6*ppd); }
-	else { const high=hmd_at(ownship.fwd), low=hmd_at(new THREE.Vector3().copy(ownship.fwd).applyAxisAngle(ownship.right,-4.3*D2R));
-		for(const p of [high,low]) if(p) plus(p[0],p[1],0.95*ppd);
+	else { const high=hmd_at(ownship.fwd,_hmd_high_at), low=hmd_at(_hmd_low_line.copy(ownship.fwd).applyAxisAngle(ownship.right,-4.3*D2R),_hmd_low_at);
+		if(high) plus(high[0],high[1],0.95*ppd); if(low) plus(low[0],low[1],0.95*ppd);
 		hctx.fillText(helmet.message(hmd),cx,cy+6*ppd);
 		if(helmet.confirmed(hmd)) hctx.fillText("ALIGN OK",cx,cy+7.5*ppd); }
 	hctx.restore(); }
@@ -13952,16 +13971,18 @@ function hmd_pattern(k,cx,cy,ppd){ const d=ppd, line=(x1,y1,x2,y2)=>{ hctx.begin
 // and the figures, and the zenith and nadir. proj_dir places a direction: the
 // HUD's camera, or the DDI's fixed field. Returns where the horizon bar's centre
 // was drawn, or null.
+// hud_pitch's scratch: its projector (the HUD camera's or the DDI's) takes an out.
+const _pitch_dir=new THREE.Vector3(), _pitch_z=[0,0], _pitch_left=[0,0], _pitch_right=[0,0], _pitch_horizon=[0,0];
 function hud_pitch(hctx,GR,proj_dir,ladFwd,rightH,pa,hs){ let horizon=null;
 	for(let p=-90;p<=90;p+=5){ const pr=p*D2R;
-		if(Math.abs(p)===90){ const Z=proj_dir(dir_at(ladFwd,rightH,0,pr)); if(!Z) continue;   // zenith circle; nadir circle with an X
+		if(Math.abs(p)===90){ const Z=proj_dir(dir_at(ladFwd,rightH,0,pr,_pitch_dir),_pitch_z); if(!Z) continue;   // zenith circle; nadir circle with an X
 			hctx.strokeStyle=GR; hctx.setLineDash([]); hctx.beginPath(); hctx.arc(Z[0],Z[1],7*hs,0,Math.PI*2); hctx.stroke();
 			if(p<0){ const q=5*hs; hctx.beginPath(); hctx.moveTo(Z[0]-q,Z[1]-q); hctx.lineTo(Z[0]+q,Z[1]+q); hctx.moveTo(Z[0]+q,Z[1]-q); hctx.lineTo(Z[0]-q,Z[1]+q); hctx.stroke(); }
 			continue; }
 		const wide=(p===0&&pa)?20:(p===0?12:5.2);   // the horizon bar extends in the landing configuration (NATOPS)
-		const L=proj_dir(dir_at(ladFwd,rightH,wide*D2R,pr)), R=proj_dir(dir_at(ladFwd,rightH,-wide*D2R,pr)); if(!L||!R) continue;
+		const L=proj_dir(dir_at(ladFwd,rightH,wide*D2R,pr,_pitch_dir),_pitch_left), R=proj_dir(dir_at(ladFwd,rightH,-wide*D2R,pr,_pitch_dir),_pitch_right); if(!L||!R) continue;
 		const midx=(L[0]+R[0])/2, midy=(L[1]+R[1])/2;
-		if(p===0) horizon=[midx,midy];
+		if(p===0){ _pitch_horizon[0]=midx; _pitch_horizon[1]=midy; horizon=_pitch_horizon; }
 		const ang=Math.atan2(R[1]-L[1],R[0]-L[0]), len=Math.hypot(R[0]-L[0],R[1]-L[1])/2;
 		const gap=(p===0?30:22)*hs;
 		hctx.save(); hctx.translate(midx,midy); hctx.rotate(ang); hctx.strokeStyle=GR; hctx.fillStyle=GR;

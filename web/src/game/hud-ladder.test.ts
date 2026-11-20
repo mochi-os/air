@@ -24,7 +24,7 @@ describe('the pitch ladder hangs on the velocity vector', () => {
     expect(conformal).toMatch(
       /const path=_hud_path\.set\(ownship\.velx[^;]*\.addScaledVector\(ownship\.fwd,Math\.max\(0,2-ownship\.speed\)\)/,
     )
-    expect(conformal).toMatch(/fpm=proj_dir\(path\)/)
+    expect(conformal).toMatch(/fpm=proj_dir\(path,_hud_fpm_raw\)/)
     expect(conformal).not.toMatch(/proj_dir\(ownship\.vel_dir\)/)
   })
 
@@ -58,8 +58,8 @@ describe('the pitch ladder hangs on the velocity vector', () => {
     // head looks, and the head holds where it is left: a look 12° up clamped a
     // level flight path to the 10° ring and flashed it (#35).
     const line = /const bore=[^\n]*;/.exec(source)?.[0] ?? ''
-    expect(line).toMatch(/^const bore=proj_dir\(ownship\.fwd\)\|\|\[cx,cy\];/)
-    const bore = new Function('glass', 'proj_dir', 'ownship', 'cx', 'cy', `${line} return bore;`) as (
+    expect(line).toMatch(/^const bore=proj_dir\(ownship\.fwd,_hud_bore\)\|\|\(_hud_bore\[0\]=cx,_hud_bore\[1\]=cy,_hud_bore\);/)
+    const bore = new Function('glass', 'proj_dir', 'ownship', 'cx', 'cy', `const _hud_bore=[0,0]; ${line} return bore;`) as (
       glass: object | null, proj_dir: (d: string) => number[] | null, ownship: { fwd: string }, cx: number, cy: number) => number[]
     const nose = (d: string) => (d === 'nose' ? [300, 500] : null)
     expect(bore(null, nose, { fwd: 'nose' }, 640, 380)).toEqual([300, 500])
@@ -149,7 +149,7 @@ describe('the velocity vector limit', () => {
   const proj_dir = (d: THREE.Vector3) => [Math.atan2(d.x, -d.z) / (Math.PI / 180), -Math.atan2(d.y, Math.hypot(d.x, d.z)) / (Math.PI / 180)]
   const ownship = { fwd: new THREE.Vector3(0, 0, -1), up: new THREE.Vector3(0, 1, 0) }
   // the section finds the optical centre; the marker is held about it at 8° (draw_hud's 8*ppd), as draw_hud holds it
-  const limit = new Function('THREE', 'ownship', 'proj_dir', 'bore', 'ppd', 'D2R', `const _hud_centre=new THREE.Vector3(); ${section} ${held}
+  const limit = new Function('THREE', 'ownship', 'proj_dir', 'bore', 'ppd', 'D2R', `const _hud_centre=new THREE.Vector3(), _hud_optical=[0,0]; ${section} ${held}
     return (p)=>{ const out=[0,0], limited=hud_limit(p,centre,8*ppd,out); return [out,limited]; };`)(
     THREE, ownship, proj_dir, [0, 0], 1, Math.PI / 180) as (p: number[]) => [number[], boolean]
 
@@ -249,7 +249,7 @@ describe('the HUD symbols as figure 2-26 draws them', () => {
       const D2R = Math.PI / 180
       // the ladder line's ends straight across the screen, so the local frame is the screen's
       const dir_at = (_f: unknown, _r: unknown, across: number, up: number) => [400 - across * 1000, 300 - up * 1000]
-      new Function('hctx', 'pitch', 'pa', 'hs', 'GR', 'D2R', 'proj_dir', 'dir_at', 'ladFwd', 'rightH', `let horizon=null; for(const p of [pitch]){ const pr=p*D2R; ${body} }`)(
+      new Function('hctx', 'pitch', 'pa', 'hs', 'GR', 'D2R', 'proj_dir', 'dir_at', 'ladFwd', 'rightH', `let horizon=null; const _pitch_dir=null, _pitch_left=[0,0], _pitch_right=[0,0], _pitch_horizon=[0,0]; for(const p of [pitch]){ const pr=p*D2R; ${body} }`)(
         c.hctx, p, pa, 1, 'g', D2R, (d: number[]) => d, dir_at, null, null)
       return c.paths.filter(path => path.points.length === 3).map(path => { const [, [, x1, y1], [, x2, y2]] = path.points; return [x2 - x1, y2 - y1] })
     }

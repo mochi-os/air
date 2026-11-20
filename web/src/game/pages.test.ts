@@ -225,14 +225,16 @@ function repeat(o: Repeat = {}): Shown {
   const climb = o.climb ?? 0, speed = 150
   const vel = fwd.clone().multiplyScalar(speed).add(new THREE.Vector3(0, climb, 0))
   const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
-  const names = ['ddi_hud', 'hud_landing', 'hud_pitch', 'hud_symbols', 'hud_tape', 'signed', 'hud_cluster', 'hud_steer', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
+  const names = ['ddi_place', 'ddi_hud', 'hud_limit', 'hud_landing', 'hud_pitch', 'hud_symbols', 'hud_tape', 'signed', 'hud_cluster', 'hud_steer', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
+  // the scratch and the fixed field ddi_hud and hud_pitch keep beside them
+  const scratch = ['DDI_PPD', 'DDI_BORE', '_ddi_path', '_ddi_fpm', '_pitch_dir'].map((n) => new RegExp(`\\n(?:const|let) ${n}=[^\\n]*\\n`).exec(source)![0]).join('')
   return new Function('THREE', 'ownship', 'navigate', `const mc=()=>({ one:true, two:true }), fed=()=>true, fpas={ climb:false }; const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
     const law_active=false, hud_cue="", sim_time=0, glance=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
     const baro_error=()=>0, altitude_reading=()=>(${o.reading ?? '{ feet:9843, radar:false, fallback:false }'}), approach_deviation=()=>null, hud_target=()=>null, wrap_distance=()=>0, wrap_axis=(v)=>v;
     const cheat=()=>false, translate=(s)=>s, timer_text=()=>"", tacan=()=>({ slant:0 }), hud_launch_zone=()=>{};
     ${navdefs} ${o.nav ?? ''}
-    ${names.map((n) => lift(n)).join(' ')}
+    ${scratch} ${names.map((n) => lift(n)).join(' ')}
     const text=[], rects=[], lines=[], arcs=[], rotations=[]; let m=[1,0,0,1,0,0], stack=[], at=[0,0];
     const apply=(px,py)=>[m[0]*px+m[2]*py+m[4], m[1]*px+m[3]*py+m[5]];
     const mul=(n)=>{ m=[m[0]*n[0]+m[2]*n[1], m[1]*n[0]+m[3]*n[1], m[0]*n[2]+m[2]*n[3], m[1]*n[2]+m[3]*n[3], m[0]*n[4]+m[2]*n[5]+m[4], m[1]*n[4]+m[3]*n[5]+m[5]]; };
@@ -347,7 +349,7 @@ describe('the HUD format on a DDI', () => {
 
   it('is drawn by the HUD\'s own code', () => {
     const body = lift('ddi_hud')
-    for (const call of ['hud_pitch(x,GREEN,place,', 'hud_symbols(x,GREEN,bore,', 'hud_cluster(x,GREEN,0,0,HH/45,true,null,pa,']) expect(body).toContain(call)
+    for (const call of ['hud_pitch(x,GREEN,ddi_place,', 'hud_symbols(x,GREEN,bore,', 'hud_cluster(x,GREEN,0,0,HH/45,true,null,pa,']) expect(body).toContain(call)
     expect(source).toMatch(/\n\thud_cluster\(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,ranged\?rng:null\);/)
     expect(source).toMatch(/const horizon=hud_pitch\(hctx,GR,proj_dir,ladFwd,rightH,pa,hs\);/)
     expect(source).toMatch(/\n\thud_symbols\(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs\);/)

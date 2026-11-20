@@ -104,4 +104,26 @@ describe('the per-frame draws', () => {
     expect(hud).not.toMatch(/const limit=|const heat_shown=\{|round_length\(ownship\.pos\.y\); const t=|muz\.clone\(\)|hud_field\(glass\)\)/)
     expect(hud).toMatch(/const l=round_length\(ownship\.pos\.y\), muz=body_offset\(ownship,6\.0,0\.35,0\.0,_hud_muzzle\);/) // once, not on each of the funnel's eleven passes
   })
+
+  // #201: the projections, the DDI's repeat of the HUD, the pitch ladder, the helmet's marks, the
+  // radar picture's link members and the chat log, each into a scratch of its own.
+  it('project into scratch and build nothing of their own', () => {
+    // a projector, dir_at or hmd_at called with a single argument: a fresh array or vector each time
+    const single = /\b(?:proj_dir|proj_point|hmd_at|dir_at)\((?:[^(),]|\([^()]*\))*\)/
+    const drawn = (name: string) => top(name).split('\n').filter((line) => !line.includes('DEV_MODE')).join('\n') // a developer probe's own line may allocate
+    // dir_at takes its out fifth: four arguments are a fresh vector
+    const bare = /\bdir_at\((?:[^(),]|\([^()]*\))*(?:,(?:[^(),]|\([^()]*\))*){3}\)/
+    for (const name of ['draw_hud', 'draw_hmd', 'hmd_alignment', 'hmd_mark', 'hud_pitch', 'hud_edge']) {
+      expect(drawn(name), name).not.toMatch(single)
+      expect(drawn(name), name).not.toMatch(bare)
+    }
+    for (const name of ['ddi_place', 'ddi_hud', 'hud_pitch', 'hud_edge', 'hmd_toward', 'hmd_mark', 'link_picture16']) {
+      const body = top(name)
+      expect(body, name).not.toBe('')
+      expect(body, name).not.toMatch(/new THREE\.|\.clone\(\)|=>|\.map\(|\[\.\.\.|return \{|return \[|horizon=\[/)
+    }
+    expect(top('hmd_alignment')).not.toMatch(/ of \[/) // the fine alignment's two crosses, no list built to walk them
+    expect(top('draw_hud')).toContain('comms.length=kept;') // the log is compacted in place
+    expect(top('draw_hud')).not.toMatch(/comms=comms\.filter\(/)
+  })
 })

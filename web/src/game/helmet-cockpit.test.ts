@@ -48,7 +48,7 @@ const world = `const D2R=Math.PI/180, HW=1000, HH=800, GR='g', AM='a';
   let MULTIPLAYER=false, has_enemy=true, ir_cool="norm"; const remotes=new Map();
   const bandit={ group:{ visible:true }, pos:new THREE.Vector3(0,0,-2000), fwd:new THREE.Vector3(0,0,-1), reheat:0 };
   const at=(az,el,d)=>new THREE.Vector3(Math.sin(az*D2R)*Math.cos(el*D2R),Math.sin(el*D2R),-Math.cos(az*D2R)*Math.cos(el*D2R)).multiplyScalar(d);`
-const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track'), line('amraam_visual'), line('VISUAL'), line('_seek_to'), line('jets_every'), line('_hmd_box')].join('')
+const defs = [line('hmd'), line('hmd_was'), line('castle'), line('_hmd_q'), line('_hmd_e'), line('_p'), line('seeker_track'), line('amraam_visual'), line('VISUAL'), line('_seek_to'), line('jets_every'), line('_hmd_box'), line('_hmd_toward')].join('')
 const functions = ['helmet_frame', 'hmd_cross', 'hmd_line', 'hmd_at', 'hmd_blanked', 'hmd_seeker', 'hmd_fit', 'hmd_shift', 'hmd_toward', 'hud_fit', 'hud_scale', 'hmd_mark', 'hmd_locator', 'alignment_cross', 'hmd_alignment', 'hmd_pattern', 'draw_hmd', 'ddi_hmd', 'hmd_press', 'ddi_legend', 'proj_dir', 'pip',
   'uncooled', 'seeker_reach', 'seeker_toward', 'jets_refresh', 'jets_all', 'jets_other', 'seeker_sees', 'seeker_aboard', 'seeker_look', 'seeker_uncage', 'amraam_field', 'hud_tape', 'designation_line'].map(lift).join('\n')
 function pit<T>(body: string): T {
@@ -377,7 +377,7 @@ describe('the alignment symbols (figures 2-56 to 2-58)', () => {
   })
   it('draws the HUD\'s side as the same cross, and the look-direction cross 1.4° across', () => {
     const block = lift('draw_hud')
-    expect(block).toContain('if(hmd.mode){ const c=proj_dir(ownship.fwd); if(c) alignment_cross(c[0],c[1],ppd); }')
+    expect(block).toContain('if(hmd.mode){ const c=proj_dir(ownship.fwd,_hud_cross); if(c) alignment_cross(c[0],c[1],ppd); }')
     expect(block.match(/plus\(p\[0\],p\[1\],0\.7\*ppd\)/g)).toHaveLength(2)
   })
 })
@@ -499,33 +499,33 @@ describe('a symbol limited to the HUD\'s field', () => {
     ${lift('proj_point')} ${lift('hud_field')} ${lift('hud_room')} ${lift('hud_edge')} ${body}`)
   const glass = 'const glass={ corners:[[400,300],[600,300],[600,500],[400,500]] };'
   it('sits at its projection while that is on the field', () => {
-    const s = edge(`return hud_edge(at(10,0,2000),[500,400],hud_field(null),20);`)
+    const s = edge(`return hud_edge(at(10,0,2000),[500,400],hud_field(null),20,{ at:[0,0], limited:false });`)
     expect(s.limited).toBe(false)
     expect(s.at[0]).toBeCloseTo(500 + Math.tan(10 * D) / Math.tan(30 * D) * 400, 6)
   })
   it('is pinned inside the field\'s edge, its radius in, on the line from the boresight toward it', () => {
-    const right = edge(`return hud_edge(at(50,0,2000),[500,400],hud_field(null),20);`)
+    const right = edge(`return hud_edge(at(50,0,2000),[500,400],hud_field(null),20,{ at:[0,0], limited:false });`)
     expect(right.limited).toBe(true)
     expect(right.at[0]).toBeCloseTo(980, 6)
     expect(right.at[1]).toBeCloseTo(400, 6)
-    const behind = edge(`return hud_edge(at(170,0,2000),[500,400],hud_field(null),20);`) // behind the eye, a little right
+    const behind = edge(`return hud_edge(at(170,0,2000),[500,400],hud_field(null),20,{ at:[0,0], limited:false });`) // behind the eye, a little right
     expect(behind.limited).toBe(true)
     expect(behind.at[0]).toBeCloseTo(980, 6)
     expect(behind.at[1]).toBeCloseTo(400, 6)
   })
   it('takes the glass for the field in the pit', () => {
-    const side = edge(`${glass} return hud_edge(at(20,0,2000),[500,400],hud_field(glass),20);`)
+    const side = edge(`${glass} return hud_edge(at(20,0,2000),[500,400],hud_field(glass),20,{ at:[0,0], limited:false });`)
     expect(side.limited).toBe(true)
     expect(side.at[0]).toBeCloseTo(580, 6)
     expect(side.at[1]).toBeCloseTo(400, 6)
-    const top = edge(`${glass} return hud_edge(at(0,20,2000),[500,400],hud_field(glass),20);`)
+    const top = edge(`${glass} return hud_edge(at(0,20,2000),[500,400],hud_field(glass),20,{ at:[0,0], limited:false });`)
     expect(top.at[0]).toBeCloseTo(500, 6)
     expect(top.at[1]).toBeCloseTo(320, 6)
-    expect(edge(`${glass} return hud_edge(at(5,0,2000),[500,400],hud_field(glass),20).limited;`)).toBe(false)
+    expect(edge(`${glass} return hud_edge(at(5,0,2000),[500,400],hud_field(glass),20,{ at:[0,0], limited:false }).limited;`)).toBe(false)
   })
   it('is where the HUD draws the 9M\'s circle and box, flashing while limited, SHOOT kept on the glass, and the locator line then', () => {
     const hud = lift('draw_hud')
-    expect(hud).toContain('const spot=look?hud_edge(look,bore,field,seeker):{ at:bore, limited:false }, at=spot.at;')
+    expect(hud).toContain('const spot=look?hud_edge(look,bore,field,seeker,_hud_seeker_edge):(_hud_resting.at=bore,_hud_resting), at=spot.at;')
     expect(hud).toContain('const glass=(cfg.view==="cockpit")?glass_rect():null, field=hud_field(glass);') // the field taken once a frame, beside the glass
     expect(hud).toContain('if(!worn&&(!spot.limited||blink)){ hctx.strokeStyle=GR;')
     expect(hud).toContain('const box=edge?(edge.limited?(master==="9m"&&blink?edge.at:null):edge.at):null;')
@@ -554,7 +554,7 @@ describe('the AIM-120\'s field-of-view circle (the DCS guide, figure 154)', () =
     expect(circles('hmd.levels["SP/AMR FOV"]=1;')).toEqual([[500, 400, 7.5]])
   })
   it('draws it on the HUD too, dashed about the boresight', () => {
-    expect(lift('draw_hud')).toContain('if(amraam_field()){ const c=proj_dir(ownship.fwd);')
+    expect(lift('draw_hud')).toContain('if(amraam_field()){ const c=proj_dir(ownship.fwd,_hud_amraam);')
     expect(lift('draw_hud')).toContain('hctx.arc(c[0],c[1],VISUAL/D2R*ppd,0,Math.PI*2);')
   })
   it('takes alone what lies inside it with a VISUAL shot, and nothing outside it', () => {

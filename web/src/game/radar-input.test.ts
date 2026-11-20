@@ -670,7 +670,7 @@ describe('the known picture: what the SA page and the map draw', () => {
          ?[{ id:2, x:100, y:-1000, z:-50000, fwd:{ x:1, z:0 }, name:'two', team:'blue' }, { id:3, x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'three', team:'red' }]
          :[{ id:'bandit', x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'', team:'' }];
        const contacts=()=>jets, remotes=new Map(jets.map(j=>[j.id,{ pos:{ x:j.x, y:j.y, z:j.z }, up:{ x:0, y:1, z:0 }, group:{ visible:true } }]));
-       ${['own_team', 'status_of', 'link_sense', 'link_picture16', 'overhead', 'identified', 'challenges', 'status_own'].map(lift).join('\n')}
+       ${['own_team', 'status_of', 'link_sense', 'LINK_NONE', 'link_picture16', 'overhead', 'identified', 'challenges', 'status_own'].map(lift).join('\n')}
        const SIGHT=12000; ${/\nconst _known=\[\];\nfunction known\(\)\{[\s\S]*?\nfunction known_newer\([^\n]*\n/.exec(source)?.[0] ?? ''}
        return { RADAR, known, statuses, squawk, terminal, power(ac){ buses={ ac }; }, emission(on){ emcon=on; }, challenges, status:status_own, lit(slot,visible){ remotes.get(slot).group.visible=visible; } };`
     )(Radar, identification, mids) as Page
