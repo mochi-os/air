@@ -143,7 +143,7 @@ describe("the carrier's ship file", () => {
 
   it("raises each catapult's own blast deflector through its keys, its struts following it", () => {
     expect(source).toMatch(
-      /carrier_jbds=rigged\?SHIP\.catapults\.map\(\(cat,i\)=>\(\{ joint:`catapult_\$\{i\+1\}_deflector`, followers:SHIP\.followers\[`catapult_\$\{i\+1\}_deflector`\]\?\?\[\], time:0 \}\)\):null;/
+      /carrier_jbds=SHIP\.catapults\.map\(\(_,i\)=>\(\{ joint:`catapult_\$\{i\+1\}_deflector`, followers:SHIP\.followers\[`catapult_\$\{i\+1\}_deflector`\]\?\?\[\], time:0 \}\)\);/
     )
     // in real time along its keys, seconds into its raise, and back along them to lower
     // the catapult our jet is hooked to: spotted, or in its stroke
@@ -181,9 +181,8 @@ describe("the carrier's ship file", () => {
     expect(colours).toContain('green:')
     // the lens's own lights where the file measures them
     expect(ford.lens.lights.datum.length).toBe(20)
-    expect(source).toMatch(
-      /const dpos=lens\?placed\(lens\.lights\.datum\):\[\];/
-    )
+    expect(source).toMatch(/const datumPts=ols_points\(placed\(lens\.lights\.datum\),0x35e06a,7\);/)
+    expect(source).toMatch(/const wavePts=ols_points\(placed\(lens\.lights\.waveoff\),0xff2a1e,7\);/)
   })
 
   it('draws a beacon or status light green where its green lamps stand, or at its red ones', () => {
@@ -314,7 +313,7 @@ describe("the carrier's ship file", () => {
   it('lights each group as ship.ts lit says for the deck, every frame', () => {
     const papi = lift('update_papi')
     expect(papi).toMatch(
-      /const deck=\{ dark, closed:deck_closed, aboard:on\?\[carrier_fore_aft\(p\.x,p\.z\),carrier_lateral\(p\.x,p\.z\)\]:null \};/
+      /const deck=_papi_deck; deck\.dark=dark; deck\.closed=deck_closed; deck\.aboard=null;\n\t\tif\(on\)\{ _papi_aboard\[0\]=carrier_fore_aft\(p\.x,p\.z\); _papi_aboard\[1\]=carrier_lateral\(p\.x,p\.z\); deck\.aboard=_papi_aboard; \}/
     )
     expect(papi).toMatch(
       /for\(const l of ship_lights\)\{ const c=ship_lit\(l\.group,SHIP,deck\); for\(const k in l\.sets\) for\(const m of l\.sets\[k\]\)\{ if\(m\.isLight\)\{ m\.visible=dark; m\.intensity=k===c\?m\.userData\.intensity:0; \} else m\.visible=k===c; \} \}/
@@ -791,5 +790,21 @@ describe('the turnaround after a stop', () => {
   it('grants nothing in a match', () => {
     expect(serviced(true, true)).toEqual({ rounds: 0, fuel: [] })
     expect(serviced(true, false)).toEqual({ rounds: 0, fuel: [] })
+  })
+})
+
+// The engine draws the carrier from its model and its ship file alone (ship.ts
+// missing): no stand-in wires, shuttles, lens housing, mast or arms for a ship
+// lacking what the Ford's file carries, which never ran and had rotted unseen.
+describe('the deck aids, drawn from the model and the file alone', () => {
+  const aids = /\nfunction build_carrier_deck_aids\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
+  it('lays each wire between its measured sheaves, and builds no shuttle, housing, mast or arm of its own', () => {
+    expect(aids).not.toBe('')
+    expect(aids).toMatch(/for\(const ends of SHIP\.landing\.ends\)\{\n\t\tconst a=carrier_world\(ends\[0\]\[0\],ends\[0\]\[2\]\), b=carrier_world\(ends\[1\]\[0\],ends\[1\]\[2\]\);/)
+    for (const gone of ['sheaveMat', 'shuttleMat', 'rigged', 'dspread', 'SHIP.ols.model', 'if(!lens)', 'const strut', 'const house', 'const mast']) expect(aids, gone).not.toContain(gone)
+    expect(lift('update_shuttles')).not.toContain('s.home')
+  })
+  it('hands the flight core each wire between its measured sheaves', () => {
+    expect(source).toMatch(/wires:SHIP\.landing\.ends\.map\(e=>\(\{ a:\{x:e\[0\]\[0\], y:0, z:e\[0\]\[2\]\}, b:\{x:e\[1\]\[0\], y:0, z:e\[1\]\[2\]\} \}\)\) \};/)
   })
 })

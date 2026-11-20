@@ -7,6 +7,10 @@
 // read into the deck layout engine.ts and the flight core take: the deck,
 // its catapults, the landing line and its wires, the lens, the elevators, the
 // deck texture's extent and the waterline the bow wave and wake draw from.
+// The engine draws a ship from its model and this file alone: the lens housed
+// by the model, each pendant between its measured sheaves, and each catapult's
+// shuttle and blast deflector as the model's own joints are required, and a
+// file without them is refused where it is read (layout).
 // The contract's frame is the engine's deck frame: x forward, y up from the
 // waterline, z to starboard, metres; headings in degrees, positive to port.
 // Free of the engine and the page, so the reading is testable.
@@ -36,11 +40,11 @@ export interface Contract {
     wires: { number: number; x: number; ends: [Point, Point] }[]
     target: number
   }
-  lens?: Lens
+  lens: Lens
   lights?: Record<string, Lights>
   parking?: { x: number; z: number; heading: number }
   vehicles?: Vehicle[]
-  joints?: Record<string, Joint>
+  joints: Record<string, Joint>
   elevators: { number: number; side: string; outline: Plan[] }[]
   texture: { x: [number, number]; z: [number, number] }
   hull?: {
@@ -52,15 +56,15 @@ export interface Contract {
 }
 
 // The lens: its cell column's centre at datum height, the way it faces, its
-// cells and their pitch, and its datum, cut and wave-off lights; housed when
-// the model carries its housing, so the engine draws only the lights
+// cells and their pitch, and its datum, cut and wave-off lights; housed: the
+// model carries its housing, mast and arms, so the engine draws only the lights
 export interface Lens {
   position: Point
   facing: Point
   cells: number
   pitch: number
   lights: { datum: Point[]; cut: Point[]; waveoff: Point[] }
-  housed?: boolean
+  housed: boolean
 }
 
 // A group of the ship's lights: where each stands, its colour's name and
@@ -123,8 +127,8 @@ export interface Layout {
     span: number
     target: number
   }
-  ols: { x: number; z: number; model: boolean }
-  lens?: Lens
+  ols: { x: number; z: number }
+  lens: Lens
   lights: Record<string, Lights>
   parking?: { x: number; z: number; heading: number }
   vehicles: Vehicle[]
@@ -194,7 +198,6 @@ export function meatball(
   eye: Point
 ): { lit: boolean; ball: { height: number; low: boolean } | null } {
   const lens = ship.lens
-  if (!lens) return { lit: false, ball: null }
   const [aft, forward] = ship.landing.line
   const { wires, target } = ship.landing
   const x = target > 1 ? (wires[target - 2] + wires[target - 1]) / 2 : wires[0]
@@ -334,8 +337,30 @@ function half(stations: Plan[], x: number): number {
   return 0
 }
 
-// layout reads a contract ship file
+// missing names what a ship file lacks of what the engine draws the ship
+// from: the housed lens, each wire's two ends, and each catapult's shuttle
+// and blast deflector joints
+export function missing(c: Contract): string[] {
+  const out: string[] = []
+  if (!c.lens || !c.lens.lights) out.push('lens')
+  else if (c.lens.housed !== true) out.push('lens.housed')
+  c.landing.wires.forEach((w, i) => {
+    if (!Array.isArray(w.ends) || w.ends.length !== 2) out.push(`landing.wires[${i}].ends`)
+  })
+  c.catapults.forEach((_, i) => {
+    for (const part of ['shuttle', 'deflector']) {
+      const name = `catapult_${i + 1}_${part}`
+      if (!c.joints?.[name]) out.push(`joints.${name}`)
+    }
+  })
+  return out
+}
+
+// layout reads a contract ship file, refusing one that lacks what the engine
+// draws the ship from (missing)
 export function layout(c: Contract): Layout {
+  const absent = missing(c)
+  if (absent.length) throw new Error('the ship file lacks ' + absent.join(', '))
   const [p, q] = c.landing.line
   const ends = c.landing.wires.map((w) => w.ends)
   const out: Layout = {
@@ -360,9 +385,7 @@ export function layout(c: Contract): Layout {
         ) / Math.max(ends.length, 1),
       target: c.landing.target,
     },
-    ols: c.lens
-      ? { x: c.lens.position[0], z: c.lens.position[2], model: !!c.lens.housed }
-      : { x: 0, z: 0, model: false },
+    ols: { x: c.lens.position[0], z: c.lens.position[2] },
     elevators: c.elevators.map((e) => {
       // the platform's outboard side, along the deck's edge: its two points
       // furthest from the centreline
@@ -376,12 +399,12 @@ export function layout(c: Contract): Layout {
       }
     }),
     texture: { x: c.texture.x, z: c.texture.z },
-    ...(c.lens ? { lens: c.lens } : {}),
+    lens: c.lens,
     lights: c.lights ?? {},
     vehicles: c.vehicles ?? [],
     ...(c.parking ? { parking: c.parking } : {}),
-    joints: c.joints ?? {},
-    followers: followers(c.joints ?? {}),
+    joints: c.joints,
+    followers: followers(c.joints),
   }
   if (c.hull) {
     const w = c.hull.waterline

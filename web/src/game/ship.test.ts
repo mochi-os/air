@@ -5,11 +5,12 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { type Contract, type Deck, deflectors, followers, foul, glide, HOOK, layout, lit, meatball, raising, STATIONS, stations, view } from './ship'
+import { type Contract, type Deck, deflectors, followers, foul, glide, HOOK, layout, lit, meatball, missing, raising, STATIONS, stations, view } from './ship'
 
 // A small deck: a landing line angled to port, one wire whose pendant runs
 // between sheaves 16 m to port and 18 to starboard of where it crosses the
-// line, a port elevator, a lens and a hull 30 m across at the stern
+// line, a port elevator, a housed lens, the catapult's shuttle and blast
+// deflector joints and a hull 30 m across at the stern
 const contract: Contract = {
   deck: {
     height: 18.27,
@@ -53,6 +54,11 @@ const contract: Contract = {
     cells: 12,
     pitch: 0.165,
     lights: { datum: [], cut: [], waveoff: [] },
+    housed: true,
+  },
+  joints: {
+    catapult_1_shuttle: { motion: 'slide', axis: [1, 0, 0], drive: 'the launch', keys: [[0, 0], [1, 90]] },
+    catapult_1_deflector: { motion: 'rotate', axis: [0, 0, 1], drive: 'the launch', keys: [[0, 0], [2, 0.87]] },
   },
   elevators: [
     {
@@ -128,30 +134,26 @@ describe('layout', () => {
     expect(parked.parking).toEqual({ x: -70, z: 20, heading: 0 })
     expect(read.lights).toEqual({})
     expect(read.parking).toBeUndefined()
-    expect(read.joints).toEqual({})
-    const slide = {
-      motion: 'slide',
-      axis: [1, 0, 0] as [number, number, number],
-      drive: 'the launch',
-      keys: [
-        [0, 0],
-        [1, 90],
-      ] as [number, number][],
-    }
-    expect(
-      layout({ ...contract, joints: { catapult_1_shuttle: slide } }).joints
-    ).toEqual({ catapult_1_shuttle: slide })
+    expect(read.joints).toEqual(contract.joints)
   })
 
   it('takes the lens from its position and the elevators by their outboard sides', () => {
-    expect(read.ols).toEqual({ x: -20, z: -28, model: false })
+    expect(read.ols).toEqual({ x: -20, z: -28 })
     expect(read.elevators).toEqual([{ aft: -62, forward: -38, side: -1 }])
   })
 
-  it('leaves a housed lens to the model: the engine draws only its lights', () => {
-    expect(
-      layout({ ...contract, lens: { ...contract.lens!, housed: true } }).ols
-    ).toEqual({ x: -20, z: -28, model: true })
+  // The engine draws a ship from its model and this file alone, with no
+  // procedural stand-in for a part the file lacks: a file without them is
+  // refused where it is read, naming each.
+  it('refuses a ship file without its housed lens, a wire\'s ends, or a catapult\'s shuttle or deflector joint', () => {
+    expect(missing(contract)).toEqual([])
+    const { lens: _lens, ...lensless } = contract
+    expect(missing(lensless as unknown as Contract)).toEqual(['lens'])
+    expect(missing({ ...contract, lens: { ...contract.lens, housed: false } })).toEqual(['lens.housed'])
+    const open = { ...contract, landing: { ...contract.landing, wires: [{ number: 1, x: 30 }] } }
+    expect(missing(open as unknown as Contract)).toEqual(['landing.wires[0].ends'])
+    expect(missing({ ...contract, joints: {} })).toEqual(['joints.catapult_1_shuttle', 'joints.catapult_1_deflector'])
+    expect(() => layout({ ...contract, joints: { catapult_1_shuttle: contract.joints.catapult_1_shuttle } })).toThrow('the ship file lacks joints.catapult_1_deflector')
   })
 
   it("passes the deck's vehicles through as the core collides with them, and none where the file has none", () => {
@@ -229,7 +231,7 @@ describe('layout', () => {
     expect(half.catapult_2_deflector).toBeCloseTo(0.4)
     expect(deflectors(ship, 1.5)).toEqual({ catapult_1_deflector: 0.8, catapult_1_deflector_crank: 1.6, catapult_2_deflector: 0.8 })
     expect(raising(ship)).toBe(1.5)   // the slowest deflector's raise, not the shuttle's or the console's travel
-    expect(raising(layout(contract))).toBe(0)
+    expect(raising(layout(contract))).toBe(2) // the fixture's one deflector
   })
 })
 

@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "Nagamit na ang {0}, at hindi na nakatali ang kontrol na iyon."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "Nasa {1} ang {0}, na pawang hindi na nakatali."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "Nasa {1} ang {0}, na hindi na nakatali."
@@ -165,6 +171,10 @@ msgstr "Pangalan ng {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} hanggang {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} para isara"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Hinaharangan"
 msgid "Blue"
 msgstr "Asul"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "ASUL {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Mga asul na bot"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Na-update ang category"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Gitnang linya"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "I-detect"
 msgid "Detect from web browser"
 msgstr "Tukuyin mula sa web browser"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Mode ng developer"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Ibang host ng laro"
@@ -1739,6 +1758,11 @@ msgstr "Walang lamang pylon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Paganahin ang tunog"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Tapos na"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Tangke ng gasolina"
 msgid "full afterburner"
 msgstr "buong afterburner"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Mga kanyon lamang"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Alisin ang kamay sa stick; pindutin ang enter para sumaludo at lumipad"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Alisin ang kamay sa stick; pindutin ang {key} para sumaludo at lumipad"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Ibaba ang antena ng radar"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M para isara"
+msgid "LWD"
+msgstr "KALIWA"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Kailangan ang pangalan"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Ang pangalan ay dapat 1000 karakter o mas mababa"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "BABA"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Mga notification: {0}"
 msgid "Novice"
 msgstr "Baguhan"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "TAAS"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Numero"
@@ -3237,7 +3265,9 @@ msgstr "Nasa runway: kalahating flaps, itaas sa lakas militar, alisin ang preno"
 msgid "Oops! Page Not Found!"
 msgstr "Ay! Hindi Nahanap ang Pahina!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Bukas"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Mga Opsyon"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Iba pa"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Iba pa"
 
@@ -3469,13 +3504,13 @@ msgstr "Mga Post"
 msgid "Posts and comments"
 msgstr "Mga post at komento"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "PINDUTIN ANG {key} PARA UMANGAT"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Pindutin ang isang key…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "PINDUTIN ANG ENTER PARA UMANGAT"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Na-save ang recording"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Pula"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "PULA {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "BUONG LAKAS"
 msgid "Runway {end}"
 msgstr "Runway {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "KANAN"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Sabado"
@@ -4074,6 +4117,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Error sa server"
 
@@ -4086,6 +4130,10 @@ msgstr "Mga patakaran ng server"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "gumagana ang server sa v{0}, mayroon kang v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Isinara ang server"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Hatiin"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "IBUKA ANG MGA PAKPAK"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "ESTAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Hindi mahanap ang hiniling na content."
 msgid "The server returned a web page instead of data."
 msgstr "Nagbalik ang server ng web page sa halip na data."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Sumagot ang world server ng error {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Hindi sumagot sa oras ang world server"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Wala nang puwang sa world server para sa isa pang match"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Nagpadala ang world server ng sagot na hindi mabasa"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Hindi pinapayagan ang app na ito na gamitin ang iyong passkey. Payagan ito sa Mga Setting, sa ilalim ng Mga Pahintulot."
@@ -4494,6 +4562,10 @@ msgstr "Oras"
 msgid "Time of day"
 msgstr "Oras ng araw"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Naubos ang oras"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Pamagat"
@@ -4524,9 +4596,17 @@ msgstr "I-toggle ang mga pagpipilian sa view"
 msgid "Toggle watched filter"
 msgstr "I-toggle ang watched filter"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Masyadong maraming match ang inalok mula sa address mo"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Masyadong maraming request"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Masyadong maraming kahilingan sa world server"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Naglalakbay"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "NAKA-LOCK ANG PAKPAK"
 msgid "WINS"
 msgstr "PANALO"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Binawi"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "World server"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Hindi maabot ang world server"

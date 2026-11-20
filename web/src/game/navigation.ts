@@ -1094,6 +1094,16 @@ export function carry(nav: Navigation, frame: Frame, r: Rigid): void {
   if (nav.update) swing(nav.update.delta)
   if (nav.previous) swing(nav.previous.error)
 }
+// sexagesimal splits the size of an angle in degrees into whole degrees and
+// the units of a degree under them, `per` to the degree (60 for minutes, 3600
+// for seconds), rounded once to the unit shown before it is split, so a value
+// that rounds up carries into the degrees: 5.9999° to the minute is 6°00',
+// where rounding the minutes alone wrote 5°00'.
+export function sexagesimal(degrees: number, per: number): [number, number] {
+  const units = Math.round(Math.abs(degrees) * per)
+  const whole = Math.floor(units / per)
+  return [whole, units - whole * per]
+}
 // angle writes a latitude or longitude as the displays do: degrees, minutes
 // and seconds, or with LATLN DCML degrees, minutes and thousandths (24.2.5.6).
 export function angle(value: number, letters: 'NS' | 'EW', decimal: boolean, precise = false): string {
@@ -1101,16 +1111,12 @@ export function angle(value: number, letters: 'NS' | 'EW', decimal: boolean, pre
   const width = letters === 'NS' ? 2 : 3
   const pad = (v: number, n: number) => String(v).padStart(n, '0')
   if (decimal) {
-    let thousandths = Math.round(Math.abs(value) * 60000)
-    const whole = Math.floor(thousandths / 60000)
-    thousandths -= whole * 60000
+    const [whole, thousandths] = sexagesimal(value, 60000)
     return letter + pad(whole, width).padStart(4) + '°' + pad(Math.floor(thousandths / 1000), 2) + '.' + pad(thousandths % 1000, 3) + "'"
   }
   // PRECISE adds the hundredths of a second (24.2.5.1)
   const per = precise ? 100 : 1
-  let seconds = Math.round(Math.abs(value) * 3600 * per)
-  const whole = Math.floor(seconds / (3600 * per))
-  seconds -= whole * 3600 * per
+  const [whole, seconds] = sexagesimal(value, 3600 * per)
   const rest = seconds % (60 * per)
   return letter + pad(whole, width).padStart(4) + '°' + pad(Math.floor(seconds / (60 * per)), 2) + "'" + pad(Math.floor(rest / per), 2) + (precise ? '.' + pad(rest % per, 2) : '') + '"'
 }

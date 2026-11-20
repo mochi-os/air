@@ -34,6 +34,7 @@ import { startGame, type GameHandle } from '../game/engine'
 import '../game/game.css'
 import { KEY_DEFAULTS, pretty } from '../game/keys'
 import { type Join as NetJoin } from '../game/net'
+import { clock } from '../lib/clock'
 import { type MissionConfig } from '../lib/config'
 import { SettingsDialog } from './SettingsDialog'
 
@@ -67,6 +68,25 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'FUEL DUMP': msg`FUEL DUMP`,
   'L ENG SECURED': msg`L ENG SECURED`,
   'R ENG SECURED': msg`R ENG SECURED`,
+  // The trim row of the same stack: {pitch} is the pitch trim, a figure in
+  // degrees followed by NU or ND, and {roll} the roll trim, a figure followed
+  // by RWD or LWD; either may be empty, and the row closes the gap it leaves
+  'TRIM {pitch} {roll}': msg({ message: 'TRIM {pitch} {roll}' }),
+  // Nose up, after the pitch trim's figure in the trim row
+  NU: msg`NU`,
+  // Nose down, after the pitch trim's figure in the trim row
+  ND: msg`ND`,
+  // Right wing down, after the roll trim's figure in the trim row
+  RWD: msg`RWD`,
+  // Left wing down, after the roll trim's figure in the trim row
+  LWD: msg`LWD`,
+  // The developer's stabilator calibration step in the same stack: {cycle} is
+  // its number, 1 to 7
+  'STAB {cycle}': msg({ message: 'STAB {cycle}' }),
+  // A teams match's running score, on the map and in the HUD view: {score}
+  // is the side's total
+  'RED {score}': msg({ message: 'RED {score}' }),
+  'BLUE {score}': msg({ message: 'BLUE {score}' }),
   YOU: msg`YOU`,
   'WAITING FOR OPPONENT': msg`WAITING FOR OPPONENT`,
   "FIGHT'S ON": msg`FIGHT'S ON`,
@@ -112,7 +132,9 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
     message: '{victim} collided with {other}',
   }),
   '{victim} crashed': msg({ message: '{victim} crashed' }),
-  'PRESS ENTER TO LAUNCH': msg`PRESS ENTER TO LAUNCH`,
+  // The launch prompt on the catapult: {key} is the key the player has bound
+  // to the launch, as its cap is labelled (ENTER by default)
+  'PRESS {key} TO LAUNCH': msg({ message: 'PRESS {key} TO LAUNCH' }),
   LIGHTS: msg`LIGHTS`,
   'RUN UP ENGINE': msg`RUN UP ENGINE`,
   '1 WIRE': msg`1 WIRE`,
@@ -129,7 +151,9 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   PADLOCK: msg`PADLOCK`,
   'PADLOCK OFF': msg`PADLOCK OFF`,
   'NO TARGET': msg`NO TARGET`,
-  'M to close': msg`M to close`,
+  // The tactical map's close prompt: {key} is the key the player has bound to
+  // the map, as its cap is labelled (M by default)
+  '{key} to close': msg({ message: '{key} to close' }),
   'CONNECTION FAILED': msg`CONNECTION FAILED`,
   'LOADING FAILED': msg`LOADING FAILED`,
   'FLIGHT CORE FAILED': msg`FLIGHT CORE FAILED`,
@@ -280,7 +304,11 @@ const HUD_MESSAGES: Record<string, MessageDescriptor> = {
   'Hooked up: run up to {power}, wipe out controls': msg({
     message: 'Hooked up: run up to {power}, wipe out controls',
   }),
-  'Hand off stick; press enter to salute and launch': msg`Hand off stick; press enter to salute and launch`,
+  // {key} is the key the player has bound to the launch, as its cap is
+  // labelled (Enter by default)
+  'Hand off stick; press {key} to salute and launch': msg({
+    message: 'Hand off stick; press {key} to salute and launch',
+  }),
   'Off the cat: hand off stick, let jet rotate 12° nose up': msg`Off the cat: hand off stick, let jet rotate 12° nose up`,
   'Positive rate: take stick, gear up, flaps auto': msg`Positive rate: take stick, gear up, flaps auto`,
   'On catapult: extend launch bar to hook up': msg`On catapult: extend launch bar to hook up`,
@@ -352,12 +380,6 @@ const HINTS: { actions: string[]; label: React.ReactNode; solo?: boolean }[] = [
     label: <Trans>views</Trans>,
   },
 ]
-
-// clock reads seconds as m:ss, as the mission-over line does.
-function clock(seconds: number): string {
-  const whole = Math.max(0, Math.floor(seconds))
-  return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`
-}
 
 export function GameCanvas({
   config,
@@ -827,8 +849,7 @@ export function GameCanvas({
                       {' · '}
                     </>
                   )}
-                  {Math.floor(over.seconds / 60)}:
-                  {String(Math.floor(over.seconds % 60)).padStart(2, '0')}
+                  {clock(over.seconds)}
                 </p>
               </div>
             )}

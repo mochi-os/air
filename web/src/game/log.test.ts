@@ -9,6 +9,7 @@ import { describe, expect, it, vi } from 'vitest'
 // The flight log pages (#57): every recording is kept, so the log reads the
 // flights a page at a time, each page asked for after the last row shown.
 const gets: [string, unknown][] = []
+const posts: [string, unknown, unknown][] = []
 let reply: unknown = {}
 vi.mock('@mochi/web', () => ({
   createAppClient: () => ({
@@ -16,10 +17,14 @@ vi.mock('@mochi/web', () => ({
       gets.push([url, config])
       return reply
     },
+    post: async (url: string, body: unknown, config: unknown) => {
+      posts.push([url, body, config])
+      return reply
+    },
   }),
 }))
 vi.mock('../lib/config-store', () => ({ authenticated: async () => {} }))
-const { log } = await import('./net')
+const { log, record } = await import('./net')
 
 const row = { id: 'x1', started: 1700 } as Parameters<typeof log>[0]
 
@@ -38,6 +43,18 @@ describe('log', () => {
     const result = await log(row)
     expect(gets).toEqual([['-/match/list', { params: { before: '1700', id: 'x1' } }]])
     expect(result.more).toBe(false) // a server that says nothing has no more
+  })
+})
+
+// A flight's history row is written as the pilot leaves (#122): through the
+// app client, which carries the token and the base path every other call
+// uses, as a keepalive request that outlives the page.
+describe('record', () => {
+  it('posts the row through the app client as a keepalive request', async () => {
+    posts.length = 0
+    const row = { world: 'w', session: 's', developer: 1 } as Parameters<typeof record>[0]
+    await record(row)
+    expect(posts).toEqual([['-/match/record', row, { keepalive: true }]])
   })
 })
 

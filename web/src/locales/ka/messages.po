@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} უკვე დაკავებული იყო და ეს მართვა ახლა მიუბმელია."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} იყო {1}-ზე, რომლებიც ახლა მიუბმელია."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} იყო {1}-ზე, რომელიც ახლა მიუბმელია."
@@ -165,6 +171,10 @@ msgstr "{entityLabel}-ის სახელი"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from}-დან {to}-მდე"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} დასახურად"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "ბლოკები"
 msgid "Blue"
 msgstr "ლურჯი"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "ლურჯი {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "ლურჯი ბოტები"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "კატეგორია განახლდა"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "ცენტრალური ხაზი"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "აღმოჩენა"
 msgid "Detect from web browser"
 msgstr "ვებ ბრაუზერიდან აღმოჩენა"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "დეველოპერის რეჟიმი"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "სხვა თამაშის სერვერი"
@@ -1739,6 +1758,11 @@ msgstr "ცარიელი პილონი"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "ხმის ჩართვა"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "დასრულდა"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "საწვავის ავზი"
 msgid "full afterburner"
 msgstr "სრული ფორსაჟი"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "მხოლოდ ქვემეხები"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "ხელი მოაშორე სახელურს; დააჭირე enter-ს მისალმებისა და გაშვებისთვის"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "ხელი მოაშორე სახელურს; დააჭირე {key}-ს მისალმებისა და გაშვებისთვის"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "რადარის ანტენის დაწევა"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M დასახურად"
+msgid "LWD"
+msgstr "მარც"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "სახელი აუცილებელია"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "სახელი უნდა იყოს 1000 სიმბოლო ან ნაკლები"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ცქ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "შეტყობინებები: {0}"
 msgid "Novice"
 msgstr "დამწყები"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "ცზ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "ნომერი"
@@ -3237,7 +3265,9 @@ msgstr "ზოლზე: ფლაპები ნახევრად, სი�
 msgid "Oops! Page Not Found!"
 msgstr "უპს! გვერდი ვერ მოიძებნა!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "ღია"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "ვარიანტები"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "სხვა"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "სხვა"
 
@@ -3469,13 +3504,13 @@ msgstr "პოსტები"
 msgid "Posts and comments"
 msgstr "პოსტები და კომენტარები"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "ასაფრენად დააჭირე {key}"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "დააჭირეთ კლავიშს…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "ასაფრენად დააჭირე ENTER"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "ჩანაწერი შენახულია"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "წითელი"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "წითელი {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "სრული სიმძლავრე"
 msgid "Runway {end}"
 msgstr "ასაფრენი ბილიკი {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "მარჯ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "შაბათი"
@@ -4074,6 +4117,7 @@ msgstr "სერვერი"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "სერვერის შეცდომა"
 
@@ -4086,6 +4130,10 @@ msgstr "სერვერის წესები"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "სერვერი მუშაობს v{0}-ზე, თქვენ გაქვთ v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "სერვერი გაითიშა"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "გაყოფა"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "ფრთების გაშლა"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "სტაბ {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "მოთხოვნილი კონტენტი ვერ მო
 msgid "The server returned a web page instead of data."
 msgstr "სერვერმა მონაცემების ნაცვლად ვებგვერდი დააბრუნა."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "სამყაროს სერვერმა უპასუხა შეცდომით {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "სამყაროს სერვერმა დროულად არ უპასუხა"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "სამყაროს სერვერზე კიდევ ერთი მატჩისთვის ადგილი არ არის"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "სამყაროს სერვერმა გამოგზავნა პასუხი, რომლის წაკითხვაც ვერ მოხერხდა"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "ამ აპლიკაციას თქვენი წვდომის გასაღების გამოყენების უფლება არ აქვს. დაუშვით პარამეტრებში, უფლებების განყოფილებაში."
@@ -4494,6 +4562,10 @@ msgstr "დრო"
 msgid "Time of day"
 msgstr "დღის დრო"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "დრო ამოიწურა"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "სათაური"
@@ -4524,9 +4596,17 @@ msgstr "ხედის ვარიანტების გადართვ�
 msgid "Toggle watched filter"
 msgstr "ყურადღების ფილტრის გადართვა"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "თქვენი მისამართიდან შეთავაზებულია ძალიან ბევრი მატჩი"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "ზედმეტად ბევრი მოთხოვნა"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "ძალიან ბევრი მოთხოვნა სამყაროს სერვერზე"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "მოგზაურობა"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ტრიმი"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ტრიმი {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "ფრთები ჩაკეტილია"
 msgid "WINS"
 msgstr "იმარჯვებს"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "მოხსნილია"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "სამყაროს სერვერი"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "სამყაროს სერვერი მიუწვდომელია"

@@ -2019,8 +2019,9 @@ def lex(side, widths):
 	# upper surface down onto the nacelle's shoulder and the wing root, so the
 	# LEX runs into the wing with no step. Its span is TM-101724's at FS 253,
 	# 296 and 357, run between them and forward by cr186938's graph; its root
-	# and edge stand where the traced TP-3111 sections put them above the
-	# keel, and so does its nearly flat underside (lex.underside); at the
+	# stands where the traced TP-3111 sections put it above the keel, its edge
+	# where three side photos see it (layout.lex edge), and so does its nearly
+	# flat underside (lex.underside) where the traced sections put it; at the
 	# junction (tp3111, FS 404.05) its edge meets the wing's leading edge.
 	# Spans and heights run on smooth curves through those knots. Behind FS
 	# 357 its underside comes down through the splitter's top (layout.inlet)
@@ -2043,9 +2044,13 @@ def lex(side, widths):
 	reach = LAYOUT["surfaces"]["lef"]["inner"][0]   # the junction's buttline
 	meet = ORIGIN["waterline"] + wing.point(reach, 0).z / INCH
 	# Heights above the keel of the LEX's upper root and of its edge, read off
-	# the traced sections at FS 253, 296 and 357 (views.py), and at the apex
+	# the traced sections at FS 253, 296 and 357 (views.py), and at the apex.
+	# The edge's waterline is where the side photos see it, from the apex on
+	# to the wing's leading edge at the junction (the sections read it up to
+	# 1.24 in higher); the upper surface falls to it from the root, so it
+	# comes down toward the sections' own upper surface near the edge
 	root_height = [(apex, start["waterline"] - profile("keel", apex)), (253, 42.6), (296, 43.0), (357, 42.7)]
-	edge_height = [(253, 38.3), (296, 35.2), (357, 31.0), (junction, meet - profile("keel", junction))]
+	edge_line = [(apex, start["waterline"])] + [tuple(k) for k in LAYOUT["lex"]["edge"]] + [(junction, meet)]
 
 	def root_line(station):
 		return profile("keel", min(station, junction)) + smooth(root_height, station)
@@ -2124,10 +2129,8 @@ def lex(side, widths):
 		if station <= junction:
 			root = root_line(station)
 			edge_bl = smooth(knots, station)
-			edge = keel + smooth(edge_height, station)
+			edge = smooth(edge_line, station)
 			span = max(edge_bl - body_at(station, root), 0.0)
-			if station < 253:
-				edge = root - (root - (keel + smooth(edge_height, 253))) * span / measured[253]
 		else:
 			# the outer side rides the inner wing just inboard of the junction
 			edge_bl = reach - 5.0 * e
@@ -2203,7 +2206,8 @@ def lex(side, widths):
 			if station > junction:
 				b = roof(station, bl)
 			elif station < 253:
-				thick = smooth(root_height, 253) + 0.5 - (smooth(root_height, 253) + 0.5 - smooth(edge_height, 253)) * smooth(LEX_FALL, t) - traced(253, t)
+				# the depth at FS 253 under the top there, so the two meet
+				thick = smooth(root_height, 253) + 0.5 - (smooth(root_height, 253) + 0.5 - (smooth(edge_line, 253) - profile("keel", 253))) * smooth(LEX_FALL, t) - traced(253, t)
 				b = wl - thick * span / measured[253]
 			else:
 				b = keel + traced(min(station, last), t)

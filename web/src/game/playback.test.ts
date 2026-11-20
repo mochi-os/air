@@ -94,6 +94,26 @@ describe('parse', () => {
     expect(pose.properties.Pilot).toBe('Viper')
   })
 
+  // A backslash escapes the character after it, in this reader and in
+  // TacView's. A multiplayer callsign ending in one escaped the comma after it,
+  // and the pilot's colour vanished into his name in every recording of the
+  // match.
+  it("keeps a callsign's trailing backslash out of the property after it", () => {
+    const p = parse(record([{ time: 0, objects: [jet({ label: 'x\\' })] }]))
+    const [pose] = scene(p, 0)
+    expect(pose.properties.Pilot).toBe('x\\')
+    expect(pose.properties.Color).toBe('Blue')
+    expect(pose.properties.Type).toBe('Air+FixedWing')
+  })
+
+  it('reads a header value back as it was written, backslash and all', () => {
+    const p = parse(
+      record([{ time: 0, objects: [jet()] }], { world: 'Back\\slash \\' })
+    )
+    expect(p.information.Match_world).toBe('Back\\slash \\')
+    expect(p.information.Title).toBe('Mochi Air: flight')
+  })
+
   it('carries a property the writer suppressed forward to the samples that did not repeat it', () => {
     const data = { gear: 0, flaps: 2, trim: 0, hook: 1 }
     const text = record(

@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} 已被占用，该控制项现已解除绑定。"
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} 原本在 {1} 上，它们现已解除绑定。"
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} 原本在 {1} 上，现已解除绑定。"
@@ -165,6 +171,10 @@ msgstr "{entityLabel}名称"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} 至 {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} 关闭"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "阻止"
 msgid "Blue"
 msgstr "蓝队"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "蓝队 {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "蓝队机器人"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "分类已更新"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "中线"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "检测"
 msgid "Detect from web browser"
 msgstr "从浏览器检测"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "开发者模式"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "不同的游戏主机"
@@ -1739,6 +1758,11 @@ msgstr "空挂架"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "启用声音"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "结束"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "副油箱"
 msgid "full afterburner"
 msgstr "全加力"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "混战"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "仅机炮"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "松开驾驶杆; 按 enter 敬礼并弹射"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "松开驾驶杆; 按 {key} 敬礼并弹射"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "降低雷达天线"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M 关闭"
+msgid "LWD"
+msgstr "左滚"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "名称为必填项"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "名称不能超过 1000 个字符"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "低头"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "通知：{0}"
 msgid "Novice"
 msgstr "新手"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "抬头"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "数字"
@@ -3237,7 +3265,9 @@ msgstr "跑道上: 襟翼半放，推油门至军用推力，松刹车"
 msgid "Oops! Page Not Found!"
 msgstr "抱歉!页面未找到!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "开放"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "选项"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "其他"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "其他"
 
@@ -3469,13 +3504,13 @@ msgstr "帖子"
 msgid "Posts and comments"
 msgstr "帖子和评论"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "按 {key} 弹射起飞"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "按下一个按键…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "按 ENTER 弹射起飞"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "飞行记录已保存"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "红队"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "红队 {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "满油门"
 msgid "Runway {end}"
 msgstr "跑道 {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "右滚"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "星期六"
@@ -4074,6 +4117,7 @@ msgstr "服务器"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "服务器错误"
 
@@ -4086,6 +4130,10 @@ msgstr "服务器规则"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "服务器运行 v{0}，你的是 v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "服务器已关闭"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "分割"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "展开机翼"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "平尾 {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "找不到请求的内容。"
 msgid "The server returned a web page instead of data."
 msgstr "服务器返回了网页而不是数据。"
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "世界服务器返回错误 {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "世界服务器未及时响应"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "世界服务器无法再容纳更多对局"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "世界服务器发送了无法读取的响应"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "此应用无权使用您的通行密钥。请在“设置”的“权限”中允许。"
@@ -4494,6 +4562,10 @@ msgstr "时长"
 msgid "Time of day"
 msgstr "时段"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "超时"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "标题"
@@ -4524,9 +4596,17 @@ msgstr "切换视图选项"
 msgid "Toggle watched filter"
 msgstr "切换已关注筛选"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "来自你的地址的对局过多"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "请求次数过多"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "对世界服务器的请求过多"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "行进中"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "配平"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "配平 {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "机翼锁定"
 msgid "WINS"
 msgstr "获胜"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "已撤回"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "世界服务器"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "无法连接世界服务器"

@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} era già occupato, e quel comando ora non è assegnato."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} era su {1}, che ora non sono assegnati."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} era su {1}, che ora non è assegnato."
@@ -165,6 +171,10 @@ msgstr "Nome {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "da {from} a {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} per chiudere"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Blocca"
 msgid "Blue"
 msgstr "Blu"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLU {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Bot blu"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Categoria aggiornata"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Linea centrale"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Rileva"
 msgid "Detect from web browser"
 msgstr "Rileva dal browser web"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Modalità sviluppatore"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Host di gioco diverso"
@@ -1739,6 +1758,11 @@ msgstr "Pilone vuoto"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Attiva l'audio"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Terminata"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Serbatoio carburante"
 msgid "full afterburner"
 msgstr "postbruciatore pieno"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Mischia"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Solo cannoni"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Mani via dalla barra; premi invio per salutare e lanciare"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Mani via dalla barra; premi {key} per salutare e lanciare"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Abbassa antenna radar"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M per chiudere"
+msgid "LWD"
+msgstr "ASG"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Il nome è obbligatorio"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Il nome deve contenere al massimo 1000 caratteri"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "PIC"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Notifiche: {0}"
 msgid "Novice"
 msgstr "Principiante"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "CAB"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Numero"
@@ -3237,7 +3265,9 @@ msgstr "In pista: flap a metà, porta i motori a potenza militare, freni liberi"
 msgid "Oops! Page Not Found!"
 msgstr "Oops! Pagina non trovata!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Aperta"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Opzioni"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Altro"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Altro"
 
@@ -3469,13 +3504,13 @@ msgstr "Post"
 msgid "Posts and comments"
 msgstr "Post e commenti"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "PREMI {key} PER IL LANCIO"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Premi un tasto…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "PREMI INVIO PER IL LANCIO"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Registrazione salvata"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Rosso"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "ROSSO {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "MASSIMA POTENZA"
 msgid "Runway {end}"
 msgstr "Pista {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ADG"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Sabato"
@@ -4074,6 +4117,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Errore del server"
 
@@ -4086,6 +4130,10 @@ msgstr "Regole del server"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "il server usa v{0}, tu hai v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Server spento"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Dividi"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "APRIRE ALI"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Impossibile trovare il contenuto richiesto."
 msgid "The server returned a web page instead of data."
 msgstr "Il server ha restituito una pagina web anziché i dati."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Il server del mondo ha risposto con l'errore {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Il server del mondo non ha risposto in tempo"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Il server del mondo non ha spazio per un'altra partita"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Il server del mondo ha inviato una risposta illeggibile"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Questa app non è autorizzata a usare la tua passkey. Autorizzala in Impostazioni, sotto Permessi."
@@ -4494,6 +4562,10 @@ msgstr "Tempo"
 msgid "Time of day"
 msgstr "Ora del giorno"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Tempo scaduto"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Titolo"
@@ -4524,9 +4596,17 @@ msgstr "Attiva/disattiva opzioni vista"
 msgid "Toggle watched filter"
 msgstr "Mostra/nascondi filtro osservati"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Troppe partite offerte dal tuo indirizzo"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Troppe richieste"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Troppe richieste al server del mondo"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "In viaggio"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "ALI BLOCCATE"
 msgid "WINS"
 msgstr "VINCE"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Ritirata"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Server del mondo"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Server del mondo non raggiungibile"

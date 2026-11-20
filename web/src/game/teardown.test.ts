@@ -21,7 +21,7 @@ function lift(name: string): string {
 // sandbox runs code with the names in vars read and written through it, and
 // every other name an inert stand-in that answers any call or property
 function sandbox(code: string, vars: Record<string, unknown>): void {
-  const real = new Set(['Math', 'JSON', 'Object', 'Array', 'Number', 'String', 'Boolean', 'Set', 'Map', 'Proxy', 'Reflect', 'Infinity', 'NaN', 'undefined', 'console', 'globalThis'])
+  const real = new Set(['Math', 'JSON', 'Object', 'Array', 'Number', 'String', 'Boolean', 'Set', 'Map', 'Proxy', 'Reflect', 'Error', 'Infinity', 'NaN', 'undefined', 'console', 'globalThis'])
   const inert: unknown = new Proxy(function () {}, { get: (_, k) => (k === Symbol.toPrimitive ? () => 0 : inert), apply: () => inert, construct: () => inert as object })
   const scope = new Proxy(vars, {
     has: (_, k) => typeof k === 'string' && !real.has(k),
@@ -87,6 +87,22 @@ describe('an engine that stops', () => {
     expect(seen).toEqual(['function', true])
     expect([scope.dev_test_probe, scope.dev_test_log, scope.dev_test_later]).toEqual([undefined, undefined, vars.made.later])
     delete scope.dev_test_later
+  })
+
+  it('publishes each probe under its own name: a second under a taken name throws, but for the records it rewrites', () => {
+    const at = engine.indexOf('  const dev_published')
+    const block = engine.slice(at, engine.indexOf('\n', engine.indexOf('  on_stop(() => { for (const [key, value] of dev_published)', at)) + 1)
+    const vars = { teardown: [] as (() => void)[], seen: {} as Record<string, unknown> }
+    sandbox(`const on_stop = (f) => teardown.push(f); ${block.replace(/ as any|<PropertyKey, unknown>/g, '')}
+      dev_global.dev_test_stars = () => 6;
+      try { dev_global.dev_test_stars = () => 0; seen.taken = 'replaced'; } catch (e) { seen.taken = String(e.message); }
+      dev_global.dev_missiles = []; dev_global.dev_missiles = dev_global.dev_missiles; dev_global.dev_crash = 'pilot'; dev_global.dev_crash = 'fire';
+      seen.crash = dev_global.dev_crash; seen.stars = dev_global.dev_test_stars();`, vars)
+    for (const release of vars.teardown) release()
+    expect(vars.seen).toEqual({ taken: 'developer probe dev_test_stars is already published', crash: 'fire', stars: 6 })
+    expect(engine).toMatch(/\(dev_global as any\)\.dev_stars=\(count=6\)=>/)
+    expect(engine).toMatch(/\(dev_global as any\)\.dev_illuminance=\(illuminance\)=>/)
+    expect(engine).not.toContain('dev_sky')
   })
 
   it('keeps a zoom it was still waiting to save', () => {

@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ஏற்கனவே எடுக்கப்பட்டிருந்தது, அந்தக் கட்டுப்பாடு இப்போது பிணைக்கப்படவில்லை."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} இல் இருந்தது, அவை இப்போது பிணைக்கப்படவில்லை."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} இல் இருந்தது, அது இப்போது பிணைக்கப்படவில்லை."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} பெயர்"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} முதல் {to} வரை"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} மூட"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "தடுக்கிறது"
 msgid "Blue"
 msgstr "நீலம்"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "நீலம் {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "நீல பாட்கள்"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "வகை புதுப்பிக்கப்பட்டது"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "மைய கோடு"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "கண்டறி"
 msgid "Detect from web browser"
 msgstr "வலை உலாவியிலிருந்து கண்டறி"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "டெவலப்பர் பயன்முறை"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "வேறு விளையாட்டு ஹோஸ்ட்"
@@ -1739,6 +1758,11 @@ msgstr "காலியான பைலான்"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "ஒலியை இயக்கு"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "முடிவுற்றது"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "எரிபொருள் தொட்டி"
 msgid "full afterburner"
 msgstr "முழு ஆஃப்டர்பர்னர்"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "பீரங்கிகள் மட்டும்"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "கைப்பிடியிலிருந்து கையை எடு; வணக்கம் செலுத்தி ஏவ enter அழுத்து"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "கைப்பிடியிலிருந்து கையை எடு; வணக்கம் செலுத்தி ஏவ {key} அழுத்து"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "ரேடார் ஆண்டெனாவைத் தாழ்த்து"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M மூட"
+msgid "LWD"
+msgstr "இடது"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "பெயர் தேவை"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "பெயர் 1000 எழுத்துக்கள் அல்லது அதற்கும் குறைவாக இருக்க வேண்டும்"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "கீழ்"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "அறிவிப்புகள்: {0}"
 msgid "Novice"
 msgstr "புதியவர்"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "மேல்"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "எண்"
@@ -3237,7 +3265,9 @@ msgstr "ஓடுபாதையில்: பாதி ஃப்ளாப், �
 msgid "Oops! Page Not Found!"
 msgstr "அய்யோ! பக்கம் கிடைக்கவில்லை!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "திறந்த போட்டி"
 
@@ -3288,6 +3318,11 @@ msgstr "விருப்பங்கள்"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "மற்றவை"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "பிற"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3469,13 +3504,13 @@ msgstr "பதிவுகள்"
 msgid "Posts and comments"
 msgstr "பதிவுகள் மற்றும் கருத்துகள்"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "பறக்க {key} அழுத்தவும்"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "ஒரு விசையை அழுத்தவும்…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "பறக்க ENTER அழுத்தவும்"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "பதிவு சேமிக்கப்பட்டது"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "சிவப்பு"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "சிவப்பு {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "முழு சக்தி"
 msgid "Runway {end}"
 msgstr "ஓடுபாதை {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "வலது"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "சனிக்கிழமை"
@@ -4074,6 +4117,7 @@ msgstr "சர்வர்"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "சேவையகப் பிழை"
 
@@ -4086,6 +4130,10 @@ msgstr "சேவையக விதிகள்"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "சேவையகம் v{0} இயக்குகிறது, உங்களிடம் v{version} உள்ளது"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "சேவையகம் நிறுத்தப்பட்டது"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "பிரி"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "இறக்கைகளை விரி"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "நிலைப்படுத்தி {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "கோரப்பட்ட உள்ளடக்கத்தைக் �
 msgid "The server returned a web page instead of data."
 msgstr "சேவையகம் தரவுக்குப் பதிலாக ஒரு வலைப் பக்கத்தை வழங்கியது."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "உலக சேவையகம் {status} பிழையுடன் பதிலளித்தது"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "உலக சேவையகம் நேரத்தில் பதிலளிக்கவில்லை"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "உலக சேவையகத்தில் மற்றொரு போட்டிக்கு இடமில்லை"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "உலக சேவையகம் படிக்க முடியாத பதிலை அனுப்பியது"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "இந்த ஆப்ஸுக்கு உங்கள் கடவுக்குறியைப் பயன்படுத்த அனுமதி இல்லை. அமைப்புகளில், அனுமதிகள் பிரிவில் அதை அனுமதிக்கவும்."
@@ -4494,6 +4562,10 @@ msgstr "நேரம்"
 msgid "Time of day"
 msgstr "நாளின் நேரம்"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "நேரம் முடிந்தது"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "தலைப்பு"
@@ -4524,9 +4596,17 @@ msgstr "காட்சி விருப்பங்களை மாற்ற�
 msgid "Toggle watched filter"
 msgstr "கவனிக்கப்பட்ட வடிகட்டியை மாற்று"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "உங்கள் முகவரியிலிருந்து மிக அதிகமான போட்டிகள் வழங்கப்பட்டுள்ளன"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "மிக அதிகமான கோரிக்கைகள்"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "உலக சேவையகத்திற்கு மிக அதிகமான கோரிக்கைகள்"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "பயணிக்கிறது"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ட்ரிம்"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ட்ரிம் {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "இறக்கைகள் பூட்டியது"
 msgid "WINS"
 msgstr "வெற்றி"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "திரும்பப் பெறப்பட்டது"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "உலக சேவையகம்"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "உலக சேவையகத்தை அடைய முடியவில்லை"

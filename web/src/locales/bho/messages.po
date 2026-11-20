@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} पहिले से लिहल जा चुकल रहे, आ ऊ नियंत्रण अब असंबद्ध बा।"
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} पर रहे, जे सभ अब असंबद्ध बाड़ें।"
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} पर रहे, जे अब असंबद्ध बा।"
@@ -165,6 +171,10 @@ msgstr "{entityLabel} के नाम"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} से {to} तक"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "बंद करे खातिर {key}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "ब्लॉक"
 msgid "Blue"
 msgstr "नीला"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "नीला {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "नीला बॉट"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "श्रेणी अद्यतन कइल गइल"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "बीच के लाइन"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "पता लगाईं"
 msgid "Detect from web browser"
 msgstr "वेब ब्राउज़र से पता लगाईं"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "डेवलपर मोड"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "अलग गेम होस्ट"
@@ -1739,6 +1758,11 @@ msgstr "खाली पाइलन"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "आवाज चालू करीं"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "समाप्त"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "ईंधन टंकी"
 msgid "full afterburner"
 msgstr "पूरा आफ्टरबर्नर"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "खाली तोप"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "स्टिक से हाथ हटाईं; सलामी आ उड़ान खातिर enter दबाईं"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "स्टिक से हाथ हटाईं; सलामी आ उड़ान खातिर {key} दबाईं"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "रडार एंटीना नीचे करीं"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "बंद करे खातिर M"
+msgid "LWD"
+msgstr "बायाँ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "नाम जरूरी बा"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "नाम 1000 अक्षर भा ओकरा से कम होखे के चाहीं"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "नीचे"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "सूचना: {0}"
 msgid "Novice"
 msgstr "नौसिखिया"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "ऊपर"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "संख्या"
@@ -3237,7 +3265,9 @@ msgstr "रनवे पर: आधा फ्लैप, सैन्य ता�
 msgid "Oops! Page Not Found!"
 msgstr "ओह! पन्ना ना मिलल!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "खुलल"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "विकल्प"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "दोसर"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "दोसर"
 
@@ -3469,13 +3504,13 @@ msgstr "पोस्ट"
 msgid "Posts and comments"
 msgstr "पोस्ट आ टिप्पणी"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "उड़ान खातिर {key} दबाईं"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "कवनो कुंजी दबाईं…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "उड़ान खातिर ENTER दबाईं"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "रिकॉर्डिंग सेव भइल"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "लाल"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "लाल {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "पूरा जोर"
 msgid "Runway {end}"
 msgstr "रनवे {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "दायाँ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "शनिवार"
@@ -4074,6 +4117,7 @@ msgstr "सर्वर"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "सर्वर त्रुटि"
 
@@ -4086,6 +4130,10 @@ msgstr "सर्वर नियम"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "सर्वर v{0} चलावत बा, राउर लगे v{version} बा"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "सर्वर बंद हो गइल"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "विभाजित करीं"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "पंख फइलाईं"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "स्टैब {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "मांगल गइल सामग्री ना मिलल।"
 msgid "The server returned a web page instead of data."
 msgstr "सर्वर डेटा के बजाय एगो वेब पेज लौटवलस।"
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "वर्ल्ड सर्वर त्रुटि {status} के साथ जवाब दिहलस"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "वर्ल्ड सर्वर समय पर जवाब ना दिहलस"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "वर्ल्ड सर्वर में दोसर मैच खातिर जगह नइखे"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "वर्ल्ड सर्वर अइसन जवाब भेजलस जे पढ़ल ना जा सकल"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "ई ऐप के रउआ पासकी इस्तेमाल करे के अनुमति नइखे। सेटिंग में, अनुमति के नीचे एकरा के अनुमति दीं।"
@@ -4494,6 +4562,10 @@ msgstr "समय"
 msgid "Time of day"
 msgstr "दिन के समय"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "समय खतम हो गइल"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "शीर्षक"
@@ -4524,9 +4596,17 @@ msgstr "दृश्य विकल्प टॉगल करीं"
 msgid "Toggle watched filter"
 msgstr "देखल फ़िल्टर टॉगल करीं"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "रउआ पता से बहुते जादा मैच पेश कइल गइल बा"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "बहुते जादा अनुरोध"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "वर्ल्ड सर्वर के बहुते जादा अनुरोध"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "यात्रा कर रहल बा"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ट्रिम"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ट्रिम {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "पंख लॉक"
 msgid "WINS"
 msgstr "जीत गइल"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "वापस ले लिहल गइल"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "वर्ल्ड सर्वर"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "वर्ल्ड सर्वर से संपर्क नइखे हो पावत"

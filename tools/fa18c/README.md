@@ -47,8 +47,10 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   areas over the spans in `facts.json` `layout`. The forebody lofts the cited sections over the HATP keel
   line, its nosecone on TM-101724's drooped axis; over FS 150-404 its bottom is flattened up onto the keel the
   photos' lower outline reads (`layout.belly`, `keeled()`), 0.3-2.1 in above that line, within 4-5 in of
-  the keel only, its lower sides held; the LEX is a wedge whose span and heights come from
-  TM-101724, cr186938 and the traced sections, its nearly flat underside traced too (`lex.underside`) and
+  the keel only, its lower sides held; the LEX is a wedge whose span comes from TM-101724 and cr186938,
+  its root's height from the traced sections and its edge's waterline from three side photos (`layout.lex`
+  edge: the sections stood it up to 1.24 in higher, with a rise behind the apex the photos lack), its
+  nearly flat underside traced (`lex.underside`) and
   carried down behind FS 357 onto the wing root's lower surface, so the root lies inside it (`layout.lex`
   underside), faired behind the LEX-wing junction onto the wing root. Every
   trace is read through its pixel steps, never step by step: the HATP profiles through each step's midpoint

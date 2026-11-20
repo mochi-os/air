@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} kien diġà meħud, u dak il-kontroll issa mhux marbut."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} kien fuq {1}, li issa mhumiex marbuta."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} kien fuq {1}, li issa mhux marbut."
@@ -165,6 +171,10 @@ msgstr "Isem ta' {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "minn {from} sa {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} biex tagħlaq"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Jimblokka"
 msgid "Blue"
 msgstr "Blu"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLU {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Bots blu"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Kategorija aġġornata"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Linja ċentrali"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Iskopri"
 msgid "Detect from web browser"
 msgstr "Iskopri mill-browser"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Modalità tal-iżviluppatur"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Server tal-logħba differenti"
@@ -1739,6 +1758,11 @@ msgstr "Pilun vojt"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Attiva l-ħoss"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Intemmet"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Tank tal-fjuwil"
 msgid "full afterburner"
 msgstr "afterburner sħiħ"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Kanuni biss"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Neħħi idek mill-istick; agħfas enter biex issellem u titlaq"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Neħħi idek mill-istick; agħfas {key} biex issellem u titlaq"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Niżżel l-antenna tar-radar"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M biex tagħlaq"
+msgid "LWD"
+msgstr "LWD"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "L-isem huwa meħtieġ"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "L-isem irid ikun ta' 1000 karattru jew inqas"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ND"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Notifiki: {0}"
 msgid "Novice"
 msgstr "Beġinner"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "NU"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Numru"
@@ -3237,7 +3265,9 @@ msgstr "Fuq il-pista: nofs flaps, tella' sa qawwa militari, brejkijiet maħlula"
 msgid "Oops! Page Not Found!"
 msgstr "Oops! Paġna Mhux Misjuba!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Miftuħa"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Għażliet"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Oħra"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Oħra"
 
@@ -3469,13 +3504,13 @@ msgstr "Posts"
 msgid "Posts and comments"
 msgstr "Posts u kummenti"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "AGĦFAS {key} BIEX TITLAQ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Agħfas ċavetta…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "AGĦFAS ENTER BIEX TITLAQ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Ir-reġistrazzjoni nħażnet"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Aħmar"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "AĦMAR {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "QAWWA SĦIĦA"
 msgid "Runway {end}"
 msgstr "Pista {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "RWD"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Is-Sibt"
@@ -4074,6 +4117,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Żball tas-server"
 
@@ -4086,6 +4130,10 @@ msgstr "Regoli tas-server"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "is-server iħaddem v{0}, int għandek v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Is-server intefa"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Aqsam"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "IFTAĦ IL-ĠWIENAĦ"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Il-kontenut mitlub ma setax jinstab."
 msgid "The server returned a web page instead of data."
 msgstr "Is-server irritorna paġna web minflok data."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Is-server tad-dinja wieġeb bl-iżball {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Is-server tad-dinja ma wieġebx fil-ħin"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Is-server tad-dinja m'għandux spazju għal partita oħra"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Is-server tad-dinja bagħat tweġiba li ma setgħetx tinqara"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Din l-app mhijiex permessa tuża ċ-ċavetta tal-aċċess tiegħek. Ippermettiha fl-Issettjar, taħt Permessi."
@@ -4494,6 +4562,10 @@ msgstr "Ħin"
 msgid "Time of day"
 msgstr "Ħin tal-jum"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Skada l-ħin"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Titlu"
@@ -4524,9 +4596,17 @@ msgstr "Aqleb l-għażliet tal-vista"
 msgid "Toggle watched filter"
 msgstr "Aqleb il-filtru tas-segwiti"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Wisq partiti offruti mill-indirizz tiegħek"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Wisq talbiet"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Wisq talbiet lis-server tad-dinja"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Qed jivvjaġġa"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "ĠWIENAĦ IMSAKKRA"
 msgid "WINS"
 msgstr "JIRBAĦ"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Irtirata"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Server tad-dinja"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Is-server tad-dinja ma jistax jintlaħaq"

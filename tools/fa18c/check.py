@@ -1960,6 +1960,12 @@ def checks(jet, only=(), seen=None):
 		yield result("layout.lex", "LEX's section at its apex, its height", 0.0, float(np.ptp(first[:, 1])) if len(first) else math.nan, 0.1)
 		tops = [jet.cut(["lex_right"], [s, 100, 0], [1, 0, 0])[:, 1].max() for s in np.arange(start["station"] + 1.5, 253, 1.5)]
 		yield result("layout.lex", "LEX's top ahead of FS 253, its largest change of climb between sections 1.5 in apart", 0.0, float(np.abs(np.diff(tops, 2)).max()), 0.15)
+		# its edge's waterline where the side photos see it: the top of the
+		# lip at the section's outermost buttline
+		for station, waterline in F["layout"]["lex"]["edge"]:
+			cut = jet.cut(["lex_right"], [station, 100, 0], [1, 0, 0]).reshape(-1, 3)
+			lip = cut[cut[:, 2] > cut[:, 2].max() - 0.05] if len(cut) else cut
+			yield result("layout.lex", f"LEX edge at FS {station}", waterline, float(lip[:, 1].max()) if len(lip) else math.nan, 0.3, "WL in")
 		base = F["lex"]["fence"]["value"]
 		plate = jet.points(["lex_fence_right"])
 		low = plate[plate[:, 1] < plate[:, 1].min() + 1.5]
@@ -2076,7 +2082,9 @@ def checks(jet, only=(), seen=None):
 		path = (every[:, :, 0].max(1) >= 300.0) & (every[:, :, 1].max(1) >= 112.0) & (every[:, :, 1].min(1) <= 124.0) & (every[:, :, 2].max(1) >= 25.0) & (every[:, :, 2].min(1) <= 52.0)
 		index, _ = hits(every[path], rays, np.array([1.0, 0.0, 0.0]))
 		owner = owner[path]
-		wrong = [names[owner[k]] for k in index if k >= 0 and not (names[owner[k]].startswith("lex_") or names[owner[k]] == "splitter_right")]
+		# the position lamp's lens lies on the LEX's top near its edge, where a
+		# ray kept half an inch under the top at the junction can skim the top
+		wrong = [names[owner[k]] for k in index if k >= 0 and not (names[owner[k]].startswith(("lex_", "lamp_position_lex_")) or names[owner[k]] == "splitter_right")]
 		yield result("shape.lex", f"rays aft under the LEX, WL 112-124, BL 25-52, meeting another part first, of {len(rays)}" + (f" ({', '.join(sorted(set(wrong)))})" if wrong else ""), 0, len(wrong), 0, "rays")
 
 	yield from guard("shape.lex", "LEX blend", blend)

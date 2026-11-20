@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} איז שוין געווען פאַרנומען, און יענער קאָנטראָל איז יצט ניט געבונדן."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} איז געווען אויף {1}, וואָס זענען יצט ניט געבונדן."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} איז געווען אויף {1}, וואָס איז יצט ניט געבונדן."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} נאָמען"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ביז {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} צו פֿאַרמאַכן"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "בלאָקירט"
 msgid "Blue"
 msgstr "בלוי"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "בלוי {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "בלויע באָטס"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "קאַטעגאָריע באַנײַט"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "צענטער ליניע"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "דערקענען"
 msgid "Detect from web browser"
 msgstr "אויסקלײַבן פֿון וועב בראָוזער"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "אַנטוויקלער־מאָדע"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "אַן אַנדער שפּיל־האָסט"
@@ -1739,6 +1758,11 @@ msgstr "ליידיקער פּילאָן"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "אָנשטעלן קלאַנג"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "פֿאַרענדיקט"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "ברענשטאָף טאַנק"
 msgid "full afterburner"
 msgstr "פֿולער נאָכברענער"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "בלויז האַרמאַטן"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "נעם די האַנט אַראָפּ פֿון שטײַערשטעקן; דריק enter צו סאַלוטירן און שטאַרטן"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "נעם די האַנט אַראָפּ פֿון שטײַערשטעקן; דריק {key} צו סאַלוטירן און שטאַרטן"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "נידעריקן די ראַדאַר־אַנטענע"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M צו פֿאַרמאַכן"
+msgid "LWD"
+msgstr "לינקס"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "נאָמען איז נייטיק"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "נאָמען מוז זײַן 1000 כאַראַקטערן אָדער ווייניקער"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "אַראָפּ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "מעלדונגען: {0}"
 msgid "Novice"
 msgstr "אָנהייבער"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "אַרויף"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "נומער"
@@ -3237,7 +3265,9 @@ msgstr "אויף דער לאַנדבאַן: האַלבע פֿלאַפּן, גי�
 msgid "Oops! Page Not Found!"
 msgstr "אױ! זײַטל ניט געפֿונען!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "אָפֿן"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "אָפּציעס"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "אַנדער"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "אַנדער"
 
@@ -3469,13 +3504,13 @@ msgstr "פּאָסטן"
 msgid "Posts and comments"
 msgstr "פּאָסטן און באַמערקונגען"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "דריקט {key} צו פֿליִען"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "דריקט אַ קלאַוויש…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "דריקט Enter צו פֿליִען"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "פֿאַרשרײַבונג געשפּייכערט"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "רויט"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "רויט {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "פֿולע קראַפֿט"
 msgid "Runway {end}"
 msgstr "לאַנדבאַן {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "רעכטס"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "שבת"
@@ -4074,6 +4117,7 @@ msgstr "סערווער"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "סערווער פֿעלער"
 
@@ -4086,6 +4130,10 @@ msgstr "סערווער־כּללים"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "סערווער לויפֿט v{0}, איר האָט v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "דער סערווער איז אָפּגעשטעלט געוואָרן"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "טייל"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "שפּרייט די פֿליגלען"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "סטאַביליזאַטאָר {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "דער פֿאַרלאַנגטער אינהאַלט איז נישט גע�
 msgid "The server returned a web page instead of data."
 msgstr "דער סערװער האָט צוריקגעגעבן אַ וועב-בלאַט אַנשטאָט דאַטן."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "דער וועלט־סערווער האָט געענטפֿערט מיט פֿעלער {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "דער וועלט־סערווער האָט נישט געענטפֿערט אין צײַט"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "דער וועלט־סערווער האָט נישט קיין אָרט פֿאַר נאָך אַ מאַטש"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "דער וועלט־סערווער האָט געשיקט אַן ענטפֿער וואָס מע קען נישט לייענען"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "די אַפּ איז נישט דערלויבט צו נוצן דײַן פּאַסקיי. דערלויבט עס אין אײַנשטעלונגען, אונטער דערלויבענישן."
@@ -4494,6 +4562,10 @@ msgstr "צײַט"
 msgid "Time of day"
 msgstr "צייט פֿון טאָג"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "די צײַט איז אויס"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "קעפּל"
@@ -4524,9 +4596,17 @@ msgstr "ביט בליק־אָפּציעס"
 msgid "Toggle watched filter"
 msgstr "ביט נאָכקוק־פֿילטער"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "צו פֿיל מאַטשן פֿאָרגעלייגט פֿון אײַער אַדרעס"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "צו פֿיל בקשות"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "צו פֿיל בקשות צום וועלט־סערווער"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "רײַזנדיק"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "טרים"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "טרים {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "פֿליגלען פֿאַרשלאָסן"
 msgid "WINS"
 msgstr "געווינט"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "צוריקגעצויגן"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "וועלט־סערווער"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "דער וועלט־סערווער איז נישט צו דערגרייכן"

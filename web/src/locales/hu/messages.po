@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} már foglalt volt, és az a vezérlő most nincs hozzárendelve."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} ezeken volt: {1}, amelyek most nincsenek hozzárendelve."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} ezen volt: {1}, ami most nincs hozzárendelve."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} neve"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} és {to} között"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} a bezáráshoz"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Blokkolja"
 msgid "Blue"
 msgstr "Kék"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "KÉK {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Kék botok"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Kategória frissítve"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Középvonal"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Észlelés"
 msgid "Detect from web browser"
 msgstr "Felismerés a böngészőből"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Fejlesztői mód"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Másik játékkiszolgáló"
@@ -1739,6 +1758,11 @@ msgstr "Üres pilon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Hang bekapcsolása"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Véget ért"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Üzemanyagtartály"
 msgid "full afterburner"
 msgstr "teljes utánégető"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Csak gépágyú"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Kezet le a botkormányról; nyomj entert a tiszteléshez és az indításhoz"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Kezet le a botkormányról; nyomd meg a(z) {key} billentyűt a tiszteléshez és az indításhoz"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Radarantenna leengedése"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M a bezáráshoz"
+msgid "LWD"
+msgstr "BSL"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "A név kötelező"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "A név legfeljebb 1000 karakter lehet"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "OL"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Értesítések: {0}"
 msgid "Novice"
 msgstr "Kezdő"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "OF"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Szám"
@@ -3237,7 +3265,9 @@ msgstr "Futópályán: fél fékszárny, gáz katonai tolóerőre, fékek ki"
 msgid "Oops! Page Not Found!"
 msgstr "Hopp! Az oldal nem található!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Nyílt"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Opciók"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Egyéb"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Egyéb"
 
@@ -3469,13 +3504,13 @@ msgstr "Bejegyzések"
 msgid "Posts and comments"
 msgstr "Bejegyzések és hozzászólások"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "NYOMD MEG AZ {key}T AZ INDÍTÁSHOZ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Nyomjon le egy billentyűt…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "NYOMD MEG AZ ENTERT AZ INDÍTÁSHOZ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "A felvétel mentve"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Piros"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "PIROS {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "TELJES GÁZ"
 msgid "Runway {end}"
 msgstr "Kifutópálya {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "JSL"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Szombat"
@@ -4074,6 +4117,7 @@ msgstr "Kiszolgáló"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Kiszolgálóhiba"
 
@@ -4086,6 +4130,10 @@ msgstr "Szerverszabályzat"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "a szerver v{0} verziót futtat, neked v{version} van"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "A szerver leállt"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Osztott"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "SZÁRNYAK KINYITÁSA"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "A kért tartalom nem található."
 msgid "The server returned a web page instead of data."
 msgstr "A kiszolgáló weboldalt adott vissza adatok helyett."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "A világszerver hibával válaszolt: {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "A világszerver nem válaszolt időben"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "A világszerveren nincs hely újabb meccsnek"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "A világszerver olvashatatlan választ küldött"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Ez az alkalmazás nem használhatja az Ön hozzáférési kulcsát. Engedélyezze a Beállításokban, az Engedélyek alatt."
@@ -4494,6 +4562,10 @@ msgstr "Idő"
 msgid "Time of day"
 msgstr "Napszak"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Időtúllépés"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Cím"
@@ -4524,9 +4596,17 @@ msgstr "Nézetbeállítások váltása"
 msgid "Toggle watched filter"
 msgstr "Figyelt szűrő váltása"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Túl sok meccsajánlat a címedről"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Túl sok kérés"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Túl sok kérés a világszerver felé"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Utazás"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trimm"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIMM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "SZÁRNYAK RETESZELVE"
 msgid "WINS"
 msgstr "GYŐZ"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Visszavonva"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Világszerver"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "A világszerver nem érhető el"

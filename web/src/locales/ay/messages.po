@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ukax katuntatäxänwa, uka apnaqäwix jichhax janiw chinutäkiti."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} ukax {1} patankänwa, ukanakax jichhax janiw chinutäkiti."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} ukax {1} patankänwa, jichhax janiw chinutäkiti."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} suti"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} {to} kama"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} jist'añataki"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Jark'i"
 msgid "Blue"
 msgstr "Larama"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "LARAMA {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Larama botanaka"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Kasta machaqachata"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Taypi siqi"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Jikxataña"
 msgid "Detect from web browser"
 msgstr "Web navegadorat jikxataña"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Lurayiri tuqi"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Yaqha anatañ host"
@@ -1739,6 +1758,11 @@ msgstr "Ch'usa pylon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Sonido activaña"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Tukusiwa"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Combustible tanki"
 msgid "full afterburner"
 msgstr "taqpacha postcombustión"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Kañunanakaki"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Palancata amparama apsuma; saludañataki ukat jaqsuñataki enter limt'ma"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Palancata amparama apsuma; saludañataki ukat jaqsuñataki {key} limt'ma"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Radar antena saraqtayaña"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M jist'añataki"
+msgid "LWD"
+msgstr "CH'I"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Suti wakisiwa"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Sutix 1000 qillqanaka jan ukax juk'ampi jisk'äñapawa"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "AYN"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Yatiyawinaka: {0}"
 msgid "Novice"
 msgstr "Yatiqiri"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "ALA"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Jakhu"
@@ -3237,7 +3265,9 @@ msgstr "Pistana: chika flaps, militar ch'amakama aptma, frenonaka antutma"
 msgid "Oops! Page Not Found!"
 msgstr "¡Oops! ¡Laphi jan jikxatasiti!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Jist'arata"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Opcionanaka"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Yaqha"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Yaqha"
 
@@ -3469,13 +3504,13 @@ msgstr "Qillqatanaka"
 msgid "Posts and comments"
 msgstr "Qillqatanak comentarionakampi"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "HALAÑATAKI {key} ÑIT'AÑA"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Mä tecla limt'am…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "HALAÑATAKI ENTER ÑIT'AÑA"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Grabación imata"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Wila"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "WILA {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "TAQI CH'AMA"
 msgid "Runway {end}"
 msgstr "Pista {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "KUP"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Sábado"
@@ -4074,6 +4117,7 @@ msgstr "Servidor"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Servidor pantjasiwi"
 
@@ -4086,6 +4130,10 @@ msgstr "Servidor kamachinaka"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "servidor v{0} apnaqi, jumax v{version} utjtamawa"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Servidorax jist'antatawa"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "T'aqaña"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "CHIQNAKA JIST'ARAÑA"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "ESTAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Mayit contenidox janiw jikxataskiti."
 msgid "The server returned a web page instead of data."
 msgstr "Servidoraxa mä web laphi kutt'ayäna, janiw yatiyawinakaki."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Uraqpacha servidorax {status} pantjasiwimpiw kutt'ayi"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Uraqpacha servidorax janiw pachaparu kutt'aykiti"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Uraqpacha servidoranx janiw yaqha anatäwitak chiqax utjkiti"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Uraqpacha servidorax mä jaysäwi apayi, ukax janiw liyiñjamäkiti"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Aka aplicacionax janiw mantañ llawima apnaqañatak iyawsatäkiti. Wakichäwinakan, Permisonaka manqhan iyawsam."
@@ -4494,6 +4562,10 @@ msgstr "Pacha"
 msgid "Time of day"
 msgstr "Uru pacha"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Pachax tukusiwa"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Título"
@@ -4524,9 +4596,17 @@ msgstr "Vista opcionanak jist'araña/jist'antaña"
 msgid "Toggle watched filter"
 msgstr "Uñch'ukit filtro activaña/desactivaña"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Direcciónamat sinti walja anatäwinakaw uñt'ayasi"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Walja mayiwinaka"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Uraqpacha servidorar walja mayiwinaka"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Sarnaqaskiwa"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "CHIQNAKA CHINTATA"
 msgid "WINS"
 msgstr "ATIPI"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Apaqata"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Uraqpacha servidora"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Janiw uraqpacha servidorar puriñjamäkiti"

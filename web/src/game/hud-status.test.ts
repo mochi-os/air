@@ -30,6 +30,7 @@ function stack(world: World): string[] {
     const RADAR={sil:!!w.sil, auto:!!w.acm, acm:w.acm||"bst"}, jammer_armed=()=>(w.jammer||"off")!=="off", jammer_loud=()=>w.jammer==="loud";
     const translate=t=>t, hud_stack={}, hctx={}, HW=0, HH=0; let drawn=[];
     const stack_draw=(rows)=>{ drawn=rows.map(([c,t])=>c+":"+t); return drawn; };
+    ${/\nfunction trim_text\(pitch,roll\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}
     ${stackCode}
     return drawn;`) as (w: World) => string[]
   return run(world)

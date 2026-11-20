@@ -41,6 +41,7 @@ import {
   History,
   Play,
   ShieldAlert,
+  Wrench,
 } from 'lucide-react'
 import { conceal } from '../game/acmi'
 import { points } from '../game/lso'
@@ -51,6 +52,7 @@ import {
   type MatchTotals,
 } from '../game/net'
 import { server_label } from '../game/servers'
+import { clock } from '../lib/clock'
 
 // Replay is the in-memory recording the engine still holds for this session's
 // flights - the fallback for a row whose upload has not landed yet.
@@ -191,14 +193,17 @@ export function MatchLog({
       .finally(() => setLoading(false))
   }
 
+  // A value this build has no label for - a mode or an end reason a newer
+  // client or world server added - reads as a translated generic word, never
+  // as it came off the wire.
   const modeLabel = (mode: string): string => {
     const labels: Record<string, string> = {
-      furball: t`Furball`,
+      furball: t({ message: 'Open', context: 'match mode' }), // the lobby's name for the free-for-all, which the wire still calls furball
       joust: t`Joust`,
       teams: t`Teams`,
       free: t`Free flight`,
     }
-    return labels[mode] ?? mode.charAt(0).toUpperCase() + mode.slice(1)
+    return labels[mode] ?? t({ message: 'Other', context: 'match mode' })
   }
   const reasonLabel = (reason: string): string => {
     const labels: Record<string, string> = {
@@ -210,8 +215,13 @@ export function MatchLog({
       killed: t`Killed`,
       traded: t`Mutual kill`, // a joust where each jet was downed, the second by what the first left flying
       flying: t`Unfinished`, // saved while flying and never finished: the tab froze, crashed or closed (#16)
+      // The world server's own ends of a session.
+      withdrawn: t({ message: 'Withdrawn', context: 'match end' }), // its creator took the match down
+      idle: t`Timed out`, // it stood empty too long
+      shutdown: t`Server shut down`,
+      fault: t`Server error`,
     }
-    return labels[reason] ?? reason.charAt(0).toUpperCase() + reason.slice(1)
+    return labels[reason] ?? t({ message: 'Ended', context: 'match end' })
   }
   // The LSO's grades and the wire, the same words the HUD banner shows at the
   // trap (GameCanvas's catalogue), so the log and the glass agree.
@@ -309,8 +319,8 @@ export function MatchLog({
   }
 
   // Career totals are the server's aggregate over every flight (the rows on
-  // screen are only the fifty most recent), cheated flights included - a
-  // logbook, not a leaderboard.
+  // screen are only the fifty most recent), cheated and developer-mode flights
+  // included - a logbook, not a leaderboard.
   const flights = totals?.flights ?? matches.length
   const kills = totals?.kills ?? 0
   const deaths = totals?.deaths ?? 0
@@ -323,17 +333,6 @@ export function MatchLog({
   const scored = totals?.scored ?? 0
   const average = scored ? (totals?.points ?? 0) / 10 / scored : 0
   const boarding = passes ? (totals?.traps ?? 0) / passes : 0
-  // M:SS under an hour, H:MM:SS past it — the same clock the flight recorder
-  // and the developer overlay show, so a duration reads the same everywhere.
-  const clock = (total: number): string => {
-    const whole = Math.max(0, Math.round(total))
-    const hh = Math.floor(whole / 3600)
-    const mm = Math.floor((whole % 3600) / 60)
-    const ss = whole % 60
-    const pad = (v: number) => String(v).padStart(2, '0')
-    return hh ? `${hh}:${pad(mm)}:${pad(ss)}` : `${mm}:${pad(ss)}`
-  }
-
   // The pickers offer only what the rows actually contain: a menu of every mode
   // the game has would mostly filter to nothing.
   // Sorted on what the MENU shows, not the raw key: modeLabel is translated, so
@@ -554,8 +553,8 @@ export function MatchLog({
                 {formatNumber(m.deaths)}
               </TableCell>
               <TableCell>{reasonLabel(m.reason)}</TableCell>
-              {/* The cheat mark first, where it always sits, then the last
-                  pass as the LSO wrote it up: the grade, its points and the wire
+              {/* The cheat and developer marks first, where they always sit,
+                  then the last pass as the LSO wrote it up: the grade, its points and the wire
                   translated, the shorthand verbatim - it is the same in every
                   language, like the radio calls. The grade and wire hold
                   together; the write-up wraps (the table's cells otherwise
@@ -570,6 +569,18 @@ export function MatchLog({
                     className='text-muted-foreground me-2 inline-block align-text-bottom'
                   >
                     <ShieldAlert className='size-4' />
+                  </span>
+                ) : null}
+                {/* Flown in developer mode, whose scripted approaches and
+                    console probes a row cannot tell from honest flying. */}
+                {m.developer ? (
+                  <span
+                    role='img'
+                    aria-label={t`Developer mode`}
+                    title={t`Developer mode`}
+                    className='text-muted-foreground me-2 inline-block align-text-bottom'
+                  >
+                    <Wrench className='size-4' />
                   </span>
                 ) : null}
                 {m.grade ? (

@@ -28,13 +28,15 @@ const catalogue = () => {
 const translated = () => {
   const source = read('./engine.ts')
   const keys = new Set<string>()
+  // A literal handed values too (a placeholder's figure) is a key like any
+  // other: "{key} to close" was one, and the check could not see it.
   for (const found of source.matchAll(
-    /translate\(\s*"((?:[^"\\]|\\.)*)"\s*\)/g
+    /translate\(\s*"((?:[^"\\]|\\.)*)"\s*[,)]/g
   )) {
     keys.add(found[1].replace(/\\(.)/g, '$1'))
   }
   for (const found of source.matchAll(
-    /translate\(\s*'((?:[^'\\]|\\.)*)'\s*\)/g
+    /translate\(\s*'((?:[^'\\]|\\.)*)'\s*[,)]/g
   )) {
     keys.add(found[1].replace(/\\(.)/g, '$1'))
   }
@@ -99,7 +101,7 @@ describe('HUD_MESSAGES', () => {
     // rendered the way the game renders it, and must come back with the figure
     // in and nothing else changed.
     const i18n = setupI18n({ locale: 'en', messages: { en: {} } })
-    const values = { heading: '069°', power: 'military power', side: 'right', mode: 'CV' }
+    const values = { heading: '069°', power: 'military power', side: 'right', mode: 'CV', key: 'Enter' }
     for (const [key, line] of hints(read('./engine.ts'))) {
       const shown = i18n._({ id: line, message: line, values })
       const wanted = line.replace(/\{(\w+)\}/g, (_: string, name: string) => values[name as keyof typeof values])
@@ -112,7 +114,7 @@ describe('HUD_MESSAGES', () => {
     // that is longer than a row is cut at the last ": " - the label colon, which
     // leaves "Case III:" alone on a row with the line under it. The English is
     // written to fit, with the widest live figures in.
-    const values = { heading: '069°', power: 'full afterburner', side: 'right' }
+    const values = { heading: '069°', power: 'full afterburner', side: 'right', key: 'Backspace' }
     for (const [key, line] of hints(read('./engine.ts'))) {
       const filled = line.replace(/\{(\w+)\}/g, (_: string, name: string) => values[name as keyof typeof values])
       for (const part of filled.split('; ')) expect(part.length, `${key}: ${part}`).toBeLessThanOrEqual(78)

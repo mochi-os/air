@@ -482,8 +482,9 @@ interface Handle { ext: number; t: number; lit?: number; wheels?: boolean; up?: 
 function handle(c: Handle): { opacity: number; lit: number; greens: number[] } {
   const block = /\n\tif\(l\.transit\)\{ const locked=[\s\S]*?lamp_set\(l\.right,locked\[2\]\); \}\n/.exec(source)?.[0] ?? ''
   const collapse = /\nconst GEAR_COLLAPSE=[^\n]*\n/.exec(source)?.[0] ?? ''
-  if (!block || !collapse) throw new Error('gear handle light block not found in engine.ts')
-  const run = new Function('c', `const ext=c.ext, sim_time=c.t, glance=c.t, wheels_warning=()=>!!c.wheels; let handle_lit=c.lit??-1; ${collapse}
+  const down = /\nfunction handle_down\(st\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
+  if (!block || !collapse || !down) throw new Error('gear handle light block not found in engine.ts')
+  const run = new Function('c', `const ext=c.ext, sim_time=c.t, glance=c.t, wheels_warning=()=>!!c.wheels; let handle_lit=c.lit??-1; ${collapse} ${down}
     const STATE={ gear_harm:0 }, out=c.harm??[0,0,0], ownship={ gearTarget:c.up?1:0 }, buses={ essential:true };
     const lamp_set=(m,on)=>{ m.on=!!on; }, l={transit:{material:{opacity:0}},nose:{},left:{},right:{}}; ${block}
     return { opacity:l.transit.material.opacity, lit:handle_lit, greens:[+!!l.nose.on,+!!l.left.on,+!!l.right.on] };`)
@@ -694,13 +695,14 @@ describe('the lights test', () => {
   const update = /\nfunction lamps_update\(out\)\{[\s\S]*?\n(?=\/\/ Radar altimeter)/.exec(source)?.[0] ?? ''
   const test = /\nfunction lights_switch\(\)\{[^\n]*\nfunction lights_test\(\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
   const set = /\nfunction lamp_set\(m,on\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  const down = /\nfunction handle_down\(st\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
   interface Light { on: boolean; swaps: number }
   interface Rig { frame(held: boolean): Record<string, Light> }
   const rig = (c: { unpowered?: boolean; playback?: boolean; caution?: boolean; clicked?: number; fire?: boolean; essential?: boolean; batt?: boolean; seat?: boolean; spin?: string; ready?: boolean } = {}): Rig => {
-    for (const [name, text] of [['lamps_update', update], ['lights_test', test], ['lamp_set', set]]) if (!text) throw new Error(name + ' not found in engine.ts')
+    for (const [name, text] of [['lamps_update', update], ['lights_test', test], ['lamp_set', set], ['handle_down', down]]) if (!text) throw new Error(name + ' not found in engine.ts')
     return new Function('c', 'countermeasures', `let lamps_testing=false, unpowered=!!c.unpowered, handle_lit=-1, lights_clicked=c.clicked??-Infinity; const playback=c.playback?{}:null;
       const keys=new Set(), key_of=(a)=>a==="lights.test"?"Shift+KeyL":"None", held=(a)=>keys.has(key_of(a));
-      ${test}${set}
+      ${test}${set}${down}
       const lens=()=>{ const m={ userData:{ lens:{ on:"on", off:"off" }, on:false }, swaps:0 }; let map="off"; m.material={ get map(){ return map; }, set map(v){ map=v; m.swaps++; } }; return m; };
       const plain=()=>({ userData:{ lit:0x2fd24a }, material:{ opacity:0 }, swaps:0 });
       const l={}; for(const n of ["fireL","fireR","caution","apufire","go","nogo","stby","disp","rcdr","spdbrk","lbar","aspj","xmit","rec","ai","hook","fuello","genL","genR","fces","lock","shoot","bleedL","bleedR","battsw","ckseat","apuacc","gentie","spin","ready"]) l[n]=lens();

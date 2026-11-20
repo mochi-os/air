@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 import fa18c_points from '../assets/fa18c.json'
-import { engine, fa18c, flight, nozzle, STILL, stroke } from './cycle'
+import { engine, fa18c, flight, nozzle, stroke } from './cycle'
 
 const DEGREE = Math.PI / 180
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
@@ -158,6 +158,10 @@ describe('the viewer', () => {
     expect(viewer).toContain("if (!current || !loaded || !moving || chosen !== MOTION.file) return")
   })
 })
+
+// The F/A-18C's drives that move nothing of their own: the loadout shows and
+// hides the stores (the viewer's Stores button), so the cycle leaves them alone.
+const STILL = new Set(['stores'])
 
 describe('the F/A-18C', () => {
   const joints = (fa18c_points as unknown as { joints: Record<string, { drive?: string; keys?: number[][] }> }).joints

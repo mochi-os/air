@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "Bhí {0} tógtha cheana, agus tá an rialtán sin gan cheangal anois."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "Bhí {0} ar {1}, atá gan cheangal anois."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "Bhí {0} ar {1}, atá gan cheangal anois."
@@ -165,6 +171,10 @@ msgstr "Ainm {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} go {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} chun dúnadh"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Bloic"
 msgid "Blue"
 msgstr "Gorm"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "GORM {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Botaí gorma"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Catagóir nuashonraithe"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Líne láir"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Braith"
 msgid "Detect from web browser"
 msgstr "Brath ón mbrabhsálaí gréasáin"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Mód forbróra"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Óstach cluiche difriúil"
@@ -1739,6 +1758,11 @@ msgstr "Piolón folamh"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Cumasaigh fuaim"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Thart"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Umar breosla"
 msgid "full afterburner"
 msgstr "iardhóiteoir iomlán"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Gunnaí amháin"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Lámh den mhaide; brúigh enter chun beannú agus seoladh"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Lámh den mhaide; brúigh {key} chun beannú agus seoladh"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Ísligh aeróg an radair"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M chun dúnadh"
+msgid "LWD"
+msgstr "CLÉ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Tá ainm riachtanach"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Caithfidh an t-ainm a bheith 1000 carachtar nó níos lú"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "SÍOS"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Fógraí: {0}"
 msgid "Novice"
 msgstr "Tosaitheoir"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "SUAS"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Uimhir"
@@ -3237,7 +3265,9 @@ msgstr "Ar an rúidbhealach: leathfhlapaí, ardaigh go cumhacht mhíleata, cosc�
 msgid "Oops! Page Not Found!"
 msgstr "Úps! Níor aimsíodh an leathanach!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Oscailte"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Roghanna"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Eile"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Eile"
 
@@ -3469,13 +3504,13 @@ msgstr "Postálacha"
 msgid "Posts and comments"
 msgstr "Postálacha agus tráchtanna"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "BRÚIGH {key} CHUN SEOLADH"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Brúigh eochair…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "BRÚIGH ENTER CHUN SEOLADH"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Taifeadadh sábháilte"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Dearg"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "DEARG {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "CUMHACHT IOMLÁN"
 msgid "Runway {end}"
 msgstr "Rúidbhealach {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "DEAS"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Dé Sathairn"
@@ -4074,6 +4117,7 @@ msgstr "Freastalaí"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Earráid fhreastalaí"
 
@@ -4086,6 +4130,10 @@ msgstr "Rialacha an fhreastalaí"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "ríomhchláraíonn an freastalaí v{0}, tá v{version} agat"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Múchadh an freastalaí"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Scoilt"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "LEATH NA SCIATHÁIN"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "COBH {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Níorbh fhéidir an t-ábhar iarrtha a aimsiú."
 msgid "The server returned a web page instead of data."
 msgstr "Sheol an freastalaí leathanach gréasáin ar ais in ionad sonraí."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "D'fhreagair an freastalaí domhain le hearráid {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Níor fhreagair an freastalaí domhain in am"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Níl spás ag an bhfreastalaí domhain do chluiche eile"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Sheol an freastalaí domhain freagra nárbh fhéidir a léamh"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Níl cead ag an aip seo do phasluiche a úsáid. Ceadaigh é i Socruithe, faoi Ceadanna."
@@ -4494,6 +4562,10 @@ msgstr "Am"
 msgid "Time of day"
 msgstr "Am den lá"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Imithe thar am"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Teideal"
@@ -4524,9 +4596,17 @@ msgstr "Scoránaigh roghanna radhairc"
 msgid "Toggle watched filter"
 msgstr "Scoránaigh scagaire ar faire"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "An iomarca cluichí tairgthe ó do sheoladh"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "An iomarca iarratas"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "An iomarca iarratas chuig an bhfreastalaí domhain"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Ag taisteal"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trimeáil"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "SCIATHÁIN GLASÁILTE"
 msgid "WINS"
 msgstr "A BHUANN"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Tarraingthe siar"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Freastalaí domhain"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Ní féidir teacht ar an bhfreastalaí domhain"

@@ -3,7 +3,7 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 
-// Flight recorder (#212): a rolling buffer of the last few minutes written out
+// Flight recorder (#212): the whole flight, sampled as it flies and written out
 // as TacView ACMI 2.2 text; it unit-tests in isolation. Positions are recorded
 // in the world frame (earth.ts EARTH, Earth-centred) and written as their true
 // latitude, longitude and height above sea level on the WGS84 earth, which the
@@ -310,11 +310,14 @@ const round = (v: number, places: number) => {
 // either writes structure rather than text: a multiplayer pilot named
 // `x,Type=Ground+Static` reaches the object line through the wire and adds a
 // property to their own object in everyone else's recording. Space, not
-// removal, so a field keeps its visible length and cannot fuse two words.
+// removal, so a field keeps its visible length and cannot fuse two words. The
+// backslash is doubled, as text() doubles it: every reader of the format takes
+// a backslash as escaping the character after it, so a pilot named `x\` would
+// otherwise escape the comma after his name and swallow the next property.
 // Every interpolation goes through here rather than only the ones that come
 // from the network today - "escape the untrusted ones" is the rule that let
 // nine of eleven sites go unescaped.
-const field = (v: string) => v.replace(/[,\n\r]/g, ' ')
+const field = (v: string) => v.replace(/\\/g, '\\\\').replace(/[,\n\r]/g, ' ')
 
 // The AI's hand: the bandit's chosen manoeuvre and its decision journal. Every
 // recording carries them, for the developers a player lets read their
@@ -860,10 +863,17 @@ export function acmi(
   return out.join('\n') + '\n'
 }
 
-// Recorder is the rolling buffer. Samples are dropped from the front once the
-// window is full, so memory is bounded however long the sortie runs.
+// Recorder samples a flight and renders it as a recording. By default it keeps
+// the whole flight, as text: render converts each sample once and lets it go,
+// so what grows with the sortie is the recording itself, not every aircraft's
+// full record at every sample. Given a window it is a rolling buffer instead:
+// samples older than the window are dropped from the front, and the samples
+// it still holds are kept whole, since a drop rebases every time on the new
+// first one and the recording is written again from it.
 export class Recorder {
-  private samples: Sample[] = []
+  private samples: Sample[] = [] // the whole flight: those render has not written yet; a window: every sample in it
+  private base = 0 // the first sample's time, which every written time is rebased on
+  private count = 0 // samples recorded, written or not
   private last = -1
   // What render has already written (#16): the body's lines for the first
   // `written` samples and the writer's delta state after them, so a render -
@@ -879,6 +889,7 @@ export class Recorder {
 
   clear() {
     this.samples = []
+    this.count = 0
     this.last = -1
     this.restart()
   }
@@ -903,28 +914,37 @@ export class Recorder {
   add(time: number, objects: Recorded[]) {
     if (!this.due(time)) return
     this.last = time
+    if (!this.count) this.base = time
     this.samples.push({ time, objects })
-    if (!this.window) return // whole-flight recording: ~35 KB per minute of a two-ship, so an hour still fits comfortably in memory
+    this.count++
+    if (!this.window) return // whole-flight recording: ~35 KB of text per minute of a two-ship, so an hour still fits comfortably in memory
     const cut = time - this.window
     let drop = 0
     while (drop < this.samples.length && this.samples[drop].time < cut) drop++
     if (drop) {
       this.samples.splice(0, drop)
+      this.count = this.samples.length
+      this.base = this.samples[0].time
       this.restart() // the first sample moved, and every time is rebased on it
     }
   }
 
   get length() {
-    return this.samples.length
+    return this.count
   }
 
   // render writes the buffer out, re-basing time so the file starts at zero.
   render(started: Date, title: string, match?: Match): string {
-    if (!this.samples.length) return ''
-    const base = this.samples[0].time
+    if (!this.count) return ''
     for (; this.written < this.samples.length; this.written++) {
       const s = this.samples[this.written]
-      this.write({ time: s.time - base, objects: s.objects }, this.body)
+      this.write({ time: s.time - this.base, objects: s.objects }, this.body)
+    }
+    // The whole flight never rewrites what it has written, so the samples are
+    // done with: only their text is kept.
+    if (!this.window) {
+      this.samples = []
+      this.written = 0
     }
     return header(started, title, match).concat(this.body).join('\n') + '\n'
   }

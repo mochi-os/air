@@ -105,12 +105,12 @@ describe('the volume controls', () => {
   it('move the model\'s RWR and WPN knobs with their levels, and set the Sidewinder tone\'s', () => {
     expect(source).toMatch(/\{ name:"volumereceiver", track:\/\^KNOB_RWR_VOL_LEFTPANEL_AN\/i, +drive:"volumereceiver" \},\n\t +\{ name:"volumeweapon", +track:\/\^KNOB_WPN_VOL_LEFTPANEL_AN\/i, +drive:"volumeweapon" \},/)
     expect(source).toMatch(/case "volumereceiver": f=st===ownship\?uhf\.panel\.volume\.receiver:1; break; case "volumeweapon": f=st===ownship\?uhf\.panel\.volume\.weapon:1; break;/)
-    expect(source).toMatch(/\telse audio_seeker\(game_paused\|\|!fed\(4,\"a\"\)\?0:\(master==="9m"&&!pa\?\(lockon\?2:1\):0\),drinking,uhf\.panel\.volume\.weapon\);/)
+    expect(source).toMatch(/\telse audio_seeker\(dead\|\|!fed\(4,"a"\)\|\|!seeker_now\.line\?0:\(seeker_now\.lockon\?2:1\),seeker_now\.drinking,uhf\.panel\.volume\.weapon\);/)
     const audio = readFileSync(fileURLToPath(new URL('./audio.ts', import.meta.url)), 'utf8')
     expect(audio).toMatch(/state === 0 \? 0 : \(lock \? 0\.09 : 0\.13\) \* \(0\.7 \+ 0\.5 \* heat\) \* level,/)
   })
   it('sound the ship\'s TACAN identity at the TCN control\'s level, keyed in Morse, while the set receives her on ac power', () => {
-    expect(source).toMatch(/\n\taudio_tacan\(!game_paused&&buses\.ac&&fed\(4,\"a\"\)&&!!tacan\(\)&&communication\.sounding\(SHIP\.ident,sim_time\),uhf\.panel\.volume\.tacan\);/)
+    expect(source).toMatch(/\n\taudio_tacan\(!dead&&buses\.ac&&fed\(4,"a"\)&&!!tacan\(\)&&communication\.sounding\(SHIP\.ident,sim_time\),uhf\.panel\.volume\.tacan\);/)
     const audio = readFileSync(fileURLToPath(new URL('./audio.ts', import.meta.url)), 'utf8')
     expect(audio).toMatch(/osc\.frequency\.value = 1350\n[\s\S]{0,200}ident = \{ osc, gain \}/)
     expect(audio).toMatch(/ident\.gain\.gain\.setTargetAtTime\(keyed \? 0\.05 \* level : 0, now\(\), 0\.004\)/)
@@ -310,3 +310,47 @@ describe('the left console\'s click spots', () => {
     }
   })
 })
+
+// The headset's standing tones hold until the next call, so they are stepped
+// with the jet (tones_update, beside cautions_update) and not by a drawn HUD:
+// drawn, they froze in the display, chase, flypast and padlock views and
+// played on through a crash.
+describe('the headset\'s tones, stepped with the jet', () => {
+  interface Step { crash?: number; master?: string; lockon?: boolean; tacan?: boolean; yaw?: number; alpha?: number; grounded?: boolean; view?: string; gear?: number; looking?: boolean }
+  interface Heard { seeker: unknown[]; tacan: unknown[]; departure: unknown[]; boxed: boolean }
+  const step = (o: Step = {}) => new Function('o', `const heard={}; const audio_seeker=(...a)=>{ heard.seeker=a; }, audio_tacan=(...a)=>{ heard.tacan=a; }, audio_departure=(...a)=>{ heard.departure=a; };
+    let crash_t=o.crash??0, master=o.master??"9m", seeker_now=null, hud_boxed=null, departure_drive=[0,0], growl_force=null, sim_time=10;
+    const cfg={ view:o.view??"chase" }, STATE={ omega:0, alpha:3 }, last_out=[0,(o.yaw??0)/57.2958,0,(o.alpha??0)/57.2958], ownship={ gear:o.gear??1, grounded:!!o.grounded };
+    const target={ name:"bandit" }, hud_target=()=>target, hud_landing=()=>(ownship.gear??1)<0.02, seeker_look=()=>o.looking===false?{ line:null, quarry:null, lockon:false, drinking:0 }:{ line:{ x:0, y:0, z:-1 }, quarry:o.lockon?target:null, lockon:!!o.lockon, drinking:o.lockon?0.5:0 };
+    const fed=()=>true, buses={ ac:true }, tacan=()=>!!o.tacan, communication={ sounding:()=>true }, SHIP={ ident:"CVN" }, uhf={ panel:{ volume:{ weapon:0.8, tacan:0.6 } } };
+    ${lift('tones_update')} tones_update(); return { ...heard, boxed:hud_boxed===target };`)(o) as Heard
+  const loud = { lockon: true, tacan: true, yaw: 50, alpha: 40 }
+
+  it('sound the lock tone, the TACAN ident and the departure tone whatever the view, and box the target for the recorder', () => {
+    for (const view of ['chase', 'ddi', 'flypast', 'padlock', 'hud']) {
+      expect(step({ ...loud, view })).toEqual({ seeker: [2, 0.5, 0.8], tacan: [true, 0.6], departure: [0.5, true], boxed: true })
+    }
+    expect(step({ ...loud, lockon: false }).seeker).toEqual([1, 0, 0.8]) // the search growl
+  })
+
+  it('silence all three at a crash', () => {
+    const heard = step({ ...loud, crash: 1 })
+    expect(heard.seeker[0]).toBe(0)
+    expect(heard.tacan[0]).toBe(false)
+    expect(heard.departure).toEqual([0, false])
+  })
+
+  it('give the growl to a seeker that looks, and none to one that returns nothing: out of 9M, under the landing symbology, or with no round aboard', () => {
+    expect(step({ ...loud, looking: false }).seeker[0]).toBe(0)
+    expect(lift('tones_update')).toMatch(/audio_seeker\(dead\|\|!fed\(4,"a"\)\|\|!seeker_now\.line\?0:/)
+  })
+
+  it('are stepped beside cautions_update and in the crash branch, and draw_hud only draws', () => {
+    const fly = lift('fly_player')
+    expect(fly).toMatch(/\n\t\tcautions_update\(dt\);[^\n]*\n\t\ttones_update\(\); baro_update\(\);/)
+    expect(fly).toMatch(/if\(crash_t>0\|\|mission_done\)\{\n\t\ttones_update\(\);/)
+    const hud = lift('draw_hud')
+    for (const call of ['audio_seeker(', 'audio_tacan(', 'audio_departure(', 'hud_boxed=', 'seeker_look(', 'departure_drive=']) expect(hud).not.toContain(call)
+  })
+})
+

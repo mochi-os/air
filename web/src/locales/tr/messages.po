@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} zaten alınmıştı ve o denetim artık atanmadı."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0}, artık hiçbiri atanmamış olan {1} üzerindeydi."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0}, artık atanmamış olan {1} üzerindeydi."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} adı"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} - {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "Kapatmak için {key}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Bloklar"
 msgid "Blue"
 msgstr "Mavi"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "MAVİ {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Mavi botlar"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Kategori güncellendi"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Merkez hattı"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Algıla"
 msgid "Detect from web browser"
 msgstr "Web tarayıcıdan algıla"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Geliştirici modu"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Farklı oyun ana makinesi"
@@ -1739,6 +1758,11 @@ msgstr "Boş pilon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Sesi etkinleştir"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Sona erdi"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Yakıt tankı"
 msgid "full afterburner"
 msgstr "tam art yakıcı"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Yalnızca toplar"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Elini levyeden çek; selam verip fırlatmak için enter'a bas"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Elini levyeden çek; selam verip fırlatmak için {key}'a bas"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Radar antenini indir"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "Kapatmak için M"
+msgid "LWD"
+msgstr "SOL"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Ad gerekli"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Ad 1000 karakter veya daha az olmalı"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "BA"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Bildirimler: {0}"
 msgid "Novice"
 msgstr "Acemi"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "BY"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Sayı"
@@ -3237,7 +3265,9 @@ msgstr "Pistte: yarım flap, askerî güce kadar gaz ver, frenler serbest"
 msgid "Oops! Page Not Found!"
 msgstr "Hata! Sayfa bulunamadı!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Açık"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Seçenekler"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Diğer"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Diğer"
 
@@ -3469,13 +3504,13 @@ msgstr "Gönderiler"
 msgid "Posts and comments"
 msgstr "Gönderiler ve yorumlar"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "FIRLATMAK İÇİN {key}'A BAS"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Bir tuşa basın…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "FIRLATMAK İÇİN ENTER'A BAS"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Uçuş kaydı kaydedildi"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Kırmızı"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "KIRMIZI {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "TAM GÜÇ"
 msgid "Runway {end}"
 msgstr "Pist {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "SAĞ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Cumartesi"
@@ -4074,6 +4117,7 @@ msgstr "Sunucu"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Sunucu hatası"
 
@@ -4086,6 +4130,10 @@ msgstr "Sunucu kuralları"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "sunucu v{0} çalıştırıyor, sizde v{version} var"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Sunucu kapandı"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Böl"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "KANATLARI AÇ"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "İstenen içerik bulunamadı."
 msgid "The server returned a web page instead of data."
 msgstr "Sunucu veri yerine bir web sayfası döndürdü."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Dünya sunucusu {status} hatasıyla yanıt verdi"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Dünya sunucusu zamanında yanıt vermedi"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Dünya sunucusunda başka bir maç için yer yok"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Dünya sunucusu okunamayan bir yanıt gönderdi"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Bu uygulamanın geçiş anahtarınızı kullanmasına izin verilmiyor. Ayarlar'da, İzinler altında izin verin."
@@ -4494,6 +4562,10 @@ msgstr "Süre"
 msgid "Time of day"
 msgstr "Günün saati"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Zaman aşımı"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Başlık"
@@ -4524,9 +4596,17 @@ msgstr "Görünüm seçeneklerini aç/kapat"
 msgid "Toggle watched filter"
 msgstr "İzlenen filtresini aç/kapat"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Adresinizden çok fazla maç teklif edildi"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Çok fazla istek"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Dünya sunucusuna çok fazla istek"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Yolda"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRİM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "KANATLAR KİLİTLİ"
 msgid "WINS"
 msgstr "KAZANDI"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Geri çekildi"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Dünya sunucusu"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Dünya sunucusuna ulaşılamıyor"

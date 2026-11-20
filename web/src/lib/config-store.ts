@@ -5,13 +5,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createAppClient, useAuthStore, useShellStorage } from '@mochi/web'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
-import {
-  absorb,
-  loadOutcome,
-  merged,
-  PendingConfig,
-  seeded,
-} from './config-persist'
+import { type Answer, PendingConfig, Saver } from './config-persist'
 
 const client = createAppClient({ appName: 'air' })
 
@@ -98,10 +92,10 @@ export function authenticated(): Promise<void> {
   })
 }
 
-// Load the signed-in user's saved settings from the app database. Returns the
-// stored keys, or null when nothing is saved yet (anonymous, or a fresh account)
-// so the caller can seed the server from its current state.
-async function loadConfig(): Promise<Partial<MissionConfig> | null> {
+// Load the signed-in user's saved settings from the app database: whether
+// the load named the account, and its stored keys, null when nothing is saved
+// yet (a fresh account, which the caller seeds from its current state).
+async function loadConfig(): Promise<Answer> {
   try {
     await authenticated()
     const res = await client.get<ConfigPayload | { data: ConfigPayload }>(
@@ -114,39 +108,48 @@ async function loadConfig(): Promise<Partial<MissionConfig> | null> {
       for (const waiter of identity_waiters.splice(0)) waiter(identity_name)
     }
     const config = payload?.config ?? {}
-    return Object.keys(config).length ? config : null
+    return {
+      signed: !!config_identity,
+      saved: Object.keys(config).length ? config : null,
+    }
   } catch {
-    return null
+    return { signed: false, saved: null }
   }
 }
 
-// Persist the whole config; the server upserts each key. Best-effort.
-async function saveConfig(config: MissionConfig): Promise<void> {
+// Persist the keys given; the server upserts each. Answers whether it took
+// them. Best-effort: the in-memory config still applies this session.
+async function saveConfig(
+  config: Partial<MissionConfig>,
+  keepalive: boolean
+): Promise<boolean> {
   // Defer until config/load has established the owning identity: the server
   // requires a matching identity, and a save fired before it is known (or for an
   // anonymous visitor) can't be safely attributed, so don't send one.
-  if (!config_identity) return
+  if (!config_identity) return false
   try {
     // identity is the account the config was loaded under; the server drops the
     // save if the session identity has since changed (in-place account switch).
-    await client.post('-/config/save', {
-      config: JSON.stringify(config),
-      identity: config_identity,
-    })
+    await client.post(
+      '-/config/save',
+      { config: JSON.stringify(config), identity: config_identity },
+      { keepalive }
+    )
+    return true
   } catch {
-    /* best-effort — the in-memory config still applies this session */
+    return false
   }
 }
-
-const SAVE_DELAY = 600
 
 // Mission/graphics config backed by the Mochi app database (the cross-device
 // source of truth), with shell storage as a local cache so the menu renders the
 // last-known settings instantly rather than flashing defaults while the server
-// responds. Saves are debounced so dragging a slider doesn't spam the server.
-// The third value is whether a signed-in player's saved config has arrived:
+// responds. Saver debounces the saves, and flushes them when the page hides or
+// the hook unmounts.
+// The third value is whether config/load has answered, whatever it answered:
 // until then the cache may be stale or another account's, so nothing that
-// depends on what this player has answered may act on it.
+// writes what this player has saved (the pilot secret, the recent servers) may
+// act on it. An anonymous or failed load settles it too, keeping the cache.
 export function useMissionConfig(): [
   MissionConfig,
   (config: MissionConfig) => void,
@@ -164,56 +167,32 @@ export function useMissionConfig(): [
   pendingRef.current ??= new PendingConfig(config)
   const pending = pendingRef.current
   pending.sync(config)
-  // The debounce timer lives INSIDE the hook, not module-global: a global timer
-  // survived unmount and was shared by every hook instance, so a pending save
-  // could fire after navigation or an in-place account change and write stale
-  // config under the then-current auth context. Cancelled on unmount.
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
-  const [loaded, setLoaded] = useState(false)
+  // The saver lives INSIDE the hook, not module-global: a global timer survived
+  // unmount and was shared by every hook instance, so a pending save could fire
+  // after navigation or an in-place account change and write stale config
+  // under the then-current auth context. It flushes on unmount instead.
+  const saverRef = useRef<Saver | null>(null)
+  saverRef.current ??= new Saver(pending, saveConfig)
+  const saver = saverRef.current
+  const [settled, setSettled] = useState(false)
 
   useEffect(() => {
-    loadConfig().then((saved) => {
-      const outcome = loadOutcome(pending.dirty, saved)
-      if (outcome === 'flush') {
-        // The player edited while loading: lay the keys they touched onto the
-        // SAVED config and persist that, now the identity is known. Not
-        // pending.current(): an edit made on a fresh page was made on the
-        // defaults, and saving those wholesale clobbered every saved setting
-        // (#41). pending.partial() is the latest edit even if React has not
-        // committed the render; cancel any pending timer so this is not a
-        // duplicate, and settle the merge as the base for edits from here on.
-        if (saveTimer.current) clearTimeout(saveTimer.current)
-        const whole = merged(saved, pending.partial())
-        pending.settle(whole)
-        setStored(whole)
-        void saveConfig(whole)
-      } else if (outcome === 'apply' && saved) {
-        // Every retired key goes, the stores map is normalized, a legacy save
-        // migrates its preset: absorb is the one reading of a saved config.
-        setStored(absorb(saved))
-      } else {
-        // First run on this account: seed the server.
-        const fresh = seeded(pending.current())
-        setStored(fresh)
-        void saveConfig(fresh)
-      }
-      setLoaded(!!config_identity)
+    void loadConfig().then((answer) => {
+      const whole = saver.load(answer)
+      if (whole) setStored(whole)
+      setSettled(true)
     })
-    return () => {
-      if (saveTimer.current) clearTimeout(saveTimer.current)
-    }
+    return saver.attach(window, document)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const setConfig = useCallback(
     (next: MissionConfig) => {
-      pending.edit(next) // records the edit AND the value synchronously
+      saver.edit(next)
       setStored(next)
-      if (saveTimer.current) clearTimeout(saveTimer.current)
-      saveTimer.current = setTimeout(() => void saveConfig(next), SAVE_DELAY) // captures this exact config snapshot
     },
-    [setStored, pending] // pending is a stable ref object; listed to satisfy exhaustive-deps
+    [setStored, saver] // saver is a stable ref object; listed to satisfy exhaustive-deps
   )
 
-  return [config, setConfig, loaded]
+  return [config, setConfig, settled]
 }

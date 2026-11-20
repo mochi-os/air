@@ -210,7 +210,7 @@ describe('the advisory line', () => {
     const ownship={ grounded:o.grounded??false, gearTarget:o.gear??1, chaff:o.chaff??20, flares:o.flares??40, gauges:{ rpmL:(o.rpm||[80,80])[0], rpmR:(o.rpm||[80,80])[1] } }, fpas_home=()=>(o.home??true)?{}:null, travel_at=()=>o.ice??1;
     const secured=o.secured||[false,false], antiskid=o.skid??true, reference=o.reference||"auto";
     buttons.trim=o.trim??-Infinity; buttons.reset=o.reset??-Infinity; buttons.standing=!!o.standing; const bit={ advisory:!!o.failure };
-    ${lift('row_store')}${lift('plain_row')}${lift('advisory_add')}${lift('advisories_now')} return advisories_now();`)(o, countermeasures, identification, helmet) as [string, string][]).map(([key]) => key)
+    ${lift('handle_down')}${lift('row_store')}${lift('plain_row')}${lift('advisory_add')}${lift('advisories_now')} return advisories_now();`)(o, countermeasures, identification, helmet) as [string, string][]).map(([key]) => key)
   it('advises HMD while the helmet is on with no valid coarse alignment, and not while it is off (2.21.9)', () => {
     expect([advised({ helmet: 'unaligned' }), advised({ helmet: 'off' }), advised({ helmet: 'aligned' })]).toEqual([['HMD'], [], []])
   })

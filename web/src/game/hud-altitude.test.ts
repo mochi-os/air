@@ -16,7 +16,7 @@ const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url
 
 const altitude = /hctx\.fillText\(String\(shown\),(lx\+\d+),wly\+16\)/.exec(source)
 const tail = /hctx\.fillText\(restStr,(lx\+\d+),wly\+17\)/.exec(source)
-const vertical = /\n\tif\((.+?)\)\{ hctx\.font="(\d+)px 'Hornet Display', monospace"; hctx\.textAlign="(\w+)";[^\n]*\n\t\thctx\.fillText\(\(vs<0\?"-":""\)\+Math\.abs\(Math\.round\(vs\/10\)\*10\),(lx\+\d+),(wly-\d+)\);/.exec(source)
+const vertical = /\n\tif\((.+?)\)\{ hctx\.font="(\d+)px 'Hornet Display', monospace"; hctx\.textAlign="(\w+)";[^\n]*\n\t\thctx\.fillText\(signed\(vs,10\),(lx\+\d+),(wly-\d+)\);/.exec(source)
 
 describe('the vertical velocity over the altitude box', () => {
   it('is right-justified on the altitude digits, one line above the box, in the standard size', () => {
@@ -30,6 +30,25 @@ describe('the vertical velocity over the altitude box', () => {
 
   it('shows in NAV and the landing configuration only', () => {
     expect(vertical?.[1]).toBe('(master==="nav"||pa)&&!limited&&keep("VSI",3)') // and not in a mission computer's backup set on the helmet (2.21.15), nor rejected there by REJECT SETUP; no HUD reject level removes it
+  })
+
+  // On the deck and in level flight the velocity is a rounding error either
+  // side of nothing: signed from the raw value it flickered between 0 and -0,
+  // and alpha read -0.0 the same way.
+  it('signs the vertical velocity and alpha from the rounded figure, so nothing reads -0', () => {
+    const signed = /\nfunction signed\(value,step\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
+    const start = source.indexOf('\t// ---- vertical velocity above the altitude box'), end = source.indexOf('\t// ---- bank angle scale', start)
+    expect(signed).not.toBe('')
+    expect(start).toBeGreaterThan(0)
+    const read = (fpm: number, aoa: number) => new Function('fpm', 'aoa', `const master="nav", pa=false, limited=false, keep=()=>true, lx=0, wly=0, ax=0, last_out=null, STATE={}, peak_g=1, text=[];
+      const ownship={ vel_dir:{ y:fpm/196.85 }, speed:1, aoa, gload:1 }, hctx={ fillText:(s)=>text.push(String(s)) };
+      ${signed}
+      ${source.slice(start, end)} return text;`)(fpm, aoa) as string[]
+    expect(read(-3, -0.04).slice(0, 2)).toEqual(['0', '\u03b1 0.0'])
+    expect(read(4, 0.04).slice(0, 2)).toEqual(['0', '\u03b1 0.0'])
+    expect(read(-6, -0.06).slice(0, 2)).toEqual(['-10', '\u03b1 -0.1'])
+    expect(read(-480, 8.1).slice(0, 2)).toEqual(['-480', '\u03b1 8.1'])
+    expect(read(1234, 12.25).slice(0, 2)).toEqual(['1230', '\u03b1 12.3'])
   })
 })
 
@@ -133,7 +152,7 @@ describe('the reject switch keeps the airspeed and altitude', () => {
   const reading = /\nfunction altitude_reading\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
   const draw = (declutter: number) => new Function('rej', `const limited=false, keep=(symbol,level)=>rej<level, GR='g', cx=640, ppdv=16, wly=344, alt_radar=false, sim_time=10, glance=10, RADAR={ sil:false }, baro_error=()=>0, radalt_inhibited=()=>RADAR.sil, master='gun';   // an A/A master: the groundspeed cue under the airspeed box is NAV's (navigation-cockpit.test.ts)
     const ownship={ cas:100, speed:100, pos:{ x:0, y:1000, z:0 } }, ground_height=()=>0, fpas={ climb:false }; ${reading}
-    let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2980;
+    let baro_armed=false, baro_shown=8, baro_flash=false, baro_set=2992, baro_last=2992;   // the setting changed 2 s ago (baro_update's latch): the readout shows steadily
     const text=[], rects=[];
     const hctx=new Proxy({}, { get:(t,k)=>k==='fillText'?(s)=>text.push(String(s)):k==='strokeRect'?(x,y,w,h)=>rects.push([x,y,w,h]):k==='measureText'?(s)=>({ width:7*String(s).length }):()=>{}, set:()=>true });
     ${boxes} return { text, rects };`)(declutter) as { text: string[]; rects: number[][] }
@@ -162,10 +181,12 @@ describe('the reject switch keeps the weapons\' ranging', () => {
     const start = source.indexOf('\t// ---- target ranging data'), end = source.indexOf('\t// ---- vertical velocity', start)
     const block = source.slice(start, end)
     const text = (rej: number) => new Function(`const rej=${rej}, aa=true, boxed={}, rng=3000, vc=150, limited=false, GR='g', lx=700, wly=300, ppdv=20;
-      const text=[]; const hctx=new Proxy({}, { get:(t,k)=>k==='fillText'?(s)=>text.push(String(s)):()=>{}, set:()=>true }); ${block} return text;`)() as string[]
+      const text=[]; const hctx=new Proxy({}, { get:(t,k)=>k==='fillText'?(s)=>text.push(String(s)):()=>{}, set:()=>true }); ${/\nfunction signed\(value,step\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}
+      ${block} return text;`)() as string[]
     expect(start).toBeGreaterThan(0)
     const norm = text(0)
     expect(norm).toContain('RDR')
+    expect(norm).toContain('290V') // 150 m/s closing, to the nearest 10 knots
     expect([text(1), text(2)]).toEqual([norm, norm])
   })
   it('draws the AIM-120\'s launch zone at every HUD reject level', () => {

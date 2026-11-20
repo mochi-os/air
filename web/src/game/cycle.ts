@@ -229,10 +229,6 @@ type Points = {
   }
 }
 
-// The F/A-18C's drives that move nothing of their own: the loadout shows and
-// hides the stores (the viewer's Stores button)
-export const STILL = new Set(['stores'])
-
 // fa18c drives every joint of our F/A-18C (fa18c.json): the gear down and
 // up, with everything that moves only on the ground still (flight), its
 // other mechanisms at their stroke times, its flight controls through their

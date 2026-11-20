@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ถูกใช้อยู่แล้ว และตัวควบคุมนั้นตอนนี้ไม่ได้ผูกไว้"
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} อยู่บน {1} ซึ่งตอนนี้ทั้งหมดไม่ได้ผูกไว้แล้ว"
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} อยู่บน {1} ซึ่งตอนนี้ไม่ได้ผูกไว้"
@@ -165,6 +171,10 @@ msgstr "ชื่อ {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ถึง {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} เพื่อปิด"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "บล็อก"
 msgid "Blue"
 msgstr "น้ำเงิน"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "น้ำเงิน {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "บอทน้ำเงิน"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "อัปเดตหมวดหมู่แล้ว"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "เส้นกึ่งกลาง"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "ตรวจจับ"
 msgid "Detect from web browser"
 msgstr "ตรวจจับจากเว็บเบราว์เซอร์"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "โหมดนักพัฒนา"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "โฮสต์เกมอื่น"
@@ -1739,6 +1758,11 @@ msgstr "ไพลอนว่าง"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "เปิดเสียง"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "สิ้นสุดแล้ว"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "ถังเชื้อเพลิง"
 msgid "full afterburner"
 msgstr "สันดาปท้ายเต็มกำลัง"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "ปืนใหญ่เท่านั้น"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "ปล่อยมือจากคันบังคับ; กด enter เพื่อวันทยหัตถ์และดีดตัวออก"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "ปล่อยมือจากคันบังคับ; กด {key} เพื่อวันทยหัตถ์และดีดตัวออก"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "ลดเสาอากาศเรดาร์ลง"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M เพื่อปิด"
+msgid "LWD"
+msgstr "ซ้าย"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "ต้องระบุชื่อ"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "ชื่อต้องไม่เกิน 1000 ตัวอักษร"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ลง"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "การแจ้งเตือน: {0}"
 msgid "Novice"
 msgstr "มือใหม่"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "ขึ้น"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "ตัวเลข"
@@ -3237,7 +3265,9 @@ msgstr "บนทางวิ่ง: แฟลปครึ่ง, เร่ง�
 msgid "Oops! Page Not Found!"
 msgstr "ขออภัย! ไม่พบหน้านี้!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "เปิด"
 
@@ -3288,6 +3318,11 @@ msgstr "ตัวเลือก"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "อื่น ๆ"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "อื่นๆ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3469,13 +3504,13 @@ msgstr "โพสต์"
 msgid "Posts and comments"
 msgstr "โพสต์และความคิดเห็น"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "กด {key} เพื่อปล่อยตัว"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "กดปุ่ม…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "กด ENTER เพื่อปล่อยตัว"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "บันทึกไฟล์การบินแล้ว"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "แดง"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "แดง {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "กำลังเต็มที่"
 msgid "Runway {end}"
 msgstr "รันเวย์ {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ขวา"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "วันเสาร์"
@@ -4074,6 +4117,7 @@ msgstr "เซิร์ฟเวอร์"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "ข้อผิดพลาดของเซิร์ฟเวอร์"
 
@@ -4086,6 +4130,10 @@ msgstr "กฎของเซิร์ฟเวอร์"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "เซิร์ฟเวอร์ใช้ v{0} คุณมี v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "เซิร์ฟเวอร์ปิดตัว"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "แยก"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "กางปีก"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "แพนหาง {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "ไม่พบเนื้อหาที่ร้องขอ"
 msgid "The server returned a web page instead of data."
 msgstr "เซิร์ฟเวอร์ส่งคืนหน้าเว็บแทนข้อมูล"
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "เซิร์ฟเวอร์โลกตอบกลับด้วยข้อผิดพลาด {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "เซิร์ฟเวอร์โลกไม่ตอบกลับภายในเวลาที่กำหนด"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "เซิร์ฟเวอร์โลกไม่มีที่ว่างสำหรับแมตช์เพิ่ม"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "เซิร์ฟเวอร์โลกส่งคำตอบที่อ่านไม่ได้"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "แอปนี้ไม่ได้รับอนุญาตให้ใช้พาสคีย์ของคุณ อนุญาตได้ในการตั้งค่า ภายใต้สิทธิ์"
@@ -4494,6 +4562,10 @@ msgstr "เวลา"
 msgid "Time of day"
 msgstr "ช่วงเวลาของวัน"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "หมดเวลา"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "ชื่อ"
@@ -4524,9 +4596,17 @@ msgstr "สลับตัวเลือกมุมมอง"
 msgid "Toggle watched filter"
 msgstr "สลับตัวกรองที่ติดตาม"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "มีแมตช์ที่เสนอจากที่อยู่ของคุณมากเกินไป"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "คำขอมากเกินไป"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "ส่งคำขอไปยังเซิร์ฟเวอร์โลกมากเกินไป"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "กำลังเดินทาง"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ทริม"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ทริม {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "ปีกล็อก"
 msgid "WINS"
 msgstr "ชนะ"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "ถอนแล้ว"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "เซิร์ฟเวอร์โลก"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "เข้าถึงเซิร์ฟเวอร์โลกไม่ได้"

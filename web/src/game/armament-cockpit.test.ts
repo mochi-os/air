@@ -46,7 +46,7 @@ function cockpit<T>(body: string, o: Jet = {}): T {
     let sim_time=0, glance=0, master=o.master||"nav", apu_accumulator=0.4, isolate_clicked=3, taping="off", ufc_dirty=false, ddi_dirty=false, recalled=0;
     const ownship={ gearTarget:o.handle??1, gear:o.gear??1, rounds:o.rounds??578, msl:o.missiles??2, amraam:o.amraams??4, failures:[7], loadout:{} }, on_ground=()=>!!o.grounded;
     const said=[], notice=(t)=>said.push(t), translate=(t)=>t, dropped=[], jettison_stations=(stations,what)=>{ dropped.push([stations,what]); return true; }, ddi_recall=()=>{ recalled++; };
-    ${line('EMERGENCY_HOLD')} ${line('EMERGENCY_PAIRS')} ${line('emergency')} ${panels} ${lift('ddi_family')} ${lift('set_master')} ${line('air_weapon')} ${lift('air_press')} ${lift('ground_press')} ${lift('next_master')} ${lift('jettison_press')} ${lift('emergency_update')} ${press}
+    ${line('EMERGENCY_HOLD')} ${line('EMERGENCY_PAIRS')} ${line('emergency')} ${lift('handle_down')} ${panels} ${lift('ddi_family')} ${lift('set_master')} ${line('air_weapon')} ${lift('air_press')} ${lift('ground_press')} ${lift('next_master')} ${lift('jettison_press')} ${lift('emergency_update')} ${press}
     systems_fresh(!o.grounded); ${body}`)(o, ...Object.values(modules)) as T
 }
 
@@ -177,7 +177,7 @@ describe('the selective jettison controls', () => {
     expect(source).toMatch(/\{ action:"jettison\.select", at:plates\.point\(\{ origin:plates\.SELECT\.centre, right:plates\.SELECT\.right, up:plates\.SELECT\.up \},\[0,0\],plates\.SELECT\.skirt\.height\), r:0\.016, hold:"jettison\.release" \}/)
   })
   it('keep the tanks key behind MASTER ARM too', () => {
-    expect(source).toMatch(/if\(ch===key_of\("jettison\.tanks"\) && !dev_parked\)\{[^\n]*\n\t\t\tif\(!arms\.arm\) notice\(translate\("MASTER ARM SAFE"\)\);[^\n]*\n\t\t\telse if\(on_ground\(\)\|\|\(ownship\.gearTarget\?\?1\)<0\.5\) notice\(translate\("JETTISON: GEAR"\)\);/)
+    expect(source).toMatch(/if\(ch===key_of\("jettison\.tanks"\) && !dev_parked\)\{[^\n]*\n\t\t\tif\(!arms\.arm\) notice\(translate\("MASTER ARM SAFE"\)\);[^\n]*\n\t\t\telse if\(on_ground\(\)\|\|handle_down\(ownship\)\) notice\(translate\("JETTISON: GEAR"\)\);/)
   })
 })
 

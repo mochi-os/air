@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} var allerede optaget, og den kontrol er nu ubundet."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} lå på {1}, som nu er ubundne."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} lå på {1}, som nu er ubundet."
@@ -165,6 +171,10 @@ msgstr "{entityLabel}-navn"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} til {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} for at lukke"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Blokerer"
 msgid "Blue"
 msgstr "Blå"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLÅ {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Blå bots"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Kategori opdateret"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Centerlinje"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Registrer"
 msgid "Detect from web browser"
 msgstr "Registrer fra webbrowser"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Udviklertilstand"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Anden spilvært"
@@ -1739,6 +1758,11 @@ msgstr "Tom pylon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Aktivér lyd"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Sluttet"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Brændstoftank"
 msgid "full afterburner"
 msgstr "fuld efterbrænder"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Kun kanoner"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Slip pinden; tryk enter for at salutere og starte"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Slip pinden; tryk {key} for at salutere og starte"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Sænk radarantennen"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M for at lukke"
+msgid "LWD"
+msgstr "VEN"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Navn er påkrævet"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Navn må højst være 1000 tegn"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "NED"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Notifikationer: {0}"
 msgid "Novice"
 msgstr "Begynder"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "OP"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Nummer"
@@ -3237,7 +3265,9 @@ msgstr "På banen: halve flaps, kør op til militær effekt, bremser fri"
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Siden blev ikke fundet!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Åben"
 
@@ -3288,6 +3318,11 @@ msgstr "Indstillinger"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Andet"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Anden"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3469,13 +3504,13 @@ msgstr "Indlæg"
 msgid "Posts and comments"
 msgstr "Indlæg og kommentarer"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "TRYK {key} FOR AT LETTE"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Tryk på en tast…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "TRYK ENTER FOR AT LETTE"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Optagelse gemt"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Rød"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "RØD {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "FULD KRAFT"
 msgid "Runway {end}"
 msgstr "Bane {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "HØJ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Lørdag"
@@ -4074,6 +4117,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Serverfejl"
 
@@ -4086,6 +4130,10 @@ msgstr "Serverregler"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "serveren kører v{0}, du har v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Server lukket ned"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Opdel"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "FOLD VINGER UD"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Det ønskede indhold kunne ikke findes."
 msgid "The server returned a web page instead of data."
 msgstr "Serveren returnerede en webside i stedet for data."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Verdensserveren svarede med fejl {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Verdensserveren svarede ikke i tide"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Verdensserveren har ikke plads til endnu en match"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Verdensserveren sendte et svar, der ikke kunne læses"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Denne app må ikke bruge din adgangsnøgle. Tillad det i Indstillinger under Tilladelser."
@@ -4494,6 +4562,10 @@ msgstr "Tid"
 msgid "Time of day"
 msgstr "Tidspunkt på dagen"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Tiden udløb"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Titel"
@@ -4524,9 +4596,17 @@ msgstr "Skift visningsindstillinger"
 msgid "Toggle watched filter"
 msgstr "Skift overvåget filter"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "For mange matcher udbudt fra din adresse"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "For mange anmodninger"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "For mange anmodninger til verdensserveren"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Rejser"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "VINGER LÅST"
 msgid "WINS"
 msgstr "VINDER"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Trukket tilbage"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Verdensserver"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Verdensserveren kan ikke nås"

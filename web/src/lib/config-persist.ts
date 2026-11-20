@@ -2,21 +2,31 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-// The load-completion decision for the mission config, isolated from the React
-// hook so it is unit testable. On config/load: an edit made while it was in
-// flight -> FLUSH (apply it onto the saved config and persist that), a saved
-// config -> APPLY, nothing saved -> SEED the server from local.
+// The mission config's persistence, isolated from the React hook so it is unit
+// testable. On config/load: no account (anonymous, or the load failed) ->
+// KEEP what is shown, an edit made while it was in flight -> FLUSH (apply it
+// onto the saved config and persist it), a saved config -> APPLY, nothing
+// saved -> SEED the server from local.
 import { migrate, normalize } from '../game/stores'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
 
-export type LoadOutcome = 'flush' | 'apply' | 'seed'
+export type LoadOutcome = 'keep' | 'flush' | 'apply' | 'seed'
 
 export function loadOutcome(
   dirty: boolean,
-  saved: Partial<MissionConfig> | null
+  saved: Partial<MissionConfig> | null,
+  signed = true
 ): LoadOutcome {
+  if (!signed) return 'keep'
   if (dirty) return 'flush'
   return saved ? 'apply' : 'seed'
+}
+
+// Answer is what config/load came back with: whether it named the account the
+// config belongs to, and that account's saved keys (null when none are).
+export interface Answer {
+  signed: boolean
+  saved: Partial<MissionConfig> | null
 }
 
 // Settings that no longer exist but whose saved VALUES still arrive: the
@@ -56,14 +66,37 @@ export function absorb(saved: Partial<MissionConfig>): MissionConfig {
   return { ...DEFAULT_CONFIG, ...kept, stores } as MissionConfig
 }
 
+// The settings a new account takes from the browser it first signs in on: the
+// device's own - its sticks and their bindings, the keys, the sound and the
+// graphics, the fields of the Controls, Keys, Sound and Graphics tabs
+// (TAB_FIELDS in lib/config.ts). The browser's cache is not keyed by account,
+// so on a shared browser everything else in it is the last account's: its
+// pilot secret (which owns that account's match offers), callsign, server,
+// recent servers and answer on sharing. A setting added later is left out
+// until it is named here.
+export const DEVICE: readonly (keyof MissionConfig)[] = [
+  'joystick',
+  'sticks',
+  'keys',
+  'sound',
+  'volume',
+  'render_scale',
+  'dyn_res',
+  'shadows',
+  'exterior_detail',
+  'effects_quality',
+  'ocean_segments',
+  'afterburner',
+  'tracers',
+  'framerate',
+]
+
 // seeded is what the first save on an account with nothing stored writes: the
-// config in memory, which on a shared browser can be another account's cached
-// settings - so never its answer on sharing, which only this account's player
-// can give. Without it the switch reads as allowed.
+// defaults, with the device settings of the config in memory.
 export function seeded(config: MissionConfig): MissionConfig {
-  const out = { ...config }
-  delete out.sharing
-  return out
+  const out: Record<string, unknown> = { ...DEFAULT_CONFIG }
+  for (const key of DEVICE) if (config[key] !== undefined) out[key] = config[key]
+  return out as MissionConfig
 }
 
 // merged is what a flush persists: the saved config (or the defaults, on a
@@ -87,7 +120,8 @@ export function merged(
 // only refreshes on render, so a config/load resolving between an edit and its
 // commit would flush a stale value; and the keys are what a flush applies onto
 // the saved config, since the in-memory config an early edit was made on may
-// be nothing but the defaults.
+// be nothing but the defaults. The keys are also what every save sends: those
+// edited since the last save that succeeded.
 export class PendingConfig {
   private value: MissionConfig
   private edits: Partial<MissionConfig> = {}
@@ -109,16 +143,23 @@ export class PendingConfig {
     this.value = next
   }
 
-  // partial is what the edits since the last settle changed.
+  // partial is what the edits not yet saved changed.
   partial(): Partial<MissionConfig> {
     return { ...this.edits }
   }
 
-  // settle adopts the config a load merged the edits into: the edits are
-  // spent, and the next sync may follow renders again.
+  // spend forgets the edits a save carried, once it succeeded. A key edited
+  // again while the save was out keeps its newer value, which was not sent.
+  spend(saved: Partial<MissionConfig>): void {
+    for (const key of Object.keys(saved)) {
+      if (this.edits[key] === saved[key]) delete this.edits[key]
+    }
+  }
+
+  // settle adopts the config a load answered with, the edits merged in: the
+  // next sync may follow renders again. The edits stay until a save spends them.
   settle(value: MissionConfig): void {
     this.value = value
-    this.edits = {}
     this.dirty = false
   }
 
@@ -130,5 +171,113 @@ export class PendingConfig {
 
   current(): MissionConfig {
     return this.value
+  }
+}
+
+export const SAVE_DELAY = 600
+
+// Saver sends the player's edits to the server: SAVE_DELAY after they pause,
+// so dragging a slider does not spam it, and at once when the page hides or
+// goes away. A save carries only the keys edited since the last save that
+// succeeded: the server stamps each key it is sent, so a whole config from a
+// tab that loaded earlier wrote its stale value of every key it had not
+// touched. post answers whether the server took the save.
+export class Saver {
+  private timer: ReturnType<typeof setTimeout> | undefined
+  private readonly pending: PendingConfig
+  private readonly post: (config: Partial<MissionConfig>, keepalive: boolean) => Promise<boolean>
+  private readonly delay: number
+
+  constructor(
+    pending: PendingConfig,
+    post: (config: Partial<MissionConfig>, keepalive: boolean) => Promise<boolean>,
+    delay = SAVE_DELAY
+  ) {
+    this.pending = pending
+    this.post = post
+    this.delay = delay
+  }
+
+  // edit records a change, and saves once the edits pause.
+  edit(next: MissionConfig): void {
+    this.pending.edit(next) // records the edit AND the value synchronously
+    this.cancel()
+    this.timer = setTimeout(() => {
+      this.timer = undefined
+      void this.save(false)
+    }, this.delay)
+  }
+
+  // save sends the edits not yet saved, and spends them once the server has them.
+  async save(keepalive: boolean): Promise<void> {
+    const partial = this.pending.partial()
+    if (!Object.keys(partial).length) return
+    if (await this.post(partial, keepalive)) this.pending.spend(partial)
+  }
+
+  // flush sends what is unsaved now, as a keepalive request that outlives the
+  // page, rather than leave it to a timer the page takes with it.
+  flush(): void {
+    this.cancel()
+    void this.save(true)
+  }
+
+  private cancel(): void {
+    if (this.timer !== undefined) clearTimeout(this.timer)
+    this.timer = undefined
+  }
+
+  // load settles what config/load answered and sends what that owes the
+  // server. It returns the config to show, or null to keep the one shown:
+  // with no account there is nothing to read the cache against, and nothing
+  // can be saved.
+  load(answer: Answer): MissionConfig | null {
+    const outcome = loadOutcome(this.pending.dirty, answer.saved, answer.signed)
+    if (outcome === 'keep') {
+      this.pending.settle(this.pending.current())
+      return null
+    }
+    if (outcome === 'flush') {
+      // The player edited while loading: lay the keys they touched onto the
+      // SAVED config and send those keys, now the account is known. Not
+      // pending.current(): an edit made on a fresh page was made on the
+      // defaults, and saving those wholesale clobbered every saved setting
+      // (#41). The timer's save would send the same keys: this is it.
+      this.cancel()
+      const whole = merged(answer.saved, this.pending.partial())
+      this.pending.settle(whole)
+      void this.save(false)
+      return whole
+    }
+    if (outcome === 'apply' && answer.saved) {
+      // Every retired key goes, the stores map is normalized, a legacy save
+      // migrates its preset: absorb is the one reading of a saved config.
+      const whole = absorb(answer.saved)
+      this.pending.settle(whole)
+      return whole
+    }
+    // First run on this account: seed the server, all of it.
+    const fresh = seeded(this.pending.current())
+    this.pending.settle(fresh)
+    void this.post(fresh, false)
+    return fresh
+  }
+
+  // attach flushes when the page hides (a hidden visibilitychange) or goes
+  // away (pagehide), and the detach it returns flushes as well, for the menu
+  // unmounting: a debounced save was cancelled on unmount and died with a
+  // closing page, and config/load then put the old value back.
+  attach(page: EventTarget, document: EventTarget & { visibilityState: string }): () => void {
+    const hide = () => this.flush()
+    const visibility = () => {
+      if (document.visibilityState === 'hidden') this.flush()
+    }
+    page.addEventListener('pagehide', hide)
+    document.addEventListener('visibilitychange', visibility)
+    return () => {
+      page.removeEventListener('pagehide', hide)
+      document.removeEventListener('visibilitychange', visibility)
+      this.flush()
+    }
   }
 }

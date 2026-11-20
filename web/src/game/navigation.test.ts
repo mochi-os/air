@@ -925,6 +925,13 @@ describe('latitude and longitude', () => {
     expect(N.angle(9.99999, 'EW', false)).toBe('E 010°00\'00"') // the seconds carry
     expect(N.angle(9.9999999, 'EW', true)).toBe("E 010°00.000'")
   })
+  it('splits an angle once rounded, so the units carry into the degrees', () => {
+    expect(N.sexagesimal(5.995, 60)).toEqual([6, 0])
+    expect(N.sexagesimal(5.99, 60)).toEqual([5, 59])
+    expect(N.sexagesimal(-10.5, 60)).toEqual([10, 30])
+    expect(N.sexagesimal(9.99999, 3600)).toEqual([10, 0])
+    expect(N.sexagesimal(28.2072, 3600)).toEqual([28, 746]) // 12'26"
+  })
   it('reads a keypad entry', () => {
     expect(N.entered('N', '281226', false)).toBeCloseTo(28 + 12 / 60 + 26 / 3600, 9)
     expect(N.entered('W', '1772225', false)).toBeCloseTo(-(177 + 22 / 60 + 25 / 3600), 9)

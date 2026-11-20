@@ -47,7 +47,7 @@ describe('when a flight saves', () => {
 describe('the save queue', () => {
   it('stores the row before its recording, and holds each save until the one before it has finished', async () => {
     calls.length = 0
-    const row = { world: 'local', title: '', session: 'local-1', mode: 'joust', team: '', started: 1, ended: 2, reason: FLYING, players: '2', kills: 0, deaths: 0, cheated: 0, grade: '', remarks: '', wire: 0, passes: 0, traps: 0, points: 0, scored: 0 }
+    const row = { world: 'local', title: '', session: 'local-1', mode: 'joust', team: '', started: 1, ended: 2, reason: FLYING, players: '2', kills: 0, deaths: 0, cheated: 0, developer: 0, grade: '', remarks: '', wire: 0, passes: 0, traps: 0, points: 0, scored: 0 }
     void save(row, { session: 'local-1', started: 1, text: 'first' })
     void save(null, { session: 'local-1', started: 1, text: 'final' })
     await settle()
@@ -83,7 +83,7 @@ function engine(setup: string) {
   return new Function(
     'checkpoint_due',
     'tally',
-    `let running=true, playback=false, MULTIPLAYER=false, sim_time=0, glance=0, mission_zero=0, checkpoint_at=-Infinity, onExit=null;
+    `let running=true, playback=false, MULTIPLAYER=false, DEV_MODE=false, sim_time=0, glance=0, mission_zero=0, checkpoint_at=-Infinity, onExit=null;
      const cfg={ task:'joust', cheats:{} }; let own_kills=0, own_deaths=0; const passes=[]; const mission_began=1700;
      let net=null, match_started=0, session_over=false; const join={ server:'world', title:'Match', session:'world-session' }; const remotes=new Map();
      const saves=[], rows=[];
@@ -144,8 +144,30 @@ describe('the engine saves a flight as it flies', () => {
     expect(rows).toHaveLength(1)
     expect(rows[0]).toMatchObject({ world: 'world', session: 'world-session', started: 900, reason: 'left', mode: 'furball' })
   })
+  it('marks a row flown in developer mode, solo or in a match, and no other', () => {
+    expect(engine('fly(70); exit_match(); return { rows };').rows[0]).toMatchObject({ developer: 0, cheated: 0 })
+    expect(engine('DEV_MODE=true; fly(70); exit_match(); return { rows };').rows[0]).toMatchObject({ developer: 1, cheated: 0 })
+    const match = `MULTIPLAYER=true; net={ welcome:{ spawn:{ mode:'furball' } }, teams:new Map(), slot:0, leave:()=>{} }; match_started=900;`
+    expect(engine(match + 'net_finish(\'left\'); return { rows };').rows[0]).toMatchObject({ developer: 0 })
+    expect(engine('DEV_MODE=true; ' + match + 'net_finish(\'left\'); return { rows };').rows[0]).toMatchObject({ developer: 1 })
+  })
   it('starts each mission\'s saves afresh', () => {
     expect(lift('start_mission')).toContain('mission_zero=sim_time; fuel_read=false; checkpoint_at=-Infinity;')
     expect(source).toContain('step_world(h); radar_step(h); rwr_step(h); recording_checkpoint();')
+  })
+})
+
+// The scripted landings (Shift+1..0, &scenario=N) fly the jet to a touchdown:
+// developer mode alone, and never in a match, whose world the server flies, or
+// in a replay, whose jets the recording flies.
+describe('the developer\'s scripted flying', () => {
+  const allowed = (developer: boolean, match: boolean, replay: boolean) => new Function(`const DEV_MODE=${developer}, MULTIPLAYER=${match}, playback=${replay ? '{}' : 'null'}; ${lift('scaffolding')} return scaffolding();`)() as boolean
+  it('is allowed in developer mode, solo and live, only', () => {
+    expect(allowed(true, false, false)).toBe(true)
+    expect([allowed(false, false, false), allowed(true, true, false), allowed(true, false, true)]).toEqual([false, false, false])
+  })
+  it('gates the scenarios on it, from the keys and from the address alike', () => {
+    expect(lift('start_test')).toMatch(/^function start_test\(i\)\{ const sc=TESTS\[i\]; if\(!sc \|\| crash_t>0 \|\| !scaffolding\(\)\) return;/)
+    expect(lift('start_mission')).toMatch(/const scq=devq\.get\("scenario"\); if\(scq!==null&&scaffolding\(\)\)\{/)
   })
 })

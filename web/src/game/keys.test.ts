@@ -101,10 +101,11 @@ describe('key bindings', () => {
   })
 
   it('gives each chord to one action, so a keypress is never ambiguous', () => {
-    // Enter deliberately serves both: it launches the selected missile and,
-    // with nothing selected, acquires. They can never both apply at once.
-    // Space fires in flight and pauses a replay, which answers no key that
-    // works the jet.
+    // Enter deliberately serves both: on deck it launches the jet from the
+    // catapult, and in the air it acquires a target. They can never both
+    // apply at once. Space fires in flight and pauses a replay, which answers
+    // no key that works the jet. A rebind leaves these pairs together
+    // (SHARED, lib/config.ts).
     const shared = new Set(['acquire/launch', 'fire/pause'])
     const byChord = new Map<string, string[]>()
     for (const [action, chord] of Object.entries(KEY_DEFAULTS)) {
@@ -562,5 +563,36 @@ describe('key bindings', () => {
     // the key cap's glyph, not the raw KeyboardEvent code, in the help line and settings
     expect(pretty(KEY_DEFAULTS.chat)).toBe('`')
     expect(pretty(KEY_DEFAULTS.shout)).toBe('Shift+`')
+  })
+})
+
+// The canvas prompts that tell the pilot which key to press name the key bound
+// to that action, as the help line does: the default's letter inside the
+// sentence sent a pilot who had moved the launch or the map to a dead key, on
+// the catapult where the prompt is the only thing naming the shot's key.
+describe('the prompts that name a key', () => {
+  const engine = read('./engine.ts')
+  const key_of = /\nfunction key_of\(action\)\{[^\n]*\n/.exec(engine)?.[0] ?? ''
+  // translate as the engine's: the catalogue key with its placeholders filled
+  const run = (code: string, keys: Record<string, string>) => new Function('pretty', 'KEYS', 'keys', `const cfg={ keys, hints:false }, translate=(t,v)=>t.replace(/\\{(\\w+)\\}/g,(_,n)=>v[n]), shown=[];
+    const hud_message=(t)=>shown.push(t), launch_status=()=>2, net_notice_t=0, mctx={ fillText:(t)=>shown.push(t) }, hinted={ }, HINT={ salute:"Hand off stick; press {key} to salute and launch", tension:"" }, hint=(k,v)=>shown.push(translate(k,v));
+    ${key_of} ${code} return shown;`)(pretty, KEY_DEFAULTS, keys) as string[]
+  const banner = /\n\tif\(net_notice_t<=0&&cfg\.hints===false\)\{[^\n]*\n/.exec(engine)?.[0] ?? ''
+  const map = /mctx\.fillText\(translate\("\{key\} to close"[^;]*;/.exec(engine)?.[0] ?? ''
+  const salute = /if\(ls===2\)\{ delete hinted\[HINT\.tension\]; hint\(HINT\.salute[^\n]*?\); \}/.exec(engine)?.[0] ?? ''
+
+  it('names the launch key in the catapult banner, as bound', () => {
+    expect(banner).not.toBe('')
+    expect(run(banner, {})).toEqual(['PRESS ENTER TO LAUNCH'])
+    expect(run(banner, { launch: 'Space' })).toEqual(['PRESS SPACE TO LAUNCH'])
+  })
+  it('names the launch key in the salute line, as bound', () => {
+    expect(salute).not.toBe('')
+    expect(run('const ls=2; ' + salute, { launch: 'KeyL' })).toEqual(['Hand off stick; press L to salute and launch'])
+  })
+  it('names the map key in the map\'s close prompt, as bound', () => {
+    expect(map).not.toBe('')
+    expect(run(map, {})).toEqual(['M to close'])
+    expect(run(map, { map: 'Shift+KeyN' })).toEqual(['Shift+N to close'])
   })
 })

@@ -249,7 +249,7 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
     // NATOPS 8.2.8: throttles held, the stick left alone while the jet rotates
     // itself, the gear up once a positive rate of climb is established. The
     // old lines put the hand back on the stick first and the gear call last.
-    expect(source).toMatch(/salute:"Hand off stick; press enter to salute and launch"/)
+    expect(source).toMatch(/salute:"Hand off stick; press \{key\} to salute and launch"/)
     expect(source).toMatch(/flyaway:"Off the cat: hand off stick,/)
     expect(source).toMatch(/positive:"Positive rate: take stick, gear up, flaps auto"/)
   })
@@ -265,7 +265,7 @@ describe('the catapult launch is coached, and owns the centre banner it replaced
   })
 
   it('shows the departure once clean, after the gear call has been read', () => {
-    expect(launch).toMatch(/const clean=\(ownship\.gearTarget\?\?0\)>0\.5&&flap_select===0;/)
+    expect(launch).toMatch(/const clean=!handle_down\(ownship\)&&flap_select===0;/)
     expect(launch).toMatch(/hinted\[HINT\.positive\]&&clean&&\(hint_key!==HINT\.positive\|\|glance-hint_since>=3\)\) hint\(HINT\.clearing,\{side:cat_idx<2\?translate\("right"\):translate\("left"\)/)
   })
 
@@ -343,5 +343,52 @@ describe('the straight-in can reach the runway set (#205)', () => {
 
   it('reaches the touchdown call from an arrival that never got a final', () => {
     expect(runway).toMatch(/hinted\[HINT\.papi\]\|\|hinted\[HINT\.donut\]/)
+  })
+})
+
+// The Case I/II visual pattern's radio script (#50), run as text against a
+// stand-in jet. gearTarget is 0 with the handle DOWN: the pilot's DIRTY UP
+// waits for the handle down below 250 knots, and the tower's reminder is for
+// a jet still clean there.
+describe('the visual pattern script', () => {
+  const watch = body('pattern_watch')
+  const handle = body('handle_down')
+  const NM = 1852
+  interface Step { kt: number; handle: 'up' | 'down'; nm: number; feet?: number }
+  // Runs the steps in order through one pattern and returns the calls each made.
+  const fly = (steps: Step[], start = { broke: false, told: false, dirty: false, downwind: false, ball: false }) =>
+    new Function('steps', 'start', `const CARRIER={ x:0, z:0 }, cfg={ callsign:"701" }, running=true, translate=(t)=>t, said=[], radio=(t)=>said.push(t), call_the_ball=()=>said.push("BALL");
+      const ownship={ pos:{ x:0, y:0, z:0 }, cas:0, gearTarget:1 }; let pattern={ ...start };
+      f${handle} f${watch}
+      return steps.map((s)=>{ said.length=0; ownship.cas=s.kt/1.9438; ownship.gearTarget=s.handle==="down"?0:1; ownship.pos.x=s.nm*${NM}; ownship.pos.y=(s.feet??600)/3.28084; pattern_watch(); return [...said]; });`)(steps, start) as string[][]
+  const broke = { broke: true, told: false, dirty: false, downwind: false, ball: false }
+
+  it('breaks inside 1.2 miles and not before', () => {
+    expect(fly([{ kt: 350, handle: 'up', nm: 2 }, { kt: 350, handle: 'up', nm: 1 }])).toEqual([[], ['TOWER: BREAK WHEN READY']])
+  })
+
+  it('calls DIRTY UP with the handle down below 250 knots, and only then', () => {
+    expect(fly([{ kt: 300, handle: 'down', nm: 1 }], broke)).toEqual([[]]) // still fast: no call either way
+    expect(fly([{ kt: 240, handle: 'down', nm: 1 }], broke)).toEqual([['701: DIRTY UP']])
+  })
+
+  it('reminds a jet still clean below 250 knots once, and hears its DIRTY UP when the handle goes down', () => {
+    expect(fly([{ kt: 240, handle: 'up', nm: 1 }, { kt: 230, handle: 'up', nm: 1 }, { kt: 220, handle: 'down', nm: 1 }], broke))
+      .toEqual([['TOWER: BELOW 250 — GEAR AND FLAPS'], [], ['701: DIRTY UP']])
+  })
+
+  it('goes on to the downwind and the ball once dirty, with the handle lowered before slowing', () => {
+    expect(fly([{ kt: 300, handle: 'down', nm: 1 }, { kt: 240, handle: 'down', nm: 1 }, { kt: 140, handle: 'down', nm: 0.9, feet: 600 }, { kt: 140, handle: 'down', nm: 0.5, feet: 400 }], broke))
+      .toEqual([[], ['701: DIRTY UP'], ['TOWER: DOWNWIND 600 FEET'], ['BALL']])
+  })
+
+  it('holds the downwind and the ball back from a jet that never dirtied up', () => {
+    expect(fly([{ kt: 240, handle: 'up', nm: 0.9, feet: 600 }, { kt: 200, handle: 'up', nm: 0.5, feet: 400 }], broke))
+      .toEqual([['TOWER: BELOW 250 — GEAR AND FLAPS'], []])
+  })
+
+  it('reads the handle through the one predicate', () => {
+    expect(handle).toMatch(/^unction handle_down\(st\)\{ return \(st\.gearTarget\?\?1\)<0\.5; \}/)
+    expect(source.match(/gearTarget(?:\?\?[01]\))?\s*(?:<|>|>=)\s*0\.5/g)).toEqual(['gearTarget??1)<0.5']) // handle_down's own, and no other
   })
 })

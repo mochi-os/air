@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} аллакай гирифта шуда буд ва он идора ҳоло пайваст нест."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} дар {1} буд, ки ҳоло пайваст нестанд."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} дар {1} буд, ки ҳоло пайваст нест."
@@ -165,6 +171,10 @@ msgstr "Номи {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "аз {from} то {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} барои пӯшидан"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Блокҳо"
 msgid "Blue"
 msgstr "Кабуд"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "КАБУД {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Ботҳои кабуд"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Категория навсозӣ шуд"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Хатти марказӣ"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Муайян кардан"
 msgid "Detect from web browser"
 msgstr "Аз браузери веб муайян кардан"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Реҷаи таҳиягар"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Мизбони дигари бозӣ"
@@ -1739,6 +1758,11 @@ msgstr "Пилони холӣ"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Фаъол кардани садо"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Анҷом ёфт"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Боки сӯзишворӣ"
 msgid "full afterburner"
 msgstr "форсажи пурра"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Танҳо тӯпҳо"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Дастро аз даста бигир; барои салом ва партоб enter-ро пахш кун"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Дастро аз даста бигир; барои салом ва партоб {key}-ро пахш кун"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Паст кардани антеннаи радар"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M барои пӯшидан"
+msgid "LWD"
+msgstr "ХЧ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Ном талаб карда мешавад"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Ном бояд 1000 аломат ё камтар бошад"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "БП"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Огоҳиномаҳо: {0}"
 msgid "Novice"
 msgstr "Навомӯз"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "ББ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Рақам"
@@ -3237,7 +3265,9 @@ msgstr "Дар хатти парвоз: закрилкаҳо нисфӣ, то қ
 msgid "Oops! Page Not Found!"
 msgstr "Эҳ! Саҳифа ёфт нашуд!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Кушода"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Вариантҳо"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Дигар"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Дигар"
 
@@ -3469,13 +3504,13 @@ msgstr "Постҳо"
 msgid "Posts and comments"
 msgstr "Постҳо ва шарҳҳо"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "БАРОИ ПАРВОЗ {key} ПАХШ КУНЕД"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Тугмаеро пахш кунед…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "БАРОИ ПАРВОЗ ENTER ПАХШ КУНЕД"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Сабт захира шуд"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Сурх"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "СУРХ {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "ҚУВВАИ ПУРРА"
 msgid "Runway {end}"
 msgstr "Хати парвоз {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ХР"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Шанбе"
@@ -4074,6 +4117,7 @@ msgstr "Сервер"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Хатогии сервер"
 
@@ -4086,6 +4130,10 @@ msgstr "Қоидаҳои сервер"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "сервер v{0}-ро иҷро мекунад, шумо v{version} доред"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Сервер хомӯш шуд"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Тақсим"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "БОЛҲОРО КУШОДАН"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "СТАБ {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Муҳтавои дархостшуда ёфт нашуд."
 msgid "The server returned a web page instead of data."
 msgstr "Сервер ба ҷои маълумот саҳифаи вебро баргардонд."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Сервери ҷаҳон бо хатои {status} ҷавоб дод"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Сервери ҷаҳон сари вақт ҷавоб надод"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Сервери ҷаҳон барои матчи дигар ҷой надорад"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Сервери ҷаҳон ҷавобе фиристод, ки хонда нашуд"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Ба ин барнома иҷозат дода нашудааст, ки калиди дастрасии шуморо истифода барад. Дар Танзимот, дар қисми Иҷозатҳо ба он иҷозат диҳед."
@@ -4494,6 +4562,10 @@ msgstr "Вақт"
 msgid "Time of day"
 msgstr "Вақти рӯз"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Вақт гузашт"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Сарлавҳа"
@@ -4524,9 +4596,17 @@ msgstr "Тағйир додани имконоти намоиш"
 msgid "Toggle watched filter"
 msgstr "Тағйир додани филтри назоратшаванда"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Аз суроғаи шумо матчҳои аз ҳад зиёд пешниҳод шудаанд"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Дархостҳои аз ҳад зиёд"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Дархостҳои аз ҳад зиёд ба сервери ҷаҳон"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Сафар"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "тример"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ТРИМ {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "БОЛҲО ҚУЛФ"
 msgid "WINS"
 msgstr "ҒОЛИБ"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Бозпас гирифта шуд"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Сервери ҷаҳон"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Сервери ҷаҳон дастнорас аст"

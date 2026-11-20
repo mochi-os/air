@@ -84,7 +84,7 @@ function exitFullscreen() {
 // (game running, menu hidden) hides the Mochi shell chrome and goes fullscreen.
 function Index() {
   const { t } = useLingui()
-  const [config, setConfig] = useMissionConfig()
+  const [config, setConfig, settled] = useMissionConfig()
   const [join, setJoin] = useState<NetJoin | null>(null)
   const developer =
     typeof window !== 'undefined' &&
@@ -186,6 +186,7 @@ function Index() {
       {menuOpen && (
         <MissionSetup
           config={config}
+          settled={settled}
           onChange={setConfig}
           tab={tab}
           onTabChange={(t) => setTab(t as SetupTab)}

@@ -2,15 +2,21 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
+import { KEY_DEFAULTS } from '../game/keys'
 import { FUEL, PRESETS, matches, normalize } from '../game/stores'
 import {
   DEFAULT_CONFIG,
+  SHARED,
   TAB_FIELDS,
+  bindings,
   deviceDefaults,
   profileBindings,
   profileFor,
   reaches,
+  rebind,
   unreachable,
   seedStart,
 } from './config'
@@ -191,6 +197,50 @@ describe('profileBindings', () => {
     ).toEqual({ axes, buttons })
   })
 
+  // A hand-written profile says "pitch": 1. Imported unchecked, the number
+  // reached the Joystick tab, whose startsWith and replace threw on every
+  // render, on every device signed in to the account.
+  it('reads a whole number as its binding, so the tab gets text', () => {
+    const bindings = profileBindings(
+      { air: 'joystick', axes: { pitch: 4, yaw: -2 }, buttons: { fire: 9 } },
+      defaults
+    )
+    expect(bindings?.axes.pitch).toBe('4')
+    expect(bindings?.axes.yaw).toBe('-2')
+    expect(bindings?.buttons.fire).toBe('9')
+  })
+
+  it('leaves an action at its default where the file holds no binding for it', () => {
+    const bindings = profileBindings(
+      {
+        air: 'joystick',
+        axes: { pitch: '4', roll: null, yaw: 1.5, throttle: 'up', look: [3] },
+        buttons: { fire: '2', gear: true, hook: '3,x' },
+      },
+      defaults
+    )
+    expect(bindings?.axes.pitch).toBe('4')
+    for (const action of ['roll', 'yaw', 'throttle', 'look'])
+      expect(bindings?.axes[action], action).toBe(defaults.axes[action])
+    expect(bindings?.buttons.fire).toBe('2')
+    for (const action of ['gear', 'hook'])
+      expect(bindings?.buttons[action], action).toBe(defaults.buttons[action])
+    for (const value of [
+      ...Object.values(bindings!.axes),
+      ...Object.values(bindings!.buttons),
+    ])
+      expect(typeof value).toBe('string')
+  })
+
+  it('refuses a file none of whose bindings can be read', () => {
+    expect(
+      profileBindings(
+        { air: 'joystick', axes: { pitch: null }, buttons: { fire: {} } },
+        defaults
+      )
+    ).toBeNull()
+  })
+
   it('does not alias the defaults it merged over', () => {
     const bindings = profileBindings(
       { air: 'joystick', axes: {}, buttons: {} },
@@ -307,5 +357,124 @@ describe('reaches', () => {
   })
   it('still treats a plain index as a single axis', () => {
     expect(reaches('5', 6)).toBe(true) // ...which "5+" would refuse
+  })
+})
+
+// The Joystick tab reads its saved maps through bindings, so an account that
+// already holds a number, or worse, renders rather than throwing.
+describe('bindings', () => {
+  it('keeps the forms the engine reads', () => {
+    expect(
+      bindings({
+        a: '',
+        b: '3',
+        c: '-5',
+        d: '5+',
+        e: '-5+',
+        f: '2,17',
+        g: ' 2, 17 ',
+      })
+    ).toEqual({
+      a: '',
+      b: '3',
+      c: '-5',
+      d: '5+',
+      e: '-5+',
+      f: '2,17',
+      g: '2,17',
+    })
+  })
+
+  it('is how the Joystick tab reads a stick it has saved', () => {
+    const settings = readFileSync(
+      fileURLToPath(
+        new URL('../components/SettingsDialog.tsx', import.meta.url)
+      ),
+      'utf8'
+    )
+    expect(settings).toMatch(/\.\.\.bindings\(saved\?\.axes\)/)
+    expect(settings).toMatch(/= bindings\(saved\?\.buttons\)/)
+  })
+
+  it('drops what is not a binding', () => {
+    expect(
+      bindings({
+        a: null,
+        b: true,
+        c: 1.5,
+        d: 'pitch',
+        e: '3,',
+        f: {},
+        g: [1],
+        h: '--3',
+      })
+    ).toEqual({})
+    expect(bindings(null)).toEqual({})
+    expect(bindings([1, 2])).toEqual({})
+  })
+})
+
+// The default keys put two controls on Enter and two on Space on purpose
+// (keys.test.ts pins which). A rebind took the chord from every other control
+// holding it, so putting Acquire target back on Enter after moving it away
+// left the catapult's Launch unbound, and Fire weapon back on Space left a
+// replay's Pause unbound.
+describe('rebind', () => {
+  it('names exactly the pairs the defaults share', () => {
+    const byChord = new Map<string, string[]>()
+    for (const [action, chord] of Object.entries(KEY_DEFAULTS))
+      if (chord !== 'None')
+        byChord.set(chord, [...(byChord.get(chord) ?? []), action])
+    const shared = [...byChord.values()]
+      .filter((actions) => actions.length > 1)
+      .map((actions) => actions.sort().join('/'))
+      .sort()
+    expect(SHARED.map((pair) => [...pair].sort().join('/')).sort()).toEqual(
+      shared
+    )
+  })
+
+  it("leaves a control's partner on the chord they share", () => {
+    const away = rebind({}, 'acquire', 'KeyQ').keys
+    const back = rebind(away, 'acquire', 'Enter')
+    expect(back.keys.launch ?? KEY_DEFAULTS.launch).toBe('Enter')
+    expect(back.keys.acquire ?? KEY_DEFAULTS.acquire).toBe('Enter')
+    expect(back.taken).toEqual([])
+
+    const fire = rebind(rebind({}, 'fire', 'KeyK').keys, 'fire', 'Space')
+    expect(fire.keys.pause ?? KEY_DEFAULTS.pause).toBe('Space')
+    expect(fire.taken).not.toContain('pause')
+  })
+
+  it('takes the chord from any other control, and says so', () => {
+    const moved = rebind({}, 'gear', 'KeyH')
+    expect(moved.keys.gear).toBe('KeyH')
+    expect(moved.keys.hook).toBe('None')
+    expect(moved.taken).toEqual(['hook'])
+  })
+
+  it('names every control it unbinds, both of a pair included', () => {
+    const moved = rebind({}, 'hook', 'Space')
+    expect(moved.keys.fire).toBe('None')
+    expect(moved.keys.pause).toBe('None')
+    expect([...moved.taken].sort()).toEqual(['fire', 'pause'])
+  })
+
+  it('is what the Keys tab does with a captured chord, naming all it took', () => {
+    const settings = readFileSync(
+      fileURLToPath(
+        new URL('../components/SettingsDialog.tsx', import.meta.url)
+      ),
+      'utf8'
+    )
+    expect(settings).toMatch(/= rebind\(overrides, arming, chord\)/)
+    expect(settings).toMatch(/\{ from: next\.taken, chord \}/)
+    expect(settings).toMatch(/formatList\(named\.map\(/)
+  })
+
+  it('clears an override that puts a control back on its default', () => {
+    expect(rebind({ gear: 'KeyQ' }, 'gear', 'KeyG').keys).not.toHaveProperty(
+      'gear'
+    )
   })
 })

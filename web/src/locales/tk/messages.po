@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} eýýäm tutulypdy we ol dolandyryş indi baglanyşyksyz."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} üstündedi, olar indi baglanyşyksyz."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} üstündedi, ol indi baglanyşyksyz."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} ady"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} bilen {to} aralygy"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} ýapmak üçin"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Bloklar"
 msgid "Blue"
 msgstr "Gök"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "GÖK {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Gök botlar"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Kategoriýa täzelendi"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Merkez çyzygy"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Anykla"
 msgid "Detect from web browser"
 msgstr "Web brauzerden anyklamak"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Işläp düzüji tertibi"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Başga oýun hosty"
@@ -1739,6 +1758,11 @@ msgstr "Boş pilon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Sesi işjeňleşdir"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Gutardy"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Ýangyç çelegi"
 msgid "full afterburner"
 msgstr "doly forsaž"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Diňe toplar"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Eliňi şturwaldan aýyr; salam berip uçmak üçin enter bas"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Eliňi şturwaldan aýyr; salam berip uçmak üçin {key} bas"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Radaryň antennasyny aşak düşür"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M ýapmak üçin"
+msgid "LWD"
+msgstr "ÇEP"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "At hökmandyr"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "At 1000 nyşandan az bolmaly"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "BA"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Bildirişler: {0}"
 msgid "Novice"
 msgstr "Täze öwreniji"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "BÝ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "San"
@@ -3237,7 +3265,9 @@ msgstr "Zolakda: ýarym flaplar, harby kuwwata çenli gaz ber, tormozlary aýyr"
 msgid "Oops! Page Not Found!"
 msgstr "Eý dostum! Sahypa tapylmady!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Açyk"
 
@@ -3288,6 +3318,11 @@ msgstr "Wariantlar"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Beýleki"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Başga"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3469,13 +3504,13 @@ msgstr "Postlar"
 msgid "Posts and comments"
 msgstr "Postlar we teswirler"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "UÇMAK ÜÇIN {key} BASYŇ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Düwmä basyň…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "UÇMAK ÜÇIN ENTER BASYŇ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Ýazgy saklandy"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Gyzyl"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "GYZYL {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "DOLY KUWWAT"
 msgid "Runway {end}"
 msgstr "Uçuş zolagy {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "SAG"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Şenbe"
@@ -4074,6 +4117,7 @@ msgstr "Serwer"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Serwer ýalňyşlygy"
 
@@ -4086,6 +4130,10 @@ msgstr "Server düzgünleri"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "server v{0} işledýär, sizde v{version} bar"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Serwer öçürildi"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Bölmek"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "GANATLARY AÇ"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Soralan mazmun tapylmady."
 msgid "The server returned a web page instead of data."
 msgstr "Serwer maglumatyň ýerine web sahypasyny gaýtardy."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Dünýä serweri {status} ýalňyşlygy bilen jogap berdi"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Dünýä serweri wagtynda jogap bermedi"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Dünýä serwerinde başga bir duşuşyk üçin orun ýok"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Dünýä serweri okap bolmaýan jogap iberdi"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Bu programma siziň geçiş açaryňyzy ulanmaga rugsat berilmedi. Sazlamalarda, Rugsatlar bölüminde rugsat beriň."
@@ -4494,6 +4562,10 @@ msgstr "Wagt"
 msgid "Time of day"
 msgstr "Günüň wagty"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Wagt gutardy"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "At"
@@ -4524,9 +4596,17 @@ msgstr "Görnüş saýlawlaryny geçir"
 msgid "Toggle watched filter"
 msgstr "Görülen filtri geçir"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Siziň salgyňyzdan gaty köp duşuşyk hödürlendi"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Aşa köp haýyş"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Dünýä serwerine gaty köp haýyş"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Sapar"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "GANATLAR GULPLY"
 msgid "WINS"
 msgstr "ÝEŇÝÄR"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Yzyna alyndy"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Dünýä serweri"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Dünýä serweri elýeterli däl"

@@ -14,7 +14,7 @@ import { type MessageDescriptor } from '@lingui/core'
 import { msg, plural } from '@lingui/core/macro'
 import { useLingui as useI18n } from '@lingui/react'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { IconButton, shellSaveBlob, toast } from '@mochi/web'
+import { IconButton, shellSaveBlob, toast, useFormat } from '@mochi/web'
 import { Badge } from '@mochi/web/components/ui/badge'
 import { Button } from '@mochi/web/components/ui/button'
 import { Input } from '@mochi/web/components/ui/input'
@@ -56,16 +56,19 @@ import {
   graphicsPreset,
   type MissionConfig,
   type StickBindings,
+  bindings,
   deviceDefaults,
   profileBindings,
   profileFor,
   PAIRS,
   reaches,
+  rebind,
 } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
 import { SliderRow, SwitchRow, MenuDialog, SectionLabel } from './menu-parts'
 
-// The fields each tab owns, for the per-tab Reset
+// A connected pad as the Joystick tab polls it: the live axes and buttons
+// drive the meters and the press-to-bind capture.
 interface PadState {
   id: string
   mapping: string
@@ -406,11 +409,12 @@ function JoystickPanel({
   const pad = pads.find((p) => p.id === active) ?? null
   const defaults = deviceDefaults(active, pad?.mapping ?? '')
   const saved = sticks[active]
-  const axes = { ...defaults.axes, ...(saved?.axes ?? {}) }
-  const buttons =
-    saved?.buttons && Object.keys(saved.buttons).length
-      ? saved.buttons
-      : defaults.buttons
+  // Through bindings: every value below is worked on as text, and a stored
+  // number (an imported profile's, before import checked them) threw on every
+  // render of the tab.
+  const axes = { ...defaults.axes, ...bindings(saved?.axes) }
+  const pressed = bindings(saved?.buttons)
+  const buttons = Object.keys(pressed).length ? pressed : defaults.buttons
   const axisCount = pad ? pad.axes.length : 10
   const buttonCount = pad ? pad.buttons.length : 24
   const [detecting, setDetecting] = useState<string | null>(null)
@@ -738,8 +742,12 @@ function JoystickPanel({
                     <Button
                       type='button'
                       size='sm'
-                      variant={reversed ? 'default' : 'outline'}
-                      className='h-8 px-2 text-xs'
+                      variant='outline'
+                      aria-pressed={reversed}
+                      className={[
+                        'h-8 px-2 text-xs',
+                        reversed ? 'bg-primary/10 text-primary' : '',
+                      ].join(' ')}
                       title={t`Reversed`}
                       onClick={() => setAxis(id, (reversed ? '' : '-') + index)}
                     >
@@ -918,7 +926,10 @@ function SoundPanel({
         <Trans>Master volume</Trans>
       </SectionLabel>
       <div
-        className={`flex items-center gap-4 p-3${sound ? '' : 'opacity-50'}`}
+        className={[
+          'flex items-center gap-4 p-3',
+          sound ? '' : 'opacity-50',
+        ].join(' ')}
       >
         <Slider
           aria-labelledby={masterVolumeId}
@@ -1021,14 +1032,17 @@ function KeysPanel({
 }) {
   const { t } = useLingui()
   const { i18n } = useI18n()
+  const { formatList } = useFormat()
   const overrides = (config.keys ?? {}) as Record<string, string>
   const [arming, setArming] = useState<string | null>(null)
-  // The action a rebind took the key away from. Taking it is right - two
-  // controls on one chord is worse - but it used to happen in silence, and the
-  // row that lost its key is usually scrolled off screen.
-  const [taken, setTaken] = useState<{ from: string; chord: string } | null>(
-    null
-  )
+  // The actions a rebind took the key away from (rebind, lib/config.ts).
+  // Taking it is right - two controls on one chord is worse - but it used to
+  // happen in silence, and the row that lost its key is usually scrolled off
+  // screen.
+  const [taken, setTaken] = useState<{
+    from: string[]
+    chord: string
+  } | null>(null)
   const [query, setQuery] = useState('')
   const current = (id: string) => overrides[id] ?? KEY_DEFAULTS[id]
   useEffect(() => {
@@ -1042,17 +1056,9 @@ function KeysPanel({
       }
       if (/^(Shift|Control|Alt|Meta)/.test(e.code)) return
       const chord = (e.shiftKey ? 'Shift+' : '') + e.code
-      const next = { ...overrides }
-      let stolen: string | null = null
-      for (const other of Object.keys(KEY_DEFAULTS))
-        if (other !== arming && current(other) === chord) {
-          next[other] = 'None'
-          stolen = other
-        }
-      if (KEY_DEFAULTS[arming] === chord) delete next[arming]
-      else next[arming] = chord
-      set('keys', next)
-      setTaken(stolen ? { from: stolen, chord } : null)
+      const next = rebind(overrides, arming, chord)
+      set('keys', next.keys)
+      setTaken(next.taken.length ? { from: next.taken, chord } : null)
       setArming(null)
     }
     window.addEventListener('keydown', capture, { capture: true })
@@ -1069,9 +1075,10 @@ function KeysPanel({
   // BUTTON_ROWS too, and a fallback below for the handful of actions the engine
   // knows that neither tab lists: naming nothing is how this went silent in the
   // first place.
-  const lost = taken
-    ? [...KEY_ROWS, ...BUTTON_ROWS].find((r) => r.id === taken.from)
-    : undefined
+  const lost = (taken?.from ?? []).map((id) =>
+    [...KEY_ROWS, ...BUTTON_ROWS].find((r) => r.id === id)
+  )
+  const named = lost.every(Boolean) ? (lost as Row[]) : []
 
   return (
     <div className='space-y-4'>
@@ -1081,9 +1088,15 @@ function KeysPanel({
           <div className='flex items-start gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 p-2.5 text-xs text-amber-600'>
             <TriangleAlert className='mt-0.5 size-4 shrink-0' />
             <span className='flex-1'>
-              {lost ? (
+              {named.length === 1 ? (
                 <Trans>
-                  {pretty(taken.chord)} was on {i18n._(lost.label)}, which is
+                  {pretty(taken.chord)} was on {i18n._(named[0].label)}, which
+                  is now unbound.
+                </Trans>
+              ) : named.length > 1 ? (
+                <Trans>
+                  {pretty(taken.chord)} was on{' '}
+                  {formatList(named.map((row) => i18n._(row.label)))}, which are
                   now unbound.
                 </Trans>
               ) : (
@@ -1208,9 +1221,13 @@ function GraphicsPanel({
               <Button
                 key={p.id}
                 type='button'
-                variant={active === p.id ? 'default' : 'outline'}
+                variant='outline'
+                aria-pressed={active === p.id}
                 size='sm'
-                className='text-xs font-semibold'
+                className={[
+                  'text-xs font-semibold',
+                  active === p.id ? 'bg-primary/10 text-primary' : '',
+                ].join(' ')}
                 onClick={() =>
                   onChange({ ...config, ...GRAPHICS_PRESETS[p.id] })
                 }

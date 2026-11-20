@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} hartuta zegoen jada, eta kontrol hori orain lotu gabe dago."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} kontroletan zegoen, eta orain lotu gabe daude."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} kontrolean zegoen, eta orain lotu gabe dago."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} izena"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} - {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} ixteko"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Blokeak"
 msgid "Blue"
 msgstr "Urdina"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "URDINA {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Bot urdinak"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Kategoria eguneratu da"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Erdiko lerroa"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Detektatu"
 msgid "Detect from web browser"
 msgstr "Detektatu web nabigatzailetik"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Garatzaile modua"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Beste joko-ostalari bat"
@@ -1739,6 +1758,11 @@ msgstr "Piloi hutsa"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Gaitu soinua"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Bukatuta"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Erregai-tanga"
 msgid "full afterburner"
 msgstr "postkonbustore osoa"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Kanoiak soilik"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Kendu eskua palankatik; sakatu enter agurtu eta abiarazteko"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Kendu eskua palankatik; sakatu {key} agurtu eta abiarazteko"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Radarraren antena jaitsi"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M ixteko"
+msgid "LWD"
+msgstr "EZK"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Izena beharrezkoa da"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Izenak 1000 karaktere edo gutxiago izan behar ditu"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "BEH"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Jakinarazpenak: {0}"
 msgid "Novice"
 msgstr "Hasiberria"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "GORA"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Zenbakia"
@@ -3237,7 +3265,9 @@ msgstr "Pistan: flapak erdira, potentzia militarra, balaztak aske"
 msgid "Oops! Page Not Found!"
 msgstr "Hutsegitea! Ez da orria aurkitu!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Irekia"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Aukerak"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Bestelakoa"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Bestelakoa"
 
@@ -3469,13 +3504,13 @@ msgstr "Argitalpenak"
 msgid "Posts and comments"
 msgstr "Argitalpenak eta iruzkinak"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "SAKATU {key} ABIARAZTEKO"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Sakatu tekla bat…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "SAKATU ENTER ABIARAZTEKO"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Grabaketa gordeta"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Gorria"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "GORRIA {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "POTENTZIA OSOA"
 msgid "Runway {end}"
 msgstr "Pista {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ESK"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Larunbata"
@@ -4074,6 +4117,7 @@ msgstr "Zerbitzaria"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Zerbitzariaren errorea"
 
@@ -4086,6 +4130,10 @@ msgstr "Zerbitzariaren arauak"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "zerbitzariak v{0} darabil, zuk v{version} duzu"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Zerbitzaria itzali da"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Banatu"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "HEGOAK ZABALDU"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "EGONK {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Eskatutako edukia ezin izan da aurkitu."
 msgid "The server returned a web page instead of data."
 msgstr "Zerbitzariak web-orri bat itzuli du datuen ordez."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Mundu-zerbitzariak {status} errorearekin erantzun du"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Mundu-zerbitzariak ez du garaiz erantzun"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Mundu-zerbitzariak ez du beste partida baterako lekurik"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Mundu-zerbitzariak irakurri ezin den erantzun bat bidali du"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Aplikazio honek ez du baimenik zure sarbide-gakoa erabiltzeko. Baimendu Ezarpenetan, Baimenak atalean."
@@ -4494,6 +4562,10 @@ msgstr "Denbora"
 msgid "Time of day"
 msgstr "Eguneko ordua"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Denbora agortuta"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Izenburua"
@@ -4524,9 +4596,17 @@ msgstr "Txandakatu ikuspegi-aukerak"
 msgid "Toggle watched filter"
 msgstr "Txandakatu ikusitako iragazkia"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Partida gehiegi eskaini dira zure helbidetik"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Eskaera gehiegi"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Eskaera gehiegi mundu-zerbitzariari"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Bidaian"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "HEGOAK BLOKEATUTA"
 msgid "WINS"
 msgstr "GARAILE"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Kenduta"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Mundu-zerbitzaria"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Ezin da mundu-zerbitzarira iritsi"

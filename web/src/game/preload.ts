@@ -21,7 +21,6 @@ interface Load {
   received: number
   total: number // decoded bytes: the size as built, else an unencoded Content-Length, else 0
   done: boolean
-  failed: boolean
 }
 
 // Every model and the flight core, by URL, to its size as built.
@@ -47,6 +46,11 @@ const loads = new Map<string, Load>()
 let moved = 0 // performance.now() of the last byte progress anywhere
 
 function begin(url: string): Load {
+  // A failed download leaves the map, so the next ask fetches it afresh and one
+  // failure does not poison the page for the next mission. Its failure reaches
+  // whoever asked for it through the promise; the engine's loading gate fails on
+  // its own loads (the carrier, the aircraft, the flight core), never on a
+  // download the menu began that this mission does not use.
   const existing = loads.get(url)
   if (existing) return existing
   moved = performance.now() // a fresh fetch starts the stall clock now, not at the last byte of some earlier download
@@ -55,7 +59,6 @@ function begin(url: string): Load {
     received: 0,
     total: sizes.get(url) ?? 0,
     done: false,
-    failed: false,
   }
   load.promise = (async () => {
     try {
@@ -106,13 +109,14 @@ function begin(url: string): Load {
       load.done = true
       return buffer.buffer
     } catch (error) {
-      load.failed = true
-      // A failed download must not poison the page: drop the entry so the next
-      // mission fetches afresh. The current waiters still see the rejection.
-      loads.delete(url)
+      if (loads.get(url) === load) loads.delete(url) // the current waiters still see the rejection
       throw error
     }
   })()
+  // Nobody may be waiting: preload() starts every download speculatively from
+  // the menu, and a failure there would otherwise be an unhandled rejection.
+  // asset() hands out this same promise, so its callers still see the failure.
+  load.promise.catch(() => {})
   loads.set(url, load)
   return load
 }
@@ -135,21 +139,18 @@ export function asset(url: string): Promise<ArrayBuffer> {
 }
 
 // progress reports the aggregate download state for the loading screen.
-export function progress(): { percent: number; failed: boolean; idle: number } {
+export function progress(): { percent: number; idle: number } {
   let received = 0
   let total = 0
-  let failed = false
   let outstanding = false
   for (const load of loads.values()) {
     received += load.received
     total += load.total
-    failed = failed || load.failed
-    outstanding = outstanding || (!load.done && !load.failed)
+    outstanding = outstanding || !load.done
   }
   return {
     percent:
       total > 0 ? Math.min(100, Math.floor((received / total) * 100)) : 0,
-    failed,
     // A stall needs OUTSTANDING work with no bytes moving: with every download
     // complete (a restart off cache fetches nothing) the idle clock would
     // otherwise grow forever.

@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} oli jo varattu, ja kyseinen säädin on nyt sitomaton."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} oli säätimissä {1}, jotka ovat nyt sitomattomia."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} oli säätimessä {1}, joka on nyt sitomaton."
@@ -165,6 +171,10 @@ msgstr "{entityLabel}: nimi"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from}–{to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} sulkee"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Estää"
 msgid "Blue"
 msgstr "Sininen"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "SININEN {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Siniset botit"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Kategoria päivitetty"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Keskilinja"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Tunnista"
 msgid "Detect from web browser"
 msgstr "Tunnista selaimesta"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Kehittäjätila"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Eri pelin isäntä"
@@ -1739,6 +1758,11 @@ msgstr "Tyhjä pyloni"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Ota ääni käyttöön"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Loppunut"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Polttoainesäiliö"
 msgid "full afterburner"
 msgstr "täysi jälkipoltin"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Vain tykit"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Käsi pois ohjaimesta; paina enter tervehtiäksesi ja laukaistaksesi"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Käsi pois ohjaimesta; paina {key} tervehtiäksesi ja laukaistaksesi"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Laske tutka-antennia"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M sulkee"
+msgid "LWD"
+msgstr "VAS"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Nimi vaaditaan"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Nimen on oltava enintään 1000 merkkiä"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ALAS"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Ilmoitukset: {0}"
 msgid "Novice"
 msgstr "Aloittelija"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "YLÖS"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Numero"
@@ -3237,7 +3265,9 @@ msgstr "Kiitotiellä: puolilaipat, nosta sotilasteholle, jarrut pois"
 msgid "Oops! Page Not Found!"
 msgstr "Hups! Sivua ei löytynyt!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Avoin"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Vaihtoehdot"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Muu"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Muu"
 
@@ -3469,13 +3504,13 @@ msgstr "Julkaisut"
 msgid "Posts and comments"
 msgstr "Julkaisut ja kommentit"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "PAINA {key} LAUKAISTAKSESI"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Paina näppäintä…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "PAINA ENTER LAUKAISTAKSESI"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Tallenne tallennettu"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Punainen"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "PUNAINEN {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "TÄYSI TEHO"
 msgid "Runway {end}"
 msgstr "Kiitotie {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "OIK"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Lauantai"
@@ -4074,6 +4117,7 @@ msgstr "Palvelin"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Palvelinvirhe"
 
@@ -4086,6 +4130,10 @@ msgstr "Palvelimen säännöt"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "palvelin käyttää v{0}, sinulla on v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Palvelin sammutettiin"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Rinnakkain"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "LEVITÄ SIIVET"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "VAKAAJA {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Pyydettyä sisältöä ei löytynyt."
 msgid "The server returned a web page instead of data."
 msgstr "Palvelin palautti verkkosivun tietojen sijaan."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Maailmapalvelin vastasi virheellä {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Maailmapalvelin ei vastannut ajoissa"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Maailmapalvelimella ei ole tilaa uudelle ottelulle"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Maailmapalvelin lähetti vastauksen, jota ei voitu lukea"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Tämä sovellus ei saa käyttää avainkoodiasi. Salli se Asetuksissa kohdassa Käyttöoikeudet."
@@ -4494,6 +4562,10 @@ msgstr "Aika"
 msgid "Time of day"
 msgstr "Vuorokaudenaika"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Aikakatkaisu"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Otsikko"
@@ -4524,9 +4596,17 @@ msgstr "Vaihda näkymäasetuksia"
 msgid "Toggle watched filter"
 msgstr "Vaihda seurattu-suodatin"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Osoitteestasi on tarjottu liian monta ottelua"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Liikaa pyyntöjä"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Liikaa pyyntöjä maailmapalvelimelle"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Matkustetaan"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trimmi"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIMMI {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "SIIVET LUKITTU"
 msgid "WINS"
 msgstr "VOITTAA"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Peruttu"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Maailmapalvelin"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Maailmapalvelimeen ei saada yhteyttä"

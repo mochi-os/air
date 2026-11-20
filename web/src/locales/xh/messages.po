@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} sele ithathiwe, kwaye olo lawulo ngoku alubotshelelwanga."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} ibise-{1}, ezingoku zingabotshelelwanga."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} ibise-{1}, engoku ingabotshelelwanga."
@@ -165,6 +171,10 @@ msgstr "Igama le-{entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "ukusuka ku-{from} ukuya ku-{to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} ukuvala"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Iyavimba"
 msgid "Blue"
 msgstr "Zuba"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "ZUBA {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Iibhothi ezizuba"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Udidi luhlaziyiwe"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Umgca ophakathi"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Fumanisa"
 msgid "Detect from web browser"
 msgstr "Bhaqa kwibhrawuza yewebhu"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Imowudi yomphuhlisi"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Iseva yomdlalo eyahlukileyo"
@@ -1739,6 +1758,11 @@ msgstr "Ipylon engenanto"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Vula isandi"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Iphelile"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Itanki yamafutha"
 msgid "full afterburner"
 msgstr "i-afterburner epheleleyo"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Imibayimbayi kuphela"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Susa isandla kwi-stick; cofa u-enter ukuze ukhahlele uze undululwe"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Susa isandla kwi-stick; cofa u-{key} ukuze ukhahlele uze undululwe"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Yehlisa i-eriyali yeradar"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M ukuvala"
+msgid "LWD"
+msgstr "LWD"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Igama liyafuneka"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Igama kufuneka libe yimpawu eziyi-1000 okanye ngaphantsi"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ND"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Izaziso: {0}"
 msgid "Novice"
 msgstr "Umqalayo"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "NU"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Inani"
@@ -3237,7 +3265,9 @@ msgstr "Kwi-runway: ii-flaps isiqingatha, nyusa ukuya kumandla omkhosi, khulula 
 msgid "Oops! Page Not Found!"
 msgstr "Yhu! Iphepha Alifumanekanga!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Uvulekile"
 
@@ -3288,6 +3318,11 @@ msgstr "Iikhetho"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Okunye"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Enye"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3469,13 +3504,13 @@ msgstr "Iimpapasho"
 msgid "Posts and comments"
 msgstr "Imiyalezo nezimvo"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "CINEZELA U-{key} UKUZE UNDIZE"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Cofa isitshixo…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "CINEZELA U-ENTER UKUZE UNDIZE"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Irekhodi igciniwe"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Bomvu"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "BOMVU {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "AMANDLA APHELELEYO"
 msgid "Runway {end}"
 msgstr "Ibala lokundiza {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "RWD"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Umgqibelo"
@@ -4074,6 +4117,7 @@ msgstr "Iseva"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Impazamo yeseva"
 
@@ -4086,6 +4130,10 @@ msgstr "Imithetho yeseva"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "iseva isebenzisa v{0}, unayo v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Iseva icinyiwe"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Yahlula"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "YANDISA AMAPHIKO"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Umxholo oceliweyo awufumanekanga."
 msgid "The server returned a web page instead of data."
 msgstr "Iseva ibuyise iphepha lewebhu endaweni yedatha."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Iseva yehlabathi iphendule ngempazamo {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Iseva yehlabathi ayiphendulanga ngexesha"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Iseva yehlabathi ayinandawo yomnye umdlalo"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Iseva yehlabathi ithumele impendulo engafundekiyo"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Le app ayivumelekanga ukusebenzisa isitshixo sakho sokungena. Yivumele kwiiSetingi, phantsi kweeMvume."
@@ -4494,6 +4562,10 @@ msgstr "Ixesha"
 msgid "Time of day"
 msgstr "Ixesha losuku"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Ixesha liphelile"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Isihloko"
@@ -4524,9 +4596,17 @@ msgstr "Tshintsha iindlela zokujonga"
 msgid "Toggle watched filter"
 msgstr "Tshintsha isihluzi sezibukelweyo"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Kunikezelwe imidlalo emininzi kakhulu isuka kwidilesi yakho"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Izicelo ezininzi kakhulu"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Izicelo ezininzi kakhulu kwiseva yehlabathi"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Ukuhamba"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "itrim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "AMAPHIKO ATSHIXIWE"
 msgid "WINS"
 msgstr "UYAPHUMELELA"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Irhoxisiwe"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Iseva yehlabathi"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Iseva yehlabathi ayifikeleleki"

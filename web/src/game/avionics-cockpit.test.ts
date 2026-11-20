@@ -44,7 +44,7 @@ const world = `const NM=1852, D2R=Math.PI/180, DDI_ORDER=["left","right","center
   const ddi_state={ left:{ page:"fcs", menu:"" }, right:{ page:"bit", menu:"" }, center:{ page:"hsi", menu:"" } }, hsi_state={ level:"", slew:false };
   const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); const nav_sense=()=>({ dt:0, x:0, z:0, east:0, south:0, tas:0, heading:0, pitch:0, bank:0, airborne:false, brake:true, power:true, radar:false, deck:false, tacan:null });`
 const defs = [menus + '\n', legends + '\n', line('mc_switch'), line('bit'), line('bit_state'), line('display_test'), line('ufc_test'), line('hmd'), line('PATTERN_BARS')].join('')
-const functions = ['fcs_jams', 'mc', '_mc', 'bit_seen', 'alike', 'bit_take', 'bit_moved', 'pattern_start', 'pattern_stop', 'equipment', 'avionics_frame', 'pattern_spot', 'pattern_draw', 'bit_press', 'ddi_bit', 'ddi_legend'].map(lift).join('\n')
+const functions = ['fcs_jams', 'mc', '_mc', 'bit_seen', 'alike', 'bit_take', 'bit_moved', 'pattern_start', 'pattern_stop', 'equipment', 'handle_down', 'avionics_frame', 'pattern_spot', 'pattern_draw', 'bit_press', 'ddi_bit', 'ddi_legend'].map(lift).join('\n')
 function cockpit<T>(body: string): T {
   return new Function('navigate', 'avionics', 'THREE', 'countermeasures', 'communication', 'identification', 'mids', 'helmet', `${world} ${defs} ${functions}
     const helmet_frame=()=>{};   // the helmet's own frame is helmet-cockpit.test.ts's

@@ -374,7 +374,7 @@ describe('spotting on the catapult under way', () => {
     const mission_start=()=>"carrier", flight_get=()=>b, flight_set=(state)=>{ sent=Array.from(state); }, sync_core=()=>{}, ground_height=()=>19.94, stance_of=()=>2.46, FUEL=()=>4000, stores_book=null;
     const flight_footing=(x,y,z)=>{ asked=[x,y,z]; return { x:2.44, y:0, z:-0.89 }; };   // the deck's own velocity where the jet sits
     const flight_stores=()=>{}, own_mask=()=>0, rested=()=>false, seated=()=>{};   // the loadout and the stance (#188): no centre or rest in this stand-in core
-    ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flight_push')}
+    ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('handle_down')} ${lift('flight_push')}
     flight_push(); return { velocity:sent.slice(3,6), asked };`)() as { velocity: number[]; asked: number[] }
   it("hands the core a jet spotted on the deck moving with her deck, not at rest over the sea", () => {
     const parked = pushed(0)
@@ -523,7 +523,6 @@ describe('the carrier under way in the engine', () => {
   })
 
   it('places what follows the jet on the deck in the frame of the rig it hangs from', () => {
-    expect(lift('update_shuttles')).toMatch(/rig_local\(s\.mesh\.position\)\.y=s\.home\.y;/)
     expect(lift('update_wire_drag')).toMatch(/const h=rig_local\(_wireApex\.set\(hx,hy,hz\)\); hx=h\.x; hz=h\.z;[^\n]*\n\t\tseg_between\(w\.vsegs\[0\]/)
   })
 

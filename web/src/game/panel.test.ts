@@ -57,7 +57,7 @@ function system(o: { tod?: string; grounded?: boolean; parking?: boolean; multip
     const SHIP={ parking:{ x:1005.3, z:-500, heading:0 } }, AIRCRAFT_MODELS={ fa18c:{ nose:5.3 } }, own_aircraft=()=>"fa18c", D2R=Math.PI/180;   // the deck's spot: its nose wheel 5.3 m ahead of the frame's origin, where the jet stands
     const on_ground=()=>ownship.grounded, parking=o.parking??true, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, buttons={ trim:-Infinity, reset:-Infinity, standing:false, jams:0 }, fcs_jams=(w)=>w.jams||0; let last_out=null;
     ${tables} ${block} ${lift('_generators')}
-${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${press}
+${lift('generators')} ${lift('lighting_set')} ${lift('trim_reset')} ${lift('handle_down')} ${press}
     return { press:pit_press, step(t,out){ sim_time=t; glance=t; power_step(out); }, start(t,out,dt){ sim_time=t; glance=t; power_step(out); start_step(out,dt); }, at(t){ sim_time=t; glance=t; }, generators,
       starter, start_fresh, apu_ready, ground_power, cranking, sub_idle, secured, fed, GROUND, get apu(){ return apu_accumulator; }, set apu(v){ apu_accumulator=v; }, knob_level, knob_turn, display_level, display_contrast, display_press, symbology,
       battery_switch, battery_volts, volt_angle, bleed_open, bleed_turn, pressurized, cabin_altitude, cabin_step, fire_testing, wing_step, wing_kept, clock_elapsed, travel_at, lighting_set,
@@ -132,7 +132,7 @@ describe('the electrical power panel (#21, #116)', () => {
     const ownship={ flown:true, grounded:true, speed:0, throttle:${throttle}, pos:{ x:0, y:10, z:0 }, vel_dir:{ x:1, y:0, z:0 }, q:{ w:1, x:0, y:0, z:0 }, gearTarget:0 };
     const mission_start=()=>"runway", flight_get=()=>b, flight_set=(state)=>{ sent=Array.from(state); }, sync_core=()=>{}, ground_height=()=>0, stance_of=()=>2, FUEL=()=>4000, stores_book=null, flight_footing=()=>({ x:0, y:0, z:0 });
     const flight_stores=()=>{}, own_mask=()=>0, rested=()=>false, seated=()=>{};   // the loadout and the stance (#188): no centre or rest in this stand-in core
-    ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('flight_push')}
+    ${/\nconst IDLE=[^\n]*\n/.exec(source)?.[0] ?? ''} ${lift('handle_down')} ${lift('flight_push')}
 } flight_push(); return [...sent.slice(14,18),...sent.slice(110,114)];`)() as number[] // the lift stops at the function's own closing brace, which stands alone
   it('hands a ground start its engines turning: both generators on the line from the first frame', () => {
     expect(IDLE).toBeGreaterThan(0)

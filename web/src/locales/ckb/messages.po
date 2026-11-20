@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} پێشتر گیرابوو، و ئەو کۆنترۆڵە ئێستا نەبەستراوە."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} لەسەر {1} بوو، کە ئێستا نەبەستراون."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} لەسەر {1} بوو، کە ئێستا نەبەستراوە."
@@ -165,6 +171,10 @@ msgstr "ناوی {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "لە {from} بۆ {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} بۆ داخستن"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "بلۆکەکان"
 msgid "Blue"
 msgstr "شین"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "شین {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "بۆتە شینەکان"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "هاوپۆل نوێکرایەوە"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "هێڵی ناوەڕاست"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "دۆزینەوە"
 msgid "Detect from web browser"
 msgstr "دۆزینەوە لە وێبگەڕ"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "دۆخی گەشەپێدەر"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "ھۆستی یاری جیاواز"
@@ -1739,6 +1758,11 @@ msgstr "پایلۆنی بەتاڵ"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "دەنگ چالاک بکە"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "کۆتایی هات"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "تانکی سووتەمەنی"
 msgid "full afterburner"
 msgstr "ئەفتەربەرنەری تەواو"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "تەنها تۆپ"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "دەست لە دەسکەکە هەڵگرە; بۆ سەلام و هەڵفڕین enter دابگرە"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "دەست لە دەسکەکە هەڵگرە; بۆ سەلام و هەڵفڕین {key} دابگرە"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "نزمکردنەوەی ئەنتێنای ڕادار"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M بۆ داخستن"
+msgid "LWD"
+msgstr "چەپ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "ناو پێویستە"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "ناو دەبێت ١٠٠٠ نووسە یان کەمتر بێت"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "خوار"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "ئاگادارکردنەوەکان: {0}"
 msgid "Novice"
 msgstr "دەستپێکەر"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "سەر"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "ژمارە"
@@ -3237,7 +3265,9 @@ msgstr "لەسەر ڕێڕەو: نیوە فلاپ، هێز بگەیەنە هێز�
 msgid "Oops! Page Not Found!"
 msgstr "ئۆه! پەڕە نەدۆزرایەوە!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "کراوە"
 
@@ -3288,6 +3318,11 @@ msgstr "هەڵبژاردەکان"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "هیتر"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "هی تر"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3469,13 +3504,13 @@ msgstr "پۆستەکان"
 msgid "Posts and comments"
 msgstr "پۆستەکان و بۆچوونەکان"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "بۆ فڕین {key} داگرە"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "کلیلێک دابگرە…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "بۆ فڕین ENTER داگرە"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "تۆمارەکە پاشەکەوتکرا"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "سوور"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "سوور {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "هێزی تەواو"
 msgid "Runway {end}"
 msgstr "باندی فڕین {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ڕاست"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "شەممە"
@@ -4074,6 +4117,7 @@ msgstr "ڕاژەکار"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "هەڵەی ڕاژەکار"
 
@@ -4086,6 +4130,10 @@ msgstr "ڕێساکانی ڕاژەکار"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "ڕاژەکار v{0} کار دەکات، تۆ v{version}ت هەیە"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "ڕاژەکار کوژێنرایەوە"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "دابەشکردن"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "باڵەکان بکەرەوە"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "جێگیرکەر {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "ناوەڕۆکی داواکراو نەدۆزرایەوە."
 msgid "The server returned a web page instead of data."
 msgstr "ڕاژەکار لە جیاتی داتا پەڕەیەکی وێبی گەڕاندەوە."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "ڕاژەکاری جیهان بە هەڵەی {status} وەڵامی دایەوە"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "ڕاژەکاری جیهان لە کاتی خۆیدا وەڵامی نەدایەوە"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "ڕاژەکاری جیهان شوێنی بۆ یارییەکی تر نییە"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "ڕاژەکاری جیهان وەڵامێکی نارد کە نەتوانرا بخوێنرێتەوە"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "ئەم بەرنامەیە ڕێگەپێدراو نییە پاسکییەکەت بەکاربهێنێت. لە ڕێکخستنەکان، لەژێر ڕێگەپێدانەکان ڕێگەی پێبدە."
@@ -4494,6 +4562,10 @@ msgstr "کات"
 msgid "Time of day"
 msgstr "کاتی ڕۆژ"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "کات بەسەرچوو"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "ناونیشان"
@@ -4524,9 +4596,17 @@ msgstr "گۆڕینی بژاردەکانی پیشاندان"
 msgid "Toggle watched filter"
 msgstr "گۆڕینی پاڵێوی چاودێریکراو"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "یاری زۆر زیاد لە ناونیشانەکەتەوە پێشکەش کراون"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "داواکاری زۆر زیاد"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "داواکاری زۆر زیاد بۆ ڕاژەکاری جیهان"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "گەشتکردن"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "تریم"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "تریم {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "باڵەکان قوفڵکراون"
 msgid "WINS"
 msgstr "بردیەوە"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "کشێنرایەوە"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "ڕاژەکاری جیهان"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "ڕاژەکاری جیهان بەردەست نییە"

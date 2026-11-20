@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} wis dienggo, lan kontrol kuwi saiki ora kaiket."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} ana ing {1}, sing saiki kabeh ora kaiket."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} ana ing {1}, sing saiki ora kaiket."
@@ -165,6 +171,10 @@ msgstr "Jeneng {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} nganti {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} kanggo nutup"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Blok"
 msgid "Blue"
 msgstr "Biru"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BIRU {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Bot biru"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Kategori dianyari"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Garis tengah"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Deteksi"
 msgid "Detect from web browser"
 msgstr "Deteksi saka browser web"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Mode pangembang"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Host game liya"
@@ -1739,6 +1758,11 @@ msgstr "Pilon kosong"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Aktifake swara"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Rampung"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Tangki bahan bakar"
 msgid "full afterburner"
 msgstr "afterburner kebak"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Mung mriyem"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Ucul tangan saka stik; pencet enter kanggo aweh hormat lan mabur"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Ucul tangan saka stik; pencet {key} kanggo aweh hormat lan mabur"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Mudhunake antena radar"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M kanggo nutup"
+msgid "LWD"
+msgstr "SKM"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Jeneng kudu diisi"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Jeneng kudu 1000 karakter utawa kurang"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "IMD"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Notifikasi: {0}"
 msgid "Novice"
 msgstr "Pemula"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "IMG"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Nomer"
@@ -3237,7 +3265,9 @@ msgstr "Ing landhasan: flap separo, unggahake menyang tenaga militer, rem diucul
 msgid "Oops! Page Not Found!"
 msgstr "Adhuh! Kaca Ora Ditemokaké!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Kabuka"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Opsi"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Liyané"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Liyané"
 
@@ -3469,13 +3504,13 @@ msgstr "Postingan"
 msgid "Posts and comments"
 msgstr "Postingan lan komentar"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "PENCET {key} KANGGO MABUR"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Pencet tombol…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "PENCET ENTER KANGGO MABUR"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Rekaman kasimpen"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Abang"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "ABANG {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "TENAGA KEBAK"
 msgid "Runway {end}"
 msgstr "Landhasan {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "STM"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Setu"
@@ -4074,6 +4117,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Kaluputan server"
 
@@ -4086,6 +4130,10 @@ msgstr "Aturan server"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "server nganggo v{0}, sampeyan duwe v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Server dipateni"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Pisah"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "MBUKAK SWIWI"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Konten sing dijaluk ora bisa ditemokake."
 msgid "The server returned a web page instead of data."
 msgstr "Server mbalèkaké kaca web tinimbang data."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Server donya mangsuli kanthi kasalahan {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Server donya ora mangsuli tepat wektu"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Server donya ora duwe papan kanggo pertandhingan liyane"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Server donya ngirim wangsulan sing ora bisa diwaca"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Aplikasi iki ora diidini nggunakake passkey sampeyan. Idini ing Setelan, ing bagean Idin."
@@ -4494,6 +4562,10 @@ msgstr "Wektu"
 msgid "Time of day"
 msgstr "Wektu dina"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Wektu entek"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Judul"
@@ -4524,9 +4596,17 @@ msgstr "Toggle pilihan tampilan"
 msgid "Toggle watched filter"
 msgstr "Toggle saringan tonton"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Kakehan pertandhingan ditawakake saka alamat sampeyan"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Kakehan panjalukan"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Kakehan panjaluk menyang server donya"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Lagi lelungan"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "SWIWI KAKUNCI"
 msgid "WINS"
 msgstr "MENANG"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Ditarik"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Server donya"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Server donya ora bisa digayuh"

@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ಈಗಾಗಲೇ ತೆಗೆದುಕೊಳ್ಳಲಾಗಿತ್ತು, ಮತ್ತು ಆ ನಿಯಂತ್ರಣ ಈಗ ಜೋಡಿಸಲಾಗಿಲ್ಲ."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} ಮೇಲಿತ್ತು, ಅವುಗಳನ್ನು ಈಗ ಜೋಡಿಸಲಾಗಿಲ್ಲ."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} ಮೇಲಿತ್ತು, ಅದು ಈಗ ಜೋಡಿಸಲಾಗಿಲ್ಲ."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} ಹೆಸರು"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ರಿಂದ {to} ವರೆಗೆ"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "ಮುಚ್ಚಲು {key}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "ತಡೆಯುತ್ತದೆ"
 msgid "Blue"
 msgstr "ನೀಲಿ"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "ನೀಲಿ {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "ನೀಲಿ ಬಾಟ್‌ಗಳು"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "ವರ್ಗ ನವೀಕರಿಸಲಾಗಿದೆ"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "ಕೇಂದ್ರ ರೇಖೆ"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "ಪತ್ತೆ ಮಾಡಿ"
 msgid "Detect from web browser"
 msgstr "ವೆಬ್ ಬ್ರೌಸರ್‌ನಿಂದ ಪತ್ತೆ ಮಾಡಿ"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "ಡೆವಲಪರ್ ಮೋಡ್"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "ಬೇರೆ ಆಟದ ಸರ್ವರ್"
@@ -1739,6 +1758,11 @@ msgstr "ಖಾಲಿ ಪೈಲಾನ್"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "ಧ್ವನಿ ಸಕ್ರಿಯಗೊಳಿಸಿ"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "ಮುಗಿದಿದೆ"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "ಇಂಧನ ಟ್ಯಾಂಕ್"
 msgid "full afterburner"
 msgstr "ಪೂರ್ಣ ಆಫ್ಟರ್‌ಬರ್ನರ್"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "ಫಿರಂಗಿಗಳು ಮಾತ್ರ"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "ಸ್ಟಿಕ್‌ನಿಂದ ಕೈ ತೆಗೆ; ಸೆಲ್ಯೂಟ್ ಮಾಡಿ ಉಡಾಯಿಸಲು enter ಒತ್ತು"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "ಸ್ಟಿಕ್‌ನಿಂದ ಕೈ ತೆಗೆ; ಸೆಲ್ಯೂಟ್ ಮಾಡಿ ಉಡಾಯಿಸಲು {key} ಒತ್ತು"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "ರೇಡಾರ್ ಆಂಟೆನಾ ಇಳಿಸಿ"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "ಮುಚ್ಚಲು M"
+msgid "LWD"
+msgstr "ಎಡ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "ಹೆಸರು ಅಗತ್ಯವಿದೆ"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "ಹೆಸರು 1000 ಅಕ್ಷರಗಳು ಅಥವಾ ಕಡಿಮೆ ಇರಬೇಕು"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ಕೆಳಗೆ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "ಅಧಿಸೂಚನೆಗಳು: {0}"
 msgid "Novice"
 msgstr "ಹೊಸಬ"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "ಮೇಲೆ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "ಸಂಖ್ಯೆ"
@@ -3237,7 +3265,9 @@ msgstr "ರನ್‌ವೇ ಮೇಲೆ: ಅರ್ಧ ಫ್ಲಾಪ್, ಮಿ
 msgid "Oops! Page Not Found!"
 msgstr "ಓ! ಪುಟ ಸಿಗಲಿಲ್ಲ!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "ಮುಕ್ತ"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "ಆಯ್ಕೆಗಳು"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "ಇತರ"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "ಇತರ"
 
@@ -3469,13 +3504,13 @@ msgstr "ಪೋಸ್ಟ್‌ಗಳು"
 msgid "Posts and comments"
 msgstr "ಪೋಸ್ಟ್‌ಗಳು ಮತ್ತು ಕಾಮೆಂಟ್‌ಗಳು"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "ಹಾರಲು {key} ಒತ್ತಿ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "ಒಂದು ಕೀಲಿ ಒತ್ತಿರಿ…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "ಹಾರಲು ENTER ಒತ್ತಿ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "ರೆಕಾರ್ಡಿಂಗ್ ಉಳಿಸಲಾಗಿದೆ"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "ಕೆಂಪು"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "ಕೆಂಪು {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "ಪೂರ್ಣ ಶಕ್ತಿ"
 msgid "Runway {end}"
 msgstr "ರನ್‌ವೇ {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ಬಲ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "ಶನಿವಾರ"
@@ -4074,6 +4117,7 @@ msgstr "ಸರ್ವರ್"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "ಸರ್ವರ್ ದೋಷ"
 
@@ -4086,6 +4130,10 @@ msgstr "ಸರ್ವರ್ ನಿಯಮಗಳು"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "ಸರ್ವರ್ v{0} ಚಲಾಯಿಸುತ್ತಿದೆ, ನಿಮ್ಮಲ್ಲಿ v{version} ಇದೆ"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "ಸರ್ವರ್ ಸ್ಥಗಿತಗೊಂಡಿತು"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "ವಿಭಜಿಸಿ"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "ರೆಕ್ಕೆ ಹರಡಿ"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "ಸ್ಟೆಬ್ {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "ವಿನಂತಿಸಿದ ವಿಷಯವನ್ನು ಹುಡುಕ�
 msgid "The server returned a web page instead of data."
 msgstr "ಸರ್ವರ್ ಡೇಟಾ ಬದಲಿಗೆ ವೆಬ್ ಪುಟವನ್ನು ಹಿಂತಿರುಗಿಸಿತು."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್ ದೋಷ {status} ನೊಂದಿಗೆ ಉತ್ತರಿಸಿತು"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್ ಸಮಯಕ್ಕೆ ಸರಿಯಾಗಿ ಉತ್ತರಿಸಲಿಲ್ಲ"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್‌ನಲ್ಲಿ ಮತ್ತೊಂದು ಪಂದ್ಯಕ್ಕೆ ಸ್ಥಳವಿಲ್ಲ"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್ ಓದಲಾಗದ ಉತ್ತರವನ್ನು ಕಳುಹಿಸಿದೆ"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "ಈ ಆ್ಯಪ್‌ಗೆ ನಿಮ್ಮ ಪಾಸ್‌ಕೀ ಬಳಸಲು ಅನುಮತಿ ಇಲ್ಲ. ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ, ಅನುಮತಿಗಳ ಅಡಿಯಲ್ಲಿ ಅದನ್ನು ಅನುಮತಿಸಿ."
@@ -4494,6 +4562,10 @@ msgstr "ಸಮಯ"
 msgid "Time of day"
 msgstr "ದಿನದ ಸಮಯ"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "ಸಮಯ ಮೀರಿದೆ"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "ಶೀರ್ಷಿಕೆ"
@@ -4524,9 +4596,17 @@ msgstr "ವೀಕ್ಷಣೆ ಆಯ್ಕೆಗಳನ್ನು ಬದಲಾಯ�
 msgid "Toggle watched filter"
 msgstr "ವೀಕ್ಷಿತ ಫಿಲ್ಟರ್ ಟಾಗಲ್ ಮಾಡಿ"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "ನಿಮ್ಮ ವಿಳಾಸದಿಂದ ತುಂಬಾ ಹೆಚ್ಚು ಪಂದ್ಯಗಳನ್ನು ನೀಡಲಾಗಿದೆ"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "ತುಂಬಾ ಹೆಚ್ಚು ವಿನಂತಿಗಳು"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್‌ಗೆ ತುಂಬಾ ಹೆಚ್ಚು ವಿನಂತಿಗಳು"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "ಪ್ರಯಾಣ ಮಾಡಲಾಗುತ್ತಿದೆ"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ಟ್ರಿಮ್"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ಟ್ರಿಮ್ {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "ರೆಕ್ಕೆ ಲಾಕ್"
 msgid "WINS"
 msgstr "ಗೆದ್ದರು"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "ಹಿಂಪಡೆಯಲಾಗಿದೆ"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "ವರ್ಲ್ಡ್ ಸರ್ವರ್ ತಲುಪಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ"

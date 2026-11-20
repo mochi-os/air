@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} duraanuu fudhatamee ture, toʼannoon sunis amma hin hidhamne."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} irra ture, kunneenis amma hin hidhamne."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} irra ture, kunis amma hin hidhamne."
@@ -165,6 +171,10 @@ msgstr "Maqaa {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} hanga {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} cufuudhaaf"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "Bloka"
 msgid "Blue"
 msgstr "Cuquliisa"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "CUQULIISA {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "Botiiwwan cuquliisa"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "Ramaddiin haaromfame"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Sarara giddugaleessa"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "Argi"
 msgid "Detect from web browser"
 msgstr "Weeb biraawsarii irraa argi"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Haala misoomsaa"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Sarvara taphaa adda"
@@ -1739,6 +1758,11 @@ msgstr "Paayilonii duwwaa"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Sagalee banuu"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Xumurame"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "Taankii boba'aa"
 msgid "full afterburner"
 msgstr "afterbarnarii guutuu"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "Qawwee gurguddaa qofa"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Harka istikii irraa fuudhi; kabaja agarsiisuufi ka'uuf enter cuqaasi"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Harka istikii irraa fuudhi; kabaja agarsiisuufi ka'uuf {key} cuqaasi"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "Antenaa raadaarii gadi buusi"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M cufuudhaaf"
+msgid "LWD"
+msgstr "KBG"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "Maqaan barbaachisaa dha"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Maqaan arfiilee 1000 ykn isaa gadi ta'uu qaba"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "FG"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "Beeksisawwan: {0}"
 msgid "Novice"
 msgstr "Jalqabaa"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "FO"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Lakkoofsa"
@@ -3237,7 +3265,9 @@ msgstr "Daandii irratti: filaapii walakkaa, humna waraanaatti ol kaasi, birekii 
 msgid "Oops! Page Not Found!"
 msgstr "Hoo! Fuulli hin argamne!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Banaa"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "Filannoowwan"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Biraa"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Biraa"
 
@@ -3469,13 +3504,13 @@ msgstr "Maxxansoota"
 msgid "Posts and comments"
 msgstr "Maxxansoota fi yaadawwan"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "KA'UUF {key} TUQI"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Furtuu tokko dhiibi…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "KA'UUF ENTER TUQI"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "Galmeen olkaa'ame"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "Diimaa"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "DIIMAA {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "HUMNA GUUTUU"
 msgid "Runway {end}"
 msgstr "Daandii balalii {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "KMG"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Sanbata"
@@ -4074,6 +4117,7 @@ msgstr "Sarvarii"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Dogoggora sarvarii"
 
@@ -4086,6 +4130,10 @@ msgstr "Seerota server"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "sarvarichi v{0} fayyadama, ati v{version} qabda"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Serveriin dhaamame"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "Hiri"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "QOOCHOO DIRIIRSI"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "EEGEE {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "Qabiyyeen gaafatame argamuu hin dandeenye."
 msgid "The server returned a web page instead of data."
 msgstr "Sarviichiin qooda daataa fuula weebii deebise."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Serveriin addunyaa dogoggora {status} deebise"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Serveriin addunyaa yeroon hin deebisne"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Serverii addunyaa irra dorgommii biraaf iddoon hin jiru"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Serveriin addunyaa deebii dubbifamuu hin dandeenye erge"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Appiin kun passkey kee fayyadamuuf hayyama hin qabu. Qindaa'ina keessatti, Hayyamoota jalatti hayyami."
@@ -4494,6 +4562,10 @@ msgstr "Yeroo"
 msgid "Time of day"
 msgstr "Yeroo guyyaa"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Yeroon darbe"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Mata duree"
@@ -4524,9 +4596,17 @@ msgstr "Filannoo argaa jijjiiri"
 msgid "Toggle watched filter"
 msgstr "Wantoota daawwataman jijjiiri"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Teessoo kee irraa dorgommiiwwan baay'een dhiyaataniiru"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Gaaffiiwwan baay'ee garmalee"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Gaaffiiwwan baay'een gara serverii addunyaa ergaman"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "Imala"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "QOOCHOON HIDHAMEERA"
 msgid "WINS"
 msgstr "NI MO'ATA"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Kaafame"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Serverii addunyaa"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Serverii addunyaa qaqqabuun hin danda'amne"

@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} اڳ ۾ ئي ورتل هو، ۽ اهو ڪنٽرول هاڻي ڳنڍيل ناهي."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} تي هو، جيڪي هاڻي ڳنڍيل ناهن."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} تي هو، جيڪو هاڻي ڳنڍيل ناهي."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} جو نالو"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} کان {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "بند ڪرڻ لاءِ {key}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "بلاڪ"
 msgid "Blue"
 msgstr "نيرو"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "نيرو {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "نيرا بوٽ"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "زمرو اپڊيٽ ٿيو"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "مرڪزي ليڪ"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "معلوم ڪريو"
 msgid "Detect from web browser"
 msgstr "ويب براؤزر کان معلوم ڪريو"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "ڊولپر موڊ"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "راند جو مختلف ميزبان"
@@ -1739,6 +1758,11 @@ msgstr "خالي پائلون"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "آواز فعال ڪريو"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "ختم ٿيو"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "ٻارڻ جي ٽانڪي"
 msgid "full afterburner"
 msgstr "پورو آفٽربرنر"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "رڳو توبون"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "هٿ اسٽڪ تان کڻو; سلام ۽ لانچ لاءِ enter دٻايو"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "هٿ اسٽڪ تان کڻو; سلام ۽ لانچ لاءِ {key} دٻايو"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "رادار جو انٽينا هيٺ ڪريو"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "بند ڪرڻ لاءِ M"
+msgid "LWD"
+msgstr "کاٻي"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "نالو گهربل آهي"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "نالو 1000 اکرن يا گهٽ هجڻ گهرجي"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "هيٺ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "اطلاعون: {0}"
 msgid "Novice"
 msgstr "نئون سکندڙ"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "مٿي"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "نمبر"
@@ -3237,7 +3265,9 @@ msgstr "رن وي تي: اڌ فليپ، فوجي طاقت تائين انجڻ و
 msgid "Oops! Page Not Found!"
 msgstr "افسوس! صفحو نه مليو!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "کليل"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "اختيار"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "ٻيو"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "ٻيو"
 
@@ -3469,13 +3504,13 @@ msgstr "پوسٽون"
 msgid "Posts and comments"
 msgstr "پوسٽون ۽ تبصرا"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "اُڏامَ لاءِ {key} دٻايو"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "ڪا ڪنجي دٻايو…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "اُڏامَ لاءِ Enter دٻايو"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "رڪارڊنگ محفوظ ٿي وئي"
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "ڳاڙهو"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "ڳاڙهو {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "پوري طاقت"
 msgid "Runway {end}"
 msgstr "رن وي {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ساڄي"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "ڇنڇر"
@@ -4074,6 +4117,7 @@ msgstr "سرور"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "سرور جي خرابي"
 
@@ -4086,6 +4130,10 @@ msgstr "سرور جا ضابطا"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "سرور v{0} هلائي ٿو، توھان وٽ v{version} آھي"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "سرور بند ٿي ويو"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "ورهايو"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "پر ڦهلايو"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "اسٽيبلائيزر {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "گهربل مواد نه ملي سگهيو."
 msgid "The server returned a web page instead of data."
 msgstr "سرور ڊيٽا جي بجاءِ ويب پيج موٽايو."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "ورلڊ سرور غلطي {status} سان جواب ڏنو"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "ورلڊ سرور وقت تي جواب نه ڏنو"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "ورلڊ سرور وٽ ٻي ميچ لاءِ گنجائش ناهي"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "ورلڊ سرور اهڙو جواب موڪليو جيڪو پڙهي نه سگهجي"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "هن ايپ کي توهان جي پاس ڪي استعمال ڪرڻ جي اجازت ناهي. سيٽنگن ۾، اجازتن هيٺ ان کي اجازت ڏيو."
@@ -4494,6 +4562,10 @@ msgstr "وقت"
 msgid "Time of day"
 msgstr "ڏينهن جو وقت"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "وقت ختم ٿي ويو"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "عنوان"
@@ -4524,9 +4596,17 @@ msgstr "ڏيک اختيار ٽوگل ڪريو"
 msgid "Toggle watched filter"
 msgstr "ڏٺو فلٽر ٽوگل ڪريو"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "توهان جي پتي تان تمام گهڻيون ميچون پيش ڪيون ويون"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "تمام گهڻيون درخواستون"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "ورلڊ سرور ڏانهن تمام گهڻيون درخواستون"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "سفر ڪرڻ"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ٽرم"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ٽرم {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "پر مقفل"
 msgid "WINS"
 msgstr "کٽي ٿو"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "واپس ورتو ويو"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "ورلڊ سرور"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "ورلڊ سرور تائين پهچ ناهي"

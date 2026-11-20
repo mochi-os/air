@@ -17,10 +17,10 @@ def decimal(value):
     return True
 def database_create():
 	# Per-key mission/graphics settings for the signed-in user. The app DB is
-	# already per-user, so no account column is needed. `updated` versions each
-	# key as an LWW-register so writes converge under multi-host replication.
+	# already per-user, so no account column is needed. `updated` is when the
+	# key was last saved.
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
-	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, grade text not null default '', remarks text not null default '', wire integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, title text not null default '', passes integer not null default 0, traps integer not null default 0, points integer not null default 0, scored integer not null default 0)")
+	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, grade text not null default '', remarks text not null default '', wire integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, title text not null default '', passes integer not null default 0, traps integer not null default 0, points integer not null default 0, scored integer not null default 0, developer integer not null default 0)")
 	# A match is identified by where and when it ran; the unique index makes the
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
 	# then-insert.
@@ -37,6 +37,12 @@ def database_create():
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 16:
+		# Flights flown in developer mode, whose scripted approaches and console
+		# probes the row otherwise records as honest flying; older rows keep 0.
+		columns = [c["name"] for c in mochi.db.table("matches")]
+		if "developer" not in columns:
+			mochi.db.execute("alter table matches add column developer integer not null default 0")
 	if version == 15:
 		# The sortie's passes tallied for the log's grade average and boarding
 		# rate: those counted (all but a foul deck's), the traps, the points of
@@ -160,7 +166,7 @@ def config_load(a):
 		config[row["name"]] = json.decode(row["value"], None)
 	return {"data": {"config": config, "name": a.user.identity.name, "identity": a.user.identity.id}}
 
-# config_save() -> {"data": {"saved": bool}}: upsert each posted key (newer `updated` wins; stale writes rejected).
+# config_save() -> {"data": {"saved": bool}}: upsert each posted key, stamped with the time of the save; the latest save of a key wins.
 def config_save(a):
 	if not a.user or not a.user.identity.id:
 		a.error.label(401, "errors.not_logged_in")
@@ -217,9 +223,9 @@ def match_record(a):
 	# record, a checkpoint or the finish, takes its place.
 	started = whole(a, "started")
 	id = mochi.uid()
-	mochi.db.execute("insert into matches (id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, grade, remarks, wire, passes, traps, points, scored, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do update set title=excluded.title, mode=excluded.mode, team=excluded.team, ended=excluded.ended, reason=excluded.reason, players=excluded.players, kills=excluded.kills, deaths=excluded.deaths, cheated=excluded.cheated, grade=excluded.grade, remarks=excluded.remarks, wire=excluded.wire, passes=excluded.passes, traps=excluded.traps, points=excluded.points, scored=excluded.scored where matches.reason='flying'",
+	mochi.db.execute("insert into matches (id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, developer, grade, remarks, wire, passes, traps, points, scored, created) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) on conflict(world, session, started) do update set title=excluded.title, mode=excluded.mode, team=excluded.team, ended=excluded.ended, reason=excluded.reason, players=excluded.players, kills=excluded.kills, deaths=excluded.deaths, cheated=excluded.cheated, developer=excluded.developer, grade=excluded.grade, remarks=excluded.remarks, wire=excluded.wire, passes=excluded.passes, traps=excluded.traps, points=excluded.points, scored=excluded.scored where matches.reason='flying'",
 		id, world, title, session, a.input("mode", "")[:32], a.input("team", "")[:16], started, whole(a, "ended"), a.input("reason", "")[:32],
-		a.input("players", "")[:1024], whole(a, "kills"), whole(a, "deaths"), whole(a, "cheated"), a.input("grade", "")[:16], a.input("remarks", "")[:256], whole(a, "wire"),
+		a.input("players", "")[:1024], whole(a, "kills"), whole(a, "deaths"), whole(a, "cheated"), whole(a, "developer"), a.input("grade", "")[:16], a.input("remarks", "")[:256], whole(a, "wire"),
 		whole(a, "passes"), whole(a, "traps"), whole(a, "points"), whole(a, "scored"), mochi.time.now())
 	stored = mochi.db.exists("select 1 from matches where world = ? and session = ? and started = ? and id = ?", world, session, started, id)
 	return {"data": {"stored": stored}}
@@ -237,10 +243,10 @@ def match_list(a):
 		return
 	before = whole(a, "before")
 	id = a.input("id", "")[:64]
-	matches = mochi.db.rows("select id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, grade, remarks, wire, recording, size from matches where ?=0 or started<? or (started=? and id<?) order by started desc, id desc limit ?", before, before, before, id, PAGE + 1) or []
+	matches = mochi.db.rows("select id, world, title, session, mode, team, started, ended, reason, players, kills, deaths, cheated, developer, grade, remarks, wire, recording, size from matches where ?=0 or started<? or (started=? and id<?) order by started desc, id desc limit ?", before, before, before, id, PAGE + 1) or []
 	more = len(matches) > PAGE
-	# Totals span every row, not the page listed, and include cheated flights (a
-	# logbook, not a leaderboard). started/ended are epoch milliseconds, hence /
+	# Totals span every row, not the page listed, and include cheated and
+	# developer-mode flights (a logbook, not a leaderboard). started/ended are epoch milliseconds, hence /
 	# 1000.
 	totals = mochi.db.row("select count(*) as flights, sum(ended - started) / 1000 as seconds, sum(kills) as kills, sum(deaths) as deaths, sum(cheated) as cheated, sum(passes) as passes, sum(traps) as traps, sum(points) as points, sum(scored) as scored from matches")
 	return {"data": {"matches": matches[:PAGE], "more": more, "totals": totals}}

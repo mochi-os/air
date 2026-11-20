@@ -99,7 +99,7 @@ describe('the ANTI SKID switch', () => {
   })
 
   it('reaches the flight core as bypass, flag bit 2048, in both samples', () => {
-    expect(source).toMatch(/\n\t\tbypass:!guarded\(\), [^\n]*gear:\(ownship\.gearTarget\?\?0\)<0\.5,/)
+    expect(source).toMatch(/\n\t\tbypass:!guarded\(\), [^\n]*gear:handle_down\(ownship\),/)
     expect(source).toMatch(/brake:input\.brake, bypass:!guarded\(\), [^\n]*trim:/)
     expect(bridge).toMatch(/\n {2}bypass: boolean/)
     expect(bridge).toMatch(/\n {4}\(controls\.bypass \? 2048 : 0\) \|\n/)

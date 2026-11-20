@@ -1037,6 +1037,25 @@ describe('rendering a recording as it grows', () => {
     recorder.render(new Date(0), 't', { task: 'joust' })
     expect(recorder.render(new Date(0), 't', { task: 'joust', bandit: 'expert' })).toContain('0,Match_bandit=expert')
   })
+  // The whole flight is kept as text: once render has written a sample, its
+  // every aircraft's full record is never read again, and holding it grew the
+  // recorder by a sample a frame under time compression for the whole sortie.
+  it('lets a whole-flight sample go once render has written it', () => {
+    const recorder = new Recorder()
+    const held = () =>
+      (recorder as unknown as { samples: Sample[] }).samples.length
+    const samples = flight(30)
+    for (const s of samples.slice(0, 20)) recorder.add(s.time, s.objects)
+    expect(held()).toBe(20)
+    recorder.render(new Date(0), 't', { task: 'joust' })
+    expect(held()).toBe(0)
+    expect(recorder.length).toBe(20) // still the flight's own count
+    for (const s of samples.slice(20)) recorder.add(s.time, s.objects)
+    expect(held()).toBe(10)
+    expect(recorder.render(new Date(0), 't', { task: 'joust' })).toBe(full(samples))
+    expect(held()).toBe(0)
+    expect(recorder.length).toBe(30)
+  })
   it('starts again when a windowed recorder drops its first samples', () => {
     const recorder = new Recorder(5)
     const samples = flight(120)

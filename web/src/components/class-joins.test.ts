@@ -7,9 +7,9 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
-// A className template must never butt one interpolation straight against the
-// next. Class names are whitespace-separated, so `${a}${b}` yields one glued
-// token — and the separator cannot live as a leading space inside a quoted
+// A className template must never butt an interpolation straight against what
+// comes before it. Class names are whitespace-separated, so `${a}${b}` yields
+// one glued token — and the separator cannot live as a leading space inside a quoted
 // class string, because prettier-plugin-tailwindcss trims those when it sorts.
 // That is exactly what happened on 2026-09-11: the app-wide reformat turned
 // `${wide ? 'sm:max-w-4xl' : …}${steady ? ' h-[…]' : ''}` into
@@ -43,14 +43,17 @@ describe('className templates separate their parts', () => {
     expect(files.length).toBeGreaterThan(5)
   })
 
-  it('has no interpolation butted against the next', () => {
+  it('has no interpolation butted against the text or the interpolation before it', () => {
     const glued: string[] = []
     for (const file of files) {
       for (const template of templates(readFileSync(file, 'utf8'))) {
-        // Nothing at all between them. Any whitespace is a valid separator,
-        // a newline in the literal text included, so only the bare join is a
-        // fault — and a newline INSIDE an interpolation is not literal text.
-        if (template.includes('}${')) {
+        // Anything but whitespace straight before an interpolation glues it
+        // on: the previous interpolation's closing brace (`}${`), or a class
+        // in the literal text (`p-3${...}` yields `p-3opacity-50`, neither
+        // class). Any whitespace is a valid separator, a newline in the
+        // literal text included - and a newline INSIDE an interpolation is
+        // not literal text.
+        if (/\S\$\{/.test(template)) {
           glued.push(`${file.slice(root.length + 1)}: ${template.trim()}`)
         }
       }

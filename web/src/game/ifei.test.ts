@@ -303,6 +303,37 @@ describe('the engine wiring', () => {
   })
 })
 
+// A held arrow scrolls BINGO (a second's hold, then 100 lb every 150 ms, 2.2.10.1). The frame steps it on the
+// pilot's clock while the press is still a press: timers kept scrolling through a head-look drag that began on
+// an arrow, after a cancelled pointer, through a pause and after the engine stopped.
+describe('a held arrow', () => {
+  const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const lift = (name: string) => { const start = source.indexOf(`function ${name}(`); if (start < 0) throw new Error(name + ' not found in engine.ts'); const rest = source.slice(start); const end = /\n(?=\S)/.exec(rest.slice(1)); return end ? rest.slice(0, end.index + 1) : rest }
+  // frames: each [the pilot's clock, the pointer moved so far, still pressed]; the clicks taken, and what the release reports
+  const hold = (frames: [number, number, boolean][]) => new Function('frames', `let glance=0, dragging=true, press_moved=0; const clicks=[], ifei_click=(button)=>clicks.push(button);
+    ${lift('ifei_hold_due')} ${lift('ifei_hold_step')} ${lift('ifei_hold_end')}
+    let ifei_hold={ button:"up", since:0, steps:0 };
+    const seen=frames.map(([t,moved,pressed])=>{ glance=t; press_moved=moved; dragging=pressed; ifei_hold_step(); return clicks.length; });
+    return { seen, scrolled:ifei_hold_end() };`)(frames) as { seen: number[]; scrolled: boolean }
+
+  it('steps once a second has passed, then every 150 ms, and the release adds none', () => {
+    expect(hold([[0.5, 0, true], [1.0, 0, true], [1.15, 0, true], [1.2, 0, true], [1.6, 0, true]])).toEqual({ seen: [0, 0, 1, 1, 4], scrolled: true })
+  })
+  it('steps nothing for a press released inside the second, which the release clicks once instead', () => {
+    expect(hold([[0.5, 0, true], [0.9, 0, true]])).toEqual({ seen: [0, 0], scrolled: false })
+  })
+  it('ends when the press becomes a head-look drag', () => {
+    expect(hold([[1.2, 0, true], [1.5, 7, true], [3.0, 7, true]]).seen).toEqual([1, 1, 1])
+  })
+  it('ends when the pointer is cancelled', () => {
+    expect(hold([[1.2, 0, true], [1.5, 0, false], [3.0, 0, true]]).seen).toEqual([1, 1, 1])
+  })
+  it('is stepped by the frame on the pilot\'s clock, which a pause stops, and keeps no timer', () => {
+    expect(source).toMatch(/\n\t\tif\(!game_paused\)\{ glance\+=dt; ifei_hold_step\(\);/)
+    for (const name of ['ifei_hold_begin', 'ifei_hold_step', 'ifei_hold_end']) expect(lift(name)).not.toMatch(/setTimeout|setInterval|clearTimeout|clearInterval/)
+  })
+})
+
 // NATOPS 2.1.1.7.5: the IFEI's FF "displays main engine fuel flow only
 // (afterburner fuel flow is not displayed)"; the engine page's FF row is the
 // same number. The per-engine flows are the measured total burn split by each

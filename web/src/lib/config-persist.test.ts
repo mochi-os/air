@@ -4,15 +4,18 @@
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { describe, it, expect } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import { migrate, normalize } from '../game/stores'
-import { DEFAULT_CONFIG, type MissionConfig } from './config'
+import { DEFAULT_CONFIG, TAB_FIELDS, type MissionConfig } from './config'
 import {
   absorb,
+  DEVICE,
   loadOutcome,
   merged,
   PendingConfig,
   RETIRED,
+  SAVE_DELAY,
+  Saver,
   seeded,
   stripRetired,
 } from './config-persist'
@@ -34,6 +37,11 @@ describe('loadOutcome', () => {
 
   it('seeds the server on a fresh account with no edit and no stored config', () => {
     expect(loadOutcome(false, null)).toBe('seed')
+  })
+
+  it('keeps what is shown when the load named no account, edited or not', () => {
+    expect(loadOutcome(false, null, false)).toBe('keep')
+    expect(loadOutcome(true, null, false)).toBe('keep')
   })
 })
 
@@ -111,7 +119,7 @@ describe('the partial a flush applies', () => {
     fuel: 6000,
   }
 
-  it('records only the keys an edit changed, accumulates across edits, and settle spends them', () => {
+  it('records only the keys an edit changed, accumulates across edits, and keeps them past settle until a save spends them', () => {
     const pending = new PendingConfig(DEFAULT_CONFIG)
     expect(pending.partial()).toEqual({})
     pending.edit({ ...DEFAULT_CONFIG, servers: '127.0.0.1:4433', pilot: 'p1' })
@@ -127,9 +135,15 @@ describe('the partial a flush applies', () => {
     })
     const whole = merged(saved, pending.partial())
     pending.settle(whole)
-    expect(pending.partial()).toEqual({})
+    expect(pending.partial()).toEqual({
+      servers: '127.0.0.1:4433',
+      pilot: 'p1',
+      tod: 'night',
+    }) // not yet saved
     expect(pending.dirty).toBe(false)
     expect(pending.current()).toBe(whole)
+    pending.spend({ servers: '127.0.0.1:4433', pilot: 'p1', tod: 'night' })
+    expect(pending.partial()).toEqual({})
     pending.sync(DEFAULT_CONFIG) // settled: renders may sync again
     expect(pending.current()).toBe(DEFAULT_CONFIG)
   })
@@ -195,7 +209,6 @@ describe('the answer on sharing', () => {
     const cached = { ...DEFAULT_CONFIG, callsign: 'Maverick', sharing: true } as MissionConfig
     const first = seeded(cached)
     expect('sharing' in first).toBe(false)
-    expect(first.callsign).toBe('Maverick')
     expect(cached.sharing).toBe(true) // a copy: the caller's config is untouched
   })
 })
@@ -228,5 +241,174 @@ describe('a first-time player', () => {
     const literal = /\nconst cfg = \{[\s\S]*?\};/.exec(engine)?.[0] ?? ''
     expect(literal).toContain(`task:"${DEFAULT_CONFIG.task}"`)
     expect(literal).toContain(`start:"${DEFAULT_CONFIG.start}"`)
+  })
+})
+
+// A new account seeded from a shared browser's cache (#103): the cache is not
+// keyed by account, so only the device's own settings may carry over.
+describe('a new account on a shared browser', () => {
+  const cached = {
+    ...DEFAULT_CONFIG,
+    pilot: 'secret of the last account',
+    callsign: 'Maverick',
+    world: 'https://w.example',
+    servers: 'https://w.example',
+    sharing: true,
+    tod: 'night',
+    joystick: 'pad',
+    keys: { fire: 'KeyF' },
+    volume: { ...(DEFAULT_CONFIG.volume as Record<string, number>), master: 20 },
+    render_scale: 0.6,
+    framerate: true,
+  } as MissionConfig
+
+  it("takes the device's settings and none of the last account's own", () => {
+    const first = seeded(cached)
+    expect(first.joystick).toBe('pad')
+    expect(first.keys).toEqual({ fire: 'KeyF' })
+    expect((first.volume as Record<string, number>).master).toBe(20)
+    expect(first.render_scale).toBe(0.6)
+    expect(first.framerate).toBe(true)
+    expect(first.pilot).toBe('')
+    expect(first.callsign).toBe('')
+    expect(first.world).toBe('')
+    expect(first.servers).toBe('')
+    expect(first.tod).toBe(DEFAULT_CONFIG.tod)
+    expect('sharing' in first).toBe(false)
+  })
+
+  it("names every field of the device's tabs, and nothing else", () => {
+    const tabs = ['controls', 'keys', 'sound', 'graphics'].flatMap((tab) => TAB_FIELDS[tab])
+    expect([...DEVICE].sort()).toEqual([...tabs].sort())
+  })
+})
+
+// The saves (#104, #105): only the keys the player edited since the last save
+// that took, sent as the edits pause, and at once when the page hides or the
+// menu goes away.
+describe('the saves', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  function saving(answers: boolean[] = []) {
+    const posts: [Partial<MissionConfig>, boolean][] = []
+    const pending = new PendingConfig(DEFAULT_CONFIG)
+    const saver = new Saver(pending, async (config, keepalive) => {
+      posts.push([config, keepalive])
+      return answers.shift() ?? true
+    })
+    return { posts, pending, saver }
+  }
+  const settled = { signed: true, saved: { callsign: 'Little Nellie' } }
+
+  it('send only the keys edited, once the edits pause', async () => {
+    vi.useFakeTimers()
+    const { posts, pending, saver } = saving()
+    saver.load(settled)
+    saver.edit({ ...pending.current(), tod: 'night' })
+    saver.edit({ ...pending.current(), clouds: 'cumulus' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY - 1)
+    expect(posts).toEqual([])
+    await vi.advanceTimersByTimeAsync(1)
+    expect(posts).toEqual([[{ tod: 'night', clouds: 'cumulus' }, false]])
+    saver.edit({ ...pending.current(), fuel: 6000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    expect(posts[1]).toEqual([{ fuel: 6000 }, false]) // the keys the last save took are spent
+  })
+
+  it('send again a key the server did not take, and keep a key edited while its save was out', async () => {
+    vi.useFakeTimers()
+    const { posts, pending, saver } = saving([false])
+    saver.load(settled)
+    saver.edit({ ...pending.current(), tod: 'night' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    saver.edit({ ...pending.current(), fuel: 6000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    expect(posts[1][0]).toEqual({ tod: 'night', fuel: 6000 })
+    // A save that lands after the player changed a key again spends only what it carried.
+    const late = saving()
+    late.saver.load(settled)
+    late.saver.edit({ ...late.pending.current(), tod: 'night' })
+    const out = late.saver.save(false)
+    late.saver.edit({ ...late.pending.current(), tod: 'day' })
+    await out
+    expect(late.pending.partial()).toEqual({ tod: 'day' })
+  })
+
+  it('send the edits made while loading laid on the saved config, and only those', () => {
+    const { posts, pending, saver } = saving()
+    saver.edit({ ...pending.current(), world: 'https://w.example' })
+    const whole = saver.load({ signed: true, saved: { callsign: 'Little Nellie', tod: 'night' } })
+    expect(whole).toMatchObject({ callsign: 'Little Nellie', tod: 'night', world: 'https://w.example' })
+    expect(posts).toEqual([[{ world: 'https://w.example' }, false]])
+  })
+
+  it('seed a fresh account whole, apply a saved one, and send nothing for one never loaded', () => {
+    const fresh = saving()
+    expect(fresh.saver.load({ signed: true, saved: null })).toEqual(seeded(DEFAULT_CONFIG))
+    expect(fresh.posts).toEqual([[seeded(DEFAULT_CONFIG), false]])
+    const returning = saving()
+    expect(returning.saver.load(settled)?.callsign).toBe('Little Nellie')
+    expect(returning.posts).toEqual([])
+    const anonymous = saving()
+    anonymous.saver.edit({ ...anonymous.pending.current(), callsign: 'Goose' })
+    expect(anonymous.saver.load({ signed: false, saved: null })).toBeNull() // the cache shown stays as it is
+    expect(anonymous.posts).toEqual([])
+  })
+
+  it('send what is unsaved at once, kept alive, when the page hides or goes away', async () => {
+    vi.useFakeTimers()
+    const { posts, pending, saver } = saving()
+    saver.load(settled)
+    const page = new EventTarget()
+    const document = Object.assign(new EventTarget(), { visibilityState: 'visible' })
+    const detach = saver.attach(page, document)
+    saver.edit({ ...pending.current(), tod: 'night' })
+    document.dispatchEvent(new Event('visibilitychange')) // still visible: nothing yet
+    await vi.advanceTimersByTimeAsync(0)
+    expect(posts).toEqual([])
+    document.visibilityState = 'hidden'
+    document.dispatchEvent(new Event('visibilitychange'))
+    await vi.advanceTimersByTimeAsync(0)
+    expect(posts).toEqual([[{ tod: 'night' }, true]])
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    expect(posts).toHaveLength(1) // the debounced save went with the flush, not after it
+    saver.edit({ ...pending.current(), clouds: 'cumulus' })
+    page.dispatchEvent(new Event('pagehide'))
+    await vi.advanceTimersByTimeAsync(0)
+    expect(posts[1]).toEqual([{ clouds: 'cumulus' }, true])
+    page.dispatchEvent(new Event('pagehide'))
+    await vi.advanceTimersByTimeAsync(0)
+    expect(posts).toHaveLength(2) // nothing unsaved, nothing sent
+    saver.edit({ ...pending.current(), fuel: 6000 })
+    detach() // the menu unmounting
+    await vi.advanceTimersByTimeAsync(0)
+    expect(posts[2]).toEqual([{ fuel: 6000 }, true])
+    saver.edit({ ...pending.current(), fuel: 7000 })
+    page.dispatchEvent(new Event('pagehide'))
+    document.dispatchEvent(new Event('visibilitychange'))
+    await vi.advanceTimersByTimeAsync(0)
+    expect(posts).toHaveLength(3) // detached: the page's events are no longer heard
+  })
+})
+
+// The hook (config-store.ts) is a thin shell over Saver, read as text: React
+// hooks need a renderer this suite does not have.
+describe('the config hook', () => {
+  const hook = readFileSync(fileURLToPath(new URL('./config-store.ts', import.meta.url)), 'utf8')
+
+  it('settles once config/load has answered, whatever it answered (#96)', () => {
+    expect(hook).toMatch(/loadConfig\(\)\.then\(\(answer\) => \{\s*const whole = saver\.load\(answer\)\s*if \(whole\) setStored\(whole\)\s*setSettled\(true\)/)
+    expect(hook).toMatch(/catch \{\s*return \{ signed: false, saved: null \}/) // a failed load answers too
+    expect(hook).toMatch(/return \[config, setConfig, settled\]/)
+  })
+
+  it('flushes when the page hides or goes away and when it unmounts (#105)', () => {
+    expect(hook).toMatch(/return saver\.attach\(window, document\)/)
+  })
+
+  it('sends a save kept alive when asked (#105)', () => {
+    expect(hook).toMatch(/\{ config: JSON\.stringify\(config\), identity: config_identity \},\s*\{ keepalive \}/)
   })
 })

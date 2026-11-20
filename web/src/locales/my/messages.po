@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ကို ယခင်ကတည်းက ယူထားပြီးဖြစ်ပြီး ထိုထိန်းချုပ်မှုမှာ ယခု မချိတ်ဆက်တော့ပါ။"
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} သည် {1} တွင်ရှိခဲ့ပြီး ယခု ၎င်းတို့အားလုံး မချိတ်ဆက်တော့ပါ။"
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} သည် {1} တွင်ရှိခဲ့ပြီး ယခု မချိတ်ဆက်တော့ပါ။"
@@ -165,6 +171,10 @@ msgstr "{entityLabel} အမည်"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} မှ {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "ပိတ်ရန် {key}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -673,6 +683,10 @@ msgstr "ပိတ်ဆို့မှုများ"
 msgid "Blue"
 msgstr "အပြာ"
 
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "အပြာ {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
 msgstr "အပြာ ဘော့များ"
@@ -874,7 +888,7 @@ msgid "Category updated"
 msgstr "အမျိုးအစား ပြောင်းပြီး"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "အလယ်မျဉ်း"
 
 #: src/components/SettingsDialog.tsx
@@ -1529,6 +1543,11 @@ msgstr "ဖော်ထုတ်မည်"
 msgid "Detect from web browser"
 msgstr "ဝဘ် ဘရောက်ဇာ မှ ရှာဖွေဖော်ထုတ်မည်"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "ဆော့ဖ်ဝဲရေးသားသူ မုဒ်"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "မတူညီသော ဂိမ်းဆာဗာ"
@@ -1739,6 +1758,11 @@ msgstr "ပိုင်လွန်အလွတ်"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "အသံဖွင့်ရန်"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "ပြီးဆုံးသွားပြီ"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2176,6 @@ msgstr "လောင်စာတိုင်ကီ"
 msgid "full afterburner"
 msgstr "အာဖတာဘာနာ အပြည့်"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2262,8 @@ msgid "Guns only"
 msgstr "အမြောက်များသာ"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "စတစ်မှ လက်လွှတ်ပါ; အလေးပြုပြီး ပစ်လွှတ်ရန် enter နှိပ်ပါ"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "စတစ်မှ လက်လွှတ်ပါ; အလေးပြုပြီး ပစ်လွှတ်ရန် {key} နှိပ်ပါ"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2726,8 +2746,8 @@ msgid "Lower radar antenna"
 msgstr "ရေဒါ အင်တာနာ နှိမ့်"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "ပိတ်ရန် M"
+msgid "LWD"
+msgstr "ဘယ်"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2959,6 +2979,10 @@ msgstr "အမည် လိုအပ်သည်"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "အမည်သည် စာလုံး ၁၀၀၀ သို့မဟုတ် ထိုထက်နည်းရမည်"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "အောက်"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -3193,6 +3217,10 @@ msgstr "အကြောင်းကြားချက်များ- {0}"
 msgid "Novice"
 msgstr "အစပြုသူ"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "အပေါ်"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "နံပါတ်"
@@ -3237,7 +3265,9 @@ msgstr "ပြေးလမ်းပေါ်: ဖလက်တစ်ဝက်, �
 msgid "Oops! Page Not Found!"
 msgstr "အိုး! စာမျက်နှာ မတွေ့ပါ!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "ဖွင့်ထား"
 
@@ -3286,6 +3316,11 @@ msgid "Options"
 msgstr "ရွေးချယ်စရာများ"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "အခြား"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "အခြား"
 
@@ -3469,13 +3504,13 @@ msgstr "ပို့စ်များ"
 msgid "Posts and comments"
 msgstr "ပို့စ်နှင့် comment များ"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "ပျံတက်ရန် {key} နှိပ်ပါ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "ခလုတ်တစ်ခု နှိပ်ပါ…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "ပျံတက်ရန် ENTER နှိပ်ပါ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3621,6 +3656,10 @@ msgstr "မှတ်တမ်းကို သိမ်းဆည်းပြီ�
 #: src/components/Multiplayer.tsx
 msgid "Red"
 msgstr "အနီ"
+
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "အနီ {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
@@ -3895,6 +3934,10 @@ msgstr "အားအပြည့်"
 msgid "Runway {end}"
 msgstr "ပြေးလမ်း {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ညာ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "စနေနေ့"
@@ -4074,6 +4117,7 @@ msgstr "ဆာဗာ"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "ဆာဗာ အမှား"
 
@@ -4086,6 +4130,10 @@ msgstr "ဆာဗာ စည်းမျဉ်းများ"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "ဆာဗာသည် v{0} ကိုအသုံးပြုသည်၊ သင့်တွင် v{version} ရှိသည်"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "ဆာဗာ ပိတ်သွားသည်"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4237,6 +4285,10 @@ msgstr "ခွဲခြားမည်"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "အတောင်ဖြန့်"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "အမြီး {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4438,6 +4490,22 @@ msgstr "တောင်းဆိုထားသော အကြောင်း�
 msgid "The server returned a web page instead of data."
 msgstr "ဆာဗာသည် ဒေတာအစား ဝဘ်စာမျက်နှာကို ပြန်ပေးခဲ့သည်။"
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "ကမ္ဘာ့ဆာဗာက အမှား {status} ဖြင့် ပြန်ဖြေသည်"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "ကမ္ဘာ့ဆာဗာက အချိန်မီ မဖြေပါ"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "ကမ္ဘာ့ဆာဗာတွင် နောက်ထပ်ပွဲစဉ်အတွက် နေရာမရှိပါ"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "ကမ္ဘာ့ဆာဗာက ဖတ်၍မရသော အဖြေကို ပို့ခဲ့သည်"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "ဤအက်ပ်သည် သင့် ဝင်ရောက်ခွင့်သော့ ကို အသုံးပြုခွင့်မရှိပါ။ ဆက်တင်များရှိ ခွင့်ပြုချက်များအောက်တွင် ခွင့်ပြုပါ။"
@@ -4494,6 +4562,10 @@ msgstr "အချိန်"
 msgid "Time of day"
 msgstr "နေ့အချိန်"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "အချိန်ကုန်သွားပြီ"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "ခေါင်းစဉ်"
@@ -4524,9 +4596,17 @@ msgstr "ကြည့်ရှုရွေးချယ်စရာ ဖွင့�
 msgid "Toggle watched filter"
 msgstr "ကြည့်ရှုနေသော စစ်ထုတ်မှု ဖွင့်/ပိတ်"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "သင့်လိပ်စာမှ ကမ်းလှမ်းထားသော ပွဲစဉ်များ များလွန်းသည်"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "တောင်းဆိုမှု များလွန်းနေသည်"
+
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "ကမ္ဘာ့ဆာဗာသို့ တောင်းဆိုမှုများ များလွန်းသည်"
 
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
@@ -4547,6 +4627,10 @@ msgstr "ခရီးသွားနေသည်"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ထရင်မ်"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ထရင်မ် {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4873,11 +4957,16 @@ msgstr "အတောင်သော့ခတ်"
 msgid "WINS"
 msgstr "နိုင်ပြီ"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "ပြန်ရုပ်သိမ်းခဲ့သည်"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "ကမ္ဘာ့ဆာဗာ"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "ကမ္ဘာ့ဆာဗာသို့ ချိတ်ဆက်၍မရပါ"
