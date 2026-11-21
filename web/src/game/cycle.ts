@@ -222,7 +222,7 @@ function by(movers: Record<string, Mover>): Motion {
 
 type Points = {
   motion: {
-    seconds: Record<'canopy' | 'probe' | 'bar' | 'fold' | 'hook' | 'scoop' | 'swing', number>
+    seconds: Record<'canopy' | 'probe' | 'bar' | 'fold' | 'hook' | 'scoop' | 'cabin' | 'swing', number>
     swing: number
     canopy: { unlatch: number; fall: number; lock: number }
     gear: Timeline
@@ -257,6 +257,7 @@ export function fa18c(points: Points = fa18c_points as unknown as Points): Motio
     fold: stroked(seconds.fold),
     hook: hook.hook,
     scoop: stroked(seconds.scoop),
+    cabin: stroked(seconds.cabin),
     // +10.5 deg trailing edge down, -24 up, at 40 deg/s
     'stabilator.left': stroke(-0.42, 0.183, 40 * DEGREE),
     'stabilator.right': stroke(-0.42, 0.183, 40 * DEGREE),

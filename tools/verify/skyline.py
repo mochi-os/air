@@ -110,6 +110,11 @@ class Settings:
 	#              region never mixes the gear down with the gear up (STANCES)
 	#   unseen     {region label: what measures it instead}: regions on no outline from any direction
 	#              (--reach finds them), reported apart from the regions no photo judges
+	#   variants   {name: {"families": [...], "stretch": [from, to], "above": value}}: what a photo of
+	#              another variant of the subject (its entry's "variant") does not share with the model,
+	#              left unjudged in it: places on parts of those families, and body places from `from`
+	#              to `to` on the first coordinate standing above `above` on the second (a two-seater's
+	#              longer canopy over the single-seater's spine)
 	# and the frame's symbol and plural, as the misses print
 	def __init__(self, catalogue=None):
 		catalogue = catalogue or {}
@@ -127,6 +132,7 @@ class Settings:
 		self.horizon = float(spec.get("horizon", HORIZON))
 		self.unseen = dict(spec.get("unseen", {}))
 		self.stances = dict(spec.get("stances", STANCES))
+		self.variants = dict(spec.get("variants", {}))
 		frame = mod.Frame(catalogue["frame"]) if "frame" in catalogue else None
 		self.symbol = frame.symbol if frame else mod.SYMBOL
 		self.plural = frame.plural if frame else mod.PLURAL
@@ -340,13 +346,16 @@ def hull(points):
 	return lower[:-1] + upper[:-1]
 
 
-def blocked(stores, load, hardpoints, frame, camera, centre, work, scale):
+def blocked(stores, load, hardpoints, frame, camera, centre, work, scale, moved=None):
 	# Where the photo may show a store the model does not carry (a tank, a
 	# missile, a pylon), as a mask at the working scale: every loaded
 	# station's boxes (stores["kinds"][kind]: centre and size in the
 	# project's coordinates from the mount, the mirror coordinate taken
 	# outboard) projected through the camera and filled. A store's skin is
-	# bright and even, so beyond the model's edge it would pass for sky
+	# bright and even, so beyond the model's edge it would pass for sky.
+	# moved: {part: 4x4 model-frame matrix from rest to the pose} for the parts
+	# a station's store hangs from (its hardpoint's "parts") that the pose has
+	# moved: the boxes move with them (a wingtip round on the folded wing)
 	image = Image.new("L", work, 0)
 	pen = ImageDraw.Draw(image)
 	mirror = frame.mirror
@@ -355,14 +364,17 @@ def blocked(stores, load, hardpoints, frame, camera, centre, work, scale):
 		if kind is None or station not in hardpoints:
 			continue
 		mount = frame.source(np.array(hardpoints[station]["mount"], float))
+		carried = next((moved[p] for p in hardpoints[station].get("parts", []) if moved and p in moved), None)
 		out = np.ones(3)
 		if mirror is not None:
 			out[mirror] = 1.0 if mount[mirror] >= 0 else -1.0
 		for box in stores["kinds"][kind]:
 			middle = mount + np.array(box["centre"], float) * out
 			half = np.array(box["size"], float) / 2
-			corners = np.array([middle + half * np.array([a, b, c]) for a in signs for b in signs for c in signs])
-			flat, depth = cam.project(camera, frame.model(corners), centre)
+			corners = frame.model(np.array([middle + half * np.array([a, b, c]) for a in signs for b in signs for c in signs]))
+			if carried is not None:
+				corners = corners @ carried[:3, :3].T + carried[:3, 3]
+			flat, depth = cam.project(camera, corners, centre)
 			if (depth <= 0).any():
 				continue
 			pen.polygon([tuple(q) for q in hull(flat * scale)], fill=255)
@@ -521,14 +533,21 @@ class Scene:
 		# "paint": "blue" where the jet itself is as blue as the sky (measure())
 		self.paint = photo.get("paint")
 		stores = catalogue.get("stores")
-		self.hidden = None
+		self.hidden, self.loaded, self.masks = None, None, None
 		if stores:
 			load = dict(stores["load"])
 			load.update(photo.get("stores", {}))
+			self.loaded = (stores, load, hardpoints)
 			self.hidden = blocked(stores, load, hardpoints, frame, self.camera, self.centre, self.work, self.scale)
 		if photo.get("masks"):
-			masks = covered(photo["masks"], self.work, self.scale)
-			self.hidden = masks if self.hidden is None else self.hidden | masks
+			self.masks = covered(photo["masks"], self.work, self.scale)
+			self.hidden = self.masks if self.hidden is None else self.hidden | self.masks
+		# what a photo of another variant does not share with the model (Settings variants)
+		self.unshared = None
+		if photo.get("variant"):
+			if photo["variant"] not in self.settings.variants:
+				raise SystemExit(f"photo {entry['photo']}: variant {photo['variant']!r} is not among the catalogue's skyline variants")
+			self.unshared = self.settings.variants[photo["variant"]]
 		# the sea's surface, the normal out of the water (the model frame's y is up)
 		self.sea = None
 		if "sea" in catalogue:
@@ -536,12 +555,25 @@ class Scene:
 			self.sea = (normal, offset) if normal[1] >= 0 else (-normal, -offset)
 		ground = photo.get("ground")
 		if ground is None:
-			ground = entry.get("pose", {}).get("gear", 0) >= 1
+			ground = posed(catalogue, entry).get("gear", 0) >= 1
 		self.ground = horizon(self.camera, self.centre, self.work, self.scale, frame.model([0, 1, 0]) - frame.model([0, 0, 0]),
 			self.settings.horizon, self.sea) if ground else None
 		# in a photo taken from the air, what lies under the sea's horizon is the
 		# sea, whose foam and waves are no sky
 		self.seaward = horizon(self.camera, self.centre, self.work, self.scale, None, 0.0, self.sea) if self.sea is not None and not ground else None
+
+	def covering(self, model, posed):
+		# What hides the photo in this pose: its masks, and its stores' boxes
+		# carried with the parts they hang from where the pose moves them
+		if self.loaded is None:
+			return self.hidden
+		stores, load, hardpoints = self.loaded
+		parts = {p for station, kind in load.items() if kind is not None and station in hardpoints for p in hardpoints[station].get("parts", [])}
+		moved = carried(model, posed, parts) if parts else {}
+		if not moved:
+			return self.hidden
+		boxes = blocked(stores, load, hardpoints, self.frame, self.camera, self.centre, self.work, self.scale, moved)
+		return boxes if self.masks is None else boxes | self.masks
 
 	def places(self, model, joints, pose, parts=None):
 		# The places found along the model's outline in the pose (the points
@@ -581,14 +613,43 @@ class Scene:
 		flat, depth = flat.reshape(-1, 3, 2), depth.reshape(-1, 3)
 		ids = frontmost(flat * self.scale, depth, self.work)
 		points = self.frame.source(tris.mean(axis=1))
-		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.hidden, self.green, self.ground, self.blue,
-			water, self.seaward, self.paint)
+		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.covering(model, posed), self.green, self.ground,
+			self.blue, water, self.seaward, self.paint)
+		if self.unshared:
+			places = [p for p in places if not unshared(self.unshared, p, self.settings)]
 		# a place on a part a stance drive has moved carries its word (stances())
 		moved = stances(model, joints, pose, self.settings)
 		for p in places:
 			if p["part"] in moved:
 				p["stance"] = moved[p["part"]]
 		return places, ids >= 0
+
+
+def unshared(variant, place, settings=None):
+	# Whether a place lies on what a photo of another variant does not share
+	# with the model (Settings variants): a part of one of its families, or the
+	# body over its stretch above its height
+	f = family(place["part"], settings)
+	if f in variant.get("families", []):
+		return True
+	if f != "body" or "stretch" not in variant:
+		return False
+	start, end = variant["stretch"]
+	return start <= place["point"][0] < end and place["point"][1] >= variant.get("above", float("-inf"))
+
+
+def carried(model, posed, parts):
+	# {part: 4x4 model-frame matrix from rest to the pose} for those of the
+	# parts the pose moves from rest
+	worlds, out = model.worlds(posed), {}
+	for name in parts:
+		i = model.index.get(name)
+		if i is None:
+			continue
+		move = worlds[i] @ np.linalg.inv(model.rest[i])
+		if not np.allclose(move, np.eye(4), atol=1e-6):
+			out[name] = move
+	return out
 
 
 def overlay(gray, mask, places, scale, path, settings=None):
@@ -879,12 +940,20 @@ def reaching(argv):
 SHARED = {}
 
 
+def posed(catalogue, entry):
+	# A photo's pose: the catalogue's, where its poses are kept and fitted
+	# (poses.py), else the copy the cameras file took when photos.py solved
+	# it, which a pose fitted since then leaves stale
+	photo = catalogue.get("photos", {}).get(entry["photo"], {})
+	return photo.get("pose", entry.get("pose", {}))
+
+
 def measured(entry):
 	# One solved photo measured on the model's outline, its overlay written:
 	# (photo, its results)
 	photo = entry["photo"]
 	scene = Scene(SHARED["catalogue"], SHARED["root"], SHARED["frame"], SHARED["hardpoints"], entry)
-	places, mask = scene.places(SHARED["model"], SHARED["joints"], entry.get("pose", {}))
+	places, mask = scene.places(SHARED["model"], SHARED["joints"], posed(SHARED["catalogue"], entry))
 	overlay(scene.gray, mask, places, scene.scale, SHARED["out"] / f"{photo}.png", SHARED["settings"])
 	print(f"photo {photo}: {len(places)} places", file=sys.stderr)
 	return photo, {"tried": len(rim(mask)), "places": places, "scale": scene.scale}

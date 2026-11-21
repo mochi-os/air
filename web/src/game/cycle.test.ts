@@ -173,7 +173,7 @@ describe('the F/A-18C', () => {
     }
   })
   it("keeps each mechanism within its joints' travel and takes it from end to end", () => {
-    for (const drive of ['gear.doors', 'gear.nose', 'gear.main', 'speedbrake', 'canopy', 'probe', 'fold', 'hook', 'scoop', 'nozzle', 'load']) {
+    for (const drive of ['gear.doors', 'gear.nose', 'gear.main', 'speedbrake', 'canopy', 'probe', 'fold', 'hook', 'scoop', 'cabin', 'nozzle', 'load']) {
       const keys = Object.values(joints).find((j) => j.drive === drive)!.keys!
       const low = keys[0][0]
       const high = keys[keys.length - 1][0]
@@ -198,7 +198,7 @@ describe('the F/A-18C', () => {
     const { gear } = (fa18c_points as unknown as { motion: { gear: Record<'down', Record<'doors' | 'nose' | 'main', number[]>> } }).motion
     for (const m of ['doors', 'nose', 'main'] as const) expect(read(`gear.${m}`, gear.down[m][1] * 5 + 0.05), m).toBeCloseTo(1, 9)
     expect(read('speedbrake', 2.5)).toBeCloseTo(1, 9)
-    for (const drive of ['probe', 'fold', 'hook', 'scoop']) {
+    for (const drive of ['probe', 'fold', 'hook', 'scoop', 'cabin']) {
       expect(read(drive, seconds[drive] / 2), drive).toBeCloseTo(0.5, 9)
       expect(read(drive, seconds[drive]), drive).toBeCloseTo(1, 9)
     }

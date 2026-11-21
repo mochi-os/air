@@ -87,7 +87,7 @@ import ford_ship from '../assets/ford.json'   // its ship file, written beside i
 import { layout as ship_layout, lit as ship_lit, glide as ship_glide, view as ship_view, HOOK as SHIP_HOOK } from './ship'
 import fa18c_model_url from '../assets/fa18c.glb?url'   // our own F/A-18C (tools/fa18c), drawn on every jet and in every external view
 import fa18c_points from '../assets/fa18c.json'   // its points file, written beside it by tools/fa18c/build.py: the joints and their schedules, and the points the engine draws
-const MOTION=(fa18c_points as any).motion as { seconds:{ canopy:number, probe:number, bar:number, fold:number, hook:number, scoop:number, swing:number }, toe:number, swing:number, canopy:{ unlatch:number, fall:number, lock:number }, gear:GearTimeline };   // the mechanisms' stroke times (the swing's from centre to either stop), the rudders' toe-in, the hook's sideways travel each way, deg, and the gear's mechanisms' timeline each way (tools/fa18c facts layout.motion; gear.ts)
+const MOTION=(fa18c_points as any).motion as { seconds:{ canopy:number, probe:number, bar:number, fold:number, hook:number, scoop:number, cabin:number, swing:number }, toe:number, swing:number, canopy:{ unlatch:number, fall:number, lock:number }, gear:GearTimeline };   // the mechanisms' stroke times (the swing's from centre to either stop), the rudders' toe-in, the hook's sideways travel each way, deg, and the gear's mechanisms' timeline each way (tools/fa18c facts layout.motion; gear.ts)
 import fa18c_old_url from '../assets/fa18c-old.glb?url'   // the model it replaces: the player's own jet in first person, whose cockpit the engine's cockpit tables are measured on, until our cockpit is built (claude/plans/air-fa18c.md, step 4)
 import fa18c_far_url from '../assets/fa18c-far.glb?url'   // the distant stages (#3): tools/fa18c
 import amraam_model_url from '../assets/aim120c.glb?url'   // our own missiles (tools/missiles), each with its points file: the mount its launcher seats
@@ -2408,6 +2408,7 @@ function exterior_value(drive,name){ const { st, s, x, down, toe, hook, open, lo
 		case "bar": return clamp(st.bar??0,0,1);
 		case "nozzle": return 1-open;
 		case "scoop": return clamp(st.scoop??0,0,1);
+		case "cabin": return clamp(st.cabin??0,0,1);
 		case "steering": return st.steer??0;
 		case "wheel.nose": return exterior_wheel("nose");
 		case "wheel.left": return exterior_wheel("left");
@@ -8026,7 +8027,8 @@ function parked_deck(){ const p=SHIP.parking, h=p.heading*D2R, nose=(AIRCRAFT_MO
 // for aircraft 163092 and up: 2,300 ft below the field on the ground, 8,000 ft from 11,000 to 24,000
 // and a 5 psi differential above; without it the cockpit is at the aircraft's altitude (#14). The
 // engine anti-ice switch lights the L and R HEAT advisories (2.1.1.6.1) and AV COOL's EMERG deploys the
-// FCS ram air scoop (scoopTarget, below), which is all either does here. TEMP, PITOT and the windshield
+// FCS ram air scoop (scoopTarget, below), which is all either does here. The cabin ram air scoop in the belly
+// stands open while no bleed air reaches the ECS, as on every cold jet, and shuts once it does (cabinTarget). TEMP, PITOT and the windshield
 // anti-ice and rain switch act on nothing: the game has no icing, rain or temperatures, and NATOPS gives
 // the pitot heater and the windshield a caution only for a failure (2.12.1.4, 2.16.4.2).
 const BLEED=["loff","norm","roff","off"];
@@ -12192,6 +12194,8 @@ function update_anim(dt){ const jets=[ownship,bandit];
 	if(st.bar===undefined) st.bar=st.barTarget??0; st.bar+=THREE.MathUtils.clamp((st.barTarget??0)-st.bar,-dt/MOTION.seconds.bar,dt/MOTION.seconds.bar);   // the launch bar's swing
 	if(st===ownship){ if(travel_at("avcool")===1) st.scoopTarget=1; else if((st.squish??0)>0.5&&(st.speed??0)<1) st.scoopTarget=0; }   // the FCS ram air scoop (NATOPS 2.16.7): AV COOL EMERG opens it and it cannot be closed in flight; stopped on the deck with the switch back at NORM, a plane captain restows it by hand (Before Taxi step 16)
 	if(st.scoop===undefined) st.scoop=st.scoopTarget??0; st.scoop+=THREE.MathUtils.clamp((st.scoopTarget??0)-st.scoop,-dt/MOTION.seconds.scoop,dt/MOTION.seconds.scoop);
+	if(st===ownship&&last_out) st.cabinTarget=pressurized(last_out)?0:1;   // the cabin ram air scoop: open while no bleed air reaches the ECS, shut once an engine turning behind an open bleed valve feeds it; set from the core's first output, so a jet starting in the air never shows it open
+	if(st.cabinTarget!==undefined){ if(st.cabin===undefined) st.cabin=st.cabinTarget; st.cabin+=THREE.MathUtils.clamp(st.cabinTarget-st.cabin,-dt/MOTION.seconds.cabin,dt/MOTION.seconds.cabin); }
 	if(st===ownship&&steering<0){ const sp=Math.max(st.speed||0,0.3), rate=(ownship.gauges||{}).yaw||0;   // steering off (#36): the nosewheel castors, trailing the path its leg travels 5.4 m ahead of the mains
 		const target=THREE.MathUtils.clamp(Math.atan2(rate*5.4,sp),-_NWS,_NWS)*(st.squish??0);
 		st.steer=(st.steer??0)+THREE.MathUtils.clamp(target-(st.steer??0),-1.5*dt,1.5*dt); }

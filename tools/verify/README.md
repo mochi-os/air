@@ -80,7 +80,9 @@ The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
   `"solve": false` for one kept on file but too thinly marked to solve, and `"use": "measure"` for a copyrighted or
   uncredited photo, whose numbers may be read but whose pixels are never published: `page.py` shows the model through
   its camera alone and the sky check's sheets a plain tile. The sky check (5a) reads `clear`,
-  `ground`, `stores` and `masks` beside them. Three more set how its camera is solved:
+  `ground`, `stores`, `masks` and `variant` beside them: a photo of another variant of the subject (an F/A-18D
+  among the F/A-18C's) names one of the `skyline` section's `variants`, and what that variant does not share with
+  the model (the two-seater's longer canopy and the spine under it) goes unjudged in it. Three more set how its camera is solved:
   - `focal`: the lens in the photo's own pixels, the solve's prior in place of the EXIF's, or `false` for no
     prior. A photo cropped and enlarged keeps an EXIF focal that no longer fits its pixels: the Ford's
     dvids9167788 solved 34% longer than its EXIF 28 mm.
@@ -100,7 +102,9 @@ The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
   `stretch` (24), `axis` (110), `sectors`, `families`, `moving`, `tolerance` (1), `solid` (the materials whose
   outline is the model's own edge), `label` (`"FS"`), `sectored` (the families split into sectors, `["body"]`),
   `sides` (names for either side of the centreline, each region split by side; none for a mirrored skin),
-  `stances` (below) and `horizon` (1.5, below); with `notes` and `posing`, text for the review page (6).
+  `stances` (below), `horizon` (1.5, below) and `variants` (each a variant's `families`, and its `stretch` of the
+  first coordinate above a height, `above`, on the second: what a photo naming it leaves unjudged); with `notes` and
+  `posing`, text for the review page (6).
 - `poses`: the joints `poses.py` fits (5b), and `subject`: what the photos show, as the review page names it
   (`"aircraft"`).
 
@@ -251,7 +255,9 @@ the catalogue's value and writes the `"joints"` entry each photo's pose takes fo
 miss. A pose's `"joints": {joint: radians}` (metres for a slide) sets that joint past its drive (`model.py`
 `setting`, honoured by `view.py` too): the only way to pose the rudders toed in, which share one drive, or a
 flap and an aileron apart. It changes nothing: look at the photo, then copy the fits that are real into the
-catalogue and run the sky check again. A fit can absorb a shape error into the angle: trust it where the
+catalogue and run the sky check again. Both read each photo's pose from the catalogue, not from the copy the
+cameras file took when `photos.py` solved it (that copy left the F/A-18C's refitted rudders and stabilators
+judged at their old angles until the cameras were solved again). A fit can absorb a shape error into the angle: trust it where the
 fitted angles are what the photo shows (flaps drooped on the ground, rudders toed in on the take-off roll),
 and treat a surface whose fits scatter from photo to photo, or leave a miss on the same side in every photo,
 as a shape question.
@@ -683,6 +689,31 @@ What went wrong on the F/A-18C, each a rule now:
 - **Trace a long line densely before triangulating far along it.** A polyline of three points over 100 in
   stands off a curving line between its points, and the triangulation inherits the gap: the F/A-18C's seam
   read 2 in inside a panel joint's end measured at the same station and height.
+- **Fit every surface a photo shows moved before reading a shape off it.** Held at rest, a deflected surface reads
+  as a shape error the size of its deflection. The F/A-18C's rudders stood 1.0-1.2 in outside in 27-39 photos;
+  the photos with their rudders posed read about 0, the unposed ones +1 to +6. A height tried against the
+  photos needs every photo's deflection refitted at that height: the F/A-18C's stabilators lowered to WL 104
+  with only 22 photos' deflections moved read 1.6-2 in worse at the tips; with all of them refitted, the
+  original 106.8 fitted the bands better.
+- **A fit whose cost hardly moves over its range is no fit.** The F/A-18C's open canopy was fitted at 49.4 deg in
+  dvids7418477, whose sky places were the hangar's trusses: they read 2.4-2.6 in at every angle from 30 to 55.
+  The outline itself sat on 30-32, as in the other three photos. Look at the cost over the whole range and at
+  the overlay at the minimum before taking it.
+- **A mask must move with what it hides.** The sky check's store boxes stood at their stations' rest mounts, so
+  with the F/A-18C's wings folded the wingtip rounds stood unmasked and the walk read their light strips as
+  the jet's edge, 2-3 in inside over FS 480-528. The boxes now ride the parts their hardpoints name.
+- **A photo of another variant shares only part of the subject.** Seventeen of the F/A-18C's photos show the
+  two-seat D, whose longer canopy stands over the C's canopy end and spine: they read -6.8 to -11.8 in there
+  and +10 with the canopy open, while the C photos read under 0.5. Name the variant in the photo's entry and
+  what it does not share in the catalogue (`skyline` `variants`).
+- **A fit that puts a hinge where the part cannot move is not a geometry finding.** Two head-on photos of the
+  F/A-18C's folded wing fitted best with the fold hinge 4.5 in under the upper skin; folding 98 deg about any
+  axis below the upper skin swings the outer panel's root through the inner panel's. An overhead photo
+  showed the hinge's lugs at the upper skin. Check the mechanism before moving its axis, and suspect the
+  cameras of photos whose marks lie far from the moving part.
+- **Check a claim that two sources agree.** The F/A-18C's LEX top fell from root to edge on one curve said to
+  be read off the FS 296 and 357 sections, "which agree"; all three traced sections fall faster over their
+  outer half (0.50-0.89 of the fall at 0.78-0.94 of the span, against the curve's 0.43-0.72).
 
 ## Files
 

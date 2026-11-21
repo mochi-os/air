@@ -41,6 +41,7 @@ PAINTED = {"layout.stencils"}   # facts only the paint's atlas shows
 # date and what they approved), or test_check fails; a text that gains a
 # guess fails again until it is signed again
 GUESSES = {
+	"layout.motion.cabin.note": (1, "user, 2026-11-20: as recommended: the cabin ram air scoop door's stroke 1 s; no source times it"),
 	"layout.wells.note": (1, "user, 2026-11-16: as recommended: the speedbrake well's floor 9.5 in under the skin, as deep as its stowed actuator and hose need; the three photos of it open look up at it from ahead, its inside hidden by the panel"),
 	"layout.paint.where": (1, "user, 2026-11-13: the speedbrake's and the probe's wells keep the airframe's greys; the refuelling photos show the probe's bay only in deep shadow; user, 2026-11-16: the speedbrake's well's inside hidden by its open panel in the three photos that show it open"),
 	"layout.aoa.note": (2, "user, 2026-11-18: the AoA probe's flange 0.1 in thick, the photo seeing its face obliquely, and the profile's last two diameters (0.4 in at 3.0 in out, 0.28 at 3.45), read by eye where the column reads blur, signed off as estimated"),
@@ -451,7 +452,7 @@ FLUSH = [("speedbrake", False), ("gear_nose_door_left", True), ("gear_nose_door_
 # symmetric about the centreline
 # a store part's name, its station and its side of a twin (the contract's Stores)
 STATION = re.compile(r"^((?:pylon|rack|rail|launcher|ejector|tank))_([1-9])([ab]?)$")
-ONE_SIDED = {"antenna_dome", "antenna_ventral", "gear_nose_door_long", "gear_nose_lamps", "gear_nose_block", "lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red", "lamp_position_tail", "pilot", "probe", "probe_door", "probe_door_forward", "scoop", "speedbrake_hose", "well_probe"}
+ONE_SIDED = {"antenna_dome", "antenna_ventral", "gear_nose_door_long", "gear_nose_lamps", "gear_nose_block", "lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red", "lamp_position_tail", "pilot", "probe", "probe_door", "probe_door_forward", "scoop", "scoop_cabin", "speedbrake_hose", "well_probe"}
 # Each well (layout.wells): the doors that close its opening and the parts it
 # holds at rest
 WELLS = {f"main_{side}": ([f"gear_door_{d}_{side}" for d in ("inner", "strip", "outer")], [f"gear_{side}_{p}" for p in ("strut", "oleo", "wheel", "axle", "shock", "shock_can", "brace", "brace_upper", "brace_fittings", "spool", "link", "crank", "casting", "rod")]) for side in ("left", "right")}
@@ -1946,6 +1947,42 @@ def checks(jet, only=(), seen=None):
 
 	yield from guard("lex.underside", "LEX underside", underside)
 
+	# The LEX's top across its span at the traced sections: how far it has
+	# fallen from its root toward its edge, as a share of the whole fall, at
+	# the outer half's points, against the section's own (build.py
+	# section_fall; each from where its top leaves the body's wall, the first
+	# buttline from which it drops under an inch in the next, to its own
+	# edge): one fall curve for every section stood FS 357's top 1.0-1.5 in
+	# over its section within 7 in of the edge
+	def fall():
+		traced = json.loads((HERE / "references" / "sections.json").read_text())["sections"]
+
+		def crossing(segments, bl):
+			a, b = segments[:, 0], segments[:, 1]
+			across = (a[:, 0] - bl) * (b[:, 0] - bl) <= 0
+			a, b = a[across], b[across]
+			f = (bl - a[:, 0]) / np.where(b[:, 0] != a[:, 0], b[:, 0] - a[:, 0], 1)
+			return a[:, 1] + f * (b[:, 1] - a[:, 1])
+
+		for sec in F["lex"]["underside"]["value"]:
+			station = sec["station"]
+			outline = np.array(traced[str(station)]["outline"], float)
+			trace = np.stack([outline[:-1], outline[1:]], 1)
+			build = jet.cut(["lex_right"], [station, 100, 0], [1, 0, 0])[:, [2, 1]].reshape(-1, 2, 2)
+			top = lambda segments, bl: float(crossing(segments, bl).max())
+			root = sec["heights"][0][0]
+			while top(trace, root) - top(trace, root + 1.0) > 1.0:
+				root += 0.25
+			ends = {"trace": (trace, sec["edge"] - 0.05), "build": (build, float(build[:, :, 0].max()) - 0.05)}
+			for t in (0.67, 0.78, 0.89):
+				share = {}
+				for name, (segments, edge) in ends.items():
+					high, low = top(segments, root), top(segments, edge)
+					share[name] = (high - top(segments, root + (edge - root) * t)) / (high - low)
+				yield result("lex.underside", f"FS {station} LEX top's fall from its root at {t:.2f} of its span, a share of the whole", share["trace"], share["build"], 0.06, "share")
+
+	yield from guard("lex.underside", "LEX top's fall", fall)
+
 	# The LEX's apex and fence (tp3111's base; the photos' apex and top corners)
 	def lex_parts():
 		start = F["layout"]["lex"]["apex"]
@@ -2613,18 +2650,17 @@ def checks(jet, only=(), seen=None):
 		# the outer face between the flap and the stabilator through the photos'
 		# strips at its widest line and its lower corner seen from below
 		def outer(station, waterline, side):
-			# the outline's buttline at the waterline, between its points just
-			# above and just below, on the outer face
-			q = jet.cut(["fuselage"], [station, 100, 0], [1, 0, 0])
+			# the outline's buttline at the waterline on the outer face: the
+			# outermost of its segments' crossings there (its vertices near
+			# the waterline need not lie within any reach of it: one ring
+			# point fewer at FS 520 left the nearest 6 in off)
+			q = jet.cut(["fuselage"], [station, 100, 0], [1, 0, 0]).reshape(-1, 2, 3)
 			sign = 1 if side == "right" else -1
-			face = q[(q[:, 2] * sign > 30) & (np.abs(q[:, 1] - waterline) < 4)]
-			above, below = face[face[:, 1] >= waterline], face[face[:, 1] < waterline]
-			if not len(above) or not len(below):
+			found = [a[2] + (b[2] - a[2]) * (waterline - a[1]) / (b[1] - a[1]) for a, b in q
+				if (a[1] - waterline) * (b[1] - waterline) <= 0 and a[1] != b[1] and min(a[2] * sign, b[2] * sign) > 30]
+			if not found:
 				raise KeyError(f"nothing of the {side} nacelle's side at FS {station}, WL {waterline}")
-			a = above[np.argmax(above[:, 2] * sign - 10 * (above[:, 1] - waterline))]
-			b = below[np.argmax(below[:, 2] * sign - 10 * (waterline - below[:, 1]))]
-			f = (waterline - b[1]) / ((a[1] - b[1]) or 1)
-			return float(abs(b[2] + (a[2] - b[2]) * f))
+			return float(max(abs(x) for x in found))
 
 		# the main gear bay's corner (layout.nacelle bay): the bottom's outboard
 		# edge along its knots, where the eases leave it whole; the band above
@@ -2666,8 +2702,9 @@ def checks(jet, only=(), seen=None):
 				yield result("layout.nacelle", f"{side} nacelle's outer face at FS {s:g}, WL {w:g}", b, outer(s, w, side), 0.5, "BL in")
 			worst, where = 0.0, None
 			# where the LAU-116's fairing stands over the cheek box, the skin
-			# under it is gone (the hidden faces' cull): its own rows judge it
-			covered = (F["layout"]["nacelle"]["cheek"]["front"], F["layout"]["stores"]["lau116"]["fairing"]["top"][-1][0])
+			# under it is gone (the hidden faces' cull), and with it the faces
+			# of the 4 in rings that straddle its ends: its own rows judge it
+			covered = (F["layout"]["nacelle"]["cheek"]["front"] - 4.0, F["layout"]["stores"]["lau116"]["fairing"]["top"][-1][0] + 4.0)
 			for station in range(int(start) + 40, int(end) - 39, 4):
 				if covered[0] <= station <= covered[1]:
 					continue
@@ -5456,7 +5493,7 @@ def checks(jet, only=(), seen=None):
 		yield result("layout.motion", "sampled schedules' turns of over a half turn between neighbouring keys", 0, wraps, 0, "keys")
 		for leg in ("left", "right"):
 			yield result("layout.motion", f"{leg} main axle's turn, stowed", 90.0, math.degrees(last(f"gear_{leg}_axle")), 0.05, "deg")
-		for k in ("canopy", "probe", "bar", "fold", "hook", "scoop", "swing"):
+		for k in ("canopy", "probe", "bar", "fold", "hook", "scoop", "cabin", "swing"):
 			yield result("layout.motion", f"{k}'s stroke time in the points file", m[k]["seconds"], told["seconds"][k], 0.001, "s")
 		for k in ("unlatch", "fall", "lock"):
 			yield result("layout.motion", f"canopy's closing {k} in the points file", m["canopy"][k], told["canopy"][k], 0.001, "s" if k != "unlatch" else "share")
@@ -5485,6 +5522,32 @@ def checks(jet, only=(), seen=None):
 		line = out[mouth].mean(0) - out[cap].mean(0)
 		yield result("layout.motion", "deployed scoop's mouth off straight ahead", 0.0, math.degrees(math.acos(min(1.0, -line[0] / np.linalg.norm(line)))), 5.0, "deg")
 		yield result("layout.motion", "deployed scoop's points inside the airframe", 0, enclosed(np.unique(out, axis=0), hull).sum(), 0, "corners")
+		# the cabin ram air scoop (layout.cabin): its door shut on the panel line
+		# the photos place, its red inside and sides within the skin; open, its
+		# front edge dropped below the skin as far as the photos see it
+		# its outline on its painted face, not the red sides that swing up from
+		# its edges
+		door = jet.model.parts(verify.pose(jet.joints, {}), materials=("paint",)).get("scoop_cabin")
+		if door is None:
+			raise KeyError("no cabin scoop")
+		door = FRAME.source(door.reshape(-1, 3))
+		edges = F["layout"]["cabin"]["door"]
+		for label, got, want in (("front", door[:, 0].min(), edges["front"]), ("aft end", door[:, 0].max(), edges["aft"]),
+				("inboard side", -door[:, 2].max(), edges["inner"]), ("outboard side", -door[:, 2].min(), edges["outer"])):
+			yield result("layout.cabin", f"shut cabin scoop's {label}", want, got, 0.1, "in")
+		# its seam painted round it: a panel line whose corners are the door's
+		box = lambda pts: (pts[:, 0].min(), pts[:, 0].max(), -pts[:, 2].max(), -pts[:, 2].min())
+		want = (edges["front"], edges["aft"], edges["inner"], edges["outer"])
+		seams = [np.abs(np.subtract(box(np.array(line, float)), want)).max() for line in F["layout"]["panels"]["lines"]]
+		yield result("layout.cabin", "cabin scoop's door against the nearest panel line round it, its furthest edge", 0.0, float(min(seams)), 0.1, "in")
+		red = jet.model.parts(verify.pose(jet.joints, {}), materials=("red",)).get("scoop_cabin")
+		if red is None:
+			raise KeyError("no red inside the cabin scoop")
+		yield result("layout.cabin", "shut cabin scoop's red points outside the airframe", 0, int((~enclosed(np.unique(FRAME.source(red.reshape(-1, 3)), axis=0), hull)).sum()), 0, "points")
+		yield result("layout.motion", "cabin scoop's travel", m["cabin"]["travel"], math.degrees(last("scoop_cabin")), 0.05, "deg")
+		opened = FRAME.source(jet.model.parts(verify.pose(jet.joints, {"cabin": 1}), materials=("paint",))["scoop_cabin"].reshape(-1, 3))
+		lip = door[:, 0] < door[:, 0].min() + 0.05
+		yield result("layout.cabin", "open cabin scoop's front edge below the skin", F["layout"]["cabin"]["open"], float(door[lip, 1].mean() - opened[lip, 1].mean()), 0.15, "in")
 		yield result("layout.motion", "rudders' toe-in in the points file", m["toe"], told["toe"], 0.001, "deg")
 		yield result("layout.motion", "hook's sideways travel in the points file", m["swing"]["travel"], told["swing"], 0.001, "deg")
 

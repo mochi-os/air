@@ -734,6 +734,10 @@ def fairing(name, side, surface, skin, span, corner):
 		if not hits:
 			raise SystemExit(f"no skin beneath fin_{name}'s fairing at FS {station:.1f}")
 		lower = at(station, 160.0 - hits[0], side * bl)
+		if upper.z < lower.z:
+			# the skin stands above the fin's root here (the deck's
+			# shoulders at the leading edge): the section closes on the skin
+			upper = lower.copy()
 		outer = upper + outward * (stand * INCH)
 		# inside: just within the fin's face (on the leading edge itself
 		# where the fin has no thickness), down that face to half an inch
@@ -1035,7 +1039,7 @@ def forebody():
 	# falling to it within 20 in of the canopy creased the spine. Behind the
 	# joint the loft (lofted()) takes the top onto the spine's crown; these
 	# knots shape the top line's run to the joint
-	onto = [(s, smooth(CORE["top"], s) - sum(raw(s)[:2])) for s in (357.0, 404.0)]
+	onto = [(s, core_top(s) - sum(raw(s)[:2])) for s in (357.0, 404.0)]
 	FORE["top"] = [(176.0, 0.0), (184.0, 0.0)] + bends + onto + [(414.0, onto[-1][1])]
 
 
@@ -1346,7 +1350,7 @@ def flared(station, outline):
 
 
 SHOULDER = 8.0   # inches below the canopy's sill over which narrowed() fades out
-SCREEN_FADE = 8.0   # inches across the windscreen's front base over which narrowed() fades in
+SCREEN_FADE = 8.0   # inches ahead of the windscreen's front base over which narrowed() fades in
 SPINE_FADE = 333.0   # the station by which narrowed() has faded out behind the canopy: the joint there (layout.canopy seam)
 
 
@@ -1365,7 +1369,7 @@ def narrowed(station, outline):
 	# left it 2-2.6 in low at the joint.
 	layout = LAYOUT["canopy"]
 	front, foot, back = layout["windscreen"]["station"], layout["sill"][0][0], layout["aft"]["station"]
-	if station <= front - SCREEN_FADE / 2 or station >= SPINE_FADE:
+	if station <= front - SCREEN_FADE or station >= SPINE_FADE:
 		return outline
 	if station > back:
 		weight = ease(1 - (station - back) / (SPINE_FADE - back))
@@ -1374,9 +1378,10 @@ def narrowed(station, outline):
 		return [(x * (1 - weight * (1 - k)), y) for (x, y), k in zip(outline, kept)]
 	if station < foot:
 		# ahead of the bow's foot the windscreen's frame sill (layout.canopy
-		# screen, traced), running on into the canopy's, fading in across the
-		# windscreen's front base
-		weight = ease((station - (front - SCREEN_FADE / 2)) / SCREEN_FADE)
+		# screen, traced), running on into the canopy's, faded in by the
+		# windscreen's front base: faded in across it, the skin beside the
+		# frame's front stood 1.0 in proud of the sky outline in 20 photos
+		weight = ease((station - (front - SCREEN_FADE)) / SCREEN_FADE)
 		sill = layout["screen"] + layout["sill"]
 		b, w = between([(p[0], p[2]) for p in sill], station), between([(p[0], p[1]) for p in sill], station)
 	else:
@@ -1529,10 +1534,15 @@ def fuselage():
 	# and every 3 in over the nose, where the section widens fastest and the
 	# probes, fairings, strips and door sit on the skin: 7-8 in apart, the
 	# rings creased it 3 deg each, and the loft's flat facets stood up to 0.3
-	# in off the section the fittings follow; every 4 in from the canopy's aft end to
+	# in off the section the fittings follow; every inch where the windscreen's
+	# frame sill fades in ahead of its front base (narrowed(), SCREEN_FADE),
+	# where 3 in between rings stood the loft's facets 0.12 in off the curve the
+	# probe door follows; every 4 in from the canopy's aft end to
 	# the nozzles, where 10-20 in between rings left the spine and nacelles
 	# faceted
-	stations = sorted(set(stations) | {float(x) for x in range(328, 692, 4)} | {float(x) for x in range(int(LOFT[0]), int(LOFT[1]), 2)} | {float(x) for x in range(488, 514, 2)} | {float(x) for x in range(326, 336)} | {float(x) for x in range(92, 217, 3)} | located
+	front = c["windscreen"]["station"]
+	fade = {float(x) for x in range(math.ceil(front - SCREEN_FADE), math.floor(front) + 1)}   # on the whole inches the 3 in grid shares
+	stations = sorted(set(stations) | {float(x) for x in range(328, 692, 4)} | {float(x) for x in range(int(LOFT[0]), int(LOFT[1]), 2)} | {float(x) for x in range(488, 514, 2)} | {float(x) for x in range(326, 336)} | {float(x) for x in range(92, 217, 3)} | fade | located
 		| {float(r["station"]) for r in FACTS["sections"]} | {253.0, 296.0, 357.0})   # a ring at every cited and traced section
 	FUSELAGE_STATIONS[:] = stations
 	rings = []
@@ -1923,7 +1933,7 @@ def crease(station):
 	# outline over from the body and the deck, walking out from the top: the
 	# V's floor behind the speedbrake, a sharp turn that columns spaced
 	# along the outline cut off by more or less from ring to ring
-	top, bottom = smooth(CORE["top"], station), smooth(CORE["bottom"], station)
+	top, bottom = core_top(station), smooth(CORE["bottom"], station)
 	upper, half = core_widths(station)
 	centre = (0.0, (top + bottom) / 2)
 	b, w, a, up, down = nacelle_at(station)
@@ -2004,11 +2014,49 @@ def beneath(starboard, bl, level=False):
 
 
 LEX_STATIONS = 48   # rings from the apex to the junction
-# The LEX's upper surface across its span: how far it has fallen from its root
-# toward its edge, as a share of the whole fall, at each share of the way out.
-# Read off the traced TP-3111 sections at FS 296 and 357, which agree: nearly
-# flat over its inner half, falling steeply only near the edge
-LEX_FALL = [(0.0, 0.0), (0.25, 0.04), (0.44, 0.15), (0.5, 0.21), (0.67, 0.32), (0.78, 0.43), (0.83, 0.52), (0.89, 0.6), (0.94, 0.72), (1.0, 1.0)]
+# Heights above the keel of the LEX's upper root at the traced sections
+# (views.py), where its top leaves the body's wall
+LEX_ROOT = {253: 42.6, 296: 43.0, 357: 42.7}
+
+
+def section_fall(station):
+	# The LEX's upper surface across its span at a traced section (FS 253, 296
+	# or 357): how far it has fallen from its root toward its edge, as a share
+	# of the whole fall, at each twentieth of the way out, read off the
+	# section's own top from where it leaves the body's wall (the first
+	# buttline from which it drops under an inch in the next: FS 357's top
+	# there stands 0.6 in over LEX_ROOT's height, and a test against that
+	# height started its fall 5 in out) to its edge (lex.underside). The
+	# three fall faster over their outer half than any one curve through them
+	# all: one curve stood FS 357's top 1.0-1.5 in over its section within 7
+	# in of the edge
+	sec = next(s for s in FACTS["lex"]["underside"]["value"] if s["station"] == station)
+	outline = TRACED[str(station)]["outline"]
+
+	def top(bl):
+		found = [w0 + (w1 - w0) * (bl - b0) / (b1 - b0) for (b0, w0), (b1, w1) in zip(outline, outline[1:]) if (b0 - bl) * (b1 - bl) <= 0 and b0 != b1]
+		return max(found)
+
+	edge = sec["edge"] - 0.05
+	root = sec["heights"][0][0]
+	while top(root) - top(root + 1.0) > 1.0:
+		root += 0.25
+	high, low = top(root), top(edge)
+	shares = [min(1.0, max(0.0, (high - top(root + (edge - root) * k / 20)) / (high - low))) for k in range(21)]
+	for k in range(1, 21):
+		shares[k] = max(shares[k], shares[k - 1])
+	return [(k / 20, s) for k, s in enumerate(shares)]
+
+
+LEX_FALLS = []   # [(station, its fall)] for the traced sections, built on first use
+
+
+def lex_fall(station, t):
+	# The fall's share at a share t of the span: each traced section's own,
+	# run between them along the stations and held past the first and last
+	if not LEX_FALLS:
+		LEX_FALLS[:] = [(sec["station"], section_fall(sec["station"])) for sec in FACTS["lex"]["underside"]["value"]]
+	return smooth([(s, smooth(fall, t)) for s, fall in LEX_FALLS], station)
 FAIRING = 60.0      # inches behind the junction the LEX takes to settle onto the wing root
 RIDE = 0.05   # inches the LEX's underside rides over the skin rising under it behind FS 357
 
@@ -2049,7 +2097,7 @@ def lex(side, widths):
 	# to the wing's leading edge at the junction (the sections read it up to
 	# 1.24 in higher); the upper surface falls to it from the root, so it
 	# comes down toward the sections' own upper surface near the edge
-	root_height = [(apex, start["waterline"] - profile("keel", apex)), (253, 42.6), (296, 43.0), (357, 42.7)]
+	root_height = [(apex, start["waterline"] - profile("keel", apex))] + sorted(LEX_ROOT.items())
 	edge_line = [(apex, start["waterline"])] + [tuple(k) for k in LAYOUT["lex"]["edge"]] + [(junction, meet)]
 
 	def root_line(station):
@@ -2182,13 +2230,13 @@ def lex(side, widths):
 			t = k / across
 			bl = body + (edge_bl - body) * t
 			# the blade's own upper surface: the traced sections' fall from root to edge
-			wl = root + 0.5 * share - (root + 0.5 * share - edge) * smooth(LEX_FALL, t)
+			wl = root + 0.5 * share - (root + 0.5 * share - edge) * lex_fall(station, t)
 			if station > junction:
 				# behind the junction it settles, once, onto what lies beneath, from
 				# the blade with its root as it stands at the junction (the root
 				# settling as well would settle it twice) and its edge riding the
 				# wing; its first column, inside the body's wall, onto its settled root
-				wl = root_line(junction) + 0.5 - (root_line(junction) + 0.5 - edge) * smooth(LEX_FALL, t)
+				wl = root_line(junction) + 0.5 - (root_line(junction) + 0.5 - edge) * lex_fall(junction, t)
 				floor = settled if k == 0 else max([w for w in (settle(bl), wing_top(station, bl)) if w is not None], default=wl)
 				wl = wl * (1 - e) + (floor + clearance) * e
 			if 0 < k < across:
@@ -2207,7 +2255,7 @@ def lex(side, widths):
 				b = roof(station, bl)
 			elif station < 253:
 				# the depth at FS 253 under the top there, so the two meet
-				thick = smooth(root_height, 253) + 0.5 - (smooth(root_height, 253) + 0.5 - (smooth(edge_line, 253) - profile("keel", 253))) * smooth(LEX_FALL, t) - traced(253, t)
+				thick = smooth(root_height, 253) + 0.5 - (smooth(root_height, 253) + 0.5 - (smooth(edge_line, 253) - profile("keel", 253))) * lex_fall(253, t) - traced(253, t)
 				b = wl - thick * span / measured[253]
 			else:
 				b = keel + traced(min(station, last), t)
@@ -2348,6 +2396,22 @@ CORE = {
 }
 
 
+# The ridge ahead of the speedbrake stood 1.05 in outside the sky outline
+# over FS 552-576 (9 photos) and 0.71 over FS 576-600 (7) on the curve through
+# FS 540 and 600: the top dips under that curve between them, eased in and out
+# level, so the curve and the body's widths fitted through it elsewhere stay
+# as they were (knots at FS 560 and 580 turned the curve's slope at FS 540 and
+# creased the spine 3.1 deg at FS 448 through the widths)
+RIDGE = (540.0, 600.0, 1.1)   # from, to, and the dip's depth at its middle, inches
+
+
+def core_top(station):
+	# The body's top line: CORE's top, less the ridge's dip
+	start, end, depth = RIDGE
+	dip = depth * math.sin(math.pi * (station - start) / (end - start)) ** 2 if start < station < end else 0.0
+	return smooth(CORE["top"], station) - dip
+
+
 def upper_widths():
 	# The body's half-width above its centre: as below it up to the LEX-wing
 	# junction, where the forebody has handed over, then through each flank
@@ -2359,7 +2423,7 @@ def upper_widths():
 	# speedbrake's side edges stood its shoulders up in a hump at FS 592,
 	# behind a dip at the ridge
 	def through(s, wl, bl):
-		top, bottom = smooth(CORE["top"], s), smooth(CORE["bottom"], s)
+		top, bottom = core_top(s), smooth(CORE["bottom"], s)
 		share = abs((wl - (top + bottom) / 2) / ((top - bottom) / 2))
 		return (s, bl / (1 - share ** 2.6) ** (1 / 2.6))
 
@@ -2396,6 +2460,29 @@ DECK_BELOW = 6.0
 # 28.2-31.3 in over FS 500-596, jagged by the outline's sampling, and the
 # jagged edge creased the side 3.1 deg
 DECK_SIDE = 30.0
+# Over the same stretch the deck is lifted DECK_LIFT in, its widest line
+# DECK_BREADTH wide there, with a squarer top (DECK_SQUARE) and an elliptical
+# underside, so its shoulders reach out to the fins' roots while at the
+# nacelles' centre height it stays near DECK_SIDE; eased back to the narrowed
+# deck over DECK_SHOULDERS. The photos put the fins' leading edges meeting the
+# skin at WL 125.2 (all 12 marks of fin_root_leading, 9 photos), the fairing's
+# foot triangulated there at 125.0 (layout.fin fairing), where the narrowed
+# deck left the nacelle's crown falling off to 122.5; and the deck's outline
+# beside the speedbrake (FS 563-606, BL 13-31) 1.5-2.9 in above it in the
+# side views (sky check, 5-7 photos). The breadth narrows to 35.7 in by FS
+# 585, so the fairing's triangulated foot at BL 42 behind FS 557 keeps near
+# the nacelle (narrowed by FS 557, it creased the side 3.2 deg there; by FS
+# 575, it stood the skin 2.9 in over the foot at FS 557)
+DECK_LIFT, DECK_SQUARE = 8.0, 7.0
+DECK_BREADTH = [(480.0, 44.0), (527.0, 43.5), (545.0, 40.5), (557.0, 37.8), (570.0, 36.6), (585.0, 35.7), (605.0, 35.5), (640.0, 33.0)]
+DECK_SHOULDERS = (610.0, 640.0)
+# The deck's top raised DECK_RAISE in over FS 550-592, eased in from 520 and
+# out by 624, the most the speedbrake's triangulated side edges leave (FS 600,
+# BL 15: WL 127.1 +-1.0, layout.spine rear) of the 1.5-2.9 in the side views
+# read the deck high there (eased out over FS 605-620, it creased the top 3.3
+# deg at FS 604; over 590-635, it moved the lower side's sampling and its crease
+# at WL 90, FS 629 rose from 2.8 to 3.0 deg)
+DECK_RAISE, DECK_RAISED = 0.9, (520.0, 550.0, 592.0, 624.0)
 
 
 def deck_top(station):
@@ -2406,7 +2493,8 @@ def deck_top(station):
 	settled = (lambda b, w, a, up, down: w + up)(*nacelle_at(580.0))
 	floor = nacelle_at(DECK_END)[1] + 0.5
 	knots = [(JOIN - 4, start), (JOIN, start), (452.0, 128.05)] + [tuple(p) for p in SPINE["deck"] if p[0] > 455] + [(540.0, 126.8)] + [(s, wl - DECK_SWELL) for s, wl, bl in SPINE["rear"] if s >= 590] + [(LAYOUT["speedbrake"]["back"], SPINE["rear"][-1][1] - DECK_SWELL - 1.0), (LAYOUT["speedbrake"]["back"] + 16, SPINE["rear"][-1][1] - DECK_SWELL - 3.0), (DECK_END, floor), (DECK_END + 4, floor)]
-	return smooth(knots, station)
+	a, b, c, d = DECK_RAISED
+	return smooth(knots, station) + DECK_RAISE * ease((station - a) / (b - a)) * (1 - ease((station - c) / (d - c)))
 
 
 def deck_half(station):
@@ -2416,8 +2504,10 @@ def deck_half(station):
 	# outboard sides, leaves them before it ends (ending at full width, it
 	# creased their sides 3-7 deg; drawn in over FS 580-640 only, 4)
 	# and narrowing with the body to the strip between the nozzles, where
-	# between the nacelles' rings it would stand a web the photos do not show
-	return narrowing(lambda s: smooth([(490.0, DECK_HALF), (510.0, DECK_HALF), (640.0, DECK_HALF - 18.0), (DECK_END + 20, DECK_HALF - 18.0)], s), station)
+	# between the nacelles' rings it would stand a web the photos do not show.
+	# Drawn in by 12 in at FS 640: by 18 the deck's top beside the speedbrake
+	# (BL 16-31) stood 1.3-1.9 in inside the sky outline over FS 576-624
+	return narrowing(lambda s: smooth([(490.0, DECK_HALF), (510.0, DECK_HALF), (640.0, DECK_HALF - 12.0), (DECK_END + 20, DECK_HALF - 12.0)], s), station)
 
 
 def narrowing(width, station):
@@ -2450,7 +2540,7 @@ def core_power(station):
 def core_at(station, waterline):
 	# The body's half-width at a waterline (its superellipse alone, without the
 	# nacelles or the deck), 0 above or below it
-	top, bottom = smooth(CORE["top"], station), smooth(CORE["bottom"], station)
+	top, bottom = core_top(station), smooth(CORE["bottom"], station)
 	y = waterline - (top + bottom) / 2
 	share = abs(y / ((top - bottom) / 2))
 	if share >= 1:
@@ -2492,7 +2582,7 @@ def union_ring(station, angles=None, sided=True):
 	# skins (inlets()) stand in for them, and the fuselage's ring jumps out to
 	# the nacelles between its last station ahead of JOIN and JOIN itself,
 	# inside them, where the ducts pass (canopy() leaves those faces out)
-	top, bottom = smooth(CORE["top"], station), smooth(CORE["bottom"], station)
+	top, bottom = core_top(station), smooth(CORE["bottom"], station)
 	upper, half = core_widths(station)
 	centre = (0.0, (top + bottom) / 2)
 	core = ((0.0, centre[1]), ((upper, half), (top - bottom) / 2), core_power(station))
@@ -2520,7 +2610,14 @@ def union_ring(station, angles=None, sided=True):
 					# a smooth minimum, so the edge leaves DECK_SIDE for the
 					# deck's own taper with no kink
 					wide = -math.log(math.exp(-wide) + math.exp(-DECK_SIDE))
-				parts.append(((0.0, w), (wide, deck - w, DECK_BELOW), DECK_EXPONENT))
+					# lifted to its shoulders (DECK_LIFT), back to the
+					# narrowed deck by the shoulders' end
+					k = 1 - ease((station - DECK_SHOULDERS[0]) / (DECK_SHOULDERS[1] - DECK_SHOULDERS[0]))
+					lift = DECK_LIFT * k
+					breadth = wide + (min(smooth(DECK_BREADTH, station), deck_half(station)) - wide) * k
+					parts.append(((0.0, w + lift), (breadth, deck - w - lift, DECK_BELOW + lift), (DECK_EXPONENT + (DECK_SQUARE - DECK_EXPONENT) * k, DECK_EXPONENT + (2.0 - DECK_EXPONENT) * k)))
+				else:
+					parts.append(((0.0, w), (wide, deck - w, DECK_BELOW), DECK_EXPONENT))
 		directions = [(math.sin(theta), math.cos(theta)) for theta in turns]
 		reaches = list(zip(*(exit_distances(c, h, n, centre, directions) for c, h, n in parts)))
 		ring = []
@@ -4080,6 +4177,67 @@ def scoop():
 	node("scoop", hinge=hinge, mesh=(vertices, faces, ["red"] * 16 + ["paint", "red"]))
 	joint("scoop", forward.cross(normal), -normal, forward, "scoop", [[0, 0], [1, round(math.radians(m["travel"]), 4)]])
 	MARKS["scoop_cap"] = (centre, "scoop")
+
+
+def cabin():
+	# The cabin ram air scoop (layout.cabin): a door in the belly left of the
+	# nose drag brace where the photos place it, laid flush on the skin, the airframe's paint outside
+	# and red inside, hinged across its aft edge, its front swinging down
+	# (layout.motion cabin) to open a bucket facing forward. Its sides are the
+	# red triangles its edges sweep, riding the door: shut they stand inside
+	# the skin, open they close the bucket to the skin
+	travel = math.radians(LAYOUT["motion"]["cabin"]["value"]["travel"])
+	door = LAYOUT["cabin"]["door"]
+	front, aft = door["front"], door["aft"]
+	inner, outer = -door["inner"], -door["outer"]   # on the left
+	skin = built(["fuselage"])
+	along, across = 4, 2
+	grid = []
+	for i in range(along + 1):
+		row = []
+		for k in range(across + 1):
+			f, b = front + (aft - front) * i / along, inner + (outer - inner) * k / across
+			start = at(f, 70.0, b)
+			hit, normal = skin.ray_cast(start, UP)[:2]
+			if hit is None:
+				raise SystemExit(f"no belly over the cabin scoop at FS {f:.1f}, BL {b:.1f}")
+			normal = -normal if normal.dot(UP) > 0 else normal   # outward, down
+			row.append((hit + normal * (FLUSH * INCH), hit - normal * (0.05 * INCH)))
+		grid.append(row)
+	vertices, faces, finishes = [], [], []
+
+	def index(i, k, side):
+		return (i * (across + 1) + k) * 2 + side
+
+	for row in grid:
+		for o, n in row:
+			vertices += [o, n]
+	for i in range(along):
+		for k in range(across):
+			faces.append((index(i, k, 0), index(i + 1, k, 0), index(i + 1, k + 1, 0), index(i, k + 1, 0)))
+			finishes.append("paint")
+			faces.append((index(i, k, 1), index(i, k + 1, 1), index(i + 1, k + 1, 1), index(i + 1, k, 1)))
+			finishes.append("red")
+	# the rim, outer face to inner, round the four edges
+	rim = [(i, 0) for i in range(along)] + [(along, k) for k in range(across)] + [(i, across) for i in range(along, 0, -1)] + [(0, k) for k in range(across, 0, -1)]
+	for (i, k), (j, l) in zip(rim, rim[1:] + rim[:1]):
+		faces.append((index(i, k, 0), index(j, l, 0), index(j, l, 1), index(i, k, 1)))
+		finishes.append("paint")
+	hinge = (grid[along][0][0] + grid[along][across][0]) / 2
+	axis = (grid[along][across][0] - grid[along][0][0]).normalized()
+	lip = (grid[0][0][0] + grid[0][across][0]) / 2
+	down = (grid[along // 2][across // 2][0] - grid[along // 2][across // 2][1]).normalized()   # outward, from the inner face to the outer
+	for k in (0, across):
+		corner, tip = grid[along][k][1], grid[0][k][1]
+		turned = [corner + Matrix.Rotation(sign * travel, 3, axis) @ (tip - corner) for sign in (-1, 1)]
+		up = max(turned, key=lambda p: p.z)   # the door's edge swung up into the skin: where the skin stands once the door is open
+		base = len(vertices)
+		vertices += [corner, tip, up]
+		faces.append((base, base + 1, base + 2))
+		finishes.append("red")
+	node("scoop_cabin", hinge=hinge, mesh=(vertices, faces, finishes))
+	joint("scoop_cabin", axis, lip - hinge, down, "cabin", [[0, 0], [1, round(travel, 4)]])
+	MARKS["scoop_cabin_lip"] = (lip, "scoop_cabin")
 
 
 def stroked(f, ramp):
@@ -5750,8 +5908,14 @@ def mechanisms():
 
 	def panel(a, b, count, head=None, tail=None):
 		# a shell on the skin from station a to b, its first or last ring's
-		# stations given round it (head, tail: of the angle and the offset)
-		stations = [a + (b - a) * i / count for i in range(count + 1)]
+		# stations given round it (head, tail: of the angle and the offset);
+		# its rings on the fuselage's own between them, at least `count`
+		# apart, so its faces follow the skin's facets (on 3 in steps of its
+		# own over the inch-apart rings where the windscreen's sill fades in,
+		# it stood 0.12 in off them)
+		inner = [s for s in FUSELAGE_STATIONS if a + 0.5 < s < b - 0.5]
+		stations = [a] + inner + [b] if len(inner) >= count - 1 else [a + (b - a) * i / count for i in range(count + 1)]
+		count = len(stations) - 1
 		at_ = lambda i, th, out: (head(th, out) if head and i == 0 else tail(th, out) if tail and i == count else stations[i])
 		return loft([[shell(at_(i, th, proud), th, proud) for th in angles] + [shell(at_(i, th, -0.1), th, -0.1) for th in reversed(angles)] for i in range(count + 1)]), stations
 	shut, stations = panel(start, end, 14, head=seam)
@@ -8594,7 +8758,7 @@ def mend(bm):
 		return before - len(bm.faces)
 
 	removed, split = dissolved(), 0
-	for _ in range(4):
+	for _ in range(12):
 		bm.normal_update()   # the fill projects each face along its normal
 		faces = [f for f in bm.faces if len(f.verts) > 3 and any(straight(loop) for loop in f.loops)]
 		if not faces:
@@ -8602,6 +8766,28 @@ def mend(bm):
 		bmesh.ops.triangulate(bm, faces=faces, quad_method="BEAUTY", ngon_method="BEAUTY")
 		split += len(faces)
 		removed += dissolved()
+	else:
+		# still a face with a straight corner after every round (each round's
+		# split laid a triangle of no area along it, which the dissolve joined
+		# back): fan it from that corner instead, which lays none there, where
+		# every triangle of the fan keeps the face's facing (a fan from a
+		# concave cap's corner passes outside it)
+		bm.normal_update()
+		for f in [f for f in bm.faces if len(f.verts) > 3 and any(straight(loop) for loop in f.loops)]:
+			corner = next(loop for loop in f.loops if straight(loop))
+			ring = [corner.vert]
+			loop = corner.link_loop_next
+			while loop.vert is not corner.vert:
+				ring.append(loop.vert)
+				loop = loop.link_loop_next
+			fan = [(ring[0].co, ring[k].co, ring[k + 1].co) for k in range(1, len(ring) - 1)]
+			if all((b - a).cross(c - a).dot(f.normal) > 0 for a, b, c in fan):
+				for k in range(2, len(ring) - 1):
+					bmesh.ops.connect_verts(bm, verts=[ring[0], ring[k]])
+				split += 1
+		left = sum(1 for f in bm.faces if len(f.verts) > 3 and any(straight(loop) for loop in f.loops))
+		if left:
+			print(f"mend: {left} faces with a straight corner left after 12 rounds and a fan from it")
 	return removed, split
 
 
@@ -8654,6 +8840,7 @@ def main():
 		brace(skin)
 	sequenced()
 	scoop()
+	cabin()
 	lamps()
 	cheeks()
 	stores()
@@ -8675,7 +8862,7 @@ def main():
 	# stop), the rudders' toe-in and the hook's sideways travel each way, for
 	# the engine (layout.motion)
 	m = {k: v["value"] for k, v in LAYOUT["motion"].items() if isinstance(v, dict)}
-	motion = {"seconds": {k: m[k]["seconds"] for k in ("canopy", "probe", "bar", "fold", "hook", "scoop", "swing")}, "toe": m["toe"], "swing": m["swing"]["travel"],
+	motion = {"seconds": {k: m[k]["seconds"] for k in ("canopy", "probe", "bar", "fold", "hook", "scoop", "cabin", "swing")}, "toe": m["toe"], "swing": m["swing"]["travel"],
 		"canopy": {k: m["canopy"][k] for k in ("unlatch", "fall", "lock")},   # the closing's own phases: the opening's are its stroke and the slide's share
 		"gear": timeline()}   # each gear mechanism's share of the stroke's time, each way
 	document = {"frame": {"origin": {"station": ORIGIN["station"], "waterline": ORIGIN["waterline"], "buttline": 0}},

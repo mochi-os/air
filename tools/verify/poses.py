@@ -124,7 +124,7 @@ def main():
 		if only and photo not in only:
 			continue
 		scene = skyline.Scene(catalogue, root, frame, hardpoints, entry)
-		pose = entry.get("pose", {})
+		pose = skyline.posed(catalogue, entry)
 		places, _ = scene.places(model, joints, pose, parts=set(surfaces))
 		counts = {n: [p["miss"] for p in places if p["part"] == n] for n in surfaces}
 		fits, entry_joints = {}, dict(pose.get("joints", {}))
