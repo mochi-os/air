@@ -9,11 +9,15 @@ import { migrate, normalize } from '../game/stores'
 import { DEFAULT_CONFIG, TAB_FIELDS, type MissionConfig } from './config'
 import {
   absorb,
+  anonymous,
+  ask,
   DEVICE,
+  disclosed,
   loadOutcome,
   merged,
   PendingConfig,
   RETIRED,
+  RETRY,
   SAVE_DELAY,
   Saver,
   seeded,
@@ -357,6 +361,33 @@ describe('the saves', () => {
     expect(anonymous.posts).toEqual([])
   })
 
+  it("seed a fresh account edited while loading over the device's own settings, and send it whole", async () => {
+    // The browser's cache holds this device's stick, keys, sound and graphics;
+    // a server entered as the page opened edits the config before the load
+    // answers that nothing is saved yet.
+    const cached = {
+      ...DEFAULT_CONFIG,
+      joystick: 'pad',
+      keys: { fire: 'KeyF' },
+      render_scale: 0.6,
+      callsign: 'Maverick', // the last account's, not the device's
+    } as MissionConfig
+    const posts: [Partial<MissionConfig>, boolean][] = []
+    const pending = new PendingConfig(cached)
+    const saver = new Saver(pending, async (config, keepalive) => {
+      posts.push([config, keepalive])
+      return true
+    })
+    saver.edit({ ...pending.current(), world: 'https://w.example' })
+    const whole = saver.load({ signed: true, saved: null })
+    expect(whole).toMatchObject({ joystick: 'pad', keys: { fire: 'KeyF' }, render_scale: 0.6, world: 'https://w.example' })
+    expect(whole?.callsign).toBe('')
+    expect(posts).toEqual([[whole, false]]) // the seed, the edit in it, as a first load sends one
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(pending.partial()).toEqual({}) // spent once the server took it
+    expect(merged(null, { world: 'w' }, cached).joystick).toBe('pad')
+  })
+
   it('send what is unsaved at once, kept alive, when the page hides or goes away', async () => {
     vi.useFakeTimers()
     const { posts, pending, saver } = saving()
@@ -393,19 +424,134 @@ describe('the saves', () => {
   })
 })
 
+// A pilot secret from before per-server tokens (#102) was crypto.randomUUID(),
+// sent as the token itself to every world server entered: any of them holds
+// it, and could work out every token made from it.
+describe('a disclosed pilot secret', () => {
+  const uuid = '3f2a9c1e-7b4d-4e8a-9c0f-1a2b3c4d5e6f'
+  const posting = () => {
+    const posts: [Partial<MissionConfig>, boolean][] = []
+    const pending = new PendingConfig(DEFAULT_CONFIG)
+    const saver = new Saver(pending, async (config, keepalive) => {
+      posts.push([config, keepalive])
+      return true
+    })
+    return { posts, pending, saver }
+  }
+
+  it('is one of the shape randomUUID gives, and never a minted one', () => {
+    expect(disclosed(uuid)).toBe(true)
+    expect(disclosed(uuid.toUpperCase())).toBe(true)
+    expect(disclosed(crypto.randomUUID())).toBe(true)
+    expect(disclosed('3f2a9c1e7b4d4e8a9c0f1a2b3c4d5e6f')).toBe(false) // pilot_mint's 32 hex digits
+    expect(disclosed('')).toBe(false)
+    expect(disclosed(undefined)).toBe(false)
+  })
+
+  it('is blanked as the saved config is applied, and the blank is saved', async () => {
+    const { posts, saver } = posting()
+    const whole = saver.load({ signed: true, saved: { callsign: 'Goose', pilot: uuid } })
+    expect(whole?.pilot).toBe('')
+    expect(whole?.callsign).toBe('Goose')
+    expect(posts).toEqual([[{ pilot: '' }, false]])
+    const minted = posting()
+    expect(minted.saver.load({ signed: true, saved: { pilot: 'a'.repeat(32) } })?.pilot).toBe('a'.repeat(32))
+    expect(minted.posts).toEqual([]) // a secret of the new shape stands, and nothing is sent
+  })
+
+  it('is blanked under an edit made while loading, and the blank goes with the edit', () => {
+    const { posts, pending, saver } = posting()
+    saver.edit({ ...pending.current(), tod: 'night' })
+    const whole = saver.load({ signed: true, saved: { pilot: uuid } })
+    expect(whole?.pilot).toBe('')
+    expect(posts).toEqual([[{ tod: 'night', pilot: '' }, false]])
+  })
+
+  it('is blanked in the cache of a player no one signed in as, with nothing sent', () => {
+    const posts: unknown[] = []
+    const pending = new PendingConfig({ ...DEFAULT_CONFIG, pilot: uuid })
+    const saver = new Saver(pending, async (config) => {
+      posts.push(config)
+      return true
+    })
+    expect(saver.load({ signed: false, saved: null })?.pilot).toBe('')
+    expect(posts).toEqual([])
+    const plain = new Saver(new PendingConfig(DEFAULT_CONFIG), async () => true)
+    expect(plain.load({ signed: false, saved: null })).toBeNull() // nothing to blank: the cache shown stays
+  })
+})
+
+// A load that fails for a signed-in player is not an answer (#229): the cache
+// may be another account's, so it stays unsettled and asks again.
+describe('a failed load', () => {
+  it('reads as anonymous only for a 401 to a request with no token, outside the shell', () => {
+    expect(anonymous(401, '', false)).toBe(true)
+    expect(anonymous(401, 'token', false)).toBe(false) // a token refused
+    expect(anonymous(401, '', true)).toBe(false) // the shell frames signed-in players only; its token is on its way
+    expect(anonymous(500, '', false)).toBe(false)
+    expect(anonymous(undefined, '', false)).toBe(false) // the network
+  })
+
+  it('is asked again, waiting longer each time, until it answers', async () => {
+    const answers: (null | { signed: boolean; saved: null })[] = [null, null, null, { signed: true, saved: null }]
+    const waits: number[] = []
+    const answer = await ask(
+      async () => answers.shift() ?? null,
+      () => false,
+      async (milliseconds) => {
+        waits.push(milliseconds)
+      }
+    )
+    expect(answer).toEqual({ signed: true, saved: null })
+    expect(waits).toEqual(RETRY.slice(0, 3))
+  })
+
+  it('waits the last delay from then on', async () => {
+    let tries = 0
+    const waits: number[] = []
+    await ask(
+      async () => (++tries > RETRY.length + 2 ? { signed: false, saved: null } : null),
+      () => false,
+      async (milliseconds) => {
+        waits.push(milliseconds)
+      }
+    )
+    expect(waits.slice(-3)).toEqual([RETRY[RETRY.length - 1], RETRY[RETRY.length - 1], RETRY[RETRY.length - 1]])
+  })
+
+  it('stops asking once the hook has gone, but keeps an answer already on its way', async () => {
+    let stopped = false
+    let tries = 0
+    const gone = await ask(
+      async () => {
+        tries++
+        return null
+      },
+      () => stopped,
+      async () => {
+        stopped = true
+      }
+    )
+    expect(gone).toBeNull()
+    expect(tries).toBe(1)
+    expect(await ask(async () => ({ signed: true, saved: null }), () => true)).toEqual({ signed: true, saved: null })
+  })
+})
+
 // The hook (config-store.ts) is a thin shell over Saver, read as text: React
 // hooks need a renderer this suite does not have.
 describe('the config hook', () => {
   const hook = readFileSync(fileURLToPath(new URL('./config-store.ts', import.meta.url)), 'utf8')
 
-  it('settles once config/load has answered, whatever it answered (#96)', () => {
-    expect(hook).toMatch(/loadConfig\(\)\.then\(\(answer\) => \{\s*const whole = saver\.load\(answer\)\s*if \(whole\) setStored\(whole\)\s*setSettled\(true\)/)
-    expect(hook).toMatch(/catch \{\s*return \{ signed: false, saved: null \}/) // a failed load answers too
+  it('settles once config/load has answered, and asks again while it fails (#96, #229)', () => {
+    expect(hook).toMatch(/ask\(loadConfig, \(\) => stopped\)\.then\(\(answer\) => \{\s*if \(!answer\) return\s*const whole = saver\.load\(answer\)\s*if \(whole\) setStored\(whole\)\s*setSettled\(true\)/)
+    expect(hook).toMatch(/catch \(problem\) \{\s*const status = isHttpError\(problem\) \? problem\.response\?\.status : undefined\s*return anonymous\(status, useAuthStore\.getState\(\)\.token, isInShell\(\)\)\s*\? \{ signed: false, saved: null \}\s*: null/) // only an anonymous failure answers
+    expect(hook).toMatch(/return \(\) => \{\s*stopped = true\s*detach\(\)/)
     expect(hook).toMatch(/return \[config, setConfig, settled\]/)
   })
 
   it('flushes when the page hides or goes away and when it unmounts (#105)', () => {
-    expect(hook).toMatch(/return saver\.attach\(window, document\)/)
+    expect(hook).toMatch(/const detach = saver\.attach\(window, document\)/)
   })
 
   it('sends a save kept alive when asked (#105)', () => {

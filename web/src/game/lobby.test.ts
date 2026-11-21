@@ -349,6 +349,13 @@ describe('entering a server', () => {
     expect(next.pilot).toMatch(/^[0-9a-f]{32}$/)
     expect(next.servers).toBe('6\n1\n2\n3\n4')
   })
+
+  it('mints a secret the config store never takes for one of the old, disclosed shape', async () => {
+    // Otherwise every load would blank the account's new secret again.
+    const { disclosed } = await import('../lib/config-persist')
+    expect(disclosed(net.pilot_mint())).toBe(false)
+    expect(disclosed(net.lobby_enter({ world: '', pilot: '', servers: '' }, 'a').pilot)).toBe(false)
+  })
 })
 
 // The match connection's writes (#114): a write to a connection that has gone

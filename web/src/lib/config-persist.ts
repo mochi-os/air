@@ -3,10 +3,11 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 // The mission config's persistence, isolated from the React hook so it is unit
-// testable. On config/load: no account (anonymous, or the load failed) ->
-// KEEP what is shown, an edit made while it was in flight -> FLUSH (apply it
-// onto the saved config and persist it), a saved config -> APPLY, nothing
-// saved -> SEED the server from local.
+// testable. On config/load: no account (anonymous) -> KEEP what is shown, an
+// edit made while it was in flight -> FLUSH (apply it onto the saved config, or
+// the seed on a fresh account, and persist it), a saved config -> APPLY,
+// nothing saved -> SEED the server from local. A load that failed is no
+// answer: it is asked again, and until one comes the account is unknown.
 import { migrate, normalize } from '../game/stores'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
 
@@ -27,6 +28,50 @@ export function loadOutcome(
 export interface Answer {
   signed: boolean
   saved: Partial<MissionConfig> | null
+}
+
+// anonymous is whether a config/load that failed said no one is signed in: a
+// 401 to a request that carried no token, outside the menu shell, which frames
+// only signed-in players. Anything else - the network, the server, a token
+// refused, the shell's token still on its way - leaves the account unknown, and
+// the cache is not read as this player's.
+export function anonymous(
+  status: number | undefined,
+  token: string,
+  shell: boolean
+): boolean {
+  return status === 401 && !token && !shell
+}
+
+// RETRY is how long each failed config/load waits before the next, in
+// milliseconds; the last repeats.
+export const RETRY = [1000, 2000, 5000, 10000, 30000]
+
+// ask asks config/load until it answers (load gives null for a failure),
+// waiting RETRY between the tries, and gives up with null once stopped (the
+// hook unmounted). A load under way when it stops still answers.
+export async function ask(
+  load: () => Promise<Answer | null>,
+  stopped: () => boolean,
+  wait: (milliseconds: number) => Promise<void> = (milliseconds) =>
+    new Promise((resolve) => setTimeout(resolve, milliseconds))
+): Promise<Answer | null> {
+  for (let attempt = 0; ; attempt++) {
+    const answer = await load()
+    if (answer) return answer
+    if (stopped()) return null
+    await wait(RETRY[Math.min(attempt, RETRY.length - 1)])
+    if (stopped()) return null
+  }
+}
+
+// A pilot secret in the shape crypto.randomUUID() gives: the secret from
+// before per-server tokens, which went verbatim to every world server the
+// account entered, so each of them holds it. pilot_mint's are 32 hex digits.
+const DISCLOSED = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+export function disclosed(pilot: unknown): boolean {
+  return typeof pilot === 'string' && DISCLOSED.test(pilot)
 }
 
 // Settings that no longer exist but whose saved VALUES still arrive: the
@@ -99,18 +144,20 @@ export function seeded(config: MissionConfig): MissionConfig {
   return out as MissionConfig
 }
 
-// merged is what a flush persists: the saved config (or the defaults, on a
-// fresh account) with the keys edited while it was loading laid on top. Never
-// the in-memory config wholesale - on a fresh or top-window load that is the
+// merged is what a flush persists: the saved config (or, on a fresh account,
+// the seed of `current`, the config in memory, which keeps the device's
+// settings) with the keys edited while it was loading laid on top. Never the
+// in-memory config wholesale - on a fresh or top-window load that is the
 // defaults, and saving it clobbered every setting the account had (#41: a
 // server deep link entered the server at boot, and the callsign, the weather
 // and everything else went back to their defaults on every visit).
 export function merged(
   saved: Partial<MissionConfig> | null,
-  partial: Partial<MissionConfig>
+  partial: Partial<MissionConfig>,
+  current: MissionConfig = DEFAULT_CONFIG
 ): MissionConfig {
   return {
-    ...(saved ? absorb(saved) : DEFAULT_CONFIG),
+    ...(saved ? absorb(saved) : seeded(current)),
     ...partial,
   } as MissionConfig
 }
@@ -154,6 +201,12 @@ export class PendingConfig {
     for (const key of Object.keys(saved)) {
       if (this.edits[key] === saved[key]) delete this.edits[key]
     }
+  }
+
+  // owe records keys the server is to be sent that no edit of the player's
+  // changed, saved with the edits: a disclosed pilot secret's blank.
+  owe(partial: Partial<MissionConfig>): void {
+    Object.assign(this.edits, partial)
   }
 
   // settle adopts the config a load answered with, the edits merged in: the
@@ -234,26 +287,34 @@ export class Saver {
   load(answer: Answer): MissionConfig | null {
     const outcome = loadOutcome(this.pending.dirty, answer.saved, answer.signed)
     if (outcome === 'keep') {
-      this.pending.settle(this.pending.current())
-      return null
+      // Nothing is saved, but a disclosed secret in the cache is not flown on.
+      const shown = this.pending.current()
+      const kept = disclosed(shown.pilot) ? { ...shown, pilot: '' } : null
+      this.pending.settle(kept ?? shown)
+      return kept
     }
     if (outcome === 'flush') {
       // The player edited while loading: lay the keys they touched onto the
       // SAVED config and send those keys, now the account is known. Not
       // pending.current(): an edit made on a fresh page was made on the
       // defaults, and saving those wholesale clobbered every saved setting
-      // (#41). The timer's save would send the same keys: this is it.
+      // (#41). The timer's save would send the same keys: this is it. An
+      // account with nothing saved takes the seed under the keys, and is sent
+      // it whole, as a first load with no edit would be.
       this.cancel()
-      const whole = merged(answer.saved, this.pending.partial())
+      const whole = this.renew(
+        merged(answer.saved, this.pending.partial(), this.pending.current())
+      )
       this.pending.settle(whole)
-      void this.save(false)
+      void (answer.saved ? this.save(false) : this.seed(whole))
       return whole
     }
     if (outcome === 'apply' && answer.saved) {
       // Every retired key goes, the stores map is normalized, a legacy save
       // migrates its preset: absorb is the one reading of a saved config.
-      const whole = absorb(answer.saved)
+      const whole = this.renew(absorb(answer.saved))
       this.pending.settle(whole)
+      void this.save(false) // what renew owes, if anything
       return whole
     }
     // First run on this account: seed the server, all of it.
@@ -261,6 +322,21 @@ export class Saver {
     this.pending.settle(fresh)
     void this.post(fresh, false)
     return fresh
+  }
+
+  // seed sends an account with nothing saved its config whole, and spends the
+  // edits it carried once the server has them.
+  private async seed(whole: MissionConfig): Promise<void> {
+    if (await this.post(whole, false)) this.pending.spend(whole)
+  }
+
+  // renew blanks a disclosed pilot secret in a config the server answered
+  // with and owes the server the blank, before any token is worked out from
+  // it: entering a server mints the next (lobby_enter), as it minted the first.
+  private renew(whole: MissionConfig): MissionConfig {
+    if (!disclosed(whole.pilot)) return whole
+    this.pending.owe({ pilot: '' })
+    return { ...whole, pilot: '' }
   }
 
   // attach flushes when the page hides (a hidden visibilitychange) or goes

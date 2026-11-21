@@ -352,7 +352,7 @@ export interface MissionConfig {
   cold: boolean // a parked start cold and dark rather than ready (#133); inert for every other start
   end: '06' | '24' // the runway end a runway start or final uses (#133), 06 into the trades
   servers: string // recently joined world servers, newline-separated, most recent first (#77) — the config's index signature is scalar-or-record, and a bare array does not fit it
-  pilot: string // this player's stable token: identifies the owner of a match offer across reconnects (#77)
+  pilot: string // this account's pilot secret (net.ts pilot_mint): each world server sees only a token derived from it (pilot_token), which owns this player's match offers there across reconnects (#77)
   cat: number // carrier-start catapult 1-4
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'mid_stratus' | 'low_stratus'

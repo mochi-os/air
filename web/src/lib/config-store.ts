@@ -3,9 +3,21 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { createAppClient, useAuthStore, useShellStorage } from '@mochi/web'
+import {
+  createAppClient,
+  isHttpError,
+  isInShell,
+  useAuthStore,
+  useShellStorage,
+} from '@mochi/web'
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
-import { type Answer, PendingConfig, Saver } from './config-persist'
+import {
+  type Answer,
+  anonymous,
+  ask,
+  PendingConfig,
+  Saver,
+} from './config-persist'
 
 const client = createAppClient({ appName: 'air' })
 
@@ -94,8 +106,10 @@ export function authenticated(): Promise<void> {
 
 // Load the signed-in user's saved settings from the app database: whether
 // the load named the account, and its stored keys, null when nothing is saved
-// yet (a fresh account, which the caller seeds from its current state).
-async function loadConfig(): Promise<Answer> {
+// yet (a fresh account, which the caller seeds from its current state). A
+// failed load is an answer only when it says no one is signed in; any other
+// failure is null, and ask asks again.
+async function loadConfig(): Promise<Answer | null> {
   try {
     await authenticated()
     const res = await client.get<ConfigPayload | { data: ConfigPayload }>(
@@ -112,8 +126,11 @@ async function loadConfig(): Promise<Answer> {
       signed: !!config_identity,
       saved: Object.keys(config).length ? config : null,
     }
-  } catch {
-    return { signed: false, saved: null }
+  } catch (problem) {
+    const status = isHttpError(problem) ? problem.response?.status : undefined
+    return anonymous(status, useAuthStore.getState().token, isInShell())
+      ? { signed: false, saved: null }
+      : null
   }
 }
 
@@ -146,10 +163,11 @@ async function saveConfig(
 // last-known settings instantly rather than flashing defaults while the server
 // responds. Saver debounces the saves, and flushes them when the page hides or
 // the hook unmounts.
-// The third value is whether config/load has answered, whatever it answered:
-// until then the cache may be stale or another account's, so nothing that
-// writes what this player has saved (the pilot secret, the recent servers) may
-// act on it. An anonymous or failed load settles it too, keeping the cache.
+// The third value is whether config/load has answered: until then the cache
+// may be stale or another account's, so nothing that writes what this player
+// has saved (the pilot secret, the recent servers) may act on it. An anonymous
+// load settles it too, keeping the cache; a failed one is asked again, and
+// leaves it unsettled until an answer comes.
 export function useMissionConfig(): [
   MissionConfig,
   (config: MissionConfig) => void,
@@ -177,12 +195,18 @@ export function useMissionConfig(): [
   const [settled, setSettled] = useState(false)
 
   useEffect(() => {
-    void loadConfig().then((answer) => {
+    let stopped = false
+    void ask(loadConfig, () => stopped).then((answer) => {
+      if (!answer) return
       const whole = saver.load(answer)
       if (whole) setStored(whole)
       setSettled(true)
     })
-    return saver.attach(window, document)
+    const detach = saver.attach(window, document)
+    return () => {
+      stopped = true
+      detach()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
