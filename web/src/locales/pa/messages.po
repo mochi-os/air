@@ -665,6 +665,7 @@ msgstr "ਬਿੰਗੋ ਈਂਧਨ"
 msgid "Block {name}"
 msgstr "{name} ਨੂੰ ਬਲੌਕ ਕਰੋ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -675,6 +676,7 @@ msgstr "ਦੁਆਰਾ ਬਲੌਕ ਕੀਤਾ"
 msgid "Blocked navigation to untrusted link"
 msgstr "ਅਣਭਰੋਸੇਯੋਗ ਲਿੰਕ ਉੱਤੇ ਨੈਵੀਗੇਸ਼ਨ ਬਲਾਕ ਕੀਤੀ ਗਈ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "ਬਲੌਕ ਕਰਦਾ ਹੈ"
@@ -911,6 +913,10 @@ msgstr "ਬਦਲਿਆ ਗਿਆ"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} ਬਦਲਿਆ ਗਿਆ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "ਕਲਾਸ ਬਦਲੀ ਗਈ"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1647,6 +1653,7 @@ msgstr "ਦੂਰ ਜਾ ਰਿਹਾ"
 msgid "Drone"
 msgstr "ਡਰੋਨ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "ਡੁਪਲੀਕੇਟ"
@@ -2625,6 +2632,7 @@ msgstr "ਬੱਤੀ ਜਾਂਚ"
 msgid "Link"
 msgstr "ਲਿੰਕ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "ਲਿੰਕ"
@@ -2937,10 +2945,6 @@ msgstr "ਹਿਲਾਓ…"
 msgid "Moved"
 msgstr "ਮੂਵ ਕੀਤਾ ਗਿਆ"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} ਮੂਵ ਕੀਤਾ ਗਿਆ"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -3022,6 +3026,10 @@ msgstr "ਅਗਲਾ ਸਾਲ"
 msgctxt "daytime"
 msgid "Night"
 msgstr "ਰਾਤ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "ਨਹੀਂ"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3686,6 +3694,7 @@ msgstr "ਰਿਫਰੈਸ਼"
 msgid "REJOINING"
 msgstr "ਵਾਪਸ ਜੁੜ ਰਿਹਾਂ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "ਸਬੰਧਤ"
@@ -4612,6 +4621,10 @@ msgstr "ਵਰਲਡ ਸਰਵਰ ਨੂੰ ਬਹੁਤ ਜ਼ਿਆਦਾ ਬ�
 msgid "Top"
 msgstr "ਸਭ ਤੋਂ ਵਧੀਆ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "ਉੱਚ ਪੱਧਰ"
+
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
 msgstr "ਟੱਚਡਾਊਨ: ਥਰੌਟਲ ਆਈਡਲ; 10° ਨੱਕ ਉੱਪਰ ਰੱਖ ਕੇ ਏਅਰੋਬ੍ਰੇਕ, 100 ਨਾਟ ਉੱਤੇ ਨੱਕ ਹੇਠਾਂ, ਬ੍ਰੇਕ"
@@ -4726,6 +4739,11 @@ msgid "United States"
 msgstr "ਸੰਯੁਕਤ ਰਾਜ"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4994,6 +5012,10 @@ msgstr "ਯੌ ਸੱਜੇ"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "ਸਾਲ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "ਹਾਂ"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"
