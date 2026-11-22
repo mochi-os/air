@@ -378,9 +378,13 @@ export class Saver {
     if (!Object.keys(partial).length) return
     // Not queued, since a page going away takes a waiting send with it. Sent
     // over a post still out, the server takes the two in either order and
-    // keeps the flush, the later of the page's two by number; each answer
-    // spends only the keys not edited since it went (PendingConfig.spend).
-    void this.send(partial, true, true, this.owner())
+    // keeps the flush, the later of the page's two by number, refusing the
+    // older if it lands after; each answer spends only the keys not edited
+    // since it went (PendingConfig.spend). A flush that failed while the
+    // page stayed has its keys go again in turn, at their values then.
+    void this.send(partial, true, true, this.owner()).then((taken) => {
+      if (!taken) void this.save()
+    })
   }
 
   // turn sends what `what` gives once no post is out: at once, or after the
@@ -392,7 +396,7 @@ export class Saver {
     return new Promise((resolve) => {
       const go = () => {
         const config = what()
-        if (Object.keys(config).length) void this.send(config, false, spend, identity).then(resolve)
+        if (Object.keys(config).length) void this.send(config, false, spend, identity).then(() => resolve())
         else resolve()
       }
       if (this.out.size) this.waiting.push(go)
@@ -403,12 +407,14 @@ export class Saver {
   // send posts `config` under the account given and the next number, spends
   // it once answered if the server took it and `spend` says to, adopts what the
   // server kept over what it was sent, and then starts the sends that were
-  // waiting.
-  private send(config: Partial<MissionConfig>, keepalive: boolean, spend: boolean, identity: string): Promise<void> {
+  // waiting. It answers whether the server took it.
+  private send(config: Partial<MissionConfig>, keepalive: boolean, spend: boolean, identity: string): Promise<boolean> {
     const label = { identity, session: this.session, sequence: ++this.sequence }
     const stamps = this.pending.stamp(Object.keys(config))
+    let took = false
     const sent: Promise<void> = this.post(config, keepalive, label)
       .then((taken) => {
+        took = Boolean(taken)
         if (taken && spend) this.pending.spend(config, stamps)
         const kept = typeof taken === 'object' ? taken.kept : {}
         if (Object.keys(kept).length) {
@@ -424,7 +430,7 @@ export class Saver {
         while (!this.out.size && this.waiting.length) this.waiting.shift()?.()
       })
     this.out.add(sent)
-    return sent
+    return sent.then(() => took)
   }
 
   private cancel(): void {
@@ -480,9 +486,11 @@ export class Saver {
   }
 
   // seed sends an account with nothing saved its config whole, in turn, and
-  // spends the edits it carried once the server has them.
+  // spends the edits it carried once the server has them. The edits are laid
+  // on as it goes: queued behind a save, it would otherwise send the values
+  // the load answered with and spend the edits made since, unsent.
   private seed(whole: MissionConfig): Promise<void> {
-    return this.turn(() => whole, true)
+    return this.turn(() => ({ ...whole, ...this.pending.partial() }), true)
   }
 
   // renew blanks a disclosed pilot secret in a config the server answered
