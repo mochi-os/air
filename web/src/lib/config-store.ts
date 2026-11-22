@@ -16,17 +16,14 @@ import {
   type Label,
   type Taken,
   anonymous,
+  answered,
   ask,
   PendingConfig,
   Saver,
+  unwrap,
 } from './config-persist'
 
 const client = createAppClient({ appName: 'air' })
-
-const unwrap = <T>(raw: unknown): T =>
-  raw && typeof raw === 'object' && 'data' in raw
-    ? (raw as { data: T }).data
-    : (raw as T)
 
 type ConfigPayload = {
   config?: Partial<MissionConfig>
@@ -152,7 +149,7 @@ async function saveConfig(
   try {
     // identity is the account the save was queued under; the server drops the
     // save if the session identity has since changed (in-place account switch).
-    const res = await client.post<{ kept?: { pilot?: unknown } } | { data: { kept?: { pilot?: unknown } } }>(
+    const res = await client.post<unknown>(
       '-/config/save',
       {
         config: JSON.stringify(config),
@@ -162,8 +159,7 @@ async function saveConfig(
       },
       { keepalive }
     )
-    const pilot = unwrap<{ kept?: { pilot?: unknown } }>(res)?.kept?.pilot
-    return { kept: typeof pilot === 'string' ? { pilot } : {} }
+    return answered(res)
   } catch {
     return false
   }

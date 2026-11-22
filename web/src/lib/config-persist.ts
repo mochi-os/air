@@ -194,6 +194,12 @@ export function merged(
 export class PendingConfig {
   private value: MissionConfig
   private edits: Partial<MissionConfig> = {}
+  // When each key was last edited, in a count of edits: a save notes it for
+  // the keys it carries, and its answer spends a key only if no edit came
+  // since. Compared by value instead, a key changed and changed back while a
+  // save was out read as spent, though a later save had carried the change.
+  private stamps: Record<string, number> = {}
+  private clock = 0
   dirty = false
 
   constructor(initial: MissionConfig) {
@@ -205,8 +211,10 @@ export class PendingConfig {
   // kept as the partial a flush applies.
   edit(next: MissionConfig): void {
     for (const key of Object.keys(next) as (keyof MissionConfig)[]) {
-      if (next[key] !== this.value[key])
-        (this.edits as Record<string, unknown>)[key] = next[key]
+      if (next[key] !== this.value[key]) {
+        ;(this.edits as Record<string, unknown>)[key] = next[key]
+        this.stamps[key] = ++this.clock
+      }
     }
     this.dirty = true
     this.value = next
@@ -217,11 +225,19 @@ export class PendingConfig {
     return { ...this.edits }
   }
 
-  // spend forgets the edits a save carried, once it succeeded. A key edited
-  // again while the save was out keeps its newer value, which was not sent.
-  spend(saved: Partial<MissionConfig>): void {
+  // stamp is when each of the keys given was last edited, noted by a save
+  // that carries them for spend.
+  stamp(keys: string[]): Record<string, number> {
+    return Object.fromEntries(keys.map((key) => [key, this.stamps[key] ?? 0]))
+  }
+
+  // spend forgets the edits a save carried, once it succeeded, by the stamps
+  // noted as it went. A key edited again while the save was out keeps its
+  // edit, which the save did not carry, even when it is back at the value the
+  // save did.
+  spend(saved: Partial<MissionConfig>, stamps: Record<string, number>): void {
     for (const key of Object.keys(saved)) {
-      if (this.edits[key] === saved[key]) delete this.edits[key]
+      if ((this.stamps[key] ?? 0) === stamps[key]) delete this.edits[key]
     }
   }
 
@@ -237,6 +253,7 @@ export class PendingConfig {
   // changed, saved with the edits: a disclosed pilot secret's blank.
   owe(partial: Partial<MissionConfig>): void {
     Object.assign(this.edits, partial)
+    for (const key of Object.keys(partial)) this.stamps[key] = ++this.clock
   }
 
   // settle adopts the config a load answered with, the edits merged in: the
@@ -274,6 +291,23 @@ export interface Label {
 // Taken is what a post answers: whether the server took the save, or that it
 // took it and kept its own value of the keys named (a stored pilot secret).
 export type Taken = boolean | { kept: Partial<MissionConfig> }
+
+// unwrap is an action's answer: the app client hands back the body, which the
+// response handling may or may not have taken out of its {data: ...}.
+export const unwrap = <T>(raw: unknown): T =>
+  raw && typeof raw === 'object' && 'data' in raw
+    ? (raw as { data: T }).data
+    : (raw as T)
+
+// answered reads what config/save answered. A save it took says so, with the
+// pilot secret it kept over the one sent when it kept one, to adopt; it
+// refuses any other with an error, which never reaches here.
+export function answered(raw: unknown): Taken {
+  const body = unwrap<{ saved?: unknown; kept?: { pilot?: unknown } } | null>(raw)
+  if (!body || typeof body !== 'object' || body.saved !== true) return false
+  const pilot = body.kept?.pilot
+  return { kept: typeof pilot === 'string' ? { pilot } : {} }
+}
 
 // page_session is a page's name for its saves: 96 random bits as hex.
 export function page_session(): string {
@@ -343,18 +377,10 @@ export class Saver {
     const partial = this.pending.partial()
     if (!Object.keys(partial).length) return
     // Not queued, since a page going away takes a waiting send with it. Sent
-    // over a post still out, the two are taken in either order and the older
-    // one's answer may spend a key the flush carried, so the flush spends
-    // nothing and its keys go again in turn, at their values then.
-    const alone = !this.out.size
-    void this.send(partial, true, alone, this.owner())
-    if (!alone) void this.turn(() => ({ ...this.values(Object.keys(partial)), ...this.pending.partial() }), true)
-  }
-
-  // values is the config as it is now, for the keys given.
-  private values(keys: string[]): Partial<MissionConfig> {
-    const current = this.pending.current() as unknown as Record<string, unknown>
-    return Object.fromEntries(keys.map((key) => [key, current[key]])) as Partial<MissionConfig>
+    // over a post still out, the server takes the two in either order and
+    // keeps the flush, the later of the page's two by number; each answer
+    // spends only the keys not edited since it went (PendingConfig.spend).
+    void this.send(partial, true, true, this.owner())
   }
 
   // turn sends what `what` gives once no post is out: at once, or after the
@@ -380,19 +406,20 @@ export class Saver {
   // waiting.
   private send(config: Partial<MissionConfig>, keepalive: boolean, spend: boolean, identity: string): Promise<void> {
     const label = { identity, session: this.session, sequence: ++this.sequence }
+    const stamps = this.pending.stamp(Object.keys(config))
     const sent: Promise<void> = this.post(config, keepalive, label)
-      .then(
-        (taken) => {
-          if (taken && spend) this.pending.spend(config)
-          const kept = typeof taken === 'object' ? taken.kept : {}
-          if (Object.keys(kept).length) {
-            this.pending.adopt(kept)
-            this.shown(this.pending.current())
-          }
-        },
-        () => {}
-      )
-      .then(() => {
+      .then((taken) => {
+        if (taken && spend) this.pending.spend(config, stamps)
+        const kept = typeof taken === 'object' ? taken.kept : {}
+        if (Object.keys(kept).length) {
+          this.pending.adopt(kept)
+          this.shown(this.pending.current())
+        }
+      })
+      // A post that failed leaves its edits for the next save. A throw in
+      // handling an answer must not hold every later save behind this one.
+      .catch(() => {})
+      .finally(() => {
         this.out.delete(sent)
         while (!this.out.size && this.waiting.length) this.waiting.shift()?.()
       })
