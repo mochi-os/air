@@ -3,7 +3,8 @@
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
 // The mission config's persistence, isolated from the React hook so it is unit
-// testable. On config/load: no account (anonymous) -> KEEP what is shown, an
+// testable. On config/load: no account (anonymous) -> KEEP what is shown, less
+// the last account's own settings (ACCOUNT), an
 // edit made while it was in flight -> FLUSH (apply it onto the saved config, or
 // the seed on a fresh account, and persist it), a saved config -> APPLY,
 // nothing saved -> SEED the server from local. A load that failed is no
@@ -136,6 +137,27 @@ export const DEVICE: readonly (keyof MissionConfig)[] = [
   'framerate',
 ]
 
+// The settings in the cache that are the account's own, named above: a visitor
+// no one signed in as is shown the cache without them.
+export const ACCOUNT: readonly (keyof MissionConfig)[] = [
+  'pilot',
+  'callsign',
+  'world',
+  'servers',
+  'sharing',
+]
+
+// visitor is the config shown to a visitor no one signed in as: `config` with
+// every ACCOUNT setting at its default, and sharing unasked.
+export function visitor(config: MissionConfig): MissionConfig {
+  const out: Record<string, unknown> = { ...config }
+  for (const key of ACCOUNT) {
+    if (key in DEFAULT_CONFIG) out[key] = DEFAULT_CONFIG[key]
+    else delete out[key]
+  }
+  return out as MissionConfig
+}
+
 // seeded is what the first save on an account with nothing stored writes: the
 // defaults, with the device settings of the config in memory.
 export function seeded(config: MissionConfig): MissionConfig {
@@ -203,6 +225,14 @@ export class PendingConfig {
     }
   }
 
+  // adopt takes the values the server kept over the ones it was sent (a
+  // stored pilot secret): they are the account's, and an edit of the same key
+  // is dropped rather than sent again.
+  adopt(kept: Partial<MissionConfig>): void {
+    for (const key of Object.keys(kept)) delete (this.edits as Record<string, unknown>)[key]
+    this.value = { ...this.value, ...kept } as MissionConfig
+  }
+
   // owe records keys the server is to be sent that no edit of the player's
   // changed, saved with the edits: a disclosed pilot secret's blank.
   owe(partial: Partial<MissionConfig>): void {
@@ -229,26 +259,65 @@ export class PendingConfig {
 
 export const SAVE_DELAY = 600
 
+// Label is what a save is sent under. identity is the account it was queued
+// under, read then and not when it goes, so an account that changed in the
+// meantime has the server refuse it rather than write one account's edit onto
+// another. session names this page and sequence counts its saves, by which the
+// server orders two saves of one page that it takes out of turn: a page
+// leaving sends its flush beside a save still out.
+export interface Label {
+  identity: string
+  session: string
+  sequence: number
+}
+
+// Taken is what a post answers: whether the server took the save, or that it
+// took it and kept its own value of the keys named (a stored pilot secret).
+export type Taken = boolean | { kept: Partial<MissionConfig> }
+
+// page_session is a page's name for its saves: 96 random bits as hex.
+export function page_session(): string {
+  const bytes = new Uint8Array(12)
+  crypto.getRandomValues(bytes)
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+}
+
 // Saver sends the player's edits to the server: SAVE_DELAY after they pause,
 // so dragging a slider does not spam it, and at once when the page hides or
 // goes away. A save carries only the keys edited since the last save that
 // succeeded: the server stamps each key it is sent, so a whole config from a
 // tab that loaded earlier wrote its stale value of every key it had not
-// touched. post answers whether the server took the save.
+// touched. The saves go one at a time, each once the one before it has
+// answered, and each is numbered (Label): two out at once are taken in either
+// order, and the server keeps the newer by its number. post answers whether
+// the server took the save. owner is the account a save is queued under, and
+// shown is told the config when the server keeps a value over the one sent.
 export class Saver {
   private timer: ReturnType<typeof setTimeout> | undefined
   private readonly pending: PendingConfig
-  private readonly post: (config: Partial<MissionConfig>, keepalive: boolean) => Promise<boolean>
+  private readonly post: (config: Partial<MissionConfig>, keepalive: boolean, label: Label) => Promise<Taken>
   private readonly delay: number
+  private readonly owner: () => string
+  private readonly shown: (config: MissionConfig) => void
+  private readonly session = page_session()
+  private sequence = 0
+  // The posts sent and not yet answered, and the sends waiting for them, in
+  // the order made.
+  private readonly out = new Set<Promise<void>>()
+  private readonly waiting: (() => void)[] = []
 
   constructor(
     pending: PendingConfig,
-    post: (config: Partial<MissionConfig>, keepalive: boolean) => Promise<boolean>,
-    delay = SAVE_DELAY
+    post: (config: Partial<MissionConfig>, keepalive: boolean, label: Label) => Promise<Taken>,
+    delay = SAVE_DELAY,
+    owner: () => string = () => '',
+    shown: (config: MissionConfig) => void = () => {}
   ) {
     this.pending = pending
     this.post = post
     this.delay = delay
+    this.owner = owner
+    this.shown = shown
   }
 
   // edit records a change, and saves once the edits pause.
@@ -257,22 +326,78 @@ export class Saver {
     this.cancel()
     this.timer = setTimeout(() => {
       this.timer = undefined
-      void this.save(false)
+      void this.save()
     }, this.delay)
   }
 
-  // save sends the edits not yet saved, and spends them once the server has them.
-  async save(keepalive: boolean): Promise<void> {
-    const partial = this.pending.partial()
-    if (!Object.keys(partial).length) return
-    if (await this.post(partial, keepalive)) this.pending.spend(partial)
+  // save sends the edits not yet saved, in turn, and spends them once the
+  // server has them.
+  save(): Promise<void> {
+    return this.turn(() => this.pending.partial(), true)
   }
 
   // flush sends what is unsaved now, as a keepalive request that outlives the
   // page, rather than leave it to a timer the page takes with it.
   flush(): void {
     this.cancel()
-    void this.save(true)
+    const partial = this.pending.partial()
+    if (!Object.keys(partial).length) return
+    // Not queued, since a page going away takes a waiting send with it. Sent
+    // over a post still out, the two are taken in either order and the older
+    // one's answer may spend a key the flush carried, so the flush spends
+    // nothing and its keys go again in turn, at their values then.
+    const alone = !this.out.size
+    void this.send(partial, true, alone, this.owner())
+    if (!alone) void this.turn(() => ({ ...this.values(Object.keys(partial)), ...this.pending.partial() }), true)
+  }
+
+  // values is the config as it is now, for the keys given.
+  private values(keys: string[]): Partial<MissionConfig> {
+    const current = this.pending.current() as unknown as Record<string, unknown>
+    return Object.fromEntries(keys.map((key) => [key, current[key]])) as Partial<MissionConfig>
+  }
+
+  // turn sends what `what` gives once no post is out: at once, or after the
+  // posts out and the sends queued before it. It is read as it goes, so it
+  // carries the edits made while it waited and none already spent; the
+  // account it goes under is the one current when it was queued.
+  private turn(what: () => Partial<MissionConfig>, spend: boolean): Promise<void> {
+    const identity = this.owner()
+    return new Promise((resolve) => {
+      const go = () => {
+        const config = what()
+        if (Object.keys(config).length) void this.send(config, false, spend, identity).then(resolve)
+        else resolve()
+      }
+      if (this.out.size) this.waiting.push(go)
+      else go()
+    })
+  }
+
+  // send posts `config` under the account given and the next number, spends
+  // it once answered if the server took it and `spend` says to, adopts what the
+  // server kept over what it was sent, and then starts the sends that were
+  // waiting.
+  private send(config: Partial<MissionConfig>, keepalive: boolean, spend: boolean, identity: string): Promise<void> {
+    const label = { identity, session: this.session, sequence: ++this.sequence }
+    const sent: Promise<void> = this.post(config, keepalive, label)
+      .then(
+        (taken) => {
+          if (taken && spend) this.pending.spend(config)
+          const kept = typeof taken === 'object' ? taken.kept : {}
+          if (Object.keys(kept).length) {
+            this.pending.adopt(kept)
+            this.shown(this.pending.current())
+          }
+        },
+        () => {}
+      )
+      .then(() => {
+        this.out.delete(sent)
+        while (!this.out.size && this.waiting.length) this.waiting.shift()?.()
+      })
+    this.out.add(sent)
+    return sent
   }
 
   private cancel(): void {
@@ -281,17 +406,20 @@ export class Saver {
   }
 
   // load settles what config/load answered and sends what that owes the
-  // server. It returns the config to show, or null to keep the one shown:
-  // with no account there is nothing to read the cache against, and nothing
-  // can be saved.
+  // server. It returns the config to show, or null to keep the one shown.
   load(answer: Answer): MissionConfig | null {
     const outcome = loadOutcome(this.pending.dirty, answer.saved, answer.signed)
     if (outcome === 'keep') {
-      // Nothing is saved, but a disclosed secret in the cache is not flown on.
+      // No account: nothing is saved, and the cache is the last account's, so
+      // the visitor keeps it without that account's own settings, under the
+      // edits made on this page. Entering a server then mints the visitor a
+      // secret of their own (lobby_enter). The account's next load takes its
+      // settings from the server, never from the cache.
       const shown = this.pending.current()
-      const kept = disclosed(shown.pilot) ? { ...shown, pilot: '' } : null
-      this.pending.settle(kept ?? shown)
-      return kept
+      const kept = { ...visitor(shown), ...this.pending.partial() } as MissionConfig
+      const same = Object.keys({ ...shown, ...kept }).every((key) => kept[key] === shown[key])
+      this.pending.settle(same ? shown : kept)
+      return same ? null : kept
     }
     if (outcome === 'flush') {
       // The player edited while loading: lay the keys they touched onto the
@@ -306,7 +434,7 @@ export class Saver {
         merged(answer.saved, this.pending.partial(), this.pending.current())
       )
       this.pending.settle(whole)
-      void (answer.saved ? this.save(false) : this.seed(whole))
+      void (answer.saved ? this.save() : this.seed(whole))
       return whole
     }
     if (outcome === 'apply' && answer.saved) {
@@ -314,20 +442,20 @@ export class Saver {
       // migrates its preset: absorb is the one reading of a saved config.
       const whole = this.renew(absorb(answer.saved))
       this.pending.settle(whole)
-      void this.save(false) // what renew owes, if anything
+      void this.save() // what renew owes, if anything
       return whole
     }
     // First run on this account: seed the server, all of it.
     const fresh = seeded(this.pending.current())
     this.pending.settle(fresh)
-    void this.post(fresh, false)
+    void this.turn(() => fresh, false)
     return fresh
   }
 
-  // seed sends an account with nothing saved its config whole, and spends the
-  // edits it carried once the server has them.
-  private async seed(whole: MissionConfig): Promise<void> {
-    if (await this.post(whole, false)) this.pending.spend(whole)
+  // seed sends an account with nothing saved its config whole, in turn, and
+  // spends the edits it carried once the server has them.
+  private seed(whole: MissionConfig): Promise<void> {
+    return this.turn(() => whole, true)
   }
 
   // renew blanks a disclosed pilot secret in a config the server answered

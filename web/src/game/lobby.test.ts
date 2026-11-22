@@ -356,6 +356,17 @@ describe('entering a server', () => {
     expect(disclosed(net.pilot_mint())).toBe(false)
     expect(disclosed(net.lobby_enter({ world: '', pilot: '', servers: '' }, 'a').pilot)).toBe(false)
   })
+
+  it("mints a visitor no one signed in as a secret of their own, not the cached account's (#242)", async () => {
+    const { PendingConfig, Saver } = await import('../lib/config-persist')
+    const { DEFAULT_CONFIG } = await import('../lib/config')
+    const cached = { ...DEFAULT_CONFIG, pilot: 'a'.repeat(32), servers: 'https://w.example' }
+    const shown = new Saver(new PendingConfig(cached), async () => true).load({ signed: false, saved: null })
+    const entered = net.lobby_enter(shown ?? cached, 'https://x.example')
+    expect(entered.pilot).toMatch(/^[0-9a-f]{32}$/)
+    expect(entered.pilot).not.toBe(cached.pilot)
+    expect(entered.servers).toBe('https://x.example')
+  })
 })
 
 // The match connection's writes (#114): a write to a connection that has gone

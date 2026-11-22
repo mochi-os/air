@@ -18,8 +18,9 @@ def decimal(value):
 def database_create():
 	# Per-key mission/graphics settings for the signed-in user. The app DB is
 	# already per-user, so no account column is needed. `updated` is when the
-	# key was last saved.
-	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null)")
+	# key was last saved; `session` and `sequence` name the page that saved it
+	# and that page's count of saves, which orders two saves of one page.
+	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null, session text not null default '', sequence integer not null default 0)")
 	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, grade text not null default '', remarks text not null default '', wire integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, title text not null default '', passes integer not null default 0, traps integer not null default 0, points integer not null default 0, scored integer not null default 0, developer integer not null default 0)")
 	# A match is identified by where and when it ran; the unique index makes the
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
@@ -37,6 +38,16 @@ def database_create():
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 17:
+		# The page that saved each key and its count of saves (config_save), so
+		# a flush a leaving page sends beside a save still out is not undone by
+		# the older one landing after it; older rows keep '' and are ordered by
+		# time, as before.
+		columns = [c["name"] for c in mochi.db.table("settings")]
+		if "session" not in columns:
+			mochi.db.execute("alter table settings add column session text not null default ''")
+		if "sequence" not in columns:
+			mochi.db.execute("alter table settings add column sequence integer not null default 0")
 	if version == 16:
 		# Flights flown in developer mode, whose scripted approaches and console
 		# probes the row otherwise records as honest flying; older rows keep 0.
@@ -157,6 +168,15 @@ def database_upgrade(version):
 SETTINGS_MAXIMUM = 200
 SETTINGS_LONGEST = 64
 
+# The page label config_save takes is the client's 24 hex digits; this is a
+# ceiling, not its shape.
+SESSION_LONGEST = 64
+
+# A stored pilot secret in the shape crypto.randomUUID() gave, JSON-encoded:
+# the secret from before per-server tokens, which every server it entered
+# holds. pilot_mint's are 32 hex digits with no dashes.
+DISCLOSED = '"________-____-____-____-____________"'
+
 def config_load(a):
 	if not a.user or not a.user.identity.id:
 		a.error.label(401, "errors.not_logged_in")
@@ -166,7 +186,7 @@ def config_load(a):
 		config[row["name"]] = json.decode(row["value"], None)
 	return {"data": {"config": config, "name": a.user.identity.name, "identity": a.user.identity.id}}
 
-# config_save() -> {"data": {"saved": bool}}: upsert each posted key, stamped with the time of the save; the latest save of a key wins.
+# config_save() -> {"data": {"saved": bool, "kept": dict}}: upsert each posted key. Two saves of one page (its session) are ordered by the sequence the page numbers them with: one leaving sends a flush beside a save still out, and the server takes the two in either order. Saves of different pages are ordered by the time the server takes them. A minted pilot secret, once stored, is never replaced or blanked: a tab that minted another, or still owes the blank that replaced a disclosed one, is answered with the stored secret under kept, to adopt.
 def config_save(a):
 	if not a.user or not a.user.identity.id:
 		a.error.label(401, "errors.not_logged_in")
@@ -193,10 +213,21 @@ def config_save(a):
 		if len(name) > SETTINGS_LONGEST:
 			a.error.label(400, "errors.invalid_request")
 			return
+	session = a.input("session", "")
+	if len(session) > SESSION_LONGEST:
+		a.error.label(400, "errors.invalid_request")
+		return
+	sequence = whole(a, "sequence")
 	now = mochi.time.now()
 	for name in config:
-		mochi.db.execute("insert into settings (name, value, updated) values (?, ?, ?) on conflict(name) do update set value = excluded.value, updated = excluded.updated where excluded.updated >= settings.updated", name, json.encode(config[name]), now)
-	return {"data": {"saved": True}}
+		mochi.db.execute("insert into settings (name, value, updated, session, sequence) values (?, ?, ?, ?, ?) on conflict(name) do update set value=excluded.value, updated=excluded.updated, session=excluded.session, sequence=excluded.sequence where (case when excluded.session!='' and settings.session=excluded.session then excluded.sequence>=settings.sequence else excluded.updated>=settings.updated end) and (settings.name!='pilot' or settings.value='\"\"' or settings.value like ?)", name, json.encode(config[name]), now, session, sequence, DISCLOSED)
+	kept = {}
+	if "pilot" in config:
+		row = mochi.db.row("select value from settings where name='pilot'")
+		stored = json.decode(row["value"], None) if row else None
+		if row and stored != config["pilot"]:
+			kept["pilot"] = stored
+	return {"data": {"saved": True, "kept": kept}}
 
 # whole(a, name) -> int: a non-negative numeric input, zero for anything
 # malformed. int() on garbage is an unhandled Starlark error (no try/except

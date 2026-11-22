@@ -13,6 +13,8 @@ import {
 import { DEFAULT_CONFIG, type MissionConfig } from './config'
 import {
   type Answer,
+  type Label,
+  type Taken,
   anonymous,
   ask,
   PendingConfig,
@@ -134,25 +136,34 @@ async function loadConfig(): Promise<Answer | null> {
   }
 }
 
-// Persist the keys given; the server upserts each. Answers whether it took
-// them. Best-effort: the in-memory config still applies this session.
+// Persist the keys given, under the label the Saver gives them; the server
+// upserts each. Answers whether it took them, and the pilot secret it kept
+// over the one sent, if it did. Best-effort: the in-memory config still
+// applies this session.
 async function saveConfig(
   config: Partial<MissionConfig>,
-  keepalive: boolean
-): Promise<boolean> {
+  keepalive: boolean,
+  label: Label
+): Promise<Taken> {
   // Defer until config/load has established the owning identity: the server
-  // requires a matching identity, and a save fired before it is known (or for an
-  // anonymous visitor) can't be safely attributed, so don't send one.
-  if (!config_identity) return false
+  // requires a matching identity, and a save queued before it is known (or for
+  // an anonymous visitor) can't be safely attributed, so don't send one.
+  if (!label.identity) return false
   try {
-    // identity is the account the config was loaded under; the server drops the
+    // identity is the account the save was queued under; the server drops the
     // save if the session identity has since changed (in-place account switch).
-    await client.post(
+    const res = await client.post<{ kept?: { pilot?: unknown } } | { data: { kept?: { pilot?: unknown } } }>(
       '-/config/save',
-      { config: JSON.stringify(config), identity: config_identity },
+      {
+        config: JSON.stringify(config),
+        identity: label.identity,
+        session: label.session,
+        sequence: String(label.sequence),
+      },
       { keepalive }
     )
-    return true
+    const pilot = unwrap<{ kept?: { pilot?: unknown } }>(res)?.kept?.pilot
+    return { kept: typeof pilot === 'string' ? { pilot } : {} }
   } catch {
     return false
   }
@@ -166,8 +177,9 @@ async function saveConfig(
 // The third value is whether config/load has answered: until then the cache
 // may be stale or another account's, so nothing that writes what this player
 // has saved (the pilot secret, the recent servers) may act on it. An anonymous
-// load settles it too, keeping the cache; a failed one is asked again, and
-// leaves it unsettled until an answer comes.
+// load settles it too, keeping the cache less the last account's own
+// settings; a failed one is asked again, and leaves it unsettled until an
+// answer comes.
 export function useMissionConfig(): [
   MissionConfig,
   (config: MissionConfig) => void,
@@ -189,8 +201,18 @@ export function useMissionConfig(): [
   // unmount and was shared by every hook instance, so a pending save could fire
   // after navigation or an in-place account change and write stale config
   // under the then-current auth context. It flushes on unmount instead.
+  // shown puts a value the server kept over the one sent (a stored pilot
+  // secret) on screen, through the latest setter.
+  const shownRef = useRef(setStored)
+  shownRef.current = setStored
   const saverRef = useRef<Saver | null>(null)
-  saverRef.current ??= new Saver(pending, saveConfig)
+  saverRef.current ??= new Saver(
+    pending,
+    saveConfig,
+    undefined,
+    () => config_identity,
+    (shown) => shownRef.current(shown)
+  )
   const saver = saverRef.current
   const [settled, setSettled] = useState(false)
 

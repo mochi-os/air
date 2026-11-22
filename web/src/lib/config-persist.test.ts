@@ -21,6 +21,8 @@ import {
   SAVE_DELAY,
   Saver,
   seeded,
+  type Label,
+  type Taken,
   stripRetired,
 } from './config-persist'
 
@@ -334,7 +336,7 @@ describe('the saves', () => {
     const late = saving()
     late.saver.load(settled)
     late.saver.edit({ ...late.pending.current(), tod: 'night' })
-    const out = late.saver.save(false)
+    const out = late.saver.save()
     late.saver.edit({ ...late.pending.current(), tod: 'day' })
     await out
     expect(late.pending.partial()).toEqual({ tod: 'day' })
@@ -424,6 +426,137 @@ describe('the saves', () => {
   })
 })
 
+// The saves in turn (#236): config_save stamps each key with the time it takes
+// the save, so of two saves out at once the one it takes last wins, whichever
+// was made first.
+describe('the saves in turn', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  // A poster whose answers the test gives, and the server behind it, which
+  // takes a post's keys as it answers it: the last post answered has the last
+  // word on every key it carried.
+  function holding() {
+    const posts: [Partial<MissionConfig>, boolean][] = []
+    const answers: (() => void)[] = []
+    const server: Partial<MissionConfig> = {}
+    const pending = new PendingConfig(DEFAULT_CONFIG)
+    const saver = new Saver(
+      pending,
+      (config, keepalive) =>
+        new Promise((resolve) => {
+          posts.push([config, keepalive])
+          answers.push(() => {
+            Object.assign(server, config)
+            resolve(true)
+          })
+        })
+    )
+    const answer = async (index: number) => {
+      answers[index]()
+      await vi.advanceTimersByTimeAsync(0)
+    }
+    saver.load({ signed: true, saved: { callsign: 'Little Nellie' } })
+    return { posts, pending, saver, server, answer }
+  }
+
+  it('send a save only once the one before it has answered, carrying the edits made meanwhile', async () => {
+    vi.useFakeTimers()
+    const { posts, pending, saver, server, answer } = holding()
+    saver.edit({ ...pending.current(), tod: 'night' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    saver.edit({ ...pending.current(), tod: 'day', clouds: 'cumulus' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    expect(posts).toEqual([[{ tod: 'night' }, false]]) // the second waits for the first
+    await answer(0)
+    expect(posts).toEqual([
+      [{ tod: 'night' }, false],
+      [{ tod: 'day', clouds: 'cumulus' }, false],
+    ])
+    await answer(1)
+    expect(server).toMatchObject({ tod: 'day', clouds: 'cumulus' })
+    expect(pending.partial()).toEqual({})
+  })
+
+  for (const [order, first, second] of [
+    ['the flush first', 1, 0],
+    ['the save first', 0, 1],
+  ] as const) {
+    it(`send a flush at once over a save still out, and its keys again once both have answered, ${order}`, async () => {
+      vi.useFakeTimers()
+      const { posts, pending, saver, server, answer } = holding()
+      const page = new EventTarget()
+      saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+      saver.edit({ ...pending.current(), tod: 'night', fuel: 6000 })
+      await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+      saver.edit({ ...pending.current(), tod: 'day' })
+      page.dispatchEvent(new Event('pagehide'))
+      // The page may be going: the flush goes now, kept alive, with every key unsaved.
+      expect(posts).toEqual([
+        [{ tod: 'night', fuel: 6000 }, false],
+        [{ tod: 'day', fuel: 6000 }, true],
+      ])
+      await answer(first)
+      expect(posts).toHaveLength(2) // nothing goes again while the other is out
+      await answer(second)
+      // The page stayed: the flush's keys go again, in turn, so the newest is taken last.
+      expect(posts[2]).toEqual([{ tod: 'day', fuel: 6000 }, false])
+      await answer(2)
+      expect(server).toMatchObject({ tod: 'day', fuel: 6000 })
+      expect(pending.partial()).toEqual({})
+      expect(posts).toHaveLength(3)
+    })
+  }
+
+  for (const [order, first, second] of [
+    ['the flush taken last', 0, 1],
+    ['the save taken last', 1, 0],
+  ] as const) {
+    it(`leave the server on a value changed back while a flush was out over a save, ${order}`, async () => {
+      vi.useFakeTimers()
+      const { posts, pending, saver, server, answer } = holding()
+      const page = new EventTarget()
+      saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+      saver.edit({ ...pending.current(), tod: 'night' })
+      await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+      saver.edit({ ...pending.current(), tod: 'day' })
+      page.dispatchEvent(new Event('pagehide'))
+      // The page stays, and the player goes back to night before either answers:
+      // the older save's answer then matches the edit and spends it.
+      saver.edit({ ...pending.current(), tod: 'night' })
+      await answer(first)
+      await answer(second)
+      expect(posts[2]).toEqual([{ tod: 'night' }, false])
+      await answer(2)
+      expect(server.tod).toBe('night')
+      expect(pending.partial()).toEqual({})
+    })
+  }
+
+  it('seed a fresh account only once a save made before the load has answered', async () => {
+    vi.useFakeTimers()
+    const posts: Partial<MissionConfig>[] = []
+    const answers: (() => void)[] = []
+    const pending = new PendingConfig(DEFAULT_CONFIG)
+    const saver = new Saver(
+      pending,
+      (config) =>
+        new Promise((resolve) => {
+          posts.push(config)
+          answers.push(() => resolve(true))
+        })
+    )
+    saver.edit({ ...pending.current(), world: 'https://w.example' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    const whole = saver.load({ signed: true, saved: null })
+    expect(posts).toEqual([{ world: 'https://w.example' }])
+    answers[0]()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(posts).toEqual([{ world: 'https://w.example' }, whole])
+  })
+})
+
 // A pilot secret from before per-server tokens (#102) was crypto.randomUUID(),
 // sent as the token itself to every world server entered: any of them holds
 // it, and could work out every token made from it.
@@ -478,6 +611,56 @@ describe('a disclosed pilot secret', () => {
     expect(posts).toEqual([])
     const plain = new Saver(new PendingConfig(DEFAULT_CONFIG), async () => true)
     expect(plain.load({ signed: false, saved: null })).toBeNull() // nothing to blank: the cache shown stays
+  })
+})
+
+// A visitor no one signed in as, on a browser an account last used (#242): the
+// cache is that account's, so its own settings are not the visitor's.
+describe('a visitor no one signed in as', () => {
+  const cached = {
+    ...DEFAULT_CONFIG,
+    pilot: 'a'.repeat(32),
+    callsign: 'Maverick',
+    world: 'https://w.example',
+    servers: 'https://w.example\nhttps://v.example',
+    sharing: false,
+    tod: 'night',
+    joystick: 'pad',
+    render_scale: 0.6,
+  } as MissionConfig
+  const anonymous = { signed: false, saved: null }
+  const quiet = (pending: PendingConfig, posts: unknown[] = []) =>
+    new Saver(pending, async (config) => {
+      posts.push(config)
+      return true
+    })
+
+  it("is shown the cache without the account's own settings, and nothing is sent", () => {
+    const posts: unknown[] = []
+    const pending = new PendingConfig(cached)
+    const shown = quiet(pending, posts).load(anonymous)
+    expect(shown).toMatchObject({ pilot: '', callsign: '', world: '', servers: '', tod: 'night', joystick: 'pad', render_scale: 0.6 })
+    expect(shown && 'sharing' in shown).toBe(false)
+    expect(pending.current()).toBe(shown)
+    expect(posts).toEqual([])
+  })
+
+  it('keeps an edit the visitor made while loading', () => {
+    const pending = new PendingConfig(cached)
+    const saver = quiet(pending)
+    saver.edit({ ...pending.current(), callsign: 'Goose' })
+    expect(saver.load(anonymous)).toMatchObject({ callsign: 'Goose', pilot: '', servers: '' })
+  })
+
+  it("leaves the account's next load to take them from the server again", () => {
+    // What the visitor was shown is what the cache holds when the account signs in again.
+    const shown = quiet(new PendingConfig(cached)).load(anonymous) ?? cached
+    const saved = { pilot: cached.pilot, callsign: 'Maverick', world: cached.world, servers: cached.servers, sharing: false }
+    expect(quiet(new PendingConfig(shown)).load({ signed: true, saved })).toMatchObject(saved)
+    const pending = new PendingConfig(shown)
+    const edited = quiet(pending)
+    edited.edit({ ...pending.current(), tod: 'day' })
+    expect(edited.load({ signed: true, saved })).toMatchObject({ ...saved, tod: 'day' })
   })
 })
 
@@ -554,7 +737,107 @@ describe('the config hook', () => {
     expect(hook).toMatch(/const detach = saver\.attach\(window, document\)/)
   })
 
-  it('sends a save kept alive when asked (#105)', () => {
-    expect(hook).toMatch(/\{ config: JSON\.stringify\(config\), identity: config_identity \},\s*\{ keepalive \}/)
+  it('sends a save kept alive when asked (#105), under the label the saver gives it (#245, #253)', () => {
+    expect(hook).toMatch(/config: JSON\.stringify\(config\),\s*identity: label\.identity,\s*session: label\.session,\s*sequence: String\(label\.sequence\),\s*\},\s*\{ keepalive \}/)
+    expect(hook).toMatch(/new Saver\(\s*pending,\s*saveConfig,\s*undefined,\s*\(\) => config_identity,/)
+  })
+})
+
+// What a save goes under (#245, #253) and what its answer may carry (#254).
+describe('the label on a save and its answer', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  function labelled(owner: { identity: string }, taken: (config: Partial<MissionConfig>) => Taken = () => true) {
+    const posts: [Partial<MissionConfig>, boolean, Label][] = []
+    const answers: (() => void)[] = []
+    const shown: MissionConfig[] = []
+    const pending = new PendingConfig(DEFAULT_CONFIG)
+    const saver = new Saver(
+      pending,
+      (config, keepalive, label) =>
+        new Promise((resolve) => {
+          posts.push([config, keepalive, label])
+          answers.push(() => resolve(taken(config)))
+        }),
+      SAVE_DELAY,
+      () => owner.identity,
+      (config) => shown.push(config)
+    )
+    const reply = async (index: number) => {
+      answers[index]()
+      await vi.advanceTimersByTimeAsync(0)
+    }
+    return { posts, pending, saver, shown, reply }
+  }
+
+  it('go under the account they were queued under, not the one current when they are sent', async () => {
+    vi.useFakeTimers()
+    const owner = { identity: 'alice' }
+    const { posts, pending, saver, reply } = labelled(owner)
+    saver.load({ signed: true, saved: { callsign: 'Goose' } })
+    saver.edit({ ...pending.current(), tod: 'night' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    saver.edit({ ...pending.current(), clouds: 'cumulus' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY) // queued behind the first, under alice
+    owner.identity = 'bob' // an in-place switch answers a new config/load
+    await reply(0)
+    expect(posts.map(([config, , label]) => [config, label.identity])).toEqual([
+      [{ tod: 'night' }, 'alice'],
+      [{ clouds: 'cumulus' }, 'alice'], // the server refuses it, as bob's session
+    ])
+  })
+
+  it('number the saves of one page, so a flush over a save still out is the newer', async () => {
+    vi.useFakeTimers()
+    const { posts, pending, saver, reply } = labelled({ identity: 'alice' })
+    saver.load({ signed: true, saved: { callsign: 'Goose' } })
+    const page = new EventTarget()
+    saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+    saver.edit({ ...pending.current(), tod: 'night' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    saver.edit({ ...pending.current(), tod: 'day' })
+    page.dispatchEvent(new Event('pagehide'))
+    const [[, , save], [, , flush]] = posts
+    expect(save.session).toMatch(/^[0-9a-f]{24}$/)
+    expect(flush.session).toBe(save.session)
+    expect(flush.sequence).toBeGreaterThan(save.sequence) // the server keeps the flush, whichever it takes last
+    await reply(1)
+    await reply(0)
+    expect(posts[2][2].sequence).toBeGreaterThan(flush.sequence)
+    const other = labelled({ identity: 'alice' })
+    other.saver.load({ signed: true, saved: null })
+    expect(other.posts[0][2].session).not.toBe(save.session) // another page is ordered by time
+  })
+
+  it('adopt the pilot secret the server kept over the one sent, and send it no more', async () => {
+    vi.useFakeTimers()
+    const stored = 'b'.repeat(32)
+    const { posts, pending, saver, shown, reply } = labelled({ identity: 'alice' }, (config) =>
+      'pilot' in config ? { kept: { pilot: stored } } : true
+    )
+    saver.load({ signed: true, saved: { callsign: 'Goose' } })
+    // This tab minted on entering a server, after another tab had.
+    saver.edit({ ...pending.current(), pilot: 'a'.repeat(32), world: 'https://w.example' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await reply(0)
+    expect(pending.current().pilot).toBe(stored)
+    expect(shown[shown.length - 1]?.pilot).toBe(stored)
+    expect(pending.partial()).toEqual({})
+    saver.edit({ ...pending.current(), tod: 'night' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    expect(posts[1][0]).toEqual({ tod: 'night' })
+  })
+
+  it('adopt the secret another tab minted in place of the blank this one owed', async () => {
+    vi.useFakeTimers()
+    const minted = 'c'.repeat(32)
+    const { posts, pending, saver, reply } = labelled({ identity: 'alice' }, () => ({ kept: { pilot: minted } }))
+    saver.load({ signed: true, saved: { pilot: '3f2a9c1e-7b4d-4e8a-9c0f-1a2b3c4d5e6f' } })
+    expect(posts[0][0]).toEqual({ pilot: '' })
+    await reply(0)
+    expect(pending.current().pilot).toBe(minted)
+    expect(pending.partial()).toEqual({})
   })
 })
