@@ -292,6 +292,15 @@ export interface Label {
 // took it and kept its own value of the keys named (a stored pilot secret).
 export type Taken = boolean | { kept: Partial<MissionConfig> }
 
+// Outgoing is what one post carries: config, the keys it sets, and fill, the
+// keys it stores only where the account has no value yet: a seed's defaults
+// and this device's settings, which must not overwrite what another page
+// saved since.
+interface Outgoing {
+  config: Partial<MissionConfig>
+  fill?: Partial<MissionConfig>
+}
+
 // unwrap is an action's answer: the app client hands back the body, which the
 // response handling may or may not have taken out of its {data: ...}.
 export const unwrap = <T>(raw: unknown): T =>
@@ -329,7 +338,12 @@ export function page_session(): string {
 export class Saver {
   private timer: ReturnType<typeof setTimeout> | undefined
   private readonly pending: PendingConfig
-  private readonly post: (config: Partial<MissionConfig>, keepalive: boolean, label: Label) => Promise<Taken>
+  private readonly post: (
+    config: Partial<MissionConfig>,
+    keepalive: boolean,
+    label: Label,
+    fill: Partial<MissionConfig>
+  ) => Promise<Taken>
   private readonly delay: number
   private readonly owner: () => string
   private readonly shown: (config: MissionConfig) => void
@@ -342,7 +356,12 @@ export class Saver {
 
   constructor(
     pending: PendingConfig,
-    post: (config: Partial<MissionConfig>, keepalive: boolean, label: Label) => Promise<Taken>,
+    post: (
+      config: Partial<MissionConfig>,
+      keepalive: boolean,
+      label: Label,
+      fill: Partial<MissionConfig>
+    ) => Promise<Taken>,
     delay = SAVE_DELAY,
     owner: () => string = () => '',
     shown: (config: MissionConfig) => void = () => {}
@@ -367,7 +386,7 @@ export class Saver {
   // save sends the edits not yet saved, in turn, and spends them once the
   // server has them.
   save(): Promise<void> {
-    return this.turn(() => this.pending.partial(), true)
+    return this.turn(() => ({ config: this.pending.partial() }), true)
   }
 
   // flush sends what is unsaved now, as a keepalive request that outlives the
@@ -381,23 +400,35 @@ export class Saver {
     // keeps the flush, the later of the page's two by number, refusing the
     // older if it lands after; each answer spends only the keys not edited
     // since it went (PendingConfig.spend). A flush that failed while the
-    // page stayed has its keys go again in turn, at their values then.
-    const identity = this.owner()
-    void this.send(partial, true, true, identity).then((taken) => {
-      if (!taken) void this.turn(() => this.pending.partial(), true, identity)
+    // page stayed goes again in turn as it was, under its own number and
+    // spent by its own stamps: the server may have taken it, with only the
+    // answer lost, and takes a page's save once, so the second cannot undo
+    // another page's save made in between. An edit made since goes in a save
+    // of its own, numbered after it.
+    const label = this.label(this.owner())
+    const stamps = this.pending.stamp(Object.keys(partial))
+    void this.send({ config: partial }, true, true, label, stamps).then((taken) => {
+      if (!taken) void this.turn(() => ({ config: partial }), true, label, stamps)
     })
   }
 
   // turn sends what `what` gives once no post is out: at once, or after the
   // posts out and the sends queued before it. It is read as it goes, so it
-  // carries the edits made while it waited and none already spent; the
-  // account it goes under is the one given, or else the one current when it
-  // was queued.
-  private turn(what: () => Partial<MissionConfig>, spend: boolean, identity = this.owner()): Promise<void> {
+  // carries the edits made while it waited and none already spent. It goes
+  // under the label given, or else the next number and the account current
+  // when it was queued.
+  private turn(
+    what: () => Outgoing,
+    spend: boolean,
+    label?: Label,
+    stamps?: Record<string, number>
+  ): Promise<void> {
+    const identity = label?.identity ?? this.owner()
     return new Promise((resolve) => {
       const go = () => {
-        const config = what()
-        if (Object.keys(config).length) void this.send(config, false, spend, identity).then(() => resolve())
+        const outgoing = what()
+        if (Object.keys(outgoing.config).length || Object.keys(outgoing.fill ?? {}).length)
+          void this.send(outgoing, false, spend, label ?? this.label(identity), stamps).then(() => resolve())
         else resolve()
       }
       if (this.out.size) this.waiting.push(go)
@@ -405,15 +436,26 @@ export class Saver {
     })
   }
 
-  // send posts `config` under the account given and the next number, spends
-  // it once answered if the server took it and `spend` says to, adopts what the
-  // server kept over what it was sent, and then starts the sends that were
-  // waiting. It answers whether the server took it.
-  private send(config: Partial<MissionConfig>, keepalive: boolean, spend: boolean, identity: string): Promise<boolean> {
-    const label = { identity, session: this.session, sequence: ++this.sequence }
-    const stamps = this.pending.stamp(Object.keys(config))
+  // label is the next number of this page's saves, under the account given.
+  private label(identity: string): Label {
+    return { identity, session: this.session, sequence: ++this.sequence }
+  }
+
+  // send posts `outgoing` under `label`, spends its config once answered if
+  // the server took it and `spend` says to, by the stamps the keys carried as
+  // it went (or as given, for one sent again), adopts what the server kept
+  // over what it was sent, and then starts the sends that were waiting. It
+  // answers whether the server took it.
+  private send(
+    outgoing: Outgoing,
+    keepalive: boolean,
+    spend: boolean,
+    label: Label,
+    stamps = this.pending.stamp(Object.keys(outgoing.config))
+  ): Promise<boolean> {
+    const config = outgoing.config
     let took = false
-    const sent: Promise<void> = this.post(config, keepalive, label)
+    const sent: Promise<void> = this.post(config, keepalive, label, outgoing.fill ?? {})
       .then((taken) => {
         took = Boolean(taken)
         if (taken && spend) this.pending.spend(config, stamps)
@@ -461,14 +503,14 @@ export class Saver {
       // pending.current(): an edit made on a fresh page was made on the
       // defaults, and saving those wholesale clobbered every saved setting
       // (#41). The timer's save would send the same keys: this is it. An
-      // account with nothing saved takes the seed under the keys, and is sent
-      // it whole, as a first load with no edit would be.
+      // account with nothing saved takes the seed under the keys, and is
+      // seeded, as a first load with no edit would be.
       this.cancel()
       const whole = this.renew(
         merged(answer.saved, this.pending.partial(), this.pending.current())
       )
       this.pending.settle(whole)
-      void (answer.saved ? this.save() : this.seed(whole))
+      void (answer.saved ? this.save() : this.seed())
       return whole
     }
     if (outcome === 'apply' && answer.saved) {
@@ -479,19 +521,22 @@ export class Saver {
       void this.save() // what renew owes, if anything
       return whole
     }
-    // First run on this account: seed the server, all of it.
+    // First run on this account: seed the server.
     const fresh = seeded(this.pending.current())
     this.pending.settle(fresh)
-    void this.turn(() => fresh, false)
+    void this.seed()
     return fresh
   }
 
-  // seed sends an account with nothing saved its config whole, in turn, and
-  // spends the edits it carried once the server has them. The edits are laid
-  // on as it goes: queued behind a save, it would otherwise send the values
-  // the load answered with and spend the edits made since, unsent.
-  private seed(whole: MissionConfig): Promise<void> {
-    return this.turn(() => ({ ...whole, ...this.pending.partial() }), true)
+  // seed initialises an account with nothing saved, in turn: the edits not
+  // yet saved as any save sends them, spent once the server has them, and the
+  // defaults with this device's settings as fill, stored only where the
+  // account still has no value. Both are read as it goes: queued behind a
+  // post, a seed of the config the load answered with wrote back the older
+  // value of a key a flush had saved meanwhile, and its defaults overwrote
+  // another page's edits.
+  private seed(): Promise<void> {
+    return this.turn(() => ({ config: this.pending.partial(), fill: seeded(this.pending.current()) }), true)
   }
 
   // renew blanks a disclosed pilot secret in a config the server answered

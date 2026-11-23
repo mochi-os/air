@@ -134,13 +134,15 @@ async function loadConfig(): Promise<Answer | null> {
 }
 
 // Persist the keys given, under the label the Saver gives them; the server
-// upserts each. Answers whether it took them, and the pilot secret it kept
-// over the one sent, if it did. Best-effort: the in-memory config still
-// applies this session.
+// upserts each, and stores each key of fill only where the account has none.
+// Answers whether it took them, and the pilot secret it kept over the one
+// sent, if it did. Best-effort: the in-memory config still applies this
+// session.
 async function saveConfig(
   config: Partial<MissionConfig>,
   keepalive: boolean,
-  label: Label
+  label: Label,
+  fill: Partial<MissionConfig>
 ): Promise<Taken> {
   // Defer until config/load has established the owning identity: the server
   // requires a matching identity, and a save queued before it is known (or for
@@ -156,6 +158,7 @@ async function saveConfig(
         identity: label.identity,
         session: label.session,
         sequence: String(label.sequence),
+        ...(Object.keys(fill).length ? { fill: JSON.stringify(fill) } : {}),
       },
       { keepalive }
     )

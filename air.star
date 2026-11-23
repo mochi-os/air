@@ -232,6 +232,20 @@ def config_save(a):
 		if len(name) > SETTINGS_LONGEST:
 			a.error.label(400, "errors.invalid_request")
 			return
+	# fill is what a seed stores only where the account has no value yet: the
+	# defaults and this device's settings, which initialise an empty account
+	# and must not overwrite what another page saved since. Its edits come in
+	# config, as any save's do.
+	fill = {}
+	if a.input("fill", ""):
+		fill = json.decode(a.input("fill", ""), None)
+	if type(fill) != "dict" or len(fill) > SETTINGS_MAXIMUM:
+		a.error.label(400, "errors.invalid_request")
+		return
+	for name in fill:
+		if len(name) > SETTINGS_LONGEST:
+			a.error.label(400, "errors.invalid_request")
+			return
 	session = a.input("session", "")
 	if len(session) > SESSION_LONGEST:
 		a.error.label(400, "errors.invalid_request")
@@ -243,11 +257,23 @@ def config_save(a):
 	# recorded for each key before the key is written, and the check is in the
 	# write's own WHERE, so an older save arriving at any point between a
 	# newer one's statements is still refused. Keys a later save did not carry
-	# are written: a seed carries every key, the flush beside it only the edits.
+	# are written. A key this page's save of this number or a later one has
+	# already been recorded for is left too: a save sent again under its own
+	# number, once the server took it and the answer was lost, is taken once,
+	# so it cannot undo another page's save of the key made in between.
+	taken = {}
+	if session:
+		for row in mochi.db.rows("select name from saves where session=? and sequence>=?", session, sequence):
+			taken[row["name"]] = True
 	for name in config:
+		if name in taken:
+			continue
 		if session:
 			mochi.db.execute("insert into saves (session, name, sequence, updated) values (?, ?, ?, ?) on conflict(session, name) do update set sequence=max(saves.sequence, excluded.sequence), updated=excluded.updated", session, name, sequence, now)
 		mochi.db.execute("insert into settings (name, value, updated, session, sequence) values (?, ?, ?, ?, ?) on conflict(name) do update set value=excluded.value, updated=excluded.updated, session=excluded.session, sequence=excluded.sequence where (case when excluded.session!='' and settings.session=excluded.session then excluded.sequence>=settings.sequence else excluded.updated>=settings.updated end) and not exists (select 1 from saves where saves.session=excluded.session and saves.name=excluded.name and saves.sequence>excluded.sequence) and (settings.name!='pilot' or settings.value='\"\"' or settings.value like ?)", name, json.encode(config[name]), now, session, sequence, DISCLOSED)
+	for name in fill:
+		if name not in config:
+			mochi.db.execute("insert into settings (name, value, updated, session, sequence) values (?, ?, ?, ?, ?) on conflict(name) do nothing", name, json.encode(fill[name]), now, session, sequence)
 	if session:
 		mochi.db.execute("delete from saves where updated<?", now - SAVE_KEPT)
 	kept = {}

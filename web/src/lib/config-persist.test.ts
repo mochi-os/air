@@ -22,6 +22,7 @@ import {
   SAVE_DELAY,
   Saver,
   seeded,
+  type Answer,
   type Label,
   type Taken,
   stripRetired,
@@ -311,12 +312,14 @@ describe('the saves', () => {
 
   function saving(answers: boolean[] = []) {
     const posts: [Partial<MissionConfig>, boolean][] = []
+    const fills: Partial<MissionConfig>[] = []
     const pending = new PendingConfig(DEFAULT_CONFIG)
-    const saver = new Saver(pending, async (config, keepalive) => {
+    const saver = new Saver(pending, async (config, keepalive, _label, fill) => {
       posts.push([config, keepalive])
+      fills.push(fill)
       return answers.shift() ?? true
     })
-    return { posts, pending, saver }
+    return { posts, fills, pending, saver }
   }
   const settled = { signed: true, saved: { callsign: 'Little Nellie' } }
 
@@ -362,10 +365,13 @@ describe('the saves', () => {
     expect(posts).toEqual([[{ world: 'https://w.example' }, false]])
   })
 
-  it('seed a fresh account whole, apply a saved one, and send nothing for one never loaded', () => {
+  it('seed a fresh account, apply a saved one, and send nothing for one never loaded', () => {
     const fresh = saving()
     expect(fresh.saver.load({ signed: true, saved: null })).toEqual(seeded(DEFAULT_CONFIG))
-    expect(fresh.posts).toEqual([[seeded(DEFAULT_CONFIG), false]])
+    // No edit to set: the seed's whole config goes as fill, stored only
+    // where the account has no value yet (#321).
+    expect(fresh.posts).toEqual([[{}, false]])
+    expect(fresh.fills).toEqual([seeded(DEFAULT_CONFIG)])
     const returning = saving()
     expect(returning.saver.load(settled)?.callsign).toBe('Little Nellie')
     expect(returning.posts).toEqual([])
@@ -375,7 +381,7 @@ describe('the saves', () => {
     expect(anonymous.posts).toEqual([])
   })
 
-  it("seed a fresh account edited while loading over the device's own settings, and send it whole", async () => {
+  it("seed a fresh account edited while loading over the device's own settings, the edit set and the rest filled", async () => {
     // The browser's cache holds this device's stick, keys, sound and graphics;
     // a server entered as the page opened edits the config before the load
     // answers that nothing is saved yet.
@@ -387,16 +393,22 @@ describe('the saves', () => {
       callsign: 'Maverick', // the last account's, not the device's
     } as MissionConfig
     const posts: [Partial<MissionConfig>, boolean][] = []
+    const fills: Partial<MissionConfig>[] = []
     const pending = new PendingConfig(cached)
-    const saver = new Saver(pending, async (config, keepalive) => {
+    const saver = new Saver(pending, async (config, keepalive, _label, fill) => {
       posts.push([config, keepalive])
+      fills.push(fill)
       return true
     })
     saver.edit({ ...pending.current(), world: 'https://w.example' })
     const whole = saver.load({ signed: true, saved: null })
     expect(whole).toMatchObject({ joystick: 'pad', keys: { fire: 'KeyF' }, render_scale: 0.6, world: 'https://w.example' })
     expect(whole?.callsign).toBe('')
-    expect(posts).toEqual([[whole, false]]) // the seed, the edit in it, as a first load sends one
+    // The seed: the edit set, as any save sets it, and the device's settings
+    // with the defaults filled where the account has none.
+    expect(posts).toEqual([[{ world: 'https://w.example' }, false]])
+    expect(fills[0]).toEqual(seeded(whole as MissionConfig))
+    expect(fills[0]).toMatchObject({ joystick: 'pad', keys: { fire: 'KeyF' }, render_scale: 0.6 })
     await new Promise((resolve) => setTimeout(resolve, 0))
     expect(pending.partial()).toEqual({}) // spent once the server took it
     expect(merged(null, { world: 'w' }, cached).joystick).toBe('pad')
@@ -438,10 +450,12 @@ describe('the saves', () => {
   })
 })
 
-// The saves in turn (#236, #253, #275): config_save takes nothing from a save
-// numbered below one its page already had taken, and otherwise each key a
-// save carries unless the same page last saved it under a later number; a key
-// another page saved last is taken, the later save winning.
+// The saves in turn (#236, #253, #275, #288, #321, #322): config_save judges
+// each key a save carries on its own. It leaves a key the same page last
+// saved under a later number, or had already taken from a save of this
+// number or a later one (the same save sent again); it takes any other, a key
+// another page saved last going to the later save. A key a seed only fills is
+// stored where the account has none.
 describe('the saves in turn', () => {
   afterEach(() => {
     vi.useRealTimers()
@@ -453,13 +467,18 @@ describe('the saves in turn', () => {
     const last: Record<string, { session: string; sequence: number }> = {}
     // Each page's highest save number taken, by key.
     const saves: Record<string, number> = {}
-    const take = (config: Partial<MissionConfig>, label: Label) => {
+    const take = (config: Partial<MissionConfig>, label: Label, fill: Partial<MissionConfig> = {}) => {
       for (const [key, value] of Object.entries(config)) {
         const mark = label.session + '\n' + key
-        saves[mark] = Math.max(saves[mark] ?? -1, label.sequence)
-        if (saves[mark] > label.sequence) continue
+        if ((saves[mark] ?? -1) >= label.sequence) continue
+        saves[mark] = label.sequence
         const before = last[key]
         if (before && before.session === label.session && label.sequence < before.sequence) continue
+        ;(values as Record<string, unknown>)[key] = value
+        last[key] = { session: label.session, sequence: label.sequence }
+      }
+      for (const [key, value] of Object.entries(fill)) {
+        if (key in config || key in values) continue
         ;(values as Record<string, unknown>)[key] = value
         last[key] = { session: label.session, sequence: label.sequence }
       }
@@ -469,20 +488,25 @@ describe('the saves in turn', () => {
 
   // A page's poster whose answers the test gives: answer has the server take
   // a post, if it has not yet, and answers it; take only has it taken, for an
-  // answer that comes back late; refuse fails it untaken.
-  function holding(store = storage()) {
+  // answer that comes back late; refuse fails it untaken. It loads `loaded`,
+  // unless that is null.
+  function holding(store = storage(), loaded: Answer | null = { signed: true, saved: { callsign: 'Little Nellie' } }) {
     const posts: [Partial<MissionConfig>, boolean][] = []
+    const labels: Label[] = []
+    const fills: Partial<MissionConfig>[] = []
     const takes: (() => void)[] = []
     const answers: ((taken: boolean) => void)[] = []
     const pending = new PendingConfig(DEFAULT_CONFIG)
     const saver = new Saver(
       pending,
-      (config, keepalive, label) =>
+      (config, keepalive, label, fill) =>
         new Promise((resolve) => {
           posts.push([config, keepalive])
+          labels.push(label)
+          fills.push(fill)
           let taken = false
           takes.push(() => {
-            if (!taken) store.take(config, label)
+            if (!taken) store.take(config, label, fill)
             taken = true
           })
           answers.push(resolve)
@@ -501,8 +525,8 @@ describe('the saves in turn', () => {
       answers[index](false)
       await vi.advanceTimersByTimeAsync(0)
     }
-    saver.load({ signed: true, saved: { callsign: 'Little Nellie' } })
-    return { posts, pending, saver, server: store.values, store, take, answer, refuse }
+    if (loaded) saver.load(loaded)
+    return { posts, labels, fills, pending, saver, server: store.values, store, take, answer, refuse }
   }
 
   it('send a save only once the one before it has answered, carrying the edits made meanwhile', async () => {
@@ -579,9 +603,9 @@ describe('the saves in turn', () => {
     })
   }
 
-  it('send the keys of a flush that failed again, in turn, while the page stays', async () => {
+  it('send a flush that failed again as it went, in turn and under its own number, while the page stays', async () => {
     vi.useFakeTimers()
-    const { posts, pending, saver, server, answer, refuse } = holding()
+    const { posts, labels, pending, saver, server, answer, refuse } = holding()
     const page = new EventTarget()
     saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
     saver.edit({ ...pending.current(), fuel: 6000 })
@@ -592,7 +616,8 @@ describe('the saves in turn', () => {
     await refuse(1)
     expect(posts).toHaveLength(2) // waiting for the save still out
     await answer(0)
-    expect(posts[2]).toEqual([{ tod: 'night' }, false]) // fuel went with the save
+    expect(posts[2]).toEqual([{ fuel: 6000, tod: 'night' }, false]) // the flush again, whole
+    expect(labels[2]).toEqual(labels[1])
     await answer(2)
     expect(server).toMatchObject({ fuel: 6000, tod: 'night' })
     expect(pending.partial()).toEqual({})
@@ -601,18 +626,75 @@ describe('the saves in turn', () => {
     page.dispatchEvent(new Event('pagehide'))
     await refuse(3)
     expect(posts[4]).toEqual([{ clouds: 'cumulus' }, false])
+    expect(labels[4]).toEqual(labels[3])
+  })
+
+  it("send a flush that failed again under its own number, so one the server took, its answer lost, does not undo another page's later save", async () => {
+    vi.useFakeTimers()
+    const store = storage()
+    const one = holding(store)
+    const two = holding(store)
+    const page = new EventTarget()
+    one.saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+    one.saver.edit({ ...one.pending.current(), fuel: 6000 })
+    page.dispatchEvent(new Event('pagehide'))
+    await one.take(0) // the server took the flush; its answer is lost
+    two.saver.edit({ ...two.pending.current(), fuel: 7000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await two.answer(0)
+    expect(store.values.fuel).toBe(7000)
+    await one.refuse(0)
+    expect(one.posts[1]).toEqual([{ fuel: 6000 }, false]) // sent again, in turn
+    expect(one.labels[1]).toEqual(one.labels[0])
+    await one.answer(1)
+    expect(store.values.fuel).toBe(7000) // the other page's later save stands
+    expect(one.pending.partial()).toEqual({})
+  })
+
+  it('seed a fresh account from the config as it is when the seed goes: a flush answered while it waited is not written back', async () => {
+    vi.useFakeTimers()
+    const { posts, pending, saver, server, answer } = holding(storage(), null)
+    const page = new EventTarget()
+    saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+    saver.edit({ ...pending.current(), callsign: 'Goose' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY) // the save goes before the load answers
+    saver.load({ signed: true, saved: null }) // the seed waits for the save
+    saver.edit({ ...pending.current(), callsign: 'Maverick' })
+    page.dispatchEvent(new Event('pagehide')) // the flush goes beside the save
+    await answer(1)
+    await answer(0)
+    expect(server.callsign).toBe('Maverick')
+    await answer(2) // the seed goes once both have answered
+    expect(server.callsign).toBe('Maverick')
+    expect(posts[2][0]).toEqual({}) // nothing unsaved to set
+    expect(pending.partial()).toEqual({})
+  })
+
+  it("fill a fresh account's defaults only where nothing is stored: another page's edit stands", async () => {
+    vi.useFakeTimers()
+    const store = storage()
+    const one = holding(store, { signed: true, saved: null }) // its seed goes at once
+    const two = holding(store)
+    two.saver.edit({ ...two.pending.current(), callsign: 'Goose' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await two.answer(0)
+    await one.answer(0) // the seed lands after the other page's edit
+    expect(store.values.callsign).toBe('Goose')
+    expect(store.values.tod).toBe(DEFAULT_CONFIG.tod) // filled, as nothing was stored
   })
 
   it('seed a fresh account with the edits made while the seed waited behind a save', async () => {
     vi.useFakeTimers()
     const posts: Partial<MissionConfig>[] = []
+    const fills: Partial<MissionConfig>[] = []
     const answers: (() => void)[] = []
     const pending = new PendingConfig(DEFAULT_CONFIG)
     const saver = new Saver(
       pending,
-      (config) =>
+      (config, _keepalive, _label, fill) =>
         new Promise((resolve) => {
           posts.push(config)
+          fills.push(fill)
           answers.push(() => resolve(true))
         })
     )
@@ -622,7 +704,9 @@ describe('the saves in turn', () => {
     saver.edit({ ...pending.current(), tod: 'night' })
     answers[0]()
     await vi.advanceTimersByTimeAsync(0)
-    expect(posts[1]).toMatchObject({ world: 'https://w.example', tod: 'night' })
+    // The save took world; the seed sets the edit made since and fills the rest.
+    expect(posts[1]).toEqual({ tod: 'night' })
+    expect(fills[1]).toEqual(seeded(pending.current()))
     answers[1]()
     await vi.advanceTimersByTimeAsync(SAVE_DELAY)
     expect(pending.partial()).toEqual({})
@@ -658,13 +742,15 @@ describe('the saves in turn', () => {
   it('seed a fresh account only once a save made before the load has answered', async () => {
     vi.useFakeTimers()
     const posts: Partial<MissionConfig>[] = []
+    const fills: Partial<MissionConfig>[] = []
     const answers: (() => void)[] = []
     const pending = new PendingConfig(DEFAULT_CONFIG)
     const saver = new Saver(
       pending,
-      (config) =>
+      (config, _keepalive, _label, fill) =>
         new Promise((resolve) => {
           posts.push(config)
+          fills.push(fill)
           answers.push(() => resolve(true))
         })
     )
@@ -674,7 +760,8 @@ describe('the saves in turn', () => {
     expect(posts).toEqual([{ world: 'https://w.example' }])
     answers[0]()
     await vi.advanceTimersByTimeAsync(0)
-    expect(posts).toEqual([{ world: 'https://w.example' }, whole])
+    expect(posts).toEqual([{ world: 'https://w.example' }, {}]) // the save took the edit
+    expect(fills[1]).toEqual(seeded(whole as MissionConfig))
   })
 })
 
@@ -859,7 +946,7 @@ describe('the config hook', () => {
   })
 
   it('sends a save kept alive when asked (#105), under the label the saver gives it (#245, #253)', () => {
-    expect(hook).toMatch(/config: JSON\.stringify\(config\),\s*identity: label\.identity,\s*session: label\.session,\s*sequence: String\(label\.sequence\),\s*\},\s*\{ keepalive \}/)
+    expect(hook).toMatch(/config: JSON\.stringify\(config\),\s*identity: label\.identity,\s*session: label\.session,\s*sequence: String\(label\.sequence\),\s*\.\.\.\(Object\.keys\(fill\)\.length \? \{ fill: JSON\.stringify\(fill\) \} : \{\}\),\s*\},\s*\{ keepalive \}/)
     expect(hook).toMatch(/new Saver\(\s*pending,\s*saveConfig,\s*undefined,\s*\(\) => config_identity,/)
     expect(hook).toMatch(/\{ keepalive \}\s*\)\s*return answered\(res\)\s*\} catch \{\s*return false/) // the answer is read by answered, below
   })
