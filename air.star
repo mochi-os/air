@@ -21,9 +21,10 @@ def database_create():
 	# key was last saved; `session` and `sequence` name the page that saved it
 	# and that page's count of saves, which orders two saves of one page.
 	mochi.db.execute("create table if not exists settings (name text not null primary key, value text not null, updated integer not null, session text not null default '', sequence integer not null default 0)")
-	# Each page's highest save number taken (config_save), kept a day: a save
-	# numbered below it is older than one the server already holds.
-	mochi.db.execute("create table if not exists pages (session text not null primary key, sequence integer not null, updated integer not null)")
+	# Each page's highest save number taken for each key (config_save), kept a
+	# day: a save of the key numbered below it is older than one the server
+	# already holds.
+	mochi.db.execute("create table if not exists saves (session text not null, name text not null, sequence integer not null, updated integer not null, primary key (session, name))")
 	mochi.db.execute("create table if not exists matches (id text not null primary key, world text not null, session text not null, mode text not null, team text not null default '', started integer not null, ended integer not null, reason text not null, players text not null, kills integer not null, deaths integer not null, cheated integer not null default 0, grade text not null default '', remarks text not null default '', wire integer not null default 0, created integer not null, recording text not null default '', size integer not null default 0, title text not null default '', passes integer not null default 0, traps integer not null default 0, points integer not null default 0, scored integer not null default 0, developer integer not null default 0)")
 	# A match is identified by where and when it ran; the unique index makes the
 	# dedup atomic (insert ... on conflict do nothing) instead of a racy check-
@@ -41,6 +42,12 @@ def database_create():
 # database_upgrade(version): schema migrations run on demand at the first
 # request after the version bump (app.json "schema").
 def database_upgrade(version):
+	if version == 19:
+		# The page's highest save number by key, not for the page as a whole: a
+		# seed carries every key and the flush beside it only the edits, so a
+		# page's older save is refused only for the keys a later one carried.
+		mochi.db.execute("drop table if exists pages")
+		mochi.db.execute("create table if not exists saves (session text not null, name text not null, sequence integer not null, updated integer not null, primary key (session, name))")
 	if version == 18:
 		# Each page's highest save number taken, so a page's older save landing
 		# after another page wrote the key does not beat the page's newer one.
@@ -179,10 +186,10 @@ SETTINGS_LONGEST = 64
 # ceiling, not its shape.
 SESSION_LONGEST = 64
 
-# How long a page's highest save number is kept. Only a save and the flush
-# sent over it are ever out at once, seconds apart; a page open for longer
-# keeps its row fresh with each save.
-PAGE_KEPT = 86400
+# How long a page's highest save number of a key is kept. Only a save and the
+# flush sent over it are ever out at once, seconds apart; a page open for
+# longer keeps a key's row fresh with each save of it.
+SAVE_KEPT = 86400
 
 # A stored pilot secret in the shape crypto.randomUUID() gave, JSON-encoded:
 # the secret from before per-server tokens, which every server it entered
@@ -198,7 +205,7 @@ def config_load(a):
 		config[row["name"]] = json.decode(row["value"], None)
 	return {"data": {"config": config, "name": a.user.identity.name, "identity": a.user.identity.id}}
 
-# config_save() -> {"data": {"saved": bool, "kept": dict}}: upsert each posted key. Two saves of one page (its session) are ordered by the sequence the page numbers them with: one leaving sends a flush beside a save still out, and the server takes the two in either order. A save numbered below one its page already had taken writes nothing, even where another page wrote the key between the two. Saves of different pages are ordered by the time the server takes them. A minted pilot secret, once stored, is never replaced or blanked: a tab that minted another, or still owes the blank that replaced a disclosed one, is answered with the stored secret under kept, to adopt.
+# config_save() -> {"data": {"saved": bool, "kept": dict}}: upsert each posted key. Two saves of one page (its session) are ordered by the sequence the page numbers them with: one leaving sends a flush beside a save still out, and the server takes the two in either order. A key its page already had a later save of taken is left as it is, even where another page wrote it between the two; the save's other keys are written. Saves of different pages are ordered by the time the server takes them. A minted pilot secret, once stored, is never replaced or blanked: a tab that minted another, or still owes the blank that replaced a disclosed one, is answered with the stored secret under kept, to adopt.
 def config_save(a):
 	if not a.user or not a.user.identity.id:
 		a.error.label(401, "errors.not_logged_in")
@@ -231,20 +238,18 @@ def config_save(a):
 		return
 	sequence = whole(a, "sequence")
 	now = mochi.time.now()
-	# A save numbered below one this page already had taken is older than it,
-	# and the newer carries every key the older does: the two out at once are
-	# a save and the flush sent over it. It is answered as taken and writes
-	# nothing, so it cannot win by arriving after another page's save.
-	older = False
-	if session:
-		row = mochi.db.row("select sequence from pages where session=?", session)
-		older = row != None and row["sequence"] > sequence
-	if not older:
-		for name in config:
-			mochi.db.execute("insert into settings (name, value, updated, session, sequence) values (?, ?, ?, ?, ?) on conflict(name) do update set value=excluded.value, updated=excluded.updated, session=excluded.session, sequence=excluded.sequence where (case when excluded.session!='' and settings.session=excluded.session then excluded.sequence>=settings.sequence else excluded.updated>=settings.updated end) and (settings.name!='pilot' or settings.value='\"\"' or settings.value like ?)", name, json.encode(config[name]), now, session, sequence, DISCLOSED)
+	# A key this page already had a later save of taken is left as it is,
+	# even where another page wrote it between the two. The save's number is
+	# recorded for each key before the key is written, and the check is in the
+	# write's own WHERE, so an older save arriving at any point between a
+	# newer one's statements is still refused. Keys a later save did not carry
+	# are written: a seed carries every key, the flush beside it only the edits.
+	for name in config:
 		if session:
-			mochi.db.execute("insert into pages (session, sequence, updated) values (?, ?, ?) on conflict(session) do update set sequence=max(pages.sequence, excluded.sequence), updated=excluded.updated", session, sequence, now)
-			mochi.db.execute("delete from pages where updated<?", now - PAGE_KEPT)
+			mochi.db.execute("insert into saves (session, name, sequence, updated) values (?, ?, ?, ?) on conflict(session, name) do update set sequence=max(saves.sequence, excluded.sequence), updated=excluded.updated", session, name, sequence, now)
+		mochi.db.execute("insert into settings (name, value, updated, session, sequence) values (?, ?, ?, ?, ?) on conflict(name) do update set value=excluded.value, updated=excluded.updated, session=excluded.session, sequence=excluded.sequence where (case when excluded.session!='' and settings.session=excluded.session then excluded.sequence>=settings.sequence else excluded.updated>=settings.updated end) and not exists (select 1 from saves where saves.session=excluded.session and saves.name=excluded.name and saves.sequence>excluded.sequence) and (settings.name!='pilot' or settings.value='\"\"' or settings.value like ?)", name, json.encode(config[name]), now, session, sequence, DISCLOSED)
+	if session:
+		mochi.db.execute("delete from saves where updated<?", now - SAVE_KEPT)
 	kept = {}
 	if "pilot" in config:
 		row = mochi.db.row("select value from settings where name='pilot'")

@@ -382,17 +382,18 @@ export class Saver {
     // older if it lands after; each answer spends only the keys not edited
     // since it went (PendingConfig.spend). A flush that failed while the
     // page stayed has its keys go again in turn, at their values then.
-    void this.send(partial, true, true, this.owner()).then((taken) => {
-      if (!taken) void this.save()
+    const identity = this.owner()
+    void this.send(partial, true, true, identity).then((taken) => {
+      if (!taken) void this.turn(() => this.pending.partial(), true, identity)
     })
   }
 
   // turn sends what `what` gives once no post is out: at once, or after the
   // posts out and the sends queued before it. It is read as it goes, so it
   // carries the edits made while it waited and none already spent; the
-  // account it goes under is the one current when it was queued.
-  private turn(what: () => Partial<MissionConfig>, spend: boolean): Promise<void> {
-    const identity = this.owner()
+  // account it goes under is the one given, or else the one current when it
+  // was queued.
+  private turn(what: () => Partial<MissionConfig>, spend: boolean, identity = this.owner()): Promise<void> {
     return new Promise((resolve) => {
       const go = () => {
         const config = what()

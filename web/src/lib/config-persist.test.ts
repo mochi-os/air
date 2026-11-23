@@ -451,11 +451,13 @@ describe('the saves in turn', () => {
   function storage() {
     const values: Partial<MissionConfig> = {}
     const last: Record<string, { session: string; sequence: number }> = {}
-    const pages: Record<string, number> = {}
+    // Each page's highest save number taken, by key.
+    const saves: Record<string, number> = {}
     const take = (config: Partial<MissionConfig>, label: Label) => {
-      if ((pages[label.session] ?? -1) > label.sequence) return
-      pages[label.session] = label.sequence
       for (const [key, value] of Object.entries(config)) {
+        const mark = label.session + '\n' + key
+        saves[mark] = Math.max(saves[mark] ?? -1, label.sequence)
+        if (saves[mark] > label.sequence) continue
         const before = last[key]
         if (before && before.session === label.session && label.sequence < before.sequence) continue
         ;(values as Record<string, unknown>)[key] = value
@@ -936,6 +938,24 @@ describe('the label on a save and its answer', () => {
     expect(posts.map(([config, , label]) => [config, label.identity])).toEqual([
       [{ tod: 'night' }, 'alice'],
       [{ clouds: 'cumulus' }, 'alice'], // the server refuses it, as bob's session
+    ])
+  })
+
+  it('send a failed flush again under the account it went under', async () => {
+    vi.useFakeTimers()
+    const owner = { identity: 'alice' }
+    let refused = 1
+    const { posts, pending, saver, reply } = labelled(owner, () => refused-- <= 0)
+    saver.load({ signed: true, saved: { callsign: 'Goose' } })
+    const page = new EventTarget()
+    saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+    saver.edit({ ...pending.current(), tod: 'night' })
+    page.dispatchEvent(new Event('pagehide'))
+    owner.identity = 'bob' // an in-place switch while the flush is out
+    await reply(0) // refused: the flush's keys go again
+    expect(posts.map(([config, , label]) => [config, label.identity])).toEqual([
+      [{ tod: 'night' }, 'alice'],
+      [{ tod: 'night' }, 'alice'],
     ])
   })
 
