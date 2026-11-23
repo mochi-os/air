@@ -79,7 +79,7 @@ The catalogue (`../fa18c/photos.json`; format in `photos.py`) holds:
   file's gear `static`, the build's own stance), pixels to cast onto a plane (`locate`), and
   `"solve": false` for one kept on file but too thinly marked to solve, and `"use": "measure"` for a copyrighted or
   uncredited photo, whose numbers may be read but whose pixels are never published: `page.py` shows the model through
-  its camera alone and the sky check's sheets a plain tile. The sky check (5a) reads `clear`,
+  its camera alone and the sky check's sheets a plain tile. The sky check (5a) reads `clear`, `contrast`,
   `ground`, `stores`, `masks` and `variant` beside them: a photo of another variant of the subject (an F/A-18D
   among the F/A-18C's) names one of the `skyline` section's `variants`, and what that variant does not share with
   the model (the two-seater's longer canopy and the spine under it) goes unjudged in it. Three more set how its camera is solved:
@@ -173,9 +173,12 @@ the photo shows sky beyond it, finds the jet's own edge: walking in from the sky
 often darkens toward the jet), the first sharp change of brightness that holds, darker or brighter, at the
 half-way crossing. Sky is even and either bright or blue (a deep blue sky or open sea reads darker in grey
 than shaded skin, which is grey); in a photo whose catalogue entry says `"clear": true` (clear blue sky or
-open sea beyond the jet, no cloud) the walk reads the blue, not the grey, and the edge is where the blue ends.
-A jet painted as blue as the sky (the Blue Angels) also takes `"paint": "blue"`: its edge is read in both the
-blue and the grey, and the one nearer the sky taken.
+open sea beyond the jet, no cloud) the edge is read both where the blue ends and in the grey, and the one
+nearer the sky taken: a jet painted as blue as the sky (the Blue Angels) passes in blue for sky, and a dark
+underside's rim takes a blue fringe from the JPEG. A change counts as the jet's edge once it reaches the
+contrast (25 in grey); a photo whose sunlit skin stands nearer its bright, overcast sky names its own,
+`"contrast"`: dvids8842278's lit top stands 16-19 over its sky, and at 25 the walk ran past it onto the lines
+beyond.
 Green is never sky, nor anything under a ground photo's horizon. A ground photo is one whose entry says
 `"ground": true`, or, without the key, whose pose has the gear down; `"ground": false` never masks the
 horizon. Open sea seen from a low camera can pass for sky: say `true`. Ground begins the `skyline`'s `horizon`
@@ -630,10 +633,15 @@ What went wrong on the F/A-18C, each a rule now:
 - **Some paint is as blue as the sky.** The Blue Angels' navy stands about 33 over its red and green against a
   clear sky's 43, a step short of the contrast, so read in blue the walk passed the navy for sky and stopped at the
   next gold stripe inward: the belly read 1.5-2 in outside in every Blue Angels photo, and the inlets 14-16 in,
-  where the model's outline lay on the photo's edge to a pixel. Their entries say `"paint": "blue"`, which reads
-  the grey as well (the navy is dark) and keeps the edge nearer the sky (gold trim, which grey passes for sky, is
-  found by its blue). A photo admitted or turned away on its sky-check misses was judged on those misses: run it
-  again after a reading like this changes.
+  where the model's outline lay on the photo's edge to a pixel. In every clear photo the walk now reads the grey
+  as well (the navy is dark) and keeps the edge nearer the sky (gold trim, which grey passes for sky, is found by
+  its blue); a flag on those photos alone missed a dark underside's rim, tinted blue for 2-3 px by the JPEG, in
+  others. A photo admitted or turned away on its sky-check misses was judged on those misses: run it again after a
+  reading like this changes.
+- **A lit skin can stand nearer a bright sky than the contrast.** Under overcast, dvids8842278's sunlit top
+  stands 16-19 over its sky in grey, under the walk's 25, so the walk ran past the top's edge onto the lines beyond
+  it and read four regions 2-5 in outside. Look at a photo whose places run far outside together, and give it its
+  own `contrast` where its edges are plain to the eye.
 - **Bright, even backgrounds pass for sky, and so can light paint.** White fabric shelters and an orange
   building behind the F/A-18C's outer wing passed the sky test, and under an overcast its light grey flaps stood
   within the sky's brightness, so the walk crossed them to the wing's dark underside and read them 12-14 in
@@ -714,6 +722,15 @@ What went wrong on the F/A-18C, each a rule now:
 - **Check a claim that two sources agree.** The F/A-18C's LEX top fell from root to edge on one curve said to
   be read off the FS 296 and 357 sections, "which agree"; all three traced sections fall faster over their
   outer half (0.50-0.89 of the fall at 0.78-0.94 of the span, against the curve's 0.43-0.72).
+- **Judge a value against its own prediction, not against a neighbour another method made.** The F/A-18C's
+  check compared each narrow paint strip with the island beside it, by the two's occlusion. Its median swung
+  0.08-0.12 with the atlas's packing and failed a correct build. The strips' own shade stood within 0.01 of
+  the light cast at them, while the neighbours' Cycles bake read 0.09 lighter. Each strip's shade read
+  against its own light gives 0.01-0.02 on fixed builds and 0.26 on the unfixed one.
+- **A fit's predicted shift is not its outcome.** The F/A-18C's nacelle shoulder exponent, swept over the
+  photos' places, promised to bring their median miss from -1.39 to -0.50 in at 3.5. Built, it read -0.83:
+  the outline's tangent moved round the nacelle, and with it the places each photo's edge meets. Build the
+  chosen value and measure it again before calling the fit done.
 
 ## Files
 

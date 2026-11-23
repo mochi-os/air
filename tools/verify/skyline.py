@@ -67,9 +67,13 @@ SHARP = 5        # samples an edge may take to rise from a quarter to three quar
 # pose puts them, so a miss on them is first a question about the pose. The
 # wells are the gear's bays: their walls make an outline only through the
 # open doors, behind the legs, braces, door links and whatever the bays hold,
-# so a miss on them is first a question about the gear in front, not the skin
-FAMILIES = [("rudder", ("rudder_",)), ("fin", ("fin_",)), ("aileron", ("aileron_",)), ("flap", ("flap_trailing_",)), ("slat", ("flap_leading_",)),
-	("wing", ("wing_",)), ("stabilator", ("stabilator_",)), ("nozzle", ("nozzle_", "burner_")), ("gear", ("gear_", "hook", "launch_bar", "ladder")),
+# so a miss on them is first a question about the gear in front, not the skin.
+# A part riding another takes that one's family: the fairings under the wings
+# ride the outer panel and the aileron, the fold's lamps the outer panel, the
+# antenna pods the fins (filed under the body, the pods carried the body's
+# upper side behind the fins, and the fairings a body region at BL 172)
+FAMILIES = [("rudder", ("rudder_",)), ("fin", ("fin_", "pod_")), ("aileron", ("aileron_", "fairing_aileron_")), ("flap", ("flap_trailing_",)), ("slat", ("flap_leading_",)),
+	("wing", ("wing_", "fairing_wing_", "lamp_position_fold_")), ("stabilator", ("stabilator_",)), ("nozzle", ("nozzle_", "burner_")), ("gear", ("gear_", "hook", "launch_bar", "ladder")),
 	("well", ("well_",)), ("canopy", ("canopy", "windscreen")), ("cockpit", ("cockpit_", "pilot"))]
 MOVING = {"rudder", "aileron", "flap", "slat", "stabilator", "nozzle", "gear", "well", "canopy"}
 MINIMUM = 3      # places a photo must judge in a region to count as judging it
@@ -141,7 +145,7 @@ class Settings:
 DEFAULT = Settings()
 
 
-def edge_along(profile, bright=SKY["bright"], attached=False):
+def edge_along(profile, bright=SKY["bright"], attached=False, contrast=SKY["contrast"]):
 	# The jet's edge along a brightness profile sampled outward across the
 	# model's edge (index REACH at the model's edge): the offset in samples
 	# (+ outward), or None where what lies beyond is not sky (darker than
@@ -151,7 +155,8 @@ def edge_along(profile, bright=SKY["bright"], attached=False):
 	# it often darkens or brightens toward the jet. Walking in from it, the
 	# jet begins at the first change of brightness held for SUSTAIN samples on
 	# one side of the sky, darker or brighter (a sunlit top is brighter than
-	# an overcast sky, a shaded flank darker), that reaches the contrast; a
+	# an overcast sky, a shaded flank darker), that reaches the contrast (a
+	# photo whose lit skin stands nearer its bright sky gives its own); a
 	# weaker change (the halo photo processing leaves round an edge, a faint
 	# cloud) is walked past. The edge is the crossing nearest the sky of
 	# half-way from the sky to the jet's own level, and it must be sharp: from
@@ -196,7 +201,7 @@ def edge_along(profile, bright=SKY["bright"], attached=False):
 		while start > max(i - SUSTAIN - 2 * SHARP, 0) and off[start - 1] * side > 0:
 			start -= 1
 		level = (off[start:i + 1] * side).max()
-		if level < SKY["contrast"]:
+		if level < contrast:
 			continue
 		end = min(i + 2, len(p) - 2)
 		half, outer, inner = (crossing(side, level, f, start, end) for f in (0.5, 0.25, 0.75))
@@ -391,7 +396,7 @@ def covered(polygons, work, scale):
 	return np.asarray(image) > 0
 
 
-def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None, water=None, seaward=None, paint=None):
+def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None, water=None, seaward=None, contrast=SKY["contrast"]):
 	# Every place along the model's edge where the photo shows sky beyond it:
 	# [{pixel, edge, miss (the frame's unit), part, point}]. gray and ids (each pixel's
 	# frontmost triangle, frontmost()) are at the working scale; names,
@@ -405,12 +410,14 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 	# band that is blue (blue: each pixel's blue over its red and green) is
 	# sky however dark: a deep blue sky or sea reads darker in grey than the
 	# brightness that keeps shaded skin from passing for sky, which is grey.
-	# Against a blue sky the edge is read where the blue ends, unless paint is
-	# "blue": a jet painted as blue as the sky (the Blue Angels' navy reads
-	# about 33 over its red and green against a clear sky's 43, short of the
-	# contrast, so the walk passes its edge for the next gold stripe inward) is
-	# read by its brightness as well, and the edge nearer the sky taken: its
-	# gold trim, which brightness passes for sky, is found by its blue. A place on a part
+	# Against a blue sky the edge is read both where the blue ends and by
+	# brightness, and the one nearer the sky taken: a jet painted as blue as
+	# the sky (the Blue Angels' navy reads about 33 over its red and green
+	# against a clear sky's 43, short of the contrast) passes in blue for sky
+	# to the next gold stripe inward, and a dark underside's rim, tinted blue
+	# by the JPEG's colour bleed for 2-3 px inside its step, put the edge that
+	# far inside it (f43326115074's lower outline, 0.6-1.0 in); gold trim at
+	# the edge, which brightness passes for sky, is found by its blue. A place on a part
 	# seen past a nearer one just inside it is not judged, nor one on water (a
 	# mask at the working scale of the model's waterline): there the outline is
 	# the sea's, which each photo's draught, waves and wake move. Where the band
@@ -467,12 +474,9 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 		# can match it and the walk would pass the skin's edge for the next
 		# bright step inward; grey skin is never that blue
 		if blue is not None and blue[y0[-BAND:], x0[-BAND:]].mean() >= BLUE:
-			found = edge_along(along(blue), 0.0, attached)
-			if paint == "blue":
-				edges = [f for f in (found, edge_along(along(gray), attached=attached)) if f is not None]
-				found = max(edges) if edges else None
-			return found
-		return edge_along(along(gray), attached=attached)
+			edges = [f for f in (edge_along(along(blue), 0.0, attached, contrast), edge_along(along(gray), attached=attached, contrast=contrast)) if f is not None]
+			return max(edges) if edges else None
+		return edge_along(along(gray), attached=attached, contrast=contrast)
 
 	for row, column in rim(mask):
 		j = ids[row, column]
@@ -529,9 +533,10 @@ class Scene:
 		self.gray = colour @ np.array([0.299, 0.587, 0.114])
 		self.green = colour[..., 1] - np.maximum(colour[..., 0], colour[..., 2])
 		clear = photo.get("clear", False)
+		# the step the walk takes for the jet's edge: a photo whose sunlit skin
+		# stands within the contrast of its bright sky names its own ("contrast")
+		self.contrast = photo.get("contrast", SKY["contrast"])
 		self.blue = colour[..., 2] - np.maximum(colour[..., 0], colour[..., 1]) if clear else None
-		# "paint": "blue" where the jet itself is as blue as the sky (measure())
-		self.paint = photo.get("paint")
 		stores = catalogue.get("stores")
 		self.hidden, self.loaded, self.masks = None, None, None
 		if stores:
@@ -614,7 +619,7 @@ class Scene:
 		ids = frontmost(flat * self.scale, depth, self.work)
 		points = self.frame.source(tris.mean(axis=1))
 		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.covering(model, posed), self.green, self.ground,
-			self.blue, water, self.seaward, self.paint)
+			self.blue, water, self.seaward, self.contrast)
 		if self.unshared:
 			places = [p for p in places if not unshared(self.unshared, p, self.settings)]
 		# a place on a part a stance drive has moved carries its word (stances())

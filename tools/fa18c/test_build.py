@@ -252,6 +252,26 @@ class ShadeTest(unittest.TestCase):
 		self.assertAlmostEqual(out[10, 10], 0.8, places=6)
 		numpy.testing.assert_allclose(out[8:13, 8:13], 0.8)
 
+	def test_lent_texels_keep_their_cast_among_their_own_kind(self):
+		# a strip's lent texels (finish.lent()) on the jet beside an island's
+		# own, cast 0 along half its length (a crack that sees nothing) and 0.3
+		# along the rest: the 0s are no buried samples, so they keep their 0
+		# and blend only with the 0.3s where the two meet; the 0.3s keep their
+		# 0.3 beside the island's 0.8, and the island's texels its 0.8; and two
+		# strips lent 0.1 and 0.2 side by side meet each other
+		import numpy
+		where, covered, size = self.atlas()
+		shade = numpy.full((20, 41), 0.8)
+		lent = numpy.zeros((20, 41), bool)
+		lent[:, 5] = lent[:, 30:32] = True
+		shade[:10, 5], shade[10:, 5], shade[:, 30], shade[:, 31] = 0.0, 0.3, 0.1, 0.2
+		out = self.soften(shade, where, covered, size, lent=lent)
+		numpy.testing.assert_allclose(out[:8, 5], 0.0)
+		self.assertLess(out[9, 5], 0.15)
+		numpy.testing.assert_allclose(out[12:, 5], 0.3)
+		self.assertTrue((out[:, 30] > 0.1 + 1e-6).all() and (out[:, 31] < 0.2 - 1e-6).all() and (out[:, 30:32] < 0.2).all())
+		numpy.testing.assert_allclose(out[:, [3, 4, 6, 7, 29, 32]], 0.8)
+
 
 class TexelTest(unittest.TestCase):
 	# Each texel's size on the jet (build.py texel_size()), without Blender:
@@ -456,6 +476,36 @@ class FittingTest(unittest.TestCase):
 		self.assertEqual(len(faces), len(vertices) // 2 + 2)
 
 
+class ExitTest(unittest.TestCase):
+	# How far rays from a section's centre reach in a superellipse (build.py
+	# exit_distances()), without Blender: python3 -I test_build.py ExitTest.
+	# A unit section whose outboard half (x > 0) has its own exponent above
+	# the centre, as a nacelle's upper outboard quarter has (quarter()); a
+	# superellipse of exponent n meets the diagonal at 2^(-1/n) along each axis
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "exit_distances"]
+		import numpy
+		space = {"np": numpy}
+		exec(compile(ast.Module(body=found, type_ignores=[]), "build.py", "exec"), space)
+		cls.exits = staticmethod(space["exit_distances"])
+
+	def test_each_quarter_takes_its_own_exponent(self):
+		diagonal = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+		directions = [(x / math.sqrt(2), y / math.sqrt(2)) for x, y in diagonal]
+		got = self.exits((0.0, 0.0), ({"in": 1.0, "out": 1.0, "sign": 1}, 1.0, 1.0), {"in": 2.0, "out": (4.0, 2.0)}, (0.0, 0.0), directions, reach=2.0)
+		want = [math.sqrt(2) * 2 ** (-1 / n) for n in (4.0, 2.0, 2.0, 2.0)]
+		for g, w in zip(got, want):
+			self.assertAlmostEqual(g, w, delta=2.0 / 960)
+
+	def test_a_plain_exponent_in_and_out_is_as_before(self):
+		directions = [(math.cos(t), math.sin(t)) for t in (0.3, 1.2, 2.5, 4.0)]
+		plain = self.exits((0.0, 0.0), ({"in": 1.0, "out": 1.0, "sign": 1}, 1.0, 1.0), {"in": 2.3, "out": 2.3}, (0.0, 0.0), directions, reach=2.0)
+		paired = self.exits((0.0, 0.0), ({"in": 1.0, "out": 1.0, "sign": 1}, 1.0, 1.0), {"in": 2.3, "out": (2.3, 2.3)}, (0.0, 0.0), directions, reach=2.0)
+		self.assertEqual(plain, paired)
+
+
 class WalledTest(unittest.TestCase):
 	# The V's walls behind the speedbrake (build.py walled()), without
 	# Blender: python3 -I test_build.py WalledTest. A half section from the
@@ -579,6 +629,216 @@ print("result " + json.dumps({name: [faces(c, p, fix) for fix in (False, True)] 
 			self.assertAlmostEqual(sum(fixed) / whole, 1.0, places=6, msg=name)   # single precision
 
 
+class BakingTest(unittest.TestCase):
+	# The parts joined into one copy for Cycles to bake (build.py baking()):
+	# two quads, each on its own half of a 32-texel atlas with a face
+	# attribute of its own, one under a joint turned a quarter turn and moved,
+	# as a posed part stands, beside a mesh left out
+	SCRIPT = """
+import bpy, json, math, sys
+import numpy as np
+from contextlib import contextmanager
+exec(sys.argv[sys.argv.index("--") + 1])
+bpy.ops.wm.read_factory_settings(use_empty=True)
+scene = bpy.context.scene
+material = bpy.data.materials.new("paint")
+material.use_nodes = True
+nodes, links = material.node_tree.nodes, material.node_tree.links
+image = bpy.data.images.new("atlas", 32, 32, alpha=False, float_buffer=True)
+target = nodes.new("ShaderNodeTexImage")
+target.image = image
+nodes.active = target
+
+def part(name, left, value, parent=None):
+	mesh = bpy.data.meshes.new(name)
+	mesh.from_pydata([(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)], [], [(0, 1, 2, 3)])
+	layer = mesh.uv_layers.new(name="UVMap")
+	for loop, uv in zip(layer.data, ((left, 0), (left + 0.5, 0), (left + 0.5, 1), (left, 1))):
+		loop.uv = uv
+	mesh.attributes.new("kind", "FLOAT", "FACE").data.foreach_set("value", [value])
+	mesh.materials.append(material)
+	o = bpy.data.objects.new(name, mesh)
+	scene.collection.objects.link(o)
+	o.parent = parent
+	return o
+joint = bpy.data.objects.new("joint", None)
+scene.collection.objects.link(joint)
+joint.location, joint.rotation_euler = (2, 3, 4), (0, 0, math.pi / 2)
+a, b, other = part("a", 0.0, 0.25), part("b", 0.5, 0.75, joint), part("other", 0.0, 0.5)
+bpy.context.view_layer.update()
+placed = lambda o: [[round(c, 5) for c in o.matrix_world @ v.co] for v in o.data.vertices]
+scene.render.engine = "CYCLES"
+scene.cycles.samples, scene.cycles.device = 1, "CPU"
+with baking([a, b]) as whole:
+	inside = {"objects": sorted(o.name for o in scene.objects), "faces": len(whole.data.polygons),
+		"vertices": sorted(placed(whole)), "expected": sorted(placed(a) + placed(b)),
+		"uvs": sorted([round(c, 5) for c in loop.uv] for loop in whole.data.uv_layers["UVMap"].data),
+		"kind": sorted(round(d.value, 5) for d in whole.data.attributes["kind"].data),
+		"hidden": [a.hide_render, b.hide_render, other.hide_render],
+		"selected": sorted(o.name for o in bpy.context.selected_objects) == [whole.name], "active": bpy.context.view_layer.objects.active == whole}
+	# the attribute emitted by a node made after the copy, as bakes() does
+	kind = nodes.new("ShaderNodeAttribute")
+	kind.attribute_type, kind.attribute_name = "GEOMETRY", "kind"
+	emission = nodes.new("ShaderNodeEmission")
+	links.new(kind.outputs["Fac"], emission.inputs["Color"])
+	links.new(emission.outputs["Emission"], nodes["Material Output"].inputs["Surface"])
+	bpy.ops.object.bake(type="EMIT", use_clear=True, margin=0)
+pixels = np.array(image.pixels[:]).reshape(32, 32, 4)
+after = {"objects": sorted(o.name for o in scene.objects), "meshes": sorted(m.name for m in bpy.data.meshes),
+	"hidden": [a.hide_render, b.hide_render, other.hide_render], "selected": sorted(o.name for o in bpy.context.selected_objects),
+	"baked": [round(float(pixels[16, 8, 0]), 4), round(float(pixels[16, 24, 0]), 4)]}
+print("result " + json.dumps({"inside": inside, "after": after}))
+"""
+
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "baking"]
+		source = ast.unparse(ast.Module(body=found, type_ignores=[]))
+		with tempfile.TemporaryDirectory() as d:
+			script = Path(d) / "baking.py"
+			script.write_text(cls.SCRIPT)
+			run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(script), "--", source], capture_output=True, text=True, timeout=600)
+		if run.returncode or "Traceback" in run.stdout + run.stderr:
+			raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+		cls.result = json.loads(re.search(r"^result (.*)$", run.stdout, re.M)[1])
+
+	def test_the_copy_holds_every_face_where_it_stands_with_its_uvs_and_attributes(self):
+		inside = self.result["inside"]
+		self.assertEqual(inside["faces"], 2)
+		self.assertEqual(inside["vertices"], inside["expected"])
+		self.assertEqual(inside["uvs"], sorted([[0, 0], [0.5, 0], [0.5, 1], [0, 1], [0.5, 0], [1, 0], [1, 1], [0.5, 1]]))
+		self.assertEqual(inside["kind"], [0.25, 0.75])
+		self.assertTrue(inside["selected"] and inside["active"])
+
+	def test_the_parts_stand_hidden_from_the_render_while_the_copy_bakes(self):
+		# coincident with the copy, they would shade it
+		self.assertEqual(self.result["inside"]["hidden"], [True, True, False])
+
+	def test_it_bakes_each_part_into_its_own_texels(self):
+		self.assertEqual(self.result["after"]["baked"], [0.25, 0.75])
+
+	def test_it_leaves_the_scene_as_it_found_it(self):
+		after = self.result["after"]
+		self.assertEqual(after["objects"], ["a", "b", "joint", "other"])
+		self.assertEqual(after["meshes"], ["a", "b", "other"])
+		self.assertEqual(after["hidden"], [False, False, False])
+		self.assertEqual(after["selected"], ["a", "b"])
+
+
+class OcclusionTest(unittest.TestCase):
+	# The ambient occlusion cast at a lent texel (build.py occlusion()), at a
+	# point facing up: under an open sky with a floor 5 m below; lying on a
+	# floor; under a roof a metre up; under the roof with a round hole a metre
+	# across straight overhead, which passes half the sky's cosine weight (a
+	# hole of half-angle a passes sin² a: 0.29 spread evenly over the
+	# hemisphere); and under the roof with a reach short of it
+	SCRIPT = """
+import json, math, sys
+import numpy as np
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+exec(sys.argv[sys.argv.index("--") + 1])
+big = 1000.0
+plane = lambda z: BVHTree.FromPolygons([(-big, -big, z), (big, -big, z), (big, big, z), (-big, big, z)], [(0, 1, 2, 3)])
+ring = [(math.cos(2 * math.pi * k / 256), math.sin(2 * math.pi * k / 256), 1.0) for k in range(256)]
+holed = BVHTree.FromPolygons(ring + [(big * x, big * y, 1.0) for x, y, _ in ring], [(k, (k + 1) % 256, 256 + (k + 1) % 256, 256 + k) for k in range(256)])
+point, up = np.array([[0.0, 0.0, 0.0]]), np.array([[0.0, 0.0, 1.0]])
+cast = lambda tree, reach=1e4: float(occlusion(tree, point, up, reach)[0])
+print("result " + json.dumps({"open": cast(plane(-5.0)), "floor": cast(plane(0.0)), "roof": cast(plane(1.0)), "hole": cast(holed), "reach": cast(plane(1.0), 0.5)}))
+"""
+
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "occlusion"]
+		with tempfile.TemporaryDirectory() as d:
+			script = Path(d) / "occlusion.py"
+			script.write_text(cls.SCRIPT)
+			run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(script), "--", ast.unparse(ast.Module(body=found, type_ignores=[]))], capture_output=True, text=True, timeout=600)
+		if run.returncode or "Traceback" in run.stdout + run.stderr:
+			raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+		cls.result = json.loads(re.search(r"^result (.*)$", run.stdout, re.M)[1])
+
+	def test_an_open_sky_is_unoccluded_and_a_roof_hides_it_all(self):
+		self.assertEqual(self.result["open"], 1.0)
+		self.assertEqual(self.result["roof"], 0.0)
+
+	def test_a_point_on_a_face_is_not_shaded_by_that_face(self):
+		self.assertEqual(self.result["floor"], 1.0)
+
+	def test_a_hole_overhead_passes_its_share_of_the_cosine_weighted_sky(self):
+		self.assertAlmostEqual(self.result["hole"], 0.5, delta=0.03)
+
+	def test_a_roof_beyond_the_reach_hides_nothing(self):
+		self.assertEqual(self.result["reach"], 1.0)
+
+
+class SeatTest(unittest.TestCase):
+	# A cut panel's open edge put back on its plan outline (build.py seat()):
+	# a unit square panel on the skin z = 0.1 y², a 4 by 4 grid of quads,
+	# its corner at (0, 1) pulled 0.02 in along one side and the edge's
+	# vertex at (0.5, 0) pulled 0.01 off it, as the cut's cleanup leaves
+	# them, one at (1, 0.5) pulled 0.08 off, past the reach of 0.05, and an
+	# inside vertex moved to 0.03 from the edge, which is no edge's own
+	SCRIPT = """
+import json, math, sys
+import bmesh
+from mathutils import Vector
+from mathutils.bvhtree import BVHTree
+exec(sys.argv[sys.argv.index("--") + 1])
+z = lambda x, y: 0.1 * y * y
+skin = bmesh.new()
+n = 40
+grid = [[skin.verts.new((-0.5 + 2 * i / n, -0.5 + 2 * j / n, z(-0.5 + 2 * i / n, -0.5 + 2 * j / n))) for j in range(n + 1)] for i in range(n + 1)]
+for i in range(n):
+	for j in range(n):
+		skin.faces.new((grid[i][j], grid[i + 1][j], grid[i + 1][j + 1], grid[i][j + 1]))
+surface = BVHTree.FromBMesh(skin)
+bm = bmesh.new()
+verts = {(i, j): bm.verts.new((i / 4, j / 4, z(i / 4, j / 4))) for i in range(5) for j in range(5)}
+for i in range(4):
+	for j in range(4):
+		bm.faces.new((verts[i, j], verts[i + 1, j], verts[i + 1, j + 1], verts[i, j + 1]))
+verts[0, 4].co = Vector((0.0, 0.98, z(0.0, 0.98)))
+verts[2, 0].co = Vector((0.5, 0.01, z(0.5, 0.01)))
+verts[4, 2].co = Vector((0.92, 0.5, z(0.92, 0.5)))
+verts[1, 1].co = Vector((0.25, 0.03, z(0.25, 0.03)))
+moved = seat(bm, [(0, 0), (1, 0), (1, 1), (0, 1)], surface, Vector((0, 0, 1)), 0.05)
+at = lambda k: list(verts[k].co)
+print("result " + json.dumps({"moved": moved, "corner": at((0, 4)), "edge": at((2, 0)), "far": at((4, 2)), "inside": at((1, 1)), "other": at((4, 4))}))
+"""
+
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "seat"]
+		with tempfile.TemporaryDirectory() as d:
+			script = Path(d) / "seat.py"
+			script.write_text(cls.SCRIPT)
+			run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(script), "--", ast.unparse(ast.Module(body=found, type_ignores=[]))], capture_output=True, text=True, timeout=600)
+		if run.returncode or "Traceback" in run.stdout + run.stderr:
+			raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+		cls.result = json.loads(re.search(r"^result (.*)$", run.stdout, re.M)[1])
+
+	def test_a_corner_pulled_in_goes_back_to_the_outline_s_corner_on_the_skin(self):
+		for got, want in zip(self.result["corner"], (0.0, 1.0, 0.1)):
+			self.assertAlmostEqual(got, want, places=6)
+
+	def test_an_edge_s_vertex_pulled_off_goes_back_onto_the_edge_on_the_skin(self):
+		for got, want in zip(self.result["edge"], (0.5, 0.0, 0.0)):
+			self.assertAlmostEqual(got, want, places=6)
+
+	def test_a_vertex_past_the_reach_and_one_inside_stay_where_they_are(self):
+		for got, want in zip(self.result["far"], (0.92, 0.5, 0.025)):
+			self.assertAlmostEqual(got, want, places=6)
+		for got, want in zip(self.result["inside"], (0.25, 0.03, 0.1 * 0.03 * 0.03)):
+			self.assertAlmostEqual(got, want, places=6)
+		for got, want in zip(self.result["other"], (1.0, 1.0, 0.1)):
+			self.assertAlmostEqual(got, want, places=6)
+		self.assertEqual(self.result["moved"], 2)
+
+
 class KeyTest(unittest.TestCase):
 	# Each case a draft build writing its keys (build.py --keys): a changed
 	# facts file, or a copy of build.py beside it with its code changed
@@ -601,6 +861,7 @@ class KeyTest(unittest.TestCase):
 		"open_reach": (None, ("OPEN_REACH = 24.0   #", "OPEN_REACH = 25.0   #")),
 		"margin": (None, ("STENCIL_MARGIN = 1.5    #", "STENCIL_MARGIN = 2.0    #")),
 		"nozzles": (None, ("			NOZZLE_PARTS.append(petal)\n", "			NOZZLE_PARTS.append(petal) if k else None\n")),
+		"baking": (None, ("		mesh.transform(o.matrix_world)\n", "		mesh.transform(o.matrix_world)   # changed\n")),
 	}
 
 	@classmethod
@@ -694,6 +955,9 @@ class KeyTest(unittest.TestCase):
 
 	def test_the_nozzles_flaps_count_in_the_jets_key_alone(self):
 		self.assertEqual(self.moved("nozzles"), {"paint": True, "stores": False})
+
+	def test_the_joined_copy_both_bake_on_counts_in_both_keys(self):
+		self.assertEqual(self.moved("baking"), {"paint": True, "stores": True})
 
 
 class CacheTest(unittest.TestCase):

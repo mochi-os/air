@@ -186,6 +186,80 @@ class GeometryTest(unittest.TestCase):
 			self.assertIn("layout.motion", run.stderr)
 
 
+class UnoccludedTest(unittest.TestCase):
+	# The ambient occlusion check.py casts as build.py's lend() does
+	# (unoccluded()), at a point facing up: an open sky with a floor 200 in
+	# below, lying on a floor, under a roof 40 in up, under the roof with a
+	# round hole 40 in across overhead (half the cosine-weighted sky; 0.29
+	# were the rays spread evenly over the hemisphere)
+	@staticmethod
+	def plane(z, big=1e4):
+		return np.array([[[-big, -big, z], [big, -big, z], [big, big, z]], [[-big, -big, z], [big, big, z], [-big, big, z]]])
+
+	def cast(self, tris):
+		return float(check.unoccluded(tris, np.array([[0.0, 0.0, 0.0]]), np.array([[0.0, 0.0, 1.0]]))[0])
+
+	def test_an_open_sky_is_unoccluded_and_a_roof_hides_it_all(self):
+		self.assertEqual(self.cast(self.plane(-200.0)), 1.0)
+		self.assertEqual(self.cast(self.plane(40.0)), 0.0)
+
+	def test_a_point_on_a_face_is_not_shaded_by_that_face(self):
+		self.assertEqual(self.cast(self.plane(0.0)), 1.0)
+
+	def test_a_face_a_hair_over_the_point_does_not_shade_it(self):
+		# a thousandth of an inch up, inside the tenth of a millimetre the
+		# rays start off the face, as build.py's do
+		self.assertEqual(self.cast(np.concatenate([self.plane(0.0), self.plane(0.001)])), 1.0)
+
+	def test_a_hole_overhead_passes_its_share_of_the_cosine_weighted_sky(self):
+		ring = [(40 * math.cos(2 * math.pi * k / 256), 40 * math.sin(2 * math.pi * k / 256)) for k in range(256)]
+		quads = [((x0, y0, 40.0), (x1, y1, 40.0), (1e4 * x1, 1e4 * y1, 40.0), (1e4 * x0, 1e4 * y0, 40.0)) for (x0, y0), (x1, y1) in zip(ring, ring[1:] + ring[:1])]
+		holed = np.array([t for a, b, c, d in quads for t in ((a, b, c), (a, c, d))])
+		self.assertAlmostEqual(self.cast(holed), 0.5, delta=0.04)
+
+
+class AcrossTest(unittest.TestCase):
+	# The points a narrow strip's light is judged at (check.across()), at a
+	# triangle's middle from its longest edge to the side opposite
+	def test_they_run_from_the_longest_edge_to_the_side_opposite_at_the_middle(self):
+		# a sliver 6 long and 0.3 across, its far corner a third of the way
+		# along: its middle (8/3 along) lies past that corner, so the far end
+		# is on the side from the far corner to the long edge's end
+		t = np.array([[0.0, 0.0, 0.0], [6.0, 0.0, 0.0], [2.0, 0.3, 0.0]])
+		points = check.across(t)
+		self.assertEqual(points.shape, (5, 3))
+		np.testing.assert_allclose(points[:, 0], 8 / 3)
+		np.testing.assert_allclose(points[0], [8 / 3, 0.0, 0.0], atol=1e-12)
+		np.testing.assert_allclose(points[-1, 1], 0.25)
+		np.testing.assert_allclose(np.diff(points[:, 1]), 0.25 / 4)
+
+	def test_a_far_corner_past_the_middle_puts_the_far_end_on_the_side_from_the_start(self):
+		t = np.array([[0.0, 0.0, 0.0], [6.0, 0.0, 0.0], [4.0, 0.3, 0.0]])
+		points = check.across(t)
+		np.testing.assert_allclose(points[:, 0], 10 / 3)
+		np.testing.assert_allclose(points[-1], [10 / 3, 0.25, 0.0], atol=1e-12)
+
+
+class ShownTest(unittest.TestCase):
+	# The shade an atlas brightness shows on a face (check.shown()), the
+	# inverse of build.py's paint: the grey there times 0.4 + 0.6 of the shade
+	def grey(self, colour):
+		return float(np.dot(colour, [0.299, 0.587, 0.114])) / 255
+
+	def test_a_face_up_shows_its_shade_on_the_upper_grey_and_one_facing_down_on_the_lower(self):
+		p = check.FACTS["layout"]["paint"]
+		for shade in (0.0, 0.3, 1.0):
+			self.assertAlmostEqual(check.shown(self.grey(p["upper"]) * (0.4 + 0.6 * shade), [0.0, 1.0, 0.0]), shade, places=9)
+			self.assertAlmostEqual(check.shown(self.grey(p["lower"]) * (0.4 + 0.6 * shade), [0.0, -1.0, 0.0]), shade, places=9)
+
+	def test_a_face_in_the_turn_shows_it_on_the_greys_blended_as_the_build_blends_them(self):
+		p = check.FACTS["layout"]["paint"]
+		start, end = p["turn"]
+		f = 0.25 * 0.25 * (3 - 2 * 0.25)   # a quarter of the way through the turn, eased
+		grey = self.grey(p["upper"]) * (1 - f) + self.grey(p["lower"]) * f
+		self.assertAlmostEqual(check.shown(grey * (0.4 + 0.6 * 0.7), [0.0, start + (end - start) / 4, 0.0]), 0.7, places=9)
+
+
 class BuriedTest(unittest.TestCase):
 	# A flush lens's outer face under the skin it stands on (check.buried()),
 	# on models of boxes: a lens plate on the right at BL 50-50.2 and a
@@ -208,6 +282,45 @@ class BuriedTest(unittest.TestCase):
 
 	def test_a_lens_half_under_the_skin_reads_half(self):
 		self.assertAlmostEqual(self.share(((370.0, 117.6, 0.0), (400.0, 125.0, 51.0))), 0.5, places=6)
+
+
+class SlotTest(unittest.TestCase):
+	# A slot cut down through a surface (check.slot_open()), on triangles in
+	# [FS, WL, BL] inches: a top at WL 127 from BL 10 to 50 over FS 400-460,
+	# with or without the strip BL 24.3-27.3, FS 405-450 taken out, and a floor
+	# at WL 110 beneath it
+	ends = np.array([[408.7, 127.0, 25.8], [446.7, 127.0, 25.8]])
+
+	def quad(self, f0, f1, b0, b1, wl):
+		a, b, c, d = [[f0, wl, b0], [f1, wl, b0], [f1, wl, b1], [f0, wl, b1]]
+		return [[a, b, c], [a, c, d]]
+
+	def surface(self, cut):
+		tris = self.quad(400, 460, 10, 50, 110.0)
+		if cut:
+			for f0, f1, b0, b1 in ((400, 460, 10, 24.3), (400, 460, 27.3, 50), (400, 405, 24.3, 27.3), (450, 460, 24.3, 27.3)):
+				tris += self.quad(f0, f1, b0, b1, 127.0)
+		else:
+			tris += self.quad(400, 460, 10, 50, 127.0)
+		return np.array(tris, float)
+
+	def test_an_open_slot_drops_to_its_floor_and_leaves_the_top_beside_it(self):
+		drop, beside = check.slot_open(self.surface(True), self.ends, 1)
+		self.assertAlmostEqual(drop, 17.0, places=6)
+		self.assertAlmostEqual(beside, 0.0, places=6)
+
+	def test_an_uncut_top_does_not_drop(self):
+		drop, beside = check.slot_open(self.surface(False), self.ends, 1)
+		self.assertAlmostEqual(drop, 0.0, places=6)
+		self.assertAlmostEqual(beside, 0.0, places=6)
+
+	def test_a_top_cut_away_beside_the_slot_reads_how_far_it_falls(self):
+		drop, beside = check.slot_open(self.quad_only_floor(), self.ends, 1)
+		self.assertEqual(drop, 17.0)
+		self.assertAlmostEqual(beside, 17.0, places=6)
+
+	def quad_only_floor(self):
+		return np.array(self.quad(400, 460, 10, 50, 110.0), float)
 
 
 class AloftTest(unittest.TestCase):

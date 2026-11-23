@@ -393,11 +393,13 @@ class SkylineTest(unittest.TestCase):
 			# the blue is read only in a photo the catalogue calls clear: elsewhere a cloud would pass for the jet
 			self.assertEqual(found["unread"], [])
 
-	def test_scene_blue_paint(self):
+	def test_scene_blue_sky_read_by_blue_and_brightness(self):
+		# against a clear sky the edge is read by its blue and by its brightness, the one nearer the sky taken:
 		# a navy plate (the Blue Angels' blue, about 33 over its red and green against a clear sky's 43) with a
-		# gold band 12 pixels inside its edge: read by its blue alone the walk passes the navy for sky and takes
-		# the band for the edge; with the catalogue's "paint": "blue" it is read by brightness as well and the
-		# edge nearer the sky taken, which still finds gold trim at the edge itself, by its blue
+		# gold band 12 pixels inside its edge, which by its blue alone passes the navy for sky and takes the band
+		# for the edge; gold trim at the edge itself, which brightness passes for sky, found by its blue; and a
+		# dark grey plate whose rim the JPEG's colour bleed tints blue for 3 pixels inside its step, which by
+		# its blue alone puts the edge that far inside
 		import tempfile
 		import camera as cam
 		import model as mod
@@ -416,22 +418,51 @@ class SkylineTest(unittest.TestCase):
 				inside[left] = k
 				left = left & np.roll(left, 1, 0) & np.roll(left, -1, 0) & np.roll(left, 1, 1) & np.roll(left, -1, 1)
 			sky, navy, gold = np.array([178, 211, 254]), np.array([0, 19, 52]), np.array([230, 190, 40])
+			dark, fringe = np.array([40, 40, 40]), np.array([40, 55, 110])
 			(root / "references").mkdir()
 			entry = {"photo": "p", "size": size, "camera": list(camera), "pose": {}}
 			found = {}
-			for name, band, paint in (("navy", (12, 20), None), ("painted", (12, 20), "blue"), ("trim", (0, 6), "blue")):
-				skin = np.where(((inside > band[0]) & (inside <= band[1]))[..., None], gold, navy)
+			for name, base, ring, band in (("navy", navy, gold, (12, 20)), ("trim", navy, gold, (0, 6)), ("fringe", dark, fringe, (0, 3))):
+				skin = np.where(((inside > band[0]) & (inside <= band[1]))[..., None], ring, base)
 				photo = np.where(mask[..., None], skin, sky).astype(np.uint8)
 				Image.fromarray(photo).save(root / "references" / f"{name}.png")
-				catalogue = {"frame": JET, "photos": {"p": dict({"clear": True}, **({"paint": paint} if paint else {}))}}
+				catalogue = {"frame": JET, "photos": {"p": {"clear": True}}}
 				places, _ = skyline.Scene(catalogue, root, mod.Frame(JET), {}, dict(entry, file=f"{name}.png")).places(model, {}, {})
 				found[name] = [p["miss"] for p in places]
-			for name in ("painted", "trim"):
+			for name in ("navy", "trim", "fringe"):
 				self.assertGreater(len(found[name]), 40, name)
 				self.assertLess(float(np.median(np.abs(found[name]))), 0.5, name)
-			# by its blue alone the navy reads as sky: the model stands outside by the band's inset
-			self.assertGreater(len(found["navy"]), 40)
-			self.assertGreater(float(np.median(found["navy"])), 2.0)
+
+	def test_a_photo_names_its_own_contrast(self):
+		# a sunlit top 18 over a bright sky, under the walk's contrast of 25: the walk passes it and finds
+		# nothing; given a contrast of 12 it reads the top's edge, and a weaker change it still walks past
+		lit = profile(3.0, jet=196.0, sky=178.0)
+		self.assertIsNone(skyline.edge_along(lit))
+		self.assertAlmostEqual(skyline.edge_along(lit, contrast=12), 2.5, delta=0.6)
+		self.assertIsNone(skyline.edge_along(profile(3.0, jet=188.0, sky=178.0), contrast=12))
+		# and a scene takes it from its photo's catalogue entry
+		import tempfile
+		import camera as cam
+		import model as mod
+		from test_verify import JET, box, glb
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			glb(root / "m.glb", [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))}])
+			model = mod.Model(root / "m.glb")
+			size = [1200, 600]
+			camera = cam.looking(np.array([0.0, 0.0, 12.0]), np.array([0.0, 0.0, 0.0]), 2400.0)
+			flat, depth = cam.project(camera, model.triangles(mod.pose({}, {})).reshape(-1, 3), (size[0] / 2, size[1] / 2))
+			mask = skyline.frontmost(flat.reshape(-1, 3, 2), depth.reshape(-1, 3), tuple(size)) >= 0
+			(root / "references").mkdir()
+			Image.fromarray(np.where(mask, 196, 178).astype(np.uint8)[..., None].repeat(3, -1)).save(root / "references" / "p.png")
+			entry = {"photo": "p", "file": "p.png", "size": size, "camera": list(camera), "pose": {}}
+			found = {}
+			for name, photo in (("default", {}), ("own", {"contrast": 12})):
+				catalogue = {"frame": JET, "photos": {"p": photo}}
+				found[name], _ = skyline.Scene(catalogue, root, mod.Frame(JET), {}, entry).places(model, {}, {})
+			self.assertEqual(found["default"], [])
+			self.assertGreater(len(found["own"]), 40)
+			self.assertLess(float(np.median(np.abs([p["miss"] for p in found["own"]]))), 0.5)
 
 	def test_stances(self):
 		# a gear leg stowed inside the body and let down by the "gear" drive: let down it is another shape, and
@@ -651,6 +682,13 @@ class SkylineTest(unittest.TestCase):
 		self.assertEqual(skyline.region("elevator_aft", point), ("body", 432, "top"))
 		self.assertEqual(skyline.region("fin_left", point, ship), ("body", 432, "top"))
 		self.assertEqual(skyline.label(("body", 432, "top"), skyline.Settings({"skyline": {"label": "frame"}})), "body frame 432-456 top")
+
+	def test_parts_riding_another_take_its_family(self):
+		# the fairings under the wings ride the outer panel and the aileron, the
+		# fold's lamps the outer panel, the antenna pods the fins: none is body
+		for name, family in (("fairing_wing_left", "wing"), ("fairing_aileron_right", "aileron"), ("lamp_position_fold_left", "wing"),
+				("pod_right", "fin"), ("fairing_cheek_left", "body"), ("fairings_right", "body")):
+			self.assertEqual(skyline.family(name), family, name)
 		self.assertEqual(skyline.label(("body", 440, "top"), skyline.Settings({"skyline": {"stretch": 40}})), "body FS 440-480 top")
 		# a ship's hull takes the sectors, and every region its side; the mirrored jet's do not
 		ship = skyline.Settings({"skyline": {"families": [["hull", ["hull"]]], "sectored": ["hull"], "sides": ["port", "starboard"]}})

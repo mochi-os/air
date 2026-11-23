@@ -103,7 +103,8 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   strips and the lower corner seen from below): `nacelle_side()` solves the outboard half's width and
   exponent through both, `union_ring()` draws the deck's edge in to `DECK_SIDE`, where the union passes within
   0.1 in of the strips' line, and the plain and reshaped outlines are blended point by point, easing in from FS 480 and out by
-  FS 680. Behind the speedbrake the top's centreline falls into the V between the nacelles' tops and the
+  FS 680. Aft, the upper outboard quarter of each nacelle takes a fuller exponent of its own (`layout.nacelle` shoulder,
+  `quarter()`), faded in from FS 620 and out into the end circle, the crown, the side and the lower half as they were. Behind the speedbrake the top's centreline falls into the V between the nacelles' tops and the
   body narrows to the strip between the nozzles (`layout.spine` tail, `narrowing()`), the steps round the
   section spaced along its legs between the nacelle's top, side and bottom (`spaced()`). The body's top there
   is the V's floor (`core_power()`), its walls straight from the floor's edges to the nacelles' tops,
@@ -147,7 +148,8 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   cut from the fuselage's own built skin (`cut()`, between stations and buttlines or inside a convex plan
   outline; a door of several convex pieces leaves no wall where two meet, and a piece may take only skin
   facing its way more steeply, as the main inner door's corner panel does short of the nacelle's side), its
-  outer face on every facet, flush, its slivers collapsed first, each edge split half its depth under the skin
+  outer face on every facet, flush, its slivers collapsed first and the rim's corners they moved put back on the
+  outline and the skin (`seat()`: the hole is cut on the outline exactly), each edge split half its depth under the skin
   (above, the outer face's finish; below, the inside's, `shape.flush`). Stood 0.15 in proud, each door's edge
   was a step the viewer's lamp lit as a light outline. The probe's doors, a loft over the skin's rings over a
   hole kept up to 0.09 in inside their edges, still stand 0.15 in off: the door's aft edge, swinging out with the
@@ -328,7 +330,9 @@ inside the fins, the pilot inside the seat and the like: about 2,100 triangles, 
 
 The build also unwraps every part into one atlas and bakes its ambient occlusion in Cycles (`paint.png`
 beside OUT.glb), the shading the paint is laid over, its texel-to-texel noise smoothed within each island
-(`soften()`). Faces of more than four corners are triangulated first (a
+(`soften()`). An island too narrow to hold a texel centre of its own is lent the texels beside it, each the occlusion
+cast across the strip there (`lend()`, `finish.lent()`), which the smoothing keeps among their own kind and never takes
+for a buried sample. Faces of more than four corners are triangulated first (a
 long bent cap laid flat in one piece overlapped itself); faces the islands lay over others get islands of their
 own (`unfolded()`), and once packed the atlas is searched again at its own size, what it finds laid into a strip
 along its right side the packing leaves free (`STRIP`), never packed again. Each texel's surface normal picks the

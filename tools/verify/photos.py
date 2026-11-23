@@ -37,8 +37,9 @@
 #   photos   {id: {"file": path under the catalogue's references folder, "pose": {drive: value, "joints": {joint: value}}
 #                  (a joint named there takes that value past its drive; a leg's oleo given as "static" stands
 #                  at the points file's gear static, model.py driven()), "solve": false to leave it out,
-#                  "stores", "clear", "paint", "ground" and "masks" for skyline.py (its load; true where the background is clear
-#                  blue sky or open sea; "blue" where the jet's own paint is as blue as that sky (the Blue Angels); true to
+#                  "stores", "clear", "contrast", "ground" and "masks" for skyline.py (its load; true where the background is clear
+#                  blue sky or open sea; the step its walk takes for the jet's edge, where the lit skin stands within
+#                  the usual 25 of a bright sky; true to
 #                  leave out what lies under the horizon, false never to, absent to leave it out where
 #                  the pose has the gear down; polygons [[[x, y], ...], ...] in the photo's own pixels hiding what the model
 #                  does not carry), "variant" naming one of the skyline section's variants (what a photo of another

@@ -56,7 +56,7 @@ GUESSES = {
 	"layout.stores.centreline.note": (2, "user, 2026-11-11: the SUU-62's width 9.5 in with its 7 in taper, consistent with dvids8025511, 9393257 and 9393262 but fixed by none; its aft end at FS 445, shaped as dvids_4642578 shows"),
 	"layout.stores.rack.note": (1, "user, 2026-11-11: keep the 3 in block joining each side rail to its LAU-115 until a solvable photo shows the shoulder fittings (dvids7378817 shows them, but no landmark lets its camera be solved)"),
 	"layout.stores.rails.tip.note": (1, "user, 2026-11-11: keep the LAU-7 channel 1.0 in deep; no public-domain end view of an empty LAU-7 was found"),
-	"layout.stores.rails.tip.adapter.note": (1, "user's ruling, 2026-11-11: the lower housing and the fairing's underside mirror the upper side about the rail (dvids_7440917, dvids_7847377)"),
+	"layout.stores.rails.tip.adapter.note": (2, "user's ruling, 2026-11-11: the lower housing and the fairing's underside mirror the upper side about the rail (dvids_7440917, dvids_7847377); user, 2026-11-21 (#244, as recommended: simplify and neaten): one smooth fairing, the housings ridges of it with the strips flush, its ridges' edges rounded 0.3 in and its ends drawn in over 6 in, no photo resolving either"),
 	"layout.strips.where": (1, "user's ruling, 2026-11-11: the strip under the tip rail held at the upper strip's buttlines, the mirror of the upper housing"),
 	"layout.stores.rails.tip.across": (1, "user, 2026-11-12: the wingtip LAU-7's cap and cone take their measured standing shares across the rail too; every view from above has a round on the rail hiding the ends and no photo of an empty rail from below was found"),
 	"layout.antennas.note": (3, "user, 2026-11-12: keep, under an inch and not seen at close range: the blades' thickness (0.4 in, as the nose blade's) and the comb posts' size"),
@@ -80,7 +80,7 @@ GUESSES = {
 	"layout.motion.probe.note": (3, "user, 2026-11-16: as recommended: the probe's root, on which the door rides, 2.5 in behind the door's aft edge (2-3 in), so that edge rises as it swings out aft; no photo shows the root; user, 2026-11-17: the forward door opening over the stroke's first 0.15 while the probe waits, and closing over as long once the probe is clear of it"),
 	"layout.probe.note": (2, "user, 2026-11-16: as recommended: the skin opened ahead of the probe door to FS 129, half an inch ahead of the stowed nozzle's tip; user, 2026-11-17: the panel ahead of the probe door over FS 129-145 a door of its own, opening while the nozzle passes and closed at rest and with the probe out, as dvids6690145 shows; its hinge and timing estimated"),
 	"layout.motion.canopy.note": (2, "user, 2026-11-16: as recommended: the canopy's shell 0.2 in proud of the loft, a visible step at the sill and the aft joint, and its slide rising 0.15 in over the 1.5 in aft, the least that clear the skin it rests on; its hinge at the aft top (FS 326, WL 152.6), whose place the photos do not tell apart"),
-	"layout.hook.note": (3, "user, 2026-11-16 and 2026-11-18: the hook's hold-down rod estimated from the proportions in US Navy 050124-N-4308O-018 (no solved camera) scaled to the solved shank (user, 2026-11-16: as recommended); the point's body as long as it is wide with its 3.5 in flare, the shoe's 5.0 in reach, dished sole and 0.35 in recess, the bolts 0.9 in ahead of the face, the forging's web and socket, the damper's lengths (cylinder 2.5 + 5.8 in, piston 7.7 in, rod end 1.6 in) and the keel's aft end turning with the sideways swing, signed off as estimated (user, 2026-11-18)"),
+	"layout.hook.note": (4, "user, 2026-11-16, 2026-11-18 and 2026-11-20: the hook's hold-down rod estimated from the proportions in US Navy 050124-N-4308O-018 (no solved camera) scaled to the solved shank (user, 2026-11-16: as recommended); the point's body as long as it is wide with its 3.5 in flare, the shoe's 5.0 in reach, dished sole and 0.35 in recess, the bolts 0.9 in ahead of the face, the forging's web and socket, the damper's lengths (cylinder 2.5 + 5.8 in, piston 7.7 in, rod end 1.6 in) and the keel's aft end turning with the sideways swing, signed off as estimated (user, 2026-11-18); the point's head rounded for the look (user, 2026-11-20, #245: the shank as it is, a more rounded head): a half-round top, a 0.7 in fillet where the shoe leaves the body and its edges rounded 0.9 in, not measured"),
 	"layout.motion.extension.note": (1, "user, 2026-11-16: the mains' start, hidden behind the camera jet's own nose tyres in DVIDS 781086, taken with the nose leg's once the doors are open"),
 	"layout.motion.braces.note": (6, "user, 2026-11-16: the main side brace's foot's clevis's lower end crossing the open inner door and the bay's edge at gear 0.375-0.45 kept, a known crossing; user, 2026-11-16: the main side brace's foot's clevis, spool, nut and end built from dvids8678626 alone, the bolt's lean across the sight line and the lugs' width round it estimated; user, 2026-11-16: the main side brace's fork at its bolt with 0.4 in cheeks, which no photo shows edge on; user, 2026-11-12: the nose drag brace's 6 in reach into its tube at full stretch kept; user, 2026-11-14: the drag brace rebuilt to the photos as the actuator they show, the hidden rod dropped; user, 2026-11-13: the main side brace's pin at WL 78 and its knee halfway (user, 2026-11-14: moved up off halfway, to 0.57, clear of the open inner door and the post), the connecting link's pin at WL 82, the bell crank's pin at WL 56 with its 6 in arm on a bracket off the pivot boss, and the link's 1.8 in diameter, placed for room and signed off from the retraction renders; user, 2026-11-19: the main side brace refitted with its knee where dvids4642471 shows it, its structure pin re-placed for room (FS 462.0, WL 80.2, BL 24.2) and the boss's length along its pin and the spring's length into the bay estimated"),
 	"layout.scoop.note": (1, "user, 2026-11-12: the FCS ram air scoop's can 4.8 in long, a 12 oz can's height from the maintainers' name for it, and its red the gear doors' edges' red in dvids8678626; no photo shows it deployed"),
@@ -433,7 +433,7 @@ HULL = ["fuselage", "lex_left", "lex_right", "inlet_left", "inlet_right", "wing_
 	"fin_left", "fin_right",
 	# and the parts on the skin, where the hidden faces under them are gone
 	"fairings_left", "fairings_right", "fin_root_left", "fin_root_right", "fin_fairing_left", "fin_fairing_right", "keel", "fairing_cheek_left", "fairing_cheek_right",
-	"antenna_chin", "antenna_dome", "antenna_dorsal", "antenna_spine", "antenna_ventral", "blade_nose", "aoa_left", "aoa_right",
+	"antenna_chin", "antenna_dome", "antenna_dorsal", "antenna_spine", "antenna_ventral", "blade_nose", "temperature", "aoa_left", "aoa_right",
 	"pitot_left", "pitot_right", "splitter_left", "splitter_right", "lex_fence_left", "lex_fence_right",
 	"formation_body_left", "formation_body_right", "formation_fin_left", "formation_fin_right", "formation_left", "formation_right",
 	"formation_tip_left", "formation_tip_right", "formation_undertip_left", "formation_undertip_right"]
@@ -452,7 +452,7 @@ FLUSH = [("speedbrake", False), ("gear_nose_door_left", True), ("gear_nose_door_
 # symmetric about the centreline
 # a store part's name, its station and its side of a twin (the contract's Stores)
 STATION = re.compile(r"^((?:pylon|rack|rail|launcher|ejector|tank))_([1-9])([ab]?)$")
-ONE_SIDED = {"antenna_dome", "antenna_ventral", "gear_nose_door_long", "gear_nose_lamps", "gear_nose_block", "lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red", "lamp_position_tail", "pilot", "probe", "probe_door", "probe_door_forward", "scoop", "scoop_cabin", "speedbrake_hose", "well_probe"}
+ONE_SIDED = {"antenna_dome", "antenna_ventral", "temperature", "gear_nose_door_long", "gear_nose_lamps", "gear_nose_block", "lamp_gear_nose", "lamp_approach_green", "lamp_approach_amber", "lamp_approach_red", "lamp_position_tail", "pilot", "probe", "probe_door", "probe_door_forward", "scoop", "scoop_cabin", "speedbrake_hose", "well_probe"}
 # Each well (layout.wells): the doors that close its opening and the parts it
 # holds at rest
 WELLS = {f"main_{side}": ([f"gear_door_{d}_{side}" for d in ("inner", "strip", "outer")], [f"gear_{side}_{p}" for p in ("strut", "oleo", "wheel", "axle", "shock", "shock_can", "brace", "brace_upper", "brace_fittings", "spool", "link", "crank", "casting", "rod")]) for side in ("left", "right")}
@@ -833,6 +833,78 @@ def closest(points, tris, chunk=256):
 				x = np.where(take[..., None], point(), x)
 			done |= take
 		out[start : start + chunk] = np.linalg.norm(x - q, axis=-1).min(1)
+	return out
+
+
+def across(triangle, count=5):
+	# Points across a triangle (3, 3) at its middle, `count` evenly from its
+	# longest edge, at the middle's place along it, to the side opposite: the
+	# points build.py casts a strip too narrow for the bake its light at
+	# (finish.across())
+	t = np.asarray(triangle, float)
+	a, b = max(((0, 1), (1, 2), (2, 0)), key=lambda e: np.sum((t[e[1]] - t[e[0]]) ** 2))
+	c = 3 - a - b
+	ab = t[b] - t[a]
+	length = ab @ ab
+	if length <= 1e-18:
+		return np.repeat(t.mean(0)[None], count, axis=0)
+	along = float(np.clip((t.mean(0) - t[a]) @ ab / length, 0, 1))
+	level = float(np.clip((t[c] - t[a]) @ ab / length, 0, 1))
+	if along <= level:
+		far = t[a] + (t[c] - t[a]) * (along / level if level > 1e-12 else 1.0)
+	else:
+		far = t[c] + (t[b] - t[c]) * ((along - level) / max(1 - level, 1e-12))
+	near = t[a] + ab * along
+	return near + (far - near) * np.linspace(0, 1, count)[:, None]
+
+
+def shown(value, normal):
+	# The shade (0..1) a brightness of the paint's atlas shows on a face facing
+	# `normal` (outward, unit, this frame): build.py paints the grey there (the
+	# upper grey turning to the lower as the face turns down, layout.paint
+	# turn) times 0.4 and 0.6 of the shade
+	p = FACTS["layout"]["paint"]
+	luma = lambda c: float(np.dot(c, [0.299, 0.587, 0.114])) / 255
+	start, end = p["turn"]
+	f = min(1.0, max(0.0, (normal[1] - start) / (end - start)))
+	f = f * f * (3 - 2 * f)
+	grey = luma(p["upper"]) * (1 - f) + luma(p["lower"]) * f
+	return (value / grey - 0.4) / 0.6
+
+
+def unoccluded(tris, points, normals, rays=32):
+	# The ambient occlusion at points (N, 3) facing their normals (N, 3), as
+	# build.py occlusion() casts it: the share of the rays over the
+	# hemisphere about the normal, cosine weighted (a sunflower's), that no
+	# triangle (M, 3, 3) stops, each from a tenth of a millimetre off the face
+	# (Moller-Trumbore), all of a point's rays at once against the triangles
+	# with a corner in front of its plane: no ray over the hemisphere meets
+	# one wholly behind it. Inches
+	k = np.arange(rays) + 0.5
+	radius, turn = np.sqrt(k / rays), k * math.pi * (3 - math.sqrt(5))
+	disc = np.c_[radius * np.cos(turn), radius * np.sin(turn), np.sqrt(1 - radius * radius)]
+	tris = np.asarray(tris, float)
+	out = np.empty(len(points))
+	for i, (p, n) in enumerate(zip(np.asarray(points, float), np.asarray(normals, float))):
+		n = n / np.linalg.norm(n)
+		t = np.cross(n, [1.0, 0.0, 0.0] if abs(n[0]) < 0.9 else [0.0, 1.0, 0.0])
+		t /= np.linalg.norm(t)
+		origin = p + n * 0.1 / 25.4
+		near = tris[((tris - origin) @ n > 0).any(1)]
+		a = near[:, 0]
+		e1, e2 = near[:, 1] - a, near[:, 2] - a
+		s = origin - a
+		q = np.cross(s, e1)
+		far = (e2 * q).sum(1)
+		seen = 0
+		for d in np.array_split(disc @ np.array([t, np.cross(n, t), n]), max(1, rays // 8)):
+			pvec = np.cross(d[:, None, :], e2[None])
+			det = np.einsum("rmk,mk->rm", pvec, e1)
+			ok = np.abs(det) > 1e-12
+			inv = np.where(ok, 1 / np.where(ok, det, 1), 0)
+			u, v = np.einsum("rmk,mk->rm", pvec, s) * inv, (q @ d.T).T * inv
+			seen += int((~(ok & (u >= 0) & (v >= 0) & (u + v <= 1) & (far[None] * inv > 1e-9)).any(1)).sum())
+		out[i] = seen / rays
 	return out
 
 
@@ -1353,6 +1425,22 @@ def first_hit(tris, origin, direction):
 	return float(d[met].min()) if met.any() else None
 
 
+def slot_open(tris, ends, side, outboard=4.0, above=6.0):
+	# A slot cut down through a surface along the line between two ends ([FS,
+	# WL, BL] each): (the least a ray straight down from above the line falls
+	# past the line before meeting anything, inf for a miss; the most the
+	# surface `outboard` inches outboard of the line lies below it), at 19
+	# points along the line
+	drops, beside = [], []
+	down = np.array([0.0, -1.0, 0.0])
+	for t in np.linspace(0.05, 0.95, 19):
+		q = ends[0] + (ends[1] - ends[0]) * t
+		for origin, out in ((q, drops), (q + [0, 0, outboard * side], beside)):
+			d = first_hit(tris, origin + [0, above, 0], down)
+			out.append(math.inf if d is None else d - above)
+	return min(drops), max(beside)
+
+
 def hits(tris, origins, direction):
 	# Where rays from each origin (N, 3) along one direction first meet the
 	# triangles: (triangle index, barycentric (u, v)) per ray, index -1 for a miss
@@ -1475,6 +1563,39 @@ def atlas(path, material="paint"):
 	view = gltf["bufferViews"][image["bufferView"]]
 	raw = binary[view.get("byteOffset", 0): view.get("byteOffset", 0) + view["byteLength"]]
 	return np.asarray(Image.open(io.BytesIO(raw)).convert("L"), float) / 255
+
+
+def islands(px):
+	# Each triangle's UV island (px (N, 3, 2), the atlas's pixels): triangles
+	# joined across corners they share at one UV; an id per triangle
+	key = np.round(px.reshape(-1, 2) * 64).astype(np.int64)
+	ids = {}
+	corner = np.array([ids.setdefault((a, b), len(ids)) for a, b in key]).reshape(-1, 3)
+	parent = list(range(len(ids)))
+
+	def find(i):
+		while parent[i] != i:
+			parent[i] = parent[parent[i]]
+			i = parent[i]
+		return i
+	for a, b, c in corner:
+		root = find(a)
+		parent[find(b)] = root
+		parent[find(c)] = root
+	return np.array([find(a) for a in corner[:, 0]])
+
+
+def holds(t):
+	# Whether a UV triangle (3, 2), in the atlas's pixels, holds a texel centre
+	(x0, y0), (x1, y1) = np.floor(t.min(0)).astype(int), np.ceil(t.max(0)).astype(int)
+	gx, gy = np.meshgrid(np.arange(x0, x1 + 1) + 0.5, np.arange(y0, y1 + 1) + 0.5)
+	a, b, c = t
+	d = (b[1] - c[1]) * (a[0] - c[0]) + (c[0] - b[0]) * (a[1] - c[1])
+	if abs(d) < 1e-12:
+		return False
+	l1 = ((b[1] - c[1]) * (gx - c[0]) + (c[0] - b[0]) * (gy - c[1])) / d
+	l2 = ((c[1] - a[1]) * (gx - c[0]) + (a[0] - c[0]) * (gy - c[1])) / d
+	return bool(((l1 >= 0) & (l2 >= 0) & (1 - l1 - l2 >= 0)).any())
 
 
 def sample(image, uv):
@@ -1780,6 +1901,24 @@ def checks(jet, only=(), seen=None):
 		burner = jet.points(["burner_left", "burner_right"])
 		yield result("layout.nozzle", "burner's faces short of the nozzles' exit", 0.0, max(0.0, burner[:, 0].max() - F["layout"]["nozzle"]["exit"] + 1.0), 0.01, "FS in")
 		yield result("layout.nozzle", "burner inside the nozzle's exit", 0.0, max(0.0, F["layout"]["nozzle"]["waterline"] - F["layout"]["nozzle"]["radius"][1] - burner[:, 1].min()), 0.01, "WL in")
+		# the afterburners' liners (layout.burner): the fuselage's faces in the
+		# burner's finish, a tunnel along each engine's axis from the fuselage's
+		# closed end, where the burner's ring meets it, forward to the
+		# flameholder, as wide as the open throat
+		end = F["layout"]["nozzle"]["start"] + F["layout"]["nacelle"]["end"]["lip"]
+		yield result("layout.burner", "burner's forward ring on the fuselage's closed end", end, burner[:, 0].min(), 0.05, "FS in")
+		liner = jet.model.parts(None, materials=("burner",)).get("fuselage")
+		if liner is None:
+			raise KeyError("no afterburner liner in the fuselage")
+		liner = FRAME.source(liner.reshape(-1, 3))
+		engine = F["engine"]
+		for side, name in ((-1, "left"), (1, "right")):
+			mine = liner[np.sign(liner[:, 2]) == side]
+			yield result("layout.burner", f"{name} afterburner liner's flameholder", F["layout"]["burner"]["flameholder"], float(mine[:, 0].min()), 0.1, "FS in")
+			yield result("layout.burner", f"{name} afterburner liner's aft end, the fuselage's closed end", end, float(mine[:, 0].max()), 0.05, "FS in")
+			axis = value(engine["buttline"]) * 12 - (mine[:, 0] - value(F["reference"]["station"])) * math.tan(math.radians(value(engine["angle"])))
+			off = np.hypot(mine[:, 1] - F["layout"]["nozzle"]["waterline"], np.abs(mine[:, 2]) - axis)
+			yield result("layout.burner", f"{name} afterburner liner's radius round the engine's axis, the open throat's", F["layout"]["petals"]["throat"][1], float(off.max()), 0.05, "in")
 		# the outer flaps: twelve a side, closing on the drive to tm100159's exit, the burner as wide as the open throat
 		petals = F["layout"]["petals"]
 		for side in ("left", "right"):
@@ -2039,16 +2178,20 @@ def checks(jet, only=(), seen=None):
 					raise KeyError(f"no skin near panel line {k}")
 				worst = max(worst, float(surface_distance(dense, near).max()))
 			yield result("layout.panels", f"panel line {k} (FS {line[0][0]:.0f}-{line[-1][0]:.0f}) off the skin, the furthest", 0.0, worst, 1.0)
-		# and the LEX's root slot, painted the same way (layout.lex slot)
+		# and the LEX's root slot, cut through the LEX (layout.lex slot): along
+		# its line a ray from above falls past the LEX's top into the opening,
+		# and 4 in outboard of it meets the LEX's top within an inch of the
+		# line's waterline
 		slot = F["layout"]["lex"]["slot"]
 		for side, name in ((1, "right"), (-1, "left")):
 			ends = np.array([slot["front"], slot["aft"]], float) * [1, 1, side]
-			dense = np.linspace(ends[0], ends[1], int(np.ceil(np.linalg.norm(ends[1] - ends[0]) / 0.5)) + 1)
-			low, high = dense.min(0) - 3, dense.max(0) + 3
+			low, high = ends.min(0) - [3, 40, 9], ends.max(0) + [3, 9, 9]
 			near = skin[((skin.min(1) <= high) & (skin.max(1) >= low)).all(1)]
 			if not len(near):
 				raise KeyError(f"no skin near the {name} LEX's slot")
-			yield result("layout.lex", f"{name} LEX's slot off the skin, the furthest", 0.0, float(surface_distance(dense, near).max()), 1.0)
+			drop, beside = slot_open(near, ends, side)
+			yield result("layout.lex", f"{name} LEX's slot open along its line: its least drop past the LEX's top (at least 2)", 2.0, min(drop, 2.0), 0.0)
+			yield result("layout.lex", f"{name} LEX's top 4 in outboard of its slot, the furthest below the slot's line", 0.0, beside, 1.0)
 
 	yield from guard("layout.panels", "panel lines", panels)
 
@@ -2980,7 +3123,9 @@ def checks(jet, only=(), seen=None):
 			return np.c_[p[:, 1] - nozzle["waterline"], p[:, 2] - axis]
 
 		skin_ = round_axis(["fuselage"])
-		skin_ = skin_[np.hypot(skin_[:, 0], skin_[:, 1]) < F["layout"]["nacelle"]["end"]["radius"] + 1.0]
+		# the skin, not the afterburner's liner within the open throat's radius (layout.burner)
+		reach = np.hypot(skin_[:, 0], skin_[:, 1])
+		skin_ = skin_[(reach < F["layout"]["nacelle"]["end"]["radius"] + 1.0) & (reach > F["layout"]["petals"]["throat"][1] + 0.5)]
 		least = lip(skin_, round_axis(sorted(n for n in jet.parts() if n.startswith("nozzle_right_petal_"))), range(-60, 96, 2))
 		if np.isnan(least):
 			raise KeyError("no lip over the right nozzle's flaps")
@@ -3324,6 +3469,33 @@ def checks(jet, only=(), seen=None):
 		yield result("layout.antennas", "ventral blade's tip off the centreline", (corners[2][2] + corners[3][2]) / 2, float(tip[:, 2].mean()), 0.4, "BL in")
 		base = p[p[:, 1] > p[:, 1].max() - 1.3]
 		yield result("layout.antennas", "ventral blade's base off the centreline", (corners[0][2] + corners[1][2]) / 2, float(base[:, 2].mean()), 0.4, "BL in")
+		# the total temperature probe on the left side: its head, what lies at
+		# or below the head's axis (the strut ends on the axis), and its strut,
+		# what stands clear of the head above it
+		t = F["layout"]["temperature"]
+		(fs, wl, bl), (hs, hw, hb) = t["foot"], t["head"]
+		radius = t["diameter"] / 2
+		p = jet.points(["temperature"])
+		head = p[p[:, 1] < hw + 0.01]
+		yield result("layout.temperature", "total temperature probe's head, its front", hs - t["length"] / 2, head[:, 0].min(), 0.05, "FS in")
+		yield result("layout.temperature", "total temperature probe's head, its aft end", hs + t["length"] / 2, head[:, 0].max(), 0.05, "FS in")
+		# across at the axis's level, where the strut is thinner than the head
+		level = p[np.abs(p[:, 1] - hw) < 0.02]
+		yield result("layout.temperature", "total temperature probe's head, its diameter", t["diameter"], float(np.ptp(level[:, 2])), 0.03, "in")
+		yield result("layout.temperature", "total temperature probe's head, its bottom", hw - radius, p[:, 1].min(), 0.05, "WL in")
+		yield result("layout.temperature", "total temperature probe's head, off the centreline", hb, float((head[:, 2].min() + head[:, 2].max()) / 2), 0.05, "BL in")
+		strut = p[p[:, 1] > hw + radius + 0.1]
+		yield result("layout.temperature", "total temperature probe's strut, its chord", t["chord"], float(strut[:, 0].max() - strut[:, 0].min()), 0.05, "in")
+		# its thickness square to its chord (along the stations) and its span
+		# (from the foot to the head)
+		across = np.cross([1.0, 0.0, 0.0], np.subtract(t["head"], t["foot"]))
+		yield result("layout.temperature", "total temperature probe's strut, its thickness", t["thickness"], float(np.ptp(strut @ (across / np.linalg.norm(across)))), 0.03, "in")
+		# the foot on the left side's skin: the fuselage met from outboard at
+		# the foot's station and waterline
+		body = FRAME.source(jet.tris(["fuselage"]).reshape(-1, 3)).reshape(-1, 3, 3)
+		k, bary = hits(body, np.array([[fs, wl, -60.0]]), np.array([0.0, 0.0, 1.0]))
+		yield result("layout.temperature", "total temperature probe's foot, the skin off the centreline there", bl, float(body[k[0], :, 2].mean()) if k[0] >= 0 else math.nan, 0.3, "BL in")
+		yield result("layout.temperature", "total temperature probe's strut reaching the skin, its highest", wl, float(strut[:, 1].max()), 1.0, "WL in")
 		dome = jet.points(["antenna_dome"])
 		station, waterline, buttline, diameter, proud = an["dome"]
 		yield result("layout.antennas", "dome's middle", station, (dome[:, 0].min() + dome[:, 0].max()) / 2, 0.5, "FS in")
@@ -3387,9 +3559,10 @@ def checks(jet, only=(), seen=None):
 			near = k[np.abs(k[:, 0] - station) < 2.0]
 			yield result("layout.keel", f"keel's bottom at FS {station}", waterline, float(near[:, 1].min()) if len(near) else 999.0, 0.5, "WL in")
 		blade = k[k[:, 1] < 90]
-		# its aft end along its bottom, below the pivot fitting that closes it
-		fitting = F["layout"]["hook"]["pivot"][1] - F["layout"]["hook"]["fitting"]["radius"]
-		bottom = k[k[:, 1] < fitting - 0.3]
+		# its aft end along its bottom, within 0.3 in of its aft bottom line (the
+		# pivot fitting's round reaches to 0.2 in above it since the pivot came
+		# down to WL 76.9, so a band below the fitting held nothing)
+		bottom = k[k[:, 1] < keel["bottom"][-1][1] + 0.3]
 		yield result("layout.keel", "keel's aft end, along its bottom below the pivot fitting", keel["stations"][1], float(bottom[:, 0].max()) if len(bottom) else 0.0, 1.0, "FS in")
 		# measured just forward of the pivot fitting, against the taper's width there
 		front, back = keel["stations"]
@@ -4803,7 +4976,8 @@ def checks(jet, only=(), seen=None):
 			p = jet.points(["rail_9"], drives)
 			along = (p - front) @ axis
 			off = p - front - np.outer(along, axis)
-			rail = np.abs(off[:, 1]) <= value(F["stores"]["lau7"]["width"]) / 2 + 0.05   # the rail's own corners, not its housings
+			# the rail's own corners, not its housings or the fairing beside it
+			rail = (np.abs(off[:, 1]) <= value(F["stores"]["lau7"]["width"]) / 2 + 0.05) & (np.abs(off[:, 2]) <= value(F["stores"]["lau7"]["height"]) / 2 + 0.05)
 			ends = along[rail]
 			yield result("stores.lau7.length", "wingtip rail, tip to tip", value(F["stores"]["lau7"]["length"]), ends.max() - ends.min(), 0.3)
 			middle = front + axis * 25.0   # clear of the fitting strip (40 to 90 in) and the housings
@@ -4855,31 +5029,52 @@ def checks(jet, only=(), seen=None):
 				line = lambda f: w0 + (f - f0) * (w1 - w0) / (f1 - f0) + sign * (strips["width"] / 2 + housing["rim"])
 				outer = cut[np.abs(cut[:, 1] - line(cut[:, 0])) < 0.1]
 				yield result("layout.stores", f"{key} strip's housing, its outer edge's length", f1 - f0 + 2 * housing["end"], np.ptp(outer[:, 0]) if len(outer) else math.nan, 0.3)
-				# its thickness 0.3 in inside its outer edge, clear of the fairing below it
+				# its thickness 0.8 in inside its outer edge at its middle, past its
+				# top edges' round and clear of the fairing below and beside it
 				middle = (f0 + f1) / 2
-				across = jet.cut(["rail_9"], np.array([middle, line(middle) - sign * 0.3, face]), [0.0, 1.0, 0.0], drives).reshape(-1, 3)
-				across = across[(across[:, 2] > face - housing["thick"] - 0.6) & (across[:, 2] < face + 0.6)]
+				across = jet.cut(["rail_9"], np.array([middle, line(middle) - sign * 0.8, face]), [0.0, 1.0, 0.0], drives).reshape(-1, 3)
+				across = across[(across[:, 2] > face - housing["thick"] - 0.6) & (across[:, 2] < face + 0.6) & (np.abs(across[:, 0] - middle) < 1.0)]
 				yield result("layout.stores", f"{key} strip's housing, thick", housing["thick"], np.ptp(across[:, 2]) if len(across) else math.nan, 0.05)
-			station = 530.0
-			k = (station - front[0]) / (aft[0] - front[0])
 			half = value(F["stores"]["lau7"]["width"]) / 2
-			top, bottom = front[1] + k * (aft[1] - front[1]) + half - 0.15, front[1] + k * (aft[1] - front[1]) - half + 0.15
-			# the section's waterlines where its segments cross the buttline just
-			# outboard of the step
-			segments = jet.cut(["rail_9"], np.array([station, top, 226.0]), [1.0, 0.0, 0.0], drives).reshape(-1, 2, 3)
-			def crossing(at):
-				spans = segments[(segments[:, 0, 2] - at) * (segments[:, 1, 2] - at) <= 0]
-				share = (at - spans[:, 0, 2]) / np.where(spans[:, 1, 2] == spans[:, 0, 2], 1.0, spans[:, 1, 2] - spans[:, 0, 2])
-				wl = spans[:, 0, 1] + share * (spans[:, 1, 1] - spans[:, 0, 1])
-				return most(wl), least(wl)
-			beside = crossing(adapter["step"] + 0.5)
-			yield result("layout.stores", "wingtip fairing's top just outboard of the step, against the rail's", top, beside[0], 0.05, "WL in")
-			yield result("layout.stores", "wingtip fairing's underside just outboard of the step, against the rail's", bottom, beside[1], 0.05, "WL in")
-			ends = crossing(adapter["edge"] - 0.3 + 0.02)
-			inboard = crossing(adapter["step"] - 0.5)
-			k = 0.5 / (adapter["step"] - adapter["edge"] + 0.3)
-			yield result("layout.stores", "wingtip fairing's top just inboard of the step, on its rise to the tip's edge", top + k * (ends[0] - top), inboard[0], 0.05, "WL in")
-			yield result("layout.stores", "wingtip fairing's underside just inboard of the step, on its rise to the tip's edge", bottom + k * (ends[1] - bottom), inboard[1], 0.05, "WL in")
+			inner = adapter["edge"] - 0.3   # where the fairing leaves the tip's surfaces
+			def fairing(station):
+				# at a station: the rail's top and bottom less the fairing's 0.15 in
+				# inset, the rail's inboard face 0.3 in inside it (the fairing's end
+				# across), and the waterlines, highest and lowest, where the
+				# section's segments cross a buttline
+				k = (station - front[0]) / (aft[0] - front[0])
+				wl, bl = front[1] + k * (aft[1] - front[1]), front[2] + k * (aft[2] - front[2])
+				segments = jet.cut(["rail_9"], np.array([station, wl, 226.0]), [1.0, 0.0, 0.0], drives).reshape(-1, 2, 3)
+				def crossing(at):
+					spans = segments[(segments[:, 0, 2] - at) * (segments[:, 1, 2] - at) <= 0]
+					share = (at - spans[:, 0, 2]) / np.where(spans[:, 1, 2] == spans[:, 0, 2], 1.0, spans[:, 1, 2] - spans[:, 0, 2])
+					w = spans[:, 0, 1] + share * (spans[:, 1, 1] - spans[:, 0, 1])
+					return most(w), least(w)
+				return wl + half - 0.15, wl - half + 0.15, bl - value(F["stores"]["lau7"]["height"]) / 2 + 0.3, crossing
+			# its section clear of the housings: an S-curve (a smoothstep across)
+			# from the tip's surfaces at their edge to the rail's top and bottom
+			# levels at the step, half way there half way across, then level
+			top, bottom, face, crossing = fairing(530.0)
+			ends = crossing(inner + 0.02)
+			quarter, middle, beyond = crossing(inner + (adapter["step"] - inner) / 4), crossing((inner + adapter["step"]) / 2), crossing(adapter["step"] + 0.5)
+			for i, word in ((0, "top"), (1, "underside")):
+				level = (top, bottom)[i]
+				# a quarter of the way the S-curve has gone 0.156 of the way, where a
+				# straight slope from the edge to the step would have gone 0.25
+				yield result("layout.stores", f"wingtip fairing's {word} at FS 530 a quarter of the way from the tip's edge to the step, on its S-curve", round(ends[i] + (level - ends[i]) * 0.15625, 2), quarter[i], 0.05, "WL in")
+				yield result("layout.stores", f"wingtip fairing's {word} at FS 530 half way from the tip's edge to the step, half way to the rail's level", round((ends[i] + level) / 2, 2), middle[i], 0.05, "WL in")
+				yield result("layout.stores", f"wingtip fairing's {word} at FS 530 just outboard of the step, level with the rail's", level, beyond[i], 0.05, "WL in")
+			# its ends drawn in to a knife edge along the rail (taper): its standing
+			# height 0.6 in inboard of the rail's face half its taper inside each
+			# end, against the same 2 in past the taper, by the smoothstep half way
+			first, last = adapter["chord"][0] + 0.3, adapter["chord"][1] - 0.3
+			for word, inside, past in (("forward", first + adapter["taper"] / 2, first + adapter["taper"] + 2.0), ("aft", last - adapter["taper"] / 2, last - adapter["taper"] - 2.0)):
+				heights = []
+				for station in (inside, past):
+					_, _, face, crossing = fairing(station)
+					high, low = crossing(face - 0.6)
+					heights.append(high - low)
+				yield result("layout.stores", f"wingtip fairing's standing height half its taper inside its {word} end, against 2 in past the taper", 0.5, heights[0] / heights[1], 0.05, "share")
 			# the lower housing the upper's mirror about the rail: its outer edge
 			# as far under the rail's bottom as the upper's stands over its top,
 			# less their strips' gaps to the rail, half way along each, and its
@@ -5144,6 +5339,46 @@ def checks(jet, only=(), seen=None):
 		paint = np.array(F["layout"]["paint"]["lower"], float) @ [0.299, 0.587, 0.114]
 		on, off = read(cap["station"], [cap["turn"]])[0], read(cap["station"], [-cap["turn"]])[0]
 		yield result("paint.stores", "tank's filler cap on its right against its left", lid / paint, on / off, 0.15, "share")
+		# the wingtip LAU-7s one even tone (layout.stores.paint tip even): along
+		# each one's top, bottom and outboard face, sampled a texel apart down
+		# its body, the paint against its own mean over 5 in (the shade's slow
+		# change taken out), its spread small. 48 bake samples a texel left
+		# blotches of 2% an inch or two across, unlike from one rail to the other
+		tip = F["layout"]["stores"]["rails"]["tip"]
+		length = float(np.linalg.norm(np.subtract(tip["aft"], tip["front"])))
+		for rail, sign in (("rail_9", 1), ("rail_1", -1)):
+			tris, uvs = jet.textured(("stores",), [rail])
+			front = np.array(tip["front"], float) * [1, 1, sign]
+			axis = (np.array(tip["aft"], float) * [1, 1, sign] - front) / length
+			for face, offset, direction in (("top", [0, 6.0, 0], [0, -1.0, 0]), ("bottom", [0, -6.0, 0], [0, 1.0, 0]), ("outboard", [0, 0, 8.0 * sign], [0, 0, -sign])):
+				values = []
+				for s in np.arange(tip["cap"] + 5, length - tip["cone"] - 5, 0.58):
+					k, bary = hits(tris, (front + axis * s + offset)[None], np.array(direction, float))
+					if k[0] >= 0:
+						u, v = bary[0]
+						values.append(sample(stores, (uvs[k[0], 0] * (1 - u - v) + uvs[k[0], 1] * u + uvs[k[0], 2] * v)[None])[0])
+				values = np.array(values)
+				spread = float(np.std((values - np.convolve(values, np.ones(9) / 9, "same"))[4:-4]) / values.mean()) if len(values) > 20 else math.nan
+				yield result("paint.stores", f"wingtip rail's paint along its {face} ({rail}), against its mean over 5 in, its spread", 0.0, spread, 0.012, "share")
+			# its body dark between its light ends (layout.stores.paint tip
+			# body, the stores' grey on the cap and the cone): the outboard
+			# face's paint down the body's middle against the cap's and the
+			# cone's, the body's colour against the grey in luminance. Painted
+			# by the frame's kind alone ("rail"), the body took the grey
+			def outboard(stations):
+				out = []
+				for s in stations:
+					k, bary = hits(tris, (front + axis * s + [0, 0, 8.0 * sign])[None], np.array([0, 0, -sign], float))
+					if k[0] >= 0:
+						u, v = bary[0]
+						out.append(sample(stores, (uvs[k[0], 0] * (1 - u - v) + uvs[k[0], 1] * u + uvs[k[0], 2] * v)[None])[0])
+				return np.array(out)
+			body = outboard(np.linspace(length * 0.35, length * 0.65, 9))
+			ends = outboard([tip["cap"] * 0.4, tip["cap"] * 0.6, length - tip["cone"] + 1.5, length - tip["cone"] + 3.0])
+			luminance = [0.299, 0.587, 0.114]
+			expected = float(np.dot(spec["tip"]["body"], luminance) / np.dot(F["layout"]["paint"]["lower"], luminance))
+			ratio = float(np.median(body) / np.median(ends)) if len(body) and len(ends) else math.nan
+			yield result("paint.stores", f"wingtip rail's body ({rail}) against its light ends, its paint's share", round(expected, 3), ratio, 0.08, "share")
 
 	yield from guard("paint", "stores' paint", stores_paint)
 
@@ -5327,10 +5562,22 @@ def checks(jet, only=(), seen=None):
 			# An edge stands square to the outer face nearest it: the forward
 			# nose doors wrap round the bay's sides, their outer faces turning
 			# past 60 deg from the vertical, and read against the vertical
-			# alone those passed for edges
+			# alone those passed for edges. One lying flush with the skin
+			# beside it, a face of the skin turned its way (within 25 deg)
+			# passing within a quarter inch of its middle, is no edge in a
+			# crack but part of the jet's outside: an inner main door's
+			# outboard edge fills the skin's corner under the nacelle's side,
+			# the side's skin standing on in its plane 0.16 in away, and lit
+			# as the side is
 			normals, middles = unit(tris), tris.mean(1)
 			nearest = np.flatnonzero(outer)[np.argmin(np.linalg.norm(middles[:, None] - middles[outer][None], axis=-1), axis=1)]
 			edges = ~outer & (np.abs((normals * normals[nearest]).sum(1)) < 0.5)
+			around = skin[(skin.min(1) <= high).all(1) & (skin.max(1) >= low).all(1)]
+			facing = unit(around)
+			for k in np.flatnonzero(edges):
+				along = np.abs(facing @ normals[k]) > 0.9
+				if along.any() and closest(middles[k][None], around[along])[0] < 0.25:
+					edges[k] = False
 			if not PROUD.get(name, 0.0):
 				if not edges.any():
 					raise ValueError(f"{name} has no edges")
@@ -6153,7 +6400,8 @@ def checks(jet, only=(), seen=None):
 				raise ValueError(f"{name}'s outline read nowhere off the paint")
 			yield result("layout.panels", f"{name}'s outline's share no darker than the door and skin beside it", 0.0, gaps / total, 0.05, "share")
 
-		# the LEX's root slot dark along its length against the LEX's top 4 in
+		# the LEX's root slot, cut through the LEX: its outboard wall an inch
+		# below its rim dark along its length against the LEX's top 4 in
 		# outboard of it (layout.lex slot)
 		slot = F["layout"]["lex"]["slot"]
 		for side, name in ((1, "right"), (-1, "left")):
@@ -6165,12 +6413,37 @@ def checks(jet, only=(), seen=None):
 			ratios = []
 			for t in np.linspace(0.1, 0.9, 9):
 				q = ends[0] + (ends[1] - ends[0]) * t
-				inside, outside = read(np.array([q, q + [0, 0, 4.0 * side]]), np.array([0.0, 1.0, 0.0]), near)
+				inside = read(np.array([q + [0, -1.0, side * slot["width"] / 2]]), np.array([0.0, 0.0, -side]), near)[0]
+				outside = read(np.array([q + [0, 0, 4.0 * side]]), np.array([0.0, 1.0, 0.0]), near)[0]
 				if np.isfinite(inside) and np.isfinite(outside):
 					ratios.append(inside / outside)
 			if not ratios:
-				raise ValueError(f"the {name} LEX's slot is off the painted skin")
-			yield result("layout.lex", f"{name} LEX's slot's paint against the LEX beside it, the lightest", slot["shade"], max(ratios), 0.2, "share")
+				raise ValueError(f"the {name} LEX's slot's wall is off the painted skin: no slot cut there")
+			yield result("layout.lex", f"{name} LEX's slot's wall against the LEX's top beside it, the lightest", slot["shade"], max(ratios), 0.2, "share")
+			# what shows through it from above, down its middle: the first skin a
+			# ray meets from an inch under its rim, as dark against the LEX's top
+			# beside it as the walls (the slot's shade, read through the paint's
+			# occlusion as the walls are). A face narrower in the atlas
+			# than a texel (the splitter's top edge) holds no texel of its own to
+			# paint, so a ray meeting one reads nothing
+			deep = ((tris.min(1) <= high) & (tris.max(1) >= ends.min(0) - [6, 30, 6])).all(1)
+			pixels = uvs * size
+			longest = np.max([np.linalg.norm(pixels[:, i] - pixels[:, (i + 1) % 3], axis=1) for i in range(3)], axis=0)
+			u, v = pixels[:, 1] - pixels[:, 0], pixels[:, 2] - pixels[:, 0]
+			spanned = np.abs(u[:, 0] * v[:, 1] - u[:, 1] * v[:, 0]) / np.maximum(longest, 1e-9) >= 1.0
+			ratios = []
+			for t in np.linspace(0.1, 0.9, 9):
+				q = ends[0] + (ends[1] - ends[0]) * t
+				k, _ = hits(tris[deep], (q + [0, -1.0, 0])[None], np.array([0.0, -1.0, 0.0]))
+				if k[0] < 0 or not spanned[np.flatnonzero(deep)[k[0]]]:
+					continue
+				floor = read(np.array([q + [0, -3.0, 0]]), np.array([0.0, 1.0, 0.0]), deep)[0]
+				outside = read(np.array([q + [0, 0, 4.0 * side]]), np.array([0.0, 1.0, 0.0]), near)[0]
+				if np.isfinite(floor) and np.isfinite(outside):
+					ratios.append(floor / outside)
+			if not ratios:
+				raise ValueError(f"nothing painted shows through the {name} LEX's slot")
+			yield result("layout.lex", f"{name} LEX's slot: what shows through it from above against the LEX's top beside it, the lightest", slot["shade"], max(ratios), 0.2, "share")
 
 	yield from guard("paint", "paint", paint)
 
@@ -6206,6 +6479,54 @@ def checks(jet, only=(), seen=None):
 		yield result("layout.inlet", f"left duct's walls in view darkening with depth: their median within 10 in of the lip ({len(near)} rays) short of 0.08 of the upper grey over theirs past 40 in ({len(far)})", 0.0, max(0.0, 0.08 - float(np.median(near) - np.median(far))), 0.0, "share")
 
 	yield from guard("paint", "inlet ducts' paint", ducts)
+
+	# The atlas's UV islands too narrow to hold a texel centre of their own
+	# (build.py lend()): each shows the shade the texels beside it were lent,
+	# the ambient occlusion cast at points across it (across(), as lend()
+	# casts it; unoccluded()), its paint read as the shade it shows on the
+	# grey there (shown()): a strip in the crack between two nozzle flaps
+	# sees none of the sky its flap's face a half inch off sees all of, and a
+	# fairing's strip sees the sky beside a face buried under the fin.
+	# Unlent, they drew an unbaked texel's paint, unshaded and unlined: 0.32
+	# off at the median. Judged against the nearest island beside each, by
+	# the two's occlusion, the measure was the neighbours' bake: 0.09 lighter
+	# than the cast at the median where the strips' own shade stood within
+	# 0.01 of it. The nozzles' parts, tinted by which way each face turns from
+	# the engine's axis, and those the bake shades open (build.py exposed())
+	# or the closed doors' edges it casts against the skin uncut, are left out
+	def narrow():
+		if image is None:
+			return
+		size = image.shape[0]
+		open_ = lambda n: n.startswith(("gear_", "well_", "speedbrake")) or n in ("launch_bar", "probe", "probe_door", "probe_door_forward")
+		materials = {m for mesh in jet.model.meshes for _, m in mesh} - {"stores"}
+		around = FRAME.source(np.concatenate(list(jet.model.parts(verify.pose(jet.joints, {}), materials).values())).reshape(-1, 3)).reshape(-1, 3, 3)
+		values, places, facing = [], [], []
+		for name in [n["name"] for n in jet.model.nodes if n["mesh"] is not None]:
+			if name.startswith("nozzle_") or open_(name):
+				continue
+			try:
+				tris, uvs = jet.textured(("paint", "team"), [name])
+			except KeyError:
+				continue
+			island = islands(uvs * size)
+			area = np.linalg.norm(np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0]), axis=1)
+			normal = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0]) / np.maximum(area, 1e-12)[:, None]
+			for i in sorted(set(island.tolist())):
+				mine = np.flatnonzero(island == i)
+				if any(holds(t) for t in uvs[mine] * size):
+					continue
+				k = mine[np.argmax(area[mine])]
+				values.append(sample(image, uvs[k].mean(0)[None])[0])
+				places.append(across(tris[k]))
+				facing.append(-normal[k])
+		if not values:
+			raise ValueError("no UV island too narrow to hold a texel centre")
+		lit = unoccluded(around, np.concatenate(places), np.repeat(np.array(facing), len(places[0]), axis=0)).reshape(len(values), -1).mean(1)
+		off = np.abs(np.array([shown(v, n) for v, n in zip(values, facing)]) - lit)
+		yield result("paint.narrow", f"UV islands too narrow to hold a texel centre ({len(off)}), the shade their paint shows against the light cast across them, the median off", 0.0, float(np.median(off)), 0.05, "shade")
+
+	yield from guard("paint", "narrow islands' paint", narrow)
 
 
 def main():
