@@ -186,10 +186,14 @@ SETTINGS_LONGEST = 64
 # ceiling, not its shape.
 SESSION_LONGEST = 64
 
-# How long a page's highest save number of a key is kept. Only a save and the
+# How long a page's highest edit taken of a key is kept. Only a save and the
 # flush sent over it are ever out at once, seconds apart; a page open for
 # longer keeps a key's row fresh with each save of it.
 SAVE_KEPT = 86400
+
+# The highest edit number config_save takes: the largest integer a page's
+# JavaScript counts to exactly.
+STAMP_MOST = 9007199254740991
 
 # A stored pilot secret in the shape crypto.randomUUID() gave, JSON-encoded:
 # the secret from before per-server tokens, which every server it entered
@@ -246,42 +250,74 @@ def config_save(a):
 		if len(name) > SETTINGS_LONGEST:
 			a.error.label(400, "errors.invalid_request")
 			return
+	# The ceiling is on what one save writes: its keys and its fill together.
+	if len(config) + len([name for name in fill if name not in config]) > SETTINGS_MAXIMUM:
+		a.error.label(400, "errors.invalid_request")
+		return
 	session = a.input("session", "")
 	if len(session) > SESSION_LONGEST:
 		a.error.label(400, "errors.invalid_request")
 		return
-	sequence = whole(a, "sequence")
+	# stamps gives each key the number of the page's edit the save carries:
+	# a page counts its edits from 1, across every key. A page loaded before
+	# stamps numbers its saves instead, and each key then carries the save's
+	# number; that fallback is for pages left open across the release that
+	# brought stamps.
+	stamps = {}
+	if session:
+		if a.input("stamps", ""):
+			stamps = json.decode(a.input("stamps", ""), None)
+			if type(stamps) != "dict" or len(stamps) > SETTINGS_MAXIMUM:
+				a.error.label(400, "errors.invalid_request")
+				return
+		else:
+			sequence = whole(a, "sequence")
+			stamps = {name: sequence for name in config}
+		# A key without a stamp, or one below 1, would read as already taken
+		# and be answered as saved while nothing was written.
+		for name in config:
+			stamp = stamps.get(name)
+			if type(stamp) != "int" or stamp < 1 or stamp > STAMP_MOST:
+				a.error.label(400, "errors.invalid_request")
+				return
 	now = mochi.time.now()
-	# A key this page already had a later save of taken is left as it is,
-	# even where another page wrote it between the two. The save's number is
-	# recorded for each key before the key is written, and the check is in the
-	# write's own WHERE, so an older save arriving at any point between a
-	# newer one's statements is still refused. Keys a later save did not carry
-	# are written. A key this page's save of this number or a later one has
-	# already been recorded for is left too: a save sent again under its own
-	# number, once the server took it and the answer was lost, is taken once,
-	# so it cannot undo another page's save of the key made in between.
+	# A page's edit of a key is taken once, and never after a later edit of
+	# the key from the same page, even where another page wrote it between
+	# the two. Each key's stamp is recorded before the key is written, and the
+	# check is in the write's own WHERE, so an older edit arriving at any
+	# point between a newer one's statements is still refused. A save sent
+	# again, under any number and in any save, once the server took it and
+	# the answer was lost, is taken once, so it cannot undo another page's
+	# save of the key made in between. One transaction, so a stamp is never
+	# recorded for a key whose value it did not also write: a request that
+	# died between the two would have its resend skip the key, answered as
+	# taken. It holds the write lock from its start, so two saves of the same
+	# key never interleave either. The saves and settings tables keep the
+	# stamp in their sequence column.
+	handle = mochi.db.transaction()
 	taken = {}
 	if session:
-		for row in mochi.db.rows("select name from saves where session=? and sequence>=?", session, sequence):
-			taken[row["name"]] = True
+		for row in handle.rows("select name, sequence from saves where session=?", session):
+			taken[row["name"]] = row["sequence"]
 	for name in config:
-		if name in taken:
+		stamp = stamps.get(name, 0)
+		if session and taken.get(name, 0) >= stamp:
 			continue
 		if session:
-			mochi.db.execute("insert into saves (session, name, sequence, updated) values (?, ?, ?, ?) on conflict(session, name) do update set sequence=max(saves.sequence, excluded.sequence), updated=excluded.updated", session, name, sequence, now)
-		mochi.db.execute("insert into settings (name, value, updated, session, sequence) values (?, ?, ?, ?, ?) on conflict(name) do update set value=excluded.value, updated=excluded.updated, session=excluded.session, sequence=excluded.sequence where (case when excluded.session!='' and settings.session=excluded.session then excluded.sequence>=settings.sequence else excluded.updated>=settings.updated end) and not exists (select 1 from saves where saves.session=excluded.session and saves.name=excluded.name and saves.sequence>excluded.sequence) and (settings.name!='pilot' or settings.value='\"\"' or settings.value like ?)", name, json.encode(config[name]), now, session, sequence, DISCLOSED)
+			handle.execute("insert into saves (session, name, sequence, updated) values (?, ?, ?, ?) on conflict(session, name) do update set sequence=max(saves.sequence, excluded.sequence), updated=excluded.updated", session, name, stamp, now)
+		handle.execute("insert into settings (name, value, updated, session, sequence) values (?, ?, ?, ?, ?) on conflict(name) do update set value=excluded.value, updated=excluded.updated, session=excluded.session, sequence=excluded.sequence where (case when excluded.session!='' and settings.session=excluded.session then excluded.sequence>=settings.sequence else excluded.updated>=settings.updated end) and not exists (select 1 from saves where saves.session=excluded.session and saves.name=excluded.name and saves.sequence>excluded.sequence) and (settings.name!='pilot' or settings.value='\"\"' or settings.value like ?)", name, json.encode(config[name]), now, session, stamp, DISCLOSED)
 	for name in fill:
 		if name not in config:
-			mochi.db.execute("insert into settings (name, value, updated, session, sequence) values (?, ?, ?, ?, ?) on conflict(name) do nothing", name, json.encode(fill[name]), now, session, sequence)
+			handle.execute("insert into settings (name, value, updated, session, sequence) values (?, ?, ?, ?, ?) on conflict(name) do nothing", name, json.encode(fill[name]), now, session, 0)
 	if session:
-		mochi.db.execute("delete from saves where updated<?", now - SAVE_KEPT)
+		handle.execute("delete from saves where updated<?", now - SAVE_KEPT)
 	kept = {}
 	if "pilot" in config:
-		row = mochi.db.row("select value from settings where name='pilot'")
+		row = handle.row("select value from settings where name='pilot'")
 		stored = json.decode(row["value"], None) if row else None
 		if row and stored != config["pilot"]:
 			kept["pilot"] = stored
+	handle.commit()
 	return {"data": {"saved": True, "kept": kept}}
 
 # whole(a, name) -> int: a non-negative numeric input, zero for anything

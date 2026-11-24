@@ -450,37 +450,41 @@ describe('the saves', () => {
   })
 })
 
-// The saves in turn (#236, #253, #275, #288, #321, #322): config_save judges
-// each key a save carries on its own. It leaves a key the same page last
-// saved under a later number, or had already taken from a save of this
-// number or a later one (the same save sent again); it takes any other, a key
-// another page saved last going to the later save. A key a seed only fills is
-// stored where the account has none.
+// The saves in turn (#236, #253, #275, #288, #321, #322, #357): config_save
+// judges each key a save carries on its own, by the stamp of the page's edit
+// it carries. It leaves a key the same page has already had this edit or a
+// later one of taken, however the save carrying it is numbered or sent; it
+// takes any other, a key another page saved last going to the later save. A
+// key a seed only fills is stored where the account has none.
 describe('the saves in turn', () => {
   afterEach(() => {
     vi.useRealTimers()
   })
 
-  // The server behind the posts, ordering each key as config_save does.
+  // The server behind the posts, ordering each key as config_save does: by
+  // the stamp of the page's edit each key carries.
   function storage() {
     const values: Partial<MissionConfig> = {}
-    const last: Record<string, { session: string; sequence: number }> = {}
-    // Each page's highest save number taken, by key.
+    const last: Record<string, { session: string; stamp: number }> = {}
+    // Each page's highest edit taken, by key.
     const saves: Record<string, number> = {}
     const take = (config: Partial<MissionConfig>, label: Label, fill: Partial<MissionConfig> = {}) => {
       for (const [key, value] of Object.entries(config)) {
+        const stamp = label.stamps[key]
+        // config_save refuses a save with a key it gives no stamp.
+        if (!Number.isInteger(stamp) || stamp < 1) throw new Error(`no stamp for ${key}`)
         const mark = label.session + '\n' + key
-        if ((saves[mark] ?? -1) >= label.sequence) continue
-        saves[mark] = label.sequence
+        if ((saves[mark] ?? 0) >= stamp) continue
+        saves[mark] = stamp
         const before = last[key]
-        if (before && before.session === label.session && label.sequence < before.sequence) continue
+        if (before && before.session === label.session && stamp < before.stamp) continue
         ;(values as Record<string, unknown>)[key] = value
-        last[key] = { session: label.session, sequence: label.sequence }
+        last[key] = { session: label.session, stamp }
       }
       for (const [key, value] of Object.entries(fill)) {
         if (key in config || key in values) continue
         ;(values as Record<string, unknown>)[key] = value
-        last[key] = { session: label.session, sequence: label.sequence }
+        last[key] = { session: label.session, stamp: 0 }
       }
     }
     return { values, take }
@@ -524,6 +528,10 @@ describe('the saves in turn', () => {
     const refuse = async (index: number) => {
       answers[index](false)
       await vi.advanceTimersByTimeAsync(0)
+    }
+    // The server holds what the load answered with.
+    for (const [key, value] of Object.entries(loaded?.saved ?? {})) {
+      if (!(key in store.values)) (store.values as Record<string, unknown>)[key] = value
     }
     if (loaded) saver.load(loaded)
     return { posts, labels, fills, pending, saver, server: store.values, store, take, answer, refuse }
@@ -603,7 +611,7 @@ describe('the saves in turn', () => {
     })
   }
 
-  it('send a flush that failed again as it went, in turn and under its own number, while the page stays', async () => {
+  it('send a flush that failed again as it went, in turn and with its own stamps, while the page stays', async () => {
     vi.useFakeTimers()
     const { posts, labels, pending, saver, server, answer, refuse } = holding()
     const page = new EventTarget()
@@ -616,8 +624,10 @@ describe('the saves in turn', () => {
     await refuse(1)
     expect(posts).toHaveLength(2) // waiting for the save still out
     await answer(0)
-    expect(posts[2]).toEqual([{ fuel: 6000, tod: 'night' }, false]) // the flush again, whole
-    expect(labels[2]).toEqual(labels[1])
+    // The flush again, with its own stamps, without the fuel the save
+    // beside it delivered.
+    expect(posts[2]).toEqual([{ tod: 'night' }, false])
+    expect(labels[2]).toEqual({ ...labels[1], stamps: { tod: labels[1].stamps.tod } })
     await answer(2)
     expect(server).toMatchObject({ fuel: 6000, tod: 'night' })
     expect(pending.partial()).toEqual({})
@@ -629,7 +639,7 @@ describe('the saves in turn', () => {
     expect(labels[4]).toEqual(labels[3])
   })
 
-  it("send a flush that failed again under its own number, so one the server took, its answer lost, does not undo another page's later save", async () => {
+  it("send a flush that failed again with its own stamps, so one the server took, its answer lost, does not undo another page's later save", async () => {
     vi.useFakeTimers()
     const store = storage()
     const one = holding(store)
@@ -649,6 +659,115 @@ describe('the saves in turn', () => {
     await one.answer(1)
     expect(store.values.fuel).toBe(7000) // the other page's later save stands
     expect(one.pending.partial()).toEqual({})
+  })
+
+  it("send nothing again for a failed flush whose keys the save beside it delivered, so another page's later save stands", async () => {
+    vi.useFakeTimers()
+    const store = storage()
+    const one = holding(store)
+    const two = holding(store)
+    const page = new EventTarget()
+    one.saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+    one.saver.edit({ ...one.pending.current(), fuel: 6000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY) // save 1 goes
+    page.dispatchEvent(new Event('pagehide')) // flush 2 goes beside it, and never arrives
+    await one.take(0) // save 1 lands
+    two.saver.edit({ ...two.pending.current(), fuel: 7000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await two.answer(0)
+    await one.refuse(1) // the flush failed: its retry waits for save 1
+    await one.answer(0) // save 1 answers and spends fuel
+    expect(one.posts).toHaveLength(2) // nothing unsaved is left to send again
+    expect(store.values.fuel).toBe(7000)
+    expect(one.pending.partial()).toEqual({})
+  })
+
+  // A save the server took whose answer was lost leaves its edit unspent, so
+  // the next save to carry the key sends it again, under whatever number:
+  // the edit's stamp is what the server takes once (#357).
+  it("send a failed flush's edit again when the save beside it was taken with its answer lost too, and leave another page's later save", async () => {
+    vi.useFakeTimers()
+    const store = storage()
+    const one = holding(store)
+    const two = holding(store)
+    const page = new EventTarget()
+    one.saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+    one.saver.edit({ ...one.pending.current(), fuel: 6000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY) // save 1 goes
+    page.dispatchEvent(new Event('pagehide')) // flush 2 goes beside it, and never arrives
+    await one.take(0) // save 1 lands
+    two.saver.edit({ ...two.pending.current(), fuel: 7000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await two.answer(0)
+    await one.refuse(1) // the flush failed
+    await one.refuse(0) // and save 1's answer is lost
+    expect(one.posts[2]).toEqual([{ fuel: 6000 }, false]) // the flush's retry
+    await one.answer(2)
+    expect(store.values.fuel).toBe(7000)
+    expect(one.pending.partial()).toEqual({})
+  })
+
+  it("send a save's edit again in the next save once its answer was lost, and leave another page's later save", async () => {
+    vi.useFakeTimers()
+    const store = storage()
+    const one = holding(store)
+    const two = holding(store)
+    one.saver.edit({ ...one.pending.current(), fuel: 6000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await one.take(0)
+    await one.refuse(0) // taken, its answer lost
+    two.saver.edit({ ...two.pending.current(), fuel: 7000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await two.answer(0)
+    one.saver.edit({ ...one.pending.current(), tod: 'night' })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    expect(one.posts[1]).toEqual([{ fuel: 6000, tod: 'night' }, false]) // the lost edit rides along
+    expect(one.labels[1].stamps.fuel).toBe(one.labels[0].stamps.fuel)
+    await one.answer(1)
+    expect(store.values).toMatchObject({ fuel: 7000, tod: 'night' })
+    expect(one.pending.partial()).toEqual({})
+  })
+
+  it("send a save's edit again in the flush once its answer was lost, and leave another page's later save", async () => {
+    vi.useFakeTimers()
+    const store = storage()
+    const one = holding(store)
+    const two = holding(store)
+    const page = new EventTarget()
+    one.saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+    one.saver.edit({ ...one.pending.current(), fuel: 6000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await one.take(0)
+    await one.refuse(0) // taken, its answer lost
+    two.saver.edit({ ...two.pending.current(), fuel: 7000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await two.answer(0)
+    page.dispatchEvent(new Event('pagehide'))
+    expect(one.posts[1]).toEqual([{ fuel: 6000 }, true])
+    await one.answer(1)
+    expect(store.values.fuel).toBe(7000)
+  })
+
+  it("send a flush's edit again in the save queued behind it once its answer was lost, and leave another page's later save", async () => {
+    vi.useFakeTimers()
+    const store = storage()
+    const one = holding(store)
+    const two = holding(store)
+    const page = new EventTarget()
+    one.saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
+    one.saver.edit({ ...one.pending.current(), fuel: 6000 })
+    page.dispatchEvent(new Event('pagehide')) // the flush alone
+    await one.take(0) // taken, its answer to come
+    one.saver.edit({ ...one.pending.current(), tod: 'night' }) // the player is back
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY) // the save waits behind the flush
+    two.saver.edit({ ...two.pending.current(), fuel: 7000 })
+    await vi.advanceTimersByTimeAsync(SAVE_DELAY)
+    await two.answer(0)
+    await one.refuse(0) // the flush's answer is lost
+    expect(one.posts[1]).toEqual([{ fuel: 6000, tod: 'night' }, false]) // the queued save goes first
+    await one.answer(1)
+    expect(one.posts).toHaveLength(2) // the flush's retry finds its edit spent
+    expect(store.values).toMatchObject({ fuel: 7000, tod: 'night' })
   })
 
   it('seed a fresh account from the config as it is when the seed goes: a flush answered while it waited is not written back', async () => {
@@ -946,7 +1065,7 @@ describe('the config hook', () => {
   })
 
   it('sends a save kept alive when asked (#105), under the label the saver gives it (#245, #253)', () => {
-    expect(hook).toMatch(/config: JSON\.stringify\(config\),\s*identity: label\.identity,\s*session: label\.session,\s*sequence: String\(label\.sequence\),\s*\.\.\.\(Object\.keys\(fill\)\.length \? \{ fill: JSON\.stringify\(fill\) \} : \{\}\),\s*\},\s*\{ keepalive \}/)
+    expect(hook).toMatch(/config: JSON\.stringify\(config\),\s*identity: label\.identity,\s*session: label\.session,\s*stamps: JSON\.stringify\(label\.stamps\),\s*\.\.\.\(Object\.keys\(fill\)\.length \? \{ fill: JSON\.stringify\(fill\) \} : \{\}\),\s*\},\s*\{ keepalive \}/)
     expect(hook).toMatch(/new Saver\(\s*pending,\s*saveConfig,\s*undefined,\s*\(\) => config_identity,/)
     expect(hook).toMatch(/\{ keepalive \}\s*\)\s*return answered\(res\)\s*\} catch \{\s*return false/) // the answer is read by answered, below
   })
@@ -1046,20 +1165,22 @@ describe('the label on a save and its answer', () => {
     ])
   })
 
-  it('number the saves of one page, so a flush over a save still out is the newer', async () => {
+  it("stamp each key with the page's edit of it, so a flush over a save still out carries the newer", async () => {
     vi.useFakeTimers()
     const { posts, pending, saver } = labelled({ identity: 'alice' })
     saver.load({ signed: true, saved: { callsign: 'Goose' } })
     const page = new EventTarget()
     saver.attach(page, Object.assign(new EventTarget(), { visibilityState: 'visible' }))
-    saver.edit({ ...pending.current(), tod: 'night' })
+    saver.edit({ ...pending.current(), tod: 'night', clouds: 'cumulus' })
     await vi.advanceTimersByTimeAsync(SAVE_DELAY)
     saver.edit({ ...pending.current(), tod: 'day' })
     page.dispatchEvent(new Event('pagehide'))
     const [[, , save], [, , flush]] = posts
     expect(save.session).toMatch(/^[0-9a-f]{24}$/)
     expect(flush.session).toBe(save.session)
-    expect(flush.sequence).toBeGreaterThan(save.sequence) // the server keeps the flush, whichever it takes last
+    expect(Object.keys(save.stamps).sort()).toEqual(['clouds', 'tod']) // a stamp for each key it carries, no more
+    expect(flush.stamps.tod).toBeGreaterThan(save.stamps.tod) // the server keeps the flush's, whichever it takes last
+    expect(flush.stamps.clouds).toBe(save.stamps.clouds) // the same edit, which the server takes once
     const other = labelled({ identity: 'alice' })
     other.saver.load({ signed: true, saved: null })
     expect(other.posts[0][2].session).not.toBe(save.session) // another page is ordered by time

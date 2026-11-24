@@ -157,7 +157,7 @@ async function saveConfig(
         config: JSON.stringify(config),
         identity: label.identity,
         session: label.session,
-        sequence: String(label.sequence),
+        stamps: JSON.stringify(label.stamps),
         ...(Object.keys(fill).length ? { fill: JSON.stringify(fill) } : {}),
       },
       { keepalive }

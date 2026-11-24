@@ -226,7 +226,8 @@ export class PendingConfig {
   }
 
   // stamp is when each of the keys given was last edited, noted by a save
-  // that carries them for spend.
+  // that carries them for spend, and sent with it: the server takes each of a
+  // page's edits once, by its key and stamp.
   stamp(keys: string[]): Record<string, number> {
     return Object.fromEntries(keys.map((key) => [key, this.stamps[key] ?? 0]))
   }
@@ -239,6 +240,18 @@ export class PendingConfig {
     for (const key of Object.keys(saved)) {
       if ((this.stamps[key] ?? 0) === stamps[key]) delete this.edits[key]
     }
+  }
+
+  // unspent is the part of `config`, keys a save carried with the stamps
+  // noted as it went, that is still waiting to be saved as that save carried
+  // it: each key still among the edits and not edited since. A key another
+  // save has spent, or edited again, is not that save's to send.
+  unspent(config: Partial<MissionConfig>, stamps: Record<string, number>): Partial<MissionConfig> {
+    const out: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(config)) {
+      if (key in this.edits && (this.stamps[key] ?? 0) === stamps[key]) out[key] = value
+    }
+    return out as Partial<MissionConfig>
   }
 
   // adopt takes the values the server kept over the ones it was sent (a
@@ -279,13 +292,17 @@ export const SAVE_DELAY = 600
 // Label is what a save is sent under. identity is the account it was queued
 // under, read then and not when it goes, so an account that changed in the
 // meantime has the server refuse it rather than write one account's edit onto
-// another. session names this page and sequence counts its saves, by which the
-// server orders two saves of one page that it takes out of turn: a page
-// leaving sends its flush beside a save still out.
+// another. session names this page, and stamps gives each key the save
+// carries the number of the page's edit of it (PendingConfig.stamp). The
+// server takes a page's edit of a key once, and never one older than an edit
+// of that key it has already taken from the page, however often and in
+// whatever order the saves carrying them arrive: a page leaving sends its
+// flush beside a save still out, and a save whose answer was lost is sent
+// again by whatever save carries its keys next.
 export interface Label {
   identity: string
   session: string
-  sequence: number
+  stamps: Record<string, number>
 }
 
 // Taken is what a post answers: whether the server took the save, or that it
@@ -331,10 +348,11 @@ export function page_session(): string {
 // succeeded: the server stamps each key it is sent, so a whole config from a
 // tab that loaded earlier wrote its stale value of every key it had not
 // touched. The saves go one at a time, each once the one before it has
-// answered, and each is numbered (Label): two out at once are taken in either
-// order, and the server keeps the newer by its number. post answers whether
-// the server took the save. owner is the account a save is queued under, and
-// shown is told the config when the server keeps a value over the one sent.
+// answered, and each key goes with the number of the edit it carries (Label):
+// two out at once are taken in either order, and the server keeps each key's
+// later edit. post answers whether the server took the save. owner is the
+// account a save is queued under, and shown is told the config when the
+// server keeps a value over the one sent.
 export class Saver {
   private timer: ReturnType<typeof setTimeout> | undefined
   private readonly pending: PendingConfig
@@ -348,7 +366,6 @@ export class Saver {
   private readonly owner: () => string
   private readonly shown: (config: MissionConfig) => void
   private readonly session = page_session()
-  private sequence = 0
   // The posts sent and not yet answered, and the sends waiting for them, in
   // the order made.
   private readonly out = new Set<Promise<void>>()
@@ -397,38 +414,38 @@ export class Saver {
     if (!Object.keys(partial).length) return
     // Not queued, since a page going away takes a waiting send with it. Sent
     // over a post still out, the server takes the two in either order and
-    // keeps the flush, the later of the page's two by number, refusing the
-    // older if it lands after; each answer spends only the keys not edited
-    // since it went (PendingConfig.spend). A flush that failed while the
-    // page stayed goes again in turn as it was, under its own number and
-    // spent by its own stamps: the server may have taken it, with only the
-    // answer lost, and takes a page's save once, so the second cannot undo
-    // another page's save made in between. An edit made since goes in a save
-    // of its own, numbered after it.
-    const label = this.label(this.owner())
+    // keeps each key's later edit by its stamp, refusing the older if it
+    // lands after; each answer spends only the keys not edited since it went
+    // (PendingConfig.spend). A flush that failed while the page stayed goes
+    // again in turn, with the stamps it went with: the server may have taken
+    // it, with only the answer lost, and takes a page's edit once, so the
+    // second cannot undo another page's save made in between. It carries only
+    // the keys still unsaved as it carried them: one the save beside it
+    // delivered is not sent again, nor one edited since, which goes in a save
+    // of its own with its own stamp.
+    const identity = this.owner()
     const stamps = this.pending.stamp(Object.keys(partial))
-    void this.send({ config: partial }, true, true, label, stamps).then((taken) => {
-      if (!taken) void this.turn(() => ({ config: partial }), true, label, stamps)
+    void this.send({ config: partial }, true, true, identity, stamps).then((taken) => {
+      if (!taken) void this.turn(() => ({ config: this.pending.unspent(partial, stamps) }), true, identity, stamps)
     })
   }
 
   // turn sends what `what` gives once no post is out: at once, or after the
   // posts out and the sends queued before it. It is read as it goes, so it
   // carries the edits made while it waited and none already spent. It goes
-  // under the label given, or else the next number and the account current
-  // when it was queued.
+  // under the account given, or else the one current when it was queued, and
+  // with the stamps given, or else the keys' stamps as it goes.
   private turn(
     what: () => Outgoing,
     spend: boolean,
-    label?: Label,
+    identity = this.owner(),
     stamps?: Record<string, number>
   ): Promise<void> {
-    const identity = label?.identity ?? this.owner()
     return new Promise((resolve) => {
       const go = () => {
         const outgoing = what()
         if (Object.keys(outgoing.config).length || Object.keys(outgoing.fill ?? {}).length)
-          void this.send(outgoing, false, spend, label ?? this.label(identity), stamps).then(() => resolve())
+          void this.send(outgoing, false, spend, identity, stamps).then(() => resolve())
         else resolve()
       }
       if (this.out.size) this.waiting.push(go)
@@ -436,24 +453,25 @@ export class Saver {
     })
   }
 
-  // label is the next number of this page's saves, under the account given.
-  private label(identity: string): Label {
-    return { identity, session: this.session, sequence: ++this.sequence }
-  }
-
-  // send posts `outgoing` under `label`, spends its config once answered if
-  // the server took it and `spend` says to, by the stamps the keys carried as
-  // it went (or as given, for one sent again), adopts what the server kept
-  // over what it was sent, and then starts the sends that were waiting. It
+  // send posts `outgoing` under the account given, each key with the stamp
+  // of the edit it carries: as the keys stand as it goes, or as given, for
+  // one sent again. Once answered it spends the config by those stamps if
+  // the server took it and `spend` says to, adopts what the server kept over
+  // what it was sent, and then starts the sends that were waiting. It
   // answers whether the server took it.
   private send(
     outgoing: Outgoing,
     keepalive: boolean,
     spend: boolean,
-    label: Label,
+    identity: string,
     stamps = this.pending.stamp(Object.keys(outgoing.config))
   ): Promise<boolean> {
     const config = outgoing.config
+    const label: Label = {
+      identity,
+      session: this.session,
+      stamps: Object.fromEntries(Object.keys(config).map((key) => [key, stamps[key]])),
+    }
     let took = false
     const sent: Promise<void> = this.post(config, keepalive, label, outgoing.fill ?? {})
       .then((taken) => {
