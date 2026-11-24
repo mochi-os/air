@@ -43,7 +43,7 @@
 		"-/match/list": {"function": "match_list", "read": true},
 		"-/servers": {"function": "servers", "read": true},
 		"-/recording/save": {"function": "recording_save"},
-		"-/recording/fetch": {"function": "recording_fetch", "read": true},
+		"-/recording/fetch": {"function": "recording_fetch", "read": true}, // asset-ok: a recording the client fetches with its app token
 		"-/feedback/check": {"function": "feedback_check"},
 		"-/feedback/post": {"function": "feedback_post"}
 	}
