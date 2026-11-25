@@ -2,34 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-import path from 'path'
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import { lingui } from '@lingui/vite-plugin'
-import { mochiPlugin } from '@mochi/web/vite'
-import tailwindcss from '@tailwindcss/vite'
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import configuration from '@mochi/web/configuration/vite'
 import { sizes } from './sizes'
 
-// https://vite.dev/config/
-export default defineConfig({
-  base: './',
-  plugins: [
-    mochiPlugin(),
-    tanstackRouter({
-      target: 'react',
-      autoCodeSplitting: true,
-    }),
-    react({
-      plugins: [['@lingui/swc-plugin', {}]],
-    }),
-    lingui(),
-    tailwindcss(),
-    sizes(),
-  ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-})
+export default configuration({ directory: __dirname, plugins: [sizes()] })

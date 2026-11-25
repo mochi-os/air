@@ -3,6 +3,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # This file is part of Mochi, licensed under the GNU AGPL v3 with the
 # Mochi Application Interface Exception - see license.txt and license-exception.md.
+#
+# Written by claude/scripts/makefiles.py from one template for every app: change
+# the template there and rerun it, rather than editing this file.
 
 APP = $(notdir $(CURDIR))
 VERSION = $(shell grep -m1 '"version"' app.json | sed 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
@@ -11,6 +14,8 @@ RELEASE = ../../release
 # (CI, a build server holding only the app repos) does not have - fall back to
 # plain pnpm there rather than failing on a path outside this repo.
 SAFE_PNPM = $(abspath ../../claude/scripts/safe-pnpm.sh)
+
+.PHONY: all clean vendor wasm release deploy install dev i18n-extract test
 
 all: vendor web/dist/index.html
 
@@ -21,16 +26,18 @@ vendor:
 	mkdir -p lib
 	ln -sf ../../../lib/starlark/attachments.star lib/attachments.star
 
-wasm: web/src/assets/flight.wasm
-
 clean:
 	rm -rf web/dist
 
 # Everything the web build reads: the source and public trees, the shared
-# library, the files at the top of web/ (index.html, package.json, the vite
-# and tsconfig files) and the workspace lockfile.
+# library (its build configuration included), the files at the top of web/
+# (index.html, package.json, the vite and tsconfig files) and the workspace
+# lockfile.
 web/dist/index.html: web/src/assets/flight.wasm $(shell find web/src web/public ../../lib/web/src -type f 2>/dev/null) $(shell find web -maxdepth 1 -type f 2>/dev/null) $(wildcard ../../pnpm-lock.yaml)
 	bash -c 'cd web && if [ -x "$(SAFE_PNPM)" ]; then "$(SAFE_PNPM)" run build; else pnpm run build; fi'
+
+wasm: web/src/assets/flight.wasm
+
 # The flight simulation core, compiled for the browser from the world repo.
 # Lands in src/assets so Vite content-hashes it into the bundle (no manual
 # cache-bust versions); the build products are gitignored there.
@@ -54,14 +61,6 @@ release: vendor web/dist/index.html
 deploy:
 	../../claude/scripts/deploy.sh $(APP)
 
-commit:
-	git add -A && git commit -m "$(VERSION)" || true
-
-push:
-	git push --follow-tags
-
-everything: clean release deploy commit push
-
 install:
 	bash -c 'cd web && $(SAFE_PNPM) install'
 
@@ -70,3 +69,9 @@ dev:
 
 i18n-extract:
 	bash -c 'cd web && $(SAFE_PNPM) i18n:extract --clean'
+
+# Integration tests, run against the local dev instances: they drive real HTTP
+# and the event pipeline, so they need mochi1 running (and mochi2 for the dual
+# flows and scripts).
+test:
+	python3 ../../claude/scripts/p2p-test.py --app $(APP)
