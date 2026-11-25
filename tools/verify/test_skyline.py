@@ -393,6 +393,40 @@ class SkylineTest(unittest.TestCase):
 			# the blue is read only in a photo the catalogue calls clear: elsewhere a cloud would pass for the jet
 			self.assertEqual(found["unread"], [])
 
+	def test_a_clear_photo_names_its_own_blue(self):
+		# a sky paled into haze, 32 bluer than its red and green and dark in grey: under the walk's blue of 40
+		# it is not sky and nothing is judged; a photo naming its own blue of 28 reads the plate's edge by it
+		import tempfile
+		import camera as cam
+		import model as mod
+		from test_verify import JET, box, glb
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			glb(root / "m.glb", [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))}])
+			model = mod.Model(root / "m.glb")
+			size = [1200, 600]
+			camera = cam.looking(np.array([0.0, 0.0, 12.0]), np.array([0.0, 0.0, 0.0]), 2400.0)
+			flat, depth = cam.project(camera, model.triangles(mod.pose({}, {})).reshape(-1, 3), (size[0] / 2, size[1] / 2))
+			mask = skyline.frontmost(flat.reshape(-1, 3, 2), depth.reshape(-1, 3), tuple(size)) >= 0
+			(root / "references").mkdir()
+			photo = np.where(mask[..., None], np.array([200, 200, 200]), np.array([60, 80, 112])).astype(np.uint8)
+			Image.fromarray(photo).save(root / "references" / "p.png")
+			entry = {"photo": "p", "file": "p.png", "size": size, "camera": list(camera), "pose": {}}
+			found = {}
+			for name, own in (("default", {"clear": True}), ("own", {"clear": True, "blue": 28})):
+				catalogue = {"frame": JET, "photos": {"p": own}}
+				found[name], _ = skyline.Scene(catalogue, root, mod.Frame(JET), {}, entry).places(model, {}, {})
+			self.assertEqual(found["default"], [])
+			self.assertGreater(len(found["own"]), 40)
+			self.assertLess(float(np.median(np.abs([p["miss"] for p in found["own"]]))), 0.5)
+
+	def test_a_lamp_belongs_to_the_part_it_lies_on(self):
+		# a strobe's lens on a fin's face, a strip on it and the tail light on its pod are the fin's, never the
+		# body's upper side, which the body's sectors would file them under; the LEX's lens stays the body's
+		for name, point in (("lamp_strobe_right", (613.8, 193.4, 64.9)), ("formation_fin_left", (600.0, 180.0, -60.0)), ("lamp_position_tail", (685.0, 210.0, 68.0))):
+			self.assertEqual(skyline.region(name, point)[0], "fin", name)
+		self.assertEqual(skyline.region("lamp_position_lex_left", (330.0, 112.0, -50.0))[0], "body")
+
 	def test_scene_blue_sky_read_by_blue_and_brightness(self):
 		# against a clear sky the edge is read by its blue and by its brightness, the one nearer the sky taken:
 		# a navy plate (the Blue Angels' blue, about 33 over its red and green against a clear sky's 43) with a

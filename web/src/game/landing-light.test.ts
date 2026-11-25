@@ -74,7 +74,8 @@ function frame(jet: Jet): Frame {
     const v=()=>{ const o={ copy(){ return o; }, addScaledVector(){ return o; } }; return o; }, point=()=>({ visible:false, material:{ opacity:1 } });
     const ownship={ lights:!!jet.lights, gear:jet.gear??1, gearTarget:jet.gearTarget??1, group:{ userData:{} }, pos:v(), fwd:v(), up:v() }, datum=(st)=>st.pos;
     const aircraft_lights={ pos:[point(),point(),point(),point(),point(),point(),point()], strobe:[point(),point()], landing:[point()], spot:{ visible:false, position:v() }, spotTarget:{ position:v() }, nose:{ x:4.6, y:-1.2 } };
-    ${body('handle_down')} ${update} update_aircraft_lights();
+    ${body('handle_down')} ${body('strobing')}
+    ${update} update_aircraft_lights();
     return { pos:aircraft_lights.pos, strobe:aircraft_lights.strobe, landing:aircraft_lights.landing, spot:aircraft_lights.spot.visible, flood:cockpit_flood.intensity, chart:chart_light.intensity };`)(jet) as Frame
 }
 const shown = (points: Point[]) => points.map((p) => (p.visible ? p.material.opacity : 0))

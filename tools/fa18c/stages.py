@@ -37,6 +37,10 @@ def linear(srgb):
 	return np.where(s <= 0.04045, s / 12.92, ((s + 0.055) / 1.055) ** 2.4)
 
 
+# the lamps' lenses, each its glass's colour unlit (layout.lights lenses), as build.py lays them
+FLAT.update({name: tuple(linear(np.asarray(c) / 255)) for name, c in json.loads((HERE / "facts.json").read_text())["layout"]["lights"]["lenses"]["colours"].items()})
+
+
 def sample(image, uv):
 	# The nearest texel at each UV, repeating, glTF's top-left origin
 	h, w, _ = image.shape

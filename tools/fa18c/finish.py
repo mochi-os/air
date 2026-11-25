@@ -10,6 +10,7 @@
 # the joints. build.py bakes what it reads and saves what it returns.
 import importlib.util
 import math
+import zlib
 from pathlib import Path
 
 import numpy as np
@@ -129,6 +130,183 @@ def bleed(colour, covered, passes=8):
 	return out, have
 
 
+# The airframe's markings (layout.markings), drawn as each marking's ink over
+# the paint, 0 to 1, at `scale` pixels per inch, from MIL-STD-2161C(AS)'s
+# dimensioned figures: build.py lays each image on the skin at its place
+
+# The modified vertical block letters (MIL-STD-2161C figure A-4(a)): six
+# blocks high, strokes a block wide, 4.5 blocks across (A and M 5.5, W 6.5),
+# a block between letters. Each letter as polygons in blocks, y up from the
+# baseline; only the letters the markings use
+BLOCKS = {
+	"A": (5.5, [[(0, 0), (1, 0), (3.25, 6), (2.25, 6)], [(4.5, 0), (5.5, 0), (3.25, 6), (2.25, 6)], [(1, 1.5), (4.5, 1.5), (4.5, 2.5), (1, 2.5)]]),
+	"N": (4.5, [[(0, 0), (1, 0), (1, 6), (0, 6)], [(3.5, 0), (4.5, 0), (4.5, 6), (3.5, 6)], [(0, 6), (1, 6), (4.5, 0), (3.5, 0)]]),
+	"V": (4.5, [[(0, 6), (1, 6), (2.75, 0), (1.75, 0)], [(3.5, 6), (4.5, 6), (2.75, 0), (1.75, 0)]]),
+	"Y": (4.5, [[(0, 6), (1, 6), (2.75, 3), (1.75, 3)], [(3.5, 6), (4.5, 6), (2.75, 3), (1.75, 3)], [(1.75, 0), (2.75, 0), (2.75, 3.2), (1.75, 3.2)]]),
+}
+
+
+def block_width(text):
+	# A word's width in blocks: its letters and a block between each
+	return sum(BLOCKS[c][0] for c in text) + (len(text) - 1)
+
+
+def block_text(text, height, scale):
+	# A word in block letters `height` inches high, as ink (H, W) 0..1 at
+	# `scale` pixels per inch, its box exactly the word's
+	from PIL import Image, ImageDraw
+	block = height / 6 * scale
+	w, h = int(round(block_width(text) * block)), int(round(height * scale))
+	image = Image.new("L", (w, h), 0)
+	draw = ImageDraw.Draw(image)
+	x = 0.0
+	for c in text:
+		width, polygons = BLOCKS[c]
+		for polygon in polygons:
+			draw.polygon([((x + px) * block, h - py * block) for px, py in polygon], fill=255)
+		x += width + 1
+	return np.asarray(image, float) / 255
+
+
+def insignia(diameter, scale):
+	# The national star insignia in the tactical paint scheme (MIL-STD-2161C
+	# figure A-1): the circle `diameter` inches across in the contrasting grey
+	# with the star inside it left in the paint, the five points on the
+	# circle; each bar a radius long past the circle, half a radius high
+	# inside an eighth-radius outline, the paint inside it split by a stripe
+	# a sixth of a radius high. Ink (H, W) 0..1, the box the marking fills:
+	# 2.125 diameters across and one high
+	from PIL import Image, ImageDraw
+	r = diameter / 2 * scale
+	outline, inner, stripe = r / 8, r / 2, r / 6
+	w, h = int(round(2 * (2 * r + outline))), int(round(2 * r))
+	image = Image.new("L", (w, h), 0)
+	draw = ImageDraw.Draw(image)
+	cx, cy = w / 2, h / 2
+	bar = inner / 2 + outline
+	draw.rectangle([cx - 2 * r - outline, cy - bar, cx + 2 * r + outline, cy + bar], fill=255)
+	for side in (-1, 1):
+		a, b = sorted((cx + side * r * 0.9, cx + side * (2 * r)))
+		draw.rectangle([a, cy - inner / 2, b, cy + inner / 2], fill=0)
+		draw.rectangle([a, cy - stripe / 2, b, cy + stripe / 2], fill=255)
+	draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=255)
+	small = r * math.sin(math.radians(18)) / math.sin(math.radians(126))
+	points = []
+	for k in range(10):
+		a = math.radians(90 + 36 * k)
+		rr = r if k % 2 == 0 else small
+		points.append((cx + rr * math.cos(a), cy - rr * math.sin(a)))
+	draw.polygon(points, fill=0)
+	return np.asarray(image, float) / 255
+
+
+def chevron(scale, text=True, left=False):
+	# The engine intake warning chevron (MIL-STD-2161C figure A-15): two arms
+	# 2 in wide, their outer edges 21.5 in apart at their open ends and
+	# meeting 42 in on; JET along the upper arm and INTAKE along the lower,
+	# 2 in letters, and between the arms' open ends the 19 in DANGER box with
+	# its arrow pointing away from the point, all the lettering in the paint.
+	# Ink (H, W) 0..1, the point at the right, or with `left` at the left (the
+	# right side's, its point aft as the left side's is), the lettering
+	# reading left to right either way, as dvids5074311 shows it on the right
+	from PIL import Image, ImageDraw, ImageFont
+	w, h = int(round(42 * scale)), int(round(21.5 * scale))
+
+	def x(v):
+		return w - v if left else v
+
+	image = Image.new("L", (w, h), 0)
+	draw = ImageDraw.Draw(image)
+	tip = np.array([w, h / 2])
+	for start, sign in ((np.array([0.0, 0.0]), 1), (np.array([0.0, float(h)]), -1)):
+		along = (tip - start) / np.linalg.norm(tip - start)
+		inward = np.array([-along[1], along[0]]) * sign
+		if inward[1] * sign < 0:
+			inward = -inward
+		off = inward * 2.0 * scale
+		# the inner edge, parallel to the outer, meets the other arm's on the
+		# centreline
+		meet = start + off + along * ((h / 2 - (start + off)[1]) / along[1])
+		draw.polygon([(x(p[0]), p[1]) for p in (start, tip, meet, start + off)], fill=255)
+		if text:
+			word = "JET" if sign > 0 else "INTAKE"
+			size = int(round(2.0 * scale * 0.8))
+			font = ImageFont.load_default(size=max(6, size))
+			label = Image.new("L", (int(14 * scale), int(2.0 * scale)), 0)
+			ImageDraw.Draw(label).text((label.width / 2, label.height / 2), word, fill=255, font=font, anchor="mm")
+			angle = math.degrees(math.atan2(-along[1], along[0])) * (-1 if left else 1)
+			turned = label.rotate(angle, expand=True, resample=Image.BICUBIC)
+			middle = start + along * 12.0 * scale + off / 2
+			image.paste(0, (int(x(middle[0]) - turned.width / 2), int(middle[1] - turned.height / 2)), turned)
+	# the DANGER box: 19 in long and 2.7 in high on the centreline at the open end
+	top, bottom = h / 2 - 1.35 * scale, h / 2 + 1.35 * scale
+	ends = sorted([x(0), x(19 * scale)])
+	draw.rectangle([ends[0], top, ends[1], bottom], fill=255)
+	if text:
+		font = ImageFont.load_default(size=max(6, int(round(2.0 * scale * 0.8))))
+		draw.text((x(11.5 * scale), h / 2), "DANGER", fill=0, font=font, anchor="mm")
+		draw.polygon([(x(1.0 * scale), h / 2), (x(3.0 * scale), top + 0.5 * scale), (x(3.0 * scale), bottom - 0.5 * scale)], fill=0)
+	return np.asarray(image, float) / 255
+
+
+def placard(lines, size, scale):
+	# A block of the contrasting grey `size` (length, height) inches with its
+	# lines of lettering in the paint (BEWARE OF BLAST, MIL-STD-2161C figure
+	# A-8; DANGER ARRESTING HOOK in the hook's T, figure A-14). Ink (H, W)
+	from PIL import Image, ImageDraw, ImageFont
+	w, h = int(round(size[0] * scale)), int(round(size[1] * scale))
+	image = Image.new("L", (w, h), 255)
+	draw = ImageDraw.Draw(image)
+	height = h / (len(lines) + 1)
+	font = ImageFont.load_default(size=max(6, int(height)))
+	for i, text in enumerate(lines):
+		draw.text((w / 2, height * (i + 1)), text, fill=0, font=font, anchor="mm")
+	return np.asarray(image, float) / 255
+
+
+def hook_tee(scale, bar=(20.0, 7.0), stem=(7.0, 7.0), arrow=True):
+	# The arresting hook marking: a T, its top `bar` (across, high) inches,
+	# its stem `stem` (wide, below the top) at the top's middle, DANGER /
+	# ARRESTING HOOK in the top and, with `arrow`, an arrow down the stem, the
+	# lettering and arrow in the paint. MIL-STD-2161C figure A-14's are the
+	# defaults (a 20 x 7 in top, a 7 in stem to 14 in, a 2 in arrow); the
+	# photos read the jets' far smaller. Ink (H, W)
+	from PIL import Image, ImageDraw, ImageFont
+	w, top, h = int(round(bar[0] * scale)), bar[1] * scale, int(round((bar[1] + stem[1]) * scale))
+	image = Image.new("L", (w, h), 0)
+	draw = ImageDraw.Draw(image)
+	draw.rectangle([0, 0, w, top], fill=255)
+	draw.rectangle([w / 2 - stem[0] / 2 * scale, 0, w / 2 + stem[0] / 2 * scale, h], fill=255)
+	# the lettering two lines in the top, each 2/7 of its height (A-14's 2 in in 7)
+	font = ImageFont.load_default(size=max(6, int(round(top * 2 / 7))))
+	draw.text((w / 2, top * 2.0 / 7), "DANGER", fill=0, font=font, anchor="mm")
+	draw.text((w / 2, top * 4.6 / 7), "ARRESTING HOOK", fill=0, font=font, anchor="mm")
+	if arrow:
+		x = w / 2
+		draw.polygon([(x - 1.0 * scale, top + 1.5 * scale), (x + 1.0 * scale, top + 1.5 * scale), (x, top + 3.5 * scale)], fill=0)
+	return np.asarray(image, float) / 255
+
+
+def walkway(size, line, spacing, scale, falling=True):
+	# A walkway square: its outline `line` inches wide round a box `size`
+	# (across, high) inches, and three stripes as wide at 45 deg inside it,
+	# the middle one through its centre and the others `spacing` inches
+	# either side, square to them. With `falling` the stripes run from the
+	# top left to the bottom right as read (on the left LEX seen from above,
+	# forward up: from forward outboard to aft inboard). Ink (H, W)
+	w, h = int(round(size[0] * scale)), int(round(size[1] * scale))
+	y, x = np.mgrid[0:h, 0:w].astype(float) + 0.5
+	u, v = (x - w / 2) / scale, (y - h / 2) / scale
+	across = (u - v if falling else u + v) / math.sqrt(2)   # inches square to the stripes
+	half = line / 2
+	ink = np.zeros((h, w))
+	for k in (-1, 0, 1):
+		ink[np.abs(across - k * spacing) <= half] = 1
+	border = (np.minimum(x, w - x) <= line * scale) | (np.minimum(y, h - y) <= line * scale)
+	ink[border] = 1
+	return ink
+
+
 # The airframe's atlas (build.py paint()): its UV islands too narrow to hold a
 # texel centre of their own, to which the bake writes nothing, given texels of
 # their own here
@@ -163,9 +341,24 @@ def closest(triangle, points):
 
 
 def bare(triangles):
-	# Whether a UV island, its triangles (K, 3, 2) in the atlas's pixels,
-	# holds no texel centre (pixel x + 0.5, y + 0.5)
-	for t in np.asarray(triangles, float):
+	# Whether a UV island, its triangles (K, 3, 2) in the atlas's pixels, is
+	# too narrow for the bake: narrower than half a texel on the mean (twice
+	# its area over its outline's length), or holding no texel centre (pixel
+	# x + 0.5, y + 0.5). A closed door's crack strip at 4096, 0.14 texels
+	# across, held a centre here and there, and between them drew the door's
+	# own paint, which the bake's margin carries into the gap round its island
+	triangles = np.asarray(triangles, float)
+	a, b = triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0]
+	area = 0.5 * np.abs(a[:, 0] * b[:, 1] - a[:, 1] * b[:, 0]).sum()
+	uses = {}
+	for t in triangles:
+		for i in range(3):
+			edge = tuple(sorted((tuple(np.round(t[i], 4)), tuple(np.round(t[(i + 1) % 3], 4)))))
+			uses[edge] = uses.get(edge, 0) + 1
+	outline = sum(math.dist(*edge) for edge, n in uses.items() if n == 1)
+	if outline > 0 and 2 * area / outline < 0.5:
+		return True
+	for t in triangles:
 		(x0, y0), (x1, y1) = np.floor(t.min(0)).astype(int), np.ceil(t.max(0)).astype(int)
 		xs, ys = np.meshgrid(np.arange(x0, x1 + 1) + 0.5, np.arange(y0, y1 + 1) + 0.5)
 		if (closest(t, np.c_[xs.ravel(), ys.ravel()])[1] == 0).any():
@@ -255,3 +448,220 @@ def lent(islands, baked, shaded, reach=0.75, count=5):
 	baked["normal"][rows, columns] = (normals + 1) / 2
 	filled[rows, columns] = True
 	return filled
+
+
+class Cells:
+	# Points (N, 3) indexed by the cube of side `size` (metres) each lies in,
+	# so what lies near a short segment or a fastener's head is read from a
+	# few cubes rather than a slab of the whole jet: thousands of traced
+	# segments, each read against every texel in its stations' slab, ran to
+	# billions of distances
+	def __init__(self, points, size):
+		self.size = size
+		cell = np.floor(points / size).astype(np.int64)
+		self.low = cell.min(0)
+		cell -= self.low
+		self.span = cell.max(0) + 1
+		key = (cell[:, 0] * self.span[1] + cell[:, 1]) * self.span[2] + cell[:, 2]
+		self.order = np.argsort(key, kind="stable")
+		self.keys = key[self.order]
+
+	def near(self, a, b, reach):
+		# indices of the points in every cube within `reach` of the box round a and b
+		lo = np.floor((np.minimum(a, b) - reach) / self.size).astype(np.int64) - self.low
+		hi = np.floor((np.maximum(a, b) + reach) / self.size).astype(np.int64) - self.low
+		lo, hi = np.maximum(lo, 0), np.minimum(hi, self.span - 1)
+		if (hi < lo).any():
+			return np.zeros(0, np.int64)
+		out = []
+		for i in range(lo[0], hi[0] + 1):
+			for j in range(lo[1], hi[1] + 1):
+				first = (i * self.span[1] + j) * self.span[2]
+				start = np.searchsorted(self.keys, first + lo[2])
+				end = np.searchsorted(self.keys, first + hi[2], side="right")
+				if end > start:
+					out.append(self.order[start:end])
+		return np.concatenate(out) if out else np.zeros(0, np.int64)
+
+
+def joined(segments, keys=None):
+	# The line each segment (M, 2, 3) belongs to: segments sharing an end
+	# joined, as a line's corners are laid one after another and a door's
+	# outline closes on itself. Returns one index a segment, its line's: the
+	# least of its segments' `keys` (M integers, default each its own index),
+	# so a line keyed by where it was given (layout.panels) keeps its key
+	# however many segments laying it on the skin made
+	segments = np.asarray(segments, float)
+	parent = list(range(len(segments)))
+
+	def root(i):
+		while parent[i] != i:
+			parent[i] = parent[parent[i]]
+			i = parent[i]
+		return i
+	first = {}
+	for i, ends in enumerate(segments):
+		for end in ends:
+			key = tuple(np.round(end, 6))
+			if key in first:
+				a, b = root(i), root(first[key])
+				parent[max(a, b)] = min(a, b)
+			else:
+				first[key] = i
+	roots = np.array([root(i) for i in range(len(segments))])
+	if keys is None:
+		return roots
+	keys = np.asarray(keys)
+	least = {}
+	for r, k in zip(roots, keys):
+		least[r] = min(least.get(r, k), k)
+	return np.array([least[r] for r in roots])
+
+
+def named(name):
+	# The key a door's seam steps the panels' tones by (tones(), draw()): its
+	# name's, past every line layout.panels gives, so the build and check.py
+	# key it alike however its outline's segments were laid
+	return 1000000 + zlib.crc32(name.encode()) % 1000000
+
+
+def oriented(segments):
+	# A joined line's segments (M, 2, 3) turned to run one way along it, the
+	# first as given and each one after it to follow on from its neighbour; a
+	# closed line (no free end) then runs so its area's largest component is
+	# positive, a rule its frame alone decides, so the build and check.py
+	# turn it alike however its edges came (by the skin's normals round it,
+	# the build counted a well's walls and the doors' insides and turned the
+	# right nose door the other way). A door's outline came as the mesh's
+	# edges, each its own way round, and its tone flipped from one edge to
+	# the next round the door
+	segments = np.array(segments, float)
+	ends = [tuple(np.round(e, 6)) for e in segments.reshape(-1, 3)]
+	touching = {}
+	for i in range(len(segments)):
+		for j in (0, 1):
+			touching.setdefault(ends[2 * i + j], []).append((i, j))
+	done = np.zeros(len(segments), bool)
+	for first in range(len(segments)):
+		if done[first]:
+			continue
+		done[first] = True
+		queue = [first]
+		while queue:
+			i = queue.pop()
+			for j in (0, 1):
+				for k, side in touching[ends[2 * i + j]]:
+					if done[k]:
+						continue
+					# a neighbour at this segment's end starts there; at its start, ends there
+					if side == j:
+						segments[k] = segments[k][::-1]
+						ends[2 * k], ends[2 * k + 1] = ends[2 * k + 1], ends[2 * k]
+					done[k] = True
+					queue.append(k)
+	counts = {}
+	for e in ends:
+		counts[e] = counts.get(e, 0) + 1
+	if len(segments) > 2 and all(c % 2 == 0 for c in counts.values()):
+		area = np.cross(segments[:, 0] - segments[0, 0], segments[:, 1] - segments[0, 0]).sum(0) / 2
+		if area[np.argmax(np.abs(area))] < 0:
+			segments = segments[:, ::-1]
+	return segments
+
+
+def mixed(values):
+	# splitmix64's finaliser on uint64s: every output bit hangs on every input
+	# bit, so keys a fixed distance apart draw unrelated numbers
+	z = np.asarray(values, np.uint64)
+	with np.errstate(over="ignore"):
+		z = (z ^ (z >> np.uint64(30))) * np.uint64(0xBF58476D1CE4E5B9)
+		z = (z ^ (z >> np.uint64(27))) * np.uint64(0x94D049BB133111EB)
+	return z ^ (z >> np.uint64(31))
+
+
+def draw(keys, seed):
+	# a draw from the normal distribution for each integer key, the same each
+	# build. A multiplicative hash's draws ran in step for keys a fixed
+	# distance apart: each panel line's mirror image, a fixed count of
+	# segments after it, stepped the paint by nearly the same amount, and the
+	# tones read the same on both sides
+	with np.errstate(over="ignore"):
+		h = mixed(np.asarray(keys, np.int64).astype(np.uint64) * np.uint64(0x9E3779B97F4A7C15) + np.uint64(int(seed * 1e6)))
+	u = ((h >> np.uint64(11)).astype(np.float64) + 0.5) / 2.0 ** 53
+	v = ((mixed(h) >> np.uint64(11)).astype(np.float64) + 0.5) / 2.0 ** 53
+	return np.sqrt(-2 * np.log(u)) * np.cos(2 * math.pi * v)
+
+
+def tones(points, normals, segments, lines, spread, reach, seed=0.37, chunk=200000):
+	# The panels' tones, a factor about 1 at each point of the skin (N, 3,
+	# inches, any frame; normals (N, 3), its skin's): the paint steps across
+	# each panel line (segments (M, 2, 3), lines (M) the line each is part
+	# of, joined()) by as much as two panels' tones differ, a normal spread
+	# of `spread` each (the step's spread `spread` times root 2), half the
+	# step up on one side and half down on the other. The step holds out to
+	# half `reach` either side and eases away by `reach`; past a line's free
+	# end it spreads across as wide as the point lies beyond the end, and
+	# eases away by half `reach`. The lines the photos traced seldom close a
+	# panel: walled off by them, one panel held nine tenths of the skin
+	points, normals = np.asarray(points, float), np.asarray(normals, float)
+	segments, lines = np.asarray(segments, float), np.asarray(lines)
+	out = np.ones(len(points))
+	if not len(segments):
+		return out
+	cells = Cells(points, reach / 2)
+	names, which = np.unique(lines, return_inverse=True)
+	steps = spread * math.sqrt(2) * draw(names, seed)
+	for k in range(len(names)):
+		seg = segments[which == k]
+		pick = np.unique(np.concatenate([cells.near(a, b, reach) for a, b in seg]))
+		seg = oriented(seg)
+		ends, counts = np.unique(np.round(seg.reshape(-1, 3), 6), axis=0, return_counts=True)
+		free = {tuple(e) for e, c in zip(ends, counts) if c == 1}
+		loose = np.array([[tuple(np.round(a, 6)) in free, tuple(np.round(b, 6)) in free] for a, b in seg])
+		for part in range(0, len(pick), chunk):
+			index = pick[part:part + chunk]
+			q, n = points[index], normals[index]
+			best = np.full(len(index), np.inf)
+			off, beyond = np.zeros(len(index)), np.zeros(len(index))
+			for (a, b), (open_a, open_b) in zip(seg, loose):
+				d = b - a
+				length = float(np.linalg.norm(d))
+				if length < 1e-9:
+					continue
+				along = d / length
+				raw = (q - a) @ along
+				t = np.clip(raw, 0.0, length)
+				gap = np.linalg.norm(q - (a + t[:, None] * along), axis=1)
+				closer = gap < best
+				if not closer.any():
+					continue
+				best[closer] = gap[closer]
+				off[closer] = np.einsum("ij,ij->i", np.cross(along, q[closer] - a), n[closer])
+				past = np.where(raw < 0, -raw if open_a else 0.0, np.where(raw > length, raw - length if open_b else 0.0, 0.0))
+				beyond[closer] = past[closer]
+			side = np.clip(off / np.maximum(beyond, 0.01), -1.0, 1.0)
+			hold = (1 - smoothstep(best, reach / 2, reach)) * (1 - smoothstep(beyond, 0.0, reach / 2))
+			out[index] += steps[k] / 2 * side * hold
+	return out
+
+
+def smoothstep(x, a, b):
+	t = np.clip((x - a) / (b - a), 0, 1)
+	return t * t * (3 - 2 * t)
+
+
+def weathering(inches, station, up, tone, wear):
+	# The light weathering every skin is laid over (plan #8 Weathering), a
+	# factor on the paint a point: the panels' tones (tone, tones()); a fine
+	# mottle; grime in streaks along the stations under the aft fuselage,
+	# from wear.grime from to full (FS), on skin facing down past its
+	# facing; and the exhaust's staining, darker towards the nozzles, from
+	# wear.exhaust from to full. inches: each point in inches (any frame,
+	# for the noise); station: its FS; up: its normal's upward part
+	g, e = wear["grime"], wear["exhaust"]
+	mottle = (missile.noise(inches, 4.0, 23) - 0.5) / missile.SPREAD
+	streak = missile.noise(inches * np.array([0.08, 1.0, 1.0]), 1.5, 29)   # features about 19 in along the stations and 1.5 in across
+	under = smoothstep(-up, -g["facing"], -g["facing"] + 0.3)
+	grime = g["amount"] * smoothstep(station, g["from"], g["full"]) * under * np.clip((streak - 0.35) / 0.4, 0, 1)
+	exhaust = e["amount"] * smoothstep(station, e["from"], e["full"]) * (0.6 + 0.4 * streak)
+	return tone * (1 + wear["mottle"] * mottle) * (1 - grime) * (1 - exhaust)

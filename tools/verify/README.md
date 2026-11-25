@@ -178,7 +178,10 @@ nearer the sky taken: a jet painted as blue as the sky (the Blue Angels) passes 
 underside's rim takes a blue fringe from the JPEG. A change counts as the jet's edge once it reaches the
 contrast (25 in grey); a photo whose sunlit skin stands nearer its bright, overcast sky names its own,
 `"contrast"`: dvids8842278's lit top stands 16-19 over its sky, and at 25 the walk ran past it onto the lines
-beyond.
+beyond. A clear photo's band counts as blue sky once its blue stands 40 over its red and green; one whose sky
+pales into haze near the jet names its own, `"blue"`: dvids8842845's reads 31-32 beside the tail against 43
+above it, and at 40 the walk read in grey past the lit top onto the nozzles' shade. Where no reading separates
+the jet from what lies beyond (a top lit as bright as the cloud behind it), mask it (below).
 Green is never sky, nor anything under a ground photo's horizon. A ground photo is one whose entry says
 `"ground": true`, or, without the key, whose pose has the gear down; `"ground": false` never masks the
 horizon. Open sea seen from a low camera can pass for sky: say `true`. Ground begins the `skyline`'s `horizon`
@@ -189,7 +192,9 @@ too: nothing under the water makes an outline.
 Each place is a miss in the frame's unit at the depth of the triangle making the outline there (+ where the
 model stands outside), on the region of skin it belongs to: part family, a stretch of stations, and for the
 body the sector round the section. The catalogue's `skyline` sets them: `families` (`[[family, [node name
-prefix, ...]], ...]`, a part matching none is `body`), `stretch` (the first coordinate's span, 24 in on the
+prefix, ...]], ...]`, a part matching none is `body`; a lamp or strip goes in the family of the part it lies
+on, since on a fin's face the body's sectors would file it as the body's upper side, as c8183843's strobe lens
+was), `stretch` (the first coordinate's span, 24 in on the
 F/A-18C), `sectors` (`[[limit, name], ...]` in degrees from straight up, each up to its limit, the last past
 180) round the line at `axis` on the second coordinate and 0 on the third (WL 110 on the centreline), and
 `label`, the first coordinate's name in a region's label (`"FS"`). A part a drive in `stances` has moved
@@ -265,6 +270,41 @@ fitted angles are what the photo shows (flaps drooped on the ground, rudders toe
 and treat a surface whose fits scatter from photo to photo, or leave a miss on the same side in every photo,
 as a shape question.
 
+### 5c. Paint: the lines and fasteners the photos show
+
+    python3 -I resect.py CATALOGUE MODEL.glb POINTS.json FEATURES.json CAMERAS.json PHOTO ... [--overlays DIR] [--distortion]
+    blender -b --factory-startup --python-exit-code 1 -P rectify.py -- CATALOGUE MODEL.glb POINTS.json CAMERAS.json CHARTS.json RECTIFIED
+    python3 -I charts.py RECTIFIED CHART LINES/CHART [--sheets [--known FACTS]]
+    python3 -I curate.py RECTIFIED LINES FACTS CURATED.json --sheets SHEETS
+    python3 -I snap.py RECTIFIED LINES SKETCH.json SNAPPED.json
+
+Panel lines and fasteners are traced off the photos onto the skin, never drawn by eye. `resect.py` solves the
+cameras of photos taken for their paint (close views of one side, which add nothing to the shape and could
+move every other camera through the bundle: catalogue them `"solve": false`). `rectify.py` lays every solved
+photo onto four charts of the rest skin (each side, the top, the bottom), orthographic at a fixed scale (8
+px/in on the F/A-18C's sides, 6 on the top and bottom), so a line lies at the same chart pixel in every photo
+that sees it, in the frame's own coordinates. `charts.py` finds each photo's valleys (thin runs darker than the
+skin on both sides, so a lettering stroke's or a shadow's edge, dark on one side only, is passed over), keeps
+each pixel's from the photo that sees it most sharply, links them into lines and the fastener heads into rows
+(a row is heads at an even pitch along a straight or gently curved run, a head or two missing allowed), and
+draws the mosaic (each pixel the sharpest photo's) and its sheets. `curate.py` keeps each point on the chart
+that faces the skin most squarely there, drops short lines, lines one photo alone sees faintly, and lines the
+facts already hold, and draws its sheets: kept lines in green with their ids, held lines in orange, dropped in
+red, rows' heads in blue.
+
+The automatic pass finds about half the lines a person sees on the mosaic, and takes lettering edges, mosaic
+seams and stains for lines. Finish it by hand: on the sheets, list the kept ids that are not lines and sketch
+each missing line as a polyline in the mosaic's pixels (`"chart": NAME`) or a sheet's (`"sheet":
+NAME_ROW_COLUMN`), to a few pixels. `snap.py` moves every point of a sketch onto the strongest valley within 5
+px across it, the moves smoothed along the line so it cannot hop to a neighbour, and gives it the skin's place;
+a sketch with no valley near stands as drawn, and its share that found one is reported. The lines kept and
+sketched go into the facts' panels as `traced` polylines, the rows into `fasteners`, each with its photos.
+
+On the F/A-18C (2026-11-23), 113 photo charts (33 photos on the right side, 29 on the left, 16 on the top, 35
+on the bottom) gave 1,052 lines and 149 rows; curating kept 663 lines (5,261 in) and 114 rows (881 heads). Two
+helpers, one for the sides and one for the top and bottom, dropped 372 of the kept lines and sketched 76, so
+372 lines (4,242 in) went into the facts.
+
 ### 6. Comparison sheets: look
 
     blender -b --factory-startup -P view.py -- MODEL.glb POINTS.json CAMERAS.json RENDERS
@@ -314,6 +354,18 @@ sketch to several inches. Say which in the facts table.
 ## Pitfalls
 
 What went wrong on the F/A-18C, each a rule now:
+
+- **Read every place behind a small finding before moving the shape.** The upper side at FS 600-624 read 2.3
+  in inside in three photos and held the speedbrake's triangulated edges in doubt for a day; read place by
+  place, one photo's three places lay on a fin's strobe lens filed under the body, another's on mountains and
+  buildings behind the jet, and one photo alone was left. List each photo's places with their parts and
+  pixels, and look at the overlay, before a finding of two to five photos becomes a change.
+- **Read a lens's colour where its glass shows no sky.** The F/A-18C's red LEX lens read pale grey to pink in
+  four of five photos, its glass catching the sky; only dvids9820782, in the LEX's own shade, showed the dark red
+  of the lens itself. White-balance each colour against the paint beside it in the same photo (lens times the
+  paint's measured colour over that photo's paint, per channel in linear light), and keep the views whose lens
+  shows its own colour. And read an outline's ends in a profile view: from below and ahead, perspective made the
+  lens look pointed forward where both profiles show it square forward and narrowing aft.
 
 - **A few photos solved alone can float.** `photos.py --only` with three gear-down approach photos fitted
   every mark to 2-3 px, yet a fin tip projected 500 px off its own mark and the wheels 45 in off: uncited
@@ -731,6 +783,25 @@ What went wrong on the F/A-18C, each a rule now:
   photos' places, promised to bring their median miss from -1.39 to -0.50 in at 3.5. Built, it read -0.83:
   the outline's tangent moved round the nacelle, and with it the places each photo's edge meets. Build the
   chosen value and measure it again before calling the fit done.
+- **A line one sharp photo shows vanishes in an average of photos.** Each photo lands a pixel or two from the
+  next on a chart, and a panel line is a pixel or two wide, so averaging the photos' valleys left the
+  F/A-18C's right side 105 lines; taking each pixel's valley from the photo that sees it most sharply found
+  266. Count how many photos agree as well, to curate with, but never average the depth.
+- **Automatic line finding finds about half.** The charts' first pass kept 663 lines on the F/A-18C, about
+  half of what a person sees on the mosaics, and among them the edges of the reference jet's MARINES
+  lettering, seams where one photo's patch of the mosaic meets the next, and stains. Finish it by hand
+  (5c), and check what it kept as closely as what it missed.
+- **A line on a chart can run off one surface onto another.** Seen from below, the F/A-18C's bottom chart
+  carried a hinge line from the nacelle's underside straight on onto the wing 20 in above it, where the two
+  meet in the view; neighbouring chart pixels lay a whole step apart on the skin, the simplified line cut a chord
+  through the air, and the build refused it (a point 1.9 in off the skin). `curate.py` and `snap.py` now end a
+  line wherever neighbouring points lie more than 2 in apart on the skin.
+- **Change nothing a running chain reads.** A chain of charts.py runs, one chart after another, read the
+  script as each began; an edit between them gave the first run's fastener rows from two versions of the
+  row finder, and the whole run was done again.
+- **A script named like a standard module hides it.** `python3 -I` puts a script's own folder first on the
+  path, so a `trace.py` there is what `import trace` finds, for every module that imports it: name scripts
+  for what they do in words the standard library does not use (it became `snap.py`).
 
 ## Files
 
@@ -745,5 +816,10 @@ What went wrong on the F/A-18C, each a rule now:
 - `page.py`: the review page for one build, from its gate, sky check and sheets.
 - `cast.py`: casts a solved photo's pixels onto the posed model's surface or a plane of the project's frame,
   and projects coordinates into a photo to find where to look.
-- `test_verify.py`, `test_photos.py`, `test_skyline.py`, `test_poses.py`, `test_page.py`: `python3 -I test_verify.py`, and
-  likewise.
+- `resect.py`: solves photos' cameras one at a time against a build, outside the shared solve (5c).
+- `rectify.py`: Blender: lays solved photos onto charts of the rest skin (5c).
+- `charts.py`: the valleys, lines and fastener rows on each chart, its mosaic and sheets (5c).
+- `curate.py`: gathers the charts' lines and rows onto the skin once each, and drops the unlikely (5c).
+- `snap.py`: lays lines sketched by hand on the charts onto the valleys the photos show (5c).
+- `test_verify.py`, `test_photos.py`, `test_skyline.py`, `test_poses.py`, `test_page.py`, `test_charts.py`,
+  `test_curate.py`, `test_snap.py`: `python3 -I test_verify.py`, and likewise.

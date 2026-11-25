@@ -159,7 +159,13 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   well stands behind the opening (`wells()`, `layout.wells`): each gear bay, the speedbrake's and the probe's,
   walls and a roof standing on the skin, their feet half of `UNDER` inside it (a main bay's roof under its inlet duct, sloping with it), sized to hold
   the parts that stow there, its faces turned in
-  (`node(inside=True)`: `tidy()` turns every face out, and an open box's out is away from its bay). A cut's
+  (`node(inside=True)`: `tidy()` turns every face out, and an open box's out is away from its bay). `tidy()`
+  turns each closed island (`sealed()`) by the volume it encloses (`enclosure()`), after Blender's own turn: that
+  turn guesses, and built the right LEX inside out while its mirror image came out right. The check's row
+  `shape.faces` "closed islands turned inward" fails any closed part facing inward (`inverted()`: islands are faces
+  joined across shared edges, as the build's are, so the cabin scoop's side triangles, touching its door only at
+  corners, stand apart from it; an island is judged only where moving the origin round its box moves its volume by
+  under 5%, which leaves open shells such as the inlets' skin and duct and the wells unjudged). A cut's
   plane takes a corner within 1e-5 m of it as on it. Before the hidden faces go, every part is mended
   (`mended()`, `mend()`): edges under 0.01 in and faces of no area dissolved; each face with a straight corner
   (a cut's point on an edge of a face it did not reach), which split later across the edge lays a triangle of
@@ -285,10 +291,28 @@ The model is checked by the procedure in `../verify/README.md`; these are its F/
   the atlas the GLB carries: no texel lying under two painted faces (`paint.overlap`), each stencil on skin
   of its own island, dense enough for its lettering, and drawn whole (`layout.stencils`), and the panel
   lines darker than the skin beside them along their whole length, and so each closed door's outline against
-  the door and skin beside it, as is the LEX's root slot against the LEX
+  the door and skin beside it (each read on the face nearest it by distance, `face()`: by its nearest
+  centre, a flap's end face 3 in off read a line on its top sideways), as is the LEX's root slot against the LEX
   beside it, and the left duct's walls in view no darker than the occlusion's floor, light near the lip and
-  darkening with depth (`shades()`). A draft carries no atlas: its paint goes
-  unchecked, and the check says so.
+  darkening with depth (`shades()`). The traced lines are read apart from those cast by hand, and each
+  fastener row's heads against the paint half way between them, over the panels' tones laid there, held to the
+  shade the build draws at the row's texel, sized as the build sizes it by its longer step (`drawn()`,
+  `texel_of()`: a 0.28 in head on a 0.35 in texel darkens it only by its share; `layout.fasteners`). Heads and
+  midpoints are read only where nothing else is drawn within 0.6 in of them (a crossing line, a line's free end,
+  a ring, another row's head, a marking or stencil), each row judged to what its own reads' scatter can tell;
+  rows whose dot would come to under three of the atlas's levels (the LEX slot's dark paint) or that are too
+  crowded to read are left to the median over all rows.
+  Each marking is read over its box and 2 in of paint round it against its ink blurred by a texel, their
+  correlation; inside its box clear of its border the same, where the drawing varies at what a texel holds
+  (the walkway's outline outweighed its stripes); and its ink against the paint round it, read clear of its
+  edges (`layout.markings`: a marking 3 in off its place, reversed, or its stripes falling the wrong way, fails). The weathering is read off the atlas
+  (`layout.weathering`): the panels' tones as the slope of the paint's step across the forward fuselage's
+  mirrored side lines, less the mirrored point's, on the steps the tones lay there (`laid()`: the facts'
+  lines keyed by their place among them and each closed door's seam by its name, as the build keys them),
+  and the grime and exhaust staining as the slope of the paint's step
+  between mirrored points under and over the aft fuselage on the facts' own weathering there. The inner
+  forward doors' red edges are read for their depth (`shape.flush`) and colour (`paint.gear`). A draft
+  carries no atlas: its paint goes unchecked, and the check says so.
 - **`outline.py`** - the outline check: the model's top, side and front silhouettes at the HATP masks' scale,
   registered on the apex and centreline, with the share of their union both cover, and every place the
   outlines part by more than a threshold, worst first, in stations, waterlines and buttlines.
@@ -336,8 +360,8 @@ for a buried sample. Faces of more than four corners are triangulated first (a
 long bent cap laid flat in one piece overlapped itself); faces the islands lay over others get islands of their
 own (`unfolded()`), and once packed the atlas is searched again at its own size, what it finds laid into a strip
 along its right side the packing leaves free (`STRIP`), never packed again. Each texel's surface normal picks the
-upper grey or, facing down, the lower (`layout.paint`, sampled in the reference photo). A texel of the 2048
-atlas is about 0.7 in on the jet: the skin under each stencil gets its own island four times as dense
+upper grey or, facing down, the lower (`layout.paint`, sampled in the reference photo). A texel of the 4096
+atlas is about 0.35 in on the jet: the skin under each stencil gets its own island four times as dense
 (`stencil_islands()`), the inlets' ducts behind their first fitted section, dark, islands 0.3 as dense
 (`coarsened()`: at the rest's density they pushed the stencils' coarsest texel past its limit), and the panel
 lines, 0.4 in wide, shade each texel by the share of it they cover. A door's seam runs along an island's edge
@@ -352,7 +376,11 @@ until the paint is traced. The landing gear takes finishes of its own, materials
 (`layout.paint.gear`, `ATLASED`): white for the legs, braces, the nose hubs, the bays and the doors' inner faces
 (`cut(inside=)`), rubber for the tyres, chrome for the polished pistons and the planing link's rod, and the main
 hubs' grey (`tyre()` closes each wheel with a hub `layout.gear.tyres` sizes); a bake of each texel's material
-picks its colour, shaded, with no panel lines or stencils. What is seen only open (the gear, its doors and bays,
+picks its colour, shaded, with no panel lines or stencils. The lamps' lenses stay out of the atlas, each in a
+plain finish named for its light (`port`, `starboard`, `strobe`, `tail`) and coloured as its glass reads unlit in
+the photos, white-balanced against the paint beside it (`layout.lights.lenses`; #262); each is laid flush on its
+face by `flush()` with the outline the photos show (`taper()`, `pill()`, `disc()`), and the engine lights each in
+its own light's colour. What is seen only open (the gear, its doors and bays,
 the speedbrake, the probe and their wells, `exposed()`) takes its occlusion from a second bake with the gear down,
 the speedbrake up and the probe out (`OPENED`, `posed()`): baked stowed behind closed doors it sat at the
 occlusion's floor, sRGB 32, 37, 42 whatever its colour. That bake reaches 24 in (`OPEN_REACH`), so the legs are
@@ -362,6 +390,31 @@ hanging open shadows the belly it stows against; so are a door's outer face and 
 a gap of no width against the hole's rim and show only through the crack the two rims leave at a glancing view
 (shaded open, unshaded, they lit there as a dashed light line round each door). Only its inside, turned against
 the skin, takes the open pose's.
+
+Over the grey and its shading the paint lays (`paint()`, each a factor on the colour):
+- **the panel lines** (`panels()`): those cast by hand (`layout.panels` lines and mirrored), those traced off the
+  photos' charts (`traced`, `../verify/README.md` 5c) and the seam round every closed door;
+- **the fasteners** (`fasteners()`): each row's heads at its pitch along it (`layout.fasteners`), a disc of the
+  measured diameter and shade, each laid on the painted skin seen from outside (`outermost()`: along the
+  canopy's sill the nearest surface was the fuselage 0.6 in under the canopy's frame, and the heads drawn there
+  never showed); the rows on the always-fitted wingtip rails go into the stores' atlas (`paint_stores()`);
+- **the stencils** (`stencils()`, `layout.stencils`) and **the markings** (`markings()`, `layout.markings`): the
+  national insignia, NAVY, the intake chevrons, BEWARE OF BLAST and the arresting hook T on both sides, and the
+  reference jet's walkway on its left LEX, drawn from MIL-STD-2161C's figures at the sizes the photos measure
+  (`finish.py`) in the ink they measure, each laid flat on the skin at its place and cast from its face;
+- **the weathering** (`weathering()`, `layout.weathering`): the panels' tones, the paint stepping across each
+  line and door seam by as much as two panels' tones differ and easing away within `reach` (`finish.tones()`;
+  the traced lines seldom close a panel, and walled off by them one panel held nine tenths of the skin). Each
+  line's step is drawn by its key, the line's place among those `layout.panels` gives and each door's seam its
+  door's name (`given_lines()`, `finish.named()`), through a mixing hash: a multiplicative one drew a line and
+  its mirror image, a fixed count of keys apart, nearly the same step. Each joined line's segments are turned
+  to run one way along it, a door's outline anticlockwise seen from outside (`finish.oriented()`): its
+  edges came each its own way round, and the door's tone flipped from one edge to the next. Then a
+  fine mottle, grime in streaks under the aft fuselage and the exhaust's staining towards the nozzles, each a
+  fraction of what the reference photos show.
+
+The inner forward main gear doors are as deep as the photos see their edges, and those edges red
+(`layout.gear` doors inner forward edge, `layout.paint.gear` edge, `cut(edge=)`).
 
 Our model's distant stages wait until the model is finished (the user, 2026-11-02): the first set was
 deleted. These scripts stay for then, building from the painted model (the old model's own pipeline is below):

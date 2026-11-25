@@ -73,6 +73,70 @@ class ThinnedTest(unittest.TestCase):
 		self.assertGreater(sum(x > 0.9 for x, _ in kept), sum(x < 0.1 for x, _ in kept))
 
 
+class QuarterTest(unittest.TestCase):
+	# The nacelles' upper outboard quarter's exponent along the stations
+	# (build.py quarter()): the section's own before the fade, the shoulder's
+	# full exponent between the fade and the fade-out, eased back to the
+	# section's own through `out`, and without `out` only the end circle's
+	# rounding takes it back
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in ("quarter", "ease")]
+		cls.space = {"rounding": lambda station: 0.0}
+		exec(compile(ast.Module(body=found, type_ignores=[]), "build.py", "exec"), cls.space)
+
+	def exponent(self, shoulder, station, power=2.3):
+		self.space["QUARTER"] = shoulder
+		return self.space["quarter"](station, power)
+
+	def test_the_shoulder_fades_in_holds_and_fades_out(self):
+		shoulder = {"exponent": 7.0, "fade": [605, 635], "out": [660, 685]}
+		self.assertAlmostEqual(self.exponent(shoulder, 600), 2.3)
+		self.assertAlmostEqual(self.exponent(shoulder, 620), 2.3 + 4.7 / 2)
+		self.assertAlmostEqual(self.exponent(shoulder, 650), 7.0)
+		self.assertAlmostEqual(self.exponent(shoulder, 672.5), 2.3 + 4.7 / 2)
+		self.assertAlmostEqual(self.exponent(shoulder, 690), 2.3)
+
+	def test_without_a_fade_out_the_shoulder_holds_to_the_end(self):
+		self.assertAlmostEqual(self.exponent({"exponent": 7.0, "fade": [605, 635]}, 690), 7.0)
+
+
+class OutlineTest(unittest.TestCase):
+	# The lenses' outlines (build.py taper(), pill() and disc()), each a share
+	# of the lens's width at a share of its length from its first end: the
+	# LEX's square across its forward end and narrowing to its aft share 85%
+	# of the way aft before a rounded end, the strobes' full but for rounded
+	# ends, the tail light's a circle; none narrower than a tenth, so no ring
+	# of the plate collapses to a point
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in ("taper", "pill", "disc")]
+		cls.space = {"math": math}
+		exec(compile(ast.Module(body=found, type_ignores=[]), "build.py", "exec"), cls.space)
+
+	def test_the_lex_lens_is_square_forward_and_narrows_to_its_aft_share_before_its_rounded_end(self):
+		taper = self.space["taper"]
+		self.assertEqual(taper(0.0, 0.55), 1.0)
+		self.assertAlmostEqual(taper(0.85, 0.55), 0.55)
+		self.assertAlmostEqual(taper(0.425, 0.55), 0.775)
+		self.assertTrue(0.1 < taper(0.95, 0.55) < 0.55)
+		self.assertEqual(taper(1.0, 0.55), 0.1)
+		shares = [taper(s / 24, 0.55) for s in range(25)]
+		self.assertEqual(shares, sorted(shares, reverse=True))
+
+	def test_the_strobe_is_a_pill_and_the_tail_light_a_circle(self):
+		pill, disc = self.space["pill"], self.space["disc"]
+		self.assertEqual(pill(0.5), 1.0)
+		self.assertGreater(pill(0.25), 0.99)
+		self.assertAlmostEqual(pill(0.1), pill(0.9))
+		self.assertEqual(pill(0.0), 0.1)
+		self.assertEqual(disc(0.5), 1.0)
+		self.assertAlmostEqual(disc(0.25), math.sqrt(0.75))
+		self.assertEqual(disc(1.0), 0.1)
+
+
 class PivotTest(unittest.TestCase):
 	# The point a turn aft toward up takes one point to another about (build.py
 	# pivot(), the speedbrake's turn solved from its photographed corner)
@@ -629,6 +693,72 @@ print("result " + json.dumps({name: [faces(c, p, fix) for fix in (False, True)] 
 			self.assertAlmostEqual(sum(fixed) / whole, 1.0, places=6, msg=name)   # single precision
 
 
+class TidyTest(unittest.TestCase):
+	# tidy() (build.py, in Blender) turns a closed island outward by the volume
+	# it encloses, whichever way Blender's own turn guessed: here the guess
+	# leaves every face as given, as it left the right LEX wholly inward. A
+	# closed box given inward comes out outward; one given outward stays so;
+	# an open box (one end missing) is left as given, having no inside to
+	# judge by; all three far from the origin, as a part's faces lie
+	SCRIPT = """
+import bmesh as real, bpy, json, math, sys
+from types import SimpleNamespace
+from mathutils import Vector
+exec(sys.argv[sys.argv.index("--") + 1])
+bmesh = SimpleNamespace(new=real.new, ops=SimpleNamespace(remove_doubles=real.ops.remove_doubles, reverse_faces=real.ops.reverse_faces, recalc_face_normals=lambda bm, faces: None))
+
+def box(x, inward, open_=False):
+	lo, hi = (x, 0.0, 0.0), (x + 0.3, 0.05, 0.08)
+	corners = [(a, b, c) for a in (lo[0], hi[0]) for b in (lo[1], hi[1]) for c in (lo[2], hi[2])]
+	quads = [(0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3)]   # outward
+	quads = quads[1:] if open_ else quads
+	return corners, [q[::-1] for q in quads] if inward else quads
+
+def volume(data):
+	total = 0.0
+	for p in data.polygons:
+		c = [Vector(data.vertices[i].co) for i in p.vertices]
+		total += sum(c[0].dot(c[i].cross(c[i + 1])) for i in range(1, len(c) - 1)) / 6
+	return total
+
+out = {}
+for name, (x, inward, open_) in {"inward": (40.0, True, False), "outward": (41.0, False, False), "open": (42.0, True, True)}.items():
+	corners, faces = box(x, inward, open_)
+	data = bpy.data.meshes.new(name)
+	data.from_pydata(corners, [], faces)
+	given = volume(data)
+	tidy(data)
+	out[name] = [given, volume(data)]
+print("result " + json.dumps(out))
+"""
+
+	@classmethod
+	def setUpClass(cls):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in ("tidy", "sealed", "enclosure")]
+		with tempfile.TemporaryDirectory() as d:
+			script = Path(d) / "tidy.py"
+			script.write_text(cls.SCRIPT)
+			run = subprocess.run(["blender", "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(script), "--", ast.unparse(ast.Module(body=found, type_ignores=[]))], capture_output=True, text=True, timeout=600)
+		if run.returncode or "Traceback" in run.stdout + run.stderr:
+			raise RuntimeError(run.stdout[-3000:] + run.stderr[-3000:])
+		cls.result = json.loads(re.search(r"^result (.*)$", run.stdout, re.M)[1])
+
+	def test_a_closed_island_given_inward_comes_out_outward(self):
+		given, tidied = self.result["inward"]
+		self.assertLess(given, 0)
+		self.assertAlmostEqual(tidied / (0.3 * 0.05 * 0.08), 1.0, places=5)   # single precision
+
+	def test_a_closed_island_given_outward_stays_outward(self):
+		given, tidied = self.result["outward"]
+		self.assertAlmostEqual(given, tidied, places=9)
+		self.assertGreater(tidied, 0)
+
+	def test_an_open_island_is_left_as_given(self):
+		given, tidied = self.result["open"]
+		self.assertAlmostEqual(given, tidied, places=9)
+
+
 class BakingTest(unittest.TestCase):
 	# The parts joined into one copy for Cycles to bake (build.py baking()):
 	# two quads, each on its own half of a 32-texel atlas with a face
@@ -852,7 +982,7 @@ class KeyTest(unittest.TestCase):
 		"bakes": (None, ("	shade = texels(occlusion)[..., 0]\n", "	shade = texels(occlusion)[..., 0]   # changed\n")),
 		"opened": (None, ('OPENED = {"gear.doors": 1.0, "gear.nose": 1.0, "gear.main": 1.0, "speedbrake": 1.0, "probe": 1.0}', 'OPENED = {"gear.doors": 1.0, "gear.nose": 1.0, "gear.main": 0.9, "speedbrake": 1.0, "probe": 1.0}')),
 		"finish": (lambda l: l["paint"]["gear"].update(white=[150, 150, 152]), None),
-		"atlas": (None, ("ATLAS = 2048\n", "ATLAS = 4096\n")),
+		"atlas": (None, ("ATLAS = 4096\n", "ATLAS = 2048\n")),
 		"store_bakes": (None, ("	occlusion = np.ones((size, size), np.float32)\n", "	occlusion = np.ones((size, size), np.float32)   # changed\n")),
 		"reach": (None, ("STORE_REACH = 12.0\n", "STORE_REACH = 12.5\n")),
 		"store_atlas": (lambda l: l["stores"]["paint"].update(atlas=512), None),

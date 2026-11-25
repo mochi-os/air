@@ -72,14 +72,16 @@ SHARP = 5        # samples an edge may take to rise from a quarter to three quar
 # ride the outer panel and the aileron, the fold's lamps the outer panel, the
 # antenna pods the fins (filed under the body, the pods carried the body's
 # upper side behind the fins, and the fairings a body region at BL 172)
-FAMILIES = [("rudder", ("rudder_",)), ("fin", ("fin_", "pod_")), ("aileron", ("aileron_", "fairing_aileron_")), ("flap", ("flap_trailing_",)), ("slat", ("flap_leading_",)),
+# a lamp or strip belongs to the part it lies on: the fins' strobes, strips and tail light to the fin, where
+# else the body's sectors file a lens on a fin's face as the body's upper side (c8183843's strobe, 2026-11-24)
+FAMILIES = [("rudder", ("rudder_",)), ("fin", ("fin_", "pod_", "lamp_strobe_", "formation_fin_", "lamp_position_tail")), ("aileron", ("aileron_", "fairing_aileron_")), ("flap", ("flap_trailing_",)), ("slat", ("flap_leading_",)),
 	("wing", ("wing_", "fairing_wing_", "lamp_position_fold_")), ("stabilator", ("stabilator_",)), ("nozzle", ("nozzle_", "burner_")), ("gear", ("gear_", "hook", "launch_bar", "ladder")),
 	("well", ("well_",)), ("canopy", ("canopy", "windscreen")), ("cockpit", ("cockpit_", "pilot"))]
 MOVING = {"rudder", "aileron", "flap", "slat", "stabilator", "nozzle", "gear", "well", "canopy"}
 MINIMUM = 3      # places a photo must judge in a region to count as judging it
 TOLERANCE = 1.0  # inches the median over a region's photos may miss by
 AGREE = 2 / 3    # share of a region's photos that must miss on the side of that median
-SOLID = ["paint", "team", "lights", "burner", "display", "white", "rubber", "chrome", "hub"]   # materials whose outline is the jet's own edge (the last four the gear's finishes)
+SOLID = ["paint", "team", "lights", "port", "starboard", "strobe", "tail", "burner", "display", "white", "rubber", "chrome", "hub"]   # materials whose outline is the jet's own edge (port to tail the lamps' lenses, the last four the gear's finishes)
 SECTORS = [(30, "top"), (75, "upper side"), (105, "side"), (150, "lower side"), (181, "bottom")]   # round the body's section, degrees from the top
 STRETCH = 24     # inches of stations a region spans
 AXIS = 110.0     # the waterline the body's sectors are measured round, on the centreline
@@ -396,7 +398,7 @@ def covered(polygons, work, scale):
 	return np.asarray(image) > 0
 
 
-def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None, water=None, seaward=None, contrast=SKY["contrast"]):
+def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, green=None, below=None, blue=None, water=None, seaward=None, contrast=SKY["contrast"], threshold=BLUE):
 	# Every place along the model's edge where the photo shows sky beyond it:
 	# [{pixel, edge, miss (the frame's unit), part, point}]. gray and ids (each pixel's
 	# frontmost triangle, frontmost()) are at the working scale; names,
@@ -473,7 +475,7 @@ def measure(gray, ids, names, points, depths, focal, unit, scale, blocked=None, 
 		# a blue sky is judged by its blue, however dark: in grey, shaded skin
 		# can match it and the walk would pass the skin's edge for the next
 		# bright step inward; grey skin is never that blue
-		if blue is not None and blue[y0[-BAND:], x0[-BAND:]].mean() >= BLUE:
+		if blue is not None and blue[y0[-BAND:], x0[-BAND:]].mean() >= threshold:
 			edges = [f for f in (edge_along(along(blue), 0.0, attached, contrast), edge_along(along(gray), attached=attached, contrast=contrast)) if f is not None]
 			return max(edges) if edges else None
 		return edge_along(along(gray), attached=attached, contrast=contrast)
@@ -537,6 +539,10 @@ class Scene:
 		# stands within the contrast of its bright sky names its own ("contrast")
 		self.contrast = photo.get("contrast", SKY["contrast"])
 		self.blue = colour[..., 2] - np.maximum(colour[..., 0], colour[..., 1]) if clear else None
+		# the blue past which a clear photo's band is sky: one whose sky pales into haze
+		# near the jet names its own ("blue"), dvids8842845's 31-32 beside the tail against
+		# 43 above it, where the walk read in grey past the lit top onto the nozzles' shade
+		self.threshold = photo.get("blue", BLUE)
 		stores = catalogue.get("stores")
 		self.hidden, self.loaded, self.masks = None, None, None
 		if stores:
@@ -619,7 +625,7 @@ class Scene:
 		ids = frontmost(flat * self.scale, depth, self.work)
 		points = self.frame.source(tris.mean(axis=1))
 		places = measure(self.gray, ids, names, points, depth.mean(axis=1), self.camera[0], self.frame.unit, self.scale, self.covering(model, posed), self.green, self.ground,
-			self.blue, water, self.seaward, self.contrast)
+			self.blue, water, self.seaward, self.contrast, self.threshold)
 		if self.unshared:
 			places = [p for p in places if not unshared(self.unshared, p, self.settings)]
 		# a place on a part a stance drive has moved carries its word (stances())

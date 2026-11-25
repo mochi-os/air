@@ -41,7 +41,8 @@ PAINTED = {"layout.stencils"}   # facts only the paint's atlas shows
 # date and what they approved), or test_check fails; a text that gains a
 # guess fails again until it is signed again
 GUESSES = {
-	"layout.motion.cabin.note": (1, "user, 2026-11-20: as recommended: the cabin ram air scoop door's stroke 1 s; no source times it"),
+	"layout.lights.lenses.note": (1, "user, 2026-11-24: as recommended: the fold fairings' position lights' lenses 1.2 in across in the LEX lenses' measured colours, no photo showing them unlit (#262)"),
+	"layout.motion.cabin.note":(1, "user, 2026-11-20: as recommended: the cabin ram air scoop door's stroke 1 s; no source times it"),
 	"layout.wells.note": (1, "user, 2026-11-16: as recommended: the speedbrake well's floor 9.5 in under the skin, as deep as its stowed actuator and hose need; the three photos of it open look up at it from ahead, its inside hidden by the panel"),
 	"layout.paint.where": (1, "user, 2026-11-13: the speedbrake's and the probe's wells keep the airframe's greys; the refuelling photos show the probe's bay only in deep shadow; user, 2026-11-16: the speedbrake's well's inside hidden by its open panel in the three photos that show it open"),
 	"layout.aoa.note": (2, "user, 2026-11-18: the AoA probe's flange 0.1 in thick, the photo seeing its face obliquely, and the profile's last two diameters (0.4 in at 3.0 in out, 0.28 at 3.45), read by eye where the column reads blur, signed off as estimated"),
@@ -207,11 +208,12 @@ class Jet:
 		# The skin under each closed door (build.py wells() cuts it away, as
 		# cut() copied it for the door): the door's outer face at rest moved
 		# back in by the PROUD it stands off (none, but the probe's doors). A door is its outer face, its
-		# inner face a quarter inch under it, and an edge square to both round
-		# its outline: an outer face is turned to the door's side (down, or up
-		# for the speedbrake's and the probe's), and a ray in from it meets the
-		# door again within 0.4 in, where one in from its edge crosses the
-		# whole door. Model frame
+		# inner face its depth under it (UNDER; the inner forward doors' red
+		# edges deeper, layout.gear doors inner forward edge), and an edge
+		# square to both round its outline: an outer face is turned to the
+		# door's side (down, or up for the speedbrake's and the probe's), and a
+		# ray in from it meets the door again within its depth and 0.3 in,
+		# where one in from its edge crosses the whole door. Model frame
 		if "plugs" not in self.cache:
 			rest = self.model.parts(verify.pose(self.joints, {}))
 			up = np.array([0.0, 1.0, 0.0]) @ FRAME.axes.T
@@ -224,7 +226,8 @@ class Jet:
 				n /= np.linalg.norm(n, axis=1)[:, None]
 				side = np.flatnonzero((n @ up) * (-1 if below else 1) > 0)
 				reach = np.array([inward(t, t[k].mean(0), -n[k]) for k in side])
-				outer = side[reach < 0.4 * FRAME.unit]
+				depth = FACTS["layout"]["gear"]["doors"]["inner"]["forward"]["edge"] if name in EDGED else UNDER
+				outer = side[reach < (depth + 0.3) * FRAME.unit]
 				# moved back along each corner's normal, its faces' mean, as cut()
 				# moved the skin out, so neighbouring faces stay joined
 				key = lambda v: tuple(np.round(v, 7))
@@ -446,6 +449,9 @@ STOWED = [f"gear_{leg}_{piece}" for leg in ("left", "right", "nose") for piece i
 # in off), and its inner face, or a well's wall's foot, inside it (UNDER)
 PROUD = {"probe_door": 0.15, "probe_door_forward": 0.15}
 UNDER = 0.1
+# the doors whose edges are red below a band of the outer face's paint (build.py cut()'s edge)
+EDGED = ("gear_door_inner_left", "gear_door_inner_right")
+EDGE_BAND = 0.1
 FLUSH = [("speedbrake", False), ("gear_nose_door_left", True), ("gear_nose_door_right", True), ("gear_nose_door_long", True), ("gear_nose_door_brace", True),
 	("gear_door_inner_left", True), ("gear_door_inner_right", True), ("gear_door_strip_left", True), ("gear_door_strip_right", True), ("gear_door_outer_left", True), ("gear_door_outer_right", True), ("probe_door", False), ("probe_door_forward", False)]
 # The parts with no twin that stand to one side; every other one is
@@ -630,6 +636,67 @@ def outline(jet, name, normals=False):
 	return (points, ups) if normals else points
 
 
+def seams(jet, name):
+	# A closed door's seam as segments (M, 2, 3) in source coordinates: its
+	# outer face's edges no other face of it shares, moved back to the skin
+	# (outline()), but for those just across which another of its faces lies,
+	# where its next panel goes on (build.py cut() lays no seam there)
+	t, moved = jet.faces(name), jet.plugs([name])
+	key = lambda v: tuple(np.round(v, 7))
+	back = {key(v): w for tri, shifted in zip(t, moved) for v, w in zip(tri, shifted)}
+	count, owner = {}, {}
+	for k_, tri in enumerate(t):
+		for i in range(3):
+			e = tuple(sorted((key(tri[i]), key(tri[(i + 1) % 3]))))
+			count[e] = count.get(e, 0) + 1
+			owner[e] = k_
+	faces_ = FRAME.source(t.reshape(-1, 3)).reshape(-1, 3, 3)
+	out, across = [], []
+	for e, k in count.items():
+		if k != 1:
+			continue
+		a_, b_ = FRAME.source(np.array([e[0], e[1]]))
+		face = faces_[owner[e]]
+		away = np.cross(b_ - a_, np.cross(face[1] - face[0], face[2] - face[0]))
+		away /= np.linalg.norm(away)
+		if away @ (face.mean(0) - (a_ + b_) / 2) > 0:
+			away = -away
+		out.append(FRAME.source(np.array([back[e[0]], back[e[1]]])))
+		across.append((a_ + b_) / 2 + away * 0.05)
+	if not out:
+		raise ValueError(f"{name} has no outline")
+	return np.array(out)[closest(np.array(across), faces_) >= 0.02]
+
+
+TONES = {}
+
+
+def laid(jet, points, normals):
+	# The panels' tones build.py lays (weathering(), finish.tones()) at points
+	# (N, 3) on skin of the normals given, source coordinates: stepping across
+	# the lines layout.panels gives, each keyed by its place among them
+	# (build.py given_lines()), and each closed door's seam, keyed by its
+	# name (finish.named()); in Blender's axes, whose handedness decides
+	# which side of a line steps up
+	finish = finishing()
+	wear = FACTS["layout"]["weathering"]
+	if jet.path not in TONES:
+		p = FACTS["layout"]["panels"]
+		given = p.get("lines", []) + p["mirrored"] + [[(a, w, -b) for a, w, b in l] for l in p["mirrored"]] + p.get("traced", [])
+		segments = [np.array([(a, b) for l in given for a, b in zip(l, l[1:])], float)]
+		keys = [np.concatenate([np.full(len(l) - 1, k) for k, l in enumerate(given)])]
+		for name, _ in FLUSH:
+			if jet.has(name):
+				door = seams(jet, name)
+				segments.append(door)
+				keys.append(np.full(len(door), finish.named(name)))
+		segments, keys = np.concatenate(segments), np.concatenate(keys)
+		TONES[jet.path] = (segments, finish.joined(segments, keys))
+	segments, chains = TONES[jet.path]
+	blender = lambda v: np.stack([-v[..., 0], -v[..., 2], v[..., 1]], -1)
+	return finish.tones(blender(np.asarray(points, float)), blender(np.asarray(normals, float)), blender(segments), chains, wear["tone"], wear["reach"])
+
+
 def rim(jet, name):
 	# How far a closed door's outline, moved back to the skin it was cut
 	# from, stands off what closes the skin round it, at its furthest, in
@@ -801,14 +868,16 @@ def interp(keys, x):
 	return float(np.interp(x, [k[0] for k in keys], [k[1] for k in keys]))
 
 
-def closest(points, tris, chunk=256):
+def closest(points, tris, chunk=256, which=False):
 	# Each point's distance (N) to the nearest of the triangles (M, 3, 3): the
 	# closest point on each triangle by Ericson's regions, taken in his order,
-	# each point and triangle keeping the first region it falls in
+	# each point and triangle keeping the first region it falls in; with
+	# `which`, also the nearest triangle's index
 	a, b, c = tris[:, 0], tris[:, 1], tris[:, 2]
 	ab, ac, bc = b - a, c - a, c - b
 	safe = lambda v: np.where(v == 0, 1e-20, v)
 	out = np.full(len(points), np.inf)
+	index = np.zeros(len(points), np.int64)
 	for start in range(0, len(points), chunk):
 		q = points[start : start + chunk, None, :]
 		ap, bp, cp = q - a, q - b, q - c
@@ -832,8 +901,19 @@ def closest(points, tris, chunk=256):
 			if take.any():
 				x = np.where(take[..., None], point(), x)
 			done |= take
-		out[start : start + chunk] = np.linalg.norm(x - q, axis=-1).min(1)
-	return out
+		gaps = np.linalg.norm(x - q, axis=-1)
+		out[start : start + chunk] = gaps.min(1)
+		index[start : start + chunk] = gaps.argmin(1)
+	return (out, index) if which else out
+
+
+def face(q, tris, near):
+	# The index of the triangle nearest q among those `near` marks: the
+	# nearest by its centre was a flap's end face 3 in from a line on its top,
+	# a large triangle whose centre lay nearer than the small ones under the
+	# line, and the paint was read sideways across the end
+	pick = np.flatnonzero(near)
+	return int(pick[closest(np.asarray(q, float)[None], tris[pick], which=True)[1][0]])
 
 
 def across(triangle, count=5):
@@ -988,6 +1068,45 @@ def shrunk(tris, by):
 	np.add.at(b, index, -by * n)
 	move = (np.linalg.pinv(a, rcond=1e-6) @ b[:, :, None])[:, :, 0]
 	return (flat + move[index]).reshape(-1, 3, 3)
+
+
+def inverted(tris, spread=0.05):
+	# A part's closed islands turned inward (triangles (N, 3, 3), model frame):
+	# each one's signed volume, negative. An island is closed enough to judge
+	# where the volume barely moves (by `spread` of itself) as its origin moves
+	# round its box: a closed surface's volume holds wherever it is taken from,
+	# where an open shell's (an inlet's skin and duct, a well) swings with it.
+	# The cull's few cut faces leave a closed part's under 1%. Islands are
+	# faces joined across shared edges, as the build's are: a face touching
+	# an island only at its corners (the cabin scoop's side triangles at its
+	# door's) is an island of its own
+	flat = np.round(tris.reshape(-1, 3), 6)
+	_, index = np.unique(flat, axis=0, return_inverse=True)
+	index = index.reshape(-1, 3)
+	parent = np.arange(len(index))
+
+	def find(i):
+		while parent[i] != i:
+			parent[i] = parent[parent[i]]
+			i = parent[i]
+		return i
+	edges = {}
+	for f, (a, b, c) in enumerate(index):
+		for p, q in ((a, b), (b, c), (c, a)):
+			first = edges.setdefault((min(p, q), max(p, q)), f)
+			parent[find(f)] = find(first)
+	root = np.array([find(f) for f in range(len(index))])
+	out = []
+	for r in np.unique(root):
+		t = tris[root == r]
+		lo, hi = t.reshape(-1, 3).min(0), t.reshape(-1, 3).max(0)
+		volumes = []
+		for o in ((lo + hi) / 2, lo, hi, np.array([lo[0], hi[1], lo[2]]), np.array([hi[0], lo[1], hi[2]])):
+			a, b, c = t[:, 0] - o, t[:, 1] - o, t[:, 2] - o
+			volumes.append(float(np.einsum("ij,ij->i", a, np.cross(b, c)).sum() / 6))
+		if volumes[0] < 0 and max(volumes) - min(volumes) <= spread * abs(volumes[0]):
+			out.append(volumes[0])
+	return out
 
 
 def boundary(tris):
@@ -1186,6 +1305,27 @@ def waves(H, stations, free, span=40.0, jump=0.6, step=None):
 	return out
 
 
+def panel_lines(skin, p):
+	# Each panel line layout.panels gives against the skin's triangles: the
+	# lines cast by hand and mirrored (both sides), then those the charts
+	# traced, keyed as build.py given_lines() counts them past the mirrored
+	# lines' two sides, each its furthest point off the skin
+	given = [(l, [1]) for l in p["lines"]] + [(l, [1, -1]) for l in p["mirrored"]] + [(l, [1]) for l in p.get("traced", [])]
+	keys = list(range(len(p["lines"]) + len(p["mirrored"]))) + [len(p["lines"]) + 2 * len(p["mirrored"]) + i for i in range(len(p.get("traced", [])))]
+	for k, (line, sides) in zip(keys, given):
+		worst = 0.0
+		for side in sides:
+			corners = np.array(line, float) * [1, 1, side]
+			dense = np.concatenate([np.linspace(q, r, max(2, int(np.ceil(np.linalg.norm(r - q) / 0.5)) + 1)) for q, r in zip(corners, corners[1:])])
+			low, high = dense.min(0) - 3, dense.max(0) + 3
+			# every triangle whose box meets the line's (a large one may have no corner near it)
+			near = skin[((skin.min(1) <= high) & (skin.max(1) >= low)).all(1)]
+			if not len(near):
+				raise KeyError(f"no skin near panel line {k}")
+			worst = max(worst, float(surface_distance(dense, near).max()))
+		yield result("layout.panels", f"panel line {k} (FS {line[0][0]:.0f}-{line[-1][0]:.0f}) off the skin, the furthest", 0.0, worst, 1.0)
+
+
 def surface_distance(points, tris, chunk=256):
 	# Each point's (N, 3) distance to the nearest of the triangles (M, 3, 3):
 	# to the plane where the point stands over a triangle, else to its edges
@@ -1364,6 +1504,59 @@ def lip(inner, outer, turns, width=2.0):
 	least = [float(r[np.abs(a - t) <= width / 2].min() - q[np.abs(b - t) <= width / 2].max()) for t in turns
 		if (np.abs(a - t) <= width / 2).any() and (np.abs(b - t) <= width / 2).any()]
 	return min(least) if least else float("nan")
+
+
+LENSES = {"lamp_position_lex_left": "port", "lamp_position_lex_right": "starboard", "lamp_position_fold_left": "port", "lamp_position_fold_right": "starboard",
+	"lamp_position_tail": "tail", "lamp_strobe_left": "strobe", "lamp_strobe_right": "strobe"}   # each lens and the finish its glass wears (layout.lights lenses)
+
+
+def colours(path):
+	# Each material's base colour factor in a GLB, linear: {name: (r, g, b)}
+	data = Path(path).read_bytes()
+	length = int.from_bytes(data[12:16], "little")
+	gltf = json.loads(data[20:20 + length])
+	return {m.get("name"): tuple(m.get("pbrMetallicRoughness", {}).get("baseColorFactor", (1.0, 1.0, 1.0, 1.0))[:3]) for m in gltf.get("materials", [])}
+
+
+def wears(jet, name):
+	# the materials a part's faces wear, by name
+	mesh = jet.model.nodes[jet.model.index[name]]["mesh"]
+	if mesh is None:
+		raise KeyError(f"{name} has no mesh")
+	return sorted({str(material) for _, material in jet.model.meshes[mesh]})
+
+
+def lenses(jet):
+	# The lamps' lenses (layout.lights lenses): each wears its glass's finish,
+	# the finish's base colour the colour the photos read unlit (in linear
+	# light, as build.py lays it), and each its measured size: the LEX lenses'
+	# and the strobes' length along the station and width up the side (the
+	# LEX's narrowed near its aft end, 5/6 of the way aft, a ring ahead of its
+	# rounding), the tail light's across both ways, the fold lights' across
+	L = FACTS["layout"]["lights"]["lenses"]
+	base = colours(jet.path)
+	for finish, colour in L["colours"].items():
+		c = np.asarray(colour, float) / 255
+		want = np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+		got = np.asarray(base.get(finish, (math.inf,) * 3), float)
+		yield result("layout.lights", f"{finish} lenses' base colour off the photos', linear", 0.0, float(np.abs(got - want).max()), 0.002, "")
+	for part, finish in LENSES.items():
+		worn = wears(jet, part)
+		yield result("layout.lights", f"{part} wearing {finish}" + ("" if worn == [finish] else f" (it wears {', '.join(worn)})"), 1, int(worn == [finish]), 0, "")
+	for side in ("left", "right"):
+		for key, size in ((f"position_lex_{side}", L["lex"]), (f"strobe_{side}", L["strobe"])):
+			p = jet.points([f"lamp_{key}"])
+			length = p[:, 0].max() - p[:, 0].min()
+			yield result("layout.lights", f"{key} lens's length", size["length"], length, 0.3)
+			yield result("layout.lights", f"{key} lens's width", size["width"], p[:, 1].max() - p[:, 1].min(), 0.3)
+			if "aft" in size:
+				ring = jet.cut([f"lamp_{key}"], [p[:, 0].min() + length * 5 / 6, 0, 0], [1, 0, 0])
+				yield result("layout.lights", f"{key} lens's width near its aft end (5/6 of the way aft)", size["width"] * size["aft"], ring[:, 1].max() - ring[:, 1].min(), 0.15)
+		p = jet.points([f"lamp_position_fold_{side}"])
+		yield result("layout.lights", f"position_fold_{side} lens across", L["fold"]["width"], p[:, 2].max() - p[:, 2].min(), 0.3)
+	p = jet.points(["lamp_position_tail"])
+	for i, word in ((1, "up"), (2, "across")):
+		yield result("layout.lights", f"tail light's lens {word}", L["tail"]["diameter"], p[:, i].max() - p[:, i].min(), 0.3)
 
 
 def buried(jet, part, carrier, outward, reach=1.0):
@@ -1545,9 +1738,10 @@ def shades(jet, image, name, eyes, aims, keep):
 	return np.array(values), np.array(points).reshape(-1, 3)
 
 
-def atlas(path, material="paint"):
+def atlas(path, material="paint", colour=False):
 	# A material's atlas a GLB carries (the paint's, or the stores' own), as
-	# brightness 0..1 (H, W), or None (a draft, unpainted)
+	# brightness 0..1 (H, W), or with colour as sRGB 0..1 (H, W, 3); None for
+	# a draft, unpainted
 	import io
 	from PIL import Image
 	data = Path(path).read_bytes()
@@ -1562,7 +1756,571 @@ def atlas(path, material="paint"):
 	image = gltf["images"][gltf["textures"][texture["index"]]["source"]]
 	view = gltf["bufferViews"][image["bufferView"]]
 	raw = binary[view.get("byteOffset", 0): view.get("byteOffset", 0) + view["byteLength"]]
-	return np.asarray(Image.open(io.BytesIO(raw)).convert("L"), float) / 255
+	return np.asarray(Image.open(io.BytesIO(raw)).convert("RGB" if colour else "L"), float) / 255
+
+
+UNTEXTURED = ("glass", "lights", "burner", "display") + tuple(FACTS["layout"]["lights"]["lenses"]["colours"])   # the materials the engine draws itself: the lenses' too
+
+MARKING = 20   # pixels per inch the markings' ink is drawn at (build.py's)
+MARGIN = 2.0   # inches of paint round a marking's box its check reads
+BORDER = 1.2   # inches inside a marking's box its inner correlation leaves out: the walkway's 1 in outline
+BLUR = 0.35    # inches: the blur a marking's ink is read against, the atlas's texel
+EDGE = 0.4     # inches either side of a marking's edges its contrast leaves out: the atlas's texel (0.35 in at 4096) and the build's blur of half a texel; the walkway's 1 in lines keep a fifth of an inch
+
+
+def finishing():
+	# finish.py, the paint's drawing and weathering, loaded from beside this
+	# file (run with -I, the script's own folder is off the path)
+	import importlib.util
+	if "finish" not in sys.modules:
+		spec = importlib.util.spec_from_file_location("finish", HERE / "finish.py")
+		module = importlib.util.module_from_spec(spec)
+		sys.modules["finish"] = module
+		spec.loader.exec_module(module)
+	return sys.modules["finish"]
+
+
+def paint_at(tris, uvs, image, points, direction, near):
+	# The atlas's brightness where rays from points (N, 3) along a direction
+	# first meet the near triangles (a mask), with the triangle each meets
+	# and where: (values, triangle index or -1, hit points); NaN for a miss
+	k, bary = hits(tris[near], points, direction)
+	values, index, at = np.full(len(points), np.nan), np.full(len(points), -1), np.full((len(points), 3), np.nan)
+	met = k >= 0
+	if met.any():
+		i = np.flatnonzero(near)[k[met]]
+		u, v = bary[met].T
+		values[met] = sample(image, uvs[i, 0] * (1 - u - v)[:, None] + uvs[i, 1] * u[:, None] + uvs[i, 2] * v[:, None])
+		index[met] = i
+		at[met] = tris[i, 0] + (tris[i, 1] - tris[i, 0]) * u[:, None] + (tris[i, 2] - tris[i, 0]) * v[:, None]
+	return values, index, at
+
+
+def markings_drawn(jet, image):
+	F = FACTS
+	tris, uvs = jet.textured()
+	normals = np.cross(tris[:, 1] - tris[:, 0], tris[:, 2] - tris[:, 0])
+	normals = normals / np.maximum(np.linalg.norm(normals, axis=1), 1e-12)[:, None]
+	# each marking (layout.markings) drawn where its place puts it and the
+	# right way round, in its ink: the atlas read over the marking's box
+	# and MARGIN of paint round it, laid flat on the skin at its place and
+	# cast from its face (the texels within 1.5 in of that plane, as the
+	# build paints them), against the figure's ink (finish.py) at the same
+	# points, their correlation (a marking 3 in off its place, or NAVY
+	# reversed, correlates under 0.5; the margin holds a placard's own
+	# edges, whose lettering is finer than a texel); and the ink against
+	# the paint round it, the median read where the ink covers all within
+	# EDGE against where it covers none within EDGE (across its edges the
+	# atlas's texel blurs the two together, and a straight line through
+	# every read took the ink 30% too light)
+	for key, spec in F["layout"].get("markings", {}).items():
+		if not isinstance(spec, dict) or "places" not in spec:
+			continue
+		for place in spec["places"]:
+			face, (a, b) = place["face"], place["at"]
+			label = f"{key} on the {face}" + (f" at {a:g}, {b:g}" if sum(p["face"] == face for p in spec["places"]) > 1 else "")
+			if face in ("right", "left"):
+				side = 1.0 if face == "right" else -1.0
+				start, aim, reference = np.array([a, b, side * 400.0]), np.array([0.0, 0.0, -side]), np.array([0.0, 1.0, 0.0])
+			else:
+				start, aim, reference = np.array([a, 400.0 if face == "top" else -200.0, b]), np.array([0.0, -1.0 if face == "top" else 1.0, 0.0]), np.array([-1.0, 0.0, 0.0])
+			k, bary = hits(tris, start[None], aim)
+			if k[0] < 0:
+				raise KeyError(f"no painted skin under the {label}")
+			t = tris[k[0]]
+			centre = t[0] + (t[1] - t[0]) * bary[0, 0] + (t[2] - t[0]) * bary[0, 1]
+			normal = normals[k[0]] * -np.sign(normals[k[0]] @ aim)
+			up = reference - normal * (reference @ normal)
+			up /= np.linalg.norm(up)
+			across = np.cross(normal, up)   # source axes are left-handed: across reads left to right seen from outside
+			turn = math.radians(place.get("turn", 0.0))
+			up, across = up * math.cos(turn) - across * math.sin(turn), across * math.cos(turn) + up * math.sin(turn)
+			pad = int(round(MARGIN * MARKING))
+			ink = np.pad(marking_ink(spec, aft=across[0] < 0), pad)
+			h, w = ink.shape
+			length, height = w / MARKING, h / MARKING
+			gx, gy = np.meshgrid(np.arange(0.125, length, 0.25), np.arange(0.125, height, 0.25))
+			u, v = gx.ravel() / length, gy.ravel() / height
+			read = np.c_[1 - u if place.get("mirror") else u, v]
+			# the ink as the atlas can hold it, blurred by about a texel: the
+			# placard's lettering, finer than one, read as noise against it
+			from PIL import Image, ImageFilter
+			soft = np.asarray(Image.fromarray((ink * 255).round().astype(np.uint8)).filter(ImageFilter.GaussianBlur(BLUR * MARKING)), float) / 255
+			expected = sample(soft, read)
+			reach = int(round(EDGE * MARKING))
+			core, clear = sample(eroded(ink >= 0.999, reach), read) >= 0.999, sample(eroded(ink <= 0.001, reach), read) >= 0.999
+			flat = centre + (u - 0.5)[:, None] * length * across - (v - 0.5)[:, None] * height * up
+			near = ((tris.min(1) <= flat.max(0) + 3) & (tris.max(1) >= flat.min(0) - 3)).all(1)
+			j, bj = hits(tris[near], flat + 2.0 * normal, -normal)
+			met = j >= 0
+			i = np.where(near)[0][np.maximum(j, 0)]
+			point = tris[i, 0] + (tris[i, 1] - tris[i, 0]) * bj[:, :1] + (tris[i, 2] - tris[i, 0]) * bj[:, 1:]
+			met &= np.abs((point - centre) @ normal) < 1.5
+			if met.sum() < 0.5 * len(met):
+				raise ValueError(f"the {label} lies off the painted skin: {met.sum()} of {len(met)} points on it")
+			uv = uvs[i[met], 0] * (1 - bj[met].sum(1))[:, None] + uvs[i[met], 1] * bj[met, :1] + uvs[i[met], 2] * bj[met, 1:]
+			shown, inked = sample(image, uv), expected[met]
+			yield result("layout.markings", f"{label}: the paint over its box and round it against its ink drawn there ({met.sum()} points), their correlation", 1.0, float(-np.corrcoef(shown, inked)[0, 1]), 0.3, "share")
+			# and inside its box clear of its border, where the drawing
+			# varies at what a texel holds: over the box and round it the
+			# walkway's outline outweighed its stripes, falling the wrong way
+			# (a placard's lettering, finer than a texel, is left out)
+			inner = ((gx > MARGIN + BORDER) & (gx < length - MARGIN - BORDER) & (gy > MARGIN + BORDER) & (gy < height - MARGIN - BORDER)).ravel()[met]
+			if inner.sum() > 20 and np.std(inked[inner]) > 0.1:
+				yield result("layout.markings", f"{label}: the paint inside its box, {BORDER} in clear of its border, against its ink drawn there ({inner.sum()} points), their correlation", 1.0, float(-np.corrcoef(shown[inner], inked[inner])[0, 1]), 0.3, "share")
+			core, clear = core[met], clear[met]
+			if core.sum() < 10 or clear.sum() < 10:
+				raise ValueError(f"the {label}: {core.sum()} points inside its ink and {clear.sum()} clear of it, {EDGE} in from its edges")
+			target = float(np.array(spec["ink"]) @ [0.299, 0.587, 0.114])
+			yield result("layout.markings", f"{label}: its ink against the paint round it ({core.sum()} and {clear.sum()} points)", target, float(np.median(shown[core]) / np.median(shown[clear])), 0.06, "share")
+
+
+def eroded(mask, reach):
+	# A boolean image held only where all within `reach` pixels (a square)
+	# holds too
+	out = mask.copy()
+	for _ in range(reach):
+		inner = out.copy()
+		inner[1:] &= out[:-1]
+		inner[:-1] &= out[1:]
+		inner[:, 1:] &= out[:, :-1]
+		inner[:, :-1] &= out[:, 1:]
+		inner[1:, 1:] &= out[:-1, :-1]
+		inner[1:, :-1] &= out[:-1, 1:]
+		inner[:-1, 1:] &= out[1:, :-1]
+		inner[:-1, :-1] &= out[1:, 1:]
+		inner[0], inner[-1], inner[:, 0], inner[:, -1] = False, False, False, False
+		out = inner
+	return out.astype(float)
+
+
+def edges_red(jet):
+	F = FACTS
+	# the inner forward doors' edges red (layout.paint gear edge): the
+	# atlas's colour across their edge faces, red over green, the median
+	# (the shade alike on both)
+	colour = atlas(jet.path, colour=True)
+	red = np.array(F["layout"]["paint"]["gear"]["edge"], float)
+	for name in EDGED:
+		_, edge_uvs = jet.textured(("edge",), [name])
+		if not len(edge_uvs):
+			raise KeyError(f"{name} has no faces in edge")
+		middle = edge_uvs.mean(1)
+		rgb = np.stack([sample(colour[..., c], middle) for c in range(3)], -1)
+		yield result("paint.gear", f"{name}'s red edges ({len(middle)} faces): their colour's red over its green, the median", red[0] / red[1], float(np.median(rgb[:, 0] / np.maximum(rgb[:, 1], 1e-3))), 0.25 * red[0] / red[1], "share")
+
+
+def fasteners_drawn(jet, image):
+	# Each row of fasteners (layout.fasteners) painted where it runs: its
+	# heads laid at its pitch along it as the build lays them, each read at
+	# its centre from outside, against the paint half way between it and the
+	# next head along the row; the median of the heads over the median of
+	# the midpoints the row's shade. A panel line under the row, the panels'
+	# tones and the skin's shading read alike at both and cancel; a row off
+	# its line reads the skin at both, 1. Its target is the shade the build
+	# draws at the row's texel (drawn()): a head 0.28 in across on a 0.35 in
+	# texel darkens it by its share of the texel, not to the photos' 0.71.
+	# A row on the wingtip rails reads the stores' own atlas, which the
+	# build draws their heads into
+	p = FACTS["layout"].get("fasteners")
+	if not p:
+		return
+	surfaces = []
+	for materials, picture in ((("paint", "team"), image), (("stores",), atlas(jet.path, "stores"))):
+		if picture is None:
+			continue
+		try:
+			t, u = jet.textured(materials)
+		except KeyError:
+			continue
+		surfaces.append((t, u, picture, outward(t), t.mean(1), t.min(1), t.max(1)))
+	# Each head or midpoint is read only where nothing else is drawn at it
+	# (CLEAR in round it), or the row reads that instead of its heads: a
+	# line, seam or ring crossing the row more than 30 deg off it (a line
+	# under the row reads alike at heads and midpoints and cancels; the
+	# radome's ring across row 26 did not), a line's free end, another row's head, a marking's
+	# or stencil's box, or a read more than a fifth off the row's median (a
+	# bay's white edge beside row 102)
+	rows = p.get("rows", [])
+	laid(jet, np.zeros((1, 3)), np.array([[0.0, 1.0, 0.0]]))
+	lines, chains = TONES[jet.path]
+	# each line's free ends: a row along a line that stops or jogs beside it
+	# reads its heads on the line and its midpoints off it (row 1 along the
+	# fin root's line, laid in two pieces 0.7 in apart)
+	ends = []
+	for chain in np.unique(chains):
+		corners = lines[chains == chain].reshape(-1, 3)
+		keys, counts = np.unique(np.round(corners, 3), axis=0, return_counts=True)
+		ends += list(keys[counts == 1])
+	ends = np.array(ends).reshape(-1, 3)
+	rings = FACTS["layout"]["panels"].get("rings", [])
+	boxes = []
+	for group in ("markings", "stencils"):
+		for spec in FACTS["layout"].get(group, {}).values():
+			if not isinstance(spec, dict):
+				continue
+			if group == "markings" and "places" in spec:
+				ink = marking_ink(spec)
+				size = (ink.shape[1] / MARKING, ink.shape[0] / MARKING)
+				boxes += [(place["face"], place["at"], size) for place in spec["places"]]
+			elif "at" in spec and "size" in spec:
+				boxes += [(face, spec["at"], spec["size"]) for face in ("right", "left")]
+	laid_heads = []
+
+	def head_points(row):
+		# a row's heads as build.py fastener_centres() lays them (each
+		# segment split into steps no longer than the row's pitch evened over
+		# its length, and its last corner), the midpoint between each head and
+		# the next, and that pitch
+		corners = np.array(row["points"], float)
+		length = float(np.linalg.norm(np.diff(corners, axis=0), axis=1).sum())
+		step = length / max(1, int(round(length / row["pitch"])))
+		heads, middles = [], []
+		for a, b in zip(corners, corners[1:]):
+			m = max(1, math.ceil(np.linalg.norm(b - a) / step - 1e-6))   # as build.py on_parts()
+			heads += [a + (b - a) * i / m for i in range(m)]
+			middles += [a + (b - a) * (i + 0.5) / m for i in range(m)]
+		heads.append(corners[-1])
+		return np.array(heads), np.array(middles), step
+
+	for row in rows:
+		laid_heads.append(head_points(row)[0])
+	owner = np.concatenate([np.full(len(h), k) for k, h in enumerate(laid_heads)])
+	every_head = np.concatenate(laid_heads)
+
+	def clear(q, direction, k):
+		if (np.linalg.norm(every_head[owner != k] - q, axis=1) < CLEAR).any():
+			return False
+		if len(ends) and (np.linalg.norm(ends - q, axis=1) < CLEAR).any():
+			return False
+		if abs(direction[0]) > 0.5 and any(abs(q[0] - r) < CLEAR for r in rings):
+			return False
+		for face_, (a, b), (length, height) in boxes:
+			across = q[1] if face_ in ("right", "left") else q[2]
+			if face_ == "right" and q[2] <= 0 or face_ == "left" and q[2] >= 0 or face_ == "top" and q[1] < 105 or face_ == "bottom" and q[1] >= 105:
+				continue
+			if abs(q[0] - a) < length / 2 + CLEAR and abs(across - b) < height / 2 + CLEAR:
+				return False
+		pick = lines[((lines.min(1) <= q + CLEAR) & (lines.max(1) >= q - CLEAR)).all(1)]
+		if len(pick):
+			start, run = pick[:, 0], pick[:, 1] - pick[:, 0]
+			span = np.linalg.norm(run, axis=1)
+			unit = run / np.maximum(span, 1e-12)[:, None]
+			t = np.clip(((q - start) * unit).sum(1), 0, span)
+			near = np.linalg.norm(start + unit * t[:, None] - q, axis=1) < CLEAR
+			if (near & (np.abs(unit @ direction) < math.cos(math.radians(30)))).any():
+				return False
+		return True
+
+	darkening, crowded, coarse, dark = [], 0, 0, 0
+	for k, row in enumerate(rows):
+		corners = np.array(row["points"], float)
+		tris, uvs, picture, facing, centres, low, high = min(surfaces, key=lambda f: float(np.linalg.norm(f[4] - corners[0], axis=1).min()))
+		heads, middles, step = head_points(row)
+		direction = corners[-1] - corners[0]
+		direction /= max(np.linalg.norm(direction), 1e-9)
+		reads, texels = {}, []
+		for kind, points in (("heads", heads), ("middles", middles)):
+			values, normals = [], []
+			for q in points:
+				near = ((low <= q + 3) & (high >= q - 3)).all(1)
+				value, normal = np.nan, np.array([0.0, 1.0, 0.0])
+				if near.any():
+					j = face(q, tris, near)
+					normal = facing[j]
+					texels.append(texel_of(tris[j], uvs[j], picture.shape[0]))
+					if clear(q, direction, k):
+						value = paint_at(tris, uvs, picture, (q + 2.0 * normal)[None], -normal, near)[0][0]
+				values.append(value if np.isfinite(value) and value > 0 else np.nan)
+				normals.append(normal)
+			# over the panels' tones laid there (laid()): a row crossing panel
+			# lines reads heads and midpoints in panels toned up to 2% apart
+			# (row 101, 22 in across the LEX's top), a third of a head's dot
+			reads[kind] = np.array(values) / laid(jet, np.array(points), np.array(normals))
+		if not texels:
+			raise ValueError(f"layout.fasteners row {k}: no head or midpoint on the painted skin")
+		texel = float(np.median(texels))
+		expected = drawn(texel, step, p["diameter"] / 2, p["shade"])
+		if 1 - expected < 0.03:
+			coarse += 1   # a head on a texel this coarse darkens it less than the paint's own grain
+			continue
+		middle = np.nanmedian(np.r_[reads["heads"], reads["middles"]]) if np.isfinite(np.r_[reads["heads"], reads["middles"]]).any() else 0.0
+		if middle * (1 - expected) * 255 < 3:
+			dark += 1   # a dot under three of the atlas's levels: row 101 in the LEX slot's paint, 36 levels, its heads 2
+			continue
+		kept = {kind: v[np.isfinite(v) & (np.abs(v / max(middle, 1e-9) - 1) < 0.2)] for kind, v in reads.items()}
+		if len(kept["heads"]) < 3 or len(kept["middles"]) < 3:
+			crowded += 1
+			continue
+		measured = float(np.median(kept["heads"]) / np.median(kept["middles"]))
+		# the reads' own scatter: each group's robust spread over its median,
+		# the medians' ratio's standard error from both (a median's is 1.25
+		# times the mean's); row 8 runs down the lower side where it turns
+		# under, the paint falling 30% in 2 in, and its few clear heads can
+		# show no 6% dot through that
+		spread = lambda v: 1.4826 * np.median(np.abs(v / np.median(v) - 1))
+		error = 1.25 * math.sqrt(spread(kept["heads"]) ** 2 / len(kept["heads"]) + spread(kept["middles"]) ** 2 / len(kept["middles"]))
+		darkening.append((1 - measured) / max(1 - expected, 1e-6))
+		# lighter than drawn() by half the darkening the row's texel allows,
+		# or twice what its reads can tell if more, fails (a row undrawn reads
+		# 1); darker passes down to the shade of a head covering its whole
+		# texel (the build's own texel, read off its atlas, can be finer than
+		# the one read off the UVs here)
+		tolerance = max((1 - expected) / 2, 2 * error) if measured >= expected else expected - p["shade"]
+		yield result("layout.fasteners", f"row {k} ({len(heads)} heads from FS {corners[0][0]:.0f}, WL {corners[0][1]:.0f}, BL {corners[0][2]:.0f}, its texel {texel:.2f} in; {len(kept['heads'])} heads and {len(kept['middles'])} midpoints clear, read to {error:.3f}): its heads against the paint between them, the medians", expected, measured, tolerance, "share")
+	if darkening:
+		yield result("layout.fasteners", f"the rows' heads' darkening against what their texels allow, the median over {len(darkening)} rows ({crowded} too crowded to read, {coarse} on texels too coarse, {dark} on paint too dark)", 1.0, float(np.median(darkening)), 0.3, "share")
+
+
+CLEAR = 0.6   # inches round a fastener's head or midpoint nothing else drawn may come (fasteners_drawn())
+
+
+def texel_of(triangle, uv, size):
+	# A texel's size on the jet as build.py texel_size() takes it, the
+	# larger of its steps along the atlas's two axes: the face's corners
+	# against their UVs (a texel 0.44 by 0.35 in under row 8 took 0.44, and
+	# the heads the build drew there were a third fainter than the mean of
+	# the two would have them)
+	edges = np.stack([triangle[1] - triangle[0], triangle[2] - triangle[0]], 1)
+	texels = np.stack([uv[1] - uv[0], uv[2] - uv[0]], 1) * size
+	if abs(np.linalg.det(texels)) < 1e-12:
+		return float(np.mean(np.linalg.norm(edges, axis=0) / np.maximum(np.linalg.norm(texels, axis=0), 1e-9)))
+	return float(np.linalg.norm(edges @ np.linalg.inv(texels), axis=0).max())
+
+
+def drawn(texel, pitch, radius, shade, count=256):
+	# The shade a row of heads `pitch` apart reads at its heads against its
+	# midpoints, drawn as build.py fasteners() draws them on texels of side
+	# `texel` (each texel darkened by the share of it the nearest head's disc
+	# covers) and read between texels: the median over heads laid at random
+	# across the texels and at a random angle to them
+	rng = np.random.default_rng(0)
+	origin = rng.random((count, 2)) * texel
+	angle = rng.random(count) * math.pi
+	along = np.stack([np.cos(angle), np.sin(angle)], 1)
+	row = origin[:, None] + np.arange(-3, 4)[None, :, None] * pitch * along[:, None]   # (count, 7 heads, 2)
+
+	def read(points):
+		# bilinear reads at points (count, 2) of the texels round them
+		base = np.floor(points / texel - 0.5)
+		fraction = points / texel - 0.5 - base
+		value = np.zeros(len(points))
+		for dx in (0, 1):
+			for dy in (0, 1):
+				centre = (base + [dx, dy] + 0.5) * texel
+				gap = np.linalg.norm(centre[:, None] - row, axis=2).min(1)
+				share = np.clip((radius - gap) / texel + 0.5, 0, 1) * min(1.0, (2 * radius / texel) ** 2)
+				weight = (fraction[:, 0] if dx else 1 - fraction[:, 0]) * (fraction[:, 1] if dy else 1 - fraction[:, 1])
+				value += weight * (1 - (1 - shade) * share)
+		return value
+	return float(np.median(read(row[:, 3])) / np.median(read(row[:, 3] + 0.5 * pitch * along)))
+
+
+def weathered(jet, image):
+	# The light weathering every skin is laid over (layout.weathering,
+	# build.py weathering(), finish.weathering()), read off the atlas. Its
+	# tones first: across each mirrored panel line on the forward fuselage's
+	# sides (FS 120-340, the skin facing within 30 deg of across), the paint
+	# 1.5-3.5 in either side of the line in half-inch steps, each read over the
+	# grey its face takes (layout.paint turn), its log fitted with a straight
+	# line across and a step at the line; then the step's difference from the
+	# mirrored point's, each read the mean over 4 in along the line (the
+	# bake's own grain, about 0.6% a read, would otherwise hold the step's
+	# spread up near the tones'). The shade, the line's own paint and the build's
+	# geometry step alike either side and cancel (the steps alone read 0.7%
+	# spread off a build with no tones), the panels' tones do not: each
+	# side's line is its own and steps by its own draw. A spread read from
+	# six lines' draws a side was luck's (and, while the draws' hash ran in
+	# step for a line and its mirror image, nothing at all), so the
+	# differences are fitted to those the tones lay there instead. A
+	# straight line takes out the shade's slope across the side, which the
+	# grey's turn and the occlusion lay on lines along the stations; a point
+	# whose faces either side turn more than 5 deg apart, a crease, is left
+	# out
+	finish = finishing()
+	wear = FACTS["layout"].get("weathering")
+	if not wear:
+		return
+	tris, uvs = jet.textured()
+	facing, centres = outward(tris), tris.mean(1)
+	low, high = tris.min(1), tris.max(1)
+	paint = FACTS["layout"]["paint"]
+	luma = lambda c: float(np.dot(c, [0.299, 0.587, 0.114])) / 255
+	start, end = paint["turn"]
+
+	def grey(normals):
+		f = np.clip((normals[:, 1] - start) / (end - start), 0, 1)
+		f = f * f * (3 - 2 * f)
+		return luma(paint["upper"]) * (1 - f) + luma(paint["lower"]) * f
+
+	offsets, along = np.array([1.5, 2.0, 2.5, 3.0, 3.5]), np.linspace(-2.0, 2.0, 5)
+	x = np.r_[offsets, -offsets]
+	design = np.c_[np.ones(len(x)), x, x > 0]
+	solve = np.linalg.pinv(design)
+
+	def step(q, tangent):
+		# the paint's step across a line at q, and the points read and the
+		# skin's normal there; None off the side's flat skin
+		near = ((low <= q + 6) & (high >= q - 6)).all(1)
+		if not near.any():
+			return None
+		j = face(q, tris, near)
+		n = facing[j]
+		if abs(n[2]) < math.cos(math.radians(30)):
+			return None
+		beside = np.cross(n, tangent)
+		if np.linalg.norm(beside) < 1e-9:
+			return None
+		beside *= np.sign(beside[1] + 1e-12) / np.linalg.norm(beside)   # up the side, either side alike
+		tangent = np.cross(beside, n)
+		grid = q + x[:, None, None] * beside + along[None, :, None] * tangent
+		values, index, _ = paint_at(tris, uvs, image, grid.reshape(-1, 3) + 2.0 * n, -n, near)
+		if not np.isfinite(values).all() or (values <= 0).any():
+			return None
+		faces = facing[index]
+		if faces[len(along) // 2] @ faces[len(offsets) * len(along) + len(along) // 2] < math.cos(math.radians(5)):
+			return None
+		logs = np.log(values / grey(faces)).reshape(len(x), len(along)).mean(1)
+		return (solve @ logs)[2], grid.reshape(-1, 3), n
+
+	# a point is left out where its reads touch something else the paint
+	# draws on one side and not, or not quite, on the other: a side marking's
+	# box and an inch round it (the insignia over the lines at FS 234-286 left
+	# steps of 0.13-0.41 its mirror image did not cancel), and within 0.75 in
+	# a fastener's head or any other line or seam (right-only access panels
+	# and rows stepped one side by 2%)
+	boxes = []
+	for spec in FACTS["layout"].get("markings", {}).values():
+		if isinstance(spec, dict) and "places" in spec:
+			ink = marking_ink(spec)
+			boxes += [(place["at"], ink.shape[1] / MARKING / 2 + 1, ink.shape[0] / MARKING / 2 + 1) for place in spec["places"] if place["face"] in ("right", "left")]
+	heads = []
+	for row in FACTS["layout"].get("fasteners", {}).get("rows", []):
+		corners = np.array(row["points"], float)
+		length = float(np.linalg.norm(np.diff(corners, axis=0), axis=1).sum())
+		pitch = length / max(1, int(round(length / row["pitch"])))   # as build.py fastener_centres()
+		for a, b in zip(corners, corners[1:]):
+			m = max(1, math.ceil(np.linalg.norm(b - a) / pitch - 1e-6))
+			heads += [a + (b - a) * i / m for i in range(m)]
+		heads.append(corners[-1])
+	heads = np.array(heads).reshape(-1, 3)
+	laid(jet, np.zeros((1, 3)), np.array([[0.0, 1.0, 0.0]]))
+	others = TONES[jet.path][0]
+
+	def busy(grid):
+		# boxes: each marking's place and half its length and height, an inch more
+		if any(((np.abs(grid[:, 0] - a) < length) & (np.abs(grid[:, 1] - b) < height)).any() for (a, b), length, height in boxes):
+			return True
+		lowest, highest = grid.min(0) - 1, grid.max(0) + 1
+		near = heads[((heads >= lowest) & (heads <= highest)).all(1)]
+		if len(near) and (np.linalg.norm(grid[:, None] - near[None], axis=-1) < 0.75).any():
+			return True
+		pick = others[((others.min(1) <= highest) & (others.max(1) >= lowest)).all(1)]
+		if not len(pick):
+			return False
+		a, d = pick[:, 0], pick[:, 1] - pick[:, 0]
+		t = np.clip(((grid[:, None] - a[None]) * d[None]).sum(-1) / np.maximum((d * d).sum(1), 1e-12), 0, 1)
+		return bool((np.linalg.norm(a[None] + t[..., None] * d[None] - grid[:, None], axis=-1) < 0.75).any())
+
+	steps, grids, normals = [], [], []
+	for line in FACTS["layout"]["panels"]["mirrored"]:
+		line = np.array(line, float)
+		points = np.concatenate([np.linspace(q, r, max(2, int(np.ceil(np.linalg.norm(r - q)))) + 1)[:-1] for q, r in zip(line, line[1:])] + [line[-1:]])
+		for i in range(1, len(points) - 1):
+			q = points[i]
+			if not 120 <= q[0] <= 340:
+				continue
+			tangent = points[i + 1] - points[i - 1]
+			one, other = step(q, tangent), step(q * [1, 1, -1], tangent * [1, 1, -1])
+			if one is None or other is None or busy(one[1]) or busy(other[1]):
+				continue
+			steps.append(one[0] - other[0])
+			grids += [one[1], other[1]]
+			normals += [np.repeat(one[2][None], len(one[1]), 0), np.repeat(other[2][None], len(other[1]), 0)]
+	if len(steps) < 20:
+		raise ValueError(f"only {len(steps)} mirrored points on the forward fuselage's sides' panel lines to read the tones across")
+	# the steps the tones lay at the same points, worked out as build.py
+	# does (laid()): the paint's steps against these, their slope 1 where
+	# the paint carries the facts' tones, 0 where it carries none, and the
+	# spread's ratio where its tones are too strong or weak. The bake's own
+	# shading differs a little from one side to the other along each line,
+	# and over the five lines left that happens to add about 0.2 (r45: 1.21
+	# at the facts' tones, 3.56 at three and a third times them)
+	tone = laid(jet, np.concatenate(grids), np.concatenate(normals))
+	stepped = (np.log(tone).reshape(-1, len(x), len(along)).mean(2) @ solve.T)[:, 2]
+	expected = stepped[0::2] - stepped[1::2]
+	steps = np.array(steps)
+	slope = float(steps @ expected / (expected @ expected))
+	yield result("layout.weathering", f"the panels' tones: the paint's step at {len(steps)} mirrored points of the forward fuselage's side panel lines against the steps finish.tones() lays there, the slope", 1.0, slope, 0.3, "share")
+	# then the grime and the exhaust's staining: the log of the paint's
+	# ratio between mirrored points (the same skin, shade, grey and lines
+	# either side, the noise not), from one half-inch step to the next along
+	# cuts across the buttlines under and over the aft fuselage (FS 600-690),
+	# against the same of the weathering the facts give there (the tones
+	# aside: a panel's step between half-inch neighbours is rare, and the
+	# steps more than four spreads off the median, a one-sided line's or
+	# fastener's, are left out), the slope of the one on the other
+	measured, expected = [], []
+	buttlines = np.arange(3.0, 40.01, 0.5)
+	for station in np.arange(600.0, 690.1, 3.0):
+		band = (high[:, 0] >= station - 1) & (low[:, 0] <= station + 1)
+		for height in (-200.0, 400.0):
+			direction = np.array([0.0, 1.0 if height < 0 else -1.0, 0.0])
+			sides = []
+			for sign in (1.0, -1.0):
+				origins = np.c_[np.full(len(buttlines), station), np.full(len(buttlines), height), sign * buttlines]
+				values, index, at = paint_at(tris, uvs, image, origins, direction, band)
+				up = np.where(index >= 0, facing[np.maximum(index, 0), 1], np.nan)
+				inches = np.c_[FRAME.origin[0] - at[:, 0], -at[:, 2], at[:, 1] - FRAME.origin[1]]   # the build's inches: x forward, y port, z up
+				ok = np.isfinite(values) & (values > 0)
+				factor = np.full(len(values), np.nan)
+				if ok.any():
+					factor[ok] = finish.weathering(inches[ok], at[ok, 0], up[ok], np.ones(int(ok.sum())), wear)   # the tones aside
+				sides.append((values, at, factor))
+			(right, a, wr), (left, b, wl) = sides
+			# the two hits each other's mirror
+			twin = np.isfinite(right) & np.isfinite(left) & (np.linalg.norm(a - b * [1, 1, -1], axis=1) < 0.05)
+			d, e = np.log(right) - np.log(left), np.log(wr) - np.log(wl)
+			pair = twin[1:] & twin[:-1]
+			measured += list(np.diff(d)[pair])
+			expected += list(np.diff(e)[pair])
+	measured, expected = np.array(measured), np.array(expected)
+	if len(measured) < 200:
+		raise ValueError(f"only {len(measured)} mirrored steps under and over the aft fuselage")
+	keep = np.abs(measured - np.median(measured)) < 4 * 1.4826 * np.median(np.abs(measured - np.median(measured)))
+	slope = float((measured[keep] * expected[keep]).sum() / max((expected[keep] ** 2).sum(), 1e-12))
+	yield result("layout.weathering", f"the aft fuselage's grime and exhaust staining: the paint's step between mirrored points against the facts' weathering's, over {int(keep.sum())} half-inch steps, the slope", 1.0, slope, 0.3, "share")
+
+
+def marking_ink(spec, aft=False):
+	# A marking's ink (H, W) 0..1 at MARKING pixels per inch, drawn from
+	# MIL-STD-2161C's figures (finish.py), the box its kind fills; `aft`: its
+	# left as read is aft, where an intake chevron's point goes
+	finish = finishing()
+	kind = spec["kind"]
+	if kind == "insignia":
+		return finish.insignia(spec["size"], MARKING)
+	if kind == "letters":
+		return finish.block_text(spec["text"], spec["size"], MARKING)
+	if kind == "chevron":
+		return finish.chevron(MARKING, left=aft)
+	if kind == "hook":
+		return finish.hook_tee(MARKING, spec["bar"], spec["stem"], spec.get("arrow", False))
+	if kind == "placard":
+		return finish.placard(spec["lines"], spec["box"], MARKING)
+	if kind == "walkway":
+		return finish.walkway(spec["box"], spec["line"], spec["spacing"], MARKING, spec.get("falling", True))
+	raise KeyError(f"layout.markings: no marking of kind {kind}")
+
+
+def materials_textured(path):
+	# Each material the GLB's meshes wear, and whether its base colour comes
+	# from a texture: [(name, bool)]
+	data = Path(path).read_bytes()
+	length = int.from_bytes(data[12:16], "little")
+	gltf = json.loads(data[20:20 + length])
+	used = sorted({p["material"] for m in gltf.get("meshes", []) for p in m["primitives"] if "material" in p})
+	return [(gltf["materials"][i].get("name"), "baseColorTexture" in gltf["materials"][i].get("pbrMetallicRoughness", {})) for i in used]
 
 
 def islands(px):
@@ -2164,20 +2922,8 @@ def checks(jet, only=(), seen=None):
 	# standing more than an inch off, so a skin moved since a line was cast
 	# shows here, in a draft, rather than only when the paint is baked
 	def panels():
-		p = F["layout"]["panels"]
 		skin = jet.points(every).reshape(-1, 3, 3)
-		for k, (line, sides) in enumerate([(l, [1]) for l in p["lines"]] + [(l, [1, -1]) for l in p["mirrored"]]):
-			worst = 0.0
-			for side in sides:
-				corners = np.array(line, float) * [1, 1, side]
-				dense = np.concatenate([np.linspace(q, r, max(2, int(np.ceil(np.linalg.norm(r - q) / 0.5)) + 1)) for q, r in zip(corners, corners[1:])])
-				low, high = dense.min(0) - 3, dense.max(0) + 3
-				# every triangle whose box meets the line's (a large one may have no corner near it)
-				near = skin[((skin.min(1) <= high) & (skin.max(1) >= low)).all(1)]
-				if not len(near):
-					raise KeyError(f"no skin near panel line {k}")
-				worst = max(worst, float(surface_distance(dense, near).max()))
-			yield result("layout.panels", f"panel line {k} (FS {line[0][0]:.0f}-{line[-1][0]:.0f}) off the skin, the furthest", 0.0, worst, 1.0)
+		yield from panel_lines(skin, F["layout"]["panels"])
 		# and the LEX's root slot, cut through the LEX (layout.lex slot): along
 		# its line a ray from above falls past the LEX's top into the opening,
 		# and 4 in outboard of it meets the LEX's top within an inch of the
@@ -3221,7 +3967,10 @@ def checks(jet, only=(), seen=None):
 			yield result("layout.aoa", f"{name}'s faces lying on another of its own", 0, doubled, 0, "faces")
 			# and painted as the skin round it: joined to its seam, the seam's
 			# rubber took the plate's edge texels and drew in dark scallops
-			# (on a painted build)
+			# (on a painted build). Judged half an inch clear of the flange: the
+			# probe standing up off it shades the plate at its foot, which a
+			# 4096 atlas (0.35 in a texel) draws as a ring 20% darker within
+			# 0.3 in of the flange and the 2048 blurred to 7%
 			image = atlas(jet.path, "paint")
 			if image is not None:
 				tris, uvs = jet.textured(("paint",), [name])
@@ -3230,7 +3979,8 @@ def checks(jet, only=(), seen=None):
 				around = np.linalg.norm(skin.mean(1) - middle, axis=1)
 				skin, skin_uvs = skin[(around > 4) & (around < 8)], skin_uvs[(around > 4) & (around < 8)]
 				spread = np.random.default_rng(0).dirichlet([1, 1, 1], 8)
-				plate = sample(image, np.einsum("pk,tkc->tpc", spread, uvs).reshape(-1, 2))
+				clear = np.linalg.norm(np.einsum("pk,tkc->tpc", spread, tris).reshape(-1, 3) - middle, axis=1) > aoa["flange"][0] / 2 + 0.5
+				plate = sample(image, np.einsum("pk,tkc->tpc", spread, uvs).reshape(-1, 2))[clear]
 				beside = float(np.median(sample(image, np.einsum("pk,tkc->tpc", spread, skin_uvs).reshape(-1, 2))))
 				yield result("layout.aoa", f"{name} plate's share darker than the skin round it", 0.0, float((plate < 0.85 * beside).mean()), 0.03, "share")
 			# the probe polished metal, as the photos show it, on its flange and
@@ -4137,7 +4887,11 @@ def checks(jet, only=(), seen=None):
 				for (fs, bl), (tf, tw, tb) in e["free"]:
 					k = np.argmin(np.hypot(rest[:, 0] - fs, rest[:, 2] - sign * bl) + np.where(rest[:, 1] < 85, 0.0, 99.0))
 					miss = float(np.linalg.norm(opened[k] - [tf - doors["offset"], tw, sign * tb]))
-					yield result("layout.gear", f"{name}_{side} open, its corner from FS {fs:g}, BL {sign * bl:g} off the photos'", 0.0, miss, 1.5, "in")
+					# a panel opened `beyond` its fit (the inner forward doors
+					# clearing the side brace's spool, the user's ruling) is
+					# allowed the arc its corner travels for it
+					reach = 1.5 + math.radians(e.get("beyond", 0.0)) * float(np.linalg.norm(rest[k] - rest[np.argmax(rest[:, 1])]))
+					yield result("layout.gear", f"{name}_{side} open, its corner from FS {fs:g}, BL {sign * bl:g} off the photos'", 0.0, miss, reach, "in")
 		c = L["canopy"]
 		for k, (st, wl, bl) in enumerate(c["sill"]):
 			sill = jet.cut(["canopy"], [st, 100, 0], [1, 0, 0])
@@ -4702,7 +5456,20 @@ def checks(jet, only=(), seen=None):
 		for name, below in FLUSH:
 			gap = rim(jet, name)
 			yield result("shape.flush", f"{name}'s closed face off the skin round its opening, its furthest", 0.0, gap, 0.1 if name.startswith("probe_") else 0.02)
-			if name.startswith("gear_"):
+			if name in EDGED:
+				# the inner forward doors' edges red, as deep as the photos see
+				# them (layout.gear doors inner forward edge): the door that deep,
+				# its edges in the outer face's down past the hole's rim to a
+				# tenth of an inch, red below that to its white inner face
+				deep = F["layout"]["gear"]["doors"]["inner"]["forward"]["edge"]
+				yield result("shape.flush", f"{name}'s red edge faces under its outer face, their shallowest", EDGE_BAND, float(depths(jet, name, "edge").min()), 0.01, "in")
+				yield result("shape.flush", f"{name}'s red edge faces under its outer face, their deepest", deep, float(depths(jet, name, "edge").max()), 0.01, "in")
+				# (the inner face set back along each corner's mean normal: at the
+				# bend to its corner panel the door is the cosine of half the
+				# bend thinner, 0.69 in at its 10 deg)
+				yield result("shape.flush", f"{name}'s white faces under its outer face, their shallowest", deep, float(depths(jet, name, "white").min()), max(0.01, 0.02 * deep), "in")
+				yield result("shape.flush", f"{name}'s painted faces under its outer face, their deepest", EDGE_BAND, float(depths(jet, name, "paint").max()), 0.01, "in")
+			elif name.startswith("gear_"):
 				# its inside finish beginning half its inner depth under the
 				# skin it was cut from: the edge's band in the outer face's
 				# down past the hole's rim (white begun on the rim itself
@@ -5423,11 +6190,15 @@ def checks(jet, only=(), seen=None):
 			if not name.startswith("gear_"):
 				continue
 			# its outer face, and its edges' band proud of the skin, in the
-			# paint; the rest white (shape.flush)
+			# paint; the rest white, but the inner forward doors' edges red
+			# (shape.flush, paint.gear)
 			painted = {tuple(np.round(t, 6).ravel()) for t in jet.model.parts(verify.pose(jet.joints, {}), materials=("paint",)).get(name, [])}
 			f = finishes.get(name, {})
 			yield result("shape.gear", f"{name}'s outer face, faces not in the paint", 0, sum(tuple(np.round(t, 6).ravel()) not in painted for t in jet.faces(name)), 0, "faces")
-			yield result("shape.gear", f"{name}'s other faces in neither the paint nor white", 0, sum(f.values()) - f.get("paint", 0) - f.get("white", 0), 0, "faces")
+			kept = ("paint", "white", "edge") if name in EDGED else ("paint", "white")
+			yield result("shape.gear", f"{name}'s other faces in neither the paint nor white{' nor the red edge' if name in EDGED else ''}", 0, sum(c for m, c in f.items() if m not in kept), 0, "faces")
+			if name in EDGED:
+				yield result("shape.gear", f"{name}'s red edge faces", 1, int(f.get("edge", 0) > 0), 0, "present")
 		skin = FRAME.source(jet.tris(["fuselage"]).reshape(-1, 3)).reshape(-1, 3, 3)
 		# under the LAU-116's ramp, block and fairing and the cheek box the
 		# hidden faces' cull took the skin away (layout.stores.lau116 fairing,
@@ -5464,6 +6235,17 @@ def checks(jet, only=(), seen=None):
 		yield result("shape.faces", "faces of no area in any part" + (f" (most in {', '.join(f'{name} {n}' for n, name in worst)})" if worst else ""), 0, sum(flat.values()), 0, "faces")
 
 	yield from guard("shape", "faces of no area", degenerate)
+
+	# no closed part turned inward: the bake casts each face's light along its
+	# normal, so an inward part reads its own inside and paints dark (the right
+	# LEX painted at half the left's light when the build's turn guessed wrong)
+	def facing():
+		parts = jet.model.parts(verify.pose(jet.joints, {}))
+		turned = {name: len(inverted(t)) for name, t in parts.items()}
+		worst = sorted(name for name, n in turned.items() if n)
+		yield result("shape.faces", "closed islands turned inward in any part" + (f" ({', '.join(worst)})" if worst else ""), 0, sum(turned.values()), 0, "islands")
+
+	yield from guard("shape", "closed parts turned inward", facing)
 
 	# with the atlas, each leg lit as it stands gear down, not in the dark of
 	# the bay it is stowed in: over the faces it shows, outside the bay gear
@@ -5532,7 +6314,10 @@ def checks(jet, only=(), seen=None):
 			return value, np.repeat(area, len(barycentres)), np.einsum("pk,tkc->tpc", barycentres, tris).reshape(-1, 3)
 
 		def median(tris, uvs):
+			# over the panels' tones laid there (laid()): a door is a panel,
+			# its tone its own, stepping up or down across its seam
 			value, weight, points = painted(tris, uvs)
+			value = value / laid(jet, points, np.repeat(unit(tris), len(barycentres), 0))
 			near = seams[((seams >= points.min(0) - 1.5) & (seams <= points.max(0) + 1.5)).all(1)]
 			off = np.full(len(points), np.inf)
 			for start in range(0, len(points), 4096):
@@ -6235,6 +7020,7 @@ def checks(jet, only=(), seen=None):
 			yield result("layout.wells", f"other parts inside the {well} well at rest{': ' + ', '.join(sorted(inside)) if inside else ''}", 0, len(inside), 0, "parts")
 
 	yield from guard("layout.wells", "wells", wells)
+	yield from guard("layout.lights", "lenses", lambda: lenses(jet))
 
 	for drive, steps in SWEPT.items():
 		yield from guard("layout.motion", f"clearance through the {drive}'s stroke", lambda drive=drive, steps=steps: clearance(jet, drive, steps))
@@ -6243,6 +7029,13 @@ def checks(jet, only=(), seen=None):
 	image = atlas(jet.path)
 	if image is None:
 		return
+	# every material the jet's faces wear takes its base colour from a
+	# texture, but the special ones (the user, 2026-11-20, #83: a part
+	# without one reads as plastic): glass, the lights, the burner and the
+	# displays
+	for name, textured in materials_textured(jet.path):
+		if name not in UNTEXTURED:
+			yield result("paint.textured", f"{name}'s base colour from a texture", 1, int(textured), 0, "")
 
 	def paint():
 		tris, uvs = jet.textured()
@@ -6329,36 +7122,41 @@ def checks(jet, only=(), seen=None):
 			if not len(segments):
 				raise KeyError(f"no painted skin at the ring at FS {station}")
 			every_line += [s for s in segments]
-		gaps, total = 0, 0
-		for line in every_line:
-			points = np.concatenate([np.linspace(q, r, max(2, int(np.ceil(np.linalg.norm(r - q) / 0.5)) + 1))[:-1] for q, r in zip(line, line[1:])] + [line[-1:]])
-			if len(points) < 3:
+		# the lines cast by hand and the rings, then those the photos' charts
+		# found (layout.panels traced), each set on its own
+		for kind, chosen_lines in (("cast by hand", every_line), ("traced", [np.array(l, float) for l in p.get("traced", [])])):
+			if not chosen_lines:
 				continue
-			low, high = points.min(0) - 3, points.max(0) + 3
-			near = ((tris.min(1) <= high) & (tris.max(1) >= low)).all(1)
-			if not near.any():
-				raise KeyError("no painted skin near a panel line")
-			for i in range(1, len(points) - 1):
-				q = points[i]
-				j = np.where(near)[0][np.argmin(np.linalg.norm(centres[near] - q, axis=1))]
-				n = normals[j]
-				along = points[i + 1] - points[i - 1]
-				beside = np.cross(n, along)
-				if np.linalg.norm(beside) < 1e-9:
+			gaps, total = 0, 0
+			for line in chosen_lines:
+				points = np.concatenate([np.linspace(q, r, max(2, int(np.ceil(np.linalg.norm(r - q) / 0.5)) + 1))[:-1] for q, r in zip(line, line[1:])] + [line[-1:]])
+				if len(points) < 3:
 					continue
-				beside /= np.linalg.norm(beside)
-				# read from outside, where the line is seen (read from inside,
-				# the fin root's fillet line along the fairing's foot was read
-				# on the skin under the fairing, which only the bake's buried
-				# texels darkened)
-				line_, left, right = read(np.array([q, q + 1.0 * beside, q - 1.0 * beside]), facing[j], near)
-				reference = np.nanmax([left, right]) if np.isfinite([left, right]).any() else np.nan
-				if np.isfinite(line_) and np.isfinite(reference):
-					total += 1
-					gaps += line_ > 0.95 * reference
-		if not total:
-			raise ValueError("no panel line read off the paint")
-		yield result("layout.panels", "panel lines' share of their length no darker than the skin beside them", 0.0, gaps / total, 0.05, "share")
+				low, high = points.min(0) - 3, points.max(0) + 3
+				near = ((tris.min(1) <= high) & (tris.max(1) >= low)).all(1)
+				if not near.any():
+					raise KeyError("no painted skin near a panel line")
+				for i in range(1, len(points) - 1):
+					q = points[i]
+					j = face(q, tris, near)
+					n = normals[j]
+					along = points[i + 1] - points[i - 1]
+					beside = np.cross(n, along)
+					if np.linalg.norm(beside) < 1e-9:
+						continue
+					beside /= np.linalg.norm(beside)
+					# read from outside, where the line is seen (read from inside,
+					# the fin root's fillet line along the fairing's foot was read
+					# on the skin under the fairing, which only the bake's buried
+					# texels darkened)
+					line_, left, right = read(np.array([q, q + 1.0 * beside, q - 1.0 * beside]), facing[j], near)
+					reference = np.nanmax([left, right]) if np.isfinite([left, right]).any() else np.nan
+					if np.isfinite(line_) and np.isfinite(reference):
+						total += 1
+						gaps += line_ > 0.95 * reference
+			if not total:
+				raise ValueError(f"no panel line {kind} read off the paint")
+			yield result("layout.panels", f"panel lines {kind}: their share of their length no darker than the skin beside them", 0.0, gaps / total, 0.05, "share")
 
 		# each closed door's outline painted as a seam, the panel lines' way
 		# (build.py panels(), rims()): a door lies flush in its opening, so
@@ -6446,6 +7244,11 @@ def checks(jet, only=(), seen=None):
 			yield result("layout.lex", f"{name} LEX's slot: what shows through it from above against the LEX's top beside it, the lightest", slot["shade"], max(ratios), 0.2, "share")
 
 	yield from guard("paint", "paint", paint)
+	if image is not None:
+		yield from guard("layout.markings", "markings", lambda: markings_drawn(jet, image))
+		yield from guard("layout.weathering", "weathering", lambda: weathered(jet, image))
+		yield from guard("layout.fasteners", "fasteners", lambda: fasteners_drawn(jet, image))
+		yield from guard("paint.gear", "the inner forward doors' red edges", lambda: edges_red(jet))
 
 	# The inlet ducts' walls in view keep the airframe's greys, shaded by the
 	# occlusion alone, never darker than its floor, 0.4 of the upper grey

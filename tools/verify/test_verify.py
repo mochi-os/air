@@ -53,11 +53,13 @@ def box(lo, hi):
 	return v, np.array(f)
 
 
-def glb(path, nodes):
+def glb(path, nodes, colours=None):
 	# A minimal glTF binary: nodes [{"name", "translation", "mesh": (vertices, faces) or None, "children": [indices],
-	# "targets": {shape key: each vertex's move (n, 3)}, "sparse": the targets written as sparse accessors, as Blender does}]
+	# "targets": {shape key: each vertex's move (n, 3)}, "sparse": the targets written as sparse accessors, as Blender does,
+	# "material": the finish its faces wear, paint unless named}]; colours: {finish: linear RGB}, each finish's base colour
 	blob = bytearray()
 	views, accessors, meshes, out = [], [], [], []
+	finishes = ["paint"] + sorted({n["material"] for n in nodes if n.get("material")} - {"paint"})
 
 	def view(data):
 		while len(blob) % 4:
@@ -74,7 +76,7 @@ def glb(path, nodes):
 			v, f = n["mesh"]
 			for data, kind, count, width in ((np.asarray(v, np.float32), 5126, len(v), "VEC3"), (np.asarray(f, np.uint32).ravel(), 5125, f.size, "SCALAR")):
 				accessors.append({"bufferView": view(data), "componentType": kind, "count": int(count), "type": width})
-			primitive = {"attributes": {"POSITION": len(accessors) - 2}, "indices": len(accessors) - 1, "material": 0}
+			primitive = {"attributes": {"POSITION": len(accessors) - 2}, "indices": len(accessors) - 1, "material": finishes.index(n.get("material") or "paint")}
 			if n.get("normals") is not None:
 				data = np.asarray(n["normals"], np.float32)
 				accessors.append({"bufferView": view(data), "componentType": 5126, "count": len(v), "type": "VEC3"})
@@ -97,7 +99,8 @@ def glb(path, nodes):
 		out.append(entry)
 	children = {c for n in nodes for c in n.get("children", [])}
 	gltf = {"asset": {"version": "2.0"}, "scene": 0, "scenes": [{"nodes": [i for i in range(len(nodes)) if i not in children]}], "nodes": out,
-		"meshes": meshes, "accessors": accessors, "bufferViews": views, "buffers": [{"byteLength": len(blob)}], "materials": [{"name": "paint"}]}
+		"meshes": meshes, "accessors": accessors, "bufferViews": views, "buffers": [{"byteLength": len(blob)}],
+		"materials": [{"name": f, **({"pbrMetallicRoughness": {"baseColorFactor": [*map(float, colours[f]), 1.0]}} if f in (colours or {}) else {})} for f in finishes]}
 	text = json.dumps(gltf).encode()
 	text += b" " * (-len(text) % 4)
 	while len(blob) % 4:

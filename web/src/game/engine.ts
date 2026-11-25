@@ -2223,7 +2223,7 @@ function controls_round(g,m){ g.updateMatrixWorld(true); const scale=g.matrixWor
 function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 	const loaded=fleet[kind]; if(!loaded||g.userData.hasModel===kind) return; g.userData.hasModel=kind;
 	g.children.forEach(c=>{ if(c.userData.body||c.userData.glass) c.visible=false; });   // hide procedural shell, keep afterburner cones
-	if(g.children.some(c=>c.userData&&(c.userData.model||c.userData.exterior))){ for(const mm of jet_owned(g)) mm.dispose(); g.userData.gearLamps=null; }   // aircraft swap: release what the old airframe made for itself, as remote_drop does
+	if(g.children.some(c=>c.userData&&(c.userData.model||c.userData.exterior))){ for(const mm of jet_owned(g)) mm.dispose(); g.userData.gearLamps=null; g.userData.lenses=null; }   // aircraft swap: release what the old airframe made for itself, as remote_drop does
 	const previous=g.children.find(c=>c.userData&&c.userData.model); if(previous) g.remove(previous);   // aircraft swap: drop the old airframe
 	const outside=g.children.find(c=>c.userData&&c.userData.exterior); if(outside) g.remove(outside);   // and our own model hung beside it
 	g.userData.exterior=null; g.userData.legacy=null; g.userData.pit=null;
@@ -2276,7 +2276,7 @@ function apply_model_to(g, kind){ kind=kind||g.userData.aircraft||"fa18c";
 			// light's lens with the LDG/TAXI light, the approach lights' green, amber and red with the angle of attack
 			const lamps={}; e.traverse(o=>{ const kind=o.name==="lamp_gear_nose"?"landing":/^lamp_approach_(green|amber|red)$/.exec(o.name)?.[1]; if(!kind||!o.isMesh) return;
 				const hue=GEAR_LAMPS[kind], m=o.material.clone(); m.color=new THREE.Color(...hue).multiplyScalar(0.45); m.emissive=new THREE.Color(...hue); m.emissiveIntensity=0; o.material=m; lamps[kind]=m; });
-			g.userData.gearLamps=lamps;
+			g.userData.gearLamps=lamps; g.userData.lenses=lenses_own(e);
 			e.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
 				const pool=mm.name==="burner"?burner:mm.name==="lights"?glow:null; if(!pool||Object.values(lamps).includes(mm)) return;
 				if(!pool.has(mm)){ const c=mm.clone(); c.emissive=pool===burner?new THREE.Color(1,0.42,0.12):new THREE.Color(0.55,1,0.45); c.emissiveIntensity=0; c.userData.glowmax=pool===burner?1:4.0; pool.set(mm,c); }   // the strips' electroluminescent green; the flames' orange
@@ -7169,6 +7169,10 @@ async function generate_world(){
 	try{
 		const base=new URL("maps/midway/",location.href).href;   // web/public/maps/<name>/ (served via the app.json "maps" route)
 		const map=await (await fetch(base+"map.json")).json();
+// the exterior's lenses by the finish each wears (#262): painted their glass's own colour unlit, each lit in its
+// light's colour with that light, the position lights' red (port), green (starboard) and white (tail) on the
+// POSITION knob (2.6.1.2) and the strobes' red as they flash (2.6.1.4)
+const LENSES={ port:{ hue:[1,0.125,0.125], light:"position" }, starboard:{ hue:[0.125,1,0.125], light:"position" }, tail:{ hue:[1,1,1], light:"position" }, strobe:{ hue:[1,0.125,0.125], light:"strobe" } };
 		if(Array.isArray(map.origin)) sky_place(map.origin[0],map.origin[1]);   // the stars stand over the map's real position
 		map_name=String(map.name||"").toUpperCase();   // the name is the memory unit's identifier (#97)
 		// --- single Sentinel-2 texture for the ocean AND the islands (reef/lagoon/breakers + land) ---
@@ -8128,7 +8132,7 @@ function recovery_start(){ const st=mission_start(); return st==="case1"||st==="
 // on_wheels: a start that hands the jet over standing on the deck or the field (#133)
 function on_wheels(st){ return st==="carrier"||st==="deck"||st==="runway"||st==="apron"; }
 function update_aircraft_lights(){
-	if(!aircraft_lights) return; const position=ownship.lights?exterior.position:0, strobe=!!ownship.lights&&exterior.strobe!=="off"&&(sim_time*1000%1100)<70;   // under the master switch (2.6.1.1); the strobes flash about once a second
+	if(!aircraft_lights) return; const position=ownship.lights?exterior.position:0, strobe=!!ownship.lights&&exterior.strobe!=="off"&&strobing();   // under the master switch (2.6.1.1)
 	instrument_backlight();
 	if(!cockpit_flood){ cockpit_flood=new THREE.PointLight(0xffd9a8,0,2.2,2); cockpit_flood.layers.set(LAYER_OWN);   // panel flood (#99): the night pit is otherwise unlit; layer-own so the world pass never pays for it
 		ownship.group.add(cockpit_flood); }
@@ -8250,6 +8254,23 @@ generate_world();
 const input={ pitch:0, roll:0, yaw:0, guns:false, brake:false };
 const keys=new Set();
 let cam_az=0, cam_el=0.22, cam_dist=24, cam_psi=0;
+// strobing: whether the strobes' flash is on now; they flash about once a second (NATOPS 2.6.1.4)
+function strobing(){ return (sim_time*1000%1100)<70; }
+// lenses_own gives a jet its own copy of each lens's finish (LENSES), its emissive the light's colour and dark
+// until lit, every lens wearing that finish taking the copy: { position:[...], strobe:[...] }
+function lenses_own(e){ const made=new Map(), out={ position:[], strobe:[] };
+	e.traverse(o=>{ if(!o.isMesh||!o.material) return; (Array.isArray(o.material)?o.material:[o.material]).forEach((mm,ix)=>{
+		const lens=LENSES[mm.name]; if(!lens) return;
+		if(!made.has(mm)){ const c=mm.clone(); c.emissive=new THREE.Color(...lens.hue); c.emissiveIntensity=0; made.set(mm,c); out[lens.light].push(c); }
+		if(Array.isArray(o.material)) o.material[ix]=made.get(mm); else o.material=made.get(mm); }); });
+	return out; }
+// lenses_update lights a jet's lenses each frame: the player's own on its exterior lights panel under the master
+// switch (2.6.1.1), as its light sprites are, the position lenses at the POSITION knob's level and the strobes' as
+// they flash, at a third on DIM; every other jet's lit at night, as its formation strips are
+function lenses_update(g,own){ const l=g.userData.lenses; if(!l) return;
+	const on=own?!!ownship.lights:cfg.tod!=="day", position=on?(own?exterior.position:1):0, strobe=on&&(!own||exterior.strobe!=="off")&&strobing()?(own&&exterior.strobe==="dim"?0.35:1):0;
+	for(const m of l.position) m.emissiveIntensity=3*position;
+	for(const m of l.strobe) m.emissiveIntensity=3*strobe; }
 const CHASE_NEAR=14, CHASE_FAR=5000;   // the chase camera's distance: no nearer than clears the airframe (#116), and as far as shows a whole ship and her wake
 let buffet_env=0;   // low-passed buffet intensity (#234): the seat cue's shared envelope — the camera writes it each frame, draw_hud reads it
 const PIT_REST=-8*D2R;   // the cockpit view's resting head pitch: from the design eye the waterline runs through the upper HUD, and a level gaze leaves the displays half under the frame; a pilot's rest is a few degrees down, with the HUD high and the DDIs whole. head_el is the look relative to it
@@ -12112,6 +12133,7 @@ function apply_anim(st,dt){ const g=st.group; if(!g||!g.userData.gearMixer||!g.u
 			// while the drawn aircraft is one rigid group hung off the same origin —
 			// so a loaded wheel sinks into the runway with the airframe, and a hard
 			// arrival buries it to the bottoming-out clamp. Seat each tyre on the
+	lenses_update(g,st===ownship);
 			// surface beneath ITS OWN wheel: the mains sink ~4.6 cm deeper than the
 			// nose, so no single shared scrub can seat both.
 			const w=s.object.getWorldPosition(oleo_at);   // (also refreshes g.matrixWorld, which the attach point below rides on)
@@ -14419,7 +14441,7 @@ let racks_seen=0;   // the net racksRevision already applied to the remote fleet
 // liveried clones of its painted parts - which are its alone to dispose. Every other material it draws
 // with is the fleet prototype's, shared by every jet the player's own included, and disposing one of
 // those drops the programs every jet still flying is drawn with.
-function jet_owned(g){ const own=new Set([...(g.userData.glow||[]),...(g.userData.burner||[]),...Object.values(g.userData.gearLamps||{})]);
+function jet_owned(g){ const own=new Set([...(g.userData.glow||[]),...(g.userData.burner||[]),...Object.values(g.userData.gearLamps||{}),...(g.userData.lenses?[...g.userData.lenses.position,...g.userData.lenses.strobe]:[])]);
 	g.traverse(o=>{ if(o.isMesh&&o.userData.liveried) own.add(o.material); }); return own; }
 function remote_drop(slot){ const st=remotes.get(slot); if(!st) return; remotes.delete(slot); jets_stale=true; audio_remote_drop("r"+slot);
 	if(st===bandit){ st.group.visible=false; }

@@ -3,7 +3,7 @@
 # Mochi Application Interface Exception - see license.txt and license-exception.md.
 #
 # usage: python3 -I test_check.py
-import json, math, re, subprocess, sys, tempfile, unittest
+import ast, json, math, re, subprocess, sys, tempfile, unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -116,6 +116,39 @@ class GeometryTest(unittest.TestCase):
 		chain = np.array([[[2, 0], [3, 0]], [[1, 0], [2, 0]], [[0, 0], [1, 0]], [[3, 0], [4, 0]]], float)
 		(loop,) = check.loops(chain)
 		self.assertEqual([tuple(p) for p in loop], [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0)])
+
+	def test_inverted_finds_a_closed_island_turned_inward(self):
+		# a box turned out passes, the same box turned in is found with its
+		# volume, and beside an outward one only the inward island counts,
+		# far from the origin as a part's islands lie
+		v, f = box((400, 100, 30), (410, 102, 33))
+		out = np.asarray(v, float)[np.asarray(f)]
+		inward = out[:, ::-1]
+		self.assertEqual(check.inverted(out), [])
+		(volume,) = check.inverted(inward)
+		self.assertAlmostEqual(volume, -60.0, places=6)
+		self.assertEqual(len(check.inverted(np.concatenate([out + [0, 0, 20], inward]))), 1)
+
+	def test_inverted_judges_an_island_without_faces_touching_it_at_corners(self):
+		# a thin closed slab turned out (the cabin scoop's door), with a broad
+		# flap at each side touching it at one corner and sharing none of its
+		# edges, facing each other: joined at the corners, the three enclose
+		# -47 in3 wherever the volume is taken from; judged as the build's
+		# islands are, the slab stands alone, turned out
+		v, f = box((400, 100, 30), (410, 100.1, 33))
+		slab = np.asarray(v, float)[np.asarray(f)]
+		flaps = np.array([[[400, 100, 33], [400, 110, 33], [410, 110, 33]], [[400, 100, 30], [410, 110, 30], [400, 110, 30]]], float)
+		self.assertEqual(check.inverted(np.concatenate([slab, flaps])), [])
+
+	def test_inverted_leaves_an_open_shell_unjudged(self):
+		# a box with one end left open turned in, as an inlet's skin and duct
+		# or a well are open shells: its volume swings with the origin, so it
+		# is not judged
+		v, f = box((400, 100, 30), (410, 102, 33))
+		inward = np.asarray(v, float)[np.asarray(f)][:, ::-1]
+		ends = np.abs(inward[:, :, 0] - 400).max(axis=1) < 1e-9
+		self.assertEqual(ends.sum(), 2)
+		self.assertEqual(check.inverted(inward[~ends]), [])
 
 	def test_leading_sweep(self):
 		# an untapered wing's leading edge sweeps as its quarter chord does
@@ -282,6 +315,120 @@ class BuriedTest(unittest.TestCase):
 
 	def test_a_lens_half_under_the_skin_reads_half(self):
 		self.assertAlmostEqual(self.share(((370.0, 117.6, 0.0), (400.0, 125.0, 51.0))), 0.5, places=6)
+
+
+class PanelLinesTest(unittest.TestCase):
+	# Every panel line layout.panels gives against the skin (check.panel_lines()):
+	# those cast by hand and mirrored, and those the charts traced, each keyed
+	# as build.py given_lines() counts them, so a row names the line the paint
+	# would refuse; on a plate of skin at WL 120
+	plate = np.array([[[590, 120, -60], [710, 120, -60], [710, 120, 60]], [[590, 120, -60], [710, 120, 60], [590, 120, 60]]], float)
+	panels = {"lines": [[[610, 120, 10], [620, 120, 10]]], "mirrored": [[[630, 120, 20], [640, 120, 20]]],
+		"traced": [[[650, 120, 30], [660, 120, 30]], [[670, 122, 40], [680, 122, 40]]]}
+
+	def rows(self, panels):
+		return {r["what"].split(" (")[0]: r for r in check.panel_lines(self.plate, panels)}
+
+	def test_a_traced_line_off_the_skin_fails_under_the_key_the_build_gives_it(self):
+		rows = self.rows(self.panels)
+		self.assertEqual(sorted(rows), ["panel line 0", "panel line 1", "panel line 3", "panel line 4"])
+		self.assertTrue(check.failed(rows["panel line 4"]))
+		self.assertAlmostEqual(rows["panel line 4"]["measured"], 2.0, places=6)
+		self.assertFalse(any(check.failed(rows[k]) for k in ("panel line 0", "panel line 1", "panel line 3")))
+
+	def test_its_key_is_the_one_build_py_counts(self):
+		tree = ast.parse((HERE / "build.py").read_text())
+		found = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "given_lines"]
+		space = {"LAYOUT": {"panels": self.panels}}
+		exec(compile(ast.Module(body=found, type_ignores=[]), "build.py", "exec"), space)
+		given = space["given_lines"]()
+		self.assertEqual([list(map(list, given[k])) for k in (3, 4)], self.panels["traced"])
+
+	def test_a_line_with_no_skin_near_it_is_missing(self):
+		with self.assertRaises(KeyError):
+			list(check.panel_lines(self.plate, {"lines": [], "mirrored": [], "traced": [[[900, 120, 0], [910, 120, 0]]]}))
+
+
+class LensesTest(unittest.TestCase):
+	# The lamps' lenses (check.lenses()), on models of boxes built to
+	# layout.lights lenses: each wearing its glass's finish in its measured
+	# colour, the LEX lenses full width over their forward 60% and narrowed to
+	# their aft share behind, the strobes, the tail light and the fold lights
+	# their measured sizes; then each broken in turn
+	L = check.FACTS["layout"]["lights"]["lenses"]
+
+	def lens(self, at, length, up, across):
+		# a box about [FS, WL, BL], its length along the station, its height up
+		# and its width across, in source inches
+		i, (f, w, b) = 0.0254, at
+		return box(((456 - f - length / 2) * i, (w - up / 2 - 105) * i, (b - across / 2) * i), ((456 - f + length / 2) * i, (w + up / 2 - 105) * i, (b + across / 2) * i))
+
+	def tapered(self, at, length, width, aft):
+		# the LEX lens: full width over its forward 60%, its aft share behind
+		f, w, b = at
+		front, back = self.lens((f - length / 2 + 0.3 * length, w, b), 0.6 * length, width, 0.2), self.lens((f + 0.3 * length, w, b), 0.4 * length, width * aft, 0.2)
+		return np.concatenate([front[0], back[0]]), np.concatenate([front[1], back[1] + len(front[0])])
+
+	def results(self, broken=None):
+		L, points = self.L, check.FACTS["layout"]["lights"]["points"]
+		parts = {}
+		for side, sign in (("left", -1), ("right", 1)):
+			f, w, b = points[f"position_lex_{side}"]["at"]
+			parts[f"lamp_position_lex_{side}"] = self.tapered((f, w, b), L["lex"]["length"], L["lex"]["width"], L["lex"]["aft"])
+			f, w, b = points[f"strobe_{side}"]["at"]
+			parts[f"lamp_strobe_{side}"] = self.lens((f, w, b), L["strobe"]["length"], L["strobe"]["width"], 0.2)
+			f, w, b = points[f"position_fold_{side}"]["at"]
+			parts[f"lamp_position_fold_{side}"] = self.lens((f, w, b), L["fold"]["width"], L["fold"]["width"], L["fold"]["width"])
+		parts["lamp_position_tail"] = self.lens(points["position_tail"]["at"], 0.2, L["tail"]["diameter"], L["tail"]["diameter"])
+		finishes = dict(check.LENSES)
+		colours = {name: tuple(np.where(np.asarray(c) / 255 <= 0.04045, np.asarray(c) / 255 / 12.92, ((np.asarray(c) / 255 + 0.055) / 1.055) ** 2.4)) for name, c in L["colours"].items()}
+		if broken:
+			broken(parts, finishes, colours)
+		with tempfile.TemporaryDirectory() as d:
+			glb(Path(d) / "m.glb", [{"name": n, "mesh": m, "material": finishes[n]} for n, m in parts.items()], colours)
+			(Path(d) / "m.json").write_text(json.dumps({"joints": {}, "points": {}}))
+			rows = list(check.lenses(check.Jet(Path(d) / "m.glb", Path(d) / "m.json")))
+		return [r["what"] for r in rows if check.failed(r)], len(rows)
+
+	def test_lenses_built_to_the_photos_pass(self):
+		failed, count = self.results()
+		self.assertEqual(failed, [])
+		self.assertEqual(count, 4 + 7 + 2 * 5 + 2 + 2)
+
+	def test_a_lens_in_the_strips_finish_fails(self):
+		def broken(parts, finishes, colours):
+			finishes["lamp_position_lex_right"] = "lights"
+		self.assertEqual(self.results(broken)[0], ["lamp_position_lex_right wearing starboard (it wears lights)"])
+
+	def test_a_finish_off_the_photos_colour_fails(self):
+		def broken(parts, finishes, colours):
+			colours["starboard"] = colours["port"]
+		self.assertEqual(self.results(broken)[0], ["starboard lenses' base colour off the photos', linear"])
+
+	def test_a_strobe_too_short_fails(self):
+		def broken(parts, finishes, colours):
+			f, w, b = check.FACTS["layout"]["lights"]["points"]["strobe_left"]["at"]
+			parts["lamp_strobe_left"] = self.lens((f, w, b), 7.0, self.L["strobe"]["width"], 0.2)
+		self.assertEqual(self.results(broken)[0], ["strobe_left lens's length"])
+
+	def test_a_lex_lens_not_narrowing_aft_fails(self):
+		def broken(parts, finishes, colours):
+			f, w, b = check.FACTS["layout"]["lights"]["points"]["position_lex_left"]["at"]
+			parts["lamp_position_lex_left"] = self.lens((f, w, b), self.L["lex"]["length"], self.L["lex"]["width"], 0.2)
+		self.assertEqual(self.results(broken)[0], ["position_lex_left lens's width near its aft end (5/6 of the way aft)"])
+
+	def test_a_tail_lens_too_small_and_a_fold_lens_too_wide_fail(self):
+		def broken(parts, finishes, colours):
+			points = check.FACTS["layout"]["lights"]["points"]
+			parts["lamp_position_tail"] = self.lens(points["position_tail"]["at"], 0.2, 1.0, 1.0)
+			parts["lamp_position_fold_right"] = self.lens(points["position_fold_right"]["at"], 1.2, 1.2, 2.0)
+		self.assertEqual(self.results(broken)[0], ["position_fold_right lens across", "tail light's lens up", "tail light's lens across"])
+
+	def test_a_lens_not_built_is_missing(self):
+		def broken(parts, finishes, colours):
+			del parts["lamp_strobe_right"]
+		with self.assertRaises(KeyError):
+			self.results(broken)
 
 
 class SlotTest(unittest.TestCase):
@@ -1528,6 +1675,42 @@ class TipsTest(unittest.TestCase):
 		k = self.tips.kinds()
 		self.assertEqual(k["wing"]["span"][0], check.FACTS["layout"]["wing"]["buttline"])
 		self.assertAlmostEqual(k["stabilator"]["span"][1] - k["stabilator"]["span"][0], check.value(check.FACTS["stabilator"]["exposed"]) * 6)
+
+
+class PaintTest(unittest.TestCase):
+	def test_a_texel_takes_its_longer_step_as_the_build_does(self):
+		# a face stretched along one of the atlas's axes: build.py texel_size()
+		# takes a texel's largest step to a neighbour, and draws its heads by it
+		face = np.array([[0.0, 0.0, 0.0], [4.4, 0.0, 0.0], [0.0, 3.5, 0.0]])
+		uv = np.array([[0.0, 0.0], [10.0, 0.0], [0.0, 10.0]]) / 4096
+		self.assertAlmostEqual(check.texel_of(face, uv, 4096), 0.44)
+		square = np.array([[0.0, 0.0, 0.0], [3.5, 0.0, 0.0], [0.0, 3.5, 0.0]])
+		self.assertAlmostEqual(check.texel_of(square, uv, 4096), 0.35)
+
+	def test_a_head_reads_the_photos_shade_on_fine_texels_and_fades_on_coarse(self):
+		# drawn as the build draws it: on texels far finer than the head it
+		# reads its own shade against the paint between heads, and lighter as
+		# the texel grows past it
+		fine, usual, coarse = (check.drawn(t, 0.92, 0.14, 0.71) for t in (0.04, 0.35, 0.6))
+		self.assertAlmostEqual(fine, 0.71, delta=0.02)
+		self.assertTrue(fine < usual < coarse < 1.0)
+		self.assertAlmostEqual(usual, 0.939, delta=0.01)                  # each texel darkened by the share of it a head covers
+		# heads closer than a texel run together into a line: no dots stand
+		# out against the paint between them
+		self.assertGreater(check.drawn(0.35, 0.2, 0.14, 0.71), 0.99)
+		self.assertEqual(check.drawn(0.35, 0.92, 0.14, 1.0), 1.0)        # undrawn heads read the paint
+
+	def test_eroded_keeps_only_what_holds_all_round(self):
+		mask = np.zeros((20, 20), bool)
+		mask[5:15, 5:15] = True
+		out = check.eroded(mask, 2)
+		self.assertEqual(int(out.sum()), 36)                            # 10 x 10 less 2 each side
+		self.assertEqual(out[7, 7], 1.0)
+		self.assertEqual(out[6, 6], 0.0)
+		self.assertEqual(int(check.eroded(np.ones((6, 6), bool), 1).sum()), 16)   # the image's edge holds nothing beyond
+		holed = np.ones((9, 9), bool)
+		holed[4, 4] = False
+		self.assertEqual([check.eroded(holed, 1)[y, x] for y, x in ((3, 3), (3, 5), (5, 3), (5, 5))], [0.0] * 4)   # a square reach: the hole's corner neighbours go too
 
 
 if __name__ == "__main__":
