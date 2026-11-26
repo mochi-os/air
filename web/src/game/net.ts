@@ -6,7 +6,7 @@
 // control stream, CBOR datagrams), remote-aircraft interpolation ~100 ms behind
 // live, and match history. World servers are open and UNTRUSTED, and identity
 // is self-asserted.
-import { createAppClient, getAppPath, useAuthStore } from '@mochi/web'
+import { createAppClient } from '@mochi/web'
 import { authenticated } from '../lib/config-store'
 import { cbor_encode, cbor_decode } from './cbor'
 import { parseDarts, type Dart } from './darts'
@@ -128,15 +128,105 @@ export interface WorldSession {
   parameters?: Record<string, unknown> // curated rules subset (#17/#19): missiles, tod, clouds — what a joiner cares about before entering
 }
 
-// normalize_server turns user input like "host", "host:4433" or a full URL
-// into a lobby base URL.
+// normalize_server turns what a player typed or a listing names - "host",
+// "host:5000" or a full URL - into a lobby base URL. A bare host, with no
+// scheme and no port, is a world server on its conventional port 4433; an
+// address with a scheme keeps its own port (https://host is 443, http://host
+// 80) and its path.
 export function normalize_server(address: string): string {
-  let a = address.trim().replace(/\/+$/, '')
-  if (!a) return a
-  if (!/^https?:\/\//.test(a))
-    a = (location.protocol === 'https:' ? 'https://' : 'http://') + a
-  if (!/:\d+$/.test(a)) a += ':4433'
-  return a
+  const typed = address.trim()
+  if (!typed) return ''
+  const schemed = /^https?:\/\//i.test(typed)
+  const scheme = globalThis.location?.protocol === 'https:' ? 'https://' : 'http://'
+  let url: URL
+  try {
+    url = new URL(schemed ? typed : scheme + typed)
+  } catch {
+    return typed.replace(/\/+$/, '') // not an address at all: asking it fails as unreachable
+  }
+  // The port as typed, not url.port: the parser drops a scheme's own port, so
+  // "host:443" on an https page would read as no port at all.
+  if (!schemed && !/^[^/?#]*:\d+(?:[/?#]|$)/.test(typed)) url.port = '4433'
+  return (url.origin + url.pathname).replace(/\/+$/, '')
+}
+
+// pilot_mint makes the account's pilot secret: 128 random bits as hex, from
+// getRandomValues, which every context has (randomUUID only a secure one).
+export function pilot_mint(): string {
+  const bytes = new Uint8Array(16)
+  crypto.getRandomValues(bytes)
+  return hex(bytes)
+}
+
+// pilot_token is the token one world server sees for this player: SHA-256 of
+// the account's secret and that server's lobby address, so a value a server
+// holds owns and withdraws offers there and nowhere else. Undefined without a
+// secret, or where the page has no SubtleCrypto (an insecure context, which
+// has no WebTransport either).
+export async function pilot_token(secret: string, server: string): Promise<string | undefined> {
+  const subtle = globalThis.crypto?.subtle
+  if (!secret || !subtle) return undefined
+  const digest = await subtle.digest('SHA-256', new TextEncoder().encode(secret + '\n' + normalize_server(server)))
+  return hex(new Uint8Array(digest))
+}
+
+// lobby_enter is the config after entering a server: the world it shows, the
+// server first among the five recent ones, and the account's pilot secret,
+// minted on its first entry. Read from the config as loaded: a config the
+// server has not answered yet has neither the secret nor the list.
+export function lobby_enter<T extends { world: string; servers: string; pilot: string }>(config: T, server: string): T {
+  const recents = String(config.servers ?? '').split('\n').filter(Boolean)
+  return {
+    ...config,
+    world: server,
+    pilot: config.pilot || pilot_mint(),
+    servers: [server, ...recents.filter((r) => r !== server)].slice(0, 5).join('\n'),
+  }
+}
+
+function hex(bytes: Uint8Array): string {
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+// WIRE_TAIL is the ranges of the snapshot core's quantised tail words, by STATE
+// index: the unit interval the wire carries maps onto [least, most]. The world
+// server quantises with the same table (games/air/air.go wire_tail); every word
+// not in it is a loss, a jam or a latch on [0, 1]. The signed words were
+// clamped to zero on the way out, so a trim, a raised flap or toe-out arrived
+// as nothing and every snapshot restarted the prediction from it.
+const UNIT: [number, number] = [0, 1]
+const FLAPS: [number, number] = [-0.14, 0.79] // the trailing edge, rad: 8 degrees up, 45 down
+export const WIRE_TAIL: Record<number, [number, number]> = {
+  [STATE.loss]: [0, 8000], // shed mass, kg
+  [STATE.loss + 4]: [-1.5, 1.5], // the pitch damper's washout, rad/s
+  [STATE.datum]: [-0.07, 0.07], // the PA trim datum, rad: 4 degrees either way
+  [STATE.bank]: [-0.06, 0.06], // the roll-trim datum, stick fraction
+  [STATE.wing]: [0, 8000], // external fuel in the wing tanks, kg
+  [STATE.centre]: [0, 8000], // and the centreline's
+  [STATE.trailing]: FLAPS,
+  [STATE.trailing + 1]: FLAPS,
+  [STATE.toe]: [-0.27, 0.53], // the rudders' toe, rad: 15 degrees out, 30 in
+}
+
+// wire_expand re-expands a snapshot's wire core to the flight core's SIZE
+// words: 57 base words at full float64 precision, then the tail quantised to
+// uint16, each word over its WIRE_TAIL range — at full float64 it burst the
+// datagram MTU. null for a core too short to be one, or one whose base words
+// are not all finite, which would poison the prediction.
+export function wire_expand(bytes: unknown): Float64Array | null {
+  if (!(bytes instanceof Uint8Array) || bytes.byteLength < 456 + (SIZE - 57) * 2) return null
+  const expanded = new Float64Array(SIZE)
+  const view = new DataView(bytes.buffer, bytes.byteOffset)
+  for (let i = 0; i < 57; i++) {
+    const w = view.getFloat64(i * 8, true)
+    if (!Number.isFinite(w)) return null
+    expanded[i] = w
+  }
+  for (let i = 57; i < SIZE; i++) {
+    const [least, most] = WIRE_TAIL[i] ?? UNIT // BY INDEX: scaling "the last word" broke when #78 appended the gear words after Loss
+    expanded[i] = least + (view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535) * (most - least) // the uint16 tail is always finite
+  }
+  return expanded
 }
 
 // default_server is the conventional lobby URL on the page's own host — the
@@ -156,16 +246,177 @@ function withTimeout(signal?: AbortSignal): AbortSignal {
   return signal ? AbortSignal.any([signal, timeout]) : timeout
 }
 
+// LobbyKind is why a lobby request failed: unreachable (no answer at all),
+// timeout (none in time), status (an error status naming no reason), refused
+// (one naming a reason), malformed (an answer that is not the reply asked for).
+export type LobbyKind = 'unreachable' | 'timeout' | 'status' | 'refused' | 'malformed'
+
+// LobbyError is a world server's failure, for the page to word in the
+// player's own language. The reason a refusal names is the server's own text,
+// so it is data: shown only through a table of the reasons the page knows.
+export class LobbyError extends Error {
+  readonly kind: LobbyKind
+  readonly status: number // the HTTP status, 0 with none
+  readonly reason: string // the reason a refusal named, '' otherwise
+
+  constructor(kind: LobbyKind, status = 0, reason = '') {
+    super(status ? kind + ' ' + status : kind)
+    this.name = 'LobbyError'
+    this.kind = kind
+    this.status = status
+    this.reason = reason
+  }
+}
+
+// lapse is the error a request with no answer rejects with: the caller's own
+// abort as it came, since nobody is waiting for that answer; otherwise a
+// timeout, or a server that could not be reached.
+function lapse(error: unknown, signal?: AbortSignal): unknown {
+  if (signal?.aborted || error instanceof LobbyError) return error
+  const name = (error as { name?: unknown } | null)?.name
+  return new LobbyError(name === 'TimeoutError' ? 'timeout' : 'unreachable')
+}
+
+// lobby_fetch asks a world server, bounded by LOBBY_TIMEOUT and the caller's signal.
+async function lobby_fetch(url: string, init: RequestInit = {}, signal?: AbortSignal): Promise<Response> {
+  try {
+    return await fetch(url, { ...init, mode: 'cors', signal: withTimeout(signal) }) // method-ok: a world server's own endpoint (status, poll, sessions, chat), never a Mochi action
+  } catch (e) {
+    throw lapse(e, signal)
+  }
+}
+
+// refusal is the error for an answer outside 2xx. Read only after the status
+// check: an HTML 502 from a proxy is the status, not a parse failure.
+async function refusal(response: Response): Promise<LobbyError> {
+  const reason = text(fields(await response.json().catch(() => null))?.error, 64)
+  return new LobbyError(reason ? 'refused' : 'status', response.status, reason)
+}
+
+// lobby_json is an answer's JSON body, or malformed when it has none.
+async function lobby_json(response: Response, signal?: AbortSignal): Promise<unknown> {
+  try {
+    return await response.json()
+  } catch (e) {
+    if (signal?.aborted || (e as { name?: unknown } | null)?.name === 'TimeoutError') throw lapse(e, signal)
+    throw new LobbyError('malformed', response.status)
+  }
+}
+
+// The lobby's answers are read field by field at this boundary, as handle()
+// reads the CBOR: each reader builds its value from what fits its type and
+// drops the rest, so no component sees a shape its type does not promise.
+const LOBBY_TEXT = 256 // the longest string a lobby field keeps
+const LOBBY_SESSIONS = 200 // the most matches one listing shows
+const LOBBY_LINES = 100 // the most chat lines one answer carries, and the room keeps
+
+function fields(value: unknown): Record<string, unknown> | null {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null
+}
+
+function list(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : []
+}
+
+function text(value: unknown, most = LOBBY_TEXT): string {
+  return typeof value === 'string' ? value.slice(0, most) : ''
+}
+
+function maybe(value: unknown): string | undefined {
+  return typeof value === 'string' ? value.slice(0, LOBBY_TEXT) : undefined
+}
+
+function finite(value: unknown): number {
+  return typeof value === 'number' && Number.isFinite(value) ? value : 0
+}
+
+function lobby_status(value: unknown): WorldStatus {
+  const s = fields(value)
+  if (!s) throw new LobbyError('malformed')
+  const certificate = fields(s.certificate)
+  const hash = certificate?.hash
+  const present = s.present
+  return {
+    name: text(s.name),
+    version: text(s.version),
+    protocol: finite(s.protocol),
+    games: list(s.games)
+      .filter((g): g is string => typeof g === 'string')
+      .slice(0, 32)
+      .map((g) => g.slice(0, LOBBY_TEXT)),
+    sessions: finite(s.sessions),
+    players: finite(s.players),
+    ...(typeof present === 'number' && Number.isFinite(present) ? { present } : {}),
+    address: text(s.address, 2048),
+    ...(typeof hash === 'string'
+      ? { certificate: { hash: hash.slice(0, LOBBY_TEXT), expires: finite(certificate?.expires) } }
+      : {}),
+  }
+}
+
+function lobby_sessions(value: unknown): WorldSession[] {
+  const out: WorldSession[] = []
+  const seen = new Set<string>()
+  for (const entry of list(value)) {
+    if (out.length >= LOBBY_SESSIONS) break
+    const s = fields(entry)
+    const session = text(s?.session)
+    if (!s || !session || seen.has(session)) continue // the id is the row's key and what a join names
+    seen.add(session)
+    const players = list(s.players).slice(0, MAX_SLOT).flatMap((p) => {
+      const player = fields(p)
+      return player ? [{ name: text(player.name), slot: finite(player.slot) }] : []
+    })
+    const parameters = fields(s.parameters)
+    out.push({
+      session,
+      game: text(s.game),
+      mode: text(s.mode),
+      label: text(s.label),
+      capacity: finite(s.capacity),
+      players,
+      created: finite(s.created),
+      state: text(s.state),
+      permanent: s.permanent === true,
+      mine: s.mine === true,
+      offer: s.offer === true,
+      ...(parameters ? { parameters } : {}),
+    })
+  }
+  return out
+}
+
+// lobby_chat reads a chat answer. A cursor the server did not give stays where it was.
+function lobby_chat(value: unknown, since: number): { lines: WorldChatLine[]; sequence: number } {
+  const c = fields(value)
+  const lines: WorldChatLine[] = []
+  for (const entry of list(c?.lines)) {
+    const line = fields(entry)
+    const sequence = line?.sequence
+    if (!line || typeof sequence !== 'number' || !Number.isFinite(sequence)) continue
+    lines.push({
+      sequence,
+      time: finite(line.time),
+      name: maybe(line.name),
+      text: maybe(line.text),
+      event: maybe(line.event),
+      label: maybe(line.label),
+    })
+  }
+  const cursor = c?.sequence
+  const sequence = typeof cursor === 'number' && Number.isFinite(cursor) ? cursor : since
+  return { lines: lines.slice(-LOBBY_LINES), sequence }
+}
+
 export async function world_status(
   server: string,
   signal?: AbortSignal
 ): Promise<WorldStatus> {
-  const response = await fetch(server + '/status', {
-    mode: 'cors',
-    signal: withTimeout(signal),
-  })
-  if (!response.ok) throw new Error('status ' + response.status)
-  return (await response.json()) as WorldStatus
+  const response = await lobby_fetch(server + '/status', {}, signal)
+  if (!response.ok) throw await refusal(response)
+  return lobby_status(await lobby_json(response, signal))
 }
 
 export async function world_sessions(
@@ -180,13 +431,9 @@ export async function world_sessions(
     '/sessions?game=' +
     encodeURIComponent(game) +
     (pilot ? '&pilot=' + encodeURIComponent(pilot) : '')
-  const response = await fetch(server + query, {
-    mode: 'cors',
-    signal: withTimeout(signal),
-  })
-  if (!response.ok) throw new Error('status ' + response.status)
-  const body = (await response.json()) as { sessions: WorldSession[] }
-  return body.sessions ?? []
+  const response = await lobby_fetch(server + query, {}, signal)
+  if (!response.ok) throw await refusal(response)
+  return lobby_sessions(fields(await lobby_json(response, signal))?.sessions)
 }
 
 export async function world_create(
@@ -205,30 +452,25 @@ export async function world_create(
   address: string
   certificate?: { hash: string }
 }> {
-  const response = await fetch(server + '/sessions', {
+  const response = await lobby_fetch(server + '/sessions', {
     method: 'POST',
-    mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
-    signal: withTimeout(),
   })
-  // Parse only after the status check: an HTML 502 from a proxy would otherwise
-  // surface as a JSON parse error instead of the status. Failed creates do
-  // answer JSON ({error}).
-  if (!response.ok) {
-    const failure = (await response.json().catch(() => null)) as {
-      error?: string
-    } | null
-    throw new Error(failure?.error || 'status ' + response.status)
+  // Failed creates answer JSON ({error}), the reason the refusal carries.
+  if (!response.ok) throw await refusal(response)
+  const body = fields(await lobby_json(response))
+  const reason = text(body?.error, 64)
+  if (reason) throw new LobbyError('refused', response.status, reason)
+  const session = text(body?.session)
+  const address = text(body?.address, 2048)
+  if (!session || !address) throw new LobbyError('malformed', response.status)
+  const hash = fields(body?.certificate)?.hash
+  return {
+    session,
+    address,
+    ...(typeof hash === 'string' ? { certificate: { hash: hash.slice(0, LOBBY_TEXT) } } : {}),
   }
-  const body = (await response.json()) as {
-    error?: string
-    session: string
-    address: string
-    certificate?: { hash: string }
-  }
-  if (body.error) throw new Error(body.error)
-  return body
 }
 
 // world_withdraw retires this pilot's own offer immediately — leaving the
@@ -238,12 +480,10 @@ export async function world_withdraw(
   server: string,
   pilot: string
 ): Promise<void> {
-  await fetch(server + '/withdraw', {
+  await lobby_fetch(server + '/withdraw', {
     method: 'POST',
-    mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ pilot }),
-    signal: withTimeout(),
   }).catch(() => {}) // best effort: the grace period covers a failed withdraw
 }
 
@@ -264,12 +504,205 @@ export async function world_chat(
   since: number,
   signal?: AbortSignal
 ): Promise<{ lines: WorldChatLine[]; sequence: number }> {
-  const response = await fetch(server + '/chat?since=' + since, {
-    mode: 'cors',
-    signal: withTimeout(signal),
-  })
-  if (!response.ok) throw new Error('status ' + response.status)
-  return (await response.json()) as { lines: WorldChatLine[]; sequence: number }
+  const response = await lobby_fetch(server + '/chat?since=' + since, {}, signal)
+  if (!response.ok) throw await refusal(response)
+  return lobby_chat(await lobby_json(response, signal), since)
+}
+
+// WorldPoll is everything the server page shows, from one request: the
+// status, the match list and the lobby chat since a cursor.
+export interface WorldPoll {
+  status: WorldStatus
+  sessions: WorldSession[]
+  chat: { lines: WorldChatLine[]; sequence: number }
+}
+
+// Servers that answered the three separate reads when /poll failed: they
+// predate it, and are asked the old way from then on. An unknown path on such a
+// server answers without the CORS header, so the browser reports it as a
+// failed fetch, not a 404 - the separate reads succeeding is what tells it
+// apart from a server that is simply down.
+const unpolled = new Set<string>()
+
+// world_poll asks a server for its status, match list and chat since a cursor
+// in one read: the page's polls cost one read of the server's per-address
+// budget instead of three, so a household behind one address is not refused.
+// The pilot token makes it the offer heartbeat, as world_sessions is.
+export async function world_poll(
+  server: string,
+  game: string,
+  since: number,
+  signal?: AbortSignal,
+  pilot?: string
+): Promise<WorldPoll> {
+  if (!unpolled.has(server)) {
+    const query =
+      '/poll?game=' +
+      encodeURIComponent(game) +
+      '&since=' +
+      since +
+      (pilot ? '&pilot=' + encodeURIComponent(pilot) : '')
+    let response: Response
+    try {
+      response = await lobby_fetch(server + query, {}, signal)
+    } catch (e) {
+      if (signal?.aborted) throw e
+      // No answer at all: an older server, or one that is down. The separate
+      // reads tell them apart, and fail with what is wrong when it is down.
+      const [status, sessions, chat] = await Promise.all([
+        world_status(server, signal),
+        world_sessions(server, game, signal, pilot),
+        world_chat(server, since, signal),
+      ])
+      unpolled.add(server)
+      return { status, sessions, chat }
+    }
+    // Any status at all is this server answering /poll: an error is the
+    // poll's, never a reason to ask three times over - a server refusing a
+    // rate-limited caller would be asked three times as often.
+    if (!response.ok) throw await refusal(response)
+    const body = fields(await lobby_json(response, signal))
+    if (!body) throw new LobbyError('malformed', response.status)
+    return {
+      status: lobby_status(body.status),
+      sessions: lobby_sessions(body.sessions),
+      chat: lobby_chat(body.chat, since),
+    }
+  }
+  const [status, sessions, chat] = await Promise.all([
+    world_status(server, signal),
+    world_sessions(server, game, signal, pilot),
+    world_chat(server, since, signal),
+  ])
+  return { status, sessions, chat }
+}
+
+// LobbyView is what one shared poll of a server has seen: its status and
+// match list (null and empty while it cannot be reached), the chat lines so
+// far (the newest hundred), and the failure of the last poll, if it failed.
+export interface LobbyView {
+  status: WorldStatus | null
+  sessions: WorldSession[]
+  lines: WorldChatLine[]
+  failure: unknown
+}
+
+export interface LobbyWatch {
+  refresh(): Promise<void> // poll now, after any poll already in flight
+  stop(): void
+}
+
+interface Lobby {
+  server: string
+  game: string
+  pilot?: string
+  cursor: number
+  view: LobbyView | null
+  listeners: Set<(view: LobbyView) => void>
+  controller: AbortController
+  pending: Promise<void> | null
+  timer: ReturnType<typeof setInterval> | null
+}
+
+// LOBBY_POLL is how often a watched server is polled.
+const LOBBY_POLL = 3000
+
+const lobbies = new Map<string, Lobby>()
+
+// lobby_room is the room after an answer: the held lines, then each new line
+// once. A line joins only past the newest held, so an answer that repeats one
+// - two requests that carried the same cursor, a server that ignores it -
+// cannot show it twice. A cursor that went backwards is a server that
+// restarted: its numbering began again, and the room with it.
+function lobby_room(lobby: Lobby, chat: WorldPoll['chat']): WorldChatLine[] {
+  const restarted = chat.sequence < lobby.cursor
+  const held = restarted ? [] : (lobby.view?.lines ?? [])
+  lobby.cursor = restarted ? 0 : chat.sequence
+  if (restarted) return held
+  let newest = held.length ? held[held.length - 1].sequence : -Infinity
+  const fresh: WorldChatLine[] = []
+  for (const line of chat.lines) {
+    if (line.sequence <= newest) continue
+    fresh.push(line)
+    newest = line.sequence
+  }
+  return fresh.length ? [...held, ...fresh].slice(-LOBBY_LINES) : held
+}
+
+function lobby_pull(lobby: Lobby): Promise<void> {
+  if (lobby.pending) return lobby.pending
+  const signal = lobby.controller.signal
+  lobby.pending = world_poll(lobby.server, lobby.game, lobby.cursor, signal, lobby.pilot)
+    .then(
+      (poll) => {
+        if (signal.aborted) return
+        const lines = lobby_room(lobby, poll.chat)
+        lobby.view = { status: poll.status, sessions: poll.sessions, lines, failure: null }
+      },
+      (e: unknown) => {
+        if (signal.aborted) return
+        lobby.view = { status: null, sessions: [], lines: lobby.view?.lines ?? [], failure: e ?? new LobbyError('unreachable') }
+      }
+    )
+    .finally(() => {
+      lobby.pending = null
+      if (signal.aborted || !lobby.view) return
+      for (const listener of lobby.listeners) listener(lobby.view)
+    })
+  return lobby.pending
+}
+
+// lobby_watch shares one poll of a server among everything on the page that
+// shows it - the match list and the lobby chat - so the page costs the server
+// one read every three seconds rather than one per panel per poll. The
+// listener is called with the view after every poll, and at once with the
+// last one if a poll has already answered. A pilot token makes the shared
+// poll this player's offer heartbeat.
+export function lobby_watch(
+  server: string,
+  game: string,
+  pilot: string | undefined,
+  listener: (view: LobbyView) => void
+): LobbyWatch {
+  const key = game + ' ' + server
+  let lobby = lobbies.get(key)
+  if (!lobby) {
+    lobby = {
+      server,
+      game,
+      cursor: 0,
+      view: null,
+      listeners: new Set(),
+      controller: new AbortController(),
+      pending: null,
+      timer: null,
+    }
+    lobbies.set(key, lobby)
+  }
+  const shared = lobby
+  if (pilot) shared.pilot = pilot
+  shared.listeners.add(listener)
+  if (shared.view) listener(shared.view)
+  if (!shared.timer) {
+    void lobby_pull(shared)
+    shared.timer = setInterval(() => void lobby_pull(shared), LOBBY_POLL)
+  }
+  let stopped = false
+  return {
+    refresh: () => {
+      if (stopped) return Promise.resolve()
+      return shared.pending ? shared.pending.then(() => lobby_pull(shared)) : lobby_pull(shared)
+    },
+    stop: () => {
+      if (stopped) return
+      stopped = true
+      shared.listeners.delete(listener)
+      if (shared.listeners.size) return
+      if (shared.timer) clearInterval(shared.timer)
+      shared.controller.abort()
+      lobbies.delete(key)
+    },
+  }
 }
 
 export async function world_say(
@@ -277,14 +710,12 @@ export async function world_say(
   name: string,
   text: string
 ): Promise<void> {
-  const response = await fetch(server + '/chat', {
+  const response = await lobby_fetch(server + '/chat', {
     method: 'POST',
-    mode: 'cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, text }),
-    signal: withTimeout(),
   })
-  if (!response.ok) throw new Error('status ' + response.status)
+  if (!response.ok) throw await refusal(response)
 }
 
 // Join is everything the engine needs to enter a session.
@@ -357,7 +788,7 @@ export interface InputSample {
   bypass: boolean // the ANTI SKID switch OFF (#114): a server that predates it reads nothing, and a sample without it keeps anti-skid on
   retract: boolean // the LAUNCH BAR switch at RETRACT (#127), sent on the wheels alone, where the crew could hook the jet up: a server that predates it reads nothing, and a sample without it keeps the crew's hook-up
   emergency: boolean // the gear handle turned and pulled: the emergency gear extension (#128)
-  mechanical: boolean // MECH ON (#116): the client judges when all electrical power is gone; a sample without it keeps the computers
+  mechanical: boolean // MECH ON (#116): false in a match, where the server models no electrical failure and ignores it (#30); a server that predates that would take it
   spin: boolean // the spin recovery switch at RCVY (#141): the flight computers engage the spin mode at 120 kt; a server that predates it reads nothing, and a sample without it keeps NORM
   uncooled: boolean // the IR COOL switch at OFF (#141): the heater's seeker has nothing, and a round leaves unguided; a sample without it keeps the seeker cooled
   wing: number // the EXT TANKS switches (#18): -1 STOP, 0 NORM, +1 ORIDE; a sample without them keeps the normal transfer
@@ -385,7 +816,7 @@ export interface InputSample {
   solo: boolean // this flare edge releases the flare alone - BYPASS, or a programme step without chaff (#107); a server that predates it drops a chaff bundle too
   extinguish: boolean // the FIRE EXTGH pushbutton, an edge: the bottle into the secured engine's bay
   onspeed: boolean // the pitch trim alone back to on-speed, an edge; a server that predates it leaves the trim where it was
-  reverted: boolean // mission computer 1 lost: the server's limiter drops its weight schedule and the stores' roll limit, as the client's has
+  reverted: boolean // mission computer 1 lost: false in a match, where the server models no such failure and ignores it (#30) - it dropped the limiter's weight schedule and the stores' roll limit for free
   held: number // wing fuel held at INHIBIT, kg; a server that predates it burns the wings' fuel with the rest
   status: Status // this aircraft's identification and link status, relayed to the session (mids.ts): a server that predates it reads nothing
   seeker: [number, number] | null // the 9M seeker's line while the helmet slaves it (helmet.ts pack: world azimuth and elevation, hundredths of a degree), else null; a server that predates it searches the nose cone
@@ -483,22 +914,31 @@ export class Net {
     this.handlers = handlers
   }
 
-  // input queues one control sample; sends at most 60/s with the previous
-  // two samples batched in for loss tolerance.
-  // input queues one control sample; returns the sequence it was assigned,
-  // or 0 when rate-limited (sends are capped at the server tick rate).
+  // input queues one control sample and sends it with the previous two
+  // batched in for loss tolerance. It returns the sequence the sample was
+  // assigned, or 0 when rate-limited: sends are capped at the server's tick
+  // rate, 60 a second.
   input(sample: InputSample): number {
     const now = performance.now()
     if (now - this.last < 1000 / 60 - 1) return 0
     this.last = now
     this.sequence++
     queue(this.batch, sample, this.sequence)
-    try {
-      this.datagrams?.write(cbor_encode({ kind: 'input', inputs: this.batch }))
-    } catch {
-      // datagram writes fail only once the connection is gone; the reader notices
-    }
+    this.send(this.datagrams, cbor_encode({ kind: 'input', inputs: this.batch }))
     return this.sequence
+  }
+
+  // send writes to the connection without waiting. A write fails only once the
+  // connection has gone, and reports it by rejecting, which nobody awaits: the
+  // rejection is dropped here, and the reader notices the loss. Nothing is
+  // written once the connection has closed, apart from leave's goodbye.
+  private send(
+    writer: WritableStreamDefaultWriter<Uint8Array> | null,
+    bytes: Uint8Array,
+    leaving = false
+  ) {
+    if (this.closed && !leaving) return
+    writer?.write(bytes).catch(() => {})
   }
 
   // soften absorbs position discontinuities (interest-set entry after a long
@@ -539,16 +979,6 @@ export class Net {
       ...pose,
       position: [x + ox, y + oy, z + oz],
     }
-  }
-
-  // self is the player's OWN latest pose, sent first in every poses datagram
-  // and skipped by slots(). Newest sample, not interpolated: it feeds
-  // annunciation and trails (engine fires, fuel fire, leak), not a rendered
-  // position.
-  self(): RemotePose | null {
-    const ring = this.slot >= 0 ? this.rings.get(this.slot) : undefined
-    if (!ring || !ring.length) return null
-    return local(ring[ring.length - 1].pose)
   }
 
   remote(slot: number): RemotePose | null {
@@ -646,20 +1076,20 @@ export class Net {
     return live
   }
 
-  // own returns the newest authoritative state for our aircraft.
+  // own is the player's OWN latest pose, the server's authoritative state for
+  // our aircraft: sent first in every poses datagram and skipped by slots().
+  // Newest sample, not interpolated: it feeds annunciation and trails (engine
+  // fires, fuel fire, leak), not a rendered position. Null before the first,
+  // and before a slot is held (-1 names no ring).
   own(): RemotePose | null {
     const ring = this.rings.get(this.slot)
-    return ring?.length ? local(ring[ring.length - 1].pose) : null // self rides first in every poses datagram
+    return ring?.length ? local(ring[ring.length - 1].pose) : null
   }
 
   // chat sends one match-chat line (#84); the server sanitizes, scopes, and
   // echoes it back as a chat event — the echo is the delivery confirmation.
   chat(text: string, scope: string) {
-    try {
-      this.writer?.write(frame(cbor_encode({ kind: 'chat', text, scope })))
-    } catch {
-      /* already gone */
-    }
+    this.send(this.writer, frame(cbor_encode({ kind: 'chat', text, scope })))
   }
 
   // jettison reports a stores departure (#18): station numbers with 'stores'
@@ -667,31 +1097,19 @@ export class Net {
   // updates the granted loadout, and re-emits the roster — every client's
   // rendering of this jet follows from that one authoritative event.
   jettison(stations: { station: number; what: string }[]) {
-    try {
-      this.writer?.write(frame(cbor_encode({ kind: 'jettison', stations })))
-    } catch {
-      /* already gone */
-    }
+    this.send(this.writer, frame(cbor_encode({ kind: 'jettison', stations })))
   }
 
   // radar reports the own emitter state (#30) on change: 0 silent, 1 search,
   // 2 STT with the locked slot (-1 none). The server validates and stamps it
   // into everyone's pose records — what their RWR reacts to (#28).
   radar(mode: number, target: number) {
-    try {
-      this.writer?.write(frame(cbor_encode({ kind: 'radar', mode, target })))
-    } catch {
-      /* already gone */
-    }
+    this.send(this.writer, frame(cbor_encode({ kind: 'radar', mode, target })))
   }
 
   leave() {
     this.closed = true
-    try {
-      this.writer?.write(frame(cbor_encode({ kind: 'leave' })))
-    } catch {
-      /* already gone */
-    }
+    this.send(this.writer, frame(cbor_encode({ kind: 'leave' })), true)
     try {
       this.transport.close()
     } catch {
@@ -833,39 +1251,8 @@ export class Net {
       case 'snapshot': {
         const tick = Number(message.tick)
         if (!Number.isFinite(tick)) break
-        let core: Float64Array | null = null
-        const bytes = message.core as Uint8Array | undefined
-        if (
-          bytes instanceof Uint8Array &&
-          bytes.byteLength >= 456 + (SIZE - 57) * 2
-        ) {
-          // The wire core: 57 base words at full float64 precision, then the
-          // damage tail quantised to uint16 (unit-interval losses; the final
-          // word is shed mass at kg/8000) — full float64 burst the datagram
-          // MTU. Re-expand to the flight core's 106-word layout.
-          const expanded = new Float64Array(SIZE)
-          const view = new DataView(bytes.buffer, bytes.byteOffset)
-          let bad = false
-          for (let i = 0; i < 57; i++) {
-            const w = view.getFloat64(i * 8, true)
-            if (!Number.isFinite(w)) {
-              bad = true
-              break
-            } // a non-finite core word would poison the WASM prediction
-            expanded[i] = w
-          }
-          if (!bad) {
-            for (let i = 57; i < SIZE; i++) {
-              let v = view.getUint16(57 * 8 + (i - 57) * 2, true) / 65535 // the uint16 tail is always finite
-              if (i === STATE.loss) v *= 8000 // Loss, kg — BY INDEX: scaling "the last word" broke when #78 appended the gear words after Loss (strut damage arrived x8000, Loss unscaled)
-              if (i === STATE.loss + 4) v = (v - 0.5) * 3 // Pitchwash, signed rad/s off the unit-interval wire mapping — BY INDEX for the same reason: "SIZE - 1" silently slid onto the roll-trim datum when buffet and bank were appended
-              if (i === STATE.wing || i === STATE.centre) v *= 8000 // external fuel, wing and centreline, kg — same scale as Loss
-              expanded[i] = v
-            }
-            core = expanded
-            this.cored = true
-          }
-        }
+        const core = wire_expand(message.core)
+        if (core) this.cored = true
         this.snapshots.push({
           at: performance.now(),
           tick,
@@ -1044,7 +1431,12 @@ function deadline<T>(work: Promise<T>, ms: number, label: string): Promise<T> {
   ) as Promise<T>
 }
 
-export async function connect(join: Join, handlers: Handlers): Promise<Net> {
+// connect dials a match and returns the Net once the welcome is in. An abort
+// of the given signal - the engine stopping while the dial is under way -
+// closes the transport and rejects at whichever step the handshake had
+// reached, so a dial no one is waiting for leaves no connection joined.
+export async function connect(join: Join, handlers: Handlers, signal?: AbortSignal): Promise<Net> {
+  signal?.throwIfAborted()
   const options: WebTransportOptions = {}
   if (join.certificate?.hash) {
     const raw = atob(join.certificate.hash)
@@ -1053,9 +1445,17 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     options.serverCertificateHashes = [{ algorithm: 'sha-256', value }]
   }
   const transport = new WebTransport(join.address, options)
+  let quit = () => {}
+  const aborted = new Promise<never>((_, reject) => {
+    quit = () => reject(signal?.reason ?? new DOMException('aborted', 'AbortError'))
+    signal?.addEventListener('abort', quit, { once: true })
+  })
+  aborted.catch(() => {}) // raced at each step; an abort after the last is no one's error
+  // step bounds one await of the handshake by its deadline and by the abort
+  const step = <T>(work: Promise<T>, ms: number, label: string) => Promise.race([deadline(work, ms, label), aborted])
   try {
-    await deadline(transport.ready, CONNECT_DEADLINE, 'connect')
-    const stream = await deadline(
+    await step(transport.ready, CONNECT_DEADLINE, 'connect')
+    const stream = await step(
       transport.createBidirectionalStream(),
       CONNECT_DEADLINE,
       'stream'
@@ -1087,7 +1487,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
     // pull the first frame here, then hand the live iterator to the Net so the
     // control loop continues from exactly where the handshake left off.
     const messages = frames(reader, new Uint8Array(0))
-    const opening = await deadline(messages.next(), WELCOME_DEADLINE, 'welcome')
+    const opening = await step(messages.next(), WELCOME_DEADLINE, 'welcome')
     if (opening.done) throw new Error('closed')
     const first = cbor_decode(opening.value) as Record<string, unknown>
     if (first.kind === 'refuse')
@@ -1131,6 +1531,7 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
         console.warn('map geometry:', error)
       }
     }
+    signal?.throwIfAborted() // the geometry's fetch is bounded by its own timeout; the abort is read once it is in
     net.start(writer, messages)
     return net
   } catch (error) {
@@ -1143,6 +1544,8 @@ export async function connect(join: Join, handlers: Handlers): Promise<Net> {
       /* already closing */
     }
     throw error
+  } finally {
+    signal?.removeEventListener('abort', quit)
   }
 }
 
@@ -1172,42 +1575,28 @@ export async function record(match: {
   traps: number // the traps among them
   points: number // the points of those that score, in tenths
   scored: number // how many score
+  developer: number // 1 when flown in developer mode, else 0
 }): Promise<void> {
   try {
-    // fetch keepalive, not the app client: this row is written as the pilot
-    // LEAVES — often from a pagehide or an unmount — and a plain request dies
-    // with the page. keepalive survives page death, and the row is tiny.
+    // keepalive: this row is written as the pilot LEAVES - often from a
+    // pagehide or an unmount - and a plain request dies with the page. The
+    // client sends a keepalive request itself rather than through the shell,
+    // whose frame dies with the page too; the row is tiny.
     await authenticated()
-    const token = useAuthStore.getState().token
-    await fetch((getAppPath() || '/air') + '/-/match/record', {
-      method: 'POST',
-      keepalive: true,
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token
-          ? {
-              Authorization: token.startsWith('Bearer ')
-                ? token
-                : 'Bearer ' + token,
-            }
-          : {}),
-      },
-      body: JSON.stringify(match),
-    })
+    await client.post('-/match/record', match, { keepalive: true })
   } catch {
     /* anonymous or offline — history is best-effort */
   }
 }
 
 // MatchRow is one recorded match as match_list returns it (players is the
-// participant count as a string; cheated is 0/1).
+// participant count as a string; cheated and developer are 0/1).
 export interface MatchRow {
   id: string // the row's own id: with started, where the next page begins
   world: string
   title: string // the server's name when the flight was flown, '' before it was recorded
   session: string
-  recording: string // attachment id, '' when nothing is stored
+  recording: string // the match's own id once its recording is stored (recording_load fetches by it), '' when none is
   size: number
   mode: string
   team: string
@@ -1218,16 +1607,14 @@ export interface MatchRow {
   kills: number
   deaths: number
   cheated: number
+  developer: number // flown with developer mode on (rows before schema 16 carry 0)
   grade: string // the last pass's LSO grade, '' when none was flown (rows before 2026-09-24 carry '')
   remarks: string // its write-up, in the LSO's shorthand
   wire: number // 1-4, 0 when it did not end in a wire
 }
 
-// log reads this player's recorded matches, most recent first. Its totals
-// come from the server over EVERY flight while the list is capped at fifty, so
-// summing the rows on screen understates a career. recording_store uploads a
-// gzipped ACMI as multipart: the 1 MB non-multipart body cap would reject
-// anything but the shortest sortie.
+// recording_store uploads a gzipped ACMI as multipart: the 1 MB non-multipart
+// body cap would reject anything but the shortest sortie.
 export async function recording_store(
   session: string,
   started: number,
@@ -1240,7 +1627,7 @@ export async function recording_store(
     const body = new FormData()
     body.append('session', session)
     body.append('started', String(started))
-    // The type matters: a typeless Blob arrives as a part the attachment API does not take as a file.
+    // The type matters: a typeless Blob arrives as a part the server's upload does not take as a file.
     const bytes = await new Response(gz).arrayBuffer()
     body.append(
       'recording',

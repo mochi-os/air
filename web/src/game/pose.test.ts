@@ -96,7 +96,7 @@ describe('self pose', () => {
         pose({ slot: 7 }),
       ])
     )
-    const mine = s.self()
+    const mine = s.own()
     expect(mine).not.toBeNull()
     expect(mine!.burn[0]).toBeCloseTo(0.6, 1)
     expect(mine!.burn[1]).toBe(0)
@@ -106,15 +106,15 @@ describe('self pose', () => {
 
   it('is null before any pose arrives, and never picks up another slot', () => {
     const s = session(3)
-    expect(s.self()).toBeNull()
+    expect(s.own()).toBeNull()
     feed(s, concat([pose({ slot: 7, fire: [1, 1], burning: true, leak: 2 })]))
-    expect(s.self()).toBeNull() // slot 7 is not us: their fire must not light our cockpit
+    expect(s.own()).toBeNull() // slot 7 is not us: their fire must not light our cockpit
   })
 
   it('an undamaged own pose annunciates nothing', () => {
     const s = session(0)
     feed(s, concat([pose({ slot: 0 })]))
-    const mine = s.self()!
+    const mine = s.own()!
     expect(mine.burn).toEqual([0, 0])
     expect(mine.burning).toBe(false)
     expect(mine.leak).toBe(0)
@@ -123,7 +123,7 @@ describe('self pose', () => {
   it('lights a fire the server rounded up from the faintest flame, on the engine it is in', () => {
     const s = session(2)
     feed(s, concat([pose({ slot: 2, fire: [0, 0.01] })]))
-    const mine = s.self()!
+    const mine = s.own()!
     expect(mine.burn[0]).toBe(0)
     expect(mine.burn[1]).toBeGreaterThan(0) // the right engine's FIRE light reads anything above zero
   })
@@ -131,7 +131,7 @@ describe('self pose', () => {
   it('reads his sideslip either way, whole degrees', () => {
     const s = session(4)
     feed(s, concat([pose({ slot: 4, beta: 7 }), pose({ slot: 5, beta: -12 })]))
-    expect(s.self()!.beta).toBe(7)
+    expect(s.own()!.beta).toBe(7)
     expect(s.remote(5)!.beta).toBe(-12)
   })
 
@@ -139,7 +139,7 @@ describe('self pose', () => {
     const s = session(1)
     feed(s, concat([pose({ slot: 1, fire: [0.2, 0] })]), 60)
     feed(s, concat([pose({ slot: 1, fire: [0.9, 0], burning: true })]), 120)
-    const mine = s.self()!
+    const mine = s.own()!
     expect(mine.burn[0]).toBeCloseTo(0.9, 1)
     expect(mine.burning).toBe(true)
   })
@@ -157,7 +157,7 @@ describe('self pose', () => {
     expect(golden.length).toBe(RECORD)
     const s = session(0)
     feed(s, golden)
-    const mine = s.self()!
+    const mine = s.own()!
     expect(mine.burn[0]).toBeCloseTo(0.6, 3) // 9 fifteenths, the high half of byte 29
     expect(mine.burn[1]).toBeCloseTo(0.2, 3) // 3 fifteenths, the low half
     expect(mine.burning).toBe(true)
@@ -281,7 +281,7 @@ describe('gun expenditure (#163)', () => {
       s,
       concat([pose({ slot: 0, spent: 40 }), pose({ slot: 3, spent: 578 })])
     )
-    expect(s.self()!.spent).toBe(40)
+    expect(s.own()!.spent).toBe(40)
     expect(s.remote(3)!.spent).toBe(578)
   })
 

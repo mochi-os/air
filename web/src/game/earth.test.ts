@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { between, centred, DEGREE, destination, geodesic, geodetic, geoid, HOME, inverse, MIDWAY, point, tangent } from './earth'
+import { between, centred, DEGREE, destination, geodesic, geodetic, geoid, HOME, inverse, MIDWAY, placed, point, tangent } from './earth'
 
 const near = (a: { x: number; y: number; z: number }, b: { x: number; y: number; z: number }, tolerance: number) =>
   Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z) <= tolerance
@@ -64,6 +64,15 @@ describe('the earth', () => {
     const q = { x: 1234.5, y: 8000, z: -4321 }
     expect(near(point(inverse(r), point(r, q)), q, 1e-6)).toBe(true)
     expect(near(point(r, q), f.local(HOME.centred(q)), 1e-6)).toBe(true)
+  })
+
+  it('places a point into a vector it is handed exactly where point carries it, and allocates nothing', () => {
+    const out = { x: 0, y: 0, z: 0 }
+    for (const r of [between(HOME, tangent(0.6, -2.9)), between(HOME, tangent(0.4, 2)), between(HOME, HOME), between(tangent(-1.1, 0.3), tangent(0.2, 0.9))])
+      for (const q of [{ x: 1234.5, y: 8000, z: -4321 }, { x: -9e4, y: 12, z: 3e4 }, { x: 0, y: 0, z: 0 }]) {
+        expect(placed(r, q.x, q.y, q.z, out)).toBe(out)
+        expect(near(out, point(r, q), 1e-6), JSON.stringify(q)).toBe(true)
+      }
   })
 
   it('drops the sea 785 m below a level line a hundred kilometres out, and hides a low jet past the horizon', () => {

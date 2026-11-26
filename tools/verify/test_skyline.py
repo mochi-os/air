@@ -485,6 +485,43 @@ class SkylineTest(unittest.TestCase):
 		rows = {key: overall for key, _, overall, _ in skyline.judge(results)}
 		self.assertEqual(rows, {("gear", 288, "down"): -4.0, ("gear", 288, ""): 2.0})
 
+	def test_carried_stores(self):
+		# a store hung from a part the pose moves (a round on a wingtip rail, the wing folded) is masked where
+		# the part has carried it, not where it hangs at rest: carried() gives the moved part's matrix, and a
+		# scene's covering in that pose follows it; a part the pose leaves alone moves nothing
+		import math
+		import tempfile
+		import camera as cam
+		import model as mod
+		from test_verify import JET, box, glb
+		joints = {"gear_leg": {"motion": "rotate", "axis": [0, 0, 1], "drive": "gear", "keys": [[0, 0], [1, math.pi / 2]]}}
+		with tempfile.TemporaryDirectory() as root:
+			root = Path(root)
+			glb(root / "m.glb", [{"name": "body", "mesh": box((-1, -0.1, -0.5), (1, 0.1, 0.5))},
+				{"name": "gear_leg", "mesh": box((-0.3, -0.04, -0.04), (0.3, 0.04, 0.04))}])
+			model = mod.Model(root / "m.glb")
+			frame = mod.Frame(JET)
+			down = mod.pose(joints, {"gear": 1})
+			moved = skyline.carried(model, down, ["gear_leg", "body", "missing"])
+			self.assertEqual(sorted(moved), ["gear_leg"])
+			tip = np.array([0.3, 0.0, 0.0])
+			self.assertTrue(np.allclose(moved["gear_leg"][:3, :3] @ tip + moved["gear_leg"][:3, 3], [0.0, 0.3, 0.0], atol=1e-6))
+			self.assertEqual(skyline.carried(model, mod.pose(joints, {}), ["gear_leg"]), {})
+			# a pod at the leg's tip: at rest it lies 0.3 m forward, the leg let down carries it 0.3 m up
+			size = [1200, 600]
+			camera = cam.looking(np.array([0.0, 0.0, 12.0]), np.array([0.0, 0.0, 0.0]), 2400.0)
+			(root / "references").mkdir()
+			Image.fromarray(np.full((size[1], size[0], 3), 220, np.uint8)).save(root / "references" / "p.png")
+			stores = {"load": {"5": "pod"}, "kinds": {"pod": [{"centre": [0, 0, 0], "size": [3, 3, 3]}]}}
+			hardpoints = {"5": {"mount": list(tip), "parts": ["gear_leg"]}}
+			entry = {"photo": "p", "size": size, "camera": list(camera), "pose": {}, "file": "p.png"}
+			scene = skyline.Scene({"frame": JET, "photos": {"p": {}}, "stores": stores}, root, frame, hardpoints, entry)
+			for posed, home, carried in ((mod.pose(joints, {}), True, False), (down, False, True)):
+				mask = scene.covering(model, posed)
+				for point, inside in ((tip, home), (np.array([0.0, 0.3, 0.0]), carried)):
+					q, _ = cam.project(camera, point[None], (size[0] / 2, size[1] / 2))
+					self.assertEqual(bool(mask[int(q[0, 1]), int(q[0, 0])]), inside, (list(point), inside))
+
 	def test_stance_drives(self):
 		# every drive that takes a part between two shapes splits its regions by default: an open speedbrake
 		# (a body part) is judged apart from the top it lies in shut, a lowered hook apart from the stowed one,
@@ -558,6 +595,33 @@ class SkylineTest(unittest.TestCase):
 		kept = look(side, photo={"masks": [[[700, 0], [1200, 0], [1200, 600], [700, 600]]]})
 		self.assertFalse([p for p in kept if p["pixel"][0] > 700])
 		self.assertTrue([p for p in kept if p["pixel"][0] < 600])
+
+	def test_variants(self):
+		# a photo of another variant (a two-seater) leaves unjudged what the catalogue says it does not share
+		# with the model: the body over a stretch above a height (the plate spans FS 416.6-495.4, WL
+		# 101.1-108.9), or every part of a family; a variant the catalogue lacks is an error, not a silent pass
+		side = (0.0, 0.0, 12.0)
+		every = look(side)
+		self.assertTrue([p for p in every if p["point"][0] >= 456] and [p for p in every if p["point"][0] < 456])
+		section = {"variants": {"aft": {"stretch": [456, 500], "above": 0}, "high": {"stretch": [456, 500], "above": 200},
+			"whole": {"families": ["body"]}}}
+		aft = look(side, photo={"variant": "aft"}, section=section)
+		self.assertFalse([p for p in aft if p["point"][0] >= 456])
+		self.assertEqual(len(aft), len([p for p in every if p["point"][0] < 456]))
+		self.assertEqual(len(look(side, photo={"variant": "high"}, section=section)), len(every))
+		self.assertEqual(look(side, photo={"variant": "whole"}, section=section), [])
+		self.assertEqual(len(look(side, section=section)), len(every))
+		with self.assertRaises(SystemExit):
+			look(side, photo={"variant": "other"}, section=section)
+
+	def test_posed(self):
+		# a photo's pose is the catalogue's, where poses are fitted; the cameras file's copy, taken when
+		# photos.py solved it, only stands in for a photo the catalogue gives none
+		entry = {"photo": "p", "pose": {"gear": 1, "joints": {"rudder_left": 0.0}}}
+		kept = {"photos": {"p": {"pose": {"gear": 1, "joints": {"rudder_left": -0.4}}}}}
+		self.assertEqual(skyline.posed(kept, entry), {"gear": 1, "joints": {"rudder_left": -0.4}})
+		self.assertEqual(skyline.posed({"photos": {"p": {}}}, entry), entry["pose"])
+		self.assertEqual(skyline.posed({}, entry), entry["pose"])
 
 	def test_solid(self):
 		# the catalogue's solid materials: a model whose paint is not among them has no outline to judge
@@ -663,6 +727,16 @@ class SkylineTest(unittest.TestCase):
 		for buttline, inside in ((-130.0, True), (-70.0, False)):
 			q, _ = cam.project(top, frame.model([[470.0, 84.0, buttline]]), (500, 500))
 			self.assertEqual(bool(mask[int(q[0, 1]), int(q[0, 0])]), inside, buttline)
+		# a box carried by the part it hangs from: the pod's part moved 60 in forward (as a wing folds, its
+		# tip round with it) takes the box from FS 470 to FS 410; a part the pose leaves alone keeps it home
+		ahead = np.eye(4)
+		ahead[:3, 3] = frame.model([[410.0, 105.0, 0.0]])[0] - frame.model([[470.0, 105.0, 0.0]])[0]
+		hung = {"2": {"mount": list(left), "parts": ["rail_2"]}}
+		for moved, home, away in (({"rail_2": ahead}, False, True), ({"rail_8": ahead}, True, False), (None, True, False)):
+			mask = skyline.blocked(side, {"2": "pod"}, hung, frame, top, (500, 500), (1000, 1000), 1.0, moved)
+			for station, inside in ((470.0, home), (410.0, away)):
+				q, _ = cam.project(top, frame.model([[station, 84.0, -130.0]]), (500, 500))
+				self.assertEqual(bool(mask[int(q[0, 1]), int(q[0, 0])]), inside, (station, moved and list(moved)))
 
 	def test_region(self):
 		self.assertEqual(skyline.region("fuselage", (450.0, 148.0, 0.0)), ("body", 432, "top"))
@@ -672,6 +746,10 @@ class SkylineTest(unittest.TestCase):
 		self.assertEqual(skyline.region("flap_trailing_right", (560.0, 110.0, 120.0)), ("flap", 552, ""))
 		self.assertEqual(skyline.region("flap_leading_outer_left", (420.0, 110.0, -150.0)), ("slat", 408, ""))
 		self.assertEqual(skyline.region("rudder_right", (650.0, 170.0, 50.0)), ("rudder", 648, ""))
+		# a gear bay's wall is no skin: it makes an outline only through the open
+		# doors, behind the gear, and its misses are listed with the gear's
+		self.assertEqual(skyline.region("well_main_right", (533.4, 74.9, 16.4)), ("well", 528, ""))
+		self.assertIn("well", skyline.DEFAULT.moving)
 
 	def test_summary(self):
 		place = lambda miss, part="fin_left": {"miss": miss, "part": part, "point": [600.0, 160.0, -40.0]}

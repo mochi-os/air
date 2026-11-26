@@ -75,7 +75,7 @@ function split(line: string, separator: string): string[] {
   return parts
 }
 
-// unescape undoes acmi.ts text.
+// unescape undoes acmi.ts text and field.
 function unescape(value: string): string {
   return value.replace(/\\(.)/g, '$1')
 }
@@ -104,9 +104,11 @@ export function parse(text: string): Playback {
     }
     if (line.startsWith('0,')) {
       // Global properties: the header's, and any written between samples.
+      // Escaped as every other value is (acmi.ts field), so a title or a
+      // match's name shows its own backslash, not a doubled one.
       const at = line.indexOf('=')
       if (at > 2 && !times.length)
-        information[line.slice(2, at)] = line.slice(at + 1)
+        information[line.slice(2, at)] = unescape(line.slice(at + 1))
       continue
     }
     // A removal line says the object is gone; the recorder writes every live

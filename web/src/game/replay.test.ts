@@ -2,8 +2,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { identity } from './replay'
+import { identity, publish, recording, settle } from './replay'
 
 // The recording has to carry the key of the history row it belongs to, and the
 // two kinds of row are keyed differently (#118). Getting this wrong is silent:
@@ -47,5 +49,28 @@ describe('identity', () => {
       session: 'local-42',
       started: 42,
     })
+  })
+})
+
+// What outlives the engine is the recording, not the engine: the function the
+// engine publishes is one of its own and reaches everything it made, so when
+// it stops it settles the recording as a value in its place.
+describe('a recording after its engine stops', () => {
+  it('is the value settled, and the function published is let go', () => {
+    let calls = 0
+    publish(() => {
+      calls++
+      return { text: 'live', session: 'local-1', started: 1, kind: 'flight' }
+    })
+    expect(recording()?.text).toBe('live')
+    settle({ text: 'final', session: 'local-1', started: 1, kind: 'flight' })
+    expect(recording()?.text).toBe('final')
+    expect(calls).toBe(1)
+  })
+  it('is settled by the engine as it stops, before anything else is torn down', () => {
+    const engine = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+    const at = engine.indexOf('  function stop() {')
+    const stop = engine.slice(at, engine.indexOf('\n  }\n', at))
+    expect(stop).toMatch(/exit_match\(\)[^\n]*\n\s*if\(!playback\) settle_recording\(recording_file\(\)\)/)
   })
 })

@@ -99,6 +99,24 @@ describe('aging', () => {
 // missile warner and the AIM-120's motor is reduced-smoke, so the launch
 // itself is silent — the receiver learns of the shot when the round's OWN
 // radar wakes and starts painting.
+// The engine's frame follows the jet and re-anchors only 4 km out, so the jet
+// is rarely at the origin: each voice's bearing must be read from where he is.
+describe('bearings away from the frame origin', () => {
+  const far = { x: 1500, z: 3000 } // the jet 3 km south and 1.5 km east of the anchor
+  it("draws an active seeker where it is, not mirrored through the anchor", () => {
+    const rwr = new Rwr()
+    rwr.step(1 / 60, far, [], steady, [{ id: 'm1', x: far.x, z: far.z - 2000 }]) // 2 km due north of him
+    expect(rwr.contacts[0].bearing).toBeCloseTo(0, 6)
+    rwr.step(1 / 60, far, [], steady, [{ id: 'm1', x: far.x + 2000, z: far.z }]) // then due east
+    expect(rwr.contacts[0].bearing).toBeCloseTo(Math.PI / 2, 6)
+  })
+  it("draws an emitter where it is", () => {
+    const rwr = new Rwr()
+    rwr.step(1 / 60, far, [{ ...facing, locked: true, mode: 2, x: far.x, z: far.z - 12 * NM }], steady)
+    expect(rwr.contacts[0].bearing).toBeCloseTo(0, 6)
+  })
+})
+
 describe('missile warning', () => {
   it('an active seeker raises MISSILE, distinct from a lock', () => {
     const rwr = new Rwr()

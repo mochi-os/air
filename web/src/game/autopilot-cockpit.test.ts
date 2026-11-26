@@ -17,7 +17,7 @@ import * as datalink from './datalink'
 // stand-ins for the jet.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -35,7 +35,7 @@ const world = `const D2R=Math.PI/180, HOOK_AFT=9, HOOK_DROP=4; let MULTIPLAYER=f
   const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); nav.gps.error={ x:0, z:0 }; nav.ins.error={ x:0, z:0 }; nav.steer="tcn";
   const nav_sense=()=>({ dt:0, x:ownship.pos.x, z:ownship.pos.z, east:0, south:-70, tas:70, heading:60*D2R, pitch:0, bank:0, airborne:true, brake:false, power:true, radar:false, deck:false, tacan:null });`
 const state = /\nconst hold=autopilot\.fresh\(\), link=datalink\.fresh\(\); let coupled="";\nlet hold_was=false, onspeed_flag=false, onspeed_owed=false;[^\n]*\n/.exec(source)?.[0] ?? ''
-const functions = ['link_picture', 'couple_now', 'autopilot_sense', 'acl_select', 'autopilot_frame', 'link_draw', 'hud_link', 'hud_coupled'].map(lift).join('\n')
+const functions = ['link_picture', 'couple_now', 'autopilot_sense', 'acl_select', 'panel_seen', 'panel_take', 'panel_moved', 'autopilot_frame', 'link_draw', 'hud_link', 'hud_coupled'].map(lift).join('\n')
 function cockpit<T>(body: string): T {
   if (!state) throw new Error('the autopilot state not found in engine.ts')
   return new Function('navigate', 'autopilot', 'datalink', `${world} ${state} ${functions}
@@ -175,9 +175,9 @@ describe('the frame', () => {
     expect(cockpit(`${engaged} ownship.aoa=6.5; hotas.paddle=true; autopilot_frame(1/60); return onspeed_flag;`)).toBe(true)
   })
   it('gives the reset to the core for the frame it steps, and to the server until a datagram has carried it', () => {
-    expect(source).toMatch(/reset:reset_flag, onspeed:onspeed_flag, reverted:!mc\(\)\.one, held:wing_kept\(\), flap:flap_select,\n\t\tlaunch:launch_flag,/)
+    expect(source).toMatch(/reset:reset_flag, onspeed:onspeed_flag, reverted:!MULTIPLAYER&&!mc\(\)\.one, held:wing_kept\(\), flap:flap_select,\n\t\tlaunch:launch_flag,/)
     expect(source).toMatch(/if\(flight_steps\.value>0\)\{ launch_flag=false; reset_flag=false; onspeed_flag=false; \}/)
-    expect(source).toMatch(/reset:reset_owed, onspeed:onspeed_owed, reverted:c\?c\.reverted:!mc\(\)\.one, held:c\?c\.held:wing_kept\(\), flap:flap_select,/)
+    expect(source).toMatch(/reset:reset_owed, onspeed:onspeed_owed, reverted:c\?c\.reverted:false, held:c\?c\.held:wing_kept\(\), flap:flap_select,/)
     expect(source).toMatch(/if\(sequence>0\)\{ flare_flag=false; [^}]*extinguish_flag=false; onspeed_owed=false; reset_owed=false; \}/)
   })
   it('packs the reset, the reversion and the held fuel as the core reads them: flags 32768 and 16384, and word 15', () => {
@@ -227,6 +227,11 @@ describe('the frame', () => {
     expect(cockpit('autopilot_frame(1/60); return [ddi_dirty, ufc_dirty];')).toEqual([false, false])
     expect(cockpit('autopilot.engage(hold,autopilot_sense(null)); autopilot_frame(1/60); ddi_dirty=ufc_dirty=false; autopilot_frame(1/60); const steady=ddi_dirty; hotas.paddle=true; autopilot_frame(1/60); return [steady, ddi_dirty, ufc_dirty];')).toEqual([false, true, true])
     expect(cockpit('acl_select(); link.test=0; ddi_dirty=ufc_dirty=false; autopilot_frame(1/60); return [ddi_dirty, ufc_dirty];')).toEqual([true, true])
+  })
+  it('redraws when a step lets one mode go and the autopilot stays engaged', () => {
+    const s = cockpit<unknown[]>(`${sequence} nav.current=4; const now=couple_now(), sense=autopilot_sense(now); autopilot.select(hold,"coupled",sense); coupled=now.label; autopilot_frame(1/60);
+      nav.auto=false; ddi_dirty=ufc_dirty=false; autopilot_frame(1/60); return [hold.engaged, hold.modes.coupled, ddi_dirty, ufc_dirty];`)
+    expect(s).toEqual([true, false, true, true])
   })
   it('makes the picture of the jet against the ship once a step, for the data link, CPL and the autopilot alike', () => {
     // a world step runs it sixteen times a frame at 64x, and the picture is the dearest thing it reads
@@ -343,7 +348,7 @@ describe('the Link 4 display', () => {
 describe('where the rest of the cockpit meets them', () => {
   it('raises AUTO PILOT among the cautions and the autopilot\'s advisories on the ADV line (2.9.1)', () => {
     expect(source).toMatch(/\n\tfor\(const caption of autopilot\.cautions\(hold,sim_time\)\) captions\.push\(caption\);/)
-    expect(source).toMatch(/\n\tfor\(const a of autopilot\.advisories\(hold\)\) list\.push\(\[a,a\]\);/)
+    expect(source).toMatch(/\n\tfor\(const a of autopilot\.advisories\(hold\)\) add\(a,a\);/)
   })
   it('starts a mission with the autopilot off, ACL unboxed, and the data link and beacon on', () => {
     expect(source).toMatch(/\n\tObject\.assign\(hold,autopilot\.fresh\(\)\); Object\.assign\(link,datalink\.fresh\(\)\); coupled="";/)

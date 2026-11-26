@@ -14,7 +14,7 @@ import { describe, expect, it } from 'vitest'
 // scope), so the pieces are lifted as text and run against stand-ins.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -288,8 +288,8 @@ describe('the seat and the canopy\'s emergency controls', () => {
   })
 
   it('refuses the ejection handle at SAFE, and fires the canopy away first when it pulls', () => {
-    expect(source).toMatch(/if\(ch===key_of\("eject"\) && !dev_parked && crash_t<=0 && !ejected && !seat_armed\) notice\(translate\("SEAT SAFE"\)\);/)
-    expect(source).toMatch(/else if\(ch===key_of\("eject"\) && !dev_parked && crash_t<=0 && !ejected\)\{\n\t\t\tcanopy_gone=true;/)
+    expect(source).toMatch(/if\(ch===key_of\("eject"\) && !dev_parked && !lost\(\) && !ejected && !seat_armed\) notice\(translate\("SEAT SAFE"\)\);/)
+    expect(source).toMatch(/else if\(ch===key_of\("eject"\) && !dev_parked && !lost\(\) && !ejected\)\{\n\t\t\tcanopy_gone=true;/)
   })
 
   it('hides every canopy the model carries once it has gone, leaving the actuator arm, and puts it back for a fresh jet', () => {
@@ -320,5 +320,21 @@ describe('the weapon select switch', () => {
 
   it('is what the stick\'s hat pair selects, once on the press edge', () => {
     expect(source).toMatch(/const want=weapon_hat\(hx,hy\);\n\t+if\(want&&want!==pad_weapon\) select_master\(want\);/)
+  })
+})
+
+// The stick's bindings are asked for several times a frame; they are resolved
+// again only when the stick or its saved map changes.
+describe("the stick's bindings", () => {
+  it('are resolved once for a stick and its saved map, and again when either changes', () => {
+    const r = new Function(`let made=0; const cfg={ sticks:{} };
+      const deviceDefaults=()=>{ made++; return { axes:{ roll:"a0", pitch:"a1" }, buttons:{ fire:"b0" } }; };
+      ${[lift('UNSET'), lift('pad_resolved'), lift('pad_bindings')].join('\n')}
+      const pad={ id:"stick", mapping:"" }, other={ id:"pedals", mapping:"standard" };
+      const a=pad_bindings(pad), b=pad_bindings(pad), once=made;
+      cfg.sticks={ stick:{ axes:{ roll:"a3" }, buttons:{} } }; const c=pad_bindings(pad), saved=made;
+      const d=pad_bindings(other);
+      return { same:a===b, once, saved, roll:c.axes.roll, pitch:c.axes.pitch, fire:c.buttons.fire, other:made, apart:d!==c };`)() as Record<string, unknown>
+    expect(r).toEqual({ same: true, once: 1, saved: 2, roll: 'a3', pitch: 'a1', fire: 'b0', other: 3, apart: true })
   })
 })

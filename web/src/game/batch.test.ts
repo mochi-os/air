@@ -88,6 +88,6 @@ describe('the input batch', () => {
   })
   it('is what the session sends', () => {
     const net = readFileSync(fileURLToPath(new URL('./net.ts', import.meta.url)), 'utf8')
-    expect(net).toMatch(/\n {4}queue\(this\.batch, sample, this\.sequence\)\n {4}try \{\n {6}this\.datagrams\?\.write\(cbor_encode\(\{ kind: 'input', inputs: this\.batch \}\)\)/)
+    expect(net).toMatch(/\n {4}queue\(this\.batch, sample, this\.sequence\)\n {4}this\.send\(this\.datagrams, cbor_encode\(\{ kind: 'input', inputs: this\.batch \}\)\)/)
   })
 })

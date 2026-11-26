@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} var redan upptagen, och den kontrollen är nu obunden."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} låg på {1}, som nu är obundna."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} låg på {1}, som nu är obunden."
@@ -165,6 +171,10 @@ msgstr "{entityLabel}-namn"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} till {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} för att stänga"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO BRÄNSLE"
 msgid "Block {name}"
 msgstr "Blockera {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Blockerad av"
 msgid "Blocked navigation to untrusted link"
 msgstr "Blockerade navigering till opålitlig länk"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Blockerar"
@@ -672,6 +684,10 @@ msgstr "Blockerar"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Blå"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLÅ {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kategori uppdaterad"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Centrumlinje"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Ändrade"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "Ändrade {field}"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Klass ändrad"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Identifiera"
 msgid "Detect from web browser"
 msgstr "Identifiera från webbläsare"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Utvecklarläge"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Annan spelvärd"
@@ -1628,6 +1653,7 @@ msgstr "BORTGÅENDE"
 msgid "Drone"
 msgstr "Drönare"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Duplicerar"
@@ -1739,6 +1765,11 @@ msgstr "Tom pylon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Aktivera ljud"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Avslutad"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Bränsletank"
 msgid "full afterburner"
 msgstr "full efterbrännkammare"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Endast kanoner"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Släpp spaken; tryck enter för att salutera och skjutas iväg"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Släpp spaken; tryck {key} för att salutera och skjutas iväg"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Lamptest"
 msgid "Link"
 msgstr "Länk"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Länkar"
@@ -2653,6 +2681,10 @@ msgstr "Läser in..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Beväpning"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "LÅSNING KRÄVS"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Sänk radarantennen"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M för att stänga"
+msgid "LWD"
+msgstr "VVN"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Rör…"
 msgid "Moved"
 msgstr "Flyttade"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "Flyttade {field}"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Flyttar till {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Flerspelarläge kräver WebTransport, som den här webbläsaren inte stöder ännu."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Ömsesidig nedskjutning"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "ÖMSESIDIG NEDSKJUTNING"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Namn krävs"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Namnet får vara högst 1000 tecken"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "NN"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Nästa år"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Natt"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Nej"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Inga personer hittades"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Inga platser hittades"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "INGEN RADARLÅSNING"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Aviseringar: {0}"
 msgid "Novice"
 msgstr "Nybörjare"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "NU"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Nummer"
@@ -3221,7 +3273,9 @@ msgstr "På banan: halva klaffar, dra upp till militär effekt, bromsarna släpp
 msgid "Oops! Page Not Found!"
 msgstr "Hoppsan! Sidan hittades inte!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Öppen"
 
@@ -3272,6 +3326,11 @@ msgstr "Alternativ"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Övrigt"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Annan"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3453,13 +3512,13 @@ msgstr "Inlägg"
 msgid "Posts and comments"
 msgstr "Inlägg och kommentarer"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "TRYCK {key} FÖR ATT LYFTA"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Tryck på en tangent…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "TRYCK ENTER FÖR ATT LYFTA"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Inspelningen har sparats"
 msgid "Red"
 msgstr "Röd"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "RÖD {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Röda bottar"
@@ -3631,6 +3694,7 @@ msgstr "Uppdatera"
 msgid "REJOINING"
 msgstr "ÅTERGÅR I FORMATION"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Relaterar"
@@ -3883,6 +3947,10 @@ msgstr "FULL KRAFT"
 msgid "Runway {end}"
 msgstr "Bana {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "HVN"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Lördag"
@@ -4062,6 +4130,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Serverfel"
 
@@ -4074,6 +4143,10 @@ msgstr "Serverregler"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "servern kör v{0}, du har v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Servern stängdes av"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Sida vid sida"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "FÄLL UT VINGAR"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Det begärda innehållet kunde inte hittas."
 msgid "The server returned a web page instead of data."
 msgstr "Servern returnerade en webbsida i stället för data."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Världsservern svarade med fel {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Världsservern svarade inte i tid"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Världsservern har inte plats för fler matcher"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Världsservern skickade ett svar som inte gick att läsa"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Den här appen får inte använda din nyckel. Tillåt det i Inställningar under Behörigheter."
@@ -4482,6 +4575,10 @@ msgstr "Tid"
 msgid "Time of day"
 msgstr "Tid på dygnet"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Tiden gick ut"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Titel"
@@ -4512,13 +4609,25 @@ msgstr "Växla vyalternativ"
 msgid "Toggle watched filter"
 msgstr "Växla bevakat-filter"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "För många matcher erbjuds från din adress"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "För många förfrågningar"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "För många förfrågningar till världsservern"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Topp"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Toppnivå"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Reser"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "USA"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "VINGAR LÅSTA"
 msgid "WINS"
 msgstr "VINNER"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Återkallad"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Världsserver"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Världsservern kan inte nås"
@@ -4893,6 +5016,10 @@ msgstr "Girning åt höger"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "År"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Ja"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

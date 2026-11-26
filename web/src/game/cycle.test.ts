@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 import fa18c_points from '../assets/fa18c.json'
-import { engine, fa18c, flight, nozzle, STILL, stroke } from './cycle'
+import { engine, fa18c, flight, nozzle, stroke } from './cycle'
 
 const DEGREE = Math.PI / 180
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
@@ -159,6 +159,10 @@ describe('the viewer', () => {
   })
 })
 
+// The F/A-18C's drives that move nothing of their own: the loadout shows and
+// hides the stores (the viewer's Stores button), so the cycle leaves them alone.
+const STILL = new Set(['stores'])
+
 describe('the F/A-18C', () => {
   const joints = (fa18c_points as unknown as { joints: Record<string, { drive?: string; keys?: number[][] }> }).joints
   it('moves every drive its joints read but the loadout', () => {
@@ -169,7 +173,7 @@ describe('the F/A-18C', () => {
     }
   })
   it("keeps each mechanism within its joints' travel and takes it from end to end", () => {
-    for (const drive of ['gear.doors', 'gear.nose', 'gear.main', 'speedbrake', 'canopy', 'probe', 'fold', 'hook', 'scoop', 'nozzle', 'load']) {
+    for (const drive of ['gear.doors', 'gear.nose', 'gear.main', 'speedbrake', 'canopy', 'probe', 'fold', 'hook', 'scoop', 'cabin', 'nozzle', 'load']) {
       const keys = Object.values(joints).find((j) => j.drive === drive)!.keys!
       const low = keys[0][0]
       const high = keys[keys.length - 1][0]
@@ -194,7 +198,7 @@ describe('the F/A-18C', () => {
     const { gear } = (fa18c_points as unknown as { motion: { gear: Record<'down', Record<'doors' | 'nose' | 'main', number[]>> } }).motion
     for (const m of ['doors', 'nose', 'main'] as const) expect(read(`gear.${m}`, gear.down[m][1] * 5 + 0.05), m).toBeCloseTo(1, 9)
     expect(read('speedbrake', 2.5)).toBeCloseTo(1, 9)
-    for (const drive of ['probe', 'fold', 'hook', 'scoop']) {
+    for (const drive of ['probe', 'fold', 'hook', 'scoop', 'cabin']) {
       expect(read(drive, seconds[drive] / 2), drive).toBeCloseTo(0.5, 9)
       expect(read(drive, seconds[drive]), drive).toBeCloseTo(1, 9)
     }
@@ -225,15 +229,28 @@ describe('the F/A-18C', () => {
   it("slews the nosewheel's steering as the engine does", () => {
     expect(source).toContain('st.steer=(st.steer??0)+THREE.MathUtils.clamp(target-(st.steer??0),-0.4*dt,0.4*dt);')
   })
-  it('swings the hook through its travel each way at the game\'s rate', () => {
-    const { swing, seconds } = (fa18c_points as unknown as { motion: { swing: number; seconds: { swing: number } } }).motion
-    expect(read('swing', seconds.swing)).toBeCloseTo(swing * DEGREE, 9)
-    expect(read('swing', 3 * seconds.swing)).toBeCloseTo(-swing * DEGREE, 9)
+  it('swings the hook through its travel each way at the game\'s rate, once it is down', () => {
+    const { swing, seconds } = (fa18c_points as unknown as { motion: { swing: number; seconds: { swing: number; hook: number } } }).motion
+    expect(read('swing', seconds.hook + seconds.swing)).toBeCloseTo(swing * DEGREE, 9)
+    expect(read('swing', seconds.hook + 3 * seconds.swing)).toBeCloseTo(-swing * DEGREE, 9)
     // the rate is the points file's, whatever it holds
-    const slower = structuredClone(fa18c_points) as unknown as { motion: { seconds: { swing: number } } }
+    const slower = structuredClone(fa18c_points) as unknown as { motion: { seconds: { swing: number; hook: number } } }
     slower.motion.seconds.swing = 2
     const motion = fa18c(slower as unknown as Parameters<typeof fa18c>[0])
-    motion.step(2)
+    motion.step(seconds.hook + 2)
     expect(motion.value('swing', '')).toBeCloseTo(swing * DEGREE, 9)
+  })
+  it('swings the hook only while it is down: stowed or moving, a swing takes its point through the nozzles', () => {
+    const { seconds } = (fa18c_points as unknown as { motion: { seconds: { swing: number; hook: number } } }).motion
+    const motion = fa18c()
+    let swung = 0
+    for (let i = 0; i < Math.round((2 * seconds.hook + 4 * seconds.swing) * 2 * 60); i++) {
+      motion.step(1 / 60)
+      const hook = motion.value('hook', '')!
+      const swing = motion.value('swing', '')!
+      if (hook < 1) expect(swing, `swing at hook ${hook}`).toBe(0)
+      else swung = Math.max(swung, Math.abs(swing))
+    }
+    expect(swung).toBeGreaterThan(0)
   })
 })

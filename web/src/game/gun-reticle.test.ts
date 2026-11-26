@@ -92,6 +92,7 @@ function readouts(world: { master?: string; boxed?: boolean; declutter?: number;
   if (!data) throw new Error('target ranging data block not found in engine.ts')
   const run = new Function('w', `const text=[]; const hctx={ fillStyle:'', font:'', textAlign:'', fillText(t,x,y){ text.push([t,x,y]); } };
     const master=w.master??'gun', aa=master!=='nav', boxed=w.boxed===false?null:{}, rej=w.declutter||0, limited=false, lx=584, wly=140, ppdv=20, GR='g', rng=w.rng, vc=w.vc;
+    ${/\nfunction signed\(value,step\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''}
     ${data}
     return text;`) as (w: object) => [string, number, number][]
   return run(world)
@@ -251,7 +252,7 @@ describe('the breakaway X', () => {
     const line = /\n\tif\(master==="120c"&&edge&&attack_cue\(\)\.shoot\)\{[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(line).not.toBe('')
     const shoot = (lit: boolean, room = true) => new Function('lit', 'room', `const text=[]; let hud_shoot=false; const master='120c', GR='g', hs=1, glass=null, edge={ at:[300,200], limited:false };
-      const attack_cue=()=>({ shoot:lit, brk:false }), hud_field=()=>null, hud_room=()=>room?1:-1;
+      const attack_cue=()=>({ shoot:lit, brk:false }), field=null, hud_room=()=>room?1:-1;
       const hctx={ fillStyle:'', font:'', textAlign:'', fillText(t,x,y){ text.push([t,x,y,this.font,this.textAlign]); } }; ${line} return [text,hud_shoot];`)(lit, room) as [unknown[][], boolean]
     expect(shoot(false)).toEqual([[], false]) // inside Rmin, in the hold or closing to the breakaway: attack_cue holds it off
     expect(shoot(true)).toEqual([[['SHOOT', 300, 174, "18.0px 'Hornet Display', monospace", 'center']], true])

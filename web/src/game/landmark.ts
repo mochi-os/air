@@ -75,6 +75,10 @@ self.onmessage = (event: MessageEvent) => {
         z: matrix[14],
         at: data.at,
       })
+    } catch (error: unknown) {
+      // A failed inference ends the session: nothing else would answer this
+      // frame, and the main side sends the next only once one is answered.
+      self.postMessage({ kind: 'dead', message: String(error) })
     } finally {
       try {
         bitmap.close()

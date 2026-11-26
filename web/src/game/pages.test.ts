@@ -225,14 +225,16 @@ function repeat(o: Repeat = {}): Shown {
   const climb = o.climb ?? 0, speed = 150
   const vel = fwd.clone().multiplyScalar(speed).add(new THREE.Vector3(0, climb, 0))
   const ownship = { fwd, right, up, speed, cas: speed, velx: vel.x, vely: vel.y, velz: vel.z, vel_dir: vel.clone().normalize(), aoa: 0, gload: 1, gear: o.gear ?? 1, grounded: false, pos: { x: 0, y: 3000, z: 0 }, rounds: 578, msl: 2, amraam: 4 }
-  const names = ['ddi_hud', 'hud_landing', 'hud_pitch', 'hud_symbols', 'hud_tape', 'hud_cluster', 'hud_steer', 'closure', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
+  const names = ['ddi_place', 'ddi_hud', 'hud_limit', 'hud_landing', 'hud_pitch', 'hud_symbols', 'hud_tape', 'signed', 'hud_cluster', 'hud_steer', 'dir_at', 'gpws_arrow', 'breakaway_shown', 'breakaway']
+  // the scratch and the fixed field ddi_hud and hud_pitch keep beside them
+  const scratch = ['DDI_PPD', 'DDI_BORE', '_ddi_path', '_ddi_fpm', '_pitch_dir'].map((n) => new RegExp(`\\n(?:const|let) ${n}=[^\\n]*\\n`).exec(source)![0]).join('')
   return new Function('THREE', 'ownship', 'navigate', `const mc=()=>({ one:true, two:true }), fed=()=>true, fpas={ climb:false }; const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; const D2R=Math.PI/180, HH=900, reference=${JSON.stringify(o.reference ?? 'auto')}, world_up=new THREE.Vector3(0,1,0), master=${JSON.stringify(o.master ?? 'nav')}, caged=false, declutter=${o.declutter ?? 0};
     const law_active=false, hud_cue="", sim_time=0, glance=0, carrier_ols=false, CARRIER={ x:0, z:0 }, SHIP={ ident:"NIM" }, atc_on=false, atc_flash=-99, steering=-1, amraam_visual=false, peak_g=1, last_out=null, STATE={ mach:0 };
     let baro_armed=false, baro_shown=-99, baro_flash=false, baro_set=2992, baro_last=2992;
     const baro_error=()=>0, altitude_reading=()=>(${o.reading ?? '{ feet:9843, radar:false, fallback:false }'}), approach_deviation=()=>null, hud_target=()=>null, wrap_distance=()=>0, wrap_axis=(v)=>v;
     const cheat=()=>false, translate=(s)=>s, timer_text=()=>"", tacan=()=>({ slant:0 }), hud_launch_zone=()=>{};
     ${navdefs} ${o.nav ?? ''}
-    ${names.map((n) => lift(n)).join(' ')}
+    ${scratch} ${names.map((n) => lift(n)).join(' ')}
     const text=[], rects=[], lines=[], arcs=[], rotations=[]; let m=[1,0,0,1,0,0], stack=[], at=[0,0];
     const apply=(px,py)=>[m[0]*px+m[2]*py+m[4], m[1]*px+m[3]*py+m[5]];
     const mul=(n)=>{ m=[m[0]*n[0]+m[2]*n[1], m[1]*n[0]+m[3]*n[1], m[0]*n[2]+m[2]*n[3], m[1]*n[2]+m[3]*n[3], m[0]*n[4]+m[2]*n[5]+m[4], m[1]*n[4]+m[3]*n[5]+m[5]]; };
@@ -314,7 +316,7 @@ describe('the HUD format on a DDI', () => {
 
   // The AMRAAM's NIRD (the AVM AIM-120 guide): its ASE circle on the waterline, the dot off the airframe's nose a
   // degree a degree, Rmin at 2:30, Rmax at 6:00, Rne between, Raero past Rmax, and his range as an arc from 12.
-  const amraam = (lead: string) => new Function('THREE', `const D2R=Math.PI/180, GR='g', sim_time=0, missiles=[], wrap_axis=(v)=>v, shoot_cue=()=>null, track_range=()=>30000;
+  const amraam = (lead: string, flying = '[]') => new Function('THREE', `const D2R=Math.PI/180, GR='g', sim_time=0, missiles=${flying}, wrap_axis=(v)=>v, shoot_cue=()=>null, track_range=()=>30000; ${/\nconst _zone_to=[^\n]*\n/.exec(source)?.[0] ?? ''}
       const ownship={ pos:{x:0,y:0,z:0}, amraam:4, fwd:new THREE.Vector3(1,0,0), right:new THREE.Vector3(0,0,1), up:new THREE.Vector3(0,1,0) };   // an airframe heading east
       const launch_zone=()=>({ aero:60000, max:40000, escape:20000, minimum:2000, range:30000, lead:${lead} }); let hud_cue="", hud_shoot=false;
       const arcs=[], tips=[], text=[]; let first=null;
@@ -322,6 +324,12 @@ describe('the HUD format on a DDI', () => {
       ${lift('nird_clock')} ${lift('nird')} ${lift('hud_launch_zone')} hud_launch_zone(hctx,GR,0,0,20,0); return { arcs, tips, text };`)(THREE) as { arcs: number[][]; tips: number[][]; text: string[] }
   const right = '{ x:1000*Math.cos(2*D2R), y:0, z:1000*Math.sin(2*D2R) }' // 2° right of the nose
 
+  it('lists the first four AMRAAMs in flight, A-time to the seeker\'s wake and T-time after it, and nothing else', () => {
+    const round = (rangeToGo: number, phase = 0) => `{ active:true, kind:"120c", phase:${phase}, rangeToGo:${rangeToGo}, vx:1000, vy:0, vz:0, stale:0 }`
+    const flying = `[${round(28000)}, { active:true, kind:"9m", phase:0, rangeToGo:1000, vx:1000, vy:0, vz:0 }, { active:false, kind:"120c", phase:0, rangeToGo:9000, vx:1000, vy:0, vz:0 }, ${round(9000, 1)}, ${round(5000, 2)}, ${round(30000)}, ${round(40000)}]`
+    expect(amraam('null', flying).text).toEqual(['A 10', 'T 9 HUSKY', 'T 5 PITBULL', 'A 12'])
+    expect(amraam('null').text).toEqual([])
+  })
   it('takes the AMRAAM steering dot off the airframe\'s nose, its circle on the waterline', () => {
     const d = amraam(right)
     expect(d.arcs[0]).toEqual([0, -80, 64, 0, 2 * Math.PI]) // 4° up the layout, 3.2° across
@@ -341,8 +349,8 @@ describe('the HUD format on a DDI', () => {
 
   it('is drawn by the HUD\'s own code', () => {
     const body = lift('ddi_hud')
-    for (const call of ['hud_pitch(x,GREEN,place,', 'hud_symbols(x,GREEN,bore,', 'hud_cluster(x,GREEN,0,0,HH/45,true,null,pa,']) expect(body).toContain(call)
-    expect(source).toMatch(/\n\thud_cluster\(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,ranged\?rng:null,/)
+    for (const call of ['hud_pitch(x,GREEN,ddi_place,', 'hud_symbols(x,GREEN,bore,', 'hud_cluster(x,GREEN,0,0,HH/45,true,null,pa,']) expect(body).toContain(call)
+    expect(source).toMatch(/\n\thud_cluster\(hctx,GR,cx,cy,ppdv,glass,screen,pa,boxed,vc,ranged\?rng:null\);/)
     expect(source).toMatch(/const horizon=hud_pitch\(hctx,GR,proj_dir,ladFwd,rightH,pa,hs\);/)
     expect(source).toMatch(/\n\thud_symbols\(hctx,GR,bore,fpm,fpm_limited,ghost,ghost_limited,pa,ppd,hs\);/)
   })
@@ -528,12 +536,12 @@ describe('the fuel low BIT', () => {
 })
 
 // The FCS status display against figure 2-16 (C/D) and 2.8.4.7. The core's words:
-// STAB 0/1, AIL 2/3, RUD 4, LEF 5, the flap readout 6, TEF 7/8, jams from 10 in the
-// harness's layout.
+// STAB 0/1, AIL 2/3, RUD 4, LEF 5, the flap readout 6, TEF 7/8, the rudders' toe-in 9,
+// jams from 10 in the harness's layout.
 function fcspage(words: number[], o: { gross?: number; fuel?: number; aoa?: number; jams?: number[]; reference?: string } = {}): Drawn {
   const out = [...words.map((w) => w * Math.PI / 180), 0, 0, 0]
   for (const j of o.jams ?? []) out[10 + j] = 0.9
-  return page('ddi_fcs', `const STATE={ stabilator:0, aileron:2, rudder:4, slat:5, flap:6, trailing:7, jam:10 }, last_out=${JSON.stringify(out)};
+  return page('ddi_fcs', `const STATE={ stabilator:0, aileron:2, rudder:4, slat:5, flap:6, trailing:7, toe:9, jam:10 }, last_out=${JSON.stringify(out)}; ${lift('rudder_angle')}
     const ownship={ aoa:${o.aoa ?? 4.2}, gauges:{ fuelRaw:${o.fuel ?? 9000}, externalRaw:0 } }, gross_weight=()=>${o.gross ?? 30000}, reference=${JSON.stringify(o.reference ?? 'auto')};`)
 }
 describe('the FCS status display', () => {
@@ -571,6 +579,19 @@ describe('the FCS status display', () => {
     expect(line(d, [176, 50, 176, 62])).toBe(true) // LEF leading edge down: down
     expect(line(d, [182, 152, 170, 152])).toBe(true) // RUD trailing edge left: left
     expect(line(fcspage([0, 0, 0, 0, -5, 0, 0]), [170, 152, 182, 152])).toBe(true) // and right
+  })
+
+  // The core flies the rudders' toe-in on the wheels in the takeoff and landing modes: the airframe is drawn
+  // with each rudder's own position (exterior_value), and the page reads the same, through the same function.
+  it('reads each rudder\'s own position with the toe-in, held to the throw, its arrow inboard', () => {
+    const rud = (rudder: number, toe: number) => { const d = fcspage([0, 0, 0, 0, rudder, 0, 0, 0, 0, toe]); return { text: [190, 314].map((x) => d.text.find((t) => t[1] === x && t[2] === 152)?.[0]), d } }
+    const toed = rud(0, 30)
+    expect(toed.text).toEqual(['30', '30'])
+    expect(line(toed.d, [170, 152, 182, 152])).toBe(true) // the left rudder's trailing edge right: inboard
+    expect(line(toed.d, [306, 152, 294, 152])).toBe(true) // the right rudder's trailing edge left: inboard
+    expect(rud(10, 30).text).toEqual(['20', '30']) // 10 left: -20 on the left, 40 held to 30 on the right
+    expect(rud(5, 0).text).toEqual(['5', '5'])
+    expect(source).toMatch(/case "rudder": return rudder_angle\(s\?s\.rudder:0,toe,name==="rudder_left"\);/) // the airframe from the same function
   })
 
   it('puts a bold X through the number of a surface the FCC no longer commands', () => {
@@ -1327,6 +1348,12 @@ describe('the HSI\'s DATA sublevels', () => {
     expect(boxed(d, 336)).toBe(true) // NOSEC GPS boxed
     expect(texts(data({ tab: 'ac', nav: 'nav.gps.search=99;' }))).not.toContain('NOSEC GPS') // secure and hearing nothing: the option is gone
   })
+  it('carries the variation\'s minutes into its degrees: 5°59.7\' reads 6°00\', on the A/C and TCN sublevels alike', () => {
+    expect(texts(data({ tab: 'ac', nav: 'nav.variation=5.995*D2R;' }))).toContain("MVAR E 6°00'")
+    expect(texts(data({ tab: 'ac', nav: 'nav.variation=-5.995*D2R;' }))).toContain("MVAR W 6°00'")
+    expect(texts(data({ tab: 'ac', nav: 'nav.variation=5.99*D2R;' }))).toContain("MVAR E 5°59'")
+    expect(texts(data({ tab: 'tcn', nav: 'nav.stations=[{ channel:74, band:"X", x:0, z:-18520, elevation:20, name:"NIM", variation:12.9999*D2R }];' }))).toContain("MVAR E 13°00'")
+  })
   it('boxes the altitude warning the UFC is setting', () => {
     expect(data({ tab: 'ac', func: 'alt', kind: 'radar' }).rects).toContainEqual([147, 428, 58, 24])
     expect(data({ tab: 'ac', func: 'alt', kind: 'baro' }).rects).toContainEqual([72, 428, 48, 24])
@@ -1563,6 +1590,25 @@ function ufcpress(buttons: string[], start: Partial<Ufc> = {}, index = 200, soun
   return run(buttons, start, index, sounding, autopilot, flying, couple, communication, identification, mids) as Pressed
 }
 const blank = ' '.repeat(9)
+
+// The UFC redraws on the 120 ms tick it shares with the IFEI or on a press, and builds nothing between them: it
+// built its whole face, the live picture and a serialised copy every frame to redraw a 2 Hz flash.
+describe('the UFC\'s redraw', () => {
+  const update = (o: { dirty: boolean; stale: boolean; drawn?: string; face?: string }) => new Function('o', `let ufc_dirty=o.dirty, ufc_last=o.drawn??"", built=0, drawn=0;
+    const ownship={ group:{ userData:{ ufc:{ width:1, height:1, tex:{} } } } }, ufc={}, ufc_live=()=>({}), ufc_face=()=>{ built++; return { text:o.face??"" }; }, performance={ now:()=>0 };
+    ${/\nfunction ufc_update\(stale\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''} drawn++; } ufc_update(o.stale); return { built, drawn, dirty:ufc_dirty };`)(o) as { built: number; drawn: number; dirty: boolean }   // its first three lines, which decide; past them it draws
+  const shown = JSON.stringify({ text: 'TCN' })
+  it('builds nothing between ticks without a press', () => {
+    expect(update({ dirty: false, stale: false, drawn: shown, face: 'TCN' })).toEqual({ built: 0, drawn: 0, dirty: false })
+  })
+  it('skips the upload on a tick that finds the face as drawn, and draws one that has changed', () => {
+    expect(update({ dirty: false, stale: true, drawn: shown, face: 'TCN' })).toEqual({ built: 1, drawn: 0, dirty: false })
+    expect(update({ dirty: false, stale: true, drawn: shown, face: 'ILS' })).toEqual({ built: 1, drawn: 1, dirty: false })
+  })
+  it('draws on a press whatever the face, off the tick', () => {
+    expect(update({ dirty: true, stale: false, drawn: shown, face: 'TCN' })).toEqual({ built: 1, drawn: 1, dirty: false })
+  })
+})
 
 describe('the UFC windows', () => {
   it('power up clear', () => {
@@ -1903,7 +1949,7 @@ describe('the UFC pushbuttons', () => {
 describe('the ILS needles', () => {
   const needles = (ils: string, panel = '') => new Function('communication', `const THREE={ MathUtils:{ clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v)) } }, SHIP={ icls:11 }, radios={ ils:${ils} }, uhf={ panel:communication.panel(11) }; ${panel}
     const carrier_ols={ tdx:0, tdz:0, dy:0 }, ownship={ pos:{ x:0, y:100, z:1000 }, fwd:{ x:0, z:-1 }, gearTarget:0 }, ols_dev=()=>({ along:1000, dist:1000, lat:0, dev:0.4 });
-    ${lift('approach_deviation')} return approach_deviation();`)(communication)
+    ${lift('handle_down')} ${lift('approach_deviation')} return approach_deviation();`)(communication)
   it('live only with the ILS on and on the ship\'s channel', () => {
     expect(needles('{ on:true, channel:11 }')).toEqual({ az: 0, gs: 0.5 })
     expect(needles('{ on:false, channel:11 }')).toBe(null)
@@ -1931,7 +1977,7 @@ describe('the radar silence the game reads', () => {
       'if(RADAR.sil) rows.push([GR,"SIL"]);',
       'RADAR.sil=false; RADAR.width=0; RADAR.bars=2; RADAR.stt=null; RADAR.ls=null; RADAR.memory=0; RADAR.auto=false; RADAR.acm="bst";',
     ])
-    expect(source.match(/RADAR\.silent\(\)/g)?.length).toBe(11) // the tenth: whether the radar can give an inflight alignment its velocities; the eleventh: whether the ACM cone skips a jet in the clutter notch
+    expect(source.match(/RADAR\.silent\(\)/g)?.length).toBe(12) // the tenth: whether the radar can give an inflight alignment its velocities; the eleventh: whether the ACM cone skips a jet in the clutter notch; the twelfth: whether RWS acquires for an AMRAAM by itself
   })
 })
 

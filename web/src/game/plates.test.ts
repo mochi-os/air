@@ -32,7 +32,7 @@ function decl(name: string): string {
   return m[0]
 }
 const tables = ['BEZEL', 'CENTRE_LEVER', 'CENTRE_COLOURS', 'SELECTOR_DETENTS', 'LEGEND_DENSITY', 'PLATE_OPEN', 'PLATE_KNOBS', 'PLATE_TOGGLES', 'TIE_HOLD'].map(decl).join('')
-const helpers = ['legend', 'centre_lever', 'plate_values', 'plates_draw', 'build_plates', 'plate_knob', 'plate_toggle', 'plates_turn', 'plate_spots'].map(lift).join('')
+const helpers = ['legend', 'centre_lever', 'plate_values', 'plate_key', 'plates_draw', 'build_plates', 'plate_knob', 'plate_toggle', 'plates_turn', 'plate_spots'].map(lift).join('')
 const PLATES = plates.PLATES
 const EYE = [5.6777, 0.669, 0] // the design eye, in the jet's frame
 const D2R = Math.PI / 180

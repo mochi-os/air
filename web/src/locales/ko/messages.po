@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0}은(는) 이미 사용 중이어서 해당 조작의 할당이 해제되었습니다."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0}은(는) {1}에 있었으며 이제 모두 할당이 해제되었습니다."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0}은(는) {1}에 있었으며 이제 할당이 해제되었습니다."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} 이름"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from}~{to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} 닫기"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "빙고 연료"
 msgid "Block {name}"
 msgstr "{name}님 차단"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "차단됨"
 msgid "Blocked navigation to untrusted link"
 msgstr "신뢰할 수 없는 링크로의 이동이 차단되었어요"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "차단"
@@ -672,6 +684,10 @@ msgstr "차단"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "파랑"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "파랑 {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "카테고리가 업데이트되었어요"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "중심선"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "변경됨"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} 변경됨"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "클래스 변경됨"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "감지"
 msgid "Detect from web browser"
 msgstr "웹 브라우저에서 감지"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "개발자 모드"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "다른 게임 호스트"
@@ -1628,6 +1653,7 @@ msgstr "이탈"
 msgid "Drone"
 msgstr "드론"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "중복"
@@ -1739,6 +1765,11 @@ msgstr "빈 파일런"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "소리 켜기"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "종료됨"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "연료 탱크"
 msgid "full afterburner"
 msgstr "최대 애프터버너"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "난투"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "기관포만"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "조종간에서 손 떼기; enter를 눌러 경례 후 발진"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "조종간에서 손 떼기; {key}를 눌러 경례 후 발진"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "등화 테스트"
 msgid "Link"
 msgstr "링크"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "링크"
@@ -2653,6 +2681,10 @@ msgstr "로딩 중..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "무장 구성"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "록온 필요"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "레이더 안테나 내리기"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M 닫기"
+msgid "LWD"
+msgstr "좌익하"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "움직이세요…"
 msgid "Moved"
 msgstr "이동됨"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} 이동됨"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "{0}(으)로 이동 중"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "멀티플레이어에는 WebTransport가 필요하지만 이 브라우저는 아직 지원하지 않습니다."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "상호 격추"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "상호 격추"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "이름은 필수예요"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "이름은 1000자 이하여야 해요"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "기수하"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "다음 연도"
 msgctxt "daytime"
 msgid "Night"
 msgstr "밤"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "아니요"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "사람을 찾을 수 없어요"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "장소를 찾을 수 없어요"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "레이더 록온 없음"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "알림: {0}"
 msgid "Novice"
 msgstr "초보"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "기수상"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "숫자"
@@ -3221,7 +3273,9 @@ msgstr "활주로: 플랩 절반, 밀리터리 파워까지 출력, 브레이크
 msgid "Oops! Page Not Found!"
 msgstr "이런! 페이지를 찾을 수 없어요!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "오픈"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "옵션"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "기타"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "기타"
 
@@ -3453,13 +3512,13 @@ msgstr "게시물"
 msgid "Posts and comments"
 msgstr "게시물 및 댓글"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "{key}로 발진"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "키를 누르세요…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "ENTER로 발진"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "기록을 저장했습니다"
 msgid "Red"
 msgstr "빨강"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "빨강 {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "빨강 봇"
@@ -3631,6 +3694,7 @@ msgstr "새로고침"
 msgid "REJOINING"
 msgstr "편대 복귀 중"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "관련"
@@ -3883,6 +3947,10 @@ msgstr "최대 출력"
 msgid "Runway {end}"
 msgstr "활주로 {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "우익하"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "토요일"
@@ -4062,6 +4130,7 @@ msgstr "서버"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "서버 오류"
 
@@ -4074,6 +4143,10 @@ msgstr "서버 규칙"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "서버는 v{0}, 당신은 v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "서버 종료됨"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "분할"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "날개 펴기"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "수평미익 {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "요청한 콘텐츠를 찾을 수 없습니다."
 msgid "The server returned a web page instead of data."
 msgstr "서버가 데이터 대신 웹 페이지를 반환했습니다."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "월드 서버가 오류 {status}을(를) 반환했습니다"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "월드 서버가 제시간에 응답하지 않았습니다"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "월드 서버에 매치를 더 만들 공간이 없습니다"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "월드 서버가 읽을 수 없는 응답을 보냈습니다"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "이 앱은 패스키를 사용할 수 없습니다. 설정의 권한에서 허용하세요."
@@ -4482,6 +4575,10 @@ msgstr "시간"
 msgid "Time of day"
 msgstr "시간대"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "시간 초과"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "제목"
@@ -4512,13 +4609,25 @@ msgstr "보기 옵션 전환"
 msgid "Toggle watched filter"
 msgstr "관찰 필터 전환"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "이 주소에서 제안된 매치가 너무 많습니다"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "요청이 너무 많음"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "월드 서버에 대한 요청이 너무 많습니다"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "최고"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "최상위"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "이동 중"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "트림"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "트림 {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "미국"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "날개 잠김"
 msgid "WINS"
 msgstr "승리"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "철회됨"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "월드 서버"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "월드 서버에 연결할 수 없습니다"
@@ -4893,6 +5016,10 @@ msgstr "오른쪽 요"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "연도"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "예"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

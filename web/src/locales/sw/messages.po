@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ilikuwa tayari imechukuliwa, na kidhibiti hicho sasa hakijafungwa."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} ilikuwa kwenye {1}, ambavyo sasa havijafungwa."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} ilikuwa kwenye {1}, ambacho sasa hakijafungwa."
@@ -165,6 +171,10 @@ msgstr "Jina la {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} hadi {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} kufunga"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "MAFUTA BINGO"
 msgid "Block {name}"
 msgstr "Zuia {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Imezuiwa na"
 msgid "Blocked navigation to untrusted link"
 msgstr "Imezuia urambazaji kwenda kiungo kisichoaminika"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Inazuia"
@@ -672,6 +684,10 @@ msgstr "Inazuia"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Bluu"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLUU {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kategoria imesasishwa"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Mstari wa kati"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Imebadilishwa"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "Imebadilisha {field}"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Darasa limebadilishwa"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Tambua"
 msgid "Detect from web browser"
 msgstr "Tambua kutoka kwa kivinjari cha wavuti"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Hali ya msanidi programu"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Seva tofauti ya mchezo"
@@ -1628,6 +1653,7 @@ msgstr "KINAONDOKA"
 msgid "Drone"
 msgstr "Droni"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Inarudia"
@@ -1739,6 +1765,11 @@ msgstr "Pailoni tupu"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Washa sauti"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Imeisha"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Tangi la mafuta"
 msgid "full afterburner"
 msgstr "afterburner kamili"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Mizinga pekee"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Ondoa mkono kwenye fimbo; bonyeza enter kusalimu na kurushwa"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Ondoa mkono kwenye fimbo; bonyeza {key} kusalimu na kurushwa"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Jaribio la taa"
 msgid "Link"
 msgstr "Kiungo"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Viungo"
@@ -2653,6 +2681,10 @@ msgstr "Inapakia..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Mpangilio wa silaha"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "KUFUNGA KUNAHITAJIKA"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Shusha antena ya rada"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M kufunga"
+msgid "LWD"
+msgstr "KUSHOTO"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Sogeza…"
 msgid "Moved"
 msgstr "Imehamishwa"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "Imehamisha {field}"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Inahamishia {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Hali ya wachezaji wengi inahitaji WebTransport, ambayo kivinjari hiki bado hakiiauni."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Kuuana"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "KUUANA"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Jina linahitajika"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Jina lazima liwe na herufi 1000 au chini"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "CHINI"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Mwaka ujao"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Usiku"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Hapana"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Hakuna watu waliopatikana"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Hakuna mahali palipopatikana"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "HAKUNA KUFUNGA KWA RADA"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Arifa: {0}"
 msgid "Novice"
 msgstr "Mwanafunzi"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "JUU"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Nambari"
@@ -3221,7 +3273,9 @@ msgstr "Kwenye njia: flapu nusu, ongeza hadi nguvu ya kijeshi, breki zimefunguli
 msgid "Oops! Page Not Found!"
 msgstr "Lo! Ukurasa Haukupatikana!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Wazi"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "Chaguo"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Nyingine"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Nyingine"
 
@@ -3453,13 +3512,13 @@ msgstr "Machapisho"
 msgid "Posts and comments"
 msgstr "Machapisho na maoni"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "BONYEZA {key} ILI KUPAA"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Bonyeza kitufe…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "BONYEZA ENTER ILI KUPAA"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Rekodi imehifadhiwa"
 msgid "Red"
 msgstr "Nyekundu"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "NYEKUNDU {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Boti nyekundu"
@@ -3631,6 +3694,7 @@ msgstr "Onyesha upya"
 msgid "REJOINING"
 msgstr "NARUDI SAFUNI"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Inahusiana"
@@ -3883,6 +3947,10 @@ msgstr "NGUVU KAMILI"
 msgid "Runway {end}"
 msgstr "Njia ya kurukia {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "KULIA"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Jumamosi"
@@ -4062,6 +4130,7 @@ msgstr "Seva"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Hitilafu ya seva"
 
@@ -4074,6 +4143,10 @@ msgstr "Sheria za seva"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "seva inaendesha v{0}, una v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Seva ilizimwa"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Gawanya"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "KUNJUA MABAWA"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "KIIMARISHAJI {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Maudhui yaliyoombwa hayakupatikana."
 msgid "The server returned a web page instead of data."
 msgstr "Seva ilirudisha ukurasa wa wavuti badala ya data."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Seva ya dunia ilijibu kwa hitilafu {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Seva ya dunia haikujibu kwa wakati"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Seva ya dunia haina nafasi ya mechi nyingine"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Seva ya dunia ilituma jibu lisiloweza kusomwa"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Programu hii hairuhusiwi kutumia pasiki yako. Iruhusu katika Mipangilio, chini ya Ruhusa."
@@ -4482,6 +4575,10 @@ msgstr "Muda"
 msgid "Time of day"
 msgstr "Wakati wa siku"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Muda umekwisha"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Kichwa"
@@ -4512,13 +4609,25 @@ msgstr "Geuza chaguzi za mwonekano"
 msgid "Toggle watched filter"
 msgstr "Geuza kichujio cha kutazamwa"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Mechi nyingi mno zimetolewa kutoka anwani yako"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Maombi mengi mno"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Maombi mengi mno kwa seva ya dunia"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Bora zaidi"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Kiwango cha juu"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Kusafiri"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trimu"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIMU {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Marekani"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "MABAWA YAMEFUNGWA"
 msgid "WINS"
 msgstr "AMESHINDA"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Imeondolewa"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Seva ya dunia"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Seva ya dunia haipatikani"
@@ -4893,6 +5016,10 @@ msgstr "Yaw kulia"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Mwaka"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Ndiyo"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

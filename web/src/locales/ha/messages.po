@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "An riga an ɗauki {0}, kuma yanzu wannan sarrafawa ba a ɗaure ba."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} yana kan {1}, waɗanda yanzu ba a ɗaure su ba."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} yana kan {1}, wanda yanzu ba a ɗaure ba."
@@ -165,6 +171,10 @@ msgstr "Sunan {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} zuwa {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} don rufewa"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "MAI BINGO"
 msgid "Block {name}"
 msgstr "Toshe {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "An toshe ta"
 msgid "Blocked navigation to untrusted link"
 msgstr "An toshe motsi zuwa ga link da ba a amince da shi ba"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Yana toshe"
@@ -672,6 +684,10 @@ msgstr "Yana toshe"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Shuɗi"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "SHUƊI {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "An sabunta rukuni"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Layin tsakiya"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "An canza"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "An canza {field}"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "An canza aji"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Gano"
 msgid "Detect from web browser"
 msgstr "Gano daga web browser"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Yanayin masu haɓakawa"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Mai masaukin wasa dabam"
@@ -1628,6 +1653,7 @@ msgstr "YANA TAFIYA"
 msgid "Drone"
 msgstr "Jirgi mara matuƙi"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Yana ninkawa"
@@ -1739,6 +1765,11 @@ msgstr "Pylon mara kaya"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Kunna sauti"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Ya ƙare"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Tankin mai"
 msgid "full afterburner"
 msgstr "cikakken afterburner"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Bindigogi kaɗai"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Cire hannu daga sanda; danna enter don yin gaisuwa da harbawa"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Cire hannu daga sanda; danna {key} don yin gaisuwa da harbawa"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Gwajin fitilu"
 msgid "Link"
 msgstr "Hanyar haɗi"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Hanyoyin haɗi"
@@ -2653,6 +2681,10 @@ msgstr "Ana saukarwa..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Kayan yaƙi"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "ANA BUKATAR KULLE"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Sauke eriyar radar"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M don rufewa"
+msgid "LWD"
+msgstr "HAGU"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Motsa…"
 msgid "Moved"
 msgstr "An matsar"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "An matsar da {field}"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Ana matsawa zuwa {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer yana buƙatar WebTransport, wanda wannan burauzar ba ta tallafa masa ba tukuna."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Kashe juna"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "KASHE JUNA"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Ana buƙatar suna"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Suna dole ya kasance haruffa 1000 ko ƙasa"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ƘASA"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Shekara mai zuwa"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Dare"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "A'a"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Babu mutane da aka samu"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Babu wurare da aka samu"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "BABU KULLE NA RADAR"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Sanarwa: {0}"
 msgid "Novice"
 msgstr "Sabon koyo"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "SAMA"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Lamba"
@@ -3221,7 +3273,9 @@ msgstr "A kan titin jirgi: rabin flaps, ɗaga zuwa ƙarfin soja, saki birki"
 msgid "Oops! Page Not Found!"
 msgstr "Kai! Ba a Sami Shafi Ba!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "A buɗe"
 
@@ -3272,6 +3326,11 @@ msgstr "Zaɓuɓɓuka"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Sauran"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Wani"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3453,13 +3512,13 @@ msgstr "Sakonni"
 msgid "Posts and comments"
 msgstr "Posts da sharhi"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "DANNA {key} DON TASHI"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Danna wani maɓalli…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "DANNA ENTER DON TASHI"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "An adana rikodin"
 msgid "Red"
 msgstr "Ja"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "JA {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Bots masu ja"
@@ -3631,6 +3694,7 @@ msgstr "Sabuntawa"
 msgid "REJOINING"
 msgstr "INA KOMAWA LAYI"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Yana da alaƙa"
@@ -3883,6 +3947,10 @@ msgstr "CIKAKKEN ƘARFI"
 msgid "Runway {end}"
 msgstr "Titin jirgi {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "DAMA"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Asabar"
@@ -4062,6 +4130,7 @@ msgstr "Sabar"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Kuskuren sabar"
 
@@ -4074,6 +4143,10 @@ msgstr "Ƙa'idojin sabar"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "sabar yana amfani da v{0}, kana da v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "An kashe sabar"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Raba"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "BUDE FIKAFIKAI"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "DAIDAITAWA {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Ba a iya samun abun cikin da aka nema ba."
 msgid "The server returned a web page instead of data."
 msgstr "Sabar ya mayar da shafin yanar gizo maimakon bayanai."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Sabar duniya ta amsa da kuskure {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Sabar duniya ba ta amsa a kan lokaci ba"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Sabar duniya ba ta da wurin wani wasa"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Sabar duniya ta aiko da amsar da ba za a iya karantawa ba"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Ba a ba wannan manhaja izinin amfani da maɓallin shiga naka ba. Ba ta izini a Saituna, ƙarƙashin Izini."
@@ -4482,6 +4575,10 @@ msgstr "Lokaci"
 msgid "Time of day"
 msgstr "Lokacin rana"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Lokaci ya ƙare"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Take"
@@ -4512,13 +4609,25 @@ msgstr "Canza zaɓuɓɓukan ra'ayi"
 msgid "Toggle watched filter"
 msgstr "Toggle filter na watched"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "An bayar da wasanni da yawa fiye da kima daga adireshinka"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Buƙatu sun yi yawa"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Buƙatu sun yi yawa zuwa sabar duniya"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Mafi kyau"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Matakin sama"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Tafiya"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Amurka"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "FIKAFIKAI A KULLE"
 msgid "WINS"
 msgstr "YA CI NASARA"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "An janye"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Sabar duniya"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Ba a iya kaiwa ga sabar duniya ba"
@@ -4893,6 +5016,10 @@ msgstr "Hanci dama"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Shekara"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Ee"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

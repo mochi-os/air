@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} artıq tutulmuşdu və həmin idarəetmə indi bağlanmayıb."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} üzərində idi, onlar da indi bağlanmayıb."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} üzərində idi, o da indi bağlanmayıb."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} adı"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ilə {to} arası"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "Bağlamaq üçün {key}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO YANACAQ"
 msgid "Block {name}"
 msgstr "{name} blokla"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Bloklayıcı"
 msgid "Blocked navigation to untrusted link"
 msgstr "Etibarsız linkə naviqasiya bloklandı"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Bloklar"
@@ -672,6 +684,10 @@ msgstr "Bloklar"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Mavi"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "MAVİ {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kateqoriya yeniləndi"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Mərkəz xətti"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Dəyişdirildi"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} dəyişdirildi"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Sinif dəyişdirildi"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Aşkarla"
 msgid "Detect from web browser"
 msgstr "Veb-brauzerdən aşkarla"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Tərtibatçı rejimi"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Fərqli oyun hostu"
@@ -1628,6 +1653,7 @@ msgstr "UZAQLAŞIR"
 msgid "Drone"
 msgstr "Dron"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Dublikatlar"
@@ -1739,6 +1765,11 @@ msgstr "Boş pilon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Səsi aktiv et"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Başa çatdı"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Yanacaq çəni"
 msgid "full afterburner"
 msgstr "tam artyanma"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Yalnız toplar"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Əlini idarə qolundan çək; salam verib start üçün enter bas"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Əlini idarə qolundan çək; salam verib start üçün {key} bas"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "İşıqların yoxlanması"
 msgid "Link"
 msgstr "Keçid"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Linklər"
@@ -2653,6 +2681,10 @@ msgstr "Yüklənir..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Silahlanma"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "KİLİD TƏLƏB OLUNUR"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Radar antenasını endir"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "Bağlamaq üçün M"
+msgid "LWD"
+msgstr "SOL"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Hərəkət etdir…"
 msgid "Moved"
 msgstr "Köçürüldü"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} köçürüldü"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "{0} tarixinə köçürülür"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Çoxoyunçulu rejim üçün WebTransport lazımdır, bu brauzer isə onu hələ dəstəkləmir."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Qarşılıqlı vurulma"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "QARŞILIQLI VURULMA"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Ad tələb olunur"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Ad 1000 simvol və ya daha az olmalıdır"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "AŞA"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Növbəti il"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Gecə"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Xeyr"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "İnsan tapılmadı"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Yer tapılmadı"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "RADAR KİLİDİ YOXDUR"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Bildirişlər: {0}"
 msgid "Novice"
 msgstr "Yeni başlayan"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "YUX"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Nömrə"
@@ -3221,7 +3273,9 @@ msgstr "Zolaqda: yarım flaplar, hərbi gücə qədər qaz ver, əyləcləri bur
 msgid "Oops! Page Not Found!"
 msgstr "Hopa! Səhifə Tapılmadı!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Açıq"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "Seçimlər"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Digər"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Digər"
 
@@ -3453,13 +3512,13 @@ msgstr "Postlar"
 msgid "Posts and comments"
 msgstr "Postlar və şərhlər"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "UÇMAQ ÜÇÜN {key} BASIN"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Bir klaviş bas…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "UÇMAQ ÜÇÜN ENTER BASIN"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Qeyd yadda saxlanıldı"
 msgid "Red"
 msgstr "Qırmızı"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "QIRMIZI {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Qırmızı botlar"
@@ -3631,6 +3694,7 @@ msgstr "Yenilə"
 msgid "REJOINING"
 msgstr "SIRAYA QAYIDIRAM"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Əlaqədardır"
@@ -3883,6 +3947,10 @@ msgstr "TAM GÜC"
 msgid "Runway {end}"
 msgstr "Uçuş zolağı {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "SAĞ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Şənbə"
@@ -4062,6 +4130,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Server xətası"
 
@@ -4074,6 +4143,10 @@ msgstr "Server qaydaları"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "server v{0} işlədir, sizdə v{version} var"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Server söndürüldü"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Böl"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "QANADLARI AÇ"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Tələb olunan məzmun tapılmadı."
 msgid "The server returned a web page instead of data."
 msgstr "Server məlumat əvəzinə veb səhifə qaytardı."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Dünya serveri {status} xətası ilə cavab verdi"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Dünya serveri vaxtında cavab vermədi"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Dünya serverində başqa matç üçün yer yoxdur"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Dünya serveri oxuna bilməyən cavab göndərdi"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Bu tətbiqin giriş açarınızdan istifadə etməsinə icazə verilmir. Ayarlarda, İcazələr bölməsində icazə verin."
@@ -4482,6 +4575,10 @@ msgstr "Vaxt"
 msgid "Time of day"
 msgstr "Günün vaxtı"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Vaxt bitdi"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Başlıq"
@@ -4512,13 +4609,25 @@ msgstr "Görünüş seçimlərini aç/bağla"
 msgid "Toggle watched filter"
 msgstr "İzlənilənlər filtrini aç/bağla"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Ünvanınızdan həddindən çox matç təklif olunub"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Həddindən çox sorğu"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Dünya serverinə həddindən çox sorğu"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Ən yaxşı"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Üst səviyyə"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Səyahət"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRİM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Birləşmiş Ştatlar"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "QANADLAR KİLİDLİ"
 msgid "WINS"
 msgstr "QALİB GƏLDİ"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Geri çəkildi"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Dünya serveri"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Dünya serveri əlçatan deyil"
@@ -4893,6 +5016,10 @@ msgstr "Sağa dönmə"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "İl"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Bəli"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

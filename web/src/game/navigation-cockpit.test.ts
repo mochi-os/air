@@ -667,7 +667,7 @@ describe('the designated target on the HUD', () => {
   const run = (designation: string, master = 'nav', error = '{ x:0, z:0 }') => new Function('navigate', 'THREE', `const master=${JSON.stringify(master)}, GR='g', hs=1, wrap_axis=(v)=>v, ownship={ pos:{ x:0, y:1000, z:0 } };
     const nav=navigate.fresh(1); navigate.ready(nav,{ x:0, z:0 }); nav.ins.error=${error}; nav.designation=${designation};
     const nav_sense=()=>({ dt:0, x:0, z:0, east:0, south:0, tas:0, heading:0, pitch:0, bank:0, airborne:true, brake:false, power:true, radar:false, deck:false, tacan:null });
-    const sights=[], points=[]; const proj_dir=(v)=>{ sights.push([v.x,v.y,v.z]); return [400,300]; };
+    const sights=[], points=[], _hud_diamond=[0,0]; const proj_dir=(v)=>{ sights.push([v.x,v.y,v.z]); return [400,300]; };
     const hctx={ beginPath(){}, closePath(){}, stroke(){}, setLineDash(){}, moveTo(x,y){ points.push([x,y]); }, lineTo(x,y){ points.push([x,y]); } };
     ${block} return { sights, points };`)(navigate, THREE) as { sights: number[][]; points: number[][] }
   it('draws the target diamond on the designated point\'s line of sight, at its elevation', () => {

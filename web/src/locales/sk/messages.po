@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} už bolo obsadené a toto ovládanie je teraz nepriradené."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} bolo na {1}, ktoré sú teraz nepriradené."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} bolo na {1}, ktoré je teraz nepriradené."
@@ -165,6 +171,10 @@ msgstr "Názov {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "od {from} do {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} zavrieť"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO PALIVO"
 msgid "Block {name}"
 msgstr "Zablokovať {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Blokované používateľom"
 msgid "Blocked navigation to untrusted link"
 msgstr "Zablokovaná navigácia na nedôveryhodný odkaz"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Bloky"
@@ -672,6 +684,10 @@ msgstr "Bloky"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Modrí"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "MODRÍ {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kategória aktualizovaná"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Stredová os"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Zmenené"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "Zmenené {field}"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Trieda zmenená"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Zistiť"
 msgid "Detect from web browser"
 msgstr "Zistiť z webového prehliadača"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Režim vývojára"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Iný herný hostiteľ"
@@ -1628,6 +1653,7 @@ msgstr "VZĎAĽUJE SA"
 msgid "Drone"
 msgstr "Dron"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Duplikáty"
@@ -1739,6 +1765,11 @@ msgstr "Prázdny pylón"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Zapnúť zvuk"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Ukončený"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Palivová nádrž"
 msgid "full afterburner"
 msgstr "plná forsáž"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Len kanóny"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Ruku preč z páky; stlač enter na pozdrav a štart"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Ruku preč z páky; stlač {key} na pozdrav a štart"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Test svetiel"
 msgid "Link"
 msgstr "Odkaz"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Odkazy"
@@ -2653,6 +2681,10 @@ msgstr "Načítava sa…"
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Výzbroj"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "POTREBNÉ ZACHYTENIE"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Sklopiť anténu radaru"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M zavrieť"
+msgid "LWD"
+msgstr "ĽKD"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Pohnite…"
 msgid "Moved"
 msgstr "Presunuté"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "Presunuté {field}"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Presúva sa na {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer vyžaduje WebTransport, ktorý tento prehliadač zatiaľ nepodporuje."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Vzájomný zostrel"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "VZÁJOMNÝ ZOSTREL"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Názov je povinný"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Názov musí mať 1000 znakov alebo menej"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ND"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Nasledujúci rok"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Noc"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Nie"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Nenašli sa žiadni ľudia"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Nenašli sa žiadne miesta"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "ŽIADNE ZACHYTENIE RADAROM"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Oznámenia: {0}"
 msgid "Novice"
 msgstr "Začiatočník"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "NH"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Číslo"
@@ -3221,7 +3273,9 @@ msgstr "Na dráhe: klapky do polovice, pridaj na vojenský výkon, brzdy uvoľne
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Stránka sa nenašla!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Otvorený"
 
@@ -3272,6 +3326,11 @@ msgstr "Možnosti"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Iné"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Iný"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3453,13 +3512,13 @@ msgstr "Príspevky"
 msgid "Posts and comments"
 msgstr "Príspevky a komentáre"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "STLAČ {key} NA ŠTART"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Stlačte kláves…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "STLAČ ENTER NA ŠTART"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Záznam bol uložený"
 msgid "Red"
 msgstr "Červení"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "ČERVENÍ {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Červení boti"
@@ -3631,6 +3694,7 @@ msgstr "Obnoviť"
 msgid "REJOINING"
 msgstr "ZARAĎUJEM SA"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Súvisí"
@@ -3883,6 +3947,10 @@ msgstr "PLNÝ PLYN"
 msgid "Runway {end}"
 msgstr "Dráha {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "PKD"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Sobota"
@@ -4062,6 +4130,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Chyba servera"
 
@@ -4074,6 +4143,10 @@ msgstr "Pravidlá servera"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "server používa v{0}, máte v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Server sa vypol"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Rozdeliť"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "ROZLOŽIŤ KRÍDLA"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Požadovaný obsah sa nepodarilo nájsť."
 msgid "The server returned a web page instead of data."
 msgstr "Server vrátil webovú stránku namiesto údajov."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Server sveta odpovedal chybou {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Server sveta neodpovedal včas"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Server sveta nemá miesto na ďalší zápas"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Server sveta poslal odpoveď, ktorú sa nepodarilo prečítať"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Táto aplikácia nemá povolenie používať váš prístupový kľúč. Povoľte ho v Nastaveniach v časti Povolenia."
@@ -4482,6 +4575,10 @@ msgstr "Čas"
 msgid "Time of day"
 msgstr "Denná doba"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Časový limit vypršal"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Názov"
@@ -4512,13 +4609,25 @@ msgstr "Prepnúť možnosti zobrazenia"
 msgid "Toggle watched filter"
 msgstr "Prepnúť filter sledovaných"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Z vašej adresy je ponúknutých príliš veľa zápasov"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Príliš veľa požiadaviek"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Príliš veľa požiadaviek na server sveta"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Najlepšie"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Najvyššia úroveň"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Cestujem"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "vyváženie"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "VYV {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Spojené štáty"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "KRÍDLA ZAISTENÉ"
 msgid "WINS"
 msgstr "VYHRÁVA"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Stiahnutý"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Server sveta"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Server sveta je nedostupný"
@@ -4893,6 +5016,10 @@ msgstr "Vybočenie doprava"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Rok"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Áno"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

@@ -304,14 +304,23 @@ const dot = (a: Vector, b: Vector) => a.x * b.x + a.y * b.y + a.z * b.z
 // slave: where the seeker looks with the helmet slaving it - along the
 // helmet's line of sight, held at its gimbal limit about the nose when the
 // pilot looks farther off. Both unit vectors.
-export function slave(sight: Vector, nose: Vector, limit = GIMBAL): Vector {
+// The answer is written into out, which the engine passes each frame.
+export function slave(sight: Vector, nose: Vector, limit = GIMBAL, out: Vector = { x: 0, y: 0, z: 0 }): Vector {
   const c = dot(sight, nose)
-  if (c >= Math.cos(limit)) return { ...sight }
-  const across = { x: sight.x - nose.x * c, y: sight.y - nose.y * c, z: sight.z - nose.z * c }
-  const length = Math.hypot(across.x, across.y, across.z)
-  if (length < 1e-9) return { ...nose } // looking straight aft: no way is nearer than another
+  const ax = sight.x - nose.x * c, ay = sight.y - nose.y * c, az = sight.z - nose.z * c
+  const length = Math.hypot(ax, ay, az)
+  if (c >= Math.cos(limit) || length < 1e-9) {
+    const from = c >= Math.cos(limit) ? sight : nose // looking straight aft: no way is nearer than another
+    out.x = from.x
+    out.y = from.y
+    out.z = from.z
+    return out
+  }
   const s = Math.sin(limit) / length, k = Math.cos(limit)
-  return { x: nose.x * k + across.x * s, y: nose.y * k + across.y * s, z: nose.z * k + across.z * s }
+  out.x = nose.x * k + ax * s
+  out.y = nose.y * k + ay * s
+  out.z = nose.z * k + az * s
+  return out
 }
 // within: a unit direction lies inside a cone about a unit line.
 export function within(line: Vector, to: Vector, angle: number): boolean {
@@ -323,7 +332,8 @@ export function within(line: Vector, to: Vector, angle: number): boolean {
 export function pack(v: Vector): [number, number] {
   return [Math.round((Math.atan2(v.z, v.x) / D) * 100), Math.round((Math.asin(Math.max(-1, Math.min(1, v.y))) / D) * 100)]
 }
-// unpack reads it back.
+// unpack reads it back, as the server does (air.go sighted). Read here by the
+// tests alone, which hold the packing to it.
 export function unpack([azimuth, elevation]: [number, number]): Vector {
   const a = (azimuth / 100) * D, e = (elevation / 100) * D
   return { x: Math.cos(e) * Math.cos(a), y: Math.sin(e), z: Math.cos(e) * Math.sin(a) }

@@ -6,9 +6,8 @@
 // matches, join one or create your own. Creators choose match type, weather and
 // rules, carried as session parameters the world relays to every participant.
 // The standing "Furball" match is listed first.
-import { useCallback, useEffect, useId, useState } from 'react'
+import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { Plural, Trans, useLingui } from '@lingui/react/macro'
-import { getErrorMessage } from '@mochi/web'
 import { Button } from '@mochi/web/components/ui/button'
 import { Input } from '@mochi/web/components/ui/input'
 import { Label } from '@mochi/web/components/ui/label'
@@ -30,11 +29,12 @@ import {
   default_server,
   normalize_server,
   supported,
+  lobby_watch,
+  LobbyError,
   world_create,
-  world_sessions,
   world_withdraw,
-  world_status,
   type Join,
+  type LobbyWatch,
   type WorldSession,
   type WorldStatus,
   crossHost,
@@ -123,6 +123,40 @@ const DEVIATIONS: Record<string, React.ReactNode> = {
   'cheat.fuel': <Trans>Unlimited fuel</Trans>,
 }
 
+// The reasons a world server names when it refuses, worded here: the server's
+// own text is never shown as it stands, and a reason this table does not know
+// is shown by its status.
+const REFUSALS: Record<string, React.ReactNode> = {
+  rate: <Trans>Too many requests to the world server</Trans>,
+  full: <Trans>The world server has no room for another match</Trans>,
+  offers: <Trans>Too many matches offered from your address</Trans>,
+}
+
+// LobbyFailure words a world server's failure (net.ts LobbyError) in the
+// player's language. Anything else shows the caller's fallback.
+export function LobbyFailure({
+  error,
+  fallback,
+}: {
+  error: unknown
+  fallback: React.ReactNode
+}) {
+  if (!(error instanceof LobbyError)) return <>{fallback}</>
+  const status = error.status
+  if (
+    error.kind === 'refused' &&
+    Object.prototype.hasOwnProperty.call(REFUSALS, error.reason)
+  )
+    return <>{REFUSALS[error.reason]}</>
+  if (error.kind === 'unreachable')
+    return <Trans>World server not reachable</Trans>
+  if (error.kind === 'timeout')
+    return <Trans>The world server did not answer in time</Trans>
+  if (error.kind === 'malformed')
+    return <Trans>The world server sent an answer that could not be read</Trans>
+  return <Trans>The world server answered with error {status}</Trans>
+}
+
 export function Multiplayer({
   server,
   callsign,
@@ -137,6 +171,8 @@ export function Multiplayer({
   stores,
   fuel,
   loadout,
+  sharing,
+  onFly,
 }: {
   server: string
   callsign: string
@@ -151,6 +187,8 @@ export function Multiplayer({
   stores?: Record<string, { fixture: string; stores: string[] }> // the player's persisted loadout, sent as the join request (#17)
   fuel?: number // the player's own spawn fuel in pounds (#221), sent with the loadout; the server bounds it by the tank and nothing else
   loadout?: React.ReactNode // the loadout editor, rendered in this panel's own dialog — the page below owns it, and passing the node avoids importing the mission setup back into here
+  sharing?: React.ReactNode // the recordings question, shown in the same dialog until the player has answered it: every join and every create passes through there
+  onFly?: () => void // that dialog's Join or Create and fly was pressed: flying with the question shown answers it as shown, as the single-player Fly does
 }) {
   const { t } = useLingui()
   const identity = useIdentityName()
@@ -161,11 +199,15 @@ export function Multiplayer({
     proceed: () => void
   } | null>(null)
   const [sessions, setSessions] = useState<WorldSession[]>([])
-  const [error, setError] = useState('')
+  const [failure, setFailure] = useState<unknown>(null) // the last poll's, null when it answered
+  // The last create's failure, shown beside its button until the next attempt:
+  // the status line above is the poll's, and the create made from the loadout
+  // dialog has closed that dialog by the time it fails.
+  const [fault, setFault] = useState<unknown>(null)
   const [busy, setBusy] = useState(false)
   const [making, setMaking] = useState(false)
-  // Refresh's own pending flag, not the poll's: the 5 s tick must never spin
-  // the button under a reader who did not press it.
+  // Refresh's own pending flag, not the poll's: the poll's tick must never
+  // spin the button under a reader who did not press it.
   const [refreshing, setRefreshing] = useState(false)
   // The join waiting on a loadout choice (#221). Every way into a match goes
   // through the editor, because a loadout is a decision about THIS fight and a
@@ -213,48 +255,27 @@ export function Multiplayer({
   const address = normalize_server(server || default_server())
   const name = (callsign || identity || t`pilot`).slice(0, 32)
 
-  const refresh = useCallback(
-    async (signal?: AbortSignal) => {
-      try {
-        const [s, list] = await Promise.all([
-          world_status(address, signal),
-          world_sessions(address, 'air', signal, pilot),
-        ])
-        setStatus(s)
-        setSessions(list)
-        setError('')
-      } catch (e) {
-        if (signal?.aborted) return // unmounted or the address changed: don't clobber state with a stale failure
-        setStatus(null)
-        setSessions([])
-        setError(getErrorMessage(e, t`World server not reachable`))
-      }
-    },
-    [address, t, pilot]
-  )
-
-  // Poll while the panel is visible so the match list stays live. A single
-  // controller aborts in-flight requests on unmount or address change, and the
-  // in-flight guard stops a slow server from stacking overlapping refreshes.
+  // Watch the server while the panel is visible so the match list stays live.
+  // The poll is shared with the lobby chat beside it - one read of the server
+  // a poll for the whole page - and stopping the watch on unmount or an
+  // address change aborts what is in flight, so a stale failure never lands.
+  const watch = useRef<LobbyWatch | null>(null)
   useEffect(() => {
-    const controller = new AbortController()
-    let busy = false
-    const tick = async () => {
-      if (busy) return
-      busy = true
-      try {
-        await refresh(controller.signal)
-      } finally {
-        busy = false
-      }
-    }
-    void tick()
-    const timer = setInterval(() => void tick(), 5000)
+    const handle = lobby_watch(address, 'air', pilot, (view) => {
+      setStatus(view.status)
+      setSessions(view.sessions)
+      setFailure(view.failure ?? null)
+    })
+    watch.current = handle
     return () => {
-      clearInterval(timer)
-      controller.abort()
+      handle.stop()
+      if (watch.current === handle) watch.current = null
     }
-  }, [refresh])
+  }, [address, pilot])
+  const refresh = useCallback(
+    () => watch.current?.refresh() ?? Promise.resolve(),
+    []
+  )
 
   // enter gates every join on a cross-host check: if the lobby is redirecting
   // the game connection to a different host, confirm before dialling it.
@@ -307,6 +328,7 @@ export function Multiplayer({
   )
 
   const create = async () => {
+    setFault(null)
     setBusy(true)
     try {
       const made = await world_create(address, {
@@ -341,7 +363,7 @@ export function Multiplayer({
         name,
       })
     } catch (e) {
-      setError(getErrorMessage(e, t`Could not create the match`))
+      setFault(e)
     } finally {
       setBusy(false)
     }
@@ -354,6 +376,7 @@ export function Multiplayer({
     const now = pending
     setPending(null)
     if (!now) return
+    onFly?.()
     if (now.kind === 'create') {
       void create()
       return
@@ -432,6 +455,7 @@ export function Multiplayer({
               </ResponsiveDialogTitle>
             </ResponsiveDialogHeader>
             {loadout}
+            {sharing}
             <ResponsiveDialogFooter>
               <Button variant='outline' onClick={() => setPending(null)}>
                 <Trans>Cancel</Trans>
@@ -492,7 +516,16 @@ export function Multiplayer({
             · <Plural value={status.players} one='# flying' other='# flying' />
           </span>
         ) : (
-          <span>{error || <Trans>Connecting…</Trans>}</span>
+          <span>
+            {failure ? (
+              <LobbyFailure
+                error={failure}
+                fallback={<Trans>World server not reachable</Trans>}
+              />
+            ) : (
+              <Trans>Connecting…</Trans>
+            )}
+          </span>
         )}
       </div>
 
@@ -560,7 +593,7 @@ export function Multiplayer({
                     ) : s.mode === 'teams' ? (
                       <Trans>Teams</Trans>
                     ) : (
-                      <Trans>Open</Trans>
+                      <Trans context='match mode'>Open</Trans>
                     )}{' '}
                     ·{' '}
                     {(s.players ?? []).map((p) => p.name).join(', ') || (
@@ -934,13 +967,24 @@ export function Multiplayer({
             </div>
           </div>
 
-          <div className='flex justify-end gap-2 border-t pt-3'>
+          <div className='flex items-center justify-end gap-2 border-t pt-3'>
+            {fault !== null && (
+              <span role='alert' className='text-destructive me-auto text-sm'>
+                <LobbyFailure
+                  error={fault}
+                  fallback={<Trans>Could not create the match</Trans>}
+                />
+              </span>
+            )}
             <Button
               type='button'
               variant='outline'
               size='sm'
               disabled={busy}
-              onClick={() => setMaking(false)}
+              onClick={() => {
+                setMaking(false)
+                setFault(null)
+              }}
             >
               <X className='size-4' />
               <Trans>Cancel</Trans>
@@ -991,7 +1035,10 @@ export function Multiplayer({
           type='button'
           variant='outline'
           disabled={!status}
-          onClick={() => setMaking((v) => !v)}
+          onClick={() => {
+            setMaking((v) => !v)
+            setFault(null)
+          }}
         >
           <Plus className='size-4' />
           <Trans>Create match</Trans>

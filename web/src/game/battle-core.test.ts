@@ -23,7 +23,7 @@ interface Core {
   racks(index: number, stores: number): boolean
   volley(input: Uint8Array, output: Uint8Array): number
   fly(input: Uint8Array, output: Uint8Array): number
-  progress(input: Uint8Array, output: Uint8Array): void
+  progress(input: Uint8Array, output: Uint8Array): unknown
 }
 let core: Core
 const input = new Float64Array(32), out = new Float64Array(64)
@@ -78,9 +78,15 @@ describe.skipIf(!built)('a store fire in the battle core', () => {
     expect(lit.length).toBeGreaterThan(0)
     for (const name of lit) expect(name).toMatch(/^(tip|9m|120c)/) // only a round on a rail burns there
     expect(out[62]).toBe(0) // no ownship model, no ownship fires
+    // The bursts every frame leave a quarter of a second of rounds still
+    // inbound, and one may yet light another round on a loaded rail: let them
+    // land before asking what burns.
     for (let k = 0; k < 30; k++) step(tick++)
-    expect(masked(out[63], book.index)).toEqual(lit) // the motor burns on while the round is carried
-    const gone = lit.reduce((m, name) => m - 2 ** book.index.get(name)!, rack)
+    const burning = masked(out[63], book.index)
+    expect(burning).toEqual(expect.arrayContaining(lit))
+    for (let k = 0; k < 30; k++) step(tick++)
+    expect(masked(out[63], book.index)).toEqual(burning) // the motor burns on while the round is carried
+    const gone = burning.reduce((m, name) => m - 2 ** book.index.get(name)!, rack)
     core.racks(0, gone)
     step(tick++)
     expect(out[63]).toBe(0) // the round has left the rail: nothing burns there
@@ -112,4 +118,44 @@ describe.skipIf(!built)('a store fire in the battle core', () => {
     step(tick++, false, BANDIT, (bay === 0 ? 1 : 2) | 4) // that engine secured and the bottle into its bay
     expect(out[bay]).toBe(0)
   }, 60000)
+
+  // fly says how many of each side's rounds are still in the air after the
+  // step, the ownship's (word 31) and the bandit's (word 32): a joust the pilot
+  // has lost waits on his, and gun rounds are the one thing he left flying that
+  // the engine cannot see.
+  it("counts each side's rounds still in the air", () => {
+    const fly = () => {
+      input.fill(0)
+      input.set([1 / 60, 1, 1, BANDIT.x, BANDIT.y, BANDIT.z, 1, 0, 0, 0, 0, 0, -200])
+      core.fly(sent, read)
+    }
+    const volley = (shooter: number, z: number, tick: number) => {
+      input.fill(0)
+      input.set([shooter, 0, 3000, z, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 200, 2, tick]) // fired north, away from the bandit
+      core.volley(sent, read)
+    }
+    for (let k = 0; k < 600; k++) fly() // whatever the cases above left flying comes down
+    expect([out[31], out[32]]).toEqual([0, 0])
+    volley(0, 5000, 200000)
+    fly()
+    expect([out[31], out[32]]).toEqual([2, 0])
+    volley(1, 9000, 200001)
+    fly()
+    expect([out[31], out[32]]).toEqual([2, 2])
+    for (let k = 0; k < 600; k++) fly()
+    expect([out[31], out[32]]).toEqual([0, 0])
+  }, 60000)
+
+  // rig accepted nine hulks, and progress writes nine words for each from word
+  // 6 into its 64: the first used hulk past the sixth indexed off the buffer,
+  // the core faulted, and the client read the last frame's fires and kills.
+  it('rigs no more hulks than the progress words hold, and steps all it rigs', () => {
+    const rigged = Array.from({ length: 9 }, (_, i) => core.hulk(i, 'fa18c', 0))
+    expect(rigged).toEqual([true, true, true, true, true, true, false, false, false])
+    input.fill(0)
+    input.set([0.8, 50000, 0, 0])
+    expect(core.progress(sent, read)).toBeFalsy() // a fault would come back as its message
+    step(50001, true)
+    core.hulk(0, 'fa18c', 0)
+  })
 })

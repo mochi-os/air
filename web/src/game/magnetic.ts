@@ -154,7 +154,8 @@ export function variation(place: Place, time: number): number {
 }
 
 // dip is the inclination: how far below the horizontal the field points,
-// radians, upward negative.
+// radians, upward negative. Read by the tests alone, which hold the field's
+// vertical part to the published model's inclination through it.
 export function dip(f: Field): number {
   return Math.atan2(f.down, Math.hypot(f.north, f.east))
 }

@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ຖືກໃຊ້ໄປແລ້ວ ແລະ ການຄວບຄຸມນັ້ນຕອນນີ້ບໍ່ໄດ້ຜູກໄວ້."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} ຢູ່ເທິງ {1} ເຊິ່ງຕອນນີ້ທັງໝົດບໍ່ໄດ້ຜູກໄວ້."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} ຢູ່ເທິງ {1} ເຊິ່ງຕອນນີ້ບໍ່ໄດ້ຜູກໄວ້."
@@ -165,6 +171,10 @@ msgstr "ຊື່ {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} ຫາ {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} ເພື່ອປິດ"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "ນ້ຳມັນເຊື້ອໄຟບິງໂກ"
 msgid "Block {name}"
 msgstr "ບລັອກ {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "ຖືກບລັອກໂດຍ"
 msgid "Blocked navigation to untrusted link"
 msgstr "ບລັອກການນຳທາງໄປຫາລິ້ງທີ່ບໍ່ເຊື່ອຖື"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "ບລັອກ"
@@ -672,6 +684,10 @@ msgstr "ບລັອກ"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "ສີຟ້າ"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "ຟ້າ {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "ອັບເດດໝວດໝູ່ແລ້ວ"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "ເສັ້ນກາງ"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "ປ່ຽນແລ້ວ"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "ປ່ຽນ {field} ແລ້ວ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "ປ່ຽນຄລາສແລ້ວ"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "ກວດຫາ"
 msgid "Detect from web browser"
 msgstr "ກວດຫາຈາກຕົວທ່ອງເວັບ"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "ໂໝດນັກພັດທະນາ"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "ເຊີບເວີເກມອື່ນ"
@@ -1628,6 +1653,7 @@ msgstr "ກຳລັງອອກໄປ"
 msgid "Drone"
 msgstr "ໂດຣນ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "ຊ້ຳກັນ"
@@ -1739,6 +1765,11 @@ msgstr "ໄພລອນເປົ່າ"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "ເປີດສຽງ"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "ສິ້ນສຸດແລ້ວ"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "ຖັງນໍ້າມັນ"
 msgid "full afterburner"
 msgstr "ອາຟເຕີເບີເນີເຕັມ"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "ປືນໃຫຍ່ເທົ່ານັ້ນ"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "ປ່ອຍມືຈາກຄັນບັງຄັບ; ກົດ enter ເພື່ອວັນທະ ແລະ ປ່ອຍຕົວອອກ"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "ປ່ອຍມືຈາກຄັນບັງຄັບ; ກົດ {key} ເພື່ອວັນທະ ແລະ ປ່ອຍຕົວອອກ"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "ທົດສອບໄຟ"
 msgid "Link"
 msgstr "ລິ້ງ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "ລິ້ງ"
@@ -2653,6 +2681,10 @@ msgstr "ກຳລັງໂຫຼດ..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "ການຕິດຕັ້ງອາວຸດ"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "ຕ້ອງລັອກ"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "ລົດເສົາອາກາດເຣດາລົງ"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M ເພື່ອປິດ"
+msgid "LWD"
+msgstr "ຊ້າຍ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "ຂະຫຍັບ…"
 msgid "Moved"
 msgstr "ຍ້າຍແລ້ວ"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "ຍ້າຍ {field} ແລ້ວ"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "ກຳລັງຍ້າຍໄປ {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "ການຫຼິ້ນຫຼາຍຄົນຕ້ອງການ WebTransport ເຊິ່ງຕົວທ່ອງເວັບນີ້ຍັງບໍ່ຮອງຮັບເທື່ອ."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "ຍິງຕົກເຊິ່ງກັນແລະກັນ"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "ຍິງຕົກເຊິ່ງກັນແລະກັນ"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "ຕ້ອງການຊື່"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "ຊື່ຕ້ອງມີ 1000 ຕົວອັກສອນຫຼືໜ້ອຍກວ່າ"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ລົງ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "ປີໜ້າ"
 msgctxt "daytime"
 msgid "Night"
 msgstr "ກາງຄືນ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "ບໍ່"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "ບໍ່ພົບຄົນ"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "ບໍ່ພົບສະຖານທີ່"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "ບໍ່ມີການລັອກເຣດາ"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "ການແຈ້ງເຕືອນ: {0}"
 msgid "Novice"
 msgstr "ຜູ້ເລີ່ມຕົ້ນ"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "ຂຶ້ນ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "ຕົວເລກ"
@@ -3221,7 +3273,9 @@ msgstr "ຢູ່ທາງແລ່ນ: ແຜ່ນປີກເຄິ່ງ, �
 msgid "Oops! Page Not Found!"
 msgstr "ອຸບຍ! ບໍ່ພົບໜ້າ!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "ເປີດ"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "ຕົວເລືອກ"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "ອື່ນໆ"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "ອື່ນໆ"
 
@@ -3453,13 +3512,13 @@ msgstr "ໂພສ"
 msgid "Posts and comments"
 msgstr "ໂພສແລະຄຳເຫັນ"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "ກົດ {key} ເພື່ອບິນຂຶ້ນ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "ກົດປຸ່ມໃດໜຶ່ງ…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "ກົດ ENTER ເພື່ອບິນຂຶ້ນ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "ບັນທຶກໄຟລ໌ການບິນແລ້ວ"
 msgid "Red"
 msgstr "ສີແດງ"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "ແດງ {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "ບອດສີແດງ"
@@ -3631,6 +3694,7 @@ msgstr "ໂຫຼດໃໝ່"
 msgid "REJOINING"
 msgstr "ກັບຄືນຂະບວນ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "ກ່ຽວຂ້ອງ"
@@ -3883,6 +3947,10 @@ msgstr "ກຳລັງເຕັມທີ່"
 msgid "Runway {end}"
 msgstr "ທາງແລ່ນ {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ຂວາ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "ວັນເສົາ"
@@ -4062,6 +4130,7 @@ msgstr "ເຊີບເວີ"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "ຂໍ້ຜິດພາດເຊີບເວີ"
 
@@ -4074,6 +4143,10 @@ msgstr "ກົດລະບຽບເຊີບເວີ"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "ເຊີບເວີແລ່ນ v{0}, ທ່ານມີ v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "ເຊີບເວີປິດແລ້ວ"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "ແຍກ"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "ກາງປີກ"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "ຫາງ {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "ບໍ່ພົບເນື້ອຫາທີ່ຮ້ອງຂໍ."
 msgid "The server returned a web page instead of data."
 msgstr "ເຊີບເວີສົ່ງຄືນໜ້າເວັບແທນຂໍ້ມູນ."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "ເຊີບເວີໂລກຕອບກັບດ້ວຍຂໍ້ຜິດພາດ {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "ເຊີບເວີໂລກບໍ່ໄດ້ຕອບກັບທັນເວລາ"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "ເຊີບເວີໂລກບໍ່ມີບ່ອນສຳລັບແມັດອື່ນອີກ"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "ເຊີບເວີໂລກສົ່ງຄຳຕອບທີ່ອ່ານບໍ່ໄດ້"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "ແອັບນີ້ບໍ່ໄດ້ຮັບອະນຸຍາດໃຫ້ໃຊ້ກະແຈຜ່ານຂອງທ່ານ. ອະນຸຍາດໃນການຕັ້ງຄ່າ, ພາຍໃຕ້ການອະນຸຍາດ."
@@ -4482,6 +4575,10 @@ msgstr "ເວລາ"
 msgid "Time of day"
 msgstr "ເວລາຂອງມື້"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "ໝົດເວລາ"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "ຊື່ເລື່ອງ"
@@ -4512,13 +4609,25 @@ msgstr "ສະຫຼັບຕົວເລືອກການເບິ່ງ"
 msgid "Toggle watched filter"
 msgstr "ສະຫຼັບຕົວກອງທີ່ເບິ່ງ"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "ມີແມັດທີ່ສະເໜີຈາກທີ່ຢູ່ຂອງທ່ານຫຼາຍເກີນໄປ"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "ມີຄຳຮ້ອງຂໍຫຼາຍເກີນໄປ"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "ມີຄຳຂໍໄປຫາເຊີບເວີໂລກຫຼາຍເກີນໄປ"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "ຍອດນິຍົມ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "ລະດັບເທິງສຸດ"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "ການເດີນທາງ"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ທຣິມ"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ທຣິມ {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "ສະຫະລັດອາເມລິກາ"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "ປີກລັອກ"
 msgid "WINS"
 msgstr "ຊະນະ"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "ຖອນອອກແລ້ວ"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "ເຊີບເວີໂລກ"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "ບໍ່ສາມາດເຊື່ອມຕໍ່ຫາເຊີບເວີໂລກໄດ້"
@@ -4893,6 +5016,10 @@ msgstr "ຫັນຫົວຂວາ"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "ປີ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "ແມ່ນ"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

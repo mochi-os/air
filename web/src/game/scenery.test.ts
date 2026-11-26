@@ -15,7 +15,7 @@ const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url
 const wire = readFileSync(fileURLToPath(new URL('./net.ts', import.meta.url)), 'utf8')
 
 function body(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   if (start < 0) throw new Error(`${name} not found in engine.ts`)
   const end = source.indexOf('\nfunction ', start + 1)
   return source.slice(start, end < 0 ? undefined : end)
@@ -45,10 +45,10 @@ interface Scenery {
 
 // Runs scenery() over a two-building, one-post map with a carrier island.
 function scenery(): Scenery {
-  const block = /function scenery\(\)\{[\s\S]*?return \{ sea:3, fields, carrier, prisms, posts \};[^\n]*\n\}/.exec(source)?.[0] ?? ''
+  const block = /function scenery\(\)\{[\s\S]*?return \{ sea:SEA, fields, carrier, prisms, posts \};[^\n]*\n\}/.exec(source)?.[0] ?? ''
   if (!block) throw new Error('scenery not found in engine.ts')
-  const run = new Function(`const ISLAND_H=3.5, AIRFIELD_FLOAT=1.46, RUNWAY_FLOAT=1.5, D2R=Math.PI/180, CARRIER_YD=0, STRIP_ULAT=1, STRIP_UFA=0, strip_lat=()=>0;
-    const CARRIER={x:0,z:0,deckY:20}, CHART={x:-18500,z:7500,yaw:0.349}, SHIP={outline:[[0,0],[1,0],[1,1]], catapults:[], landing:{ wires:[], span:2 }, vehicles:[]};
+  const run = new Function(`const SEA=3, ISLAND_H=3.5, AIRFIELD_FLOAT=1.46, RUNWAY_FLOAT=1.5, D2R=Math.PI/180, CARRIER_YD=0, STRIP_ULAT=1, STRIP_UFA=0, strip_lat=()=>0;
+    const CARRIER={x:0,z:0,deckY:20}, CHART={x:-18500,z:7500,yaw:0.349}, SHIP={outline:[[0,0],[1,0],[1,1]], catapults:[], landing:{ wires:[], ends:[], span:2 }, vehicles:[]};
     const physics_strips=[{a:[0,0],b:[100,0],w:46}];
     const runway_strips=[{a:[-1500,0],b:[1500,0],w:60}];
     const obstacles={ islands:[{pts:[[0,0],[10,0],[10,10]]}], buildings:[{pts:[[0,0],[10,0],[10,10],[0,10]],topY:12},{pts:[[20,0],[30,0],[30,10]],topY:8}], posts:[{x:5,z:5,r:2,y1:9}] };
@@ -105,7 +105,7 @@ describe('the scenery', () => {
 
   it('sweeps the midair over the world step, so a long step cannot fly two jets through each other', () => {
     const run = (dt: number, gap: number) => new Function('dt', 'gap', `const THREE={ MathUtils:{ clamp:(v,a,b)=>Math.min(b,Math.max(a,v)) } }, wrap_axis=(v)=>v;
-      const crashed=[]; let crash_t=0, has_enemy=true; const BANDIT='bandit', bandit_destroy=()=>{}, crash_ownship=(why)=>{ crashed.push(why); }, ground_height=()=>0, theatre={ frame:{ altitude:(p)=>p.y } };
+      const crashed=[]; let crash_t=0, has_enemy=true; const MULTIPLAYER=false, BANDIT='bandit', bandit_destroy=()=>{}, crash_ownship=(why)=>{ crashed.push(why); }, ground_height=()=>0, theatre={ frame:{ altitude:(p)=>p.y } };
       const ownship={ pos:{ x:0, y:3000, z:0 }, velx:0, vely:0, velz:-250 }, bandit={ pos:{ x:5, y:3000, z:gap }, velx:0, vely:0, velz:250 };
       ${body('swept')}
 ${body('check_collisions')}

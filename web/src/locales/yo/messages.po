@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "A ti gbà {0} tẹ́lẹ̀, ìdarí yẹn kò sì so mọ́ ohunkóhun mọ́."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} wà lórí {1}, tí wọn kò sì so mọ́ ohunkóhun mọ́."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} wà lórí {1}, tí kò sì so mọ́ ohunkóhun mọ́."
@@ -165,6 +171,10 @@ msgstr "Orúkọ {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "láti {from} sí {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} láti tì"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "EPO BINGO"
 msgid "Block {name}"
 msgstr "Dènà {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Dídènà nípasẹ̀"
 msgid "Blocked navigation to untrusted link"
 msgstr "A dí ìrìnnà sí ọ̀nà tí a kò gbẹ́kẹ̀lé"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Dí"
@@ -672,6 +684,10 @@ msgstr "Dí"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Búlúù"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BÚLÚÙ {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "A ti ṣe àtúnyẹ̀wò ẹ̀ka"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Ìlà àárín"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "A yí padà"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "A yí {field} padà"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "A yí kilaasi padà"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Ṣàwárí"
 msgid "Detect from web browser"
 msgstr "Ṣàwárí láti web browser"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Ipò olùgbéejáde"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Àgbàlejò eré tó yàtọ̀"
@@ -1628,6 +1653,7 @@ msgstr "Ń LỌ KÚRÒ"
 msgid "Drone"
 msgstr "Dírónì"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Ẹ̀dà"
@@ -1739,6 +1765,11 @@ msgstr "Pylon òfìfo"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Mú ìró ṣiṣẹ́"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Ó dópin"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Tanki epo"
 msgid "full afterburner"
 msgstr "áfítábọ̀nà kíkún"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Ìbọn ńlá nìkan"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Gbé ọwọ́ kúrò lórí ọ̀pá ìdarí; tẹ enter láti kí kí o sì gbéra"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Gbé ọwọ́ kúrò lórí ọ̀pá ìdarí; tẹ {key} láti kí kí o sì gbéra"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Àyẹ̀wò àwọn ìmọ́lẹ̀"
 msgid "Link"
 msgstr "Ọna asopọ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Àwọn ìjápọ̀"
@@ -2653,6 +2681,10 @@ msgstr "Ń ṣí..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Ìhámọ́ra"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "A NILO TITIPA"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Sọ eriali rẹ́dà kalẹ̀"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M láti tì"
+msgid "LWD"
+msgstr "ÒSÌ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Gbé…"
 msgid "Moved"
 msgstr "A gbé lọ"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "A gbé {field} lọ"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Ń kó lọ sí {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Eléré púpọ̀ nílò WebTransport, èyí tí aṣàwákiri yìí kò tíì ṣe àtìlẹ́yìn fún."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Pípa ara wọn"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "PÍPA ARA WỌN"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "A nílò orúkọ"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Orúkọ gbọ́dọ̀ jẹ́ lẹ́tà 1000 tàbí kéré"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ÌSÀLẸ̀"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Ọdún tó ń bọ̀"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Òru"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Bẹ́ẹ̀ kọ́"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "A kò rí ènìyàn kankan"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "A kò rí ibikíbi"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "KO SI TITIPA RADA"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Àwọn ìfitónilétí: {0}"
 msgid "Novice"
 msgstr "Olùbẹ̀rẹ̀"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "ÒKÈ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Nọ́mbà"
@@ -3221,7 +3273,9 @@ msgstr "Lórí ojú ọ̀nà: fláàpù ìdajì, tì tírọ́tù dé agbára ol
 msgid "Oops! Page Not Found!"
 msgstr "Aàá! A Kò Rí Ojú-ìwé!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Gbangba"
 
@@ -3272,6 +3326,11 @@ msgstr "Àwọn àṣàyàn"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Mìíràn"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Òmíràn"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3453,13 +3512,13 @@ msgstr "Àwọn ìfìránṣẹ́"
 msgid "Posts and comments"
 msgstr "Àwọn ìfìránṣẹ́ àti àlàyé"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "TẸ {key} LÁTI FÒ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Tẹ bọtìnì kan…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "TẸ ENTER LÁTI FÒ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "A ti fi àkọsílẹ̀ pamọ́"
 msgid "Red"
 msgstr "Pupa"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "PUPA {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Àwọn bot pupa"
@@ -3631,6 +3694,7 @@ msgstr "Tún kí"
 msgid "REJOINING"
 msgstr "MO Ń PADÀ DARAPỌ̀"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Ṣe pẹ̀lú"
@@ -3883,6 +3947,10 @@ msgstr "AGBÁRA KÍKÚN"
 msgid "Runway {end}"
 msgstr "Ojú-pápá ìfò {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "Ọ̀TÚN"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Ọjọ́ Àbámẹ́ta"
@@ -4062,6 +4130,7 @@ msgstr "Sáfà"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Àṣìṣe sáfà"
 
@@ -4074,6 +4143,10 @@ msgstr "Àwọn òfin sáfà"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "olupin nṣiṣẹ v{0}, o ni v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "A ti pa sáfà"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Pínyà"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "TẸ́ ÌYẸ́ SÍLẸ̀"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "AMÚDÚRÓ {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "A kò rí àkóónú tí o béèrè fún."
 msgid "The server returned a web page instead of data."
 msgstr "Olupin naa da oju-ìwé wẹ́ẹ̀bù padà dípò data."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Olùpín ayé dáhùn pẹ̀lú àṣìṣe {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Olùpín ayé kò dáhùn lásìkò"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Olùpín ayé kò ní àyè fún ìdíje mìíràn"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Olùpín ayé fi ìdáhùn tí a kò lè kà ránṣẹ́"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Ìṣàmúlò yìí kò ní àṣẹ láti lo kọ́kọ́rọ́-ìwọlé rẹ. Fàyè gbà á ní Ètò, lábẹ́ Àwọn Àṣẹ."
@@ -4482,6 +4575,10 @@ msgstr "Àkókò"
 msgid "Time of day"
 msgstr "Àkókò ọjọ́"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Àkókò ti tán"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Àkọlé"
@@ -4512,13 +4609,25 @@ msgstr "Yí àwọn àṣàyàn ìwòye padà"
 msgid "Toggle watched filter"
 msgstr "Yí filter watched"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Ìdíje tó pọ̀ jù ni a ti fi lọ̀ láti àdírẹ́sì rẹ"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Àwọn ìbéèrè ti pọ̀ jù"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Ìbéèrè tó pọ̀ jù sí olùpín ayé"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Tó dára jùlọ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Ipele òkè"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Ń rìn"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Orílẹ̀-èdè Amẹ́ríkà"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "ÌYẸ́ TI TÍ"
 msgid "WINS"
 msgstr "BORÍ"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "A ti yọ ọ́ kúrò"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Olùpín ayé"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "A kò lè dé ọ̀dọ̀ olùpín ayé"
@@ -4893,6 +5016,10 @@ msgstr "Yaw sí ọ̀tún"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Ọdún"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Bẹ́ẹ̀ ni"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

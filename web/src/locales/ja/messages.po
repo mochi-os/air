@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} はすでに使われていたため、その操作は割り当て解除されました。"
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} は {1} に割り当てられていましたが、いずれも解除されました。"
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} は {1} に割り当てられていましたが、解除されました。"
@@ -165,6 +171,10 @@ msgstr "{entityLabel} の名前"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from}～{to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} で閉じる"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "ビンゴ燃料"
 msgid "Block {name}"
 msgstr "{name}をブロック"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "ブロック元"
 msgid "Blocked navigation to untrusted link"
 msgstr "信頼できないリンクへの遷移をブロックしました"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "ブロック"
@@ -672,6 +684,10 @@ msgstr "ブロック"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "青"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "青 {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "カテゴリを更新しました"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "中心線"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "変更しました"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field}を変更しました"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "クラスを変更しました"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "検出"
 msgid "Detect from web browser"
 msgstr "ウェブブラウザから検出"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "開発者モード"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "別のゲームホスト"
@@ -1628,6 +1653,7 @@ msgstr "離脱中"
 msgid "Drone"
 msgstr "ドローン"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "重複"
@@ -1739,6 +1765,11 @@ msgstr "空のパイロン"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "サウンドを有効にする"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "終了"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "燃料タンク"
 msgid "full afterburner"
 msgstr "フルアフターバーナー"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "乱戦"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "機関砲のみ"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "スティックから手を離す; エンターを押して敬礼し発艦"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "スティックから手を離す; {key} を押して敬礼し発艦"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "ランプテスト"
 msgid "Link"
 msgstr "リンク"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "リンク"
@@ -2653,6 +2681,10 @@ msgstr "読み込み中..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "兵装"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "ロックが必要"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "レーダーアンテナを下げる"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M で閉じる"
+msgid "LWD"
+msgstr "左翼下"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "動かしてください…"
 msgid "Moved"
 msgstr "移動しました"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field}を移動しました"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "{0} に移動しています"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "マルチプレイには WebTransport が必要ですが、このブラウザはまだ対応していません。"
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "相撃ち"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "相撃ち"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "名前が必要です"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "名前は1000文字以下にしてください"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "機首下"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "翌年"
 msgctxt "daytime"
 msgid "Night"
 msgstr "夜"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "いいえ"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "人が見つかりません"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "場所が見つかりません"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "レーダーロックなし"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "通知: {0}"
 msgid "Novice"
 msgstr "初心者"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "機首上"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "数値"
@@ -3221,7 +3273,9 @@ msgstr "滑走路上: フラップハーフ、ミリタリーパワーまで出�
 msgid "Oops! Page Not Found!"
 msgstr "ページが見つかりません!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "オープン"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "オプション"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "その他"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "その他"
 
@@ -3453,13 +3512,13 @@ msgstr "投稿"
 msgid "Posts and comments"
 msgstr "投稿とコメント"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "{key} で発艦"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "キーを押してください…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "エンターで発艦"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "記録を保存しました"
 msgid "Red"
 msgstr "赤"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "赤 {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "赤ボット"
@@ -3631,6 +3694,7 @@ msgstr "更新"
 msgid "REJOINING"
 msgstr "編隊復帰"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "関連"
@@ -3883,6 +3947,10 @@ msgstr "フルスロットル"
 msgid "Runway {end}"
 msgstr "滑走路 {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "右翼下"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "土曜日"
@@ -4062,6 +4130,7 @@ msgstr "サーバー"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "サーバーエラー"
 
@@ -4074,6 +4143,10 @@ msgstr "サーバーのルール"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "サーバーは v{0}、あなたは v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "サーバー停止"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "分割"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "主翼展開"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "水平尾翼 {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "リクエストされたコンテンツが見つかりませんでした
 msgid "The server returned a web page instead of data."
 msgstr "サーバーがデータではなくウェブページを返しました。"
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "ワールドサーバーがエラー {status} を返しました"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "ワールドサーバーが時間内に応答しませんでした"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "ワールドサーバーに新しいマッチを作成する空きがありません"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "ワールドサーバーから読み取れない応答が返されました"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "このアプリはパスキーの使用を許可されていません。設定の「権限」で許可してください。"
@@ -4482,6 +4575,10 @@ msgstr "時間"
 msgid "Time of day"
 msgstr "時刻"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "タイムアウト"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "タイトル"
@@ -4512,13 +4609,25 @@ msgstr "ビューオプションを切り替え"
 msgid "Toggle watched filter"
 msgstr "ウォッチ中フィルターを切り替え"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "お使いのアドレスから提示されたマッチが多すぎます"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "リクエストが多すぎます"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "ワールドサーバーへのリクエストが多すぎます"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "トップ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "最上位"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "移動中"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "トリム"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "トリム {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "アメリカ合衆国"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "主翼ロック"
 msgid "WINS"
 msgstr "の勝利"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "取り下げ"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "ワールドサーバー"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "ワールドサーバーに接続できません"
@@ -4893,6 +5016,10 @@ msgstr "右ヨー"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "年"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "はい"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

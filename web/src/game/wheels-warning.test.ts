@@ -13,12 +13,13 @@ import { describe, expect, it } from 'vitest'
 // read as text and run against a stand-in jet, as trim-law.test.ts does.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const law = /\nfunction wheels_warning\(\)\{[^\n]*\}\n/.exec(source)?.[0] ?? ''
+const handle = /\nfunction handle_down\(st\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
 
 interface Jet { gearTarget: number; cas: number; y: number; vely: number; grounded?: boolean; launching?: boolean }
 function warning(jet: Jet): boolean {
-  if (!law) throw new Error('wheels_warning() not found in engine.ts')
+  if (!law || !handle) throw new Error('wheels_warning() or handle_down() not found in engine.ts')
   const run = new Function('jet', `const ownship={ gearTarget:jet.gearTarget, cas:jet.cas, speed:jet.cas, pos:{y:jet.y}, vely:jet.vely, grounded:!!jet.grounded, launching:!!jet.launching };
-    ${law}
+    ${handle} ${law}
     return wheels_warning();`) as (jet: Jet) => boolean
   return run(jet)
 }

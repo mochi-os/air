@@ -77,7 +77,7 @@ export interface Ins {
   error: Fix // INS position less the true one
   drift: Fix // the rate that error grows, m/s
   angle: number // which way this INS drifts
-  motion: Fix // the deck's velocity as a manual carrier alignment was given it, less the true one, m/s
+  motion: Fix // the deck's velocity as a manual carrier alignment was given it, m/s
   aided: { position: number; velocity: number; held: boolean } // the aided INS's update clocks, and its velocities corrected
 }
 
@@ -347,9 +347,10 @@ function navigate(nav: Navigation, truth: Truth): void {
   ins.mode = 'nav'
   ins.drift = polar(ins.angle, DRIFT * (q / COMPLETE))
   if (ins.kind === 'cv' && ins.manual) {
-    // a manual carrier alignment tracked the deck by the heading and speed entered: what they got wrong stays as a velocity error (24.2.3.1.3)
-    ins.drift.x += ins.motion.x
-    ins.drift.z += ins.motion.z
+    // a manual carrier alignment tracked the deck by the heading and speed entered: what they got wrong stays as a velocity error (24.2.3.1.3).
+    // The jet sits on the deck, so its own ground velocity is the ship's true one.
+    ins.drift.x += ins.motion.x - truth.east
+    ins.drift.z += ins.motion.z - truth.south
   }
   if (ins.kind !== 'ifa') nav.waypoints[0] = { x: truth.x + ins.error.x, z: truth.z + ins.error.z, elevation: nav.waypoints[0]?.elevation ?? 0, name: '', offset: null }
   nav.source = ins.knob === 'ifa' && good(nav.gps) ? 'ains' : 'ins'
@@ -546,7 +547,9 @@ export function manual(nav: Navigation): boolean {
   return true
 }
 // carrier gives a manual carrier alignment the ship's heading and speed
-// (24.2.3.1.4). The game's ship holds still, so any speed given is error.
+// (24.2.3.1.4). Measured against the deck's true velocity where the alignment
+// completes, so the ship's real heading and speed leave no error and none
+// entered on a ship under way leaves all of it.
 export function carrier(nav: Navigation, heading: number, speed: number): void {
   nav.ins.motion = polar(heading, speed)
 }
@@ -860,9 +863,17 @@ export function required(nav: Navigation, here: Fix, now: number): number | null
   const from = list.indexOf(nav.current)
   const to = list.indexOf(nav.target)
   if (nav.auto && from >= 0 && to > from) {
-    before = leg( here, nav.waypoints[nav.current] as Waypoint).range
-    for (let k = from; k < to - 1; k++) before += leg( nav.waypoints[list[k]] as Waypoint, nav.waypoints[list[k + 1]] as Waypoint).range
-    final = leg( nav.waypoints[list[to - 1]] as Waypoint, there).range
+    // every point on the path read as the other sequence readers read one: a
+    // sequence may hold a number whose waypoint was never entered, and there is
+    // then no path to time
+    const path: Fix[] = [here]
+    for (let k = from; k < to; k++) {
+      const point = spot(nav, list[k])
+      if (!point) return null
+      path.push(point)
+    }
+    for (let k = 0; k < path.length - 1; k++) before += leg(path[k], path[k + 1]).range
+    final = leg(path[path.length - 1], there).range
   } else if (nav.current === nav.target) final = leg( here, there).range
   else return null
   const pace = nav.speed * KNOT
@@ -1083,6 +1094,16 @@ export function carry(nav: Navigation, frame: Frame, r: Rigid): void {
   if (nav.update) swing(nav.update.delta)
   if (nav.previous) swing(nav.previous.error)
 }
+// sexagesimal splits the size of an angle in degrees into whole degrees and
+// the units of a degree under them, `per` to the degree (60 for minutes, 3600
+// for seconds), rounded once to the unit shown before it is split, so a value
+// that rounds up carries into the degrees: 5.9999° to the minute is 6°00',
+// where rounding the minutes alone wrote 5°00'.
+export function sexagesimal(degrees: number, per: number): [number, number] {
+  const units = Math.round(Math.abs(degrees) * per)
+  const whole = Math.floor(units / per)
+  return [whole, units - whole * per]
+}
 // angle writes a latitude or longitude as the displays do: degrees, minutes
 // and seconds, or with LATLN DCML degrees, minutes and thousandths (24.2.5.6).
 export function angle(value: number, letters: 'NS' | 'EW', decimal: boolean, precise = false): string {
@@ -1090,16 +1111,12 @@ export function angle(value: number, letters: 'NS' | 'EW', decimal: boolean, pre
   const width = letters === 'NS' ? 2 : 3
   const pad = (v: number, n: number) => String(v).padStart(n, '0')
   if (decimal) {
-    let thousandths = Math.round(Math.abs(value) * 60000)
-    const whole = Math.floor(thousandths / 60000)
-    thousandths -= whole * 60000
+    const [whole, thousandths] = sexagesimal(value, 60000)
     return letter + pad(whole, width).padStart(4) + '°' + pad(Math.floor(thousandths / 1000), 2) + '.' + pad(thousandths % 1000, 3) + "'"
   }
   // PRECISE adds the hundredths of a second (24.2.5.1)
   const per = precise ? 100 : 1
-  let seconds = Math.round(Math.abs(value) * 3600 * per)
-  const whole = Math.floor(seconds / (3600 * per))
-  seconds -= whole * 3600 * per
+  const [whole, seconds] = sexagesimal(value, 3600 * per)
   const rest = seconds % (60 * per)
   return letter + pad(whole, width).padStart(4) + '°' + pad(Math.floor(seconds / (60 * per)), 2) + "'" + pad(Math.floor(rest / per), 2) + (precise ? '.' + pad(rest % per, 2) : '') + '"'
 }
@@ -1177,7 +1194,16 @@ const arc = (phi: number) =>
     ((15 * ECC ** 2) / 256 + (45 * ECC ** 3) / 1024) * Math.sin(4 * phi) - ((35 * ECC ** 3) / 3072) * Math.sin(6 * phi))
 // project: the transverse Mercator easting of a place in a zone, and its
 // northing from the equator, negative south of it. lift is its inverse.
-const own = (longitude: number) => (Math.floor((((longitude + 180) % 360) + 360) % 360 / 6) % 60) + 1
+// own: the grid zone a position lies in - the six-degree zone of its
+// longitude, but for the grid's two exceptions: zone 32 widened to 3-12 E over
+// south-west Norway in band V (56-64 N), and in band X (72-84 N) round
+// Svalbard only the odd zones 31, 33, 35 and 37, bounded at 9, 21 and 33 E.
+function own(latitude: number, longitude: number): number {
+  const east = ((((longitude + 180) % 360) + 360) % 360) - 180
+  if (latitude >= 56 && latitude < 64 && east >= 3 && east < 12) return 32
+  if (latitude >= 72 && east >= 0 && east < 42) return east < 9 ? 31 : east < 21 ? 33 : east < 33 ? 35 : 37
+  return (Math.floor((east + 180) / 6) % 60) + 1
+}
 function project(latitude: number, longitude: number, zone: number): { easting: number; y: number } {
   const phi = latitude * RAD
   const turn = ((((longitude - ((zone - 1) * 6 - 177) + 180) % 360) + 360) % 360) - 180
@@ -1208,7 +1234,7 @@ function lift(zone: number, easting: number, y: number): { latitude: number; lon
 // null outside N84 to S80. geodetic is its inverse.
 export function utm(latitude: number, longitude: number): Utm | null {
   if (latitude > 84 || latitude < -80) return null
-  const zone = own(longitude)
+  const zone = own(latitude, longitude)
   const at = project(latitude, longitude, zone)
   return { zone, band: BANDS[Math.min(19, Math.floor((latitude + 80) / 8))], easting: at.easting, northing: latitude < 0 ? at.y + 10000000 : at.y }
 }
@@ -1262,7 +1288,8 @@ function centre(latitude: number, longitude: number, shift: { east: number; nort
   const y = latitude < 0 ? here.northing - 10000000 : here.northing
   if (!shift.east && !shift.north) return { zone: here.zone, easting: here.easting, y }
   const at = lift(here.zone, here.easting + 5 * shift.east * 100000, y + 5 * shift.north * 100000)
-  return { zone: own(at.longitude), ...project(at.latitude, at.longitude, own(at.longitude)) }
+  const zone = own(at.latitude, at.longitude)
+  return { zone, ...project(at.latitude, at.longitude, zone) }
 }
 // sig lays out the square identification grid (figure 24-9 sheet 4): five
 // squares each way about a reference position, north up, each with its zone,

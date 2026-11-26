@@ -22,9 +22,9 @@ describe('the pitch ladder hangs on the velocity vector', () => {
     // drawn on it snapped the marker and the ladder sideways as a taxi turn
     // crossed that speed.
     expect(conformal).toMatch(
-      /const path=new THREE\.Vector3\(ownship\.velx[^;]*\.addScaledVector\(ownship\.fwd,Math\.max\(0,2-ownship\.speed\)\)/,
+      /const path=_hud_path\.set\(ownship\.velx[^;]*\.addScaledVector\(ownship\.fwd,Math\.max\(0,2-ownship\.speed\)\)/,
     )
-    expect(conformal).toMatch(/fpm=proj_dir\(path\)/)
+    expect(conformal).toMatch(/fpm=proj_dir\(path,_hud_fpm_raw\)/)
     expect(conformal).not.toMatch(/proj_dir\(ownship\.vel_dir\)/)
   })
 
@@ -35,8 +35,8 @@ describe('the pitch ladder hangs on the velocity vector', () => {
     // never selected.
     expect(source).toMatch(/if\(master==="120c"\)\{[^}]*\} else if\(master==="nav"\) caged=!caged;/)
     expect(conformal).toMatch(/const cage=master==="nav"\?caged:!pa;/)
-    expect(conformal).toMatch(/if\(cage\) fpm=\[bore\[0\],truth\[1\]\];/)
-    expect(conformal).toMatch(/if\(cage&&Math\.abs\(truth\[0\]-bore\[0\]\)>2\*ppd\) \[ghost,ghost_limited\]=limit\(truth\);/)
+    expect(conformal).toMatch(/if\(cage\)\{ _hud_caged\[0\]=bore\[0\]; _hud_caged\[1\]=truth\[1\]; fpm=_hud_caged; \}/)
+    expect(conformal).toMatch(/if\(cage&&Math\.abs\(truth\[0\]-bore\[0\]\)>2\*ppd\)\{ ghost_limited=hud_limit\(truth,centre,8\*ppd,_hud_ghost\); ghost=_hud_ghost; \}/)
     expect(conformal).not.toMatch(/fpm_true/)
   })
 
@@ -58,8 +58,8 @@ describe('the pitch ladder hangs on the velocity vector', () => {
     // head looks, and the head holds where it is left: a look 12° up clamped a
     // level flight path to the 10° ring and flashed it (#35).
     const line = /const bore=[^\n]*;/.exec(source)?.[0] ?? ''
-    expect(line).toMatch(/^const bore=proj_dir\(ownship\.fwd\)\|\|\[cx,cy\];/)
-    const bore = new Function('glass', 'proj_dir', 'ownship', 'cx', 'cy', `${line} return bore;`) as (
+    expect(line).toMatch(/^const bore=proj_dir\(ownship\.fwd,_hud_bore\)\|\|\(_hud_bore\[0\]=cx,_hud_bore\[1\]=cy,_hud_bore\);/)
+    const bore = new Function('glass', 'proj_dir', 'ownship', 'cx', 'cy', `const _hud_bore=[0,0]; ${line} return bore;`) as (
       glass: object | null, proj_dir: (d: string) => number[] | null, ownship: { fwd: string }, cx: number, cy: number) => number[]
     const nose = (d: string) => (d === 'nose' ? [300, 500] : null)
     expect(bore(null, nose, { fwd: 'nose' }, 640, 380)).toEqual([300, 500])
@@ -71,9 +71,10 @@ describe('the pitch ladder hangs on the velocity vector', () => {
   it('references the ladder to the marker as drawn, limit included', () => {
     // On the unlimited flight path the ladder sat a crab angle's width to the
     // side of a marker held at its limit.
-    expect(conformal.indexOf('const marked=')).toBeGreaterThan(conformal.indexOf('fpm_limited=true'))
+    expect(conformal.indexOf('fpm_limited=hud_limit(')).toBeGreaterThan(0)
+    expect(conformal.indexOf('const marked=')).toBeGreaterThan(conformal.indexOf('fpm_limited=hud_limit('))
     expect(conformal).toMatch(/const marked=fpm\?/)
-    expect(conformal).toMatch(/const ladFwd=new THREE\.Vector3\(marked\.x,0,marked\.z\)/)
+    expect(conformal).toMatch(/const ladFwd=_hud_level\.set\(marked\.x,0,marked\.z\)/)
   })
 })
 
@@ -144,13 +145,17 @@ describe('the landing symbology gate', () => {
 describe('the velocity vector limit', () => {
   const from = conformal.indexOf('\n', conformal.indexOf('if(path.lengthSq()>1e-9)')) + 1
   const section = conformal.slice(from, conformal.indexOf('\tconst cage='))
+  const held = /\nfunction hud_limit\(p,centre,rmax,out\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
   const proj_dir = (d: THREE.Vector3) => [Math.atan2(d.x, -d.z) / (Math.PI / 180), -Math.atan2(d.y, Math.hypot(d.x, d.z)) / (Math.PI / 180)]
   const ownship = { fwd: new THREE.Vector3(0, 0, -1), up: new THREE.Vector3(0, 1, 0) }
-  const limit = new Function('THREE', 'ownship', 'proj_dir', 'bore', 'ppd', 'D2R', `${section} return limit;`)(
+  // the section finds the optical centre; the marker is held about it at 8° (draw_hud's 8*ppd), as draw_hud holds it
+  const limit = new Function('THREE', 'ownship', 'proj_dir', 'bore', 'ppd', 'D2R', `const _hud_centre=new THREE.Vector3(), _hud_optical=[0,0]; ${section} ${held}
+    return (p)=>{ const out=[0,0], limited=hud_limit(p,centre,8*ppd,out); return [out,limited]; };`)(
     THREE, ownship, proj_dir, [0, 0], 1, Math.PI / 180) as (p: number[]) => [number[], boolean]
 
   it('leaves an on-speed approach and a path 11° below the nose alone', () => {
-    expect(section).toMatch(/const limit=/)
+    expect(held).not.toBe('')
+    expect(conformal).toMatch(/fpm_limited=hud_limit\(fpm,centre,8\*ppd,_hud_marker\);/)
     expect(limit([0, 8.1])[1]).toBe(false)
     expect(limit([0, 11])[1]).toBe(false)
   })
@@ -244,7 +249,7 @@ describe('the HUD symbols as figure 2-26 draws them', () => {
       const D2R = Math.PI / 180
       // the ladder line's ends straight across the screen, so the local frame is the screen's
       const dir_at = (_f: unknown, _r: unknown, across: number, up: number) => [400 - across * 1000, 300 - up * 1000]
-      new Function('hctx', 'pitch', 'pa', 'hs', 'GR', 'D2R', 'proj_dir', 'dir_at', 'ladFwd', 'rightH', `let horizon=null; for(const p of [pitch]){ const pr=p*D2R; ${body} }`)(
+      new Function('hctx', 'pitch', 'pa', 'hs', 'GR', 'D2R', 'proj_dir', 'dir_at', 'ladFwd', 'rightH', `let horizon=null; const _pitch_dir=null, _pitch_left=[0,0], _pitch_right=[0,0], _pitch_horizon=[0,0]; for(const p of [pitch]){ const pr=p*D2R; ${body} }`)(
         c.hctx, p, pa, 1, 'g', D2R, (d: number[]) => d, dir_at, null, null)
       return c.paths.filter(path => path.points.length === 3).map(path => { const [, [, x1, y1], [, x2, y2]] = path.points; return [x2 - x1, y2 - y1] })
     }

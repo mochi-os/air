@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ужо было занята, і гэтае кіраванне цяпер не прызначана."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} было на {1}, якія цяпер не прызначаны."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} было на {1}, якое цяпер не прызначана."
@@ -165,6 +171,10 @@ msgstr "Назва {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "з {from} да {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} каб закрыць"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "БІНГА ПАЛІВА"
 msgid "Block {name}"
 msgstr "Заблакаваць {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Заблакавана"
 msgid "Blocked navigation to untrusted link"
 msgstr "Заблакаваны пераход па ненадзейнай спасылцы"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Блокі"
@@ -672,6 +684,10 @@ msgstr "Блокі"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Сінія"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "СІНІЯ {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Катэгорыя абноўлена"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Цэнтральная лінія"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Зменена"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "Зменена {field}"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Клас зменены"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Вызначыць"
 msgid "Detect from web browser"
 msgstr "Вызначыць з вэб-браўзера"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Рэжым распрацоўшчыка"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Іншы гульнявы хост"
@@ -1628,6 +1653,7 @@ msgstr "АДЫХОДЗІЦЬ"
 msgid "Drone"
 msgstr "Дрон"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Дублікаты"
@@ -1739,6 +1765,11 @@ msgstr "Пусты пілон"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Уключыць гук"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Скончана"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Паліўны бак"
 msgid "full afterburner"
 msgstr "поўны фарсаж"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Толькі гарматы"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Прымі руку з ручкі; націсні enter, каб аддаць гонар і стартаваць"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Прымі руку з ручкі; націсні {key}, каб аддаць гонар і стартаваць"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Праверка агнёў"
 msgid "Link"
 msgstr "Спасылка"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Спасылкі"
@@ -2653,6 +2681,10 @@ msgstr "Загрузка..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Узбраенне"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "ПАТРЭБНЫ ЗАХОП"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Апусціць антэну радара"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M каб закрыць"
+msgid "LWD"
+msgstr "ЛЕВ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Рухайце…"
 msgid "Moved"
 msgstr "Перамешчана"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "Перамешчана {field}"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Перамяшчэнне на {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Для мультыплэера патрэбны WebTransport, які гэты браўзер пакуль не падтрымлівае."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Узаемнае збіццё"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "УЗАЕМНАЕ ЗБІЦЦЁ"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Назва абавязковая"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Назва павінна быць не больш за 1000 сімвалаў"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "НІЗ"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Наступны год"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Ноч"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Не"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Людзі не знойдзены"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Месцы не знойдзены"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "НЯМА ЗАХОПУ РАДАРАМ"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Апавяшчэнні: {0}"
 msgid "Novice"
 msgstr "Пачатковец"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "ВЕРХ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Лік"
@@ -3221,7 +3273,9 @@ msgstr "На паласе: палова закрылкаў, выведзі на 
 msgid "Oops! Page Not Found!"
 msgstr "Вой! Старонка не знойдзена!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Адкрыты"
 
@@ -3272,6 +3326,11 @@ msgstr "Параметры"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Іншае"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Іншы"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3453,13 +3512,13 @@ msgstr "Пасты"
 msgid "Posts and comments"
 msgstr "Пасты і каментары"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "НАЦІСНІ {key} ДЛЯ ЎЗЛЁТУ"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Націсніце клавішу…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "НАЦІСНІ ENTER ДЛЯ ЎЗЛЁТУ"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Запіс захаваны"
 msgid "Red"
 msgstr "Чырвоныя"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "ЧЫРВОНЫЯ {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Чырвоныя боты"
@@ -3631,6 +3694,7 @@ msgstr "Абнавіць"
 msgid "REJOINING"
 msgstr "ВЯРТАЮСЯ Ў СТРОЙ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Звязана"
@@ -3883,6 +3947,10 @@ msgstr "ПОЎНЫ ГАЗ"
 msgid "Runway {end}"
 msgstr "Паласа {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ПРАВ"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Субота"
@@ -4062,6 +4130,7 @@ msgstr "Сервер"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Памылка сервера"
 
@@ -4074,6 +4143,10 @@ msgstr "Правілы сервера"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "сервер працуе на v{0}, у вас v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Сервер выключаны"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Падзяліць"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "РАСКРЫЦЬ КРЫЛЫ"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "СТАБ {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Запытанае змесціва не знойдзена."
 msgid "The server returned a web page instead of data."
 msgstr "Сервер вярнуў вэб-старонку замест даных."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Сервер свету адказаў памылкай {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Сервер свету не адказаў своечасова"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "На серверы свету няма месца для яшчэ аднаго матча"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Сервер свету даслаў адказ, які не ўдалося прачытаць"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Гэтай праграме не дазволена выкарыстоўваць ваш ключ доступу. Дазвольце гэта ў Наладах, у раздзеле Дазволы."
@@ -4482,6 +4575,10 @@ msgstr "Час"
 msgid "Time of day"
 msgstr "Час сутак"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Час выйшаў"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Назва"
@@ -4512,13 +4609,25 @@ msgstr "Пераключыць параметры выгляду"
 msgid "Toggle watched filter"
 msgstr "Пераключыць фільтр прагледжаных"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Занадта шмат матчаў прапанавана з вашага адраса"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Занадта шмат запытаў"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Занадта шмат запытаў да сервера свету"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Лепшае"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Верхні ўзровень"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "У дарозе"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "трымер"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ТРЫМЕР {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Злучаныя Штаты"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "КРЫЛЫ ЗАФІКСАВАНЫ"
 msgid "WINS"
 msgstr "ПЕРАМАГАЕ"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Знята"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Сервер свету"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Сервер свету недаступны"
@@ -4893,6 +5016,10 @@ msgstr "Рысканне ўправа"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Год"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Так"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

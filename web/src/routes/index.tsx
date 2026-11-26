@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { useLingui } from '@lingui/react/macro'
 import {
@@ -13,9 +13,6 @@ import {
 } from '@mochi/web'
 import { MissionSetup } from '../components/MissionSetup'
 import { audio_gesture } from '../game/audio'
-// Type-only, so the statement is erased at build. Keep it that way: a VALUE
-// import from the engine here would undo the lazy split below.
-import { type GameHandle } from '../game/engine'
 import { warm } from '../game/library'
 import { type Join as NetJoin } from '../game/net'
 import { preload } from '../game/preload'
@@ -87,7 +84,7 @@ function exitFullscreen() {
 // (game running, menu hidden) hides the Mochi shell chrome and goes fullscreen.
 function Index() {
   const { t } = useLingui()
-  const [config, setConfig] = useMissionConfig()
+  const [config, setConfig, settled] = useMissionConfig()
   const [join, setJoin] = useState<NetJoin | null>(null)
   const developer =
     typeof window !== 'undefined' &&
@@ -97,7 +94,6 @@ function Index() {
   const [started, setStarted] = useState(fly)
   const [menuOpen, setMenuOpen] = useState(!fly)
   const [gameKey, setGameKey] = useState(0)
-  const gameRef = useRef<GameHandle | null>(null)
 
   const [tab, setTab] = useState<SetupTab>('general')
 
@@ -161,9 +157,6 @@ function Index() {
               key={gameKey}
               config={config}
               join={join}
-              onReady={(h) => {
-                gameRef.current = h
-              }}
               onExit={() => {
                 // The mission is OVER, not suspended: exit_match has written the
                 // flight to the log and closed any transport, so leaving
@@ -193,6 +186,7 @@ function Index() {
       {menuOpen && (
         <MissionSetup
           config={config}
+          settled={settled}
           onChange={setConfig}
           tab={tab}
           onTabChange={(t) => setTab(t as SetupTab)}

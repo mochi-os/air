@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} je već bilo zauzeto i ta kontrola sada nije dodijeljena."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} je bilo na {1}, koje sada nisu dodijeljene."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} je bilo na {1}, što sada nije dodijeljeno."
@@ -165,6 +171,10 @@ msgstr "Naziv {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} do {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} za zatvaranje"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO GORIVO"
 msgid "Block {name}"
 msgstr "Blokiraj {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Blokirao"
 msgid "Blocked navigation to untrusted link"
 msgstr "Blokirana navigacija na nepouzdani link"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Blokovi"
@@ -672,6 +684,10 @@ msgstr "Blokovi"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Plavi"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "PLAVI {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kategorija ažurirana"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Središnja linija"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Promijenjeno"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "Promijenjeno {field}"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Klasa promijenjena"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Otkrij"
 msgid "Detect from web browser"
 msgstr "Detektuj iz web browsera"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Način za programere"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Drugi host igre"
@@ -1628,6 +1653,7 @@ msgstr "UDALJAVA SE"
 msgid "Drone"
 msgstr "Dron"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Duplikati"
@@ -1739,6 +1765,11 @@ msgstr "Prazan pilon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Uključi zvuk"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Okončano"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Rezervoar goriva"
 msgid "full afterburner"
 msgstr "puni forsaž"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Samo topovi"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Skini ruku s palice; pritisni enter za pozdrav i lansiranje"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Skini ruku s palice; pritisni {key} za pozdrav i lansiranje"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Test svjetala"
 msgid "Link"
 msgstr "Veza"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Veze"
@@ -2653,6 +2681,10 @@ msgstr "Učitavanje..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Naoružanje"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "POTREBAN ZAHVAT"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Spusti radarsku antenu"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M za zatvaranje"
+msgid "LWD"
+msgstr "LIJ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Pomjeri…"
 msgid "Moved"
 msgstr "Premješteno"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "Premješteno {field}"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Premještanje na {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer zahtijeva WebTransport, koji ovaj preglednik još ne podržava."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Međusobno obaranje"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "MEĐUSOBNO OBARANJE"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Naziv je obavezan"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Naziv mora imati 1000 ili manje znakova"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "DOL"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Sljedeća godina"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Noć"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Ne"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Nisu pronađeni ljudi"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Nisu pronađena mjesta"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "NEMA RADARSKOG ZAHVATA"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Obavijesti: {0}"
 msgid "Novice"
 msgstr "Početnik"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "GOR"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Broj"
@@ -3221,7 +3273,9 @@ msgstr "Na pisti: pola zakrilaca, podigni na vojni režim, kočnice otpusti"
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Stranica nije pronađena!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Otvoreno"
 
@@ -3272,6 +3326,11 @@ msgstr "Opcije"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Drugo"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Drugi"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3453,13 +3512,13 @@ msgstr "Objave"
 msgid "Posts and comments"
 msgstr "Objave i komentari"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "PRITISNI {key} ZA LANSIRANJE"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Pritisni tipku…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "PRITISNI ENTER ZA LANSIRANJE"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Snimak je sačuvan"
 msgid "Red"
 msgstr "Crveni"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "CRVENI {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Crveni botovi"
@@ -3631,6 +3694,7 @@ msgstr "Osvježi"
 msgid "REJOINING"
 msgstr "VRAĆAM SE U FORMACIJU"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Povezuje"
@@ -3883,6 +3947,10 @@ msgstr "PUNI GAS"
 msgid "Runway {end}"
 msgstr "Pista {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "DES"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Subota"
@@ -4062,6 +4130,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Greška servera"
 
@@ -4074,6 +4143,10 @@ msgstr "Pravila servera"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "server koristi v{0}, vi imate v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Server ugašen"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Podijeli"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "RAŠIRI KRILA"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Traženi sadržaj nije pronađen."
 msgid "The server returned a web page instead of data."
 msgstr "Server je vratio web stranicu umjesto podataka."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Server svijeta je odgovorio greškom {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Server svijeta nije odgovorio na vrijeme"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Server svijeta nema mjesta za još jedan meč"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Server svijeta je poslao odgovor koji se nije mogao pročitati"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Ova aplikacija nema dozvolu da koristi vaš pristupni ključ. Dozvolite joj to u Postavkama, pod Dozvole."
@@ -4482,6 +4575,10 @@ msgstr "Vrijeme"
 msgid "Time of day"
 msgstr "Doba dana"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Isteklo vrijeme"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Naslov"
@@ -4512,13 +4609,25 @@ msgstr "Prikaži/sakrij opcije pregleda"
 msgid "Toggle watched filter"
 msgstr "Prikaži/sakrij filter praćenih"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Previše mečeva ponuđeno s vaše adrese"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Previše zahtjeva"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Previše zahtjeva serveru svijeta"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Najbolje"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Najviši nivo"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Putovanje"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Sjedinjene Države"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "KRILA ZAKLJUČANA"
 msgid "WINS"
 msgstr "POBJEĐUJE"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Povučeno"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Server svijeta"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Server svijeta nije dostupan"
@@ -4893,6 +5016,10 @@ msgstr "Skretanje desno"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Godina"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Da"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

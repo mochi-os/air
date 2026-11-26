@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} پہلے ہی لیا جا چکا تھا، اور وہ کنٹرول اب منسلک نہیں۔"
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} پر تھا، جو اب منسلک نہیں ہیں۔"
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} پر تھا، جو اب منسلک نہیں۔"
@@ -165,6 +171,10 @@ msgstr "{entityLabel} کا نام"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} سے {to} تک"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "بند کرنے کے لیے {key}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "بنگو ایندھن"
 msgid "Block {name}"
 msgstr "{name} کو بلاک کریں"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "بلاک کردہ"
 msgid "Blocked navigation to untrusted link"
 msgstr "غیر بھروسہ مند لنک پر نیویگیشن مسدود"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "بلاک کرتا ہے"
@@ -672,6 +684,10 @@ msgstr "بلاک کرتا ہے"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "نیلا"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "نیلا {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "زمرہ اپ ڈیٹ ہو گیا"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "مرکزی لکیر"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "تبدیل ہوا"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} تبدیل ہوا"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "کلاس تبدیل کی گئی"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "شناخت کریں"
 msgid "Detect from web browser"
 msgstr "ویب براؤزر سے پتہ لگائیں"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "ڈویلپر موڈ"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "مختلف گیم ہوسٹ"
@@ -1628,6 +1653,7 @@ msgstr "دور جا رہا"
 msgid "Drone"
 msgstr "ڈرون"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "نقل کرتا ہے"
@@ -1739,6 +1765,11 @@ msgstr "خالی پائلون"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "آواز فعال کریں"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "ختم ہوا"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "ایندھن کی ٹنکی"
 msgid "full afterburner"
 msgstr "پورا آفٹر برنر"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "صرف توپیں"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "اسٹک سے ہاتھ ہٹائیں; سلامی دینے اور لانچ کے لیے enter دبائیں"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "اسٹک سے ہاتھ ہٹائیں; سلامی دینے اور لانچ کے لیے {key} دبائیں"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "روشنیوں کی جانچ"
 msgid "Link"
 msgstr "لنک"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "لنکس"
@@ -2653,6 +2681,10 @@ msgstr "لوڈ ہو رہا ہے..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "اسلحہ بندی"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "لاک ضروری"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "ریڈار اینٹینا نیچے کریں"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "بند کرنے کے لیے M"
+msgid "LWD"
+msgstr "بائیں"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "حرکت دیں…"
 msgid "Moved"
 msgstr "منتقل ہوا"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} منتقل ہوا"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "{0} پر منتقل کیا جا رہا ہے"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "ملٹی پلیئر کے لیے WebTransport درکار ہے، جسے یہ براؤزر ابھی سپورٹ نہیں کرتا۔"
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "باہمی مار گرانا"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "باہمی مار گرانا"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "نام درکار ہے"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "نام 1000 حروف یا اس سے کم ہونا چاہیے"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "نیچے"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "اگلا سال"
 msgctxt "daytime"
 msgid "Night"
 msgstr "رات"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "نہیں"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "کوئی لوگ نہیں ملے"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "کوئی مقامات نہیں ملے"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "کوئی ریڈار لاک نہیں"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "اطلاعات: {0}"
 msgid "Novice"
 msgstr "نو آموز"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "اوپر"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "نمبر"
@@ -3221,7 +3273,9 @@ msgstr "رن وے پر: آدھے فلیپ، ملٹری پاور تک زور بڑ
 msgid "Oops! Page Not Found!"
 msgstr "اوہ! صفحہ نہیں ملا!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "اوپن"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "اختیارات"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "دیگر"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "دیگر"
 
@@ -3453,13 +3512,13 @@ msgstr "پوسٹس"
 msgid "Posts and comments"
 msgstr "پوسٹس اور تبصرے"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "اڑان کے لیے {key} دبائیں"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "کوئی کلید دبائیں…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "اڑان کے لیے Enter دبائیں"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "ریکارڈنگ محفوظ ہو گئی"
 msgid "Red"
 msgstr "سرخ"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "سرخ {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "سرخ بوٹس"
@@ -3631,6 +3694,7 @@ msgstr "ریفریش کریں"
 msgid "REJOINING"
 msgstr "واپس شامل ہو رہا ہوں"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "متعلق"
@@ -3883,6 +3947,10 @@ msgstr "پوری طاقت"
 msgid "Runway {end}"
 msgstr "رن وے {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "دائیں"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "ہفتہ"
@@ -4062,6 +4130,7 @@ msgstr "سرور"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "سرور کی خرابی"
 
@@ -4074,6 +4143,10 @@ msgstr "سرور قواعد"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "سرور v{0} چلا رہا ہے، آپ کے پاس v{version} ہے"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "سرور بند ہو گیا"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "تقسیم کریں"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "پر کھولیں"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "اسٹیبلائزر {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "مطلوبہ مواد نہیں مل سکا۔"
 msgid "The server returned a web page instead of data."
 msgstr "سرور نے ڈیٹا کے بجائے ایک ویب صفحہ واپس کیا۔"
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "ورلڈ سرور نے خرابی {status} کے ساتھ جواب دیا"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "ورلڈ سرور نے وقت پر جواب نہیں دیا"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "ورلڈ سرور میں ایک اور میچ کی گنجائش نہیں"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "ورلڈ سرور نے ایسا جواب بھیجا جو پڑھا نہیں جا سکا"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "اس ایپ کو آپ کی پاس کی استعمال کرنے کی اجازت نہیں ہے۔ ترتیبات میں، اجازتوں کے تحت اسے اجازت دیں۔"
@@ -4482,6 +4575,10 @@ msgstr "وقت"
 msgid "Time of day"
 msgstr "دن کا وقت"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "وقت ختم ہو گیا"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "عنوان"
@@ -4512,13 +4609,25 @@ msgstr "ویو آپشنز ٹوگل کریں"
 msgid "Toggle watched filter"
 msgstr "دیکھا گیا فلٹر ٹوگل کریں"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "آپ کے پتے سے بہت زیادہ میچ پیش کیے گئے"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "بہت زیادہ درخواستیں"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "ورلڈ سرور کو بہت زیادہ درخواستیں"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "بہترین"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "اوپر کی سطح"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "سفر کر رہے ہیں"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ٹرم"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ٹرم {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "ریاستہائے متحدہ"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "پر مقفل"
 msgid "WINS"
 msgstr "فاتح"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "واپس لے لیا گیا"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "ورلڈ سرور"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "ورلڈ سرور تک رسائی نہیں"
@@ -4893,6 +5016,10 @@ msgstr "یاو دائیں"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "سال"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "ہاں"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

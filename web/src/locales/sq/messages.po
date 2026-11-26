@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ishte tashmë i zënë dhe ai kontroll tani është i palidhur."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} ishte në {1}, të cilat tani janë të palidhura."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} ishte në {1}, i cili tani është i palidhur."
@@ -165,6 +171,10 @@ msgstr "Emri i {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "nga {from} deri në {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} për të mbyllur"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO KARBURANT"
 msgid "Block {name}"
 msgstr "Blloko {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Bllokuar nga"
 msgid "Blocked navigation to untrusted link"
 msgstr "Lundrimi te lidhja e pabesueshme u bllokua"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Blloqe"
@@ -672,6 +684,10 @@ msgstr "Blloqe"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Blutë"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLUTË {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kategoria u përditësua"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Vija qendrore"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "U ndryshua"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "U ndryshua {field}"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Klasa u ndryshua"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Zbulo"
 msgid "Detect from web browser"
 msgstr "Zbulo nga shfletuesi i web-it"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Modaliteti i zhvilluesit"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Strehues tjetër i lojës"
@@ -1628,6 +1653,7 @@ msgstr "LARGOHET"
 msgid "Drone"
 msgstr "Dron"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Dublikatat"
@@ -1739,6 +1765,11 @@ msgstr "Pilon bosh"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Aktivizo zërin"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Mbaroi"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Serbator karburanti"
 msgid "full afterburner"
 msgstr "pasdjegës i plotë"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Vetëm topa"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Hiq dorën nga leva; shtyp enter për nderim dhe nisje"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Hiq dorën nga leva; shtyp {key} për nderim dhe nisje"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Testi i dritave"
 msgid "Link"
 msgstr "Lidhje"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Lidhjet"
@@ -2653,6 +2681,10 @@ msgstr "Duke ngarkuar..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Armatimi"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "KËRKOHET KYÇJE"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Ul antenën e radarit"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M për të mbyllur"
+msgid "LWD"
+msgstr "KMP"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Lëvizni…"
 msgid "Moved"
 msgstr "U zhvendos"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "U zhvendos {field}"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Duke e zhvendosur te {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Loja shumëlojtarëshe kërkon WebTransport, të cilin ky shfletues ende nuk e mbështet."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Vrasje e ndërsjellë"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "VRASJE E NDËRSJELLË"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Emri është i detyrueshëm"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Emri duhet të jetë 1000 karaktere ose më pak"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "HP"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Viti tjetër"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Natë"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Jo"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "S'u gjet asnjë person"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "S'u gjet asnjë vend"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "S'KA KYÇJE RADARI"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Njoftimet: {0}"
 msgid "Novice"
 msgstr "Fillestar"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "HL"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Numri"
@@ -3221,7 +3273,9 @@ msgstr "Në pistë: flapsat në gjysmë, rrit deri në fuqinë ushtarake, frenat
 msgid "Oops! Page Not Found!"
 msgstr "Ups! Faqja s'u gjet!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "E hapur"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "Opsione"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Tjetër"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Tjetër"
 
@@ -3453,13 +3512,13 @@ msgstr "Postimet"
 msgid "Posts and comments"
 msgstr "Postimet dhe komentet"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "SHTYP {key} PËR T'U NGRITUR"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Shtypni një tast…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "SHTYP ENTER PËR T'U NGRITUR"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Regjistrimi u ruajt"
 msgid "Red"
 msgstr "Të kuqtë"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "TË KUQTË {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Bots të kuq"
@@ -3631,6 +3694,7 @@ msgstr "Rifresko"
 msgid "REJOINING"
 msgstr "RIKTHEHEM NË FORMACION"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Lidhet"
@@ -3883,6 +3947,10 @@ msgstr "FUQI E PLOTË"
 msgid "Runway {end}"
 msgstr "Pista {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "KDP"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "E shtunë"
@@ -4062,6 +4130,7 @@ msgstr "Serveri"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Gabim serveri"
 
@@ -4074,6 +4143,10 @@ msgstr "Rregullat e serverit"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "serveri përdor v{0}, ju keni v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Serveri u fik"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Ndaj"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "HAP KRAHËT"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Përmbajtja e kërkuar nuk u gjet."
 msgid "The server returned a web page instead of data."
 msgstr "Serveri ktheu një faqe interneti në vend të të dhënave."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Serveri i botës u përgjigj me gabimin {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Serveri i botës nuk u përgjigj në kohë"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Serveri i botës nuk ka vend për një ndeshje tjetër"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Serveri i botës dërgoi një përgjigje që nuk mund të lexohej"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Ky aplikacion nuk lejohet të përdorë kyçin tuaj. Lejojeni te Cilësimet, nën Lejet."
@@ -4482,6 +4575,10 @@ msgstr "Koha"
 msgid "Time of day"
 msgstr "Koha e ditës"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Koha mbaroi"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Titulli"
@@ -4512,13 +4609,25 @@ msgstr "Ndrysho opsionet e pamjes"
 msgid "Toggle watched filter"
 msgstr "Ndrysho filtrin e të shikuarve"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Tepër ndeshje të ofruara nga adresa juaj"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Shumë kërkesa"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Tepër kërkesa drejt serverit të botës"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Më të mirat"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Niveli i lartë"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Duke udhëtuar"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trimim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Shtetet e Bashkuara"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "KRAHËT KYÇUR"
 msgid "WINS"
 msgstr "FITON"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "U tërhoq"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Serveri i botës"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Serveri i botës nuk arrihet"
@@ -4893,6 +5016,10 @@ msgstr "Devijim djathtas"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Viti"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Po"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

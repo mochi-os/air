@@ -20,7 +20,7 @@ const bridge = readFileSync(fileURLToPath(new URL('./flight.ts', import.meta.url
 // lift cuts one top-level function out of the source: from its head to the
 // next line that starts at column 0 (the bodies are tab-indented).
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -65,7 +65,7 @@ const jet = (rigged = true, light = true): Jet => ({ burst: 0, gun: rigged ? rig
 // own rig (null for one whose model is not measured yet).
 function effects(ownship: Jet, bandit: Jet, remotes: Map<number, Jet>) {
   const streaks = { offset: { x: 0 } }
-  const run = new Function('gas_streaks', 'ownship', 'bandit', 'remotes', 'gun_rig', `${lift('gun_effects')}\nreturn gun_effects;`)(
+  const run = new Function('gas_streaks', 'ownship', 'bandit', 'remotes', 'gun_rig', `const jets_all=()=>[...new Set([ownship,bandit,...remotes.values()])];\n${lift('gun_effects')}\nreturn gun_effects;`)(
     streaks, ownship, bandit, remotes, (st: Jet) => st.gun) as (dt: number) => void
   return { run, streaks }
 }

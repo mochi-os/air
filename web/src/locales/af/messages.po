@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} was reeds geneem, en daardie kontrole is nou ongebonde."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} was op {1}, wat nou ongebonde is."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} was op {1}, wat nou ongebonde is."
@@ -165,6 +171,10 @@ msgstr "{entityLabel}-naam"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} tot {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} om te sluit"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO BRANDSTOF"
 msgid "Block {name}"
 msgstr "Blokkeer {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Geblokkeer deur"
 msgid "Blocked navigation to untrusted link"
 msgstr "Navigasie na onvertroude skakel geblokkeer"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Blokkeer"
@@ -672,6 +684,10 @@ msgstr "Blokkeer"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Blou"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLOU {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kategorie opgedateer"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Middellyn"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Verander"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} verander"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Klas verander"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Bespeur"
 msgid "Detect from web browser"
 msgstr "Spoor op vanaf webblaaier"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Ontwikkelaarsmodus"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Ander speletjie-gasheer"
@@ -1628,6 +1653,7 @@ msgstr "WEGVLIEGEND"
 msgid "Drone"
 msgstr "Hommeltuig"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Dupliseer"
@@ -1739,6 +1765,11 @@ msgstr "Leë piloon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Aktiveer klank"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Beëindig"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Brandstoftenk"
 msgid "full afterburner"
 msgstr "volle nabrander"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Slegs kanonne"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Hand van die stuurstok af; druk enter om te salueer en te lanseer"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Hand van die stuurstok af; druk {key} om te salueer en te lanseer"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Ligtetoets"
 msgid "Link"
 msgstr "Skakel"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Skakels"
@@ -2653,6 +2681,10 @@ msgstr "Laai..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Bewapening"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "SLOT VEREIS"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Verlaag radarantenna"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M om te sluit"
+msgid "LWD"
+msgstr "LI"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Beweeg…"
 msgid "Moved"
 msgstr "Geskuif"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} geskuif"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Skuif na {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Veelspeler benodig WebTransport, wat hierdie blaaier nog nie ondersteun nie."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Wedersydse afskiet"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "WEDERSYDSE AFSKIET"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Naam word vereis"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Naam moet 1000 karakters of minder wees"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "AF"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Volgende jaar"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Nag"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Nee"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Geen mense gevind nie"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Geen plekke gevind nie"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "GEEN RADARSLOT"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Kennisgewings: {0}"
 msgid "Novice"
 msgstr "Beginner"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "OP"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Nommer"
@@ -3221,7 +3273,9 @@ msgstr "Op die aanloopbaan: half flappe, gee op tot militêre krag, remme af"
 msgid "Oops! Page Not Found!"
 msgstr "Oeps! Bladsy nie gevind nie!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Oop"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "Opsies"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Ander"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Ander"
 
@@ -3453,13 +3512,13 @@ msgstr "Plasings"
 msgid "Posts and comments"
 msgstr "Plasings en kommentaar"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "DRUK {key} OM TE LANSEER"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Druk 'n toets…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "DRUK ENTER OM TE LANSEER"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Opname gestoor"
 msgid "Red"
 msgstr "Rooi"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "ROOI {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Rooi bots"
@@ -3631,6 +3694,7 @@ msgstr "Verfris"
 msgid "REJOINING"
 msgstr "SLUIT WEER AAN"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Verband"
@@ -3883,6 +3947,10 @@ msgstr "VOLLE KRAG"
 msgid "Runway {end}"
 msgstr "Aanloopbaan {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "RE"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Saterdag"
@@ -4062,6 +4130,7 @@ msgstr "Bediener"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Bedienerfout"
 
@@ -4074,6 +4143,10 @@ msgstr "Bediener-reëls"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "bediener loop op v{0}, jy het v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Bediener afgeskakel"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Verdeel"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "VLEUELS OOPVOU"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Die aangevraagde inhoud kon nie gevind word nie."
 msgid "The server returned a web page instead of data."
 msgstr "Die bediener het 'n webblad in plaas van data teruggestuur."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Die wêreldbediener het met fout {status} geantwoord"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Die wêreldbediener het nie betyds geantwoord nie"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Die wêreldbediener het nie plek vir nog 'n wedstryd nie"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Die wêreldbediener het 'n antwoord gestuur wat nie gelees kon word nie"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Hierdie toepassing mag nie jou toegangsleutel gebruik nie. Laat dit toe in Instellings, onder Toestemmings."
@@ -4482,6 +4575,10 @@ msgstr "Tyd"
 msgid "Time of day"
 msgstr "Tyd van dag"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Tyd verstreke"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Titel"
@@ -4512,13 +4609,25 @@ msgstr "Wissel aansigopsies"
 msgid "Toggle watched filter"
 msgstr "Skakel dopgehouede filter"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Te veel wedstryde vanaf jou adres aangebied"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Te veel versoeke"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Te veel versoeke aan die wêreldbediener"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Beste"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Boonste vlak"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Op reis"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Verenigde State"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "VLEUELS GESLUIT"
 msgid "WINS"
 msgstr "WEN"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Onttrek"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Wêreldbediener"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Wêreldbediener nie bereikbaar nie"
@@ -4893,6 +5016,10 @@ msgstr "Gier regs"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Jaar"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Ja"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

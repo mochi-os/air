@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} te deja pran, epi kontwòl sa a pa lye ankò."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} te sou {1}, yo pa lye ankò."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} te sou {1}, ki pa lye ankò."
@@ -165,6 +171,10 @@ msgstr "Non {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} a {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} pou fèmen"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO KONBISTIB"
 msgid "Block {name}"
 msgstr "Bloke {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Bloke pa"
 msgid "Blocked navigation to untrusted link"
 msgstr "Navigasyon bloke nan lyen pa fyab"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Blòk"
@@ -672,6 +684,10 @@ msgstr "Blòk"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Ble"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLE {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kategori mete ajou"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Liy santral"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Chanje"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} chanje"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Klas chanje"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Detekte"
 msgid "Detect from web browser"
 msgstr "Detekte nan navigatè web"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Mòd devlopè"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Lòt sèvè jwèt"
@@ -1628,6 +1653,7 @@ msgstr "AP ALE"
 msgid "Drone"
 msgstr "Dwòn"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Doublon"
@@ -1739,6 +1765,11 @@ msgstr "Pilon vid"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Aktive son"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Fini"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Rezèvwa konbistib"
 msgid "full afterburner"
 msgstr "postkonbisyon konplè"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Kanon sèlman"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Retire men sou manch la; peze enter pou salye epi lanse"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Retire men sou manch la; peze {key} pou salye epi lanse"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Tès limyè"
 msgid "Link"
 msgstr "Lyen"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Lyen"
@@ -2653,6 +2681,10 @@ msgstr "Ap chaje..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Amman"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "LOK OBLIGATWA"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Bese antèn rada a"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M pou fèmen"
+msgid "LWD"
+msgstr "ZGA"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Deplase…"
 msgid "Moved"
 msgstr "Deplase"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} deplase"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Ap deplase nan {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Plizyè jwè bezwen WebTransport, men navigatè sa a poko sipòte li."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Eliminasyon mityèl"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "ELIMINASYON MITYÈL"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Non obligatwa"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Non dwe gen 1000 karaktè oswa mwens"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "NB"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Ane pwochen"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Lannwit"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Non"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Pa gen moun ki jwenn"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Pa gen kote ki jwenn"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "PA GEN LOK RADA"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Notifikasyon: {0}"
 msgid "Novice"
 msgstr "Debitan"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "NA"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Nimewo"
@@ -3221,7 +3273,9 @@ msgstr "Sou pis la: mwatye flap, monte jiska pisans militè, frenn lage"
 msgid "Oops! Page Not Found!"
 msgstr "Oops! Paj Pa Jwenn!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Ouvè"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "Opsyon"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Lòt"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Lòt"
 
@@ -3453,13 +3512,13 @@ msgstr "Pòs yo"
 msgid "Posts and comments"
 msgstr "Pòs ak kòmantè"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "PIJE {key} POU DEKOLE"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Peze yon touch…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "PIJE ENTER POU DEKOLE"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Anrejistreman an sove"
 msgid "Red"
 msgstr "Wouj"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "WOUJ {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Bot wouj"
@@ -3631,6 +3694,7 @@ msgstr "Rafrechi"
 msgid "REJOINING"
 msgstr "M AP REJWENN FÒMASYON"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Gen rapò"
@@ -3883,6 +3947,10 @@ msgstr "PLEN GAZ"
 msgid "Runway {end}"
 msgstr "Pis {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "ZDA"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Samdi"
@@ -4062,6 +4130,7 @@ msgstr "Sèvè"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Erè sèvè"
 
@@ -4074,6 +4143,10 @@ msgstr "Règ sèvè"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "sèvè a ap sèvi ak v{0}, ou gen v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Sèvè a fèmen"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Divize"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "LOUVRI ZÈL YO"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "ESTAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Nou pa t ka jwenn kontni ou te mande a."
 msgid "The server returned a web page instead of data."
 msgstr "Sèvè a voye yon paj wèb olye pou done."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Sèvè mond lan reponn ak erè {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Sèvè mond lan pa t reponn atan"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Sèvè mond lan pa gen plas pou yon lòt match"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Sèvè mond lan voye yon repons yo pa t ka li"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Aplikasyon sa a pa gen dwa itilize kle aksè ou. Bay li pèmisyon nan Paramèt, anba Pèmisyon."
@@ -4482,6 +4575,10 @@ msgstr "Tan"
 msgid "Time of day"
 msgstr "Lè nan jounen"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Tan an fini"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Tit"
@@ -4512,13 +4609,25 @@ msgstr "Aktive opsyon vi"
 msgid "Toggle watched filter"
 msgstr "Aktive filtè gade"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Twòp match ofri depi adrès ou"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Twòp demann"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Twòp demann bay sèvè mond lan"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Pi bon"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Nivo anwo"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Vwayaje"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Etazini"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "ZÈL KLE"
 msgid "WINS"
 msgstr "GENYEN"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Retire"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Sèvè mond"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Pa ka jwenn sèvè mond lan"
@@ -4893,6 +5016,10 @@ msgstr "Nen adwat"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Ane"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Wi"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

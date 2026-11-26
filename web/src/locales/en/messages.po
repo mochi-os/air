@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} was already taken, and that control is now unbound."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} was on {1}, which are now unbound."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} was on {1}, which is now unbound."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} name"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} to {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} to close"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO FUEL"
 msgid "Block {name}"
 msgstr "Block {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Blocked by"
 msgid "Blocked navigation to untrusted link"
 msgstr "Blocked navigation to untrusted link"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Blocks"
@@ -672,6 +684,10 @@ msgstr "Blocks"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Blue"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLUE {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,8 +890,8 @@ msgid "Category updated"
 msgstr "Category updated"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
-msgstr "Centerline"
+msgid "Centreline"
+msgstr "Centreline"
 
 #: src/components/SettingsDialog.tsx
 msgid "Chaff"
@@ -897,6 +913,10 @@ msgstr "Changed"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "Changed {field}"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Changed class"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Detect"
 msgid "Detect from web browser"
 msgstr "Detect from web browser"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Developer mode"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Different game host"
@@ -1628,6 +1653,7 @@ msgstr "DRAG"
 msgid "Drone"
 msgstr "Drone"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Duplicates"
@@ -1739,6 +1765,11 @@ msgstr "Empty pylon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Enable sound"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Ended"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Fuel tank"
 msgid "full afterburner"
 msgstr "full afterburner"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Guns only"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Hand off stick; press enter to salute and launch"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Hand off stick; press {key} to salute and launch"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Lights test"
 msgid "Link"
 msgstr "Link"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Links"
@@ -2653,6 +2681,10 @@ msgstr "Loading..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Loadout"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "LOCK REQUIRED"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Lower radar antenna"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M to close"
+msgid "LWD"
+msgstr "LWD"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Move…"
 msgid "Moved"
 msgstr "Moved"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "Moved {field}"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Moving to {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer needs WebTransport, which this browser does not support yet."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Mutual kill"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "MUTUAL KILL"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Name is required"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Name must be 1000 characters or less"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "ND"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Next year"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Night"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "No"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "No people found"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "No places found"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "NO RADAR LOCK"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Notifications: {0}"
 msgid "Novice"
 msgstr "Novice"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "NU"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Number"
@@ -3221,7 +3273,9 @@ msgstr "On runway: half flaps, run up to military power, brakes off"
 msgid "Oops! Page Not Found!"
 msgstr "Oops! Page Not Found!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Open"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "Options"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Other"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Other"
 
@@ -3453,13 +3512,13 @@ msgstr "Posts"
 msgid "Posts and comments"
 msgstr "Posts and comments"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "PRESS {key} TO LAUNCH"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Press a key…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "PRESS ENTER TO LAUNCH"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Recording saved"
 msgid "Red"
 msgstr "Red"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "RED {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Red bots"
@@ -3631,6 +3694,7 @@ msgstr "Refresh"
 msgid "REJOINING"
 msgstr "REJOINING"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Relates"
@@ -3883,6 +3947,10 @@ msgstr "RUN UP ENGINE"
 msgid "Runway {end}"
 msgstr "Runway {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "RWD"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Saturday"
@@ -4062,6 +4130,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Server error"
 
@@ -4074,6 +4143,10 @@ msgstr "Server rules"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "server runs v{0}, you have v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Server shut down"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Split"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "SPREAD WINGS"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "The requested content could not be found."
 msgid "The server returned a web page instead of data."
 msgstr "The server returned a web page instead of data."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "The world server answered with error {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "The world server did not answer in time"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "The world server has no room for another match"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "The world server sent an answer that could not be read"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
@@ -4482,6 +4575,10 @@ msgstr "Time"
 msgid "Time of day"
 msgstr "Time of day"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Timed out"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Title"
@@ -4512,13 +4609,25 @@ msgstr "Toggle view options"
 msgid "Toggle watched filter"
 msgstr "Toggle watched filter"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Too many matches offered from your address"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Too many requests"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Too many requests to the world server"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Top"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Top level"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Travelling"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "United States"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "WINGS LOCKED"
 msgid "WINS"
 msgstr "WINS"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Withdrawn"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "World server"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "World server not reachable"
@@ -4893,6 +5016,10 @@ msgstr "Yaw right"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Year"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Yes"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

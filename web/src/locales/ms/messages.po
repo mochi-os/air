@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} sudah diambil, dan kawalan itu kini tidak terikat."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} berada pada {1}, yang kini semuanya tidak terikat."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} berada pada {1}, yang kini tidak terikat."
@@ -165,6 +171,10 @@ msgstr "Nama {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} hingga {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} untuk tutup"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BAHAN API BINGO"
 msgid "Block {name}"
 msgstr "Sekat {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Disekat oleh"
 msgid "Blocked navigation to untrusted link"
 msgstr "Navigasi ke pautan tidak dipercayai disekat"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Sekat"
@@ -672,6 +684,10 @@ msgstr "Sekat"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Biru"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BIRU {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kategori dikemas kini"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Garisan tengah"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Diubah"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} diubah"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Kelas ditukar"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Kesan"
 msgid "Detect from web browser"
 msgstr "Kesan daripada pelayar web"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Mod pembangun"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Hos permainan berbeza"
@@ -1628,6 +1653,7 @@ msgstr "MENJAUH"
 msgid "Drone"
 msgstr "Dron"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Pendua"
@@ -1739,6 +1765,11 @@ msgstr "Pilon kosong"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Dayakan bunyi"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Tamat"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Tangki bahan api"
 msgid "full afterburner"
 msgstr "afterburner penuh"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Meriam sahaja"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Lepaskan tangan dari stik; tekan enter untuk tabik dan lancar"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Lepaskan tangan dari stik; tekan {key} untuk tabik dan lancar"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Ujian lampu"
 msgid "Link"
 msgstr "Pautan"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Pautan"
@@ -2653,6 +2681,10 @@ msgstr "Memuatkan..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Persenjataan"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "KUNCIAN DIPERLUKAN"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Turunkan antena radar"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M untuk tutup"
+msgid "LWD"
+msgstr "SKIT"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Gerakkan…"
 msgid "Moved"
 msgstr "Dipindahkan"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} dipindahkan"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Mengalihkan ke {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Multiplayer memerlukan WebTransport, yang belum disokong oleh pelayar ini."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Saling tembak jatuh"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "SALING TEMBAK JATUH"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Nama diperlukan"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Nama mestilah 1000 aksara atau kurang"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "HT"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Tahun hadapan"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Malam"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Tidak"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Tiada orang dijumpai"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Tiada tempat dijumpai"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "TIADA KUNCIAN RADAR"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Pemberitahuan: {0}"
 msgid "Novice"
 msgstr "Pemula"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "HN"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Nombor"
@@ -3221,7 +3273,9 @@ msgstr "Di landasan: flap separuh, naikkan ke kuasa tentera, lepas brek"
 msgid "Oops! Page Not Found!"
 msgstr "Alamak! Halaman Tidak Dijumpai!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Terbuka"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "Pilihan"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Lain-lain"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Lain-lain"
 
@@ -3453,13 +3512,13 @@ msgstr "Hantaran"
 msgid "Posts and comments"
 msgstr "Hantaran dan komen"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "TEKAN {key} UNTUK BERLEPAS"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Tekan satu kekunci…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "TEKAN ENTER UNTUK BERLEPAS"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Rakaman disimpan"
 msgid "Red"
 msgstr "Merah"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "MERAH {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Bot merah"
@@ -3631,6 +3694,7 @@ msgstr "Muat semula"
 msgid "REJOINING"
 msgstr "KEMBALI KE FORMASI"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Berkaitan"
@@ -3883,6 +3947,10 @@ msgstr "KUASA PENUH"
 msgid "Runway {end}"
 msgstr "Landasan {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "SKAT"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Sabtu"
@@ -4062,6 +4130,7 @@ msgstr "Pelayan"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Ralat pelayan"
 
@@ -4074,6 +4143,10 @@ msgstr "Peraturan pelayan"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "pelayan menjalankan v{0}, anda ada v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Pelayan dimatikan"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Pisah"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "KEMBANGKAN SAYAP"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Kandungan yang diminta tidak ditemui."
 msgid "The server returned a web page instead of data."
 msgstr "Pelayan mengembalikan halaman web dan bukannya data."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Pelayan dunia menjawab dengan ralat {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Pelayan dunia tidak menjawab tepat pada masanya"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Pelayan dunia tiada ruang untuk perlawanan lain"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Pelayan dunia menghantar jawapan yang tidak dapat dibaca"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Aplikasi ini tidak dibenarkan menggunakan kunci laluan anda. Benarkan dalam Tetapan, di bawah Kebenaran."
@@ -4482,6 +4575,10 @@ msgstr "Masa"
 msgid "Time of day"
 msgstr "Waktu hari"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Masa tamat"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Tajuk"
@@ -4512,13 +4609,25 @@ msgstr "Togol pilihan paparan"
 msgid "Toggle watched filter"
 msgstr "Togol penapis dipantau"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Terlalu banyak perlawanan ditawarkan dari alamat anda"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Terlalu banyak permintaan"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Terlalu banyak permintaan kepada pelayan dunia"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Teratas"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Aras atas"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Sedang dalam perjalanan"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Amerika Syarikat"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "SAYAP TERKUNCI"
 msgid "WINS"
 msgstr "MENANG"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Ditarik balik"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Pelayan dunia"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Pelayan dunia tidak dapat dihubungi"
@@ -4893,6 +5016,10 @@ msgstr "Yaw ke kanan"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Tahun"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Ya"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

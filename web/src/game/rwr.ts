@@ -108,6 +108,14 @@ const REVISIT = 2.2 // his sweep's revisit floor, seconds; jitter rides on top
 const JITTER = 1.6
 const AGE = 8 // seconds a contact survives without a fresh paint
 
+// toward is the bearing from the jet to a point, both in the engine's frame (x
+// east, z south): radians clockwise from north. One reading for every voice -
+// the seeker's once had its own, and drew the symbol off by twice the jet's
+// distance south of the frame's anchor.
+function toward(own: { x: number; z: number }, x: number, z: number): number {
+  return Math.atan2(x - own.x, own.z - z)
+}
+
 export class Rwr {
   contacts: RwrContact[] = []
   paints = 0 // cumulative search paints — the harness's cadence probe
@@ -135,7 +143,7 @@ export class Rwr {
     // receiver will ever hear, and it owns its own symbol rather than
     // colouring the shooter's.
     for (const s of seekers) {
-      const bearing = Math.atan2(s.x - own.x, -s.z - own.z)
+      const bearing = toward(own, s.x, s.z)
       const existing = this.contacts.find((c) => c.id === s.id)
       if (existing) {
         existing.bearing = bearing
@@ -156,7 +164,7 @@ export class Rwr {
       const dx = e.x - own.x
       const dz = e.z - own.z
       const range = Math.hypot(dx, dz) || 1
-      const bearing = Math.atan2(dx, -dz)
+      const bearing = toward(own, e.x, e.z)
       if (e.locked) {
         fresh += this.heard(e.id, bearing, true)
         continue

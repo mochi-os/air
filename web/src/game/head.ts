@@ -134,6 +134,13 @@ export async function start(
       if (live) options.pose?.(data)
     }
   }
+  // A worker that throws past its own handlers answers no frame again: end the
+  // session, as a failed start does, rather than wait on it for good.
+  worker.onerror = (event: ErrorEvent) => {
+    event.preventDefault()
+    died = event.message || 'failed'
+    finish('landmarker: ' + died)
+  }
 
   let session: CameraSession | null = null
   const finish = (reason: string) => {

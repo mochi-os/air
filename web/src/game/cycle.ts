@@ -171,6 +171,43 @@ export function engine(hold: number): Mover {
   }
 }
 
+// hooked runs the hook down, swings it to each stop and back while it is
+// down, and raises it, without end: the engine swings the shank only on a
+// wire, the hook down, and stowed a swing would take its point through the
+// nozzles. The hook strokes in its own seconds; the swing reaches either stop
+// from the centre in its own (fa18c.json motion.seconds.swing)
+export function hooked(hook: number, swing: number, seconds: number): { hook: Mover; swing: Mover } {
+  const legs = [hook, seconds, 2 * seconds, seconds, hook]
+  const cycle = legs.reduce((a, b) => a + b, 0)
+  let clock = 0
+  // the leg the clock stands in, and how far through it
+  const at = (): [number, number] => {
+    let t = clock % cycle
+    let leg = 0
+    while (leg < legs.length - 1 && t >= legs[leg]) t -= legs[leg++]
+    return [leg, t / legs[leg]]
+  }
+  return {
+    hook: {
+      get value() {
+        const [leg, share] = at()
+        return leg === 0 ? share : leg === 4 ? 1 - share : 1
+      },
+      step(seconds: number) {
+        clock += seconds
+      },
+    },
+    swing: {
+      get value() {
+        const [leg, share] = at()
+        return leg === 1 ? swing * share : leg === 2 ? swing * (1 - 2 * share) : leg === 3 ? -swing * (1 - share) : 0
+      },
+      // the hook's step moves both
+      step() {},
+    },
+  }
+}
+
 // by builds a motion from movers keyed by drive
 function by(movers: Record<string, Mover>): Motion {
   return {
@@ -185,16 +222,12 @@ function by(movers: Record<string, Mover>): Motion {
 
 type Points = {
   motion: {
-    seconds: Record<'canopy' | 'probe' | 'bar' | 'fold' | 'hook' | 'scoop' | 'swing', number>
+    seconds: Record<'canopy' | 'probe' | 'bar' | 'fold' | 'hook' | 'scoop' | 'cabin' | 'swing', number>
     swing: number
     canopy: { unlatch: number; fall: number; lock: number }
     gear: Timeline
   }
 }
-
-// The F/A-18C's drives that move nothing of their own: the loadout shows and
-// hides the stores (the viewer's Stores button)
-export const STILL = new Set(['stores'])
 
 // fa18c drives every joint of our F/A-18C (fa18c.json): the gear down and
 // up, with everything that moves only on the ground still (flight), its
@@ -204,6 +237,10 @@ export const STILL = new Set(['stores'])
 export function fa18c(points: Points = fa18c_points as unknown as Points): Motion {
   const { seconds, canopy } = points.motion
   const stroked = (s: number) => stroke(0, 1, 1 / s)
+  // the hook's sideways travel each way (fa18c.json motion.swing) at the
+  // game's own rate, its time from centre to either stop
+  // (motion.seconds.swing), and only with the hook down
+  const hook = hooked(seconds.hook, points.motion.swing * DEGREE, seconds.swing)
   return by({
     ...flight(points.motion.gear),
     speedbrake: stroke(0, 1, 0.4), // 2.5 s to full travel (Control.Rate.Brake)
@@ -218,8 +255,9 @@ export function fa18c(points: Points = fa18c_points as unknown as Points): Motio
     ),
     probe: stroked(seconds.probe),
     fold: stroked(seconds.fold),
-    hook: stroked(seconds.hook),
+    hook: hook.hook,
     scoop: stroked(seconds.scoop),
+    cabin: stroked(seconds.cabin),
     // +10.5 deg trailing edge down, -24 up, at 40 deg/s
     'stabilator.left': stroke(-0.42, 0.183, 40 * DEGREE),
     'stabilator.right': stroke(-0.42, 0.183, 40 * DEGREE),
@@ -236,13 +274,6 @@ export function fa18c(points: Points = fa18c_points as unknown as Points): Motio
     // the wing's bend through its whole -3 to 7.5 g at 5 g/s: an estimate
     // (it follows the lift)
     load: stroke(-3, 7.5, 5),
-    // the hook's sideways travel each way (fa18c.json motion.swing) at the
-    // game's own rate, its time from centre to either stop
-    // (motion.seconds.swing)
-    swing: stroke(
-      -points.motion.swing * DEGREE,
-      points.motion.swing * DEGREE,
-      (points.motion.swing * DEGREE) / points.motion.seconds.swing
-    ),
+    swing: hook.swing,
   })
 }

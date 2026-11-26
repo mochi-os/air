@@ -55,7 +55,7 @@ describe('the wiring', () => {
 
   it('opens Match or Team on the chat key and Everyone on the server on its shift chord', () => {
     expect(engine).toMatch(
-      /function chat_scope\(\)\{ return \(net&&net\.welcome&&net\.welcome\.spawn&&net\.welcome\.spawn\.mode==="teams"\)\?"team":"match"; \}/
+      /function chat_scope\(\)\{ return chat_opening\(net\?\.welcome\?\.spawn\?\.mode==="teams"\); \}/
     )
     expect(engine).toMatch(
       /if\(ch===key_of\("shout"\) && MULTIPLAYER && running && onChat\)\{ e\.preventDefault\(\); onChat\("server"\); \}/
@@ -95,5 +95,53 @@ describe('the wiring', () => {
     expect(canvas).toMatch(
       /\{chat === 'team' \? \(\s*<Trans>Team<\/Trans>\s*\) : chat === 'match' \? \(\s*<Trans>Match<\/Trans>\s*\) : \(\s*<Trans>Everyone<\/Trans>\s*\)\}/
     )
+  })
+})
+
+// The lobby ring in flight (#111): its read can take eight seconds against a
+// three-second period, so one request is in flight at a time and each answer is
+// printed from the last line held on. Two overlapping reads printed the same
+// lines twice, and a slow answer arriving after a quick one moved the cursor
+// back. Run as text against a stand-in server whose answers arrive when told.
+describe('the lobby ring in flight', () => {
+  const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
+  const block = /\n\/\/ One request is in flight at a time:[\s\S]*?\nfunction lounge_take\(r,cursor\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+  interface Answer { lines: { sequence: number; name?: string; text?: string; event?: string }[]; sequence: number }
+  const rig = () => new Function(`let net={}, session_over=false, tick=null; const join={ server:"w" }, printed=[], asked=[], answers=[];
+    const translate=(t)=>t, comm=(t)=>printed.push(t), setInterval=(f)=>{ tick=f; return 1; }, clearInterval=()=>{ tick=null; };
+    const world_chat=(server,since)=>{ asked.push(since); return new Promise((resolve,reject)=>answers.push({ resolve, reject })); };
+    ${block}
+    const settle=async(i,answer)=>{ if(answer) answers[i].resolve(answer); else answers[i].reject(new Error("down")); await new Promise((r)=>setTimeout(r,0)); };
+    return { start:lounge_start, stop:lounge_stop, tick:()=>tick&&tick(), settle, printed, asked, take:lounge_take };`)() as {
+    start(): void; stop(): void; tick(): void; settle(i: number, answer?: Answer): Promise<void>; printed: string[]; asked: number[]; take(r: Answer, cursor: number): { lines: unknown[]; cursor: number } }
+  const line = (sequence: number, text = 'hi' + sequence) => ({ sequence, name: 'BOB', text })
+
+  it('asks again only once the read in flight has answered', async () => {
+    expect(block).not.toBe('')
+    const r = rig()
+    r.start(); r.tick(); r.tick()
+    expect(r.asked).toEqual([0]) // the head read still in flight: the ticks skip
+    await r.settle(0, { lines: [], sequence: 10 })
+    r.tick(); r.tick()
+    expect(r.asked).toEqual([0, 10])
+    await r.settle(1) // a failed read frees the next tick too
+    r.tick()
+    expect(r.asked).toEqual([0, 10, 10])
+  })
+
+  it('prints each player line once, from the last held on, and never moves the cursor back', async () => {
+    const r = rig()
+    r.start(); await r.settle(0, { lines: [], sequence: 10 })
+    r.tick(); await r.settle(1, { lines: [line(11), line(12), { sequence: 13, event: 'made', name: 'X' }], sequence: 13 })
+    r.tick(); await r.settle(2, { lines: [line(12), line(13, 'again'), line(14)], sequence: 14 })
+    expect(r.printed).toEqual(['[EVERYONE] BOB: hi11', '[EVERYONE] BOB: hi12', '[EVERYONE] BOB: hi14'])
+    expect(r.take({ lines: [line(9)], sequence: 9 }, 14)).toEqual({ lines: [], cursor: 14 }) // an old answer takes nothing and keeps the cursor
+  })
+
+  it('drops an answer that arrives after the poll has stopped', async () => {
+    const r = rig()
+    r.start(); await r.settle(0, { lines: [], sequence: 10 })
+    r.tick(); r.stop(); await r.settle(1, { lines: [line(11)], sequence: 11 })
+    expect(r.printed).toEqual([])
   })
 })

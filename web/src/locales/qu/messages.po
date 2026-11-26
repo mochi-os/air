@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ñam hapisqaña karqan, chay kamachiypas kunanqa mana watasqachu."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} karqan {1} patapi, chaykunapas kunanqa mana watasqachu."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} karqan {1} patapi, chaypas kunanqa mana watasqachu."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} suti"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} {to} kama"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} wichq'anapaq"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO COMBUSTIBLE"
 msgid "Block {name}"
 msgstr "{name}-ta hark'ay"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Hark'aq"
 msgid "Blocked navigation to untrusted link"
 msgstr "Mana iñikuq t'inkiman yaykuy hark'asqa"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Hark'aykuna"
@@ -672,6 +684,10 @@ msgstr "Hark'aykuna"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Anqas"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "ANQAS {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Categoría musuqchasqa"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Chawpi siqi"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Hukchasqa"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} hukchasqa"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Clase t'ikrasqa"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Tariy"
 msgid "Detect from web browser"
 msgstr "Web navegadormanta tariy"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Desarrolladorpa modon"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Huk pukllay servidor"
@@ -1628,6 +1653,7 @@ msgstr "KARUNCHAKUSHAN"
 msgid "Drone"
 msgstr "Dron"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Iskaychasqakuna"
@@ -1739,6 +1765,11 @@ msgstr "Ch'usaq pylon"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Uyarinata activay"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Tukusqa"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Combustible waqaychana"
 msgid "full afterburner"
 msgstr "llapan postcombustión"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Kañunkunalla"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Makita palancamanta hurquy; saludanapaq hinaspa lanzanapaq enter ñit'iy"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Makita palancamanta hurquy; saludanapaq hinaspa lanzanapaq {key} ñit'iy"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "K'anchaykuna pruebay"
 msgid "Link"
 msgstr "T'inki"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "T'inkikuna"
@@ -2653,6 +2681,10 @@ msgstr "Cargachkan..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Armamentu"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "HAP'IYMI MUNAKUN"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Radar antenata uraykachiy"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M wichq'anapaq"
+msgid "LWD"
+msgstr "LLUQ'I"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Astay…"
 msgid "Moved"
 msgstr "Astasqa"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} astasqa"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "{0}-man astachkan"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Achka pukllaqpaq WebTransport necesitakun; kay navegadorqa manaraq chayta atinchu."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Urmachinakuy"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "URMACHINAKUY"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Suti necesitakun"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Sutiqa 1000 sananchakuna utaq pisilla kanan"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "URA"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Qatiq wata"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Tuta"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Manan"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Mana runakuna tarisqachu"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Mana lugarkuna tarisqachu"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "MANA RADAR HAP'IY KANCHU"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Willaykuna: {0}"
 msgid "Novice"
 msgstr "Qallariq"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "HANAQ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Yupay"
@@ -3221,7 +3273,9 @@ msgstr "Pistapi: chawpi flaps, militar kallpakama wichachiy, frenos kacharisqa"
 msgid "Oops! Page Not Found!"
 msgstr "¡Ay! ¡Página mana tarisqachu!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Kichasqa"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "Akllanakuna"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "Huk"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "Huk"
 
@@ -3453,13 +3512,13 @@ msgstr "Qillqakuna"
 msgid "Posts and comments"
 msgstr "Qillqakuna comentariokunawan"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "PHAWANAPAQ {key} ÑIT'IY"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Huk teclata ñit'iy…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "PHAWANAPAQ ENTER ÑIT'IY"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Grabación waqaychasqa"
 msgid "Red"
 msgstr "Puka"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "PUKA {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Puka botkuna"
@@ -3631,6 +3694,7 @@ msgstr "Musuqchay"
 msgid "REJOINING"
 msgstr "KUTIMANTA YAYKUCHKAN"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "T'inkisqa"
@@ -3883,6 +3947,10 @@ msgstr "MOTORTA KALLPACHAY"
 msgid "Runway {end}"
 msgstr "Pista {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "PAÑA"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "K'uychichaw"
@@ -4062,6 +4130,7 @@ msgstr "Servidor"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Servidorpi pantay"
 
@@ -4074,6 +4143,10 @@ msgstr "Servidor kamachiykuna"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "servidorqa v{0}-ta purichin, qampa v{version} kachkan"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Servidor wichq'akurqan"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "T'aqasqa"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "RAPRAKUNATA MAST'ARIY"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "ESTAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Mañakusqa contenido mana tarikunchu."
 msgid "The server returned a web page instead of data."
 msgstr "Servidorqa mana datokunatachu kutichirqan, huk web páginatam."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Mundo servidorqa {status} pantaywan kutichirqan"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Mundo servidorqa manam pachanpi kutichirqanchu"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Mundo servidorpiqa manam huk pukllaypaq kiti kanchu"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Mundo servidorqa mana ñawinchay atina kutichiyta apachimurqan"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Kay appqa manam yaykuna llaveykita llamk'achiyta atinchu. Wakichiykunapi, Permisokuna ukhupi saqiy."
@@ -4482,6 +4575,10 @@ msgstr "Pacha"
 msgid "Time of day"
 msgstr "P'unchawpa pachan"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Pacha tukukurqan"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Sutinchay"
@@ -4512,13 +4609,25 @@ msgstr "Vista akllanakunata tikray"
 msgid "Toggle watched filter"
 msgstr "Qatipasqa filtrota tikray"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Ancha achka pukllaykuna direccionniykimanta haywarisqa"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Nishu achka mañakuykuna"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Ancha achka mañakuykuna mundo servidorman"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Aswan allin"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Hanaq nivel"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Puriykachachkan"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trim"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRIM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Hukllachasqa Suyukuna"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "RAPRAKUNA LLAWIYASQA"
 msgid "WINS"
 msgstr "LLALLIN"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Hurqusqa"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Mundo servidor"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Mundo servidorman mana chayay atikunchu"
@@ -4893,6 +5016,10 @@ msgstr "Kinray pañaman"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Wata"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Arí"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

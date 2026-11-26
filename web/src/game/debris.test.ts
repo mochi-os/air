@@ -12,7 +12,7 @@ import { describe, expect, it } from 'vitest'
 // against stand-ins.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -25,8 +25,8 @@ describe('the bandit falls', () => {
     new Function(
       'flight_debris_lay',
       `const bandit={ pos:{x:1,y:2000,z:3}, velx:150, vely:-5, velz:0, group:{ visible:true } };
-       let has_enemy=true, sim_time=12; const cfg={}; const BANDIT="Bandit";
-       const explosion_at=()=>{}, feed=()=>{}, opponent=()=>"", notice=()=>{}, translate=(t)=>t;
+       let has_enemy=true, sim_time=12, crash_t=0, traded=false; const cfg={}; const BANDIT="Bandit";
+       const explosion_at=()=>{}, feed=()=>{}, opponent=()=>"", notice=()=>{}, translate=(t)=>t, audio_remote_drop=()=>{};
        ${lift('bandit_destroy')}
        bandit_destroy(${JSON.stringify(why)});`
     )((...args: unknown[]) => laid.push(args))
@@ -65,6 +65,6 @@ describe('the pilot flies through it', () => {
   })
 
   it('is met every frame the pilot flies alone, and never in a match, a replay, a crash or under the invulnerable cheat', () => {
-    expect(lift('step_world')).toContain('fly_player(dt); if(!MULTIPLAYER&&!playback&&crash_t<=0&&!cheat("invulnerable")) debris_struck();')
+    expect(lift('step_world')).toContain('fly_player(dt); if(!MULTIPLAYER&&!playback&&!lost()&&!cheat("invulnerable")) debris_struck();')
   })
 })

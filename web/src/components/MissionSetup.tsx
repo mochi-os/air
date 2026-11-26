@@ -17,7 +17,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
   cn,
-  getErrorMessage,
   LazyBoundary,
   useFormat,
   useShellStorage,
@@ -86,12 +85,15 @@ import {
 import { flight_catalog, flight_load } from '../game/flight'
 import {
   default_server,
+  lobby_enter,
+  lobby_watch,
   normalize_server,
-  world_chat,
+  pilot_token,
   world_status,
   world_withdraw,
   world_say,
   type Join,
+  type LobbyWatch,
   type WorldChatLine,
 } from '../game/net'
 import {
@@ -110,7 +112,7 @@ import { useServers } from '../hooks/use-servers'
 import { type MissionConfig, type StationSlot, seedStart } from '../lib/config'
 import { useIdentityName } from '../lib/config-store'
 import { diagnose } from '../lib/graphics'
-import { Multiplayer } from './Multiplayer'
+import { LobbyFailure, Multiplayer } from './Multiplayer'
 import { ServerList, ServerRow } from './ServerList'
 import { SettingsDialog } from './SettingsDialog'
 import { CLOUD_ICONS, START_ICONS, TOD_ICONS } from './menu-icons'
@@ -380,7 +382,7 @@ function Armament({
     2: <Trans>Left wing</Trans>,
     3: <Trans>Left wing</Trans>,
     4: <Trans>Fuselage</Trans>,
-    5: <Trans>Centerline</Trans>,
+    5: <Trans>Centreline</Trans>,
     6: <Trans>Fuselage</Trans>,
     7: <Trans>Right wing</Trans>,
     8: <Trans>Right wing</Trans>,
@@ -450,9 +452,13 @@ function Armament({
             <Button
               key={entry.name}
               type='button'
-              variant={active ? 'default' : 'outline'}
+              variant='outline'
               size='sm'
-              className='flex-1 gap-1.5 text-xs font-semibold'
+              aria-pressed={active}
+              className={cn(
+                'flex-1 gap-1.5 text-xs font-semibold',
+                active && 'bg-primary/10 text-primary'
+              )}
               onClick={() =>
                 onPreset(structuredClone(PRESETS[entry.name]), FUEL[entry.name])
               }
@@ -1012,9 +1018,13 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
   const { t } = useLingui()
   const identity = useIdentityName()
   const [lounge, setLounge] = useState<WorldChatLine[]>([])
-  const [error, setError] = useState('')
+  const [failure, setFailure] = useState<unknown>(null) // the last send's, null once one goes
   const [up, setUp] = useState(true)
-  const cursor = useRef(0)
+  // A send is out: Send and Enter wait for it, so one line cannot go twice.
+  // The ref answers at once, the state redraws the button.
+  const flight = useRef(false)
+  const [sending, setSending] = useState(false)
+  const watch = useRef<LobbyWatch | null>(null)
   const lineRef = useRef<HTMLInputElement>(null)
   const boxRef = useRef<HTMLDivElement>(null)
   // Whether the reader is parked on the newest line. Recorded when they SCROLL,
@@ -1033,28 +1043,19 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
     if (!matchMedia(TOUCH).matches) lineRef.current?.focus()
   }, [])
 
+  // The room is read through the poll the match list beside it shares: one
+  // read of the server a poll for the whole page.
   useEffect(() => {
-    cursor.current = 0
     setLounge([])
     stuck.current = true // a different server is a different room: start at its newest line
-    let alive = true
-    const pull = async () => {
-      try {
-        const reply = await world_chat(address, cursor.current)
-        if (!alive) return
-        cursor.current = reply.sequence
-        if (reply.lines.length)
-          setLounge((have) => [...have, ...reply.lines].slice(-100))
-        setUp(true)
-      } catch {
-        if (alive) setUp(false)
-      }
-    }
-    void pull()
-    const chatter = setInterval(pull, 3000)
+    const handle = lobby_watch(address, 'air', undefined, (view) => {
+      setUp(!view.failure)
+      setLounge(view.lines)
+    })
+    watch.current = handle
     return () => {
-      alive = false
-      clearInterval(chatter)
+      handle.stop()
+      if (watch.current === handle) watch.current = null
     }
   }, [address])
 
@@ -1066,27 +1067,27 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
 
   const say = async () => {
     const words = lineRef.current?.value.trim()
-    if (!words) return
-    if (lineRef.current) lineRef.current.value = ''
+    if (!words || flight.current) return
+    flight.current = true
+    setSending(true)
     try {
       await world_say(address, name, words)
+      // Cleared once the server has the line, so a send that failed leaves it
+      // to send again - unless the player has typed on meanwhile.
+      if (lineRef.current && lineRef.current.value.trim() === words)
+        lineRef.current.value = ''
       // Pinned once the line is actually in the room: saying something is
       // asking to be shown it, but a send that failed must not drag the reader
       // off what they had scrolled back to.
       stuck.current = true
-      const reply = await world_chat(address, cursor.current)
-      cursor.current = reply.sequence
-      if (reply.lines.length)
-        setLounge((have) => [...have, ...reply.lines].slice(-100))
-      setError('')
-      setUp(true)
+      setFailure(null)
+      await watch.current?.refresh()
     } catch (e) {
       setUp(false)
-      setError(
-        up
-          ? getErrorMessage(e, t`Could not send the message`)
-          : t`World server not reachable`
-      )
+      setFailure(e)
+    } finally {
+      flight.current = false
+      setSending(false)
     }
   }
 
@@ -1136,7 +1137,14 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
           )
         )}
       </div>
-      {error && <div className='text-destructive mt-1 text-xs'>{error}</div>}
+      {failure !== null && (
+        <div className='text-destructive mt-1 text-xs'>
+          <LobbyFailure
+            error={failure}
+            fallback={<Trans>Could not send the message</Trans>}
+          />
+        </div>
+      )}
       <div className='border-input bg-card focus-within:ring-ring mt-2 flex items-center gap-1 rounded-lg border p-1 focus-within:ring-1'>
         {/* The wordless placeholder: it marks the box as somewhere to write
             whether or not there is anything in it, and needs no translation. */}
@@ -1157,8 +1165,13 @@ function LobbyChat({ server, callsign }: { server: string; callsign: string }) {
             }}
           />
         </label>
-        <Button type='button' size='sm' onClick={() => void say()}>
-          <Send className='size-4' />
+        <Button
+          type='button'
+          size='sm'
+          loading={sending}
+          icon={<Send className='size-4' />}
+          onClick={() => void say()}
+        >
           <Trans>Send</Trans>
         </Button>
       </div>
@@ -1179,12 +1192,14 @@ function bookmarked(search: string): string {
 function ServerFlow({
   onClose,
   config,
+  settled,
   set,
   onChange,
   onJoin,
 }: {
   onClose: () => void
   config: MissionConfig
+  settled: boolean // config/load has answered: until then config is the cache, perhaps another account's or the defaults
   set: <K extends keyof MissionConfig>(key: K, value: MissionConfig[K]) => void
   onChange: (config: MissionConfig) => void
   onJoin: (join: Join) => void
@@ -1196,6 +1211,12 @@ function ServerFlow({
   // dialog walked straight back into it instead of offering the list.
   const initial = bookmarked(window.location.search)
   const [entered, setEntered] = useState(!!initial)
+  // A server entered before config/load answered - a bookmark, as the page
+  // opens - is shown at once and written to the config once it has: written
+  // to the cache before then, its edit carried a freshly minted pilot secret
+  // and a recent-servers list of one over the account's own (#96).
+  const [held, setHeld] = useState(initial)
+  const here = held || config.world
   const [address, setAddress] = useState(config.world || '')
   // The address bar follows the entered server so the page can be bookmarked:
   // ?server=<address> while on a server, gone again on leaving. Through the
@@ -1216,42 +1237,53 @@ function ServerFlow({
   const { t } = useLingui()
   const [private_, setPrivate] = useState(false)
   const [world, setWorld] = useState('')
+  const lobby = normalize_server(here || default_server())
   useEffect(() => {
     if (!entered) return
     const abort = new AbortController()
     setWorld('')
-    world_status(
-      normalize_server(config.world || default_server()),
-      abort.signal
-    )
+    world_status(lobby, abort.signal)
       .then((s) => setWorld(s.name))
       .catch(() => {})
     return () => abort.abort()
-  }, [entered, config.world])
+  }, [entered, lobby])
 
-  // Minted once per opening of this dialog, not once per render: called in the
-  // render body straight, crypto.randomUUID() handed out a fresh token on every
-  // keystroke and every 30-second server poll until enter() wrote one into the
-  // config, so the offer token identifying this player was never stable before
-  // it was saved.
-  const minted = useRef('')
-  if (!config.pilot && !minted.current) minted.current = crypto.randomUUID()
-  const pilot = config.pilot || minted.current
+  // The token this server sees (#102): derived from the account's secret and
+  // the server's address, so no server holds one another server takes. Worked
+  // out in an effect, not in render (SubtleCrypto answers asynchronously), and
+  // only from the secret as loaded; until then no token rides the poll.
+  const [token, setToken] = useState<{ key: string; value?: string } | null>(null)
+  const secret = settled ? String(config.pilot ?? '') : ''
+  const key = secret + '\n' + lobby
+  useEffect(() => {
+    if (!secret) return
+    let live = true
+    void pilot_token(secret, lobby).then((value) => {
+      if (live) setToken({ key, value })
+    })
+    return () => {
+      live = false
+    }
+  }, [secret, lobby, key])
+  const pilot = secret && token?.key === key ? token.value : undefined
   const recents = String(config.servers ?? '')
     .split('\n')
     .filter(Boolean)
   const enter = (server: string) => {
     const chosen = server.trim() || default_server()
-    const next = { ...config, world: chosen, pilot }
-    onChange({
-      ...next,
-      servers: [chosen, ...recents.filter((r) => r !== chosen)]
-        .slice(0, 5)
-        .join('\n'),
-    })
+    // The secret is minted here, in the handler, never during render; and
+    // from the config as loaded, so an account's own secret and list stand.
+    if (settled) onChange(lobby_enter(config, chosen))
+    else setHeld(chosen)
     setEntered(true)
     bar(chosen)
   }
+  useEffect(() => {
+    if (!settled || !held) return
+    onChange(lobby_enter(config, held))
+    setHeld('')
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once the load has answered, with the config it answered
+  }, [settled, held])
   // A server joined once - a test instance, a friend's machine that has gone
   // away, an address typed wrong - would otherwise sit in the list for good,
   // and the list is the first thing read when choosing where to fly.
@@ -1262,22 +1294,11 @@ function ServerFlow({
     })
   }
   const leave = () => {
-    void world_withdraw(
-      normalize_server(config.world || default_server()),
-      pilot
-    )
+    if (pilot) void world_withdraw(lobby, pilot)
     setEntered(false)
     bar(null)
     onClose()
   }
-  // A bookmarked server: entered once, on mount, as if picked from the list.
-  const opened = useRef(false)
-  useEffect(() => {
-    if (!initial || opened.current) return
-    opened.current = true
-    enter(initial)
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per mount, with the mount's config
-  }, [initial])
   if (!entered) {
     const matched = (r: string) =>
       (servers ?? []).find(
@@ -1423,9 +1444,7 @@ function ServerFlow({
                   {world || <Trans>Matches</Trans>}
                 </h2>
               </TooltipTrigger>
-              <TooltipContent className='font-mono'>
-                {config.world}
-              </TooltipContent>
+              <TooltipContent className='font-mono'>{here}</TooltipContent>
             </Tooltip>
           </div>
           <Multiplayer
@@ -1451,9 +1470,21 @@ function ServerFlow({
                 }
               />
             }
+            /* The recordings question rides the dialog every join and create
+               passes through, until it is answered, as single player's Fly
+               asks it (#106). */
+            sharing={
+              <SharingSwitch
+                sharing={config.sharing}
+                onChange={(v) => set('sharing', v)}
+              />
+            }
+            onFly={() => {
+              if (config.sharing === undefined) set('sharing', true)
+            }}
             hideServer
             pilot={pilot}
-            server={config.world}
+            server={here}
             callsign={config.callsign}
             onServer={(v) => set('world', v)}
             onCallsign={(v) => set('callsign', v)}
@@ -1462,7 +1493,7 @@ function ServerFlow({
           />
         </div>
         <div className='flex min-h-0 w-full flex-col max-lg:h-96 lg:w-80'>
-          <LobbyChat server={config.world} callsign={config.callsign} />
+          <LobbyChat server={here} callsign={config.callsign} />
         </div>
       </div>
     </div>
@@ -1470,10 +1501,10 @@ function ServerFlow({
 }
 
 // Whether the developers may read this player's flight recordings: beside the
-// create flight dialog's Fly button until the player has set it, and from then
-// on only in the general settings. Unset reads as allowed. Judged once per
-// opening, as the dialog mounts its footer afresh each time, so the switch
-// stays put while it is flipped.
+// create flight dialog's Fly button and in a match's loadout dialog until the
+// player has set it, and from then on only in the general settings. Unset
+// reads as allowed. Judged once per opening, as each dialog mounts its
+// content afresh, so the switch stays put while it is flipped.
 function SharingSwitch({
   sharing,
   onChange,
@@ -1741,6 +1772,7 @@ function MissionPanel({
 
 export function MissionSetup({
   config,
+  settled,
   onChange,
   tab,
   onTabChange,
@@ -1748,6 +1780,7 @@ export function MissionSetup({
   onJoin,
 }: {
   config: MissionConfig
+  settled: boolean // config/load has answered (useMissionConfig's third value)
   onChange: (config: MissionConfig) => void
   tab: string
   onTabChange: (tab: string) => void
@@ -1919,6 +1952,7 @@ export function MissionSetup({
         <ServerFlow
           onClose={close}
           config={config}
+          settled={settled}
           set={set}
           onChange={onChange}
           onJoin={onJoin}

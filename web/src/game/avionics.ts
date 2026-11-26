@@ -19,8 +19,10 @@ export interface Computers {
   one: boolean // MC1, the navigation computer
   two: boolean // MC2, the weapon delivery computer
 }
-export function computers(selection: Selection, power: boolean): Computers {
-  return { one: power && selection !== 'one', two: power && selection !== 'two' }
+export function computers(selection: Selection, power: boolean, out: Computers = { one: false, two: false }): Computers {
+  out.one = power && selection !== 'one'
+  out.two = power && selection !== 'two'
+  return out
 }
 // standby: with neither computer the displays show only a flashing STANDBY
 // (2.13.4.2.1).
@@ -38,10 +40,17 @@ export function offered(menu: 'tac' | 'supt', page: string, mc: Computers): bool
 // MC1's place and has only MC 1 to show, with AUTO PILOT (2.20.5, figure 12-1
 // MC 1; its HYD cautions have no system here); MC1 adds MC 2 for a dead MC2;
 // with neither there is no one to show any.
-export function cautions(raised: readonly string[], mc: Computers): string[] {
-  if (standby(mc)) return []
-  if (!mc.one) return [...raised.filter((c) => c === 'AUTO PILOT'), 'MC 1']
-  return mc.two ? [...raised] : [...raised, 'MC 2']
+// out is written and returned, and may be raised itself: asked every step, the
+// engine's list is edited in place.
+export function cautions(raised: readonly string[], mc: Computers, out: string[] = []): string[] {
+  let n = 0
+  if (!standby(mc)) {
+    for (const caption of raised) if (mc.one || caption === 'AUTO PILOT') out[n++] = caption // never past the one being read
+    if (!mc.one) out[n++] = 'MC 1'
+    else if (!mc.two) out[n++] = 'MC 2'
+  }
+  out.length = n
+  return out
 }
 // advised: the advisories go with MC1 (2.20.5).
 export function advised<T>(raised: readonly T[], mc: Computers): T[] {

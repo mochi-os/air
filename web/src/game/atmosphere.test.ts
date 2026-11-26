@@ -761,7 +761,9 @@ describe("the sun's glint", () => {
         expect(Math.abs(sum / (n * n) - 1)).toBeLessThan(0.03)
       }
     }
-  })
+    // The bake alone is 3.4 s on an idle machine (512x512 texels of 204
+    // waves), so under a loaded full suite vitest's 5 s default is no margin.
+  }, 30000)
 })
 
 describe('the sun', () => {

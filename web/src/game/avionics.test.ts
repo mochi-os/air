@@ -37,6 +37,13 @@ describe('the mission computers', () => {
     expect(A.cautions(raised, first)).toEqual([...raised, 'MC 2'])
     expect(A.cautions(raised, neither)).toEqual([])
   })
+  it('edit the list they are given in place, step after step, as a fresh one would read', () => {
+    for (const mc of [both, second, first, neither]) {
+      const list = ['FUEL LO', 'AUTO PILOT', 'L GEN']
+      expect(A.cautions(list, mc, list)).toBe(list)
+      expect(list).toEqual(A.cautions(['FUEL LO', 'AUTO PILOT', 'L GEN'], mc))
+    }
+  })
   it('lose the advisories with MC1', () => {
     expect(A.advised(['ALGN', 'SKID'], both)).toEqual(['ALGN', 'SKID']); expect(A.advised(['ALGN'], first)).toEqual(['ALGN']); expect(A.advised(['ALGN'], second)).toEqual([])
   })

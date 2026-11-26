@@ -18,6 +18,7 @@ export type Queued = Record<string, unknown> & { sequence: number }
 // DEPTH: the samples a datagram carries.
 export const DEPTH = 3
 // BUDGET: the bytes the encoded datagram must stay within, clear of the limit.
+// Read by the tests alone, which hold a full datagram of DEPTH samples to it.
 export const BUDGET = 1100
 
 // queue adds a sample to the batch. solo, extinguish, onspeed, reverted, retract,

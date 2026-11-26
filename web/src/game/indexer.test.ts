@@ -404,6 +404,7 @@ const pressfn = /\nfunction pit_press\(action,direction\)\{ const d=[\s\S]*?\n\t
 const indexfn = /\nfunction index_step\(index,direction\)\{[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 const crankfn = /\nfunction canopy_crank\(d\)\{[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 const saritrim = /\nconst SARI_TRIM=[^\n]*\n/.exec(source)?.[0] ?? ''
+const handlefn = /\nfunction handle_down\(st\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
 const foldfn = /\nconst FOLD_HANDLE=[^\n]*\nlet fold_handle="lock";\nfunction fold_set\(handle\)\{[^\n]*\n(?:\/\/[^\n]*\n)*function fold_turn\(d\)\{[^\n]*\n[^\n]*\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
 interface Pit {
   squish?: number; speed?: number; ground?: boolean; canopyTarget?: number; foldTarget?: number; gearTarget?: number; hookTarget?: number
@@ -417,14 +418,14 @@ interface Pressed {
   exterior: Panel; clicked: number; handle: string; sari: number; trim: number; pulled: number; gone: boolean; cranked: boolean; armed: boolean
 }
 function press(action: string, direction: number, state: Pit = {}): Pressed {
-  if (!pressfn || !foldfn || !saritrim) throw new Error('pit_press, the fold handle or the standby attitude indicator\'s trim not found in engine.ts')
+  if (!pressfn || !foldfn || !saritrim || !handlefn) throw new Error('pit_press, the fold handle, the gear handle\'s reading or the standby attitude indicator\'s trim not found in engine.ts')
   const run = new Function('action', 'direction', 'state', 'panel', 'STROBE', `
     const exterior={ ...panel, ...state.exterior }, ownship={ squish:state.squish??1, speed:state.speed??0, canopy:state.canopy??0, canopyTarget:state.canopyTarget??0, foldTarget:state.foldTarget??0, gearTarget:state.gearTarget??0, hookTarget:state.hookTarget??0, probeTarget:state.probeTarget??0, lights:!!state.lights, grounded:state.ground??true };
     let canopy_gone=!!state.gone, cranked=false, seat_armed=state.armed??true; const buses={ essential:state.essential??true };
     let gear_emergency=!!state.emergency, parking=!!state.parking, alt_radar=!!state.alt_radar, declutter=state.declutter??0, fuel_dump=!!state.fuel_dump, hook_bypass=state.hook_bypass??"carrier", flap_select=state.flap_select??0, flap_armed=0, peak_g=state.peak_g??1, law_index=state.index??200, radalt_on=state.on??true, radalt_test=-Infinity, radalt_greet=false, lights_clicked=-Infinity, sari_clicked=-Infinity, sari_trim=state.trim??0, sari_pulled=-Infinity;
     const D2R=Math.PI/180; ${saritrim}
     const THREE={MathUtils:{clamp:(v,lo,hi)=>Math.min(hi,Math.max(lo,v))}}, RADAR={ sil:!!state.sil }, bingo_low=()=>!!state.bingo, fuel_low=()=>!!state.fuellow, sim_time=10, glance=10, notices=[], notice=(t)=>notices.push(t), translate=(t)=>t, on_ground=()=>state.ground??true, masters=[], set_master=(m)=>masters.push(m);
-    ${pressfn} ${indexfn} ${foldfn} ${crankfn}
+    ${handlefn} ${pressfn} ${indexfn} ${foldfn} ${crankfn}
     fold_handle=state.handle??"lock"; ownship.fold=state.fold??0;
     pit_press(action, direction);
     return { ownship, parking, alt_radar, declutter, fuel_dump, hook_bypass, flap_select, flap_armed, sil:RADAR.sil, notices, masters, peak_g, index:law_index, on:radalt_on, greet:radalt_greet, test:radalt_test, exterior, clicked:lights_clicked, handle:fold_handle, sari:sari_clicked, trim:sari_trim, pulled:sari_pulled, gone:canopy_gone, cranked, armed:seat_armed };`)
@@ -780,12 +781,13 @@ describe('the cockpit pointer', () => {
     expect(lifted.mark_ring({ at: new THREE.Vector3(14, 0.3, 0), radius: 0.006 })?.[2]).toBe(6) // a far one stays in sight
     const drawn: number[][] = []
     const hctx = { save() {}, restore() {}, setTransform() {}, beginPath() {}, stroke() {}, arc: (...a: number[]) => drawn.push(a) }
-    const pointer = { x: 0, y: 0, key: '', mark: null, screen: null as number[] | null }
-    new Function('THREE', 'hctx', 'pointer', 'mark_ring', `const running=true, game_paused=false, playback=null, head_az=0, head_el=0, view_zoom=1, devicePixelRatio=1;
-      const pointer_shown=()=>true, pit_hover=()=>({});
-      ${top('pointer_draw')} pointer_draw();`)(THREE, hctx, pointer, () => [400, 300, 12])
+    const pointer = { x: 0, y: 0, seen: [NaN, NaN, NaN, NaN, NaN], mark: null, screen: null as number[] | null }
+    const found = new Function('THREE', 'hctx', 'pointer', 'mark_ring', `const running=true, game_paused=false, playback=null, devicePixelRatio=1; let head_az=0, head_el=0, view_zoom=1, found=0;
+      const pointer_shown=()=>true, pit_hover=()=>{ found++; return {}; };
+      ${top('pointer_draw')} pointer_draw(); pointer_draw(); pointer_draw(); const still=found; head_az=0.1; pointer_draw(); pointer.x=5; pointer_draw(); view_zoom=2; pointer_draw(); return [still, found];`)(THREE, hctx, pointer, () => [400, 300, 12])
     expect(drawn[0].slice(0, 3)).toEqual([400, 300, 12]) // drawn round, at the size mark_ring gives
     expect(pointer.screen).toEqual([400, 300, 12])
+    expect(found).toEqual([1, 4]) // found again only when the pointer, the head or the zoom moves
   })
 
   it('rings only what the eye sees of a part that runs on into the panel, and looks again once the head turns', () => {
@@ -917,7 +919,7 @@ function clicks(action: string, buttons: number[]): unknown[] {
     const ownship={ squish:1, speed:0, canopyTarget:0, gearTarget:1 }, buses={ essential:true }, RADAR={ sil:false }, arms={ arm:false }, uhf={ panel:{ landing:"ufc" } }, squawk={ master:"normal" };
     let canopy_gone=false, cranked=false, bar_switch="retract", taping_source="hud", spin_switch="norm", ddi_dirty=false, gear_emergency=false;
     const on_ground=()=>false, set_master=()=>{}, notice=()=>{}, translate=(t)=>t, pit_target=()=>({ action });
-    ${travel.join('')} ${flipsdef} ${pressfn} ${switchfn}
+    ${travel.join('')} ${flipsdef} ${handlefn} ${pressfn} ${switchfn}
     const seen=[${read}]; for(const button of buttons){ pit_switch({ button }); seen.push(${read}); } return seen;`)(action, buttons) as unknown[]
 }
 

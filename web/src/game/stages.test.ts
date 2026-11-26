@@ -94,6 +94,8 @@ function harness(): Harness {
     ${lift('stage_for')}
     ${lift('stage_show')}
     ${lift('dots_build')}
+    ${line(/^const _stage_sky=[^\n]*/m)}
+    const jets_other=()=>[...new Set([bandit,...remotes.values()])];
     ${lift('update_stages')}
     return { update_stages, stage_for, screen_size, jet:bandit, posed, dots:()=>stage_dots, carrier:(far)=>{ carrier_far=far; } };`
   )(THREE, stages) as Harness

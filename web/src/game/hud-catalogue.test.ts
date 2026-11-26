@@ -28,13 +28,15 @@ const catalogue = () => {
 const translated = () => {
   const source = read('./engine.ts')
   const keys = new Set<string>()
+  // A literal handed values too (a placeholder's figure) is a key like any
+  // other: "{key} to close" was one, and the check could not see it.
   for (const found of source.matchAll(
-    /translate\(\s*"((?:[^"\\]|\\.)*)"\s*\)/g
+    /translate\(\s*"((?:[^"\\]|\\.)*)"\s*[,)]/g
   )) {
     keys.add(found[1].replace(/\\(.)/g, '$1'))
   }
   for (const found of source.matchAll(
-    /translate\(\s*'((?:[^'\\]|\\.)*)'\s*\)/g
+    /translate\(\s*'((?:[^'\\]|\\.)*)'\s*[,)]/g
   )) {
     keys.add(found[1].replace(/\\(.)/g, '$1'))
   }
@@ -56,6 +58,19 @@ const hints = (source: string) => {
 const VERBATIM = ['AUTO', 'BALL', 'CLARA', 'HORNET']
 
 describe('HUD_MESSAGES', () => {
+  it("hands the notice line no English of its own but a developer's", () => {
+    // A notice given a bare literal is not in translated() at all, so the
+    // catalogue check above cannot see it: NO RADAR LOCK and LOCK REQUIRED
+    // went out in English that way. The developer test scenarios' lines are
+    // the developer's; head tracking's is unreachable while its start is
+    // parked (start_mission's head_begin).
+    const bare = read('./engine.ts')
+      .split('\n')
+      .filter((line) => !line.includes('TEST_SCENARIOS'))
+      .flatMap((line) => [...line.matchAll(/notice\(\s*["'`]([^"'`]*)/g)].map((found) => found[1]))
+    expect(bare).toEqual(['HEAD TRACKING: '])
+  })
+
   it('carries every string the engine asks it to translate', () => {
     // translate() returns its input on a miss, so a gap here is silent: the
     // string renders in English beside its translated neighbours, which is how
@@ -86,7 +101,7 @@ describe('HUD_MESSAGES', () => {
     // rendered the way the game renders it, and must come back with the figure
     // in and nothing else changed.
     const i18n = setupI18n({ locale: 'en', messages: { en: {} } })
-    const values = { heading: '069°', power: 'military power', side: 'right', mode: 'CV' }
+    const values = { heading: '069°', power: 'military power', side: 'right', mode: 'CV', key: 'Enter' }
     for (const [key, line] of hints(read('./engine.ts'))) {
       const shown = i18n._({ id: line, message: line, values })
       const wanted = line.replace(/\{(\w+)\}/g, (_: string, name: string) => values[name as keyof typeof values])
@@ -99,7 +114,7 @@ describe('HUD_MESSAGES', () => {
     // that is longer than a row is cut at the last ": " - the label colon, which
     // leaves "Case III:" alone on a row with the line under it. The English is
     // written to fit, with the widest live figures in.
-    const values = { heading: '069°', power: 'full afterburner', side: 'right' }
+    const values = { heading: '069°', power: 'full afterburner', side: 'right', key: 'Backspace' }
     for (const [key, line] of hints(read('./engine.ts'))) {
       const filled = line.replace(/\{(\w+)\}/g, (_: string, name: string) => values[name as keyof typeof values])
       for (const part of filled.split('; ')) expect(part.length, `${key}: ${part}`).toBeLessThanOrEqual(78)

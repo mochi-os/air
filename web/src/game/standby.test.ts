@@ -242,16 +242,20 @@ describe('the primary radar low-altitude warning (NATOPS 2.12.5.1)', () => {
 // The standby altimeter's barometric setting (NATOPS 2.12.4) and the HUD
 // baro-set readout (2.13.4.8.11 item 4): the four window drums read the
 // setting, and the HUD shows it below the altitude for 5 s after a change
-// and flashing for 5 s on a descent through 10,000 ft below 300 knots.
-interface Moment { feet: number; knots: number; t: number; set?: number }
+// and flashing for 5 s on a descent through 10,000 ft below 300 knots. The
+// latches are stepped with the jet (baro_update), the readout drawn by
+// hud_cluster, so a descent flown with no HUD on screen is still caught.
+interface Moment { feet: number; knots: number; t: number; set?: number; drawn?: boolean }
+const baroupdate = /\nfunction baro_update\(\)\{[\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
 function baroset(moments: Moment[]): (string | null)[] {
-  const block = /\n\tif\(!limited&&keep\("BARO PRES",3\)\)\{ const knots=\(ownship\.cas\?\?ownship\.speed\)\*1\.944;[\s\S]*?fixed-format like the real instrument\n/.exec(source)?.[0] ?? ''
-  if (!block) throw new Error('baro-set block not found in engine.ts')
-  const run = new Function('moments', `let baro_set=2992, baro_last=2992, baro_shown=-1e9, baro_flash=false, baro_armed=false;
-    const GR='#0f0', lx=0, wly=0, rej=0, limited=false, keep=(symbol,level)=>rej<level, ownship={cas:0, speed:0};
+  const block = /\n\tif\(!limited&&keep\("BARO PRES",3\)\)\{\n\t\tif\(glance-baro_shown<5[\s\S]*?fixed-format like the real instrument\n/.exec(source)?.[0] ?? ''
+  if (!block || !baroupdate) throw new Error('baro-set block or baro_update not found in engine.ts')
+  const run = new Function('moments', `let baro_set=2992, baro_last=2992, baro_shown=-1e9, baro_flash=false, baro_armed=false, glance=0;
+    const GR='#0f0', lx=0, wly=0, rej=0, limited=false, keep=(symbol,level)=>rej<level, ownship={ cas:0, speed:0, pos:{ y:0 } }, baro_error=()=>0;
+    ${baroupdate}
     return moments.map((m)=>{ let drawn=null; const hctx={ fillText:(s)=>{ drawn=s; }, font:'', textAlign:'', fillStyle:'' };
-      const baro=m.feet, sim_time=m.t, glance=m.t; ownship.cas=m.knots/1.944; if(m.set!==undefined) baro_set=m.set;
-      ${block} return drawn; });`)
+      glance=m.t; ownship.pos.y=m.feet/3.28084; ownship.cas=m.knots/1.944; if(m.set!==undefined) baro_set=m.set;
+      baro_update(); if(m.drawn!==false){ ${block} } return drawn; });`)
   return run(moments) as (string | null)[]
 }
 
@@ -272,6 +276,19 @@ describe('the standby altimeter baro setting', () => {
     expect(baroset([{ feet: 12000, knots: 320, t: 50 }, { feet: 9900, knots: 320, t: on }])).toEqual([null, null]) // fast through the level: no reminder
     expect(baroset([{ feet: 12000, knots: 250, t: 50 }, { feet: 9900, knots: 250, t: on }, { feet: 12000, knots: 250, t: 120 }, { feet: 9900, knots: 250, t: 200.1 }]))
       .toEqual([null, '29.92', null, '29.92']) // re-armed by the climb back above
+  })
+
+  it('catches the descent with no HUD drawn, and shows the reminder once one is', () => {
+    // A descent through the level in the chase view, the HUD back on screen a second later
+    expect(baroset([{ feet: 12000, knots: 250, t: 50, drawn: false }, { feet: 9900, knots: 250, t: 100.1, drawn: false }, { feet: 9800, knots: 250, t: 100.8 }]))
+      .toEqual([null, null, '29.92'])
+  })
+
+  it('is latched by baro_update, stepped with the jet, and only drawn by hud_cluster', () => {
+    const cluster = /\nfunction hud_cluster\([\s\S]*?\n(?=\S)/.exec(source)?.[0] ?? ''
+    expect(cluster).not.toBe('')
+    for (const latch of ['baro_armed=', 'baro_shown=', 'baro_flash=', 'baro_last=']) expect(cluster).not.toContain(latch)
+    expect(source).toMatch(/\n\t\tcautions_update\(dt\);[^\n]*\n\t\ttones_update\(\); baro_update\(\);/)
   })
 
   it('shows a changed setting steadily for 5 s', () => {
@@ -658,7 +675,8 @@ describe('the standby altimeter knob', () => {
   it('feeds the setting to every barometric altitude reader', () => {
     // each from the jet's height over the sea, which the frame's y is not away from its anchor (#134)
     expect(source).toMatch(/altitude=Math\.max\(0,\(ownship\.altitude\?\?out\[STATE\.position\+1\]\?\?0\)\*3\.281\+baro_error\(\)\);/) // the standby altimeter and the ADI page
-    expect(source).toMatch(/const baro=\(ownship\.altitude\?\?ownship\.pos\.y\)\*3\.28084\+baro_error\(\); const lx=/) // the HUD's altitude box
+    expect(source).toMatch(/\nfunction altitude_reading\(\)\{ const height=ownship\.altitude\?\?ownship\.pos\.y, baro=height\*3\.28084\+baro_error\(\);/) // the HUD's altitude box
+    expect(source).toMatch(/\nfunction baro_update\(\)\{ const baro=\(ownship\.altitude\?\?ownship\.pos\.y\)\*3\.28084\+baro_error\(\),/) // the HUD's baro-set reminder
     expect(source).toMatch(/baro:\(ownship\.altitude\?\?ownship\.pos\.y\)\*3\.28084\+baro_error\(\) \};/) // the barometric low-altitude warning
   })
 

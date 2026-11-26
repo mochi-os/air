@@ -251,7 +251,7 @@ export function LoadoutPreview({
     <div className='relative w-full'>
       <div ref={mount} className='aspect-[29/10] w-full overflow-hidden' />
       {!ready && (
-        <div className='pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-xs text-white/60'>
+        <div className='text-muted-foreground pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-xs'>
           <Trans>Loading aircraft</Trans>
         </div>
       )}

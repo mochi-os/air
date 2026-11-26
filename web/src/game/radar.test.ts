@@ -401,6 +401,30 @@ describe('STT', () => {
     radar.step(1 / 60, own, [beam], always)
     expect(radar.strobes.length).toBe(0)
   })
+  it('keeps receiving the strobe with the transmitter silent, and none without power or in BIT', () => {
+    const radar = new Radar()
+    const jammer = { ...beam, x: 5 * NM, jamming: true }
+    radar.step(1 / 60, own, [jammer], always)
+    const right = radar.strobes[0]
+    radar.sil = true
+    radar.step(1 / 60, { ...own, heading: Math.PI / 2 }, [jammer], always) // turned east, toward it
+    expect(radar.strobes.length).toBe(1)
+    expect(radar.strobes[0]).toBeLessThan(right) // it moved toward the nose as the jet turned
+    radar.step(1 / 60, own, [beam], always)
+    expect(radar.strobes, 'the jammer stopped').toEqual([])
+    radar.sil = false
+    radar.emcon = true
+    radar.step(1 / 60, own, [jammer], always)
+    expect(radar.strobes.length).toBe(1)
+    radar.emcon = false
+    radar.unpowered = true
+    radar.step(1 / 60, own, [jammer], always)
+    expect(radar.strobes).toEqual([])
+    radar.unpowered = false
+    radar.testing = true
+    radar.step(1 / 60, own, [jammer], always)
+    expect(radar.strobes).toEqual([])
+  })
   it('breaks past the gimbal and returns to search', () => {
     const radar = new Radar()
     radar.designate(7)

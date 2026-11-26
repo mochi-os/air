@@ -15,13 +15,14 @@ import { describe, expect, it } from 'vitest'
 // text and stepped against a stand-in ownship, as landing-light.test.ts does.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 const law = /\nfunction trim_law\(\)\{[\s\S]*?\n\treturn [^\n]*\}\n/.exec(source)?.[0] ?? ''
+const handle = /\nfunction handle_down\(st\)\{[^\n]*\n/.exec(source)?.[0] ?? ''
 
 interface Jet { grounded: boolean; speed: number; cas: number; gearTarget: number }
 // A fresh law mirror; step() is one frame at a time and flap setting.
 function mirror() {
-  if (!law) throw new Error('trim_law() not found in engine.ts')
+  if (!law || !handle) throw new Error('trim_law() or handle_down() not found in engine.ts')
   return new Function(`let law_halfleg=false, law_wheels=-Infinity, law_fast=false, sim_time=0, flap_select=0, ownship=null;
-    ${law}
+    ${handle} ${law}
     return (jet, time, flap) => { ownship=jet; sim_time=time; flap_select=flap; return trim_law(); };`)() as
     (jet: Jet, time: number, flap: number) => boolean
 }
@@ -69,7 +70,7 @@ describe('the HUD trim readout follows the PA law, not the gear', () => {
 
   it('gates the readout on the mirror, not on the landing-symbology gate', () => {
     expect(source).toMatch(/trim_manual=trim_law\(\);/)
-    expect(source).toMatch(/if\(trim_manual&&Math\.abs\(datum\)>0\.0025\)/)
+    expect(source).toMatch(/const trim=trim_text\(trim_manual&&Math\.abs\(datum\)>0\.0025\?datum\*57\.3:0,/)
     expect(source).not.toMatch(/if\(hud_pa&&Math\.abs\(datum\)/)
   })
 })

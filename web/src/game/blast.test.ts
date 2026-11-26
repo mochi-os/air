@@ -148,3 +148,38 @@ describe('the fireball at range', () => {
     expect(material.fragmentShader).not.toContain('texture2D(')
   })
 })
+
+// A blast's flash light is one of a few the scene holds from the start, dark
+// until a blast takes one: a light added for each blast changed the scene's
+// count of lights, and a new count recompiles every lit material in view.
+describe("a blast's flash", () => {
+  const run = (body: string) => {
+    const added: unknown[] = []
+    const world = new Function(
+      'added',
+      `class PointLight { constructor(c, i) { this.intensity = i; this.color = { setHex: () => {} }; this.position = { set: () => {} } } }
+       const THREE = { PointLight }, scene = { add: (o) => added.push(o), remove: () => {} }
+       const cfg = { effects_quality: 2 }, boom_texture = () => ({ then: () => {} }), soot_queue = [], sim_time = 0, camera = {}
+       const transient_fx = [];
+       ${/\nconst blast_lights=[^\n]*\n/.exec(source)?.[0] ?? ''}
+       ${lift('transient_blast')}${lift('update_transient_fx')}
+       ${body}`
+    )
+    return world(added) as { added: number; lit: number[]; free: number }
+  }
+  it('lights a light the scene already holds, and adds none', () => {
+    const seen = run(`const at = added.length; transient_blast(0, 100, 0, false)
+      return { added: added.length - at, lit: added.map((l) => l.intensity), free: blast_lights.length }`)
+    expect(seen.added).toBe(0)
+    expect(seen.lit.filter((i) => i > 0)).toEqual([38])
+  })
+  it('hands it back dark when the blast is over, and goes without one when every light is lit', () => {
+    const seen = run(`for (let k = 0; k < 4; k++) transient_blast(0, 100, 0, false)
+      const lit = added.map((l) => l.intensity), crowded = blast_lights.length
+      update_transient_fx(1)
+      return { added: crowded, lit, free: blast_lights.length }`)
+    expect(seen.added, 'all three taken by the first three blasts').toBe(0)
+    expect(seen.lit).toEqual([38, 38, 38])
+    expect(seen.free).toBe(3)
+  })
+})

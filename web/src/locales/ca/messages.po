@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} ja estava ocupat, i aquest control ara no té assignació."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} era a {1}, que ara no tenen assignació."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} era a {1}, que ara no té assignació."
@@ -165,6 +171,10 @@ msgstr "Nom de {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} a {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} per tancar"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO COMBUSTIBLE"
 msgid "Block {name}"
 msgstr "Bloqueja {name}"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Bloquejat per"
 msgid "Blocked navigation to untrusted link"
 msgstr "S'ha bloquejat la navegació a un enllaç no fiable"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Blocs"
@@ -672,6 +684,10 @@ msgstr "Blocs"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Blau"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "BLAU {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Categoria actualitzada"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Línia central"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Canviat"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "S'ha canviat {field}"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Classe canviada"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Detecta"
 msgid "Detect from web browser"
 msgstr "Detecta des del navegador"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Mode de desenvolupador"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Amfitrió de joc diferent"
@@ -1628,6 +1653,7 @@ msgstr "D'ESQUENA"
 msgid "Drone"
 msgstr "Dron"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Duplicats"
@@ -1739,6 +1765,11 @@ msgstr "Piló buit"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Activa el so"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Acabada"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Dipòsit de combustible"
 msgid "full afterburner"
 msgstr "postcombustió total"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Només canons"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Treu la mà de la palanca; prem enter per saludar i enlairar-te"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Treu la mà de la palanca; prem {key} per saludar i enlairar-te"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Prova de llums"
 msgid "Link"
 msgstr "Enllaç"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Enllaços"
@@ -2653,6 +2681,10 @@ msgstr "S'està carregant..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Armament"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "CAL FIXACIÓ"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Baixa l'antena del radar"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M per tancar"
+msgid "LWD"
+msgstr "ESQ"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Mou…"
 msgid "Moved"
 msgstr "Mogut"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "S'ha mogut {field}"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "S'està movent a {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "El multijugador necessita WebTransport, que aquest navegador encara no admet."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Abatiment mutu"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "ABATIMENT MUTU"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "El nom és obligatori"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "El nom ha de tenir 1000 caràcters o menys"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "AVAL"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Any següent"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Nit"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "No"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "No s'ha trobat ningú"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "No s'ha trobat cap lloc"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "SENSE FIXACIÓ DE RADAR"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Notificacions: {0}"
 msgid "Novice"
 msgstr "Principiant"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "AMUN"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Número"
@@ -3221,7 +3273,9 @@ msgstr "A la pista: mitjos flaps, puja a potència militar, frens deixats anar"
 msgid "Oops! Page Not Found!"
 msgstr "Vaja! Pàgina no trobada!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Oberta"
 
@@ -3272,6 +3326,11 @@ msgstr "Opcions"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Altres"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Altre"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3453,13 +3512,13 @@ msgstr "Publicacions"
 msgid "Posts and comments"
 msgstr "Publicacions i comentaris"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "PREMEU {key} PER ENLAIRAR"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Prem una tecla…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "PREMEU RETORN PER ENLAIRAR"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Enregistrament desat"
 msgid "Red"
 msgstr "Vermell"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "VERMELL {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Bots vermells"
@@ -3631,6 +3694,7 @@ msgstr "Actualitza"
 msgid "REJOINING"
 msgstr "REAGRUPANT-ME"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Es relaciona"
@@ -3883,6 +3947,10 @@ msgstr "MÀXIMA POTÈNCIA"
 msgid "Runway {end}"
 msgstr "Pista {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "DRET"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Dissabte"
@@ -4062,6 +4130,7 @@ msgstr "Servidor"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Error del servidor"
 
@@ -4074,6 +4143,10 @@ msgstr "Regles del servidor"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "el servidor fa servir v{0}, tu tens v{version}"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Servidor aturat"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Divideix"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "DESPLEGA LES ALES"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "ESTAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "No s'ha pogut trobar el contingut sol·licitat."
 msgid "The server returned a web page instead of data."
 msgstr "El servidor ha retornat una pàgina web en lloc de dades."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "El servidor de món ha respost amb l'error {status}"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "El servidor de món no ha respost a temps"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "El servidor de món no té lloc per a una altra partida"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "El servidor de món ha enviat una resposta que no s'ha pogut llegir"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Aquesta aplicació no té permís per utilitzar la vostra clau d'accés. Permeteu-ho a Configuració, sota Permisos."
@@ -4482,6 +4575,10 @@ msgstr "Temps"
 msgid "Time of day"
 msgstr "Hora del dia"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Temps esgotat"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Títol"
@@ -4512,13 +4609,25 @@ msgstr "Commuta les opcions de vista"
 msgid "Toggle watched filter"
 msgstr "Commuta el filtre observat"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Massa partides ofertes des de la teva adreça"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Massa sol·licituds"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Massa sol·licituds al servidor de món"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Millors"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Nivell superior"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Viatjant"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "compensador"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "COMP {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Estats Units"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "ALES BLOQUEJADES"
 msgid "WINS"
 msgstr "GUANYA"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Retirada"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Servidor de món"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "No es pot accedir al servidor de món"
@@ -4893,6 +5016,10 @@ msgstr "Guinyada a la dreta"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Any"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Sí"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

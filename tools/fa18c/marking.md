@@ -96,12 +96,14 @@ photo's `aside`, never its `marks` (a tank's tip is a silhouette end, and in the
 - `pylon_centre_nose`, `pylon_centre_tail`: the SUU-62's foremost point low down (where its front meets the tank)
   and its aft lower corner; `pylon_centre_root_front`, `pylon_centre_root_aft`: where its edges meet the belly.
 - The LAU-116 shows a block on the nacelle's side ahead of the cheek box, its outboard face flush with the box's, its
-  top below the box's (`left` for station 4, `right` for 6): `ejector_front_top_<side>`, `ejector_front_bottom_<side>`,
-  its front face's top and bottom outboard corners; `ejector_front_inboard_<side>`, where its front face's top edge
-  meets the nacelle's side; `ejector_step_<side>`, the upper corner of the step in its outline near its aft end, seen from
-  aft of the beam; `ejector_hole_<side>`, the middle of the dark round hole in the upper half of its outboard face, about 6 in
-  behind its front. From ahead, the round's upper wing can stand in front of its front's outboard edge: mark a corner
-  only where it shows.
+  top a seam (a dark line) below the box's, a fairing over it flush with its face up to where it turns in to the
+  nacelle's side, and a lit ramp ahead of its front edge falling forward into the skin (`left` for station 4, `right`
+  for 6): `ejector_front_top_<side>`, `ejector_front_bottom_<side>`, where that seam and the block's bottom meet the
+  face's front edge, the crease where the ramp begins (about FS 480); `ejector_crest_<side>`, the front edge's top,
+  where the ramp's raised top edge meets it; `ejector_step_<side>`, the upper corner of the step in the seam near its
+  aft end, seen from aft of the beam; `ejector_hole_<side>`, the middle of the dark round hole in the upper half of its
+  outboard face, about 30 in behind its front edge. The round's upper wing stands beside the face's forward part
+  (about FS 490-504): seen from aft, its trailing edge is not the block's front; mark a corner only where it shows.
 - `fairing_cheek_aft_<side>`: the middle of the box behind the cheek station's aft-most edge, the upright edge over
   the round's tail where the chamfered aft face meets the outboard side; `fairing_cheek_front_<side>`: the top front
   corner of its outboard face. The box is airframe, there with no stores.

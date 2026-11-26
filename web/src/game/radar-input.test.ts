@@ -26,7 +26,7 @@ import { amraams as stores_amraams, eject as stores_eject, sequence, departed } 
 // as text and run against the real Radar class, as acmi.test.ts's lift() does.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -247,7 +247,8 @@ describe('the RDR page draws the scan volume', () => {
        const radar_cursor={ azimuth:0, range:20*NM };
        const ownship={ pos:{x:0,y:6096,z:0}, gauges:{heading:0}, speed:250, fwd:{x:0,y:0,z:-1} };
        const attack_cue=()=>cue, breakaway=()=>{};
-       ${[lift('radar_own'), lift('ddi_legend'), lift('rdr_x'), lift('rdr_y'), lift('rdr_stick'), lift('rdr_star'), lift('rdr_block'), lift('ddi_rdr')].join('\n')}
+       const theatre={ frame:{ altitude:(p)=>p.y } };   // the frame's level the sea's here: a flat test world
+       ${[lift('radar_own'), lift('ddi_legend'), lift('rdr_x'), lift('rdr_y'), lift('rdr_stick'), lift('rdr_star'), lift('_rdr_at'), lift('rdr_height'), lift('rdr_block'), lift('ddi_rdr')].join('\n')}
        set(RADAR);
        const x=new Proxy({}, { get:(t,k)=>k==='fillText'?(s,px)=>{ text.push(String(s)); at.push([String(s),px]); }:k==='strokeRect'?(bx)=>boxes.push(bx):k==='measureText'?(s)=>({ width:10*String(s).length }):()=>{}, set:()=>true });
        ddi_rdr(x);
@@ -632,11 +633,11 @@ describe('the HUD box: what the pilot has designated, and nothing else', () => {
     const hud = lift('draw_hud')
     expect(hud).toMatch(/const dst=hud_target\(\); if\(dst\)\{ boxed=dst;/)
     expect(hud).not.toMatch(/if\(has_enemy\)\{[^}]*boxed=bandit/) // never the bandit for being there
-    expect(hud).toMatch(/\n\thud_cue=""; hud_shoot=false;[^\n]*\n\tseeker_now=seeker_look\(hud_target\(\),\(ownship\.gear\?\?1\)<0\.02\);/) // first, before any view returns
+    expect(lift('tones_update')).toMatch(/\n\tseeker_now=seeker_look\(hud_target\(\),pa\);/) // stepped with the jet, so every view and the line sent to the server have it
     expect(source).not.toMatch(/heat_quarry/)
     expect(lift('seeker_look')).not.toMatch(/0\.866/) // no cone on the client: the seeker's own 2.5° field about its line
-    expect(lift('seeker_look')).toMatch(/if\(master!=="9m"\|\|pa\)/)
-    expect(hud).toMatch(/const look=lockon\?quarry\.pos:seeker_now\.line\?new THREE\.Vector3\(\)\.copy\(camera\.position\)\.addScaledVector\(seeker_now\.line,1000\):null;/) // the seeker circle on its heat, boxed or not
+    expect(lift('seeker_look')).toMatch(/if\(master!=="9m"\|\|pa\|\|!seeker_aboard\(\)\)/)
+    expect(hud).toMatch(/const look=lockon\?quarry\.pos:seeker_now\.line\?_seek_look\.copy\(camera\.position\)\.addScaledVector\(seeker_now\.line,1000\):null;/) // the seeker circle on its heat, boxed or not
     expect(lift('radar_step')).toMatch(/RADAR\.step\(dt,radar_own\(\),contacts\(\)\);\n\tradar_held\(\);/)
   })
 
@@ -669,8 +670,8 @@ describe('the known picture: what the SA page and the map draw', () => {
          ?[{ id:2, x:100, y:-1000, z:-50000, fwd:{ x:1, z:0 }, name:'two', team:'blue' }, { id:3, x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'three', team:'red' }]
          :[{ id:'bandit', x:0, y:0, z:-${far}, fwd:{ x:0, z:1 }, name:'', team:'' }];
        const contacts=()=>jets, remotes=new Map(jets.map(j=>[j.id,{ pos:{ x:j.x, y:j.y, z:j.z }, up:{ x:0, y:1, z:0 }, group:{ visible:true } }]));
-       ${['own_team', 'status_of', 'link_sense', 'link_picture16', 'overhead', 'identified', 'challenges', 'status_own'].map(lift).join('\n')}
-       ${lift('known').replace(/^function known/, 'const SIGHT=12000; function known')}
+       ${['own_team', 'status_of', 'link_sense', 'LINK_NONE', 'link_picture16', 'overhead', 'identified', 'challenges', 'status_own'].map(lift).join('\n')}
+       const SIGHT=12000; ${/\nconst _known=\[\];\nfunction known\(\)\{[\s\S]*?\nfunction known_newer\([^\n]*\n/.exec(source)?.[0] ?? ''}
        return { RADAR, known, statuses, squawk, terminal, power(ac){ buses={ ac }; }, emission(on){ emcon=on; }, challenges, status:status_own, lit(slot,visible){ remotes.get(slot).group.visible=visible; } };`
     )(Radar, identification, mids) as Page
   }
@@ -840,9 +841,30 @@ describe('the known picture: what the SA page and the map draw', () => {
     expect(solo.status().tracks).toEqual([])
   })
   it('sends its status with every input sample, and takes the others\' from the session\'s status events', () => {
-    expect(source).toMatch(/solo:solo_flag, extinguish:extinguish_flag, status:status_own\(\), seeker:seeker_now\.line\?helmet\.pack\(seeker_now\.line\):null \};/) // whatever it is slaved to, whenever the 9M is selected (#143)
+    expect(source).toMatch(/solo:solo_flag, extinguish:extinguish_flag, status:status_own\(\), seeker:seeker_now\.line\?seeker_wire\(seeker_now\.line\):null \};/) // whatever it is slaved to, whenever the 9M is selected (#143)
     const net = readFileSync(fileURLToPath(new URL('./net.ts', import.meta.url)), 'utf8')
     expect(net).toMatch(/if \(ev\.kind === 'status' && validSlot\(ev\.slot\)\) this\.statuses\.set\(ev\.slot as number, status_read\(ev, MAX_SLOT\)\)/)
+  })
+  it('builds the picture from the link, the eyes, the trackfiles, the newest paint of each and the members\' donated tracks, in one list rewritten in place', () => {
+    const block = /\nconst _known=\[\];\nfunction known\(\)\{[\s\S]*?\nfunction known_newer\([^\n]*\n/.exec(source)?.[0] ?? ''
+    expect(block).not.toBe('')
+    expect(block).not.toMatch(/=>|\.filter\(|\.map\(|\.some\(|\.find\(|\.\.\./) // no closures and no copies, as the map draws it every frame
+    const run = new Function(`const SIGHT=12000, cfg={ tod:"day" }, ownship={ pos:{ x:0, y:0, z:0 } }, own_team=()=>"blue", identified=(c)=>!!c.answered;
+      const jet=(id,x,team,name,answered)=>({ id, x, y:0, z:0, fwd:{ x:1, z:0 }, team, name, answered });
+      const all=[jet(1,50000,"blue","WING"), jet(2,5000,"red","BAD"), jet(3,30000,"red","C",true), jet(4,40000,"red","D"), jet(5,60000,"blue","E"), jet(6,70000,"red","F")];
+      const contacts=()=>all, link_picture16=()=>({ members:[1], donated:[5,1,99] });
+      const RADAR={ time:10, tracks:[{ id:2, x:5000, z:0, vx:1, vz:0, at:9 }, { id:3, x:30000, z:0, vx:10, vz:0, at:8 }],
+        bricks:[{ id:4, x:40000, z:0, at:5 }, { id:4, x:41000, z:0, at:7 }, { id:3, x:30000, z:0, at:9 }] };
+      ${block} const first=known(), again=known(); return { list:first.map((c)=>({ ...c })), same:first===again };`)
+    const { list, same } = run() as { list: unknown[]; same: boolean }
+    expect(list).toEqual([
+      { x: 50000, z: 0, fx: 1, fz: 0, team: 'blue', name: 'WING' }, // on the link, by its own report
+      { x: 5000, z: 0, fx: 1, fz: 0, team: 'red', name: '' }, // seen, no name
+      { x: 30020, z: 0, fx: 10, fz: 0, team: 'red', name: '' }, // a trackfile, carried on, its side by its mode 4 answer
+      { x: 41000, z: 0, fx: 0, fz: 0, team: '', name: '' }, // the newest paint, no heading
+      { x: 60000, z: 0, fx: 1, fz: 0, team: '', name: '' }, // a member's donated track
+    ])
+    expect(same).toBe(true)
   })
   it('draws the SA page and the map from it, a paint with no heading as a plain mark', () => {
     const sa = lift('ddi_sa'), map = lift('draw_map')
@@ -937,7 +959,7 @@ describe("the attack format's cues (attack_cue)", () => {
   it("is the HUD's decision too", () => {
     const hud = lift('draw_hud')
     expect(hud).toContain('const brk=breakaway_due(boxed,rng,vc);')
-    expect(hud).toContain('const heat_shown={ shoot:heat_lit(lockon,brk,cue) };')
+    expect(hud).toContain('const heat_shown=_heat_shown; heat_shown.shoot=heat_lit(lockon,brk,cue);')
   })
 })
 
@@ -1078,7 +1100,7 @@ describe('the launch zones fly the radar trackfile, not the jet', () => {
       const body = lift(name)
       expect(body, name).toMatch(/const r=ranging\(\); if\(r\)\{ rng=r\.range; vc=r\.closure; ranged=true; \}/)
       expect(body, name).not.toMatch(/rng=wrap_distance\(ownship\.pos,dst\.pos\)/)
-      expect(body, name).toContain('vc,ranged?rng:null,')
+      expect(body, name).toContain('vc,ranged?rng:null')
     }
     expect(lift('hud_cluster')).toContain('if(aa&&boxed&&rng!=null&&!limited)')
   })

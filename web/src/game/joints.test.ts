@@ -416,6 +416,36 @@ describe('the ram air scoop', () => {
   })
 })
 
+// The cabin ram air scoop (engine.ts update_anim; tools/fa18c facts
+// layout.cabin): open on the pilot's jet while no bleed air reaches the ECS,
+// as on every cold jet in the photos, shut once it does; it takes its state
+// from the core's first output, so a jet starting in the air never shows it
+// open, and another jet's stays shut.
+describe('the cabin ram air scoop', () => {
+  const lines = /\n\tif\(st===ownship&&last_out\) st\.cabinTarget[^\n]*\n\tif\(st\.cabinTarget!==undefined\)[^\n]*\n/.exec(engine)?.[0] ?? ''
+  const step = (st: Record<string, unknown>, bleed: boolean | null, dt: number, own = true) => {
+    if (!lines) throw new Error('the cabin scoop lines not found in update_anim')
+    const ownship = own ? st : {}
+    const out = bleed === null ? null : []
+    new Function('st', 'ownship', 'last_out', 'pressurized', 'dt', 'MOTION', 'THREE', lines)(st, ownship, out, () => bleed, dt, { seconds: { cabin: 1 } }, THREE)
+    return st.cabin as number | undefined
+  }
+  it('stands open on a cold jet from its first frame, and shuts over its stroke once bleed air flows', () => {
+    const st: Record<string, unknown> = {}
+    close(step(st, false, 0.5)!, 1)
+    close(step(st, true, 0.5)!, 0.5)
+    close(step(st, true, 0.5)!, 0)
+    close(step(st, false, 0.25)!, 0.25)
+  })
+  it('starts shut on a jet with bleed air, as one starting in the air', () => {
+    close(step({}, true, 0.5)!, 0)
+  })
+  it("waits for the core's first output, and leaves another jet's shut", () => {
+    expect(step({}, null, 0.5)).toBeUndefined()
+    expect(step({}, false, 0.5, false)).toBeUndefined()
+  })
+})
+
 describe('the lights on our model', () => {
   it('ride the outer panels where they sit on them', () => {
     const lights = (points as unknown as { points: { lights: Record<string, { node?: string }> } }).points.lights

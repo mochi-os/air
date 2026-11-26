@@ -23,7 +23,7 @@ import { EARTH, HOME, between, point } from './earth'
 // half is read from its source, and lift cuts one top-level function out of it.
 const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 function lift(name: string): string {
-  const start = source.indexOf(`function ${name}(`)
+  const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)) // a function, or a scratch record declared on a line of its own
   expect(start, `${name} in engine.ts`).toBeGreaterThan(0)
   const rest = source.slice(start)
   const end = /\n(?=\S)/.exec(rest.slice(1))
@@ -1037,6 +1037,25 @@ describe('rendering a recording as it grows', () => {
     recorder.render(new Date(0), 't', { task: 'joust' })
     expect(recorder.render(new Date(0), 't', { task: 'joust', bandit: 'expert' })).toContain('0,Match_bandit=expert')
   })
+  // The whole flight is kept as text: once render has written a sample, its
+  // every aircraft's full record is never read again, and holding it grew the
+  // recorder by a sample a frame under time compression for the whole sortie.
+  it('lets a whole-flight sample go once render has written it', () => {
+    const recorder = new Recorder()
+    const held = () =>
+      (recorder as unknown as { samples: Sample[] }).samples.length
+    const samples = flight(30)
+    for (const s of samples.slice(0, 20)) recorder.add(s.time, s.objects)
+    expect(held()).toBe(20)
+    recorder.render(new Date(0), 't', { task: 'joust' })
+    expect(held()).toBe(0)
+    expect(recorder.length).toBe(20) // still the flight's own count
+    for (const s of samples.slice(20)) recorder.add(s.time, s.objects)
+    expect(held()).toBe(10)
+    expect(recorder.render(new Date(0), 't', { task: 'joust' })).toBe(full(samples))
+    expect(held()).toBe(0)
+    expect(recorder.length).toBe(30)
+  })
   it('starts again when a windowed recorder drops its first samples', () => {
     const recorder = new Recorder(5)
     const samples = flight(120)
@@ -1751,7 +1770,7 @@ describe("the ownship's death in the recording", () => {
   })
 
   it('is wired where the engine samples and where the jet dies', () => {
-    expect(source).toMatch(/function crash_ownship\(why,killer\)\{ if\(crash_t>0\) return; crash_t=3\.0; own_written=false;/)
+    expect(source).toMatch(/function crash_ownship\(why,killer\)\{ if\(lost\(\)\) return; crash_t=3\.0; own_written=false;/)
     const sample = lift('recording_sample')
     expect(sample).toMatch(/const due=recorder\.due\(sim_time\);[^\n]*\n\tif\(!due\) return;[^\n]*\n\tconst own=own_record\(due\);/)
     expect(sample).toMatch(/tas:own==="death"\?undefined:airspeed\(out\[STATE\.mach\]\|\|0,ownship\.pos\.y\)/)

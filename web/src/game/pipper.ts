@@ -60,6 +60,7 @@ export function flight(span: number, v0: number, altitude: number): number {
 
 // reach is how far a round gets before its life runs out — about 2,500 m at sea
 // level from a standing start, further with the shooter's own speed behind it.
+// Read by the tests alone, which hold the round's flight and life to it.
 export function reach(altitude: number, v0: number = MUZZLE): number {
   return travel(v0, LIFE, altitude)
 }
@@ -110,7 +111,8 @@ export function impact(
 }
 
 // aim answers the pilot's question: which way must the nose point for the rounds
-// to arrive on the target? The pipper says this by sitting on him.
+// to arrive on the target? The pipper says this by sitting on him. Read by the
+// tests alone: the inverse of the pipper's own solution, which they check it by.
 export function aim(
   muzzle: Vector,
   own: Vector,

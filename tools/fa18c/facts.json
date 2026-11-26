@@ -914,6 +914,13 @@
 			"source": "tm103703",
 			"where": "PDF pages 17 and 31 (figure 17)",
 			"note": "hydraulic diameter of the inlet duct entrance"
+		},
+		"face": {
+			"value": 28,
+			"unit": "in",
+			"source": "gef404",
+			"where": "performance specifications, page 2: inlet diameter",
+			"note": "the engine face's diameter, where each inlet duct ends (layout.inlet duct): the F404-GE-402's, the F/A-18C/D's engine (page 1), the -102 and -103 alike. Its length there, 154 in, from the face at X/D 6.5 (FS 563.1) reaches FS 717, 3.8 in past the nozzles' exit (layout.nozzle, FS 713.3)"
 		}
 	},
 	"canopy": {
@@ -1174,8 +1181,8 @@
 			"buttline": 41.6,
 			"waterline": 106.8,
 			"source": "hatp; photo match",
-			"where": "figure 2, top view; natops 1.1.2 for the length; the waterline from the in-flight photos dvids8901347, dvids7487368 and dvids6690145 (tips.py, deflections held at rest, the cameras photos.py solved)",
-			"note": "the root leading edge of the exposed panel (BL 41.6: the 21.6 ft span less the 14.67 ft exposed span). The views from straight above and below (dvids7487365, 7487366, 9820744), each photo's left and right sides averaged to cancel its camera's registration, read the leading edge 0.1 in and the trailing edge 0.05 in from the model's here (sky check); moving the panel 1.8 or 2.9 in aft took them to -0.6 and +1.5, or -0.9 and +2.5. It was first placed for the 56 ft overall length with an 8 in corner round; with the photos' 13 in round (layout.stabilator_corner) the tips' aftmost point falls at FS 729.8, 2.9 in short of it, and the photos' own apex and aftmost point give 55.84 ft (overall.length). WL 106.8: the in-flight photos put the tips' leading corners 6.8 in above where cr3608 figure 3's and tp209033 figure 2's WL 100 had them (6.3-7.7 leaving each photo out; 4-7.5 with trim free), the root then 3.8 in above the engine axes (layout.nozzle, WL 103); the HATP side view draws them about 10 in higher. The spindle is not published"
+			"where": "figure 2, top view; natops 1.1.2 for the length; the waterline from the in-flight photos dvids8901347, dvids7487368 and dvids6690145 (tips.py, deflections held at rest, the cameras photos.py solved), and held with each photo's deflection fitted (2026-11-20, scratchpad f233, f233b): each photo-side at its own best deflection, the sky check's stabilator bands read -0.54 to +0.02 in at WL 106.8 against +1.0 at the root (FS 600-624) and +0.73 at FS 624-648 at WL 104, though the photo-sides' own best misses favour 104 (median 0.59 in against 0.71, 40 better and 23 worse)",
+			"note": "the root leading edge of the exposed panel (BL 41.6: the 21.6 ft span less the 14.67 ft exposed span). The views from straight above and below (dvids7487365, 7487366, 9820744), each photo's left and right sides averaged to cancel its camera's registration, read the leading edge 0.1 in and the trailing edge 0.05 in from the model's here (sky check); moving the panel 1.8 or 2.9 in aft took them to -0.6 and +1.5, or -0.9 and +2.5. It was first placed for the 56 ft overall length with an 8 in corner round; with the photos' 13 in round (layout.stabilator_corner) the tips' aftmost point falls at FS 729.8, 2.9 in short of it, and the photos' own apex and aftmost point give 55.84 ft (overall.length). WL 106.8: the in-flight photos put the tips' leading corners 6.8 in above where cr3608 figure 3's and tp209033 figure 2's WL 100 had them (at rest 6.3-7.7 leaving each photo out; 4-7.5 with trim free), the root then 3.8 in above the engine axes (layout.nozzle, WL 103); the HATP side view draws them about 10 in higher. The spindle is not published"
 		},
 		"stabilator_corner": {
 			"value": 13.0,
@@ -1293,7 +1300,7 @@
 				},
 				"unit": "top: [FS, WL] in, the fairing's upper edge on the fin's outboard face, from where it meets the leading edge to the band's aft end; foot: [FS, BL] in, its lower edge on the nacelle; step: in, how far its upper edge stands off the fin's face; standoff: in, how far its foot stands outboard of the fin's face carried straight down; aft, the plate from the band's aft end to the rudder's lower leading corner: top [FS, WL] in, its upper edge on the fin's face; seam, in, how far it stands in from the band at the band's end; step, in, how far its upper edge stands off the fin's face at its aft end, eased in from the band's; foot, [FS, BL] in, its lower edge on the skin; clear, in, how far forward of the rudder's hinge line it ends",
 				"source": "photo match",
-				"where": "a riveted band along each fin's root on its outboard side, its upper edge the bolt row along the tops of its notches, continued forward as a riveted seam to the leading edge, its foot the lower edge of the root strip where the plain nacelle skin begins; it ends at the seam at the last notch's aft edge (2026-11-06). Marked by a helper in dvids9820801, dvids9820808 (right), dvids9820782, dvids9820788, dvids9820749, dvids7418477 (left) and triangulated as mirrored pairs through the bundle's cameras: each point 4-5 rays over 51-83 deg, the rays within 0.1-0.9 in. The upper edge lies on the build's fin face within 0.3-0.7 in. step and standoff: from straight behind (navy090715N6106R097, the left fin within 1 deg of edge-on, 338 px/m) the outline steps out 9 px at the band's top and stands 16-20 px outboard of the fin's edge carried down, 22-26 px at its lower end. The foot's waterlines, 125.0, 119.2, 120.1 and 121.5 at the four stations, stand 1.0-3.4 in above the build's nacelle shoulder at those buttlines, as the views from behind read the top between the fins high; the build stands the foot on its own skin. aft (2026-11-16): a riveted plate carries on from the band's end to the rudder's lower leading corner, with only a thin seam step where the band ends and no end face (dvids9393266 left, dvids9820808 right); its upper edge cast through each camera onto the fin, from the band's end (FS 603.4-605.0, WL 128.2-129.3) through FS 609.1-610.8, WL 127.4-128.2 to the hinge line at FS 616.9-617.3, WL 126.3-127.2, 1.6-1.8 in above the rudder's lower edge. Its foot is the fin root's line the photos cast (layout.panels fin_root_fillet_right, its points from FS 601 aft): it draws in from the band's foot (BL 42.3 at FS 601.0) to BL 40.8 at 602.7 and 39.0 at 605.5, then runs close along the fin's face carried down to the skin (BL 38.8-38.3) to FS 615; drawn in over 3 in from the band's own foot instead, the plate covered the line for 3 in behind the band. Its seam step and its stand-off at the rudder's corner are the user's ruling (2026-11-16, as recommended): a 0.2-0.3 in step at the band's end, under 0.5 in at the corner"
+				"where": "a riveted band along each fin's root on its outboard side, its upper edge the bolt row along the tops of its notches, continued forward as a riveted seam to the leading edge, its foot the lower edge of the root strip where the plain nacelle skin begins; it ends at the seam at the last notch's aft edge (2026-11-06). Marked by a helper in dvids9820801, dvids9820808 (right), dvids9820782, dvids9820788, dvids9820749, dvids7418477 (left) and triangulated as mirrored pairs through the bundle's cameras: each point 4-5 rays over 51-83 deg, the rays within 0.1-0.9 in. The upper edge lies on the build's fin face within 0.3-0.7 in. step and standoff: from straight behind (navy090715N6106R097, the left fin within 1 deg of edge-on, 338 px/m) the outline steps out 9 px at the band's top and stands 16-20 px outboard of the fin's edge carried down, 22-26 px at its lower end. The foot's waterlines, 125.0, 119.2, 120.1 and 121.5 at the four stations, stood 1.0-3.6 in above the build's nacelle shoulder at those buttlines; with the deck's shoulders lifted to the fins' roots (2026-11-20, build.py DECK_LIFT) the skin there reads +0.5, +1.9, +0.5 and -2.4 in against them. The build stands the foot on its own skin. aft (2026-11-16): a riveted plate carries on from the band's end to the rudder's lower leading corner, with only a thin seam step where the band ends and no end face (dvids9393266 left, dvids9820808 right); its upper edge cast through each camera onto the fin, from the band's end (FS 603.4-605.0, WL 128.2-129.3) through FS 609.1-610.8, WL 127.4-128.2 to the hinge line at FS 616.9-617.3, WL 126.3-127.2, 1.6-1.8 in above the rudder's lower edge. Its foot is the fin root's line the photos cast (layout.panels fin_root_fillet_right, its points from FS 601 aft): it draws in from the band's foot (BL 42.3 at FS 601.0) to BL 40.8 at 602.7 and 39.0 at 605.5, then runs close along the fin's face carried down to the skin (BL 38.8-38.3) to FS 615; drawn in over 3 in from the band's own foot instead, the plate covered the line for 3 in behind the band. Its seam step and its stand-off at the rudder's corner are the user's ruling (2026-11-16, as recommended): a 0.2-0.3 in step at the band's end, under 0.5 in at the corner"
 			}
 		},
 		"rudder": {
@@ -1782,7 +1789,7 @@
 			],
 			"unit": "FS in, WL in; the sill as [FS, WL, BL]; top, the canopy's top line behind the crown as [FS, WL]; glass, the exponents of the superellipse the glass's section follows from the sill to the top centreline, at the bow's foot and at the aft corner (linear between); screen, the windscreen's frame sill as [FS, WL, BL] ahead of the bow's foot; screen_glass, [FS, exponent]: the windscreen glass's superellipse exponent, held to that station and rising linearly to glass's first at the bow's foot; joint, [FS, WL, BL] along the joint where the canopy's aft fairing meets the spine, from its top down to the sill; glass_edge, [FS, WL] readings along the glass's lower edge on the left, where the metal panel below it meets it",
 			"source": "photo match",
-			"where": "verify/photos.py over photos.json (12 photos solved together): windscreen_base in 5 photos, bow_top 2, canopy_aft 3, bow_foot 4, sill_aft 4 (+-1 in); canopy_crown and the sill's middle in dvids9820808 alone. The sill's buttlines from the 22-photo solve (2026-11-02): bow_foot BL 15.24 in 8 photos and sill_aft 20.15 in 7 (+-0.4), each 1.3-1.6 in further out than the first solve put them, which every single photo left out keeps (1.06-1.81); the middle, which only dvids9820808 sees, moved out by their mean. TM 101724's cited sections (FS 184-253) agree: they stand 2-2.5 in wider than the earlier sill. glass and top: the canopy outlines traced in the seven photos with well-solved cameras, split fore and aft by the station of the model's silhouette nearest each traced point, the cameras held while only the canopy changes. The glass's upper edge against the sky in the profiles dvids9820808 and dvids9820801 (the strongest step in each pixel column, cast onto the centreline) gives the top line behind the crown; the two agree within 0.15 in (0.45 at FS 264), three readings that caught the cockpit inside left out. With that top line the outlines' median miss is 0.28 in (1.00 with the cited sections unchanged): forward of FS 280 any exponent from 1.8 to 2.3 does as well, aft 1.0 and 1.2 do (0.20 and 0.25 in) while 1.6 and 2.0 miss by 0.55 and 0.83 screen: the windscreen frame's sill line traced in the side photos (layout.panels, sill_line_right), sampled. screen_glass (2026-11-02): with the windscreen's section above it drawn in to a superellipse, the quarter views' sky outline just behind the front base (FS 192-216, BL 8-13) read +1.18 in with an exponent of 2.0, +1.25 with 1.6, +0.69 with 1.3 and +0.47 with 1.1 (where the head-up display's glass then pokes through); 1.3 held back to the bow drew the glass at FS 216-240 0.77 in inside, so it rises to the canopy's 2.0 at the bow's foot from FS 200: +0.82 there over 7 photos (was +1.22), the glass at FS 216-240 -0.01 over 9, dvids9820748's traced windscreen edge 0.19 in (was 1.04) joint (2026-11-03): the seam behind the canopy's aft fairing traced in dvids9820801 (right) and triangulated against its mirror image traced in dvids9820782 and dvids9820788 (left): the two left photos agree within 0.3 in, each pixel 0.0-0.4 px off the traced line; the point at the top (BL 11.3) missed by 3-6 px and is left out. Cast onto the skin instead, the right photo put the joint at FS 333-334 and the left at 338-339 over a spine faded too long behind the canopy (2 in low there) glass_edge (2026-11-04): the glass's lower edge, its dark seal line found column by column in dvids9820782 (FS 254-317) and dvids9820788 (FS 280-315) and cast onto the canopy's skin: the two agree within 0.5 in where both see it. It runs 3.5 in above the sill at FS 254 and rises steadily to WL 151.5 at FS 317, a broad metal panel below it, ahead of the canopy's aft end tail (2026-11-05): the top's height above the spine's crown at the canopy's aft end, the sky check over the 31 photos solved together: the top's centreline reads WL 152.30 at FS 324-328 (8 side photos, 151.53-152.80), 152.09 at FS 328-332 (5) and 152.35 at FS 332-336 (3), against the crown's 152.35, the spine running flat to the canopy's aft frame in the profiles where the old model's hood rose 1.8 in; the canopy's top falls to it at the aft end and the spine runs on flat behind, where the old model's hood rose 1.8 in. The canopy_aft marks triangulate 1.2 in below the old model's height there (6 photos). The canopy's aft part is the section the photos traced (the user's decision, 2026-11-05): the old model's (laid 2026-11-04) stood 2-2.7 in outside the head-on photos' outline beside it, where the traced section comes within 0.5 in",
+			"where": "verify/photos.py over photos.json (12 photos solved together): windscreen_base in 5 photos, bow_top 2, canopy_aft 3, bow_foot 4, sill_aft 4 (+-1 in); canopy_crown and the sill's middle in dvids9820808 alone. The sill's buttlines from the 22-photo solve (2026-11-02): bow_foot BL 15.24 in 8 photos and sill_aft 20.15 in 7 (+-0.4), each 1.3-1.6 in further out than the first solve put them, which every single photo left out keeps (1.06-1.81); the middle, which only dvids9820808 sees, moved out by their mean. TM 101724's cited sections (FS 184-253) agree: they stand 2-2.5 in wider than the earlier sill. glass and top: the canopy outlines traced in the seven photos with well-solved cameras, split fore and aft by the station of the model's silhouette nearest each traced point, the cameras held while only the canopy changes. The glass's upper edge against the sky in the profiles dvids9820808 and dvids9820801 (the strongest step in each pixel column, cast onto the centreline) gives the top line behind the crown; the two agree within 0.15 in (0.45 at FS 264), three readings that caught the cockpit inside left out. With that top line the outlines' median miss is 0.28 in (1.00 with the cited sections unchanged): forward of FS 280 any exponent from 1.8 to 2.3 does as well, aft 1.0 and 1.2 do (0.20 and 0.25 in) while 1.6 and 2.0 miss by 0.55 and 0.83 screen: the windscreen frame's sill line traced in the side photos (layout.panels, sill_line_right), sampled. screen_glass (2026-11-02): with the windscreen's section above it drawn in to a superellipse, the quarter views' sky outline just behind the front base (FS 192-216, BL 8-13) read +1.18 in with an exponent of 2.0, +1.25 with 1.6, +0.69 with 1.3 and +0.47 with 1.1 (where the head-up display's glass then pokes through); 1.3 held back to the bow drew the glass at FS 216-240 0.77 in inside, so it rises to the canopy's 2.0 at the bow's foot from FS 200: +0.82 there over 7 photos (was +1.22), the glass at FS 216-240 -0.01 over 9, dvids9820748's traced windscreen edge 0.19 in (was 1.04); 1.1 from FS 200 (2026-11-20), the exponent rising from there to the canopy's 2.0 at the bow's foot so the head-up display's glass at FS 225-230 stays inside: the sky outline over FS 192-216 read +0.45 in over 21 photos (was +1.02 at 1.3), the skin within 8 in of the centreline within 0.2 in at FS 188-196 and its frame sill line (BL 12-14) still +0.7 to +1.4 there joint (2026-11-03): the seam behind the canopy's aft fairing traced in dvids9820801 (right) and triangulated against its mirror image traced in dvids9820782 and dvids9820788 (left): the two left photos agree within 0.3 in, each pixel 0.0-0.4 px off the traced line; the point at the top (BL 11.3) missed by 3-6 px and is left out. Cast onto the skin instead, the right photo put the joint at FS 333-334 and the left at 338-339 over a spine faded too long behind the canopy (2 in low there) glass_edge (2026-11-04): the glass's lower edge, its dark seal line found column by column in dvids9820782 (FS 254-317) and dvids9820788 (FS 280-315) and cast onto the canopy's skin: the two agree within 0.5 in where both see it. It runs 3.5 in above the sill at FS 254 and rises steadily to WL 151.5 at FS 317, a broad metal panel below it, ahead of the canopy's aft end tail (2026-11-05): the top's height above the spine's crown at the canopy's aft end, the sky check over the 31 photos solved together: the top's centreline reads WL 152.30 at FS 324-328 (8 side photos, 151.53-152.80), 152.09 at FS 328-332 (5) and 152.35 at FS 332-336 (3), against the crown's 152.35, the spine running flat to the canopy's aft frame in the profiles where the old model's hood rose 1.8 in; the canopy's top falls to it at the aft end and the spine runs on flat behind, where the old model's hood rose 1.8 in. The canopy_aft marks triangulate 1.2 in below the old model's height there (6 photos). The canopy's aft part is the section the photos traced (the user's decision, 2026-11-05): the old model's (laid 2026-11-04) stood 2-2.7 in outside the head-on photos' outline beside it, where the traced section comes within 0.5 in",
 			"note": "the windscreen's front base, the bow between windscreen and canopy, the canopy's crown and aft end on the centreline, and the canopy's sill from the bow's foot to the canopy's aft lower corner. The cited sections between FS 184 and 253 leave the skin 2-2.5 in wider than the sill, so the build draws the glass in to meet it",
 			"screen": [
 				[
@@ -1977,7 +1984,7 @@
 			],
 			"screen_glass": [
 				200.0,
-				1.3
+				1.1
 			]
 		},
 		"eye": {
@@ -2319,6 +2326,7 @@
 				"waterline": 125.1,
 				"buttline": 15.5
 			},
+			"edge": [[215, 124.94], [232, 124.21], [254, 123.02], [275, 121.55], [297, 119.69], [318, 117.53], [340, 115.83], [357, 114.69], [378, 113.84]],
 			"fence": {
 				"front": [
 					382.6,
@@ -2351,10 +2359,10 @@
 				"where": "behind FS 357 (lex.underside's last section) the underside comes down to the wing: through the splitter's top, whose leading edge meets it at FS 379.7, WL 115.5, BL 27.6 (layout.inlet, 2-4 photos each), to the inner wing's lower surface at its root (BL 40) under the junction (FS 404.05, wing.junction), less the clearance, by the wing root's leading edge (FS 397.05 at BL 40), arriving level, so the inner wing's leading edge inboard of the junction (BL 40-54.4) lies inside it; behind that it runs at that height, or the clearance under the wing's lower surface where that is lower, the wing's root end (BL 40) carried inboard so its lower edge stays covered, and rides just over the cowl and the nacelle where they rise above that (build.py RIDE: enclosing them, it would take their faces as hidden)",
 				"note": "the user's decision (2026-11-16, as recommended): carried down onto the wing's lower surface at the junction, about WL 111-112 over BL 40-54. The photos see the underside nearly edge on from every front quarter (dvids8025511, 8678629, 9820782, 7418477) and out of focus head on (dvids8559777), and no crease shows where it meets the cowl (1-4 grey levels in dvids8025511 and 8678629, its trace scattering 15 px). The leading-edge flap's inboard lower corner is crisp in four of them (dvids8025511, 8678629, 9820782, 7418477), but it rides the flap, whose droop on the ground no photo states: its root chord is 37 in, so a degree moves its nose 0.65 in, and in dvids8025511 the flap's lower outline stands 25 px (1.5 in) under the undrooped flap's hinge line, so the corner measures the droop, not the junction. clearance: the fairing's own (lex())"
 			},
-			"unit": "FS, WL, BL in; slot: its two ends on the right (mirrored), its width in and the paint's brightness across it",
+			"unit": "FS, WL, BL in; slot: its two ends on the right (mirrored), its width in and the paint's brightness across it; edge: [FS in, WL in] of the right LEX's leading edge (mirrored)",
 			"source": "photo match",
-			"where": "verify/photos.py over photos.json: lex_apex in 7 photos (+-0.8 in), 12 photos solved together; the fence's top corners in 8 photos (+-1.6 in across, 2.0 in in height), 21 solved together; the slot's ends triangulated from 4 rays each (dvids6690145, dvids6696790, dvids8901347, navy090712N2791J126, navy100713N2918M085; both sides as one, over 65 and 53 deg), each laid on the skin at its nearest point (front 0.3 in, aft 1.0 in: marked at the middle of the opening's aft edge, inside it), its width read across the opening: 2.7 in from above (dvids6690145), 4.3 in from behind and above (navy100713N2918M085), which looks into it",
-			"note": "where the LEX's edge leaves the body, 7 in aft of and 5 in below where cr186938's graph extrapolates it (FS 189); and the top corners of the fleet LEX fence, which stands on tp3111's base (lex.fence: FS 378.17 to 410.33 at BL 42). The slot is an opening along each LEX's root against the fuselage, inboard of and just aft of the fence, lit structure showing through its aft end: painted as a dark band until the paint is traced (it is not cut into the skin)"
+			"where": "verify/photos.py over photos.json: lex_apex in 7 photos (+-0.8 in), 12 photos solved together; the fence's top corners in 8 photos (+-1.6 in across, 2.0 in in height), 21 solved together; the slot's ends triangulated from 4 rays each (dvids6690145, dvids6696790, dvids8901347, navy090712N2791J126, navy100713N2918M085; both sides as one, over 65 and 53 deg), each laid on the skin at its nearest point (front 0.3 in, aft 1.0 in: marked at the middle of the opening's aft edge, inside it), its width read across the opening: 2.7 in from above (dvids6690145), 4.3 in from behind and above (navy100713N2918M085), which looks into it; the edge's waterline (edge): its lip, the step from the lit top to the shaded underside, traced column by column in three side photos of the right side (dvids8842278, dvids9820801, dvids9820810; their cameras fit to 1.4, 3.7 and 9.2 px) and cast from each solved camera onto the edge's buttline at that station, the planform the outline regions hold within 1 in (scratchpad f225/measure.py, 2026-11-19): the median of the three to FS 340, which agree within 0.5 in, and the mean of dvids9820801 and dvids9820810 at FS 357 and 378, where dvids8842278's trace leaves the lip; dropping any one photo moves the median 0.14 in at most",
+			"note": "where the LEX's edge leaves the body, 7 in aft of and 5 in below where cr186938's graph extrapolates it (FS 189); and the top corners of the fleet LEX fence, which stands on tp3111's base (lex.fence: FS 378.17 to 410.33 at BL 42). The slot is an opening along each LEX's root against the fuselage, inboard of and just aft of the fence, lit structure showing through its aft end: painted as a dark band until the paint is traced (it is not cut into the skin). The edge runs level from the apex for 15 in, then falls on to the junction, where it meets the wing's leading edge (wing.junction); tp3111's traced sections stood it 0.4 in higher at FS 206-228 and 0.9-1.24 in higher at FS 240-357 (user, 2026-11-19: follow the photos)"
 		},
 		"probe": {
 			"from": 144.9,
@@ -2371,12 +2379,14 @@
 			"station": 164.0,
 			"waterline": 103.6,
 			"plate": 5.5,
+			"rim": 0.25,
+			"flange": [1.3, 0.1],
+			"profile": [[0.0, 0.9], [0.6, 0.8], [1.0, 0.78], [1.5, 0.66], [1.9, 0.58], [2.25, 0.53], [3.0, 0.4], [3.45, 0.28]],
 			"cone": 3.7,
-			"base": 0.9,
-			"unit": "FS, WL in; the base plate's diameter, the cone's length and base diameter in",
+			"unit": "FS, WL in; plate: the base plate's diameter, rim: the dark seam round its edge, its width, flange: the probe's foot's diameter and thickness, profile: [inches out from the flange, the probe's diameter], the last a rounded tip's base; cone: the probe's height off the plate to its tip, in",
 			"source": "photo match",
-			"where": "cast onto the skin: the right probe seen end-on in dvids9820808 (FS 164.4, WL 103.3), the left probe's base in dvids9820782 (FS 163.6, WL 103.8); its size read in dvids8678631 at 0.11 in per pixel, where the cone stands across the line of sight",
-			"note": "the two angle-of-attack probes (natops 2.19.1), a cone standing straight out of each side of the nose on a round plate; both photos' projections land on the probes in dvids8678631 and dvids9820799"
+			"where": "cast onto the skin: the right probe seen end-on in dvids9820808 (FS 164.4, WL 103.3), the left probe's base in dvids9820782 (FS 163.6, WL 103.8); its size read in dvids8678631 at 0.11 in per pixel, where the cone stands across the line of sight: round for its first 1.5 in (14 px), then tapering to its point over the rest; the plate's outline a seam ringing a face flush with the skin (dvids8678631); end-on in dvids9820806 (28 px/in) a dark ring 1.36 in across (38 px) round a lighter ring at the probe's foot, the probe's end reading 0.6 of the skin beside it in dvids9820808 (sRGB 63, 62, 69 against 90, 100, 112); the probe's shape re-read in dvids8678629 (2026-11-18: the left probe at 26.6 px/in, its axis at 0.92 of its length in the view, the plate's 5.5 in for scale): a flat flange 1.19-1.27 in across on the plate (1.3: the dark ring 1.36 in across dvids9820806 sees end-on is this flange's edge), the probe 0.92 in across just past it, 0.78-0.8 in to 1 in out, 0.66 at 1.5, 0.58 at 1.9, 0.53 at 2.25, tapering faster to a rounded blunt tip about 0.25 in across at 3.6 in, read across its axis column by column; the plate's rim a dark seam 0.25 in wide (dvids8678629; dvids8025511 shows the plate barely), the probe polished bare metal in both",
+			"note": "the two angle-of-attack probes (natops 2.19.1), a probe standing straight out of each side of the nose on a round plate; both photos' projections land on the probes in dvids8678631 and dvids9820799. The plate is laid on the skin, standing off it as a lens does (build.py FLUSH), its rim a dark sealant seam; the probe polished metal (chrome, as the pitot tube), on its flange. The flange's thickness (0.1 in, the photo seeing its face obliquely) and the profile's last two diameters (3.0 and 3.45 in out, by eye where the column reads blur) are estimated"
 		},
 		"pitot": {
 			"root": [
@@ -2384,20 +2394,41 @@
 				176.8
 			],
 			"waterline": 92.8,
-			"bend": [
-				168.8,
-				89.4
+			"foot": [
+				169.6,
+				173.1
 			],
 			"tip": [
 				163.7,
 				88.8
 			],
+			"rise": 0.4,
 			"buttline": 15.1,
 			"tube": 0.8,
-			"unit": "FS, WL in; the tube's buttline in; the tube's diameter in",
+			"profile": [
+				[0.0, 0.18],
+				[0.55, 0.39],
+				[1.25, 0.46],
+				[2.35, 0.57],
+				[3.4, 0.68],
+				[4.5, 0.78]
+			],
+			"thickness": [
+				0.5,
+				0.35
+			],
+			"plate": [
+				[172.6, 93.6],
+				[176.3, 93.8],
+				[177.4, 92.8],
+				[177.1, 91.9],
+				[172.1, 92.2],
+				[172.2, 93.2]
+			],
+			"unit": "FS, WL in; the strut's leading and trailing edges at the tube (foot), FS in; the tube's rise from its tip to its aft end, its buttline and diameter in; its profile [inches aft of the tip, diameter in]; the strut's thickness at its root and at the tube in; the plate's outline [FS, WL] in",
 			"source": "photo match",
-			"where": "dvids9820808: the strut's root cast onto the skin (BL 13.1), its bend and the tube's tip onto the root's buttline; the left tube in dvids9820782 and both in dvids9820799 lie where these project; the tubes' buttline from the two views from below: both tips cast onto their WL from the solved cameras stand 15.1 in (dvids7487365, nearly straight below) and 15.3 in (navy090707N7665E003) either side of the centreline, and the photo match measures 14.95 (+-0.38, 7 marks)",
-			"note": "the two pitot-static tubes under the nose (natops 2.12.1): a strut swept forward and down from the skin, canted outboard from its root on the skin (BL 13.1) to the tube, the tube pointing forward from its foot. tm101724's FS 164 to 177 (fittings.pitot) agrees within 0.3 in"
+			"where": "dvids9820808: the strut's root cast onto the skin (BL 13.1) and the tube's tip onto the root's buttline; the left tube in dvids9820782 and both in dvids9820799 lie where these project; the tubes' buttline from the two views from below: both tips cast onto their WL from the solved cameras stand 15.1 in (dvids7487365, nearly straight below) and 15.3 in (navy090707N7665E003) either side of the centreline, and the photo match measures 14.95 (+-0.38, 7 marks). The strut, tube and plate from the side close-up dvids9820806 (2026-11-17), its camera resected on nine landmarks (layout.gear), 28 px/in at the tube: the strut's root at FS 172.6 and 176.9 cast onto BL 13.1 (the root above within 0.2 in), its leading and trailing edges meeting the tube's top at FS 169.6 and 173.1 cast onto BL 15.1; the tube runs aft to the trailing edge's foot and its centre rises 0.4 in from the tip to there (WL 89.2 to 89.6); its diameter across the lit top and the shaded underside together, 0.75-0.82 in from its aft end to 4.5 in from the tip, then tapering to 0.18 at its open tip (columns at nine stations, +-0.05 in); the plate's outline, a dark flange round the strut's root, cast onto BL 13.1",
+			"note": "the two pitot-static tubes under the nose (natops 2.12.1): a strut swept forward and down from the skin, canted outboard from its root on the skin (BL 13.1) to the tube, the tube pointing forward from its foot. tm101724's FS 164 to 177 (fittings.pitot) agrees within 0.3 in. The strut and tube bare metal, the gear's chrome: the strut's face reads 2.0 times the skin beside it in dvids9820808 (sRGB 111, 105, 99 against 51, 60, 66), the tube's lit top 168, 168, 163; the plate dark, the gear's rubber (32, 29, 20 there against the rubber's 30, 30, 31), standing off the skin as a pin's end does (build.py STANDOFF). The strut's thickness no photo shows: every view sees its face (user, 2026-11-17: kept at 0.5 in at its root and 0.35 at the tube, a symmetric section with a round leading edge)"
 		},
 		"blisters": {
 			"upper": [
@@ -4217,6 +4248,53 @@
 						111.6,
 						20.5
 					]
+				],
+				[
+					[
+						306.4,
+						86.98,
+						-3.9
+					],
+					[
+						306.4,
+						87.11,
+						-5.0
+					],
+					[
+						306.4,
+						87.32,
+						-6.1
+					],
+					[
+						308.3,
+						87.28,
+						-6.1
+					],
+					[
+						310.2,
+						87.25,
+						-6.1
+					],
+					[
+						310.2,
+						87.05,
+						-5.0
+					],
+					[
+						310.2,
+						86.96,
+						-3.9
+					],
+					[
+						308.3,
+						86.96,
+						-3.9
+					],
+					[
+						306.4,
+						86.98,
+						-3.9
+					]
 				]
 			],
 			"mirrored": [
@@ -5965,149 +6043,149 @@
 				],
 				[
 					[
-						527.8,
-						122.4,
-						39.6
+						525.4,
+						122.1,
+						43.7
 					],
 					[
-						529.4,
-						122.2,
-						39.7
-					],
-					[
-						531.1,
+						527.0,
 						121.9,
-						39.9
+						43.8
 					],
 					[
-						532.7,
+						528.7,
 						121.7,
-						40.1
+						44.0
 					],
 					[
-						534.4,
+						530.4,
 						121.5,
-						40.2
+						44.1
 					],
 					[
-						536.0,
+						532.0,
 						121.3,
-						40.4
+						44.3
 					],
 					[
-						537.7,
+						533.7,
 						121.1,
-						40.6
+						44.3
 					],
 					[
-						539.3,
+						535.5,
 						120.9,
-						40.7
+						44.3
 					],
 					[
-						541.0,
+						537.2,
 						120.7,
-						40.8
+						44.3
 					],
 					[
-						542.7,
-						120.6,
-						41.0
+						538.9,
+						120.5,
+						44.3
+					],
+					[
+						540.8,
+						120.4,
+						44.2
+					],
+					[
+						542.6,
+						120.2,
+						44.1
 					],
 					[
 						544.4,
-						120.4,
-						41.1
+						119.9,
+						44.1
 					],
 					[
 						546.1,
-						120.1,
-						41.3
+						119.9,
+						43.9
 					],
 					[
-						547.6,
-						120.0,
-						41.4
-					],
-					[
-						549.3,
-						119.8,
-						41.5
-					],
-					[
-						551.0,
+						547.9,
 						119.7,
-						41.7
+						43.8
 					],
 					[
-						552.6,
+						549.8,
 						119.6,
-						41.9
+						43.8
 					],
 					[
-						554.3,
+						551.5,
 						119.5,
-						42.0
+						43.6
 					],
 					[
-						555.9,
+						553.4,
 						119.4,
-						42.2
+						43.5
 					],
 					[
-						557.5,
+						555.1,
 						119.3,
-						42.3
+						43.4
 					],
 					[
-						559.2,
-						119.3,
-						42.2
+						556.8,
+						119.2,
+						43.4
 					],
 					[
-						560.9,
-						119.3,
-						42.2
+						558.5,
+						119.2,
+						43.3
 					],
 					[
-						562.6,
-						119.3,
-						42.2
+						560.3,
+						119.2,
+						43.2
 					],
 					[
-						564.2,
+						562.0,
+						119.2,
+						43.1
+					],
+					[
+						563.7,
 						119.4,
-						42.2
+						43.0
 					],
 					[
-						565.9,
+						565.4,
 						119.4,
-						42.2
+						42.9
 					],
 					[
-						567.5,
+						567.1,
 						119.5,
-						42.2
+						42.8
 					],
 					[
-						569.2,
+						568.8,
 						119.5,
-						42.1
+						42.8
 					],
 					[
-						570.9,
+						570.5,
 						119.6,
-						42.1
+						42.7
 					],
 					[
-						572.6,
+						572.2,
 						119.6,
-						42.1
+						42.7
 					],
 					[
-						574.1,
+						573.8,
 						119.6,
-						42.1
+						42.6
 					],
 					[
 						575.7,
@@ -6474,8 +6552,8 @@
 			"shade": 0.72,
 			"unit": "rings: stations of joints round the fuselage; lines: polylines of [FS, WL, BL] on the skin (mirrored ones are copied to the other side); width in; shade, the paint's brightness on a line",
 			"source": "photo match",
-			"where": "the radome's joint cast onto the skin in dvids9820808 (FS 127.9 to 128.1, top and bottom); tm101724's nose.junction gives 128.5. The lines, in order: fuselage_side_lower_right (mirrored), door_edge_359_right (mirrored), door_edge_327_right (mirrored), door_edge_287_right (mirrored), door_edge_234_right (mirrored), panel_edge_204_right, panel_edge_204_left_lower, panel_lower_234_204_right (mirrored), door_hinge_right (mirrored), latch_panel_right, access_panel_195_right, access_panel_175_right, access_door_left, sill_line_right (mirrored), spine_side_right (mirrored), spine_joint_335, spine_joint_385, spine_joint_422, spine_joint_456, spine_joint_491, spine_joint_521, fin_root_panel_right, fin_root_panel_left, scoop_panel_right (the FCS ram air scoop's sub-panel, layout.scoop), fin_root_fillet_right (mirrored), nacelle_side_right (mirrored), afterbody_joint_right (mirrored): traced in dvids9820801, 9820808, 9820810, 9820782 and 9820788 and cast onto the skin (verify/cast.py), each checked in a second photo where one shows it (most within 0.1-1.3 in)",
-			"note": "the panel lines baked into the paint, 0.4 in wide: under one texel of the 2048 atlas (0.47 in), so each texel takes the share of it a line covers (wholly on or off by its centre, they broke into dots). The mirrored lines were traced on the right and copied to the left; one oblique left photo (9820782) puts the doors' edges at FS 234, 287 and 327 1-2.5 in further forward, unsettled. The spine joints' tops (10-12 in either side of the centreline) no photo sees: filled along the skin at the same station. The spine lines were cast from dvids9820801, which sees them nearly abeam: the model's spine aft of FS 440 is broader than the photos' (a task), so they need casting again when it changes. Single-photo: panel_edge_204_left_lower, spine_joint_385, fin_root_panel_left, nacelle_side_right, afterbody_joint_right. nacelle_side_right and afterbody_joint_right were cast again onto the lowered underside behind FS 540 (2026-10-31): the afterbody joint now runs round the boat-tail at FS 660.4-661.2, where on the old skin it slanted 664 to 668. spine_joint_335 (2026-11-03) is the joint behind the canopy's aft fairing, triangulated (layout.canopy joint), its top filled along the skin at FS 334.4: cast before, it lay 1.5 in aft of where two photos either side put it. spine_side_right ahead of FS 404 (2026-11-03) is the seam triangulated from both sides (layout.spine side), from the joint's foot. fin_root_panel_right, fin_root_panel_left and fin_root_fillet_right cast again (2026-11-07) onto the fairing along the fins' roots, from the same photos (dvids9820801 and 9820808, 9820782 and 9820788), the two casts' mean (0.8-0.9 in apart; the fillet's within 0.5 in but at one point). Lines 6, 7 and 22 re-laid onto the skin at FS 312-415 (2026-11-04), where the fuselage behind the canopy took the old model's section: each point moved across onto it, outboard on the sides, down onto the top; and again (2026-11-05) when it went back to the photos' section, each point to the nearest point of the new section at its station (up to 1.06 in). fin_root_fillet_right, nacelle_side_right and afterbody_joint_right were cast again (2026-11-06) onto the nacelles' flatter outer side (layout.nacelle side): each old point projected into a photo that shows the line (dvids9820801 for the fillet, 9820808 for the others) and cast onto the new skin, up to 5 in further outboard on the fillet's aft end; the right-side photos see these lines nearly along their sight lines, so where they cross the skin is the skin's to say"
+			"where": "the radome's joint cast onto the skin in dvids9820808 (FS 127.9 to 128.1, top and bottom); tm101724's nose.junction gives 128.5. The lines, in order: fuselage_side_lower_right (mirrored), door_edge_359_right (mirrored), door_edge_327_right (mirrored), door_edge_287_right (mirrored), door_edge_234_right (mirrored), panel_edge_204_right, panel_edge_204_left_lower, panel_lower_234_204_right (mirrored), door_hinge_right (mirrored), latch_panel_right, access_panel_195_right, access_panel_175_right, access_door_left, sill_line_right (mirrored), spine_side_right (mirrored), spine_joint_335, spine_joint_385, spine_joint_422, spine_joint_456, spine_joint_491, spine_joint_521, fin_root_panel_right, fin_root_panel_left, scoop_panel_right (the FCS ram air scoop's sub-panel, layout.scoop), fin_root_fillet_right (mirrored), nacelle_side_right (mirrored), afterbody_joint_right (mirrored), scoop_cabin_left (the cabin ram air scoop's door, shut: its mouth's top corners in dvids6685701 and dvids6685695, each camera resected on the nose leg's lamps, its wheels and the airframe, placed on the skin by both photos' pixels, the door 2.2 in across and 3.8 in long behind the mouth, as the open scoop's side walls show; its station is loose by about 4 in, the two views both looking nearly along the jet; the door is shut on every running jet, open on the cold ones, NATOPS III-10-11): traced in dvids9820801, 9820808, 9820810, 9820782 and 9820788 and cast onto the skin (verify/cast.py), each checked in a second photo where one shows it (most within 0.1-1.3 in); fin_root_fillet_right's points from FS 528 to 574 re-cast (2026-11-20) through dvids9820808's solved camera, their pixels unchanged, onto the skin as rebuilt with the deck's shoulders lifted to the fins' roots (build.py DECK_LIFT), where they had stood 0.5-2.5 in off it",
+			"note": "the panel lines baked into the paint, 0.4 in wide: under one texel of the 2048 atlas (about 0.7 in), so each texel takes the share of it a line covers (wholly on or off by its centre, they broke into dots). The mirrored lines were traced on the right and copied to the left; one oblique left photo (9820782) puts the doors' edges at FS 234, 287 and 327 1-2.5 in further forward, unsettled. The spine joints' tops (10-12 in either side of the centreline) no photo sees: filled along the skin at the same station. The spine lines were cast from dvids9820801, which sees them nearly abeam: the model's spine aft of FS 440 is broader than the photos' (a task), so they need casting again when it changes. Single-photo: panel_edge_204_left_lower, spine_joint_385, fin_root_panel_left, nacelle_side_right, afterbody_joint_right. nacelle_side_right and afterbody_joint_right were cast again onto the lowered underside behind FS 540 (2026-10-31): the afterbody joint now runs round the boat-tail at FS 660.4-661.2, where on the old skin it slanted 664 to 668. spine_joint_335 (2026-11-03) is the joint behind the canopy's aft fairing, triangulated (layout.canopy joint), its top filled along the skin at FS 334.4: cast before, it lay 1.5 in aft of where two photos either side put it. spine_side_right ahead of FS 404 (2026-11-03) is the seam triangulated from both sides (layout.spine side), from the joint's foot. fin_root_panel_right, fin_root_panel_left and fin_root_fillet_right cast again (2026-11-07) onto the fairing along the fins' roots, from the same photos (dvids9820801 and 9820808, 9820782 and 9820788), the two casts' mean (0.8-0.9 in apart; the fillet's within 0.5 in but at one point). Lines 6, 7 and 22 re-laid onto the skin at FS 312-415 (2026-11-04), where the fuselage behind the canopy took the old model's section: each point moved across onto it, outboard on the sides, down onto the top; and again (2026-11-05) when it went back to the photos' section, each point to the nearest point of the new section at its station (up to 1.06 in). fin_root_fillet_right, nacelle_side_right and afterbody_joint_right were cast again (2026-11-06) onto the nacelles' flatter outer side (layout.nacelle side): each old point projected into a photo that shows the line (dvids9820801 for the fillet, 9820808 for the others) and cast onto the new skin, up to 5 in further outboard on the fillet's aft end; the right-side photos see these lines nearly along their sight lines, so where they cross the skin is the skin's to say"
 		},
 		"stencils": {
 			"warning": {
@@ -6697,6 +6775,14 @@
 			"where": "dvids9820808, cast onto the centreline's plane; dvids9820799, seen from ahead, puts it on the centreline within its chord",
 			"note": "the blade antenna under the nose ahead of the nose gear (stencilled DO NOT PAINT). Its thickness is not measured"
 		},
+		"cabin": {
+			"door": {"front": 306.4, "aft": 310.2, "inner": 3.9, "outer": 6.1},
+			"open": 2.4,
+			"unit": "door: FS in of its front and aft edges, BL in of its inboard and outboard edges, on the left; open: in, how far below the skin the open door's front edge stands. The panel line scoop_cabin_left (layout.panels lines) paints its seam",
+			"source": "photo match",
+			"where": "the cabin ram air scoop (NATOPS III-10-11, the plane captain watching it open and close; 2.16.2.1): a red bucket in the belly just left of the nose drag brace, open on every cold jet (DVIDS 6685700 and 6685701, VMFA-115; 6685695 and 6685696, Finnish HN-421) and shut on a taxiing NASA jet (AFRC2018-0287-171), its mouth facing forward, hinged at its aft edge, its front swung down. dvids6685701's camera resected on the nose leg's lamps, the left nose and main wheels and the left inlet's lip (20 px rms), dvids6685695's on the lamps, the nose wheel, the left fin's tip, the centreline tank's nose and the inlet (14 px rms); the mouth's corners placed on the skin by both photos' pixels at FS 306.4-310.2, BL 3.9-6.1 on the left (the mouth 2.2 in across, against the drag brace's 4.4 in cylinder beside it), its lip 2.4 in below the skin (scratchpad f208/resect701.py, resect695.py, castscoop.py, 2026-11-19)",
+			"note": "its station is loose by 4 in along the two cameras' sight lines, both looking nearly along the jet; its sides are the red triangles the door's edges sweep, closing the bucket to the skin"
+		},
 		"scoop": {
 			"cap": [
 				284.5,
@@ -6740,20 +6826,43 @@
 				]
 			],
 			"head": {
-				"boss": [
-					4.4,
-					4.0
+				"body": {
+					"width": 4.0,
+					"length": 4.0,
+					"top": 1.4,
+					"bottom": 2.4
+				},
+				"flare": 3.5,
+				"bore": [
+					2.0,
+					1.8
 				],
-				"bore": 2.0,
-				"skid": [
-					5.3,
-					6.5,
-					2.0
+				"ring": [
+					2.8,
+					0.15
 				],
-				"bolts": [
-					7.6,
-					1.2
-				]
+				"shoe": {
+					"width": 7.0,
+					"thickness": 2.0,
+					"root": 1.6,
+					"recess": 0.35,
+					"reach": 5.0,
+					"round": 1.6,
+					"lean": 24.0,
+					"fillet": 0.4,
+					"dish": [
+						0.3,
+						0.5
+					]
+				},
+				"bolts": {
+					"span": 5.2,
+					"size": 1.2,
+					"place": [
+						0.9,
+						-0.2
+					]
+				}
 			},
 			"fitting": {
 				"radius": 2.5,
@@ -6766,6 +6875,14 @@
 					1.6
 				],
 				"lug": 4.4,
+				"web": [
+					2.6,
+					3.2
+				],
+				"socket": [
+					7.0,
+					3.6
+				],
 				"collar": [
 					10.0,
 					0.5,
@@ -6787,16 +6904,21 @@
 						1.3,
 						0.9
 					],
-					"lengths": [
-						8.0,
-						7.5
+					"cylinder": [
+						2.5,
+						5.8
+					],
+					"piston": 7.7,
+					"end": [
+						1.6,
+						1.1
 					]
 				}
 			},
-			"unit": "[FS, WL] in, on the centreline; pivot: the centre of the pivot fitting's end cap; point: the stowed shoe's aft tip; lowered: the lowered shoe's lowest point, fully down (its direction from the pivot is built; its distance is unsettled); length: pivot to tip, in; shank: [share of the length from the pivot, diameter in] knots of the round shank, the diameter linear between them and held past; head, in, the point's casting: boss [diameter, length along the shank] its rounded head round the shank's line at the tip, bore its aft-facing bore's diameter, skid [width, length, thickness] the flat shoe under the boss, bolts [span across their heads, diameter] on the skid's sides; fitting, in: the radius of the yoke's lugs round the pin, their caps 5 in across, and the span across the pin's ends; fittings, in: yoke each arm's thickness, of the shank's forked forward end, pin [the hollow pin's ends' diameter, bore], lug the diameter of the keel's lug between the yoke's arms, collar [distance from the pivot, stand off the shank, length] the split collar, tab [share of the length, length, width, height] the small lug on the shank's top, rod the hold-down rod: top [FS, WL] its pin on the keel's aft face, lug the distance from the pivot of its lug on the shank's top, diameters [cylinder, piston], lengths [cylinder from its pin, piston from its lug]",
+			"unit": "[FS, WL] in, on the centreline; pivot: the centre of the pivot fitting's end cap; point: the stowed point's aftmost point, where its shoe leaves the aft face; lowered: the lowered shoe's lowest point, fully down (its direction from the pivot is built; its distance is unsettled); length: pivot to tip, in; shank: [share of the length from the pivot, diameter in] knots of the round shank, the diameter linear between them and held past; head, in, the point's casting: body {width across, length along the shank, top above the shank's line, bottom below it} round the shank's end, flare the length along the shank over which the shank flares into the body, bore [the aft-facing bore's diameter, the depth it is drawn to], ring [outside diameter, stand proud of the aft face] the shank tube's end round it, shoe {width across its shoulders, thickness, root its shoulders below the shank's line, recess its sole's stand in from the aft face there, reach its lowest point below the shank's line, round the depth of its rounded end, lean deg from square to the shank toward the pivot, fillet the radius it leaves the body's sides on, dish [the depth its sole is dished, the rim round it]} the plate under the body, bolts {span across the through bolt's hex heads, size across their corners, place [ahead of the aft face, above the shank's line]}; fitting, in: the radius of the yoke's lugs round the pin, their caps 5 in across, and the span across the pin's ends; fittings, in: yoke each arm's thickness, of the shank's forked forward end, pin [the hollow pin's ends' diameter, bore], lug the diameter of the pivot fitting's lug between the yoke's arms, web [its front aft of the pin, depth] the forging joining the arms, socket [aft of the pin, diameter] where it closes round the shank, collar [distance from the pivot, stand off the shank, length] the split collar, tab [share of the length, length, width, height] the small lug on the shank's top, rod the hold-down damper: top [FS, WL] its trunnion pin on the keel's aft face, lug the distance from the pivot of its clevis on the forging's top, diameters [cylinder, piston], cylinder [above its pin, below it], piston its length, end [the rod end's length from the centre of its eye, its eye's diameter]",
 			"source": "photo match",
-			"where": "verify/photos.py over photos.json: hook_pivot in dvids9820808 and navy090707N7665E003, FS 649.9 +-2.3, WL 77.6 +-3.5 (dvids9820808 cast onto BL 0 alone: 647.5, 76.9); hook_point in navy090707N7665E003 alone on the centreline, FS 713.6 +-2.7, WL 96.3 +-4.0, between the nozzles. Length: 66.4 in to that point; the lowered hook's shoe cast onto BL 0 in dvids9820748 (FS 718.1, WL 59.3: 70.6 in, 15 deg down) and dvids9820749 (718.9, 74.6: 69.1 in, 2.5 deg down), whose shank also casts to the pivot (648.4, 77.5); the point is placed at their mean, 68.7 in, along the stowed direction (16.3 deg up aft). The fitting's cap 5 in across in dvids9820808. Shank, point and fittings (2026-11-16): dvids9877274 (stowed, from behind, solved, 11.9 px/in) shows a round shank about 3.2 in across a third of the way from the pivot, 2.7 mid-way and 2.0-2.3 near the point; dvids9820808 reads its depth 2.3-2.8 (29 px at 0.097 in/px near the pivot); the user's ruling (2026-11-16, as recommended): a round shank tapering from 3.0 to 2.4 in. The 4.4 in width read from navy090707N7665E003 (22 px at 5 px/in) is dropped: that photo's solved camera gives about 2.5 px/in at the hook. The point in dvids9877274: a head about 5.3 in wide with a rounded top and an aft-facing bore about 2 in across, side lugs or bolt heads spanning about 7.6 in, a darker shoe below; US Navy 050124-N-4308O-018 (hook down, close, no solved camera: ratios to the shank only) shows the point as a boss with an aft bore on a flat skid wider than the shank, chamfered at its ends, with side bolts, the boss about 1.8 shank diameters across and as long as it is wide; c8203275 (3 px/in, low confidence) puts the skid about 6-7 in along and 2 in thick. The pivot in dvids9820808: the cap about 5 in across round a hollow pin (its bore 15-20 px, 1.5-1.9 in), the shank's forward end a yoke round it; 050124-N-4308O-018: a box clevis there, a split collar near the shank's top (about one shank diameter aft of the yoke) and a rod from the fuselage down to a bolted lug at the shank's top just aft of the yoke; dvids9820748: a small lug on the shank's top about a third of the way along. Stowed angle (2026-11-05): the sky check's side views read the shank's lower edge at FS 690 0.6-2.0 in under the earlier build's (c61468204 -2.0, dvids8842845 -1.8, dvids2211572 -0.6, level views), which puts the stowed hook 13.6 deg up aft instead of 16.3 and its tip at FS 716.7, WL 93.8 (the same 68.7 in from the pivot), inside navy090707N7665E003's 96.3 +-4.0. Length (2026-11-05): seen from below, the sky check's edges on the shoe's tip near the centreline cast onto its height put it at FS 712.6-714.9 (dvids931513 and 931513b from 81-84 deg below, 714.4-715.0 and 713.6-713.9; dvids7487365 and 9820744 from 63-65 deg, 712.6-712.9 and 712.3-712.5), and dvids7487365, sharp, shows the dark shoe ending at FS 713, read against the solved camera's projected stations, as navy090707N7665E003's mark has it (713.6): the tip is placed at FS 713.5 along the stowed direction, 65.4 in from the pivot, 3.2 in forward of the lowered hook's casts' 68.7 mean. The casts (69.1-70.6 in) and the stowed tip cannot both hold for a straight hook turning about this pivot; the stowed tip, which every view from below shows, is taken, and the lowered hook's reach stays unsettled; lowered (2026-11-06): the shoe's lowest point triangulated from four hook-down photos (f54337945831, f6545328211, c8203275 in flight, c8219137 landing; 4 rays over 69 deg, each within 1.6-3.4 px), 60 deg below the horizontal from the pivot: with the stowed tip 13.6 deg above it, the hook travels 73.7 deg (it had swung an earlier 62, its tip 10 in high and the sky check reading the lowered hook 5.7 in outside over 5 photos). The lowered point stands 68.3 in from the pivot, the stowed tip 65.4: as before, a straight hook about this pivot cannot meet both, and the build turns the hook to the lowered point's direction, its shoe 2.9 in short of it",
-			"note": "the stowed hook hangs below the aft fuselage from its pivot at the keel's aft end, its shank climbing 13.6 deg aft into the channel between the nacelles, its shoe tucked between the nozzles. The earlier build placed the point at FS 684 from a mark on the place the shank passes into the body's outline in a side view (about 30 in forward of the shoe) and the pivot 9 in forward: a 43 in rod. The hold-down rod is estimated from 050124-N-4308O-018's proportions scaled to the shank (its pin on the keel's aft face 10 in above the pivot, its lug 5 in along the shank, a cylinder and a piston telescoping as the hook lowers): no solved photo sees it."
+			"where": "verify/photos.py over photos.json: hook_pivot in dvids9820808 and navy090707N7665E003, FS 649.9 +-2.3, WL 77.6 +-3.5 (dvids9820808 cast onto BL 0 alone: 647.5, 76.9); hook_point in navy090707N7665E003 alone on the centreline, FS 713.6 +-2.7, WL 96.3 +-4.0, between the nozzles. Length: 66.4 in to that point; the lowered hook's shoe cast onto BL 0 in dvids9820748 (FS 718.1, WL 59.3: 70.6 in, 15 deg down) and dvids9820749 (718.9, 74.6: 69.1 in, 2.5 deg down), whose shank also casts to the pivot (648.4, 77.5); the point is placed at their mean, 68.7 in, along the stowed direction (16.3 deg up aft). The fitting's cap 5 in across in dvids9820808. Shank, point and fittings (2026-11-16): dvids9877274 (stowed, from behind, solved, 11.9 px/in) shows a round shank about 3.2 in across a third of the way from the pivot, 2.7 mid-way and 2.0-2.3 near the point; dvids9820808 reads its depth 2.3-2.8 (29 px at 0.097 in/px near the pivot); the user's ruling (2026-11-16, as recommended): a round shank tapering from 3.0 to 2.4 in. The 4.4 in width read from navy090707N7665E003 (22 px at 5 px/in) is dropped: that photo's solved camera gives about 2.5 px/in at the hook. The point in dvids9877274: a head about 5.3 in wide with a rounded top and an aft-facing bore about 2 in across, side lugs or bolt heads spanning about 7.6 in, a darker shoe below; US Navy 050124-N-4308O-018 (hook down, close, no solved camera: ratios to the shank only) shows the point as a boss with an aft bore on a flat skid wider than the shank, chamfered at its ends, with side bolts, the boss about 1.8 shank diameters across and as long as it is wide; c8203275 (3 px/in, low confidence) puts the skid about 6-7 in along and 2 in thick. The pivot in dvids9820808: the cap about 5 in across round a hollow pin (its bore 15-20 px, 1.5-1.9 in), the shank's forward end a yoke round it; 050124-N-4308O-018: a box clevis there, a split collar near the shank's top (about one shank diameter aft of the yoke) and a rod from the fuselage down to a bolted lug at the shank's top just aft of the yoke; dvids9820748: a small lug on the shank's top about a third of the way along. Stowed angle (2026-11-05): the sky check's side views read the shank's lower edge at FS 690 0.6-2.0 in under the earlier build's (c61468204 -2.0, dvids8842845 -1.8, dvids2211572 -0.6, level views), which puts the stowed hook 13.6 deg up aft instead of 16.3 and its tip at FS 716.7, WL 93.8 (the same 68.7 in from the pivot), inside navy090707N7665E003's 96.3 +-4.0. Length (2026-11-05): seen from below, the sky check's edges on the shoe's tip near the centreline cast onto its height put it at FS 712.6-714.9 (dvids931513 and 931513b from 81-84 deg below, 714.4-715.0 and 713.6-713.9; dvids7487365 and 9820744 from 63-65 deg, 712.6-712.9 and 712.3-712.5), and dvids7487365, sharp, shows the dark shoe ending at FS 713, read against the solved camera's projected stations, as navy090707N7665E003's mark has it (713.6): the tip is placed at FS 713.5 along the stowed direction, 65.4 in from the pivot, 3.2 in forward of the lowered hook's casts' 68.7 mean. The casts (69.1-70.6 in) and the stowed tip cannot both hold for a straight hook turning about this pivot; the stowed tip, which every view from below shows, is taken, and the lowered hook's reach stays unsettled; lowered (2026-11-06): the shoe's lowest point triangulated from four hook-down photos (f54337945831, f6545328211, c8203275 in flight, c8219137 landing; 4 rays over 69 deg, each within 1.6-3.4 px), 60 deg below the horizontal from the pivot: with the stowed tip 13.6 deg above it, the hook travels 73.7 deg (it had swung an earlier 62, its tip 10 in high and the sky check reading the lowered hook 5.7 in outside over 5 photos). The lowered point stands 68.3 in from the pivot, the stowed tip 65.4: as before, a straight hook about this pivot cannot meet both, and the build turns the hook to the lowered point's direction, its shoe 2.9 in short of it; point and pivot re-read (2026-11-17) at full resolution: navy131008NZG705121 (a Marine F/A-18C, stowed, from behind) and navy080711N3946H116 (an F/A-18C, stowed, from behind and below) show the point as one casting: the shank's end a thin ring round the bore at the top of the flat aft face of a body with flat sides and chamfered top corners, the face about as tall as it is wide, overhanging the shoe, the ring 0.70 of the face's width across and the bore 0.50-0.57 of it, a hex bolt head on its port side and a hex nut on its starboard side about the bore's height, and under the body a shoe wider than the bolts, its shoulders carried out of the body's sides at three quarters of the face's height, rounded below to a U (its rounded end 0.46 of its half-width deep), its sole dished inside a rim worn to bare metal; navy080711N3946H176 (from below) the shank flaring smoothly into the body; f54337945831 (abeam, hook down, 6.4 px/in across the shank) and c8203275 the shoe standing forward of the shank's end below it, its throat face 6 deg below the horizontal with the shank 58 deg below it: it leans 24 deg from square to the shank toward the pivot, and its tip stands 3.8 in from the shank's line. Widths from dvids9877274's solved camera (11.9 px/in across at the point): the body's face 48 px (4.0 in), the bolts' heads 62 px (5.2 in), the shoe's shoulders 84 px (7.0 in); the face white down to 2.4 in below the bore's centre (row 2098 against 2069, 12.1 px/in up), the shoe's shoulders from 1.6 in below (row 2088). The earlier reading's 5.3 in head was the bolts' span and its 7.6 in side lugs the shoe's shoulders: navy131008NZG705121 and navy080711N3946H116 put the bolts' span at 1.48 and the shoulders at 1.93 of the face's width. Finishes: the shank, the forging at the pivot and the point white, chipped (navy131008NZG705121; usmc131002MSO590006 the shoe painted, scratched to bare metal; 050124-N-4308O-018), the bolts plated steel; navy080711N3946H116's Navy jet a bare steel shoe. The pivot: navy090401N2562S004 (hook down, from port below): the yoke a white forging, stained by fluid, its arms round the pin closing aft into a socket with a band where the shank enters, the hold-down damper's polished piston coming down from the skin to a white rod end with a jam nut on a clevis on the forging's top, bolted through; 050124-N-4308O-018 the same white forging and rod end",
+			"note": "the stowed hook hangs below the aft fuselage from its pivot at the keel's aft end, its shank climbing 13.6 deg aft into the channel between the nacelles, its shoe tucked between the nozzles. The earlier build placed the point at FS 684 from a mark on the place the shank passes into the body's outline in a side view (about 30 in forward of the shoe) and the pivot 9 in forward: a 43 in rod. The hold-down rod is estimated from 050124-N-4308O-018's proportions scaled to the shank (its pin on the keel's aft face 10 in above the pivot, its lug 5 in along the shank, a cylinder and a piston telescoping as the hook lowers): no solved photo sees it. The point's body length (as long as it is wide, 050124-N-4308O-018), its 3.5 in flare, the shoe's reach (its lowest point 5.0 in below the line, between f54337945831's 3.8 and navy080711N3946H116's U about 3 in below the face), its sole's dish (0.3 in deep inside a 0.5 in rim) and its sole standing 0.35 in forward of the aft face, which overhangs it, the bolts' place along the body (0.9 in ahead of the face), the forging's web and socket (from navy090401N2562S004's proportions) are estimated; so are the damper's lengths (its cylinder 2.5 in above its trunnion and 5.8 below, its piston 7.7 in, its rod end 1.6 in), set so it telescopes with the rod end clear of the cylinder stowed and 1.1 in of piston still in it down, and the keel's aft end turning with the hook's sideways swing about the upright through the pin, which no photo shows: with the keel fixed, the yoke's arms swing through its aft end"
 		},
 		"nozzle": {
 			"start": 690.0,
@@ -6982,8 +7104,9 @@
 			},
 			"wall": 1.2,
 			"duct": {
-				"depth": 35.0,
 				"face": 6.5,
+				"sections": [[448, 32.0, 95.3, 11.9, 14.3, 2.1], [460, 28.5, 103.5, 12.0, 14.0, 2.3], [472, 25.8, 108.5, 12.8, 13.2, 2.5], [485, 23.5, 113.3, 14.8, 11.0, 2.8], [498, 22.0, 116.7, 17.0, 9.3, 3.0], [510, 22.0, 115.6, 17.0, 9.6, 3.0], [522, 22.5, 114.0, 16.0, 10.8, 2.6], [540, 23.8, 108.5, 14.6, 12.5, 2.3]],
+				"hub": [5.0, 7.0],
 				"sight": {
 					"eye": [
 						-642.71,
@@ -7008,10 +7131,10 @@
 						]
 					]
 				},
-				"unit": "depth: in from the lip's top to the duct's cap, square across it; face: the engine face's distance down the duct in hydraulic diameters (engine.inlet); sight: the eye of dvids8025511's camera and a far point on each of three sight lines, [FS, WL, BL] in",
-				"source": "photo match; tm103703",
-				"where": "dvids8025511 (left front quarter, 40-50 deg off the inlet's axis; its camera from the catalogue's solve, 5.4 px): the lit floor and walls of the left duct run back to an edge at y 2800-2803 across x 4420-4640, past which the duct is dark; the sight lines through that edge (sight), cast on the solved camera, run nearly level at WL 94-95 and inboard at 0.19 in per in, and pass 30 in past the lip at FS 443-445: a duct shallower than that would end them on its cap in the lit part. tm103703: the duct D-shaped at its entrance and circular at the engine face (figures 15-16), which stands at X/D 6.5 (PDF page 18, the hydraulic diameter 23.34 in, PDF page 17)",
-				"note": "the duct as far as the photos see into it, 35 in from the lip's top to FS 446.4, short of the main gear's bay (FS 450.5): over its length it turns toward a circle of the mouth's area and its centre toward the engine's axis (BL 24.4 at the engine face), each by the share of the way to the engine face its depth is, the turn eased in from the mouth; the paint darkens it from the lip's grey to black over one hydraulic diameter, its cap black. Past the cap the photos show nothing (no fan face or guide vanes in any): the duct's full 152 in to the engine face would need the main gear's bays reshaped"
+				"unit": "face: the engine face's distance behind the lip's top in hydraulic diameters (engine.inlet); sections: the duct's fitted sections behind the mouth, each [FS, BL and WL of its centre, half-width, half-height, the exponent of its superellipse], in; hub: the engine face's hub, its radius at the face and its length ahead of it, in; sight: the eye of dvids8025511's camera and a far point on each of three sight lines, [FS, WL, BL] in",
+				"source": "tm103703; photo match; solved",
+				"where": "tm103703: the duct D-shaped at its entrance and circular at the engine face (figures 15-16, which give no dimensions), the face at X/D 6.5 (PDF page 18; the hydraulic diameter 23.34 in, PDF page 17): FS 563.1, 151.7 in behind the lip's top. There it is the F404's 28 in circle (engine.face) on the engine's axis (engine.buttline), its centre at the nozzles' axis's waterline (layout.nozzle, WL 103). dvids8025511 (left front quarter, 40-50 deg off the inlet's axis; its camera from the catalogue's solve, 5.4 px): the lit floor and walls of the left duct run back to an edge at y 2800-2803 across x 4420-4640, past which the duct is dark; the sight lines through that edge (sight), cast on the solved camera, run nearly level at WL 94-95 and inboard at 0.19 in per in, and pass 30 in past the lip at FS 443-445, where they meet the duct's walls. The sections are solved for room: the stowed main gear and its sweep reach WL 105.8 at FS 496-500 (BL 24-34) and WL 101 over FS 516-522 (layout.wells), the wing's root stands inboard to BL 39.9 above WL 109.1, the nacelle's top is at WL 125-127 over the gear, and ahead of JOIN the inlet's outer skin closes in on the duct's lower outboard side; the duct's floor stands 1.3 in over the gear's highest point at its closest (FS 477-478; 1.5 in at FS 497-500), its walls 0.6-0.9 in clear of the wing's root, the skin and the inlet's outer skin",
+				"note": "the duct runs from the mouth's D, the D and its rake eased out by the first section (FS 448), on monotone cubics through the sections to the engine face's circle: up 23 in over the stowed main gear, where it is an oval 19 in high and 34 in wide, inboard toward the engine's axis, and down to the face; its area 498 sq in at the mouth, 555-590 over the gear and 615 at the face. Its path and its area between the ends are estimated: tm103703 draws the duct's shape but gives neither its centreline nor its area along it, and the photos see 30 in into it. Its section at FS 460 stands 2.5 in higher than the room over the stowed gear first gave it (2026-11-19), so the main side brace's knee, its boss and its spring, refitted to dvids4642471, fold clear of the bay's roof under it (layout.motion braces), its size and so its area unchanged. The hub's size, 5 in in radius and 7 in long, is estimated, no source giving it. The engine's axis is taken level, its inclination estimated, no source giving it: the face's centre on the nozzles' axis's waterline. The paint gives the face and hub the engine's bare metal (layout.paint.nozzle outer), the walls the airframe's greys, shaded by the occlusion alone"
 			},
 			"unit": "[FS, WL, BL] in; lip: its rounded front edge's highest, lowest and most outboard points and the ends of its curve at the flat inboard wall, outer side; outline: [WL, BL] along the lip's front edge from the top corner round the outside to the bottom corner; splitter: its leading edge, top to bottom",
 			"source": "photo match",
@@ -7143,10 +7266,7 @@
 			"where": "the HATP figure's side view keel line between FS 436 and 500 (WL 73.3 at FS 448-452, 75.8 at 500, 78.3 at 540), rising where the photos show the main gear doors' blister below it: the figure is of the wind-tunnel model, which has none. door: the lower outline traced column by column in c82077610 (Swiss, left side) and c61468204 (US Navy 163451, right side), both level in flight about 5 deg below the jet, cameras solved among the catalogue (2.9 and 3.1 px), each edge cast onto BL 27 on the far side; the two agree within 0.5-1.2 in (2.1 at FS 544), and the knots are their mean, smoothed over 12 in, 12-16 in apart, within 0.25 in of it (8 in apart, or at FS 548, they creased the skin 3.6-4.5 deg, the traces' noise). The blister leaves the own line at FS 460, at its low point, and runs level into its traced front at FS 496 (c82077610 reads a 1.2 in rise at FS 456-476 that c61468204, falling, and c59672497, level, do not; started at FS 484, where the traces meet the HATP line, it left the line's rise there as a 0.65 in hump ahead of it); the blister is deepest at WL 73.1-73.2 at FS 516-528, 3.8 in under the line the build had, rising to WL 76.3 at FS 560 and levelling off to 76.6 at FS 572, and ends in a 2 in step up at FS 574-578 (built as a 14 deg rise over 8 in); span: dvids7487365 from below, read against the solved camera's projected grid: each door a long panel between BL 16 and 42; the outline is lowered across it, fading over 4 in inside each edge and over a band above the bottom (at least 4 in, 2.5 times the depth), so the tunnel between the nacelles and their outer sides keep their shape (lowering the nacelle's own line instead deepened its whole lower half, pushing its inner wall into the tunnel and creasing it 4.2 deg at FS 476); c59672497 (Spanish, from 12 deg below) reads the same shape 1-2 in lower, its buttline unsettled. dvids6696790's lower outline, a sky silhouette behind the left lip, with its camera solved among 21 photos (verify/photos.py, 7.0 px): the skin steps 0.8 in below the lip's rim right behind it and falls to WL 73.6 at FS 447 cast onto BL -29 (+-1.5 in: the camera stands 7 deg above the wing plane), where an AIM-120's radome takes the outline over; navy090707N7665E003's lit strip along the right nacelle's lower side, seen from below (3.5 px), falls at the same slope over the first 25-30 in, bottoms out near FS 490-500 and rises 2-2.5 in by FS 509-528. aft: dvids9820808's lower outline behind the hook's pivot, a sky silhouette from a camera at the underside's own height (WL 78), so its waterline barely depends on the buttline it is cast onto (BL 20 here): WL 82.0 at FS 647, 82.7 at 666, 83.9 at 676, 85.2 at 685, 86.4 at 695, 87.0 at 702 (cast.py over its camera solved among 20 photos, 9.2 px); dvids8678629 and dvids9820808 read the same stretch about 2 in low against the earlier build in the sky check (verify/skyline.py). The HATP line rose to 85.0 at FS 620 and 87.5 at 640, 3-5.5 in above that outline; it is held only to FS 540, where its climb is still gentle: from FS 540 the line rises 0.21 in/in, and no smooth line joins that climb to the photo's 82.0 at FS 647 (held to FS 580, the join creased the skin 3.9 deg). Between FS 540 and 647 the build runs a monotone cubic; the photos agree in direction there (the sky check reads the lower side 2.4 in below the earlier build at FS 576-600 in dvids9820744; the top of the keel's lit side in dvids9820808 sits at WL 79 over FS 619-641). line (2026-11-05): the sky check's lower outline over FS 594-642, each place's photo edge cast to the point on its ray nearest the model's place, the nacelles' bottoms seen from below and level (c59200713, c59200713b, navy090707N7665E003, dvids8901347, dvids7487366): 2.4-2.7 in under the earlier build's cubic at FS 594-618, 1.9 at 630, 1.4 at 642 (the knot at FS 630 held 0.3 in above that, where the line turns up into dvids9820808's 82.0 at FS 647: at the photos' 79.6 it bent 3.6 deg there); the lit side's top in dvids9820808 at WL 79 over FS 619-641 agrees. Ahead of it the Blue Angels views read the bottom 1.7-2.1 in above the HATP line at FS 432-468 (c59200713, c59200713b, c61468204) where dvids6696790's outline reads it on the line (73.6 +-1.5 at FS 447), and c61468204 alone reads it 1.9-2.5 in under the line at FS 492-516: both unsettled, the line kept. The HATP line is held to FS 500 only: climbing 0.06 in/in from there to FS 540, it met the photos' near-level line in a 4 deg bend at FS 540 side (2026-11-06): the formation strips on the nacelles' sides, triangulated from 7-9 rays over 90 deg (layout.strips), stand at BL 43.5 and 43.2 at WL 103.8 over FS 562-597, 1.5 in inboard of the section's widest line; navy040107N3799S002 from straight behind reads that line 1.4 in wide at FS 576-600; from below (dvids7487366, 9820744, 7487365, 60-65 deg) the lower corner reads 1.2-4.4 in outside over FS 594-605, its points on the photo edges' rays at BL 41.9-42.9, WL 84.8-90.4 (their mean the corner knot, BL 42.5; FS 580-584 left out: the boxy fittings there read BL 45-46); taken in to BL 42.0 when the reshaped build's sky check put the same photos' points 0.4-0.9 in inside it at FS 600-636 (dvids7487365, 7487366, 9820744, 8901347), as points nearest a model inches off lean towards it. Three photos read the upper side 1.6 in outside too: the outer face is flatter than the section's superellipse, the inboard side unmeasured. The outboard half takes the width and exponent (4.2-4.5, the section's 2.3) that pass through the line and the corner, the deck's edge drawn in to 30 in, where the union passes within 0.1 in of the line all along (left as it was, 3 in inside the narrowed side, it swelled it 1.7 in at FS 548; solved station by station it came out jagged, 28-31 in, and creased the side 3.1 deg), and the plain and reshaped outlines are blended point by point, easing in from FS 480 and out by FS 680 (the lower side reads outside at FS 528-552 and 624-648 too, one and four photos); blending the width and exponent instead creased the skin 3.4-5.0 deg whatever the fade's length. end (2026-11-16): the user's ruling (as recommended): each nacelle ends on its outer flaps' start circle, their 17.5 in (layout.nozzle) and the alternate flaps' 0.3 in stand with 0.1 in to spare, its lip over their forward ends by an inch, so the fuselage's end lies inside the nozzles; ended at FS 692 on its own section, it reached BL 38.3, 0.6-0.9 in outside the flaps' start ring, an annulus round them seen from behind",
 			"note": "the nacelles hang about 10 in below the belly between them (the central body's bottom, WL 84). The earlier build held each nacelle's bottom at WL 87, from a symmetric section fitted to the HATP views, and rose 10 in behind the lip into it: the photos and the line both fall instead. The build keeps each nacelle's section above its centre as it was (its shoulder meets the wing's root there) and reaches below the centre down to this line. The navy photo's strip reads 2-2.5 in below the line all along, since it cannot fix its buttline (6 in of buttline there looks like 2.5 in of waterline): it agrees with the line's shape, not its level. dvids9820808's tank below the right nacelle cannot place the line (which tank it is, centreline or station 7, is not settled, and the open gear doors hang across the nacelle's lower edge), and the other solved ground photos are in shade or behind tanks. The HATP side view's keel line is held to FS 540 only: aft of it the photo's outline sits 3-5.5 in lower (2026-10-31)",
 			"cheek": {
-				"edge": [
-					565.3,
-					44.7
-				],
+				"edge": 565.3,
 				"front": 521.6,
 				"top": [
 					[
@@ -7177,19 +7297,70 @@
 				"bottom": [
 					[
 						521.6,
-						80.26
+						81.1
+					],
+					[
+						530.0,
+						81.25
+					],
+					[
+						545.0,
+						80.95
+					],
+					[
+						552.0,
+						80.3
+					],
+					[
+						556.5,
+						79.2
 					],
 					[
 						565.3,
 						79.35
 					]
 				],
-				"chamfer": 6.5,
-				"depth": 4.8,
-				"unit": "edge: the aft-most edge's FS and BL in; front: its front's FS; top, bottom: [FS, WL] knots of its outboard face's upper and lower edges; chamfer: in along the jet; depth: in inboard of its outboard face",
+				"face": {
+					"station": 524.5,
+					"waterline": 84.0,
+					"buttline": 44.93,
+					"lean": 0.3,
+					"where": "the slot's forward edge (FS 524.5) traced row by row through the solved cameras and cast on its station (2026-11-18): dvids9820799 (the right side from 76 deg ahead of the beam, x 4541-4520 over y 2606-2680) BL 44.02 at WL 87.2 to 45.83 at 81.4, dvids8678629 (the left side from 80 deg ahead, mirrored, x 5914-5936 over y 3346-3410) 44.33 at 85.8 to 45.65 at 81.3, and dvids8025511 (the left side 13 deg off the nose, mirrored, x 4941-4964 over y 2912-2996) 43.98 at 87.3 to 45.58 at 81.9: each straight within 0.05 in, all three within 0.1 in of BL 44.93 at WL 84 leaning in 0.30 in per inch going up (17 deg, the face looking up and out). The louvred panel's corners triangulated from dvids8842278 and 9393266 lean the same (1.5 in further out at the bottom over 5.3 in), and the dark seam at the LAU-116's front edge in dvids9820799, cast on FS 480.1, 0.27 in per inch (44.45 at WL 87 to 45.70 at 82.35). Ahead of the slot the plane passes through layout.stores.lau116 front_top (three photos) at the same lean, 0.46 in further out at the block's front edge than at the slot, straight between. Built upright at BL 44.7 until 2026-11-18, from the aft edge's triangulated buttline (+-0.7 in) and the block's marks"
+				},
+				"sweep": {
+					"run": 6.5,
+					"round": 1.5,
+					"edge": 0.1,
+					"where": "run: from where the aft face leaves the nacelle's skin to the aft edge: dvids9393266 (63 deg aft of the beam) shows the aft face as a band of shade beside the aft edge, softening forward (x 3430-3458 over y 3060-3105), its forward side cast on the skin (BL 40.5-41) at FS 557.4-559.5; dvids8842278's shaded trapezoid runs the same at its top (FS 558.5 to the edge). Its diagonal forward side, FS 558.7 at WL 84.2 to 552.6 at 79.4 in both photos, lies on the face's plane: a panel on the face, not built",
+					"note": "the aft face's curve from the skin to the aft edge and the face's rounding into it over its last inches (round; in plan a quarter ellipse each, square to the jet where they meet) and the edge's least thickness are estimated: dvids9393266 shows the aft face only as a band of shade softening forward, and dvids9820799 and 8678629, from ahead, the aft end's outline rounded"
+				},
+				"section": {
+					"corner": 0.15,
+					"into": 30.0,
+					"ease": 2.0,
+					"span": 0.4,
+					"note": "estimated, the photos showing the station's top rounding into the nacelle with no step (dvids9820799, 9393266, 8678629) but measuring none of these: the box's top corner's rounding (corner), how far into the skin the station's top meets it (into), the height of the fairing over the box's top below which it flattens onto it (ease), and the curve from the face's top to the skin (span); the block's face on the face's plane up to the box's top's height and rising from there to the station's top, and the fairing over the box leaving its foot upright; the bottom corner rounded as the front edge's band (layout.stores.lau116 round); the ramp's sections the front edge's, scaled to its line and drawn in"
+				},
+				"unit": "edge: the aft edge's FS; front: the box's top front corner's FS; top, bottom: [FS, WL] knots of its outboard face's upper and lower edges; face: the outboard face's plane, BL = buttline + lean x (waterline - WL), in, measured at station, and ahead of it through layout.stores.lau116 front_top; sweep: run, in along the jet from where the aft face leaves the skin to the aft edge, round, in the face rounds in over the aft edge, edge, the aft edge's least thickness, in; section: corner, in along each face where the box's top corner's rounding starts, into, deg the station's top turns into the skin where it meets it, ease, in of the fairing's height over the box's top below which it flattens onto it, span, the end slopes of the curve from the face's top to the skin as shares of its chord",
 				"source": "photo match",
-				"where": "dvids8842278 and dvids9393266 (both an F/A-18D's right side, station 6 loaded, 36 deg apart), cameras of the catalogue's solve (1.4 and 4.3 px). edge: triangulated from the two photos' fairing_cheek_aft_right marks and the edge's ends (2026-11-11, +-3.5 px, BL +-0.7 in): upright, from WL 79.3 to 84.2; front: its top front corner, fairing_cheek_front_right in both (2026-11-16, 2 px each way), triangulated at FS 521.6, WL 87.7, BL 44.5; top: the outboard face's upper edge read column by column in both and cast onto its plane (BL 44.6), the two agreeing within 0.4 in: level at 84.2 over the chamfer, rising 2.1 in within 3 in ahead of it, then 1.2 in more by FS 531 and level to the front (FS 522-540: 87.2-87.8, both photos); chamfer: the aft face's run along the jet, read against dvids8842278's projected stations (FS 558.5 to 565.3); depth: to 0.5 in inside the nacelle's side, which stands upright at BL 40.4-40.9 from WL 78 to 84 over FS 500-565 and widens to 42.1 at WL 88; bottom: 0.4 in over the cheek AIM-120's top along its line (layout.stores.rounds.cheek, 79.3 against the round's 78.9 at the edge), which the photos' lower edge follows within 1 in where the louvred panel's frame does not hide it",
-				"note": "a box on each nacelle's side over the cheek station, airframe: dvids9820801 (VMFA-112, station 6 empty, DVIDS, public domain) shows it with its louvred panel and chamfered aft end on a clean jet, and c33266359 (copyrighted, measured only) a lit face standing off the nacelle at its aft end with no round fitted; the LAU-116's face stands flush in the side ahead of it (dvids9390273). Its outboard face carries the louvred panel (FS 530-542) and the aft face is a trapezoid, shaded in one photo and sunlit in the other. Its front's shape below its top corner is not seen (the LAU-116's fitting and the round stand in front of it): built square"
+				"where": "dvids8842278 and dvids9393266 (both an F/A-18D's right side, station 6 loaded, 36 deg apart), cameras of the catalogue's solve (1.4 and 4.3 px). edge: triangulated from the two photos' fairing_cheek_aft_right marks (2026-11-11, +-3.5 px), FS 565.2 at WL 81.7, and its ends, read again 2026-11-18 (dvids8842278 x 2246-2250 at y 2445 and 2495, 9393266 x 3456-3460 at y 3045 and 3106), FS 565.5-565.8 at WL 84.0 and 79.5; front: its top front corner, fairing_cheek_front_right in both (2026-11-16, 2 px each way), triangulated at FS 521.6, WL 87.7, BL 44.5; top: the outboard face's upper edge read column by column in both and cast onto a plane (BL 44.6), the two agreeing within 0.4 in (cast on the face's leaning plane instead the readings move under 0.05 in, both cameras standing level with it): level at 84.2 behind FS 558.8, rising 2.1 in within 3 in ahead of it, then 1.2 in more by FS 531 and level to the front (FS 522-540: 87.2-87.8, both photos); bottom (2026-11-17): the outboard face's lower edge read column by column in dvids8842278, dvids9393266 and dvids8678626 (the right main gear's close-up, its camera solved from its EXIF focal length on the gear, reading the box's top 0.4 in high and its stations 2.5 in aft, both taken out) and cast onto a plane (BL 44.7): at FS 522 80.5, 81.4 and 81.3, at 530 80.7, 81.4 and 81.6, at 545 80.4, 81.0 and 81.5, the knots their means; aft of FS 550 the first two alone, 8678626's view hidden there, falling 0.8-1.4 in over FS 552-556.5 to 79.0-79.5 and level on to the triangulated aft edge's 79.35, as the top falls ahead of the aft face; the edge runs on along the LAU-116's block ahead without a step in all three (layout.stores.lau116), 1.1-1.2 in over the cheek AIM-120's top (layout.stores.rounds.cheek)",
+				"note": "a box on each nacelle's side over the cheek station, airframe, built with the LAU-116's block and ramp ahead of it and the fairing over it as one loft from the ramp's front to the aft edge, each section from the nacelle's skin out round the face and over its top into the skin (the user, 2026-11-18: the station read as separate flat solids where the photos show one faired body): dvids9820801 (VMFA-112, station 6 empty, DVIDS, public domain) shows it with its louvred panel and swept aft end on a clean jet, and c33266359 (copyrighted, measured only) a lit face standing off the nacelle at its aft end with no round fitted; the LAU-116's face stands flush in the side ahead of it (dvids9390273), the bottom edge running on without a step and the faces flush across their seam (dvids8678626), and over the box the fairing stands set in from the box's top corner (layout.stores.lau116 fairing). Its outboard face carries the louvred panel (FS 530-542). Its front below its top corner is not seen (the LAU-116's fitting and the round stand in front of it): the block's face runs on into the box's there",
+				"slot": {
+					"stations": [
+						524.5,
+						528.0
+					],
+					"waterlines": [
+						81.6,
+						87.45
+					],
+					"depth": 3.5,
+					"round": 0.6,
+					"room": 2.0,
+					"unit": "stations, waterlines: FS and WL in of its outline on the box's outboard face; depth: in inboard from the face, its walls level; round: in, its corners' radius; room: in inside the nacelle's side the station runs round the slot, holding its floor",
+					"where": "a rounded oblong recess in the box's outboard face just behind its front (2026-11-17): dvids8678626 (the right main gear's close-up) shows its outline whole, x 3920-4050 and y 2215-2460, its corners rounded about 22 px; read against the same photo's box front (the seam at x 4150) and top and bottom edges at its 37.9 px/in, its ends 2.6 and 6.1 in behind the box's front (FS 524.2-527.7; 525.1-528.6 from the box's top corner's end at x 4185), its top 0.15 in under the box's top and its bottom 0.5 in over the box's bottom; it is the dark slot every front view shows at the box's front (dvids8678629, 9820799, 8025511, 9393257: cast on the box's face at FS 522-529, loose along the stations)",
+					"note": "its depth is estimated, as deep as it is wide along the jet, inboard from the face, its floor up to 1.4 in inside the nacelle's side at its top, where the face leans in over it: its floor lies in shadow in every photo that sees into it"
+				}
 			},
 			"bay": {
 				"buttline": [
@@ -7311,13 +7482,14 @@
 			"note": "the HATP keel line is a trace of a small figure: the photos put it 1-2 in low over the forebody's aft half, while it fits the nose"
 		},
 		"wells": {
-			"main": [[450.5, 533.4, 2.8, 42.7, 107.4]],
+			"main": [[450.5, 533.4, 2.8, 42.7]],
+			"roof": [0.4, 1.0],
 			"nose": [[204.9, 235.3, -14.7, 14.7, 116.0], [235.3, 283.6, -14.7, 14.7, 117.3], [283.6, 343.5, -3.5, 3.5, 97.0]],
 			"speedbrake": {"segments": [[592.0, 652.0, -15.2, 15.2, 0.0]], "depth": 9.5},
 			"probe": {"depth": 6.0},
-			"unit": "main and nose: sections [FS from, FS to, BL low, BL high, roof WL], in; the main's the right well, the left its mirror; speedbrake: its section and its floor's depth under the skin, in; probe: the trough's depth under its door, in",
+			"unit": "main: the bay's plan [FS from, FS to, BL low, BL high], in, the right bay's, the left its mirror; roof: the main bays' roof, in under the inlet duct's lowest point over the plan and at least in over the skin; nose: sections [FS from, FS to, BL low, BL high, roof WL], in; speedbrake: its section and its floor's depth under the skin, in; probe: the trough's depth under its door, in",
 			"source": "solved",
-			"where": "each well's plan holds its doors' closed outline (layout.gear doors, layout.speedbrake, layout.probe) and its stowed parts with an inch of room: the main bay in to BL 2.8, an inch inboard of the stowed strut's BL 3.8, out to BL 42.7 and its roof at WL 107.4, an inch round the stowed leg fitted to the take-off photos (layout.motion stowed: it reaches BL 41.7 and WL 106.1); the nose bay over its doors, its roof at WL 116 ahead of the cockpit tub's front (FS 235.3), under the pilot's feet (WL 117.2) and over the stowed wheel (WL 114.4), and behind it at WL 117.3 under the tub's floor (WL 117.5), the stowed lamps reaching WL 117.2, back to FS 283.6 over the trunnion's cross tube (to FS 282.6, BL 4.0), and aft to FS 343.5 round the stowed drag brace from its slot in the skin up to its cylinder (WL 95.7) and back to its pin's cross tube (FS 342.4, BL 2.0, the cylinder's collar 2.5 in round its axis) with an inch of room; the probe's trough 6 in deep, the stowed probe's underside at 5.7 in",
+			"where": "each well's plan holds its doors' closed outline (layout.gear doors, layout.speedbrake, layout.probe) and its stowed parts with an inch of room: the main bay in to BL 2.8, an inch inboard of the stowed strut's BL 3.8, out to BL 42.7, an inch outboard of the stowed leg fitted to the take-off photos (layout.motion stowed: it reaches BL 41.7 and WL 106.1), its roof the inlet duct's floor (layout.inlet duct), 0.4 in under the duct's lowest point at each of its rings and at least an inch over the skin where the skin rises at the bay's outboard edge, the gear 0.9 in under it at its closest (FS 477-478); the nose bay over its doors, its roof at WL 116 ahead of the cockpit tub's front (FS 235.3), under the pilot's feet (WL 117.2) and over the stowed wheel (WL 114.4), and behind it at WL 117.3 under the tub's floor (WL 117.5), the stowed lamps reaching WL 117.2, back to FS 283.6 over the trunnion's cross tube (to FS 282.6, BL 4.0), and aft to FS 343.5 round the stowed drag brace from its slot in the skin up to its cylinder (WL 95.7) and back to its pin's cross tube (FS 342.4, BL 2.0, the cylinder's collar 2.5 in round its axis) with an inch of room; the probe's trough 6 in deep, the stowed probe's underside at 5.7 in",
 			"note": "the speedbrake well's depth estimated: as deep as its stowed actuator and hose need (the photos with it open, dvids9393262, 9393257 and 8025511, look up at it from ahead, its inside hidden by the panel); the wells' shapes are boxes until photos of their insides are traced"
 		},
 		"speedbrake": {
@@ -7954,18 +8126,86 @@
 				}
 			},
 			"lau116": {
-				"front_top": [504.47, 85.78, 44.96],
-				"front_bottom": [503.22, 82.0, 45.22],
+				"front_top": [480.4, 86.24, 44.72],
+				"front_bottom": [479.83, 82.48, 44.72],
 				"hole": [510.29, 84.63, 44.95],
 				"round": 0.45,
 				"hooks": {
 					"hangers": ["hook_forward_flange", "hook_centre_web"],
-					"note": "a hook on each hanger of the round the LAU-116 holds, the forward and the centre (dvids8025511, its station empty, shows the two hanging open at their stations, 4845, 3048 and 4912, 3041 projected), each the hanger's own footprint (../missiles layout.aim120c fittings), running up the round's up from the hanger's top until its middle reaches inboard; the round hides them closed in every photo of a loaded station, so their shape is estimated"
+					"note": "a hook on each hanger of the round the LAU-116 holds, the forward and the centre (dvids8025511, its station empty, shows the two hanging open at their stations, 4845, 3048 and 4912, 3041 projected), each the hanger's own footprint (../missiles layout.aim120c fittings), running up the round's up from the hanger's top until its middle reaches inboard; the round hides them closed in every photo of a loaded station, so their shape is estimated",
+					"forward": {
+						"station": 480.0,
+						"where": "the forward hook's middle (2026-11-17): dvids7487365 from below, station 4 empty, its two hooks hanging open, the centre one on the round's centre hanger's station (FS 515.3 projected) and the forward one 273 px ahead at the model's 7.63 px/in, FS 479.5; dvids8678626, station 6 loaded, the forward hook's clevis on the bracket at the face's front edge, FS 480.3 against the centre hook's 515.5 (40 px/in between them). The station 6 round's nose and tail in dvids7487365 stand within about an inch of layout.stores.rounds.cheek's, so the round stays: the forward hook stands 9.5 in ahead of the AIM-120's forward hanger (../missiles layout.aim120c fittings, 67.4-69.2 in from its nose), on the round's body there"
+					}
 				},
-				"unit": "front_top, front_bottom, hole: [FS, WL, BL] in on the right; round: in, the edges' radius",
+				"fairing": {
+					"top": [
+						[
+							488.0,
+							92.2
+						],
+						[
+							496.5,
+							94.4
+						],
+						[
+							505.0,
+							95.6
+						],
+						[
+							526.0,
+							95.6
+						],
+						[
+							536.6,
+							94.1
+						],
+						[
+							541.8,
+							92.1
+						],
+						[
+							546.1,
+							88.9
+						],
+						[
+							548.0,
+							86.7
+						]
+					],
+					"inset": 0.45,
+					"ramp": {
+						"top": [
+							[
+								451.0,
+								84.0
+							],
+							[
+								456.0,
+								86.5
+							],
+							[
+								463.0,
+								88.5
+							],
+							[
+								471.0,
+								91.0
+							]
+						],
+						"where": "the ramp's top edge, a raised edge along the lit panel ahead of the face's front edge, cast onto the face's plane (BL 45) and on the skin through the solved cameras (2026-11-17): dvids9393266 (from aft, 63 deg off the beam) 91.4 at its front edge, 88.6 at FS 464.8 and 86.1 at 453.2 on the face's plane, 2-4 in further forward where the drawn-in ramp stands inboard of it; dvids9820801 (abeam) level at 91.1-91.4 over FS 471-478.6, then falling to 88.2 by 468.3; dvids8678629 (mirrored) 90.8 at 466, 87.7 at 457, 83.4 at 452; dvids9820799 91 at 474, 87 at 453. Its bottom the face's, level (dvids9393266's lit panel's lower edge, dvids8025511's lit ramp); drawn in to the skin from the front edge to its front at FS 451, where the four views lose it, a crease along the front edge, as every view shows an edge there"
+					},
+					"where": "the fairing's line (its top where it turns in to the nacelle's side) after the front edge's crest, cast through the solved cameras (2026-11-17): rising, dvids9393266 on the face's plane 92.2 at FS 487.8, 94.4 at 496.5, 95.8 at 505.2, and dvids8025511's arch (mirrored, loose along the stations) 94.2-95.6 over FS 481-500; level, 95.5 and 95.2 in dvids8678626 (the right main gear's close-up, its camera solved from its EXIF focal length, its 0.4 in high reading taken out), the apex in dvids9820799 (96.0) and 8678629 (95.7), 95.9-96.1 over FS 512-526 in dvids9393266, spread +-0.4 in; falling over the box, dvids9393266's outline cast on the plane of the fairing's face there (BL 44.25): 95.9 at FS 524.5, 94.1 at 536.6, 92.1 at 541.8, 88.9 at 546.1, on to the box's top (86.7) by FS 548. inset: in from the box's top corner over the box, whose top corner dvids8678626 shows lit over FS 521-536 and 9393266 and 8842278 mark at its front (fairing_cheek_front), the fairing rising from the box's top behind it and meeting the skin along its line"
+				},
+				"unit": "front_top, front_bottom, crest, hole: [FS, WL, BL] in on the right; round: in, the edges' radius; fairing.top, fairing.ramp.top: [FS, WL] knots of the fairing's and the ramp's lines, the fairing's from the crest aft, the ramp's up to it; fairing.inset: in; hooks.forward.station: FS in",
 				"source": "photo match",
-				"where": "aside marks on the catalogue's solved cameras (2026-11-17), each left mark mirrored onto the right: front_top and front_bottom (ejector_front_top, ejector_front_bottom), the exposed block's top and bottom front outboard corners, from dvids9393266 (right, 63 deg aft of the beam) and dvids8025511 (left, 13 deg off the nose), rays 0.0 and 0.06 in apart; each photo's ray cast on the outboard face puts the front at FS 504.0-504.6 (top) and 502.8-504.4 (bottom), the top at WL 85.77-85.78 and the bottom at 81.95-82.04; hole (ejector_hole), a dark round hole in the outboard face's upper half, from dvids8842278, 9393266 and 8025511, each photo left out moving it 0.26, 0.30 and 0.21 in at most; its inboard side on the nacelle's side, which the front's top edge meets at BL 40.6-41.1 (ejector_front_inboard, dvids8025511 and 9393257, cast on the front; the build's skin there reads 41.3); round: the lit band along the front's outboard edge in dvids9393266, 6 px (0.45 in) wide",
-				"note": "the LAU-116 as the photos show it: a block on the nacelle's side ahead of the cheek box (layout.nacelle cheek), which dvids8842278 and 9393266 show forward of FS 520 below the box's top, and the head-on views dvids8025511 (station 4 empty) and 9393257 standing from the nacelle's side out to the box's face. Built from its front (front_top's and front_bottom's mean station, upright) to the box's front, its top level at front_top's waterline, its bottom at front_bottom's, its outboard face upright at the three points' mean buttline (45.04), flush with the box's (44.7) within the marks' spread, its inboard face at inboard. The side photos' top and bottom edges along it, cast on that face: 85.3 and 80.65 in dvids8842278, 85.6-85.8 and 81.7-81.85 in dvids9393266. dvids8842278 alone shows a step in its outline near its aft end (ejector_step, cast on the face at FS 517.5, WL 85.3, the step's foot at FS 519.0, WL 84.1): a notch 1.2 in deep in its top, or a panel's edge; dvids9820799 shows its top level to the box's front, and it is built so. The rest of its 44 x 9.5 x 16 in body (stores.lau116) lies inside the nacelle behind its shut bay (dvids9390273 shows the bay open with the launcher in it): not built. The same block shows on jets with no round loaded (dvids9820799, 8678629, f6545328211), so it is built as the airframe's, on the cheek box's node, and only the hooks are the store's (user, 2026-11-17)"
+				"where": "aside marks on the catalogue's solved cameras, each left mark mirrored onto the right (2026-11-17, re-marked the same day): front_top (ejector_front_top), where the seam along the block's top meets the face's front edge, from dvids9393266 (right, 63 deg aft of the beam), 8025511 (left, 13 deg off the nose) and 9393257 (left, front quarter), +-0.63, 0.16 and 0.17 in; front_bottom (ejector_front_bottom), the front edge's lower end, dvids9393266's ray cast on the face's plane as first taken, upright (44.72; on the leaning plane (layout.nacelle cheek face) it reads FS 482.1, BL 45.85: the front edge stays at the marks' mean, FS 480.1, as the user confirmed on 2026-11-18); crest (ejector_crest), the front edge's top, where the ramp's top edge meets it, from dvids9393266 and 9820801 (abeam), +-0.38, 0.26 and 0.42 in, its buttline where the face's top turns in: 0.2 in off the nacelle's skin (BL 43.66 there), where the station's top meets it along the ramp's line and the fairing's. The front edge also stands at FS 477.3-477.6 in dvids8678626 (the right main gear's close-up, its camera solved from its EXIF focal length, which reads the box's front 1.5 in forward and the louvres 2.5 in aft) and 478.6 in dvids9820801 cast on the face; f6545328211 is too soft to mark at its range. hole (ejector_hole), a dark round hole in the outboard face's upper half, from dvids8842278, 9393266 and 8025511, each photo left out moving it 0.26, 0.30 and 0.21 in at most; round: the lit band along the front's outboard edge in dvids9393266, 6 px (0.45 in) wide, the bottom corner's radius",
+				"note": "the LAU-116 as the photos show it: a block on the nacelle's side ahead of the cheek box (layout.nacelle cheek), with a fairing over it and a ramp ahead of it, one face. Built from its front edge (front_top's and front_bottom's mean station) to the box's front within the cheek station's one loft (layout.nacelle cheek), its bottom from front_bottom's waterline running on into the box's (layout.nacelle cheek bottom), its outboard face on the box's leaning plane carried forward through front_top (layout.nacelle cheek face), its top meeting the nacelle's skin along the fairing's line, its inboard side on the skin. Its top is a seam: dvids8025511, 9393257 and 9393266 see it as a dark line on the face, and dvids8678626 (the right main gear's close-up from below and ahead, the block's whole length in view) as a thin seam rising forward, the face running on above it flush to the fairing's line (fairing), the box's top corner ending against the fairing's upright aft edge, no front face of the box showing over the block, the bottom edge running from the box's along the block without a step. The fairing runs on over the box's top set in from its corner, falling to it by FS 548 (fairing inset), the box's slot below it (layout.nacelle cheek slot). Ahead of the front edge, the lit ramp (fairing ramp) falls forward and is drawn in to the skin by FS 451. The first marks put the front at FS 504: dvids9393266's lay on the trailing edge of the round's upper wing, which hides the face's forward part from aft, and dvids8025511's lit band is the face's forward part seen 13 deg off its axis, not a front face (user, 2026-11-17: the front moved to the photos' edge, with the ramp ahead of it and the fairing curving down over the box). The side photos' top and bottom edges along it, cast on that face: 85.3 and 80.65 in dvids8842278, 85.6-85.8 and 81.7-81.85 in dvids9393266. dvids8842278 shows a step in its outline near its aft end (ejector_step, cast on the face at FS 517.5, WL 85.3, the step's foot at FS 519.0, WL 84.1), and dvids8678626 the same step in the seam (FS 515.7-517.7, WL 85.8 to 84.7): a panel's edge on the face, a panel line, not built. The rest of its 44 x 9.5 x 16 in body (stores.lau116) lies inside the nacelle behind its shut bay (dvids9390273 shows the bay open with the launcher in it): not built. The same block shows on jets with no round loaded (dvids9820799, 8678629, f6545328211), so it is built as the airframe's, on the cheek station's node, and only the hooks are the store's (user, 2026-11-17)",
+				"crest": [
+					478.67,
+					91.12,
+					43.86
+				]
 			},
 			"paint": {
 				"atlas": 1024,
@@ -8017,7 +8257,7 @@
 					"rise": 0.15,
 					"hinge": [326.0, 152.6],
 					"seal": 0.2,
-					"open": 49.4,
+					"open": 30.5,
 					"seconds": 9.2,
 					"unlatch": 0.25,
 					"fall": 4.5,
@@ -8026,7 +8266,7 @@
 				"unit": "slide: aft, rise: up over it, seal: the shell's step proud of the loft, each in; hinge: [FS, WL] in; open: deg; seconds, fall, lock: s; unlatch: share",
 				"note": "the rise and the seal estimated: the least that let the canopy's rim clear the skin it rests on through the stroke (a straight aft slide dragged its aft lip and sill rim through it, the sill rising 0.06-0.07 in per inch aft), no photo resolving either; the hinge's place inside the aft top estimated likewise: the photos do not tell its places apart",
 				"source": "NATOPS 2.15.1 (slide); photo match (open); DVIDS and NASA video (timing)",
-				"where": "the slide aft to unlatch: \"moves 1.5 inches aft before rising\", NATOPS 2.15.1, and rising 0.15 in along the sill as it goes. The hinge at the canopy's aft top, an inch behind its aft end and 0.9 in under the top there, where dvids7418477 shows the open canopy's aft tip resting on the fixed fairing's forward top corner: about the old hinge, 4 in lower, the aft top swung 2 in aft and 0.25 in down into the spine. Fully open, fitted against the sky with the hinge free (verify/poses.py's fit, 2026-11-16, scratchpad canopyfit): dvids7418477, the steepest of four single-seat photos, 49.4 deg at this hinge, 1.68 in over 51 places against 1.98 at 45.8, and 45.8-50.9 deg with the hinge moved over FS 324-328, WL 152.2-153.0 (the three photos' summed misses 1.7-2.4 in there, with no trend); dvids8678629 and dvids8678631 (the reference jet in its shelter) keep 30.4 and 30.8 deg, 0.39 and 0.19 in, and c8183843 (VFA-37) 25.8 deg (2026-11-12): each stopped short of full travel. Timed in public-domain videos (2026-11-12, frame by frame): opening, the slide aft 2.67, 1.83 and 2.37 s in NASA AFRC-2026-14669-01, -14614-02 and AFRC_2026_14593 (NASA 862 and 846, two-seaters; +-0.2 s), the rise 6.91 s in DVIDS 657681 (VFA-34's F/A-18C 434, +-0.15 s); closing in 657681, the fall 4.47 s and the slide forward to lock 1.97 s (+-0.2 s). seconds: the opening's slide and rise, 2.3 + 6.9 s; unlatch: the slide's share of that stroke, and so of the canopy's drive; fall and lock: the closing's two phases, s, each paced on its own"
+				"where": "the slide aft to unlatch: \"moves 1.5 inches aft before rising\", NATOPS 2.15.1, and rising 0.15 in along the sill as it goes. The hinge at the canopy's aft top, an inch behind its aft end and 0.9 in under the top there, where dvids7418477 shows the open canopy's aft tip resting on the fixed fairing's forward top corner: about the old hinge, 4 in lower, the aft top swung 2 in aft and 0.25 in down into the spine. Fully open, 30.5 deg at this hinge, the outline traced against all four single-seat photos that see it open (2026-11-20, scratchpad f232): c8183843 (VFA-37) puts the bow's top where the model reaches at 30.1 deg, its sky places best at 30 (0.36 in mean against 0.86 at 49.4); dvids8678629 best at 30 (1.22 in against 3.65 at 49.4) and dvids8678631 on the overlay at 30.5 (the reference jet in its shelter); dvids7418477's bow, rails and aft tip at 30-32 deg, 49.4 standing about 20 in high. The 49.4 fitted to dvids7418477 on 2026-11-16 was the hangar's trusses: its sky places read 2.4-2.6 in at every angle from 30 to 55 deg. The two-seaters' longer canopies open alike, about 28.5 (dvids9393266) and 30 deg (dvids7847398). Timed in public-domain videos (2026-11-12, frame by frame): opening, the slide aft 2.67, 1.83 and 2.37 s in NASA AFRC-2026-14669-01, -14614-02 and AFRC_2026_14593 (NASA 862 and 846, two-seaters; +-0.2 s), the rise 6.91 s in DVIDS 657681 (VFA-34's F/A-18C 434, +-0.15 s); closing in 657681, the fall 4.47 s and the slide forward to lock 1.97 s (+-0.2 s). seconds: the opening's slide and rise, 2.3 + 6.9 s; unlatch: the slide's share of that stroke, and so of the canopy's drive; fall and lock: the closing's two phases, s, each paced on its own"
 			},
 			"probe": {
 				"value": {
@@ -8040,6 +8280,15 @@
 				"note": "pivot estimated: no photo shows the root; 2-3 in behind the door's aft edge, so that edge rises as the door swings out aft on the probe, and 2.5 the middle of it. forward estimated: the forward door's share of the stroke to open, the probe waiting while it does, and as long again to close once the probe is clear of it (no video shows the probe moving); how far it opens and when it closes the build solves from the probe's path (build.py forward_door())",
 				"source": "NATOPS III-10-13 (stroke); photo match (nozzle)",
 				"where": "the stroke time: \"The refueling probe extends or retracts in 6 seconds\" (NATOPS III-10-13, FCF 10.2.1.3 step 21). nozzle and tip triangulated from the two probe-out photos through their solved cameras (2026-11-16): dvids8025511 and dvids6690145, the rays 0.8-0.9 in apart and 35 deg apart; moving the picks by 8-15 px moves the ball's centre over FS 133.5-139.3, WL 139.9-141.6, BL 25.9-27.3. The probe swings about its root by the least turn that takes its stowed nozzle there (build.py mechanisms()), with the door riding it on the row of stand-off brackets both photos show; the turn before, 28 deg about an axis 22 deg off vertical, left the nozzle 19 in off and the door fitted 66 deg open on its own hinge crossing the probe"
+			},
+			"cabin": {
+				"value": {
+					"travel": 39.2,
+					"seconds": 1.0
+				},
+				"source": "photo match (the travel)",
+				"where": "the travel: the open door's front edge 2.4 in below the skin (layout.cabin) on the door's 3.8 in length (FS 306.4-310.2), asin(2.4 / 3.8); it opens while no bleed air reaches the ECS, as on every cold jet in the photos, and shuts with it",
+				"note": "the 1 s stroke estimated: no source times it"
 			},
 			"scoop": {
 				"value": {
@@ -8125,8 +8374,9 @@
 					"link": 1.8,
 					"overlap": 6.0,
 					"side": {
-						"pin": 78.0,
-						"knee": 0.57,
+						"pin": [462.0, 80.2, 24.2],
+						"boss": [2.4, 2.0],
+						"spring": {"diameter": 0.8, "pitch": 0.25, "length": 5.0},
 						"fitting": {"length": 3.0, "eye": 3.1, "cheek": 0.4}, "foot": {"bolt": [0.284, -0.957, 0.066], "lugs": [[1.6, 2.6], [4.2, 5.3]], "spool": 2.8, "nut": [2.8, 5.5, 6.6], "end": [1.7, 7.8]}
 					},
 					"connecting": {
@@ -8140,9 +8390,9 @@
 					}
 				},
 				"source": "solved",
-				"where": "the nose drag brace is the actuator the photos show (layout.gear legs nose actuator): its cylinder turns about its pin in the airframe to aim at the web's pin and its rod slides out of it as the leg swings forward, the rod as long as keeping the overlap inside the cylinder at full stretch needs, its inner end 3 in or more short of the cylinder's pin (build.py actuator()). The main side brace folds at a knee 0.57 of the way up from its bolt, WL 69.8 (2026-11-14, user: moved off halfway, which put the folding knee 0.23 in through the open inner door's hinge at mid-retraction; 0.6 crossed the post's top stowed, and past 0.68 the halves cannot fold short enough for the bolt, which passes 8.7 in from the pin at gear 0.4; 0.57 clears the door, the belly and the post through the stroke), its pin on its axis 2 in inside the skin at WL 78; the connecting link's pin on its axis at WL 82, 1.4 in off the trunnion's axis, so its ends draw apart little over the swing, and the bell crank, on a bracket off the arm's pivot boss, its pin at WL 56 where the photos lose the rod and its 4 in arm square to the link (6 in put its boss in the shock absorber's can, which the arm's droop brings forward in flight) (an arm along the link, pinned on the boss itself, sits at dead centre and cannot hold the length), turns little; the brace's halves, the link and the crank hinge about axes along the trunnion's, so the leg's swing keeps each in its plane. The link as dvids8678626 shows it (2026-11-15, at the post's 46 px/in, +-0.1 in): a white sleeve 1.15 in across (53 px) down to the polished rod, 0.6 in (28 px), with a lock collar 1.1 in across and 0.5 long at each of the rod's ends (50 and 23 px), and a white rod end 1.0 in (46 px) on down to the crank's pin",
-				"note": "the rod's reach into the cylinder at full stretch estimated, nothing seeing inside it; the main side brace's pin and knee, the connecting link's pin and its bell crank's place: no photo shows them, unseen, placed for room. The main side brace's fork at its bolt (2026-11-16): an eye 3.1 in across round the bolt, tapering 3 in up the brace into its tube, either side of the post's lug, the bolt's pin hollow at its outer end and with a round head at its inner; each cheek's 0.4 in thickness, which no photo shows edge on, is estimated. The pin through the fork reads 17.5 deg off the trunnion's axis in dvids8678626 (it runs 19.7 deg below the photo's horizontal from its hollow end to its head, the axis 2.3 deg; taken square to the brace its end face would read 0.50 against the photo's 0.5, the axis's 0.38), and dvids8678629's soft view of its end, about 25 deg (+-10) from the photo's horizontal, sits between the two (-17 and -1); the build keeps the bolt along the trunnion's axis, which its brace's planar linkage turns about. What reads face on in dvids8678629 is the slot between the cheeks above the bolt. Under the fork the foot turns in a clevis on the post across the bolt, a universal joint's second pin (dvids8678626 from outboard, 46.7 px/in, read relative to the fork's centre, the camera there 2.4 in off): two lugs off the post 1.6-2.6 and 4.2-5.3 in down a bolt through the fork's middle, a spool 2.8 in across between them, and under the lower lug the bolt's castellated nut 2.8 in across (5.5-6.6 in down) and its rounded end 1.7 across to 7.8 in. The bolt runs 18.6 deg aft of the photo's vertical through the pin's centre, the fork's block's bottom, the spool's middle and the nut's; taken square to the pin as the photo measures it, it is (FS 0.284, WL -0.957, BL 0.066) down on the right leg, 18 deg off the post; no second photo sees it, so its lean across the sight line and the lugs' width round it (the spool's and 0.3 in) are estimated (user, 2026-11-16: built from the one view). On the main leg's path (layout.motion stowed main) its lower end, from the lower lug down the bolt to the end, passes through the open inner door and the skin at the bay's edge at gear 0.375-0.45: no path clears it without running the shock's can through the skin, and the foot's depth is the one view's least certain reading (user, 2026-11-16: kept, a known crossing). The knee carries no boss wider than its tubes: stowed, the post passes within 0.1 in of the knee's pin axis within 1 in along it, and at mid-stroke the inner door and the belly within 0.6 in.",
-				"unit": "link: the side braces' diameter, in (their tubes' measured 1.8); overlap: how far the nose drag brace's rod reaches into its cylinder at full stretch, in; side: the main side brace's structure pin, WL in on its axis, and its knee's place, the share of its length up from the bolt, and its fitting: the fork at its bolt, its length from the bolt up the brace to where it meets the tube, its eye's diameter round the bolt and each cheek's thickness, either side of the post's lug, in; and foot: the clevis under the fork, bolt the direction its bolt runs down through the fork's middle [FS, WL, BL] on the right leg, lugs each lug's [top, bottom] down that bolt from the fork's middle, spool its diameter, nut [across flats, top, bottom], end [diameter, bottom], in; connecting: the connecting link's structure pin and the bell crank's pin, WL in on its axis, the crank's arm from its pivot to that pin, in; sleeve, rod and end, the link's diameters down its length, in, and collar its lock collars' [diameter, length], in"
+				"where": "the nose drag brace is the actuator the photos show (layout.gear legs nose actuator): its cylinder turns about its pin in the airframe to aim at the web's pin and its rod slides out of it as the leg swings forward, the rod as long as keeping the overlap inside the cylinder at full stretch needs, its inner end 3 in or more short of the cylinder's pin (build.py actuator()). The main side brace folds at its knee, which gear down stands where the photos last see the brace (layout.gear legs main brace's first point): dvids4642471 (VMFA-115, 2018, from inboard and ahead of the left leg) shows the knee's boss there at the bay's edge, the lower half lit from the foot up to it and the upper half going on up into the bay, so the lower half is 18.4 in, not the 14 in of a knee 0.57 of the way up (2026-11-19); the knee's boss 2.4 in across (150 px against the tube's 111 px, its 1.8 in) and the downlock spring 0.8 in across with its coils 0.25 in apart (48 px and 15 px), running from the knee on up into the bay; the structure pin at FS 462.0, WL 80.2, BL 24.2, the upper half 8 in, found by a search of the brace's plane for the fold that keeps the boss and the tubes clearest of the post, the doors, the bay's walls and the duct through the stroke (scratchpad f208/pinfit_near2.py), with the inlet duct's section at FS 460 raised 2.5 in for the room (layout.inlet.duct); the connecting link's pin on its axis at WL 82, 1.4 in off the trunnion's axis, so its ends draw apart little over the swing, and the bell crank, on a bracket off the arm's pivot boss, its pin at WL 56 where the photos lose the rod and its 4 in arm square to the link (6 in put its boss in the shock absorber's can, which the arm's droop brings forward in flight) (an arm along the link, pinned on the boss itself, sits at dead centre and cannot hold the length), turns little; the brace's halves, the link and the crank hinge about axes along the trunnion's, so the leg's swing keeps each in its plane. The link as dvids8678626 shows it (2026-11-15, at the post's 46 px/in, +-0.1 in): a white sleeve 1.15 in across (53 px) down to the polished rod, 0.6 in (28 px), with a lock collar 1.1 in across and 0.5 long at each of the rod's ends (50 and 23 px), and a white rod end 1.0 in (46 px) on down to the crank's pin",
+				"note": "the rod's reach into the cylinder at full stretch estimated, nothing seeing inside it; the main side brace's structure pin, the boss's length along its pin (2 in) and the spring's length into the bay (5 in), the connecting link's pin and its bell crank's place: no photo shows them, unseen, placed for room. The main side brace's fork at its bolt (2026-11-16): an eye 3.1 in across round the bolt, tapering 3 in up the brace into its tube, either side of the post's lug, the bolt's pin hollow at its outer end and with a round head at its inner; each cheek's 0.4 in thickness, which no photo shows edge on, is estimated. The pin through the fork reads 17.5 deg off the trunnion's axis in dvids8678626 (it runs 19.7 deg below the photo's horizontal from its hollow end to its head, the axis 2.3 deg; taken square to the brace its end face would read 0.50 against the photo's 0.5, the axis's 0.38), and dvids8678629's soft view of its end, about 25 deg (+-10) from the photo's horizontal, sits between the two (-17 and -1); the build keeps the bolt along the trunnion's axis, which its brace's planar linkage turns about. What reads face on in dvids8678629 is the slot between the cheeks above the bolt. Under the fork the foot turns in a clevis on the post across the bolt, a universal joint's second pin (dvids8678626 from outboard, 46.7 px/in, read relative to the fork's centre, the camera there 2.4 in off): two lugs off the post 1.6-2.6 and 4.2-5.3 in down a bolt through the fork's middle, a spool 2.8 in across between them, and under the lower lug the bolt's castellated nut 2.8 in across (5.5-6.6 in down) and its rounded end 1.7 across to 7.8 in. The bolt runs 18.6 deg aft of the photo's vertical through the pin's centre, the fork's block's bottom, the spool's middle and the nut's; taken square to the pin as the photo measures it, it is (FS 0.284, WL -0.957, BL 0.066) down on the right leg, 18 deg off the post; no second photo sees it, so its lean across the sight line and the lugs' width round it (the spool's and 0.3 in) are estimated (user, 2026-11-16: built from the one view). On the main leg's path (layout.motion stowed main) its lower end, from the lower lug down the bolt to the end, passes through the open inner door and the skin at the bay's edge at gear 0.375-0.45: no path clears it without running the shock's can through the skin, and the foot's depth is the one view's least certain reading (user, 2026-11-16: kept, a known crossing). The knee's boss and spring clear the post, the doors and the bay's roof by about 0.4 in through the stroke on the search's sampled surfaces (2026-11-19), the knee photographed and the pin placed to make room for them.",
+				"unit": "link: the side braces' diameter, in (their tubes' measured 1.8); overlap: how far the nose drag brace's rod reaches into its cylinder at full stretch, in; side: the main side brace's structure pin [FS, WL, BL] (the right leg's), boss the knee's boss [diameter, length along its pin], spring the downlock spring [diameter, pitch of its coils, its length from the boss up the upper half], in, and its fitting: the fork at its bolt, its length from the bolt up the brace to where it meets the tube, its eye's diameter round the bolt and each cheek's thickness, either side of the post's lug, in; and foot: the clevis under the fork, bolt the direction its bolt runs down through the fork's middle [FS, WL, BL] on the right leg, lugs each lug's [top, bottom] down that bolt from the fork's middle, spool its diameter, nut [across flats, top, bottom], end [diameter, bottom], in; connecting: the connecting link's structure pin and the bell crank's pin, WL in on its axis, the crank's arm from its pivot to that pin, in; sleeve, rod and end, the link's diameters down its length, in, and collar its lock collars' [diameter, length], in"
 			},
 			"swing": {
 				"value": {

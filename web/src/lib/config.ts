@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // This file is part of Mochi, licensed under the GNU AGPL v3 with the
 // Mochi Application Interface Exception - see license.txt and license-exception.md.
+import { KEY_DEFAULTS } from '../game/keys'
 import { FUEL, PRESETS, matches } from '../game/stores'
 
 // One joystick's bindings: which pad axis drives each aircraft axis ('' = none),
@@ -236,26 +237,99 @@ export function deviceDefaults(id: string, mapping = ''): StickBindings {
   return { axes: { ...profile.axes }, buttons: { ...profile.buttons } }
 }
 
+// `typeof value === 'object'` is not the test for a map: it admits null and
+// arrays, and spreading either is legal, so a file declaring null maps
+// imported as a success that stored nothing.
+const record = (value: unknown): value is Record<string, unknown> =>
+  !!value && typeof value === 'object' && !Array.isArray(value)
+
+// BINDING is the form the engine reads a stick binding in: comma-separated
+// indices, each with an optional "-" (the reversed axis sense) and an optional
+// trailing "+" (the half-axis pair wheel). '' is unbound.
+const BINDING = /^-?\d+\+?(,-?\d+\+?)*$/
+
+// bindings keeps the entries of a binding map the Joystick tab and the engine
+// can read, each as text: a whole number becomes its string, the way a
+// hand-written profile says "pitch": 1, and anything else is dropped. The tab
+// works on every value as a string, so one number or null among them threw on
+// every render of it - on any device signed in to the account, with the tab's
+// own Reset out of reach behind the throw.
+export function bindings(map: unknown): Record<string, string> {
+  const kept: Record<string, string> = {}
+  if (!record(map)) return kept
+  for (const [action, value] of Object.entries(map)) {
+    const text =
+      typeof value === 'number' && Number.isSafeInteger(value)
+        ? String(value)
+        : typeof value === 'string'
+          ? value.replace(/\s+/g, '')
+          : null
+    if (text !== null && (text === '' || BINDING.test(text)))
+      kept[action] = text
+  }
+  return kept
+}
+
 // profileBindings resolves an imported joystick profile against a device's
-// defaults, or null when the file is not one. `typeof value === 'object'` is
-// not the test: it admits null and arrays, and spreading either is legal, so a
-// file declaring null maps imported as a success that stored nothing. Both maps
-// merge OVER the defaults - a profile exported before a binding existed carries
-// no entry for it, and adopting its map wholesale would leave that action
-// unbound.
+// defaults, or null when the file is not one, or declares bindings and not one
+// of them can be read. Both maps merge OVER the defaults - a profile exported
+// before a binding existed carries no entry for it, and adopting its map
+// wholesale would leave that action unbound - and an entry that is not a
+// binding (bindings above) leaves its action at the default.
 export function profileBindings(
   parsed: unknown,
   defaults: StickBindings
 ): StickBindings | null {
-  const record = (value: unknown): value is Record<string, unknown> =>
-    !!value && typeof value === 'object' && !Array.isArray(value)
   if (!record(parsed) || parsed.air !== 'joystick') return null
-  const { axes, buttons } = parsed
-  if (!record(axes) || !record(buttons)) return null
+  if (!record(parsed.axes) || !record(parsed.buttons)) return null
+  const axes = bindings(parsed.axes)
+  const buttons = bindings(parsed.buttons)
+  const declared =
+    Object.keys(parsed.axes).length + Object.keys(parsed.buttons).length
+  const kept = Object.keys(axes).length + Object.keys(buttons).length
+  if (declared && !kept) return null
   return {
-    axes: { ...defaults.axes, ...(axes as Record<string, string>) },
-    buttons: { ...defaults.buttons, ...(buttons as Record<string, string>) },
+    axes: { ...defaults.axes, ...axes },
+    buttons: { ...defaults.buttons, ...buttons },
   }
+}
+
+// SHARED pairs the controls the default keys deliberately put on one chord.
+// Each pair is read where the other never is - Enter launches from the
+// catapult on deck and acquires a target in the air; Space fires in flight
+// and pauses a replay, which answers no key that works the jet - so a rebind
+// that lands one on its partner's chord leaves the partner bound.
+export const SHARED: readonly (readonly [string, string])[] = [
+  ['acquire', 'launch'],
+  ['fire', 'pause'],
+]
+
+// rebind puts a chord on an action in the keyboard overrides, taking it from
+// every other control that holds it but the action's SHARED partner: two
+// controls on one chord is otherwise worse than one unbound. It answers the
+// new overrides and the controls the chord was taken from, every one of them,
+// so the Keys tab can say which are now unbound.
+export function rebind(
+  keys: Record<string, string>,
+  action: string,
+  chord: string
+): { keys: Record<string, string>; taken: string[] } {
+  const current = (id: string) => keys[id] ?? KEY_DEFAULTS[id]
+  const partner = (id: string) =>
+    SHARED.some(
+      ([one, two]) =>
+        (one === action && two === id) || (two === action && one === id)
+    )
+  const next = { ...keys }
+  const taken: string[] = []
+  for (const other of Object.keys(KEY_DEFAULTS))
+    if (other !== action && !partner(other) && current(other) === chord) {
+      next[other] = 'None'
+      taken.push(other)
+    }
+  if (KEY_DEFAULTS[action] === chord) delete next[action]
+  else next[action] = chord
+  return { keys: next, taken }
 }
 
 // Mission configuration collected by the setup menu and handed to the engine.
@@ -278,7 +352,7 @@ export interface MissionConfig {
   cold: boolean // a parked start cold and dark rather than ready (#133); inert for every other start
   end: '06' | '24' // the runway end a runway start or final uses (#133), 06 into the trades
   servers: string // recently joined world servers, newline-separated, most recent first (#77) — the config's index signature is scalar-or-record, and a bare array does not fit it
-  pilot: string // this player's stable token: identifies the owner of a match offer across reconnects (#77)
+  pilot: string // this account's pilot secret (net.ts pilot_mint): each world server sees only a token derived from it (pilot_token), which owns this player's match offers there across reconnects (#77)
   cat: number // carrier-start catapult 1-4
   tod: 'day' | 'night'
   clouds: 'none' | 'cumulus' | 'high_stratus' | 'mid_stratus' | 'low_stratus'

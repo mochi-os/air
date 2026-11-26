@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} നേരത്തെ തന്നെ എടുത്തിരുന്നു, ആ നിയന്ത്രണം ഇപ്പോൾ ബന്ധിപ്പിച്ചിട്ടില്ല."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} {1} എന്നിവയിലായിരുന്നു, അവ ഇപ്പോൾ ബന്ധിപ്പിച്ചിട്ടില്ല."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} {1} എന്നതിലായിരുന്നു, അത് ഇപ്പോൾ ബന്ധിപ്പിച്ചിട്ടില്ല."
@@ -165,6 +171,10 @@ msgstr "{entityLabel} പേര്"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "{from} മുതൽ {to} വരെ"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "അടയ്ക്കാൻ {key}"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "ബിംഗോ ഇന്ധനം"
 msgid "Block {name}"
 msgstr "{name} ബ്ലോക്ക് ചെയ്യുക"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "തടഞ്ഞത്"
 msgid "Blocked navigation to untrusted link"
 msgstr "വിശ്വസനീയമല്ലാത്ത ലിങ്കിലേക്കുള്ള നാവിഗേഷൻ തടഞ്ഞു"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "തടയുന്നു"
@@ -672,6 +684,10 @@ msgstr "തടയുന്നു"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "നീല"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "നീല {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "വിഭാഗം അപ്ഡേറ്റ് ചെയ്തു"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "മധ്യരേഖ"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "മാറ്റി"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} മാറ്റി"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "ക്ലാസ് മാറ്റി"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "കണ്ടെത്തുക"
 msgid "Detect from web browser"
 msgstr "വെബ് ബ്രൗസറിൽ നിന്ന് കണ്ടെത്തുക"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "ഡെവലപ്പർ മോഡ്"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "മറ്റൊരു ഗെയിം സെർവർ"
@@ -1628,6 +1653,7 @@ msgstr "അകലുന്നു"
 msgid "Drone"
 msgstr "ഡ്രോൺ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "ഡ്യൂപ്ലിക്കേറ്റ്"
@@ -1739,6 +1765,11 @@ msgstr "ഒഴിഞ്ഞ പൈലൺ"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "ശബ്ദം പ്രവർത്തനക്ഷമമാക്കുക"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "അവസാനിച്ചു"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "ഇന്ധന ടാങ്ക്"
 msgid "full afterburner"
 msgstr "ഫുൾ ആഫ്റ്റർബർണർ"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "പീരങ്കികൾ മാത്രം"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "സ്റ്റിക്കിൽ നിന്ന് കൈ മാറ്റുക; സല്യൂട്ട് ചെയ്ത് ലോഞ്ച് ചെയ്യാൻ enter അമർത്തുക"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "സ്റ്റിക്കിൽ നിന്ന് കൈ മാറ്റുക; സല്യൂട്ട് ചെയ്ത് ലോഞ്ച് ചെയ്യാൻ {key} അമർത്തുക"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "വിളക്ക് പരിശോധന"
 msgid "Link"
 msgstr "ലിങ്ക്"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "ലിങ്കുകൾ"
@@ -2653,6 +2681,10 @@ msgstr "ലോഡുചെയ്യുന്നു..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "ആയുധസജ്ജീകരണം"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "ലോക്ക് ആവശ്യമാണ്"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "റഡാർ ആന്റിന താഴ്ത്തുക"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "അടയ്ക്കാൻ M"
+msgid "LWD"
+msgstr "ഇടത്"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "ചലിപ്പിക്കുക…"
 msgid "Moved"
 msgstr "നീക്കി"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} നീക്കി"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "{0} എന്നതിലേക്ക് നീക്കുന്നു"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "മൾട്ടിപ്ലെയറിന് WebTransport ആവശ്യമാണ്; ഈ ബ്രൗസർ അത് ഇതുവരെ പിന്തുണയ്ക്കുന്നില്ല."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "പരസ്പര കിൽ"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "പരസ്പര കിൽ"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "പേര് നൽകേണ്ടത് ആവശ്യമാണ്"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "പേര് 1000 പ്രതീകങ്ങൾ അല്ലെങ്കിൽ അതിൽ കുറവായിരിക്കണം"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "കീഴ്"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "അടുത്ത വർഷം"
 msgctxt "daytime"
 msgid "Night"
 msgstr "രാത്രി"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "ഇല്ല"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "ആളുകളെ കണ്ടെത്തിയില്ല"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "സ്ഥലങ്ങളൊന്നും കണ്ടെത്തിയില്ല"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "റഡാർ ലോക്ക് ഇല്ല"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "അറിയിപ്പുകൾ: {0}"
 msgid "Novice"
 msgstr "തുടക്കക്കാരൻ"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "മേൽ"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "സംഖ്യ"
@@ -3221,7 +3273,9 @@ msgstr "റൺവേയിൽ: ഹാഫ് ഫ്ലാപ്പ്, മില�
 msgid "Oops! Page Not Found!"
 msgstr "ഓ! പേജ് കണ്ടെത്തിയില്ല!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "ഓപ്പൺ"
 
@@ -3270,6 +3324,11 @@ msgid "Options"
 msgstr "ഓപ്ഷനുകൾ"
 
 #: ../../../lib/web/src/features/access/access-dialog.tsx
+msgid "Other"
+msgstr "മറ്റുള്ളവ"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
 msgid "Other"
 msgstr "മറ്റുള്ളവ"
 
@@ -3453,13 +3512,13 @@ msgstr "പോസ്റ്റുകൾ"
 msgid "Posts and comments"
 msgstr "പോസ്റ്റുകളും അഭിപ്രായങ്ങളും"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "പറന്നുയരാൻ {key} അമർത്തുക"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "ഒരു കീ അമർത്തുക…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "പറന്നുയരാൻ ENTER അമർത്തുക"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "റെക്കോർഡിംഗ് സേവ് ചെയ്തു"
 msgid "Red"
 msgstr "ചുവപ്പ്"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "ചുവപ്പ് {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "ചുവന്ന ബോട്ടുകൾ"
@@ -3631,6 +3694,7 @@ msgstr "പുതുക്കുക"
 msgid "REJOINING"
 msgstr "വ്യൂഹത്തിലേക്ക് മടങ്ങുന്നു"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "ബന്ധപ്പെട്ടത്"
@@ -3883,6 +3947,10 @@ msgstr "പൂർണ്ണ ശക്തി"
 msgid "Runway {end}"
 msgstr "റൺവേ {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "വലത്"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "ശനിയാഴ്ച"
@@ -4062,6 +4130,7 @@ msgstr "സെർവർ"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "സെർവർ പിശക്"
 
@@ -4074,6 +4143,10 @@ msgstr "സെർവർ നിയമങ്ങൾ"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "സെർവർ v{0} പ്രവർത്തിക്കുന്നു, നിങ്ങൾക്ക് v{version} ഉണ്ട്"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "സെർവർ പ്രവർത്തനം നിർത്തി"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "സ്പ്ലിറ്റ്"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "ചിറകുകൾ വിരിക്കുക"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "സ്റ്റെബ് {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "അഭ്യർത്ഥിച്ച ഉള്ളടക്കം കണ�
 msgid "The server returned a web page instead of data."
 msgstr "സെർവർ ഡാറ്റയ്ക്ക് പകരം ഒരു വെബ് പേജ് തിരികെ നൽകി."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "വേൾഡ് സെർവർ {status} പിശകോടെ മറുപടി നൽകി"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "വേൾഡ് സെർവർ സമയത്ത് മറുപടി നൽകിയില്ല"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "വേൾഡ് സെർവറിൽ മറ്റൊരു മത്സരത്തിന് ഇടമില്ല"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "വേൾഡ് സെർവർ വായിക്കാനാകാത്ത മറുപടി അയച്ചു"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "ഈ ആപ്പിന് നിങ്ങളുടെ പാസ്കീ ഉപയോഗിക്കാൻ അനുവാദമില്ല. ക്രമീകരണങ്ങളിൽ, അനുമതികൾക്ക് കീഴിൽ അത് അനുവദിക്കുക."
@@ -4482,6 +4575,10 @@ msgstr "സമയം"
 msgid "Time of day"
 msgstr "ദിവസത്തിലെ സമയം"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "സമയം കഴിഞ്ഞു"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "തലക്കെട്ട്"
@@ -4512,13 +4609,25 @@ msgstr "കാഴ്ച ഓപ്ഷനുകൾ ടോഗിൾ ചെയ്യ
 msgid "Toggle watched filter"
 msgstr "വാച്ച് ചെയ്ത ഫിൽട്ടർ ടോഗിൾ ചെയ്യുക"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "നിങ്ങളുടെ വിലാസത്തിൽ നിന്ന് വളരെയധികം മത്സരങ്ങൾ വാഗ്ദാനം ചെയ്തിട്ടുണ്ട്"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "വളരെയധികം അഭ്യർത്ഥനകൾ"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "വേൾഡ് സെർവറിലേക്ക് വളരെയധികം അഭ്യർത്ഥനകൾ"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "മികച്ചവ"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "ഏറ്റവും മുകളിലുള്ള ലെവൽ"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "യാത്ര ചെയ്യുന്നു"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "ട്രിം"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "ട്രിം {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "യുണൈറ്റഡ് സ്റ്റേറ്റ്സ്"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "ചിറകുകൾ പൂട്ടി"
 msgid "WINS"
 msgstr "ജയിക്കുന്നു"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "പിൻവലിച്ചു"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "വേൾഡ് സെർവർ"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "വേൾഡ് സെർവറിലേക്ക് എത്താനാകുന്നില്ല"
@@ -4893,6 +5016,10 @@ msgstr "യാവ് വലത്തേക്ക്"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "വർഷം"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "അതെ"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

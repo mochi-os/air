@@ -122,7 +122,13 @@ msgid "{0} was already taken, and that control is now unbound."
 msgstr "{0} berê hatibû girtin, û ew kontrol niha ne girêdayî ye."
 
 #. placeholder {0}: pretty(taken.chord)
-#. placeholder {1}: i18n._(lost.label)
+#. placeholder {1}: formatList(named.map((row) => i18n._(row.label)))
+#: src/components/SettingsDialog.tsx
+msgid "{0} was on {1}, which are now unbound."
+msgstr "{0} li ser {1} bû, ku niha ne girêdayî ne."
+
+#. placeholder {0}: pretty(taken.chord)
+#. placeholder {1}: i18n._(named[0].label)
 #: src/components/SettingsDialog.tsx
 msgid "{0} was on {1}, which is now unbound."
 msgstr "{0} li ser {1} bû, ku niha ne girêdayî ye."
@@ -165,6 +171,10 @@ msgstr "Navê {entityLabel}"
 #: ../../../lib/web/src/components/calendar/tooltip.ts
 msgid "{from} to {to}"
 msgstr "ji {from} heta {to}"
+
+#: src/components/GameCanvas.tsx
+msgid "{key} to close"
+msgstr "{key} ji bo girtinê"
 
 #: src/components/GameCanvas.tsx
 msgid "{killer} destroyed {victim}"
@@ -655,6 +665,7 @@ msgstr "BINGO SOTEMENÎ"
 msgid "Block {name}"
 msgstr "{name} asteng bike"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocked by"
@@ -665,6 +676,7 @@ msgstr "Hat astengkirin ji aliyê"
 msgid "Blocked navigation to untrusted link"
 msgstr "Gihîştin bo girêdaneke nebawer hat astengkirin"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Blocks"
 msgstr "Blok"
@@ -672,6 +684,10 @@ msgstr "Blok"
 #: src/components/Multiplayer.tsx
 msgid "Blue"
 msgstr "Şîn"
+
+#: src/components/GameCanvas.tsx
+msgid "BLUE {score}"
+msgstr "ŞÎN {score}"
 
 #: src/components/Multiplayer.tsx
 msgid "Blue bots"
@@ -874,7 +890,7 @@ msgid "Category updated"
 msgstr "Kategorî hat nûkirin"
 
 #: src/components/MissionSetup.tsx
-msgid "Centerline"
+msgid "Centreline"
 msgstr "Xeta navîn"
 
 #: src/components/SettingsDialog.tsx
@@ -897,6 +913,10 @@ msgstr "Hate guhertin"
 #: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 msgid "Changed {field}"
 msgstr "{field} hate guhertin"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Changed class"
+msgstr "Pol hate guhertin"
 
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
@@ -1529,6 +1549,11 @@ msgstr "Tespît bike"
 msgid "Detect from web browser"
 msgstr "Ji geroka webê tespît bike"
 
+#: src/components/MatchLog.tsx
+#: src/components/MatchLog.tsx
+msgid "Developer mode"
+msgstr "Moda pêşdebiran"
+
 #: src/components/Multiplayer.tsx
 msgid "Different game host"
 msgstr "Hosteke lîstikê ya cuda"
@@ -1628,6 +1653,7 @@ msgstr "DÛR DIKEVE"
 msgid "Drone"
 msgstr "Dron"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Duplicates"
 msgstr "Dubare"
@@ -1739,6 +1765,11 @@ msgstr "Pîlona vala"
 #: src/components/SettingsDialog.tsx
 msgid "Enable sound"
 msgstr "Deng çalak bike"
+
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Ended"
+msgstr "Qediya"
 
 #: ../../../lib/web/src/components/calendar/time-grid.tsx
 msgid "Ends before it starts"
@@ -2152,10 +2183,6 @@ msgstr "Tanka sotemeniyê"
 msgid "full afterburner"
 msgstr "paşsotîner tam"
 
-#: src/components/MatchLog.tsx
-msgid "Furball"
-msgstr "Furball"
-
 #: src/components/MissionSetup.tsx
 #: src/components/MissionSetup.tsx
 msgid "Fuselage"
@@ -2242,8 +2269,8 @@ msgid "Guns only"
 msgstr "Tenê top"
 
 #: src/components/GameCanvas.tsx
-msgid "Hand off stick; press enter to salute and launch"
-msgstr "Destê xwe ji desteyê veke; ji bo silavdan û firînê enter bitikîne"
+msgid "Hand off stick; press {key} to salute and launch"
+msgstr "Destê xwe ji desteyê veke; ji bo silavdan û firînê {key} bitikîne"
 
 #: src/components/MissionSetup.tsx
 msgid "Hardware graphics acceleration is off — check browser settings or graphics drivers."
@@ -2605,6 +2632,7 @@ msgstr "Ceribandina çirayan"
 msgid "Link"
 msgstr "Girêdan"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Links"
 msgstr "Girêdan"
@@ -2653,6 +2681,10 @@ msgstr "Tê barkirin..."
 #: src/components/Multiplayer.tsx
 msgid "Loadout"
 msgstr "Çekdarî"
+
+#: src/components/GameCanvas.tsx
+msgid "LOCK REQUIRED"
+msgstr "KILÎT PÊWÎST E"
 
 #: src/routes/log.tsx
 msgid "Log"
@@ -2722,8 +2754,8 @@ msgid "Lower radar antenna"
 msgstr "Antena radarê nizm bike"
 
 #: src/components/GameCanvas.tsx
-msgid "M to close"
-msgstr "M ji bo girtinê"
+msgid "LWD"
+msgstr "ÇEP"
 
 #: src/components/MissionSetup.tsx
 msgid "Magnetic field from the <0>World Magnetic Model 2025</0> of <1>NOAA NCEI</1> and the <2>British Geological Survey</2> (public domain)."
@@ -2913,10 +2945,6 @@ msgstr "Bilivîne…"
 msgid "Moved"
 msgstr "Hate guhastin"
 
-#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
-msgid "Moved {field}"
-msgstr "{field} hate guhastin"
-
 #. placeholder {0}: dayName(dragging.day)
 #. placeholder {0}: dayName(opening(current, format.zonedDay))
 #: ../../../lib/web/src/components/calendar/month-grid.tsx
@@ -2927,6 +2955,14 @@ msgstr "Tê veguhastin bo {0}"
 #: src/components/Multiplayer.tsx
 msgid "Multiplayer needs WebTransport, which this browser does not support yet."
 msgstr "Pirlîstikvan hewceyî WebTransport e, ku ev gerok hîn piştgiriya wê nake."
+
+#: src/components/MatchLog.tsx
+msgid "Mutual kill"
+msgstr "Kuştina hevdu"
+
+#: src/components/GameCanvas.tsx
+msgid "MUTUAL KILL"
+msgstr "KUŞTINA HEVDU"
 
 #: ../../../lib/web/src/components/entity/add-field-dialog.tsx
 #: ../../../lib/web/src/components/entity/entity-board-column.tsx
@@ -2947,6 +2983,10 @@ msgstr "Nav pêwîst e"
 #: ../../../lib/web/src/components/ui/create-entity-dialog.tsx
 msgid "Name must be 1000 characters or less"
 msgstr "Nav divê 1000 tîp an kêmtir be"
+
+#: src/components/GameCanvas.tsx
+msgid "ND"
+msgstr "JÊR"
 
 #: ../../../lib/web/src/features/errors/general-error.tsx
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
@@ -2986,6 +3026,10 @@ msgstr "Sala bê"
 msgctxt "daytime"
 msgid "Night"
 msgstr "Şev"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "No"
+msgstr "Na"
 
 #: ../../../lib/web/src/components/entity/entity-create-object-dialog.tsx
 msgid "No {parentClassNames} to add to"
@@ -3051,6 +3095,10 @@ msgstr "Tu kes nehatin dîtin"
 #: ../../../lib/web/src/components/place-picker.tsx
 msgid "No places found"
 msgstr "Tu cîh nehatin dîtin"
+
+#: src/components/GameCanvas.tsx
+msgid "NO RADAR LOCK"
+msgstr "KILÎTA RADARÊ TUNE"
 
 #: ../../../lib/web/src/components/inline-entity-search.tsx
 #: ../../../lib/web/src/components/search-entity-page.tsx
@@ -3177,6 +3225,10 @@ msgstr "Agahdarî: {0}"
 msgid "Novice"
 msgstr "Destpêker"
 
+#: src/components/GameCanvas.tsx
+msgid "NU"
+msgstr "JOR"
+
 #: ../../../lib/web/src/hooks/use-field-type-labels.ts
 msgid "Number"
 msgstr "Hejmar"
@@ -3221,7 +3273,9 @@ msgstr "Li ser pîstê: flap nîvî, heta hêza leşkerî bilind bike, frên vek
 msgid "Oops! Page Not Found!"
 msgstr "Wey! Rûpel nehat dîtin!"
 
+#: src/components/MatchLog.tsx
 #: src/components/Multiplayer.tsx
+msgctxt "match mode"
 msgid "Open"
 msgstr "Vekirî"
 
@@ -3272,6 +3326,11 @@ msgstr "Vebijêrk"
 #: ../../../lib/web/src/features/access/access-dialog.tsx
 msgid "Other"
 msgstr "Yên din"
+
+#: src/components/MatchLog.tsx
+msgctxt "match mode"
+msgid "Other"
+msgstr "Moda din"
 
 #: src/components/SettingsDialog.tsx
 msgid "Override G limit"
@@ -3453,13 +3512,13 @@ msgstr "Poste"
 msgid "Posts and comments"
 msgstr "Poste û şîrove"
 
+#: src/components/GameCanvas.tsx
+msgid "PRESS {key} TO LAUNCH"
+msgstr "JI BO FIRÎNÊ {key} BIKIRTÎNE"
+
 #: src/components/SettingsDialog.tsx
 msgid "Press a key…"
 msgstr "Pêl bişkokekê bike…"
-
-#: src/components/GameCanvas.tsx
-msgid "PRESS ENTER TO LAUNCH"
-msgstr "JI BO FIRÎNÊ ENTER BIKIRTÎNE"
 
 #: src/components/SettingsDialog.tsx
 msgid "Press…"
@@ -3606,6 +3665,10 @@ msgstr "Qeyd hate tomarkirin"
 msgid "Red"
 msgstr "Sor"
 
+#: src/components/GameCanvas.tsx
+msgid "RED {score}"
+msgstr "SOR {score}"
+
 #: src/components/Multiplayer.tsx
 msgid "Red bots"
 msgstr "Botên sor"
@@ -3631,6 +3694,7 @@ msgstr "Nûjen bike"
 msgid "REJOINING"
 msgstr "VEDIGERIM REFÊ"
 
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
 #: ../../../lib/web/src/components/entity/entity-object-links.tsx
 msgid "Relates"
 msgstr "Pêwendîdar e"
@@ -3883,6 +3947,10 @@ msgstr "HÊZA TEMAM"
 msgid "Runway {end}"
 msgstr "Pîst {end}"
 
+#: src/components/GameCanvas.tsx
+msgid "RWD"
+msgstr "RAST"
+
 #: ../../../lib/web/src/lib/preference-utils.ts
 msgid "Saturday"
 msgstr "Şemî"
@@ -4062,6 +4130,7 @@ msgstr "Server"
 
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
 #: ../../../lib/web/src/lib/api-response-interceptors.ts
+#: src/components/MatchLog.tsx
 msgid "Server error"
 msgstr "Çewtiya rajekarê"
 
@@ -4074,6 +4143,10 @@ msgstr "Qaîdeyên server"
 #: src/components/ServerList.tsx
 msgid "server runs v{0}, you have v{version}"
 msgstr "rajekar v{0} dixebitîne, te v{version} heye"
+
+#: src/components/MatchLog.tsx
+msgid "Server shut down"
+msgstr "Server hate girtin"
 
 #: src/components/GameCanvas.tsx
 msgid "SESSION ENDED"
@@ -4225,6 +4298,10 @@ msgstr "Parçe bike"
 #: src/components/GameCanvas.tsx
 msgid "SPREAD WINGS"
 msgstr "BASKAN VEKE"
+
+#: src/components/GameCanvas.tsx
+msgid "STAB {cycle}"
+msgstr "STAB {cycle}"
 
 #: src/components/MissionSetup.tsx
 msgid "Stall, clean (Vs1)"
@@ -4426,6 +4503,22 @@ msgstr "Naveroka xwestî nehat dîtin."
 msgid "The server returned a web page instead of data."
 msgstr "Rajekar li şûna daneyan rûpeleke webê vegerand."
 
+#: src/components/Multiplayer.tsx
+msgid "The world server answered with error {status}"
+msgstr "Servera cîhanê bi xeletiya {status} bersiv da"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server did not answer in time"
+msgstr "Servera cîhanê di wextê xwe de bersiv neda"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server has no room for another match"
+msgstr "Li servera cîhanê ji bo maçeke din cih tune"
+
+#: src/components/Multiplayer.tsx
+msgid "The world server sent an answer that could not be read"
+msgstr "Servera cîhanê bersivek şand ku nehat xwendin"
+
 #: ../../../lib/web/src/lib/shell-errors.ts
 msgid "This app is not allowed to use your passkey. Allow it in Settings, under Permissions."
 msgstr "Ev sepan destûr nîne ku passkey-a te bi kar bîne. Di Mîhengan de, di bin Destûran de destûrê bide."
@@ -4482,6 +4575,10 @@ msgstr "Dem"
 msgid "Time of day"
 msgstr "Dema rojê"
 
+#: src/components/MatchLog.tsx
+msgid "Timed out"
+msgstr "Dem qediya"
+
 #: src/components/Feedback.tsx
 msgid "Title"
 msgstr "Sernav"
@@ -4512,13 +4609,25 @@ msgstr "Vebijarkên dîtinê biguherîne"
 msgid "Toggle watched filter"
 msgstr "Parzûna temaşekirî biguherîne"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many matches offered from your address"
+msgstr "Ji navnîşana te gelek zêde maç hatin pêşkêşkirin"
+
 #: ../../../lib/web/src/features/errors/general-error.tsx
 msgid "Too many requests"
 msgstr "Daxwazên pir zêde"
 
+#: src/components/Multiplayer.tsx
+msgid "Too many requests to the world server"
+msgstr "Gelek zêde daxwaz ji servera cîhanê re"
+
 #: ../../../lib/web/src/components/ui/sort-selector.tsx
 msgid "Top"
 msgstr "Çêtirîn"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Top level"
+msgstr "Asta jor"
 
 #: src/components/GameCanvas.tsx
 msgid "Touchdown: throttle idle; aerobrake at 10° nose up, lower nose at 100 knots, brake"
@@ -4535,6 +4644,10 @@ msgstr "Rêwîtî"
 #: src/components/GameCanvas.tsx
 msgid "trim"
 msgstr "trîm"
+
+#: src/components/GameCanvas.tsx
+msgid "TRIM {pitch} {roll}"
+msgstr "TRÎM {pitch} {roll}"
 
 #: src/components/GameCanvas.tsx
 msgid "Trim for amber light beside HUD (8.1° AOA), power for height"
@@ -4630,6 +4743,11 @@ msgid "United States"
 msgstr "Dewletên Yekbûyî"
 
 #: ../../../lib/web/src/components/audit-timeline.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+#: ../../../lib/web/src/components/entity/entity-board-card.tsx
 #: ../../../lib/web/src/components/entity/entity-field-dialog.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
 #: ../../../lib/web/src/components/tree-row.tsx
@@ -4861,11 +4979,16 @@ msgstr "BASK KILÎTKIRÎ"
 msgid "WINS"
 msgstr "BI SER KET"
 
+#: src/components/MatchLog.tsx
+msgctxt "match end"
+msgid "Withdrawn"
+msgstr "Hate vekişandin"
+
 #: src/components/Multiplayer.tsx
 msgid "World server"
 msgstr "Servera cîhanê"
 
-#: src/components/MissionSetup.tsx
+#: src/components/Multiplayer.tsx
 #: src/components/Multiplayer.tsx
 msgid "World server not reachable"
 msgstr "Gihîştina servera cîhanê ne pêkan e"
@@ -4893,6 +5016,10 @@ msgstr "Poz ber bi rastê"
 #: ../../../lib/web/src/components/calendar/date-header.tsx
 msgid "Year"
 msgstr "Sal"
+
+#: ../../../lib/web/src/components/entity/entity-activity-list.tsx
+msgid "Yes"
+msgstr "Erê"
 
 #: src/components/GameCanvas.tsx
 msgid "YOU"

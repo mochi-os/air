@@ -14,6 +14,50 @@ import { ACROSS, PRIORITY, SLOTS, dedicated, host, lines, reconcile, restack, ty
 const row = (key: string, red = false): Row => [key, key, red]
 const keys = (slots: Slots) => slots.map((slot) => (slot ? slot.key : null))
 
+// reference is reconcile as it stood before the steady state was answered without building anything:
+// the fast path must answer every input exactly as this does, the same array included.
+function reference(slots: Slots, rows: readonly Row[]): Slots {
+  const want = new Map(rows.map(([key, label, red]) => [key, { key, label, red }]))
+  const next: Slots = slots.map((slot) => (slot && want.has(slot.key) ? want.get(slot.key)! : null))
+  const held = new Set(next.filter((slot) => slot !== null).map((slot) => slot!.key))
+  while (next.length && next[next.length - 1] === null) next.pop()
+  for (const [key, slot] of want) {
+    if (held.has(key)) continue
+    if (next.length >= SLOTS) {
+      if (!PRIORITY.has(key)) continue
+      const oldest = next.findIndex((slot) => slot !== null && !PRIORITY.has(slot.key))
+      if (oldest < 0) continue
+      next.splice(oldest, 1)
+    }
+    next.push(slot)
+  }
+  let same = next.length === slots.length
+  for (let i = 0; same && i < next.length; i++) {
+    const a = slots[i], b = next[i]
+    same = a === b || (!!a && !!b && a.key === b.key && a.label === b.label && a.red === b.red)
+  }
+  return same ? slots : next
+}
+
+describe('the caution slots in their steady state', () => {
+  it('are answered as the full reconciliation answers them, whatever is shown and on show', () => {
+    let seed = 7
+    const random = () => ((seed = (Math.imul(seed, 1103515245) + 12345) >>> 0) / 2 ** 32)
+    const pool = ['A', 'B', 'C', 'D', 'E', 'RUD OFF', 'MECH ON']
+    const pick = () => pool[Math.floor(random() * pool.length)]
+    for (let n = 0; n < 4000; n++) {
+      const slots: Slots = []
+      for (let k = Math.floor(random() * 6); k > 0; k--) slots.push(random() < 0.25 ? null : { key: pick(), label: random() < 0.9 ? 'L' : 'M', red: random() < 0.2 })
+      const rows: Row[] = []
+      for (let k = Math.floor(random() * 6); k > 0; k--) rows.push([random() < 0.7 && slots.some((s) => s) ? (slots.find((s) => s)!.key) : pick(), random() < 0.9 ? 'L' : 'M', random() < 0.2])
+      if (random() < 0.4) rows.splice(0, rows.length, ...slots.filter((s) => s !== null).map((s): Row => [s!.key, s!.label, s!.red]))   // exactly what is shown: the steady state itself
+      const want = reference(slots, rows), got = reconcile(slots, rows)
+      expect(got === slots, JSON.stringify([slots, rows])).toBe(want === slots)
+      expect(got, JSON.stringify([slots, rows])).toEqual(want)
+    }
+  })
+})
+
 describe('the caution slots', () => {
   it('fill from the first slot in the order the cautions occur, three to a line', () => {
     const slots = reconcile([], [row('FUEL LEAK'), row('CANOPY'), row('WING UNLK'), row('STRUCTURE')])
@@ -93,15 +137,15 @@ describe('the caution wiring', () => {
   const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
 
   it('feeds the slots from the caution rows before the tail the voice test extracts', () => {
-    expect(source).toMatch(/const next=cautions_reconcile\(caution_slots,captions\.map\(c=>\[c,c,false\]\)\); if\(next!==caution_slots\)\{ caution_slots=next; ddi_dirty=true; \} \}[^\n]*\n\tcaution_list=rows;\n/)
+    expect(source).toMatch(/caption_rows\.length=0; for\(const c of captions\) caption_rows\.push\(plain_row\(c,c\)\);\n\t\{ const next=cautions_reconcile\(caution_slots,caption_rows\); if\(next!==caution_slots\)\{ caution_slots=next; ddi_dirty=true; \} \}[^\n]*\n\tcaution_list=rows;\n/)
   })
 
   it('shows the jet\'s cautions only, under their index captions, FLAMEOUT per engine', () => {
     const table = /\nconst DDI_CAPTIONS=\{[^\n]*\n/.exec(source)?.[0] ?? ''
-    const section = /\n\tconst captions=\[\];\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
+    const section = /\n\tconst captions=caption_list; captions\.length=0;\n[^\n]*\n[^\n]*\n/.exec(source)?.[0] ?? ''
     expect(table).not.toBe(''); expect(section).not.toBe('')
     const run = (rows: string[], o: { fuel?: number; harm?: [number, number]; secured?: [boolean, boolean] } = {}) => new Function(`const STATE={ engine_harm:0 }, core=${JSON.stringify(o.harm ?? [0, 0])}, secured=${JSON.stringify(o.secured ?? [false, false])}, ownship={ fuel:${o.fuel ?? 3000} }, rows=${JSON.stringify(rows.map((k) => [k, k, false]))};
-      ${table} ${section} return captions;`)() as string[]
+      ${table} const caption_list=[], FLAMEOUT_CAPTIONS=["L FLAMEOUT","R FLAMEOUT"]; ${section} return captions;`)() as string[]
     expect(run(['FUEL LEAK', 'WING UNLK', 'L ENG FIRE', 'FUEL FIRE', 'PARK BRK', 'NOSE GEAR', 'STRUCTURE', 'L ENG', 'FCS', 'FUEL LO', 'BINGO', 'HOME FUEL', 'CANOPY', 'PROBE UNLK', 'FLAMEOUT']))
       .toEqual(['WING UNLK', 'PARK BRAKE', 'FCS', 'FUEL LO', 'BINGO', 'HOME FUEL', 'CANOPY', 'PROBE UNLK'])
     expect(run([], { fuel: 0 })).toEqual(['L FLAMEOUT', 'R FLAMEOUT']) // dry tanks: both engines
@@ -157,7 +201,7 @@ describe('the display that carries the cautions', () => {
 
 describe('the advisory line', () => {
   const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
-  const lift = (name: string) => { const start = source.indexOf(`function ${name}(`); if (start < 0) throw new Error(name + ' not found'); const rest = source.slice(start); const end = /\n(?=\S)/.exec(rest.slice(1)); return end ? rest.slice(0, end.index + 1) : rest }
+  const lift = (name: string) => { const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)); if (start < 0) throw new Error(name + ' not found'); const rest = source.slice(start); const end = /\n(?=\S)/.exec(rest.slice(1)); return end ? rest.slice(0, end.index + 1) : rest }
   const consts = /\nconst buttons=\{[^\n]*\n/.exec(source)?.[0] ?? '', on = /\nconst ANTIICE_ON=[^\n]*\n/.exec(source)?.[0] ?? ''
   interface Jet { suite?: string[]; attitude?: boolean; grounded?: boolean; home?: boolean; ice?: number; rpm?: [number, number]; secured?: [boolean, boolean]; gear?: number; skid?: boolean; time?: number; trim?: number; reset?: number; standing?: boolean; reference?: string; failure?: boolean; chaff?: number; flares?: number; dispenser?: string; challenged?: boolean; answered?: boolean; alert?: string; helmet?: 'aligned' | 'unaligned' | 'off' }
   const advised = (o: Jet = {}) => (new Function('o', 'countermeasures', 'identification', 'helmet', `const hmd=helmet.fresh(!o.helmet||o.helmet==='aligned',{ azimuth:0, elevation:0, roll:0 },0); if(o.helmet==='unaligned') helmet.step(hmd,true,1); const hold={ engaged:false, modes:{ attitude:false, select:false, barometric:false, radar:false, coupled:false }, source:"track", caution:-Infinity, flash:-Infinity }, link={ selected:false, five:null, six:null }, autopilot={ cue:()=>false, cautions:()=>[], advisories:()=>[] }, hud_link=()=>"", hud_coupled=()=>""; let coupled=""; ${consts} ${on} const sim_time=o.time??100, glance=o.time??100, navigate={ advisories:()=>o.suite||[], attitude:()=>o.attitude??true }, nav={ ins:{} };
@@ -166,7 +210,7 @@ describe('the advisory line', () => {
     const ownship={ grounded:o.grounded??false, gearTarget:o.gear??1, chaff:o.chaff??20, flares:o.flares??40, gauges:{ rpmL:(o.rpm||[80,80])[0], rpmR:(o.rpm||[80,80])[1] } }, fpas_home=()=>(o.home??true)?{}:null, travel_at=()=>o.ice??1;
     const secured=o.secured||[false,false], antiskid=o.skid??true, reference=o.reference||"auto";
     buttons.trim=o.trim??-Infinity; buttons.reset=o.reset??-Infinity; buttons.standing=!!o.standing; const bit={ advisory:!!o.failure };
-    ${lift('advisories_now')} return advisories_now();`)(o, countermeasures, identification, helmet) as [string, string][]).map(([key]) => key)
+    ${lift('handle_down')}${lift('row_store')}${lift('plain_row')}${lift('advisory_add')}${lift('advisories_now')} return advisories_now();`)(o, countermeasures, identification, helmet) as [string, string][]).map(([key]) => key)
   it('advises HMD while the helmet is on with no valid coarse alignment, and not while it is off (2.21.9)', () => {
     expect([advised({ helmet: 'unaligned' }), advised({ helmet: 'off' }), advised({ helmet: 'aligned' })]).toEqual([['HMD'], [], []])
   })
@@ -240,7 +284,7 @@ describe('the advisory line', () => {
   })
 
   it('follows what is advised each sim step, and packs with the cautions on MASTER CAUTION', () => {
-    expect(source).toMatch(/const next=cautions_reconcile\(advisory_slots,avionics\.advised\(advisories_now\(\),computing\)\.map\(\(\[key,label\]\)=>\[key,label,false\]\)\); if\(next!==advisory_slots\)\{ advisory_slots=next; ddi_dirty=true; \} \}/)
+    expect(source).toMatch(/const next=cautions_reconcile\(advisory_slots,computing\.one\?advisories_now\(\):NONE\); if\(next!==advisory_slots\)\{ advisory_slots=next; ddi_dirty=true; \} \}/)
   })
 })
 
@@ -274,7 +318,7 @@ describe('the IFF and APU accumulator cautions', () => {
 
 describe('where the cautions are drawn', () => {
   const source = readFileSync(fileURLToPath(new URL('./engine.ts', import.meta.url)), 'utf8')
-  const lift = (name: string) => { const start = source.indexOf(`function ${name}(`); if (start < 0) throw new Error(name + ' not found'); const rest = source.slice(start); const end = /\n(?=\S)/.exec(rest.slice(1)); return end ? rest.slice(0, end.index + 1) : rest }
+  const lift = (name: string) => { const start = ((at: number) => (at >= 0 ? at : source.search(new RegExp(`\\n(?:const|let) ${name}=`)) + 1))(source.indexOf(`function ${name}(`)); if (start < 0) throw new Error(name + ' not found'); const rest = source.slice(start); const end = /\n(?=\S)/.exec(rest.slice(1)); return end ? rest.slice(0, end.index + 1) : rest }
   interface Pit { levels?: Record<string, number>; pages?: Record<string, [string, string]>; cautions?: number }
   const pit = (o: Pit, body: string) => new Function('cautions_host', 'cautions_dedicated', 'o', `const levels={ left:1, center:1, right:1, ...o.levels }, display_level=(d)=>levels[d];
     const page=(d,fallback)=>({ page:(o.pages&&o.pages[d]||[fallback,""])[0], menu:(o.pages&&o.pages[d]||[fallback,""])[1] });
